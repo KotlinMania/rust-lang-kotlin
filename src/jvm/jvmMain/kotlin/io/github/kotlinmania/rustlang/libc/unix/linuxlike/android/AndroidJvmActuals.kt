@@ -2,23 +2,23 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TimerT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 
 private object UnixLinuxlikeAndroidJniBridge {
     init {
@@ -724,7 +724,7 @@ public actual fun signalfd(fd: CInt, mask: ConstPtr, flags: CInt): CInt =
     UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidSignalfd(fd, mask.rawAddress, flags)
 
 public actual fun timerfdCreate(clock: ClockidT, flags: CInt): CInt =
-    UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerfdCreate(clock.toInt(), flags)
+    UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerfdCreate(clock, flags)
 
 public actual fun timerfdGettime(fd: CInt, currentValue: MutPtr): CInt =
     UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerfdGettime(fd, currentValue.rawAddress)
@@ -733,7 +733,7 @@ public actual fun timerfdSettime(fd: CInt, flags: CInt, newValue: ConstPtr, oldV
     UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerfdSettime(fd, flags, newValue.rawAddress, oldValue.rawAddress)
 
 public actual fun timerCreate(clockid: ClockidT, sevp: MutPtr, timerid: MutPtr): CInt =
-    UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerCreate(clockid.toInt(), sevp.rawAddress, timerid.rawAddress)
+    UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerCreate(clockid, sevp.rawAddress, timerid.rawAddress)
 
 public actual fun timerDelete(timerid: TimerT): CInt =
     UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidTimerDelete(timerid.rawAddress)
@@ -838,7 +838,7 @@ public actual fun schedGetscheduler(pid: PidT): CInt =
     UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidSchedGetscheduler(pid)
 
 public actual fun clockNanosleep(clkId: ClockidT, flags: CInt, rqtp: ConstPtr, rmtp: MutPtr): CInt =
-    UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidClockNanosleep(clkId.toInt(), flags, rqtp.rawAddress, rmtp.rawAddress)
+    UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidClockNanosleep(clkId, flags, rqtp.rawAddress, rmtp.rawAddress)
 
 public actual fun sethostname(name: ConstPtr, len: SizeT): CInt =
     UnixLinuxlikeAndroidJniBridge.libcUnixLinuxlikeAndroidSethostname(name.rawAddress, len.toLong())

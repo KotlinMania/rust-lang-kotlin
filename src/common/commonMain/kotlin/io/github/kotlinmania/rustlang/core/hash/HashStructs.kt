@@ -71,7 +71,7 @@ public class DebugStruct(
  */
 public open class BuildHasherDefault<H>(
     public var value: Unit,
-) : BuildHasher<Any?, H> {
+) : BuildHasher<H> {
     public var field0: Unit
         get() = value
         set(v) {

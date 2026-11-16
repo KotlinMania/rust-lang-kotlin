@@ -23,13 +23,13 @@ public var STRINGNAMES: List<String> = listOf("cbt", "_", "cr", "csr", "tbc", "c
 
 public fun readLeU16(r: Read): Result<UShort> {
     val b = MutableList(2) { 0 }
-    when (val tryResult = r.readExact(b)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = r.readExact(b)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     return Result.Ok((b[0].toUShort()) or (((b[1].toUShort()).toUInt() shl 8).toUShort()))
 }
 
 public fun readLeU32(r: Read): Result<UInt> {
     val b = MutableList(4) { 0 }
-    when (val tryResult = r.readExact(b)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = r.readExact(b)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     return Result.Ok((b[0].toUInt()) or ((b[1].toUInt()) shl 8) or ((b[2].toUInt()) shl 16) or ((b[3].toUInt()) shl 24))
 }
 
@@ -59,29 +59,29 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
     val magic =
         run {
             val matchVal = readLeU16(file)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 val e = matchVal.value
                 e
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val e1 = matchVal.error
-                return Result.Err(e1.toString())
+                return Result.Err<TermInfo, String>(e1.toString())
             } }
         }
     val extended =
         when (magic) {
             282 -> false
             542 -> true
-            else -> { return Result.Err("invalid magic number, found $magic") }
+            else -> { return Result.Err<TermInfo, String>("invalid magic number, found $magic") }
         }
     val namesBytes = run {
         val matchVal2 = (run {
         val matchVal1 = readLeU16(file)
-        when (matchVal1) { is Result.Ok<*> -> {
+        when (matchVal1) { is Result.Ok -> {
             val e2 = matchVal1.value
             e2
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e3 = matchVal1.error
-            return Result.Err(e3.toString())
+            return Result.Err<TermInfo, String>(e3.toString())
         } }
     }).toShort()
         when {
@@ -90,18 +90,18 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                 n.toInt()
             }
             matchVal2 == -1 -> 0
-            else -> { return Result.Err("incompatible file: length fields must be  >= -1".toString()) }
+            else -> { return Result.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
     val boolsBytes = run {
         val matchVal4 = (run {
         val matchVal3 = readLeU16(file)
-        when (matchVal3) { is Result.Ok<*> -> {
+        when (matchVal3) { is Result.Ok -> {
             val e4 = matchVal3.value
             e4
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e5 = matchVal3.error
-            return Result.Err(e5.toString())
+            return Result.Err<TermInfo, String>(e5.toString())
         } }
     }).toShort()
         when {
@@ -110,18 +110,18 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                 n1.toInt()
             }
             matchVal4 == -1 -> 0
-            else -> { return Result.Err("incompatible file: length fields must be  >= -1".toString()) }
+            else -> { return Result.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
     val numbersCount = run {
         val matchVal6 = (run {
         val matchVal5 = readLeU16(file)
-        when (matchVal5) { is Result.Ok<*> -> {
+        when (matchVal5) { is Result.Ok -> {
             val e6 = matchVal5.value
             e6
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e7 = matchVal5.error
-            return Result.Err(e7.toString())
+            return Result.Err<TermInfo, String>(e7.toString())
         } }
     }).toShort()
         when {
@@ -130,18 +130,18 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                 n2.toInt()
             }
             matchVal6 == -1 -> 0
-            else -> { return Result.Err("incompatible file: length fields must be  >= -1".toString()) }
+            else -> { return Result.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
     val stringOffsetsCount = run {
         val matchVal8 = (run {
         val matchVal7 = readLeU16(file)
-        when (matchVal7) { is Result.Ok<*> -> {
+        when (matchVal7) { is Result.Ok -> {
             val e8 = matchVal7.value
             e8
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e9 = matchVal7.error
-            return Result.Err(e9.toString())
+            return Result.Err<TermInfo, String>(e9.toString())
         } }
     }).toShort()
         when {
@@ -150,18 +150,18 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                 n3.toInt()
             }
             matchVal8 == -1 -> 0
-            else -> { return Result.Err("incompatible file: length fields must be  >= -1".toString()) }
+            else -> { return Result.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
     val stringTableBytes = run {
         val matchVal10 = (run {
         val matchVal9 = readLeU16(file)
-        when (matchVal9) { is Result.Ok<*> -> {
+        when (matchVal9) { is Result.Ok -> {
             val e10 = matchVal9.value
             e10
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e11 = matchVal9.error
-            return Result.Err(e11.toString())
+            return Result.Err<TermInfo, String>(e11.toString())
         } }
     }).toShort()
         when {
@@ -170,87 +170,87 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                 n4.toInt()
             }
             matchVal10 == -1 -> 0
-            else -> { return Result.Err("incompatible file: length fields must be  >= -1".toString()) }
+            else -> { return Result.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
     if (namesBytes == 0) {
-        return Result.Err("incompatible file: names field must be at least 1 byte wide".toString())
+        return Result.Err<TermInfo, String>("incompatible file: names field must be at least 1 byte wide".toString())
     }
     if (boolsBytes > BOOLNAMES.size) {
-        return Result.Err("incompatible file: more booleans than expected".toString())
+        return Result.Err<TermInfo, String>("incompatible file: more booleans than expected".toString())
     }
     if (numbersCount > NUMNAMES.size) {
-        return Result.Err("incompatible file: more numbers than expected".toString())
+        return Result.Err<TermInfo, String>("incompatible file: more numbers than expected".toString())
     }
     if (stringOffsetsCount > STRINGNAMES.size) {
-        return Result.Err("incompatible file: more string offsets than expected".toString())
+        return Result.Err<TermInfo, String>("incompatible file: more string offsets than expected".toString())
     }
     // don't read NUL
     val bytes = mutableListOf()
     run {
         val matchVal11 = file.take((namesBytes - 1).toULong()).readToEnd(bytes)
-        when (matchVal11) { is Result.Ok<*> -> {
+        when (matchVal11) { is Result.Ok -> {
             val e12 = matchVal11.value
             e12
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e13 = matchVal11.error
-            return Result.Err(e13.toString())
+            return Result.Err<TermInfo, String>(e13.toString())
         } }
     }
     val namesStr =
         run {
             val matchVal12 = String.fromUtf8(bytes)
-            when (matchVal12) { is Result.Ok<*> -> {
+            when (matchVal12) { is Result.Ok -> {
                 val s = matchVal12.value
                 s
-            }; is Result.Err<*> -> {
-                return Result.Err("input not utf-8".toString())
+            }; is Result.Err -> {
+                return Result.Err<TermInfo, String>("input not utf-8".toString())
             } }
         }
     val termNames: List<String> = namesStr.split('|').map({ s1 -> s1.toString() }).toMutableList()
     // consume NUL
     if (run {
         val matchVal13 = readByte(file)
-        when (matchVal13) { is Result.Ok<*> -> {
+        when (matchVal13) { is Result.Ok -> {
             val e14 = matchVal13.value
             e14
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             val e15 = matchVal13.error
-            return Result.Err(e15.toString())
+            return Result.Err<TermInfo, String>(e15.toString())
         } }
     } != 0u) {
-        return Result.Err("incompatible file: missing null terminator for names section".toString())
+        return Result.Err<TermInfo, String>("incompatible file: missing null terminator for names section".toString())
     }
     val boolsMap: MutableMap<String, Boolean> =
         run {
             val matchVal14 = (0 until boolsBytes).mapNotNull({ i -> run {
             val matchVal14 = readByte(file)
             when {
-                matchVal14 is Result.Err<*> -> {
-                    val e16 = (matchVal14 as Result.Err<*>).error
+                matchVal14 is Result.Err -> {
+                    val e16 = matchVal14.error
                     Result.Err(e16)
                 }
-                matchVal14 is Result.Ok<*> && matchVal14.value == 1 -> Result.Ok(Pair(bnames[i].toString(), true))
+                matchVal14 is Result.Ok && matchVal14.value == 1 -> Result.Ok(Pair(bnames[i].toString(), true))
                 else -> null
             }
         } }).toMap(LinkedHashMap())
-            when (matchVal14) { is Result.Ok<*> -> {
+            when (matchVal14) { is Result.Ok -> {
                 val e16 = matchVal14.value
                 e16
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val e17 = matchVal14.error
-                return Result.Err(e17.toString())
+                return Result.Err<TermInfo, String>(e17.toString())
             } }
         }
     if ((boolsBytes + namesBytes) % 2 == 1) {
         run {
             val matchVal15 = readByte(file)
-            when (matchVal15) { is Result.Ok<*> -> {
+            when (matchVal15) { is Result.Ok -> {
                 val e18 = matchVal15.value
                 e18
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val e19 = matchVal15.error
-                return Result.Err(e19.toString())
+                return Result.Err<TermInfo, String>(e19.toString())
             } }
         }
         // compensate for padding
@@ -265,23 +265,23 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                     readLeU16(file).map(Into::into)
                 }
             when {
-                number is Result.Ok<*> && number.value == 0xFFFF -> null
-                number is Result.Ok<*> -> {
-                    val n5 = (number as Result.Ok<*>).value
+                number is Result.Ok && number.value == 0xFFFF -> null
+                number is Result.Ok -> {
+                    val n5 = number.value
                     Result.Ok(Pair(nnames[i].toString(), n5))
                 }
                 else -> {
-                    val e20 = (number as Result.Err<*>).error
+                    val e20 = number.error
                     Result.Err(e20)
                 }
             }
         }).toMap(LinkedHashMap())
-            when (matchVal16) { is Result.Ok<*> -> {
+            when (matchVal16) { is Result.Ok -> {
                 val e20 = matchVal16.value
                 e20
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val e21 = matchVal16.error
-                return Result.Err(e21.toString())
+                return Result.Err<TermInfo, String>(e21.toString())
             } }
         }
     val stringMap: MutableMap<String, List<UByte>> =
@@ -289,23 +289,23 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
             val stringOffsets: List<UShort> =
                 run {
                     val matchVal17 = (0 until stringOffsetsCount).map({ readLeU16(file) }).toMutableList()
-                    when (matchVal17) { is Result.Ok<*> -> {
+                    when (matchVal17) { is Result.Ok -> {
                         val e22 = matchVal17.value
                         e22
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val e23 = matchVal17.error
-                        return Result.Err(e23.toString())
+                        return Result.Err<TermInfo, String>(e23.toString())
                     } }
                 }
             val stringTable = mutableListOf()
             run {
                 val matchVal18 = file.take(stringTableBytes.toULong()).readToEnd(stringTable)
-                when (matchVal18) { is Result.Ok<*> -> {
+                when (matchVal18) { is Result.Ok -> {
                     val e24 = matchVal18.value
                     e24
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     val e25 = matchVal18.error
-                    return Result.Err(e25.toString())
+                    return Result.Err<TermInfo, String>(e25.toString())
                 } }
             }
             run {
@@ -326,28 +326,28 @@ public fun parse(file: Read, longnames: Boolean): Result<TermInfo, String> {
                     return@closure Result.Ok(Pair(name.toString(), mutableListOf()))
                 }
                 // Find the offset of the NUL we want to go to
-                val nulpos = ((stringTable).slice(offset1 until stringTableBytes)).indexOfFirst({ b -> b == 0 }).takeIf { it >= 0 }
+                val nulpos = ((stringTable).subList(offset1, stringTableBytes)).indexOfFirst({ b -> b == 0 }).takeIf { it >= 0 }
                 when (nulpos) {
                     null -> Result.Err("invalid file: missing NUL in string_table".toString())
                     else -> {
                         val len = nulpos
-                        Result.Ok(Pair(name.toString(), ((stringTable).slice(offset1 until offset1 + len)).toMutableList()))
+                        Result.Ok(Pair(name.toString(), ((stringTable).subList(offset1, offset1 + len)).toMutableList()))
                     }
                 }
             })).toMap(LinkedHashMap())
-                when (matchVal19) { is Result.Ok<*> -> {
+                when (matchVal19) { is Result.Ok -> {
                     val e26 = matchVal19.value
                     e26
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     val e27 = matchVal19.error
-                    return Result.Err(e27.toString())
+                    return Result.Err<TermInfo, String>(e27.toString())
                 } }
             }
         } else {
             mutableMapOf()
         }
     // And that's all there is to it
-    return Result.Ok(TermInfo(names = termNames, bools = boolsMap, numbers = numbersMap, strings = stringMap))
+    return Result.Ok<TermInfo, String>(TermInfo(names = termNames, bools = boolsMap, numbers = numbersMap, strings = stringMap))
 }
 
 /**

@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.common.posix.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initNewCommonPosixPthreadNapiAddon(): Boolean
@@ -209,7 +209,7 @@ public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, shared: CInt): CInt
     if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr.rawAddress.toString(), shared) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCancel(thread: PthreadT): CInt =
-    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadCancel(thread.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadCancel(thread.toLong().toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
     if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadCondattrGetclock(attr.rawAddress.toString(), clockId.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -227,13 +227,13 @@ public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreate
     if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadCreate(native.rawAddress.toString(), attr.rawAddress.toString(), 0L.toString(), value.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetcpuclockid(thread: PthreadT, clkId: MutPtr): CInt =
-    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadGetcpuclockid(thread.rawAddress.toString(), clkId.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadGetcpuclockid(thread.toLong().toString(), clkId.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetschedparam(native: PthreadT, policy: MutPtr, param: MutPtr): CInt =
-    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadGetschedparam(native.rawAddress.toString(), policy.rawAddress.toString(), param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadGetschedparam(native.toLong().toString(), policy.rawAddress.toString(), param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
-    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadKill(thread.rawAddress.toString(), sig) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadKill(thread.toLong().toString(), sig) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexConsistent(mutex: MutPtr): CInt =
     if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadMutexConsistent(mutex.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -269,10 +269,10 @@ public actual fun pthreadOnce(control: MutPtr, routine: PthreadAtforkPrepareCall
     if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadOnce(control.rawAddress.toString(), 0L.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetschedparam(native: PthreadT, policy: CInt, param: ConstPtr): CInt =
-    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadSetschedparam(native.rawAddress.toString(), policy, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadSetschedparam(native.toLong().toString(), policy, param.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetschedprio(native: PthreadT, priority: CInt): CInt =
-    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadSetschedprio(native.rawAddress.toString(), priority) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadSetschedprio(native.toLong().toString(), priority) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSigmask(how: CInt, set: ConstPtr, oldset: MutPtr): CInt =
     if (newCommonPosixPthreadNapiAvailable) wasmLibcNewCommonPosixPthreadPthreadSigmask(how, set.rawAddress.toString(), oldset.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")

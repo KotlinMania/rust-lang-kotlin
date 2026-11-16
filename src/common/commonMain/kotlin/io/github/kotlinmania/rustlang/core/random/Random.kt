@@ -5,7 +5,7 @@ package io.github.kotlinmania.rustlang.core.random
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
@@ -126,7 +126,7 @@ public fun bounded32(bound: UInt, source: Rng): UInt {
     val sample: UInt = (0 until 0).sample(source)
     var (l, res) = sample.carryingMul(bound, 0)
     if (l < bound) {
-        val t = rustWrappingNeg(bound) % bound
+        val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: UInt = (0 until 0).sample(source)
             Pair(l, res) = sample1.carryingMul(bound, 0)
@@ -154,7 +154,7 @@ public fun bounded64(bound: ULong, source: Rng): ULong {
     val sample: ULong = (0 until 0).sample(source)
     var (l, res) = sample.carryingMul(bound, 0)
     if (l < bound) {
-        val t = rustWrappingNeg(bound) % bound
+        val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: ULong = (0 until 0).sample(source)
             Pair(l, res) = sample1.carryingMul(bound, 0)
@@ -182,7 +182,7 @@ public fun bounded128(bound: U128, source: Rng): U128 {
     val sample: U128 = (0 until 0).sample(source)
     var (l, res) = sample.carryingMul(bound, 0)
     if (l < bound) {
-        val t = rustWrappingNeg(bound) % bound
+        val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: U128 = (0 until 0).sample(source)
             Pair(l, res) = sample1.carryingMul(bound, 0)

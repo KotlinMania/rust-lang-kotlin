@@ -2,21 +2,23 @@
 package io.github.kotlinmania.rustlang.core.slice.cmp
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
 import io.github.kotlinmania.rustlang.core.intrinsics.compareBytes
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Comparison traits for `[T]`.
 
@@ -36,7 +38,7 @@ public fun <T, U> List<T>.eq(other: List<U>): Boolean {
  */
 public fun <T> List<T>.cmp(other: List<T>): Ordering = SliceOrd.compare(this, other)
 
-public fun asUnderlying(x: ControlFlow<Boolean>): UByte {
+public fun asUnderlying(x: ControlFlow<Boolean, Unit>): UByte {
     // SAFETY: This will only compile if `Boolean` and `ControlFlow<Boolean>` have the same
     // size (which isn't guaranteed but this is libcore). Because they have the same
     // size, it's a niched implementation, which in one byte means there can't be
@@ -68,9 +70,9 @@ public fun <T> List<T>.gt(other: List<T>): Boolean = asUnderlying(this.chainingG
 
 public fun <T> List<T>.ge(other: List<T>): Boolean = asUnderlying(this.chainingGreater(other)) != 0u.toUByte()
 
-public fun <T> List<T>.chainingLess(other: List<T>): ControlFlow<Boolean> = SliceChain.chainingLess(this, other)
+public fun <T> List<T>.chainingLess(other: List<T>): ControlFlow<Boolean, Unit> = SliceChain.chainingLess(this, other)
 
-public fun <T> List<T>.chainingGreater(other: List<T>): ControlFlow<Boolean> = SliceChain.chainingGreater(this, other)
+public fun <T> List<T>.chainingGreater(other: List<T>): ControlFlow<Boolean, Unit> = SliceChain.chainingGreater(this, other)
 
 // intermediate trait for specialization of slice's PartialEq
 public interface SlicePartialEq<B, T> {
@@ -86,13 +88,13 @@ public interface SlicePartialEq<B, T> {
 // and preventing it encourages more useful inlining upstream,
 // such as in `<String as PartialEq>.eq`.
 // The codegen backend can still inline it later if needed.
-public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, len: Int, typeLayoutB: TypeLayout<B>): Boolean {
+public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, len: Int, typeLayoutB: TypeLayout<B> = UnresolvedTypeLayout()): Boolean {
     // Implemented as explicit indexing rather
     // than zipped iterators for performance reasons.
     // See PR https://github.com/rust-lang/rust/pull/116846
     for (idx in 0 until len) {
         // SAFETY: idx < len, so both are in-bounds and readable
-        if ((ObjectSlotLayout<A>()).readNative((ConstPtr((lhs).rawAddress + ((idx).toLong() * (ObjectSlotLayout<A>()).strideBytes))).rawAddress) != (typeLayoutB).readNative((ConstPtr((rhs).rawAddress + ((idx).toLong() * (typeLayoutB).strideBytes))).rawAddress)) {
+        if ((UnresolvedTypeLayout<A>()).readNative((ConstPtr((lhs).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<A>()).strideBytes))).rawAddress) != (typeLayoutB).readNative((ConstPtr((rhs).rawAddress + ((idx).toLong() * (typeLayoutB).strideBytes))).rawAddress)) {
             return false
         }
     }
@@ -106,7 +108,7 @@ public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, l
     // for reading `len` values, which also means the size is guaranteed
     // not to overflow because it exists in memory;
     return run {
-        val size = uncheckedMul(len, A.SIZE)
+        val size = ((len) * (A.SIZE))
         compareBytes(((lhs as Any?) as Boolean), ((rhs as Any?) as Boolean), size) == 0
     }
 }
@@ -116,9 +118,9 @@ public interface SlicePartialOrd<T> {
 }
 
 public interface SliceChain<T> {
-    public fun chainingLess(left: List<T>, right: List<T>): ControlFlow<Boolean>
+    public fun chainingLess(left: List<T>, right: List<T>): ControlFlow<Boolean, Unit>
 
-    public fun chainingGreater(left: List<T>, right: List<T>): ControlFlow<Boolean>
+    public fun chainingGreater(left: List<T>, right: List<T>): ControlFlow<Boolean, Unit>
 }
 
 public typealias AlwaysBreak<B> = ControlFlow<B, Nothing>
@@ -138,18 +140,18 @@ public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Or
     return b
 }
 
-public fun <A> sliceChainChainingLessA(left: List<A>, right: List<A>): ControlFlow<Boolean> = chainingImpl(left, right, PartialOrd.chainingLess, Int.chainingLess)
+public fun <A> sliceChainChainingLessA(left: List<A>, right: List<A>): ControlFlow<Boolean, Unit> = chainingImpl(left, right, PartialOrd.chainingLess, Int.chainingLess)
 
-public fun <A> sliceChainChainingGreaterA(left: List<A>, right: List<A>): ControlFlow<Boolean> = chainingImpl(left, right, PartialOrd.chainingGreater, Int.chainingGreater)
+public fun <A> sliceChainChainingGreaterA(left: List<A>, right: List<A>): ControlFlow<Boolean, Unit> = chainingImpl(left, right, PartialOrd.chainingGreater, Int.chainingGreater)
 
-public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, A) -> ControlFlow<B>, lenChain: (Int, Int) -> ControlFlow<B, C>): ControlFlow<B, C> {
+public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, A) -> ControlFlow<B, Unit>, lenChain: (Int, Int) -> ControlFlow<B, C>): ControlFlow<B, C> {
     val l = minOf(left.size, right.size)
     // Slice to the loop iteration range to enable bound check
     // elimination in the compiler
-    val lhs = ((left).slice(0 until l))
-    val rhs = ((right).slice(0 until l))
+    val lhs = ((left).subList(0, l))
+    val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return lenChain(left.size, right.size)
 }
@@ -210,12 +212,12 @@ public interface SliceContains<T> {
 
 public fun <T> T.sliceContains(x: List<T>): Boolean = x.any({ y -> y == this })
 
-public fun <T : BytewiseEq<T>> T.sliceContains(x: List<T>, typeLayoutT: TypeLayout<T>): Boolean =
+public fun <T : BytewiseEq<T>> T.sliceContains(x: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean =
     if (sizeOf<T>(typeLayoutT = typeLayoutT) == 1) {
         // SAFETY: `BytewiseEq` guarantees that values have no padding or provenance and
         // compare like their underlying bytes. Since `T` is one byte, both the value and
         // slice can be read as `UByte`s.
-        val (byte, bytes) = Pair(transmuteCopy<T, UByte>(this), rawSliceList(ConstPtr((x.asPtr()).rawAddress), x.size, PrimitiveLayouts.U8))
+        val (byte, bytes) = Pair(transmuteCopy<T, UByte>(this), linearSliceView(ConstPtr((x.asPtr()).rawAddress), x.size, PrimitiveLayouts.U8))
         memchr.memchr(byte, bytes) != null
     } else {
         x.any({ y -> y == this })

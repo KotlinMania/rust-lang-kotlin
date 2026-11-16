@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo
 
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
@@ -114,9 +114,9 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
             run {
                 val matchVal1 = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
                 when {
-                    matchVal1 is Result.Ok<*> -> { break }
-                    matchVal1 is Result.Err<*> && (matchVal1 as Result.Err<*>).error == thisRef -> {
-                        val owner = (matchVal1 as Result.Err<*>).error
+                    matchVal1 is Result.Ok -> { break }
+                    matchVal1 is Result.Err && (matchVal1 as Result.Err).error == thisRef -> {
+                        val owner = matchVal1.error
                         run {
                             when (val matchVal2 = panicOutput()) {
                                 null -> {}
@@ -142,7 +142,7 @@ public fun <R> withCurrentInfo(f: (ThreadInfo?) -> R): R {
             }
         }
     // SAFETY: we own the spin lock, so `THREAD_INFO` cannot not be aliased.
-    val threadInfo = (ObjectSlotLayout<MutableMap<Int, ThreadInfo>>()).readNative(((addrOf(THREAD_INFO))).rawAddress)
+    val threadInfo = (UnresolvedTypeLayout<MutableMap<Int, ThreadInfo>>()).readNative(((addrOf(THREAD_INFO))).rawAddress)
     return f(threadInfo.get(thisRef))
 }
 
@@ -151,9 +151,9 @@ public fun spinLockInSetup(thisRef: Int): UnlockOnDrop {
         run {
             val matchVal = SPIN_LOCK.compareExchange(0, thisRef, Ordering.Acquire, Ordering.Relaxed)
             when {
-                matchVal is Result.Ok<*> -> { return UnlockOnDrop() }
-                matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error == thisRef -> {
-                    val owner = (matchVal as Result.Err<*>).error
+                matchVal is Result.Ok -> { return UnlockOnDrop() }
+                matchVal is Result.Err && (matchVal as Result.Err).error == thisRef -> {
+                    val owner = matchVal.error
                     error("the thread info setup logic isn't recursive")
                 }
                 // This function is always called with the outer lock held,
@@ -173,13 +173,13 @@ public fun setCurrentInfo(guardPageRange: IntRange) {
     val name = withCurrentName({ name -> name.map(Box::from) })
     val thisRef = (errnoLocation()).rawAddress.toInt()
     // SAFETY: we own the spin lock, so `THREAD_INFO` cannot be aliased.
-    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), ObjectSlotLayout<MutableMap<Int, ThreadInfo>>())
+    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), UnresolvedTypeLayout<MutableMap<Int, ThreadInfo>>())
     threadInfo.put(thisRef, ThreadInfo(tid = tid, name = name, guardPageRange = guardPageRange))
 }
 
 public fun deleteCurrentInfo() {
     val thisRef = (errnoLocation()).rawAddress.toInt()
     // SAFETY: we own the spin lock, so `THREAD_INFO` cannot not be aliased.
-    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), ObjectSlotLayout<MutableMap<Int, ThreadInfo>>())
+    val threadInfo = RustMutableReference(MutPtr(((addrOfMut(THREAD_INFO))).rawAddress), UnresolvedTypeLayout<MutableMap<Int, ThreadInfo>>())
     threadInfo.remove(thisRef)
 }

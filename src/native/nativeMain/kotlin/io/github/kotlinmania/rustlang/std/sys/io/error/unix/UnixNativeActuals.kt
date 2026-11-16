@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.std.sys.io.error.unix.cinterop.stdSysIoErr
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toLong
 
-public actual var LIBC_ERRNO: CInt
+public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
     get() = stdSysIoErrorUnixGetLIBCERRNO()
     set(value) {
         stdSysIoErrorUnixSetLIBCERRNO(value)

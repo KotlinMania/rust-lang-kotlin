@@ -93,21 +93,21 @@ public sealed class Feature {
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "32s" -> Result.Ok(Feature.v32s)
-                "f" -> Result.Ok(Feature::f)
-                "d" -> Result.Ok(Feature::d)
-                "frecipe" -> Result.Ok(Feature::frecipe)
-                "div32" -> Result.Ok(Feature::div32)
-                "lsx" -> Result.Ok(Feature::lsx)
-                "lasx" -> Result.Ok(Feature::lasx)
-                "lam-bh" -> Result.Ok(Feature::lamBh)
-                "lamcas" -> Result.Ok(Feature::lamcas)
-                "ld-seq-sa" -> Result.Ok(Feature::ldSeqSa)
-                "scq" -> Result.Ok(Feature::scq)
-                "lbt" -> Result.Ok(Feature::lbt)
-                "lvz" -> Result.Ok(Feature::lvz)
-                "ual" -> Result.Ok(Feature::ual)
-                else -> Result.Err(Unit)
+                "32s" -> Result.Ok<Feature, Unit>(Feature.v32s)
+                "f" -> Result.Ok<Feature, Unit>(Feature::f)
+                "d" -> Result.Ok<Feature, Unit>(Feature::d)
+                "frecipe" -> Result.Ok<Feature, Unit>(Feature::frecipe)
+                "div32" -> Result.Ok<Feature, Unit>(Feature::div32)
+                "lsx" -> Result.Ok<Feature, Unit>(Feature::lsx)
+                "lasx" -> Result.Ok<Feature, Unit>(Feature::lasx)
+                "lam-bh" -> Result.Ok<Feature, Unit>(Feature::lamBh)
+                "lamcas" -> Result.Ok<Feature, Unit>(Feature::lamcas)
+                "ld-seq-sa" -> Result.Ok<Feature, Unit>(Feature::ldSeqSa)
+                "scq" -> Result.Ok<Feature, Unit>(Feature::scq)
+                "lbt" -> Result.Ok<Feature, Unit>(Feature::lbt)
+                "lvz" -> Result.Ok<Feature, Unit>(Feature::lvz)
+                "ual" -> Result.Ok<Feature, Unit>(Feature::ual)
+                else -> Result.Err<Feature, Unit>(Unit)
             }
     }
 }
@@ -116,82 +116,82 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun v32s(): Boolean = checkFor(Feature.v32s)
+public fun v32s(): Boolean = checkFor(v32s)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f(): Boolean = checkFor(Feature::f)
+public fun f(): Boolean = checkFor(::f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun d(): Boolean = checkFor(Feature::d)
+public fun d(): Boolean = checkFor(::d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun frecipe(): Boolean = checkFor(Feature::frecipe)
+public fun frecipe(): Boolean = checkFor(::frecipe)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun div32(): Boolean = checkFor(Feature::div32)
+public fun div32(): Boolean = checkFor(::div32)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lsx(): Boolean = checkFor(Feature::lsx)
+public fun lsx(): Boolean = checkFor(::lsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lasx(): Boolean = checkFor(Feature::lasx)
+public fun lasx(): Boolean = checkFor(::lasx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lamBh(): Boolean = checkFor(Feature::lamBh)
+public fun lamBh(): Boolean = checkFor(::lamBh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lamcas(): Boolean = checkFor(Feature::lamcas)
+public fun lamcas(): Boolean = checkFor(::lamcas)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ldSeqSa(): Boolean = checkFor(Feature::ldSeqSa)
+public fun ldSeqSa(): Boolean = checkFor(::ldSeqSa)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun scq(): Boolean = checkFor(Feature::scq)
+public fun scq(): Boolean = checkFor(::scq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lbt(): Boolean = checkFor(Feature::lbt)
+public fun lbt(): Boolean = checkFor(::lbt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lvz(): Boolean = checkFor(Feature::lvz)
+public fun lvz(): Boolean = checkFor(::lvz)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ual(): Boolean = checkFor(Feature::ual)
+public fun ual(): Boolean = checkFor(::ual)

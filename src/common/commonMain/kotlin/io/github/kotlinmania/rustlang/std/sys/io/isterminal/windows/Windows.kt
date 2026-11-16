@@ -2,10 +2,11 @@
 package io.github.kotlinmania.rustlang.std.sys.io.isterminal.windows
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
@@ -25,8 +26,8 @@ public fun handleIsConsole(handle: BorrowedHandle): Boolean {
         // `NtQueryVolumeInformationFile` lets us test the handle directly.
         // The required `FILE_DEVICE_CONSOLE` type was introduced in Windows 8.
         // Fun fact: `GetFileType` uses `NtQueryVolumeInformationFile` internally.
-        val ioStatus = MaybeUninit.uninit(ObjectSlotLayout<c.IoStatusBlock>())
-        val deviceInfo = MaybeUninit.uninit(ObjectSlotLayout<c.FileFsDeviceInformation>())
+        val ioStatus = MaybeUninit.uninit(UnresolvedTypeLayout<c.IoStatusBlock>())
+        val deviceInfo = MaybeUninit.uninit(UnresolvedTypeLayout<c.FileFsDeviceInformation>())
         val status = c.NtQueryVolumeInformationFile(handle.asRawHandle(), ioStatus.asMutPtr(), deviceInfo.asMutPtr().cast(), sizeOfVal(deviceInfo).toUInt(), c.FileFsDeviceInformation)
         if (status < 0) {
             return false
@@ -54,10 +55,10 @@ public fun msysTtyOn(handle: BorrowedHandle): Boolean {
         public var fileNameLength: UInt,
         public var fileName: List<MaybeUninit<UShort>>,
     )
-    val localStorageL73C4 = AddressableLocal(FileNameInfo(fileNameLength = 0u, fileName = List(_) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), ObjectSlotLayout<FileNameInfo>())
+    val localStorageL73C4 = AddressableLocal(FileNameInfo(fileNameLength = 0u, fileName = List(_) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<FileNameInfo>())
     val nameInfo by localStorageL73C4
     // Safety: buffer length is fixed.
-    val res = c.GetFileInformationByHandleEx(handle.asRawHandle(), c.FileNameInfo, ((localStorageL73C4.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<FileNameInfo>(typeLayoutT = ObjectSlotLayout<FileNameInfo>()).toUInt())
+    val res = c.GetFileInformationByHandleEx(handle.asRawHandle(), c.FileNameInfo, ((localStorageL73C4.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<FileNameInfo>(typeLayoutT = UnresolvedTypeLayout<FileNameInfo>()).toUInt())
     if (res == 0) {
         return false
     }

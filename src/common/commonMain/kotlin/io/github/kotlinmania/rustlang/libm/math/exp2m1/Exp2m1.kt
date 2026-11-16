@@ -2647,9 +2647,9 @@ public fun lookupException(table: List<Triple<Double, Double, Double>>, x: Doubl
             return hi + lo
         }
         if (x < input) {
-            table1 = ((table1).slice(0 until middle))
+            table1 = ((table1).subList(0, middle))
         } else {
-            table1 = ((table1).slice(middle + 1 until table1.size))
+            table1 = ((table1).subList(middle + 1, (table1).size))
         }
     }
     return null

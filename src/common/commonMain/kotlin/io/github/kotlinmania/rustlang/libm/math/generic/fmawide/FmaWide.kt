@@ -1,7 +1,7 @@
 // port-lint: source math/generic/fma_wide.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.fmawide
 
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
@@ -45,7 +45,7 @@ public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, f
     }
     val neg = ui shr (B.BITS - 1).toInt() != IntTy.ZERO
     val err =
-        if (neg == ((compareNaturalOrder(zb, xy) > 0))) {
+        if (neg == ((kmCompareValues(zb, xy) > 0))) {
             xy - result + zb
         } else {
             zb - result + xy

@@ -14,26 +14,28 @@ import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatwith.repeatWith
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.ops.range.Range
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 
 /**
  * A double-ended queue implemented with a growable ring buffer.
@@ -144,7 +146,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      */
     public open fun bufferRead(off: WrappedIndex): T {
         // SAFETY: Upheld by caller.
-        return ptr.read(this.ptr().add(off.asIndex()))
+        return read(this.ptr().add(off.asIndex()))
     }
 
     /**
@@ -260,10 +262,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * (abs(dst - src) + len) must be no larger than capacity() (There must be at
      * most one continuous overlapping region between src and dest).
      */
-    public open fun wrapCopy(src: WrappedIndex, dst: WrappedIndex, len: Int) {
+    public open fun wrapCopy(src: WrappedIndex, dst: WrappedIndex, len: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         check(minOf(src.absDiff(dst), this.capacity() - src.absDiff(dst)) + len <= this.capacity()) { "wrc dst=$dst src=$src len=$len cap=${this.capacity()}" }
         // If T is a ZST, don't do any copying.
-        if (T.IS_ZST || src == dst || len == 0) {
+        if (((typeLayoutT).sizeBytes == 0L) || src == dst || len == 0) {
             return
         }
         val dstAfterSrc = this.wrapSub(dst, src.asIndex()) < len
@@ -422,7 +424,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
          *
          * See [ptr.copyNonoverlapping].
          */
-        fun <T> copyNonoverlappingReversed(src1: ConstPtr, dst1: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+        fun <T> copyNonoverlappingReversed(src1: ConstPtr, dst1: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
             for (i in 0 until count) {
                 // SAFETY: Upheld by caller.
                 copyNonoverlapping(ConstPtr((src1).rawAddress + ((count - 1 - i).toLong() * (typeLayoutT).strideBytes)), MutPtr((dst1).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1, typeLayoutT = typeLayoutT)
@@ -718,12 +720,14 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * val buf: VecDeque<Int> = VecDeque.withCapacity(10)
+     * import alloc.Global
+     *
+     * val buf: VecDeque<Int, Global> = VecDeque.withCapacity(10)
      * check(buf.capacity() >= 10)
      * ```
      */
-    public open fun capacity(): Int =
-        if (T.IS_ZST) {
+    public open fun capacity(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int =
+        if (((typeLayoutT).sizeBytes == 0L)) {
             Int.MAX_VALUE
         } else {
             this.buf.capacity()
@@ -744,7 +748,9 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * var buf: VecDeque<Int> = listOf(1).into()
+     * import alloc.Global
+     *
+     * var buf: VecDeque<Int, Global> = listOf(1).into()
      * buf.reserveExact(10)
      * check(buf.capacity() >= 11)
      * ```
@@ -752,7 +758,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * [reserve]: VecDeque.reserve
      */
     public open fun reserveExact(additional: Int) {
-        val newCap = (rustCheckedAdd(this.len, additional) ?: error("capacity overflow"))
+        val newCap = (this.len.checkedAdd(additional) ?: error("capacity overflow"))
         val oldCap = this.capacity()
         if (newCap > oldCap) {
             this.buf.reserveExact(this.len, additional)
@@ -774,13 +780,15 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * var buf: VecDeque<Int> = listOf(1).into()
+     * import alloc.Global
+     *
+     * var buf: VecDeque<Int, Global> = listOf(1).into()
      * buf.reserve(10)
      * check(buf.capacity() >= 11)
      * ```
      */
     public open fun reserve(additional: Int) {
-        val newCap = (rustCheckedAdd(this.len, additional) ?: error("capacity overflow"))
+        val newCap = (this.len.checkedAdd(additional) ?: error("capacity overflow"))
         val oldCap = this.capacity()
         if (newCap > oldCap) {
             // we don't need to reserveExact(), as the size doesn't have
@@ -813,8 +821,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * fun processData(data: List<UInt>): Result<VecDeque<UInt>> {
-     *     var output: VecDeque<UInt> = VecDeque.new()
+     * import alloc.Global
+     *
+     * fun processData(data: List<UInt>): Result<VecDeque<UInt, Global>> {
+     *     var output: VecDeque<UInt, Global> = VecDeque.new()
      *     // Pre-reserve the memory, exiting if we can't
      *     output.tryReserveExact(data.size).getOrElse { return Result.failure(it) }
      *     // Now we know this can't OOM(Out-Of-Memory) in the middle of our complex work
@@ -826,16 +836,16 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserveExact(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (rustCheckedAdd(this.len, additional)?.let { Result.Ok(it) } ?: Result.Err(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
-            when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
             // ignore-tidy-undocumented-unchecked
             run {
                 this.handleCapacityIncrease(oldCap)
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
@@ -854,8 +864,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * fun processData(data: List<UInt>): Result<VecDeque<UInt>> {
-     *     var output: VecDeque<UInt> = VecDeque.new()
+     * import alloc.Global
+     *
+     * fun processData(data: List<UInt>): Result<VecDeque<UInt, Global>> {
+     *     var output: VecDeque<UInt, Global> = VecDeque.new()
      *     // Pre-reserve the memory, exiting if we can't
      *     output.tryReserve(data.size).getOrElse { return Result.failure(it) }
      *     // Now we know this can't OOM in the middle of our complex work
@@ -867,16 +879,16 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserve(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (rustCheckedAdd(this.len, additional)?.let { Result.Ok(it) } ?: Result.Err(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
-            when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
             // ignore-tidy-undocumented-unchecked
             run {
                 this.handleCapacityIncrease(oldCap)
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
@@ -919,7 +931,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * check(buf.capacity() >= 4)
      * ```
      */
-    public open fun shrinkTo(minCapacity: Int) {
+    public open fun shrinkTo(minCapacity: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         open class Guard<T, A : Allocator>(
             public var deque: VecDeque<T, A>,
             public var oldHead: WrappedIndex,
@@ -933,7 +945,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         }
         val targetCap = minCapacity.max(this.len)
         // never shrink ZSTs
-        if (T.IS_ZST || this.capacity() <= targetCap) {
+        if (((typeLayoutT).sizeBytes == 0L) || this.capacity() <= targetCap) {
             return
         }
         // There are three cases of interest:
@@ -1158,7 +1170,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> truncateToRange(range: R) where R : RangeBounds<Int> {
-        val structVal = Range(range, 0 until this.len)
+        val structVal = Slice.range(range, 0 until this.len)
         val start = structVal.start
         val end = structVal.end
         if (start == 0 && end == this.len) {
@@ -1396,7 +1408,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * logical buffer, and that all elements in that range are initialized.
      */
     public open fun <R> sliceRanges(range: R, len: Int): Pair<IntRange, IntRange> where R : RangeBounds<Int> {
-        val structVal = Range(range, 0 until len)
+        val structVal = Slice.range(range, 0 until len)
         val start = structVal.start
         val end = structVal.end
         val len1 = end - start
@@ -1522,7 +1534,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         // When finished, the remaining data will be copied back to cover the hole,
         // and the head/tail values will be restored correctly.
         //
-        val structVal = Range(range, 0 until this.len)
+        val structVal = Slice.range(range, 0 until this.len)
         val start = structVal.start
         val end = structVal.end
         val drainStart = start
@@ -1629,7 +1641,9 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * var deque: VecDeque<UInt> = VecDeque.new()
+     * import alloc.Global
+     *
+     * var deque: VecDeque<UInt, Global> = VecDeque.new()
      * deque.addLast(0)
      * deque.addLast(1)
      * check(deque.contains(1) == true)
@@ -1782,9 +1796,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import alloc.Global
      * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
      *
-     * var deque: VecDeque<Int> = mutableListOf(0, 1, 2, 3, 4).into()
+     * var deque: VecDeque<Int, Global> = mutableListOf(0, 1, 2, 3, 4).into()
      * val pred = { x: RustMutableReference<Int> -> x % 2 == 0 }
      * check(deque.popFrontIf(pred) == 0)
      * check(deque == listOf(1, 2, 3, 4))
@@ -1808,9 +1823,10 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import alloc.Global
      * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
      *
-     * var deque: VecDeque<Int> = mutableListOf(0, 1, 2, 3, 4).into()
+     * var deque: VecDeque<Int, Global> = mutableListOf(0, 1, 2, 3, 4).into()
      * val pred = { x: RustMutableReference<Int> -> x % 2 == 0 }
      * check(deque.popBackIf(pred) == 4)
      * check(deque == listOf(0, 1, 2, 3))
@@ -2227,9 +2243,9 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * check(buf2 == listOf())
      * ```
      */
-    public open fun append(other: VecDeque<T, A>) {
-        if (T.IS_ZST) {
-            this.len = (rustCheckedAdd(this.len, other.len) ?: error("capacity overflow"))
+    public open fun append(other: VecDeque<T, A>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
+            this.len = (this.len.checkedAdd(other.len) ?: error("capacity overflow"))
             other.len = 0
             other.head = WrappedIndex.zero()
             return
@@ -2433,14 +2449,14 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * }
      * ```
      */
-    public open fun makeContiguous(): MutableList<T> {
-        if (T.IS_ZST) {
+    public open fun makeContiguous(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             this.head = WrappedIndex.zero()
         }
         if (this.isContiguous()) {
             // ignore-tidy-undocumented-unchecked
             run {
-                return rawMutSliceList(this.ptr().add(this.head.asIndex()), this.len.toInt(), PrimitiveLayouts.U8)
+                return Slice.fromRawPartsMut(this.ptr().add(this.head.asIndex()), this.len)
             }
         }
         val head = this.head
@@ -2552,7 +2568,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
             }
         }
         // ignore-tidy-undocumented-unchecked
-        return rawMutSliceList(ptr.add(this.head.asIndex()), this.len.toInt(), PrimitiveLayouts.U8)
+        return Slice.fromRawPartsMut(ptr.add(this.head.asIndex()), this.len)
     }
 
     /**
@@ -2759,7 +2775,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         val (front, back) = this.asSlices()
         val cmpBack = back.first()?.let(f)
         return if (cmpBack == Ordering.Equal) {
-            Result.Ok(front.len())
+            Result.Ok<Int, Int>(front.len())
         } else if (cmpBack == Ordering.Less) {
             back.binarySearchBy(f).map({ idx -> idx + front.len() }).mapErr({ idx -> idx + front.len() })
         } else {
@@ -2915,7 +2931,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = Range(src, 0 until this.len())
+        val range = Slice.range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -2951,7 +2967,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun <R> prependFromWithin(src: R) where R : RangeBounds<Int> {
-        val range = Range(src, 0 until this.len())
+        val range = Slice.range(src, 0 until this.len())
         this.reserve(range.len())
         // SAFETY:
         // - `slice.range` guarantees that the given range is valid for indexing self
@@ -3199,9 +3215,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
@@ -3222,7 +3236,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
          * ```kotlin
          * import alloc.Global
          *
-         * val deque: VecDeque<Int> = VecDeque.newIn(Global)
+         * val deque: VecDeque<Int, Global> = VecDeque.newIn(Global)
          * ```
          */
         public fun <T, A : Allocator> newIn(alloc: A): VecDeque<T, A> = VecDeque(head = WrappedIndex.zero(), len = 0, buf = RawVec.newIn(alloc))
@@ -3235,7 +3249,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
          * ```kotlin
          * import alloc.Global
          *
-         * val deque: VecDeque<Int> = VecDeque.withCapacityIn(10, Global)
+         * val deque: VecDeque<Int, Global> = VecDeque.withCapacityIn(10, Global)
          * ```
          */
         public fun <T, A : Allocator> withCapacityIn(capacity: Int, alloc: A): VecDeque<T, A> = VecDeque(head = WrappedIndex.zero(), len = 0, buf = RawVec.withCapacityIn(capacity, alloc))
@@ -3283,7 +3297,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
 /**
  * Creates an empty deque.
  */
-public fun <T> defaultVecDequeT(): VecDeque<T> = VecDeque.new()
+public fun <T> defaultVecDequeT(): VecDeque<T, Global> = VecDeque.new()
 
 /**
  * Creates an empty deque.
@@ -3291,10 +3305,12 @@ public fun <T> defaultVecDequeT(): VecDeque<T> = VecDeque.new()
  * # Examples
  *
  * ```kotlin
- * val deque: VecDeque<UInt> = VecDeque.new()
+ * import alloc.Global
+ *
+ * val deque: VecDeque<UInt, Global> = VecDeque.new()
  * ```
  */
-public fun <T> VecDeque.Companion.new(): VecDeque<T> {
+public fun <T> VecDeque.Companion.new(): VecDeque<T, Global> {
     // Note(const-Note): This should just be `VecDeque.newIn(Global)` once that hits stable.
     return VecDeque(head = WrappedIndex.zero(), len = 0, buf = RawVec.new())
 }
@@ -3305,10 +3321,12 @@ public fun <T> VecDeque.Companion.new(): VecDeque<T> {
  * # Examples
  *
  * ```kotlin
- * val deque: VecDeque<Int> = VecDeque.withCapacity(10)
+ * import alloc.Global
+ *
+ * val deque: VecDeque<Int, Global> = VecDeque.withCapacity(10)
  * ```
  */
-public fun <T> VecDeque.Companion.withCapacity(capacity: Int): VecDeque<T> = VecDeque.withCapacityIn(capacity, Global)
+public fun <T> VecDeque.Companion.withCapacity(capacity: Int): VecDeque<T, Global> = VecDeque.withCapacityIn(capacity, Global())
 
 /**
  * Creates an empty deque with space for at least `capacity` elements.
@@ -3321,14 +3339,16 @@ public fun <T> VecDeque.Companion.withCapacity(capacity: Int): VecDeque<T> = Vec
  * # Examples
  *
  * ```kotlin
- * val deque: VecDeque<UInt> = VecDeque.tryWithCapacity(10).getOrElse { return Result.failure(it) }
+ * import alloc.Global
+ *
+ * val deque: VecDeque<UInt, Global> = VecDeque.tryWithCapacity(10).getOrElse { return Result.failure(it) }
  * ```
  */
-public fun <T> VecDeque.Companion.tryWithCapacity(capacity: Int): Result<VecDeque<T>, TryReserveError> {
-    return Result.Ok(VecDeque(head = WrappedIndex.zero(), len = 0, buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, Global)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+public fun <T> VecDeque.Companion.tryWithCapacity(capacity: Int): Result<VecDeque<T, Global>, TryReserveError> {
+    return Result.Ok<VecDeque<T, Global>, TryReserveError>(VecDeque(head = WrappedIndex.zero(), len = 0, buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, Global())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<VecDeque<T, Global>, TryReserveError>(tryResult.error) }))
 }
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T> = SpecFromIter.specFromIter(iter.iterator())
+public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.specFromIter(iter.iterator())
 
 /**
  * Converts a `[T; N]` into a `VecDeque<T>`.
@@ -3339,10 +3359,10 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque
  * check(deq1 == deq2)
  * ```
  */
-public fun <T> fromVecDequeT(arr: List<T>, n: Int): VecDeque<T> {
+public fun <T> fromVecDequeT(arr: List<T>, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): VecDeque<T, Global> {
     val deq = VecDeque.withCapacity(n)
     val arr1 = arr
-    if (T.IS_ZST.inv()) {
+    if ((((typeLayoutT).sizeBytes == 0L)).inv()) {
         // SAFETY: VecDeque.withCapacity ensures that there is enough capacity.
         run {
             copyNonoverlapping(arr1.asPtr(), deq.ptr(), n)

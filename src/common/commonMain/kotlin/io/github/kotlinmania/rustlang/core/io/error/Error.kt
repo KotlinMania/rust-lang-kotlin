@@ -1,7 +1,7 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.core.io.error
 
-import io.github.kotlinmania.rustlang.core.fmt.builders.fromFn
+import io.github.kotlinmania.rustlang.core.fmt.fmt
 import io.github.kotlinmania.rustlang.core.hint.mustUse
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind.*
@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.io.error.osfunctions.setFunctions
 import io.github.kotlinmania.rustlang.core.io.error.repr.Repr
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun interface OsFunctionsFormatOsErrorCallback {
-    public operator fun invoke(arg0: RawOsError, arg1: StringBuilder)
+    public operator fun invoke(arg0: RawOsError, arg1: StringBuilder): io.github.kotlinmania.rustlang.core.result.Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>
 }
 
 public fun interface OsFunctionsDecodeErrorKindCallback {
@@ -145,9 +146,9 @@ public open class Error(
         }) {
             val c = this.repr.intoData() ?: // SAFETY: Checked above using `matches`.
 unreachableUnchecked()
-            RustResult.Ok(c)
+            RustResult.Ok<CustomOwner, Error>(c)
         } else {
-            RustResult.Err(this)
+            RustResult.Err<CustomOwner, Error>(this)
         }
 
     // Note(#74481): Hard-links required to link from `core` to `std` for incoherent method
@@ -388,7 +389,7 @@ unreachableUnchecked()
         when (val matchVal = this.repr.data()) {
             is ErrorData.Os -> {
                 val (code) = matchVal
-                val detail = fromFn({ fmt1 -> formatOsError(code, fmt1) })
+                val detail = fmt.fromFn({ fmt1 -> formatOsError(code, fmt1) })
                 fmt.writeFmt("$detail (os error $code)")
             }
             is ErrorData.Custom -> {
@@ -397,7 +398,7 @@ unreachableUnchecked()
             }
             is ErrorData.Simple -> {
                 val (kind) = matchVal
-                run { kind.fmt(fmt); RustResult.Ok(Unit) }
+                kind.fmt(fmt)
             }
             is ErrorData.SimpleMessage -> {
                 val (msg) = matchVal
@@ -536,8 +537,8 @@ public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
     when (val matchVal = this.data()) {
         is ErrorData.Os -> {
             val (code) = matchVal
-            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fromFn({ fmt1 ->
-                fmt1.writeFmt("\"${fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
+            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
+                fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
             })).finish()
         }
         is ErrorData.Custom -> {
@@ -648,7 +649,7 @@ public open class Custom(
  */
 public open class CustomOwner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<NonNull>,
+    public val fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout(),
 ) {
     public var field0: NonNull
         get() = value
@@ -660,7 +661,7 @@ public open class CustomOwner internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: NonNull, fieldLayout: TypeLayout<NonNull>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CustomOwner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CustomOwner(ptr, layout) }, { it.value })
 
@@ -697,9 +698,9 @@ public open class CustomOwner internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(value: NonNull, fieldLayout: TypeLayout<NonNull>): CustomOwner = CustomOwner(value, fieldLayout)
+        public operator fun invoke(value: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): CustomOwner = CustomOwner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonNull>): CustomOwner = CustomOwner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): CustomOwner = CustomOwner(fieldStorage, fieldLayout)
 
         /**
          * # Safety
@@ -707,7 +708,7 @@ public open class CustomOwner internal constructor(
          * * `custom` must point to valid `Custom`.
          * * The `outerDrop` of the provided `custom` must be the drop function for this pointer.
          */
-        public fun fromRaw(custom: NonNull, fieldLayout: TypeLayout<NonNull>): CustomOwner {
+        public fun fromRaw(custom: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): CustomOwner {
             // INVARIANT: by the preconditions, `custom.outerDrop` is the drop for `custom`.
             return CustomOwner(custom, fieldLayout = fieldLayout)
         }

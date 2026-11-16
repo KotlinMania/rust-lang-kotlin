@@ -1842,8 +1842,8 @@ static Napi::Value libcUnixBsdGetgrnam_napi(const Napi::CallbackInfo& km_info) {
 
 static Napi::Value libcUnixBsdPthreadCancel_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    uint64_t thread = km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0;
-    typedef int32_t (*km_fn_t)(uint64_t);
+    void* thread = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
+    typedef int32_t (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {
@@ -1875,9 +1875,9 @@ static Napi::Value libcUnixBsdPthreadCancel_napi(const Napi::CallbackInfo& km_in
 
 static Napi::Value libcUnixBsdPthreadKill_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    uint64_t thread = km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0;
+    void* thread = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     int32_t sig = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
-    typedef int32_t (*km_fn_t)(uint64_t, int32_t);
+    typedef int32_t (*km_fn_t)(void*, int32_t);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {

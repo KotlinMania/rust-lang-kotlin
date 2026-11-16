@@ -2,11 +2,10 @@
 package io.github.kotlinmania.rustlang.core.num.bfloat
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.LowerExp
-import io.github.kotlinmania.rustlang.core.fmt.UpperExp
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
@@ -37,8 +36,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class F16b internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UShort>,
-) : LowerExp, UpperExp {
+    public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout(),
+) : fmt.LowerExp, fmt.UpperExp {
     public var field0: UShort
         get() = value
         set(v) {
@@ -49,7 +48,7 @@ public open class F16b internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<F16b> = TransparentTypeLayout(fieldLayout, { ptr, layout -> F16b(ptr, layout) }, { it.value })
 
@@ -91,9 +90,9 @@ public open class F16b internal constructor(
     public open fun fmtUpperExp(formatter: StringBuilder): Result<Unit, Unit> = widen(this).fmt(formatter)
 
     public companion object {
-        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort>): F16b = F16b(value, fieldLayout)
+        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): F16b = F16b(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort>): F16b = F16b(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): F16b = F16b(fieldStorage, fieldLayout)
 
         /**
          * Raw transmutation from `UShort`.

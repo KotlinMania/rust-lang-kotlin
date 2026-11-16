@@ -11,9 +11,9 @@ public fun err2io(err: Errno): Error = Error.fromRawOsError(err.raw().into())
 
 public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
     if (t.isMinusOne()) {
-        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<T, io.github.kotlinmania.rustlang.std.io.error.Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
-        Result.Ok(t)
+        Result.Ok<T, io.github.kotlinmania.rustlang.std.io.error.Error>(t)
     }
 
 public fun <T> cvtR(f: () -> T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> where T : IsMinusOne {
@@ -21,8 +21,8 @@ public fun <T> cvtR(f: () -> T): Result<T, io.github.kotlinmania.rustlang.std.io
         run {
             val matchVal = cvt(f())
             when {
-                matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                    val e = (matchVal as Result.Err<*>).error
+                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    val e = matchVal.error
                 }
                 else -> {
                     val other = matchVal

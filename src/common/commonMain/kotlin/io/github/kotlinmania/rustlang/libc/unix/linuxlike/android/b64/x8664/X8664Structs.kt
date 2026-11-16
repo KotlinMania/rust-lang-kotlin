@@ -2,25 +2,31 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.x8664
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.InoT
-import io.github.kotlinmania.rustlang.libc.Sigset64T
-import io.github.kotlinmania.rustlang.libc.SigsetT
-import io.github.kotlinmania.rustlang.libc.StackT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.DevT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.InoT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.StackT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Sigset64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SigsetT
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -47,42 +53,41 @@ public class DebugStruct(
     }
 }
 
-public class Stat(
-    public var stDev: DevT = 0,
-    public var stIno: InoT = 0uL,
-    public var stNlink: CUlong = 0uL,
-    public var stMode: CUint = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0,
-    public var stSize: Off64T = 0L,
-    public var stBlksize: CLong = 0L,
-    public var stBlocks: CLong = 0L,
-    public var stAtime: CLong = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: CLong = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: CLong = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused: LongArray = LongArray(3),
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stNlink: CUlong,
+    public var stMode: CUint,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var stSize: Off64T,
+    public var stBlksize: CLong,
+    public var stBlocks: CLong,
+    public var stAtime: CLong,
+    public var stAtimeNsec: CLong,
+    public var stMtime: CLong,
+    public var stMtimeNsec: CLong,
+    public var stCtime: CLong,
+    public var stCtimeNsec: CLong,
+    public var unused: LongArray,
 ) {
-    public fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, stRdev, stSize, stBlksize, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
+    public open fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, stRdev, stSize, stBlksize, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
             object : TypeLayout<Stat> {
                 override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 136L
+                override val sizeBytes: Long = 144L
                 override fun readNative(addr: Long): Stat =
                     Stat(
-                        (PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr),
                         (PrimitiveLayouts.U64).readNative(addr + 8L),
                         (PrimitiveLayouts.U64).readNative(addr + 16L),
                         (PrimitiveLayouts.U32).readNative(addr + 24L),
                         (PrimitiveLayouts.I32).readNative(addr + 28L),
                         (PrimitiveLayouts.I32).readNative(addr + 32L),
-                        (PrimitiveLayouts.I32).readNative(addr + 36L),
-                        (PrimitiveLayouts.I64).readNative(addr + 40L),
+                        (PrimitiveLayouts.U64).readNative(addr + 40L),
                         (PrimitiveLayouts.I64).readNative(addr + 48L),
                         (PrimitiveLayouts.I64).readNative(addr + 56L),
                         (PrimitiveLayouts.I64).readNative(addr + 64L),
@@ -91,37 +96,37 @@ public class Stat(
                         (PrimitiveLayouts.I64).readNative(addr + 88L),
                         (PrimitiveLayouts.I64).readNative(addr + 96L),
                         (PrimitiveLayouts.I64).readNative(addr + 104L),
-                        (PrimitiveArrayLayouts.longArray(3)).readNative(addr + 112L),
+                        (PrimitiveLayouts.I64).readNative(addr + 112L),
+                        (PrimitiveArrayLayouts.longArray(3)).readNative(addr + 120L),
                     )
                 override fun writeNative(addr: Long, value: Stat) {
-                    (PrimitiveLayouts.I32).writeNative(addr, value.stDev)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.stDev)
                     (PrimitiveLayouts.U64).writeNative(addr + 8L, value.stIno)
                     (PrimitiveLayouts.U64).writeNative(addr + 16L, value.stNlink)
                     (PrimitiveLayouts.U32).writeNative(addr + 24L, value.stMode)
                     (PrimitiveLayouts.I32).writeNative(addr + 28L, value.stUid)
                     (PrimitiveLayouts.I32).writeNative(addr + 32L, value.stGid)
-                    (PrimitiveLayouts.I32).writeNative(addr + 36L, value.stRdev)
-                    (PrimitiveLayouts.I64).writeNative(addr + 40L, value.stSize)
-                    (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stBlksize)
-                    (PrimitiveLayouts.I64).writeNative(addr + 56L, value.stBlocks)
-                    (PrimitiveLayouts.I64).writeNative(addr + 64L, value.stAtime)
-                    (PrimitiveLayouts.I64).writeNative(addr + 72L, value.stAtimeNsec)
-                    (PrimitiveLayouts.I64).writeNative(addr + 80L, value.stMtime)
-                    (PrimitiveLayouts.I64).writeNative(addr + 88L, value.stMtimeNsec)
-                    (PrimitiveLayouts.I64).writeNative(addr + 96L, value.stCtime)
-                    (PrimitiveLayouts.I64).writeNative(addr + 104L, value.stCtimeNsec)
-                    (PrimitiveArrayLayouts.longArray(3)).writeNative(addr + 112L, value.unused)
+                    (PrimitiveLayouts.U64).writeNative(addr + 40L, value.stRdev)
+                    (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stSize)
+                    (PrimitiveLayouts.I64).writeNative(addr + 56L, value.stBlksize)
+                    (PrimitiveLayouts.I64).writeNative(addr + 64L, value.stBlocks)
+                    (PrimitiveLayouts.I64).writeNative(addr + 72L, value.stAtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 80L, value.stAtimeNsec)
+                    (PrimitiveLayouts.I64).writeNative(addr + 88L, value.stMtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 96L, value.stMtimeNsec)
+                    (PrimitiveLayouts.I64).writeNative(addr + 104L, value.stCtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 112L, value.stCtimeNsec)
+                    (PrimitiveArrayLayouts.longArray(3)).writeNative(addr + 120L, value.unused)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Stat =
                     Stat(
-                        (PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
                         (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 32),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 36),
-                        (PrimitiveLayouts.I64).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 48),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 56),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 64),
@@ -130,68 +135,68 @@ public class Stat(
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 88),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 96),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 104),
-                        (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset + 112),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 112),
+                        (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset + 120),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Stat) {
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.stDev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.stDev)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.stIno)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.stNlink)
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.stMode)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.stUid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 32, value.stGid)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 36, value.stRdev)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 40, value.stSize)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stBlksize)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 56, value.stBlocks)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 64, value.stAtime)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 72, value.stAtimeNsec)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 80, value.stMtime)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 88, value.stMtimeNsec)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 96, value.stCtime)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 104, value.stCtimeNsec)
-                    (PrimitiveArrayLayouts.longArray(3)).writeBytes(buf, offset + 112, value.unused)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.stRdev)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stSize)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 56, value.stBlksize)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 64, value.stBlocks)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 72, value.stAtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 80, value.stAtimeNsec)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 88, value.stMtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 96, value.stMtimeNsec)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 104, value.stCtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 112, value.stCtimeNsec)
+                    (PrimitiveArrayLayouts.longArray(3)).writeBytes(buf, offset + 120, value.unused)
                 }
             }
     }
 }
 
 // Note(1.0,deprecate): lfs binding to be removed
-public class Stat64(
-    public var stDev: DevT = 0,
-    public var stIno: InoT = 0uL,
-    public var stNlink: CUlong = 0uL,
-    public var stMode: CUint = 0u,
-    public var stUid: UidT = 0,
-    public var stGid: GidT = 0,
-    public var stRdev: DevT = 0,
-    public var stSize: Off64T = 0L,
-    public var stBlksize: CLong = 0L,
-    public var stBlocks: CLong = 0L,
-    public var stAtime: CLong = 0L,
-    public var stAtimeNsec: CLong = 0L,
-    public var stMtime: CLong = 0L,
-    public var stMtimeNsec: CLong = 0L,
-    public var stCtime: CLong = 0L,
-    public var stCtimeNsec: CLong = 0L,
-    public var unused: LongArray = LongArray(3),
+public open class Stat64(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stNlink: CUlong,
+    public var stMode: CUint,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var stRdev: DevT,
+    public var stSize: Off64T,
+    public var stBlksize: CLong,
+    public var stBlocks: CLong,
+    public var stAtime: CLong,
+    public var stAtimeNsec: CLong,
+    public var stMtime: CLong,
+    public var stMtimeNsec: CLong,
+    public var stCtime: CLong,
+    public var stCtimeNsec: CLong,
+    public var unused: LongArray,
 ) {
-    public fun clone(): Stat64 = Stat64(stDev, stIno, stNlink, stMode, stUid, stGid, stRdev, stSize, stBlksize, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
+    public open fun clone(): Stat64 = Stat64(stDev, stIno, stNlink, stMode, stUid, stGid, stRdev, stSize, stBlksize, stBlocks, stAtime, stAtimeNsec, stMtime, stMtimeNsec, stCtime, stCtimeNsec, unused)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat64> =
             object : TypeLayout<Stat64> {
                 override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 136L
+                override val sizeBytes: Long = 144L
                 override fun readNative(addr: Long): Stat64 =
                     Stat64(
-                        (PrimitiveLayouts.I32).readNative(addr),
+                        (PrimitiveLayouts.U64).readNative(addr),
                         (PrimitiveLayouts.U64).readNative(addr + 8L),
                         (PrimitiveLayouts.U64).readNative(addr + 16L),
                         (PrimitiveLayouts.U32).readNative(addr + 24L),
                         (PrimitiveLayouts.I32).readNative(addr + 28L),
                         (PrimitiveLayouts.I32).readNative(addr + 32L),
-                        (PrimitiveLayouts.I32).readNative(addr + 36L),
-                        (PrimitiveLayouts.I64).readNative(addr + 40L),
+                        (PrimitiveLayouts.U64).readNative(addr + 40L),
                         (PrimitiveLayouts.I64).readNative(addr + 48L),
                         (PrimitiveLayouts.I64).readNative(addr + 56L),
                         (PrimitiveLayouts.I64).readNative(addr + 64L),
@@ -200,37 +205,37 @@ public class Stat64(
                         (PrimitiveLayouts.I64).readNative(addr + 88L),
                         (PrimitiveLayouts.I64).readNative(addr + 96L),
                         (PrimitiveLayouts.I64).readNative(addr + 104L),
-                        (PrimitiveArrayLayouts.longArray(3)).readNative(addr + 112L),
+                        (PrimitiveLayouts.I64).readNative(addr + 112L),
+                        (PrimitiveArrayLayouts.longArray(3)).readNative(addr + 120L),
                     )
                 override fun writeNative(addr: Long, value: Stat64) {
-                    (PrimitiveLayouts.I32).writeNative(addr, value.stDev)
+                    (PrimitiveLayouts.U64).writeNative(addr, value.stDev)
                     (PrimitiveLayouts.U64).writeNative(addr + 8L, value.stIno)
                     (PrimitiveLayouts.U64).writeNative(addr + 16L, value.stNlink)
                     (PrimitiveLayouts.U32).writeNative(addr + 24L, value.stMode)
                     (PrimitiveLayouts.I32).writeNative(addr + 28L, value.stUid)
                     (PrimitiveLayouts.I32).writeNative(addr + 32L, value.stGid)
-                    (PrimitiveLayouts.I32).writeNative(addr + 36L, value.stRdev)
-                    (PrimitiveLayouts.I64).writeNative(addr + 40L, value.stSize)
-                    (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stBlksize)
-                    (PrimitiveLayouts.I64).writeNative(addr + 56L, value.stBlocks)
-                    (PrimitiveLayouts.I64).writeNative(addr + 64L, value.stAtime)
-                    (PrimitiveLayouts.I64).writeNative(addr + 72L, value.stAtimeNsec)
-                    (PrimitiveLayouts.I64).writeNative(addr + 80L, value.stMtime)
-                    (PrimitiveLayouts.I64).writeNative(addr + 88L, value.stMtimeNsec)
-                    (PrimitiveLayouts.I64).writeNative(addr + 96L, value.stCtime)
-                    (PrimitiveLayouts.I64).writeNative(addr + 104L, value.stCtimeNsec)
-                    (PrimitiveArrayLayouts.longArray(3)).writeNative(addr + 112L, value.unused)
+                    (PrimitiveLayouts.U64).writeNative(addr + 40L, value.stRdev)
+                    (PrimitiveLayouts.I64).writeNative(addr + 48L, value.stSize)
+                    (PrimitiveLayouts.I64).writeNative(addr + 56L, value.stBlksize)
+                    (PrimitiveLayouts.I64).writeNative(addr + 64L, value.stBlocks)
+                    (PrimitiveLayouts.I64).writeNative(addr + 72L, value.stAtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 80L, value.stAtimeNsec)
+                    (PrimitiveLayouts.I64).writeNative(addr + 88L, value.stMtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 96L, value.stMtimeNsec)
+                    (PrimitiveLayouts.I64).writeNative(addr + 104L, value.stCtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 112L, value.stCtimeNsec)
+                    (PrimitiveArrayLayouts.longArray(3)).writeNative(addr + 120L, value.unused)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Stat64 =
                     Stat64(
-                        (PrimitiveLayouts.I32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
                         (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
                         (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
                         (PrimitiveLayouts.I32).readBytes(buf, offset + 32),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 36),
-                        (PrimitiveLayouts.I64).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 48),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 56),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 64),
@@ -239,42 +244,36 @@ public class Stat64(
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 88),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 96),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 104),
-                        (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset + 112),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 112),
+                        (PrimitiveArrayLayouts.longArray(3)).readBytes(buf, offset + 120),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Stat64) {
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset, value.stDev)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.stDev)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.stIno)
                     (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.stNlink)
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.stMode)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.stUid)
                     (PrimitiveLayouts.I32).writeBytes(buf, offset + 32, value.stGid)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 36, value.stRdev)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 40, value.stSize)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stBlksize)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 56, value.stBlocks)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 64, value.stAtime)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 72, value.stAtimeNsec)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 80, value.stMtime)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 88, value.stMtimeNsec)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 96, value.stCtime)
-                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 104, value.stCtimeNsec)
-                    (PrimitiveArrayLayouts.longArray(3)).writeBytes(buf, offset + 112, value.unused)
+                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.stRdev)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 48, value.stSize)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 56, value.stBlksize)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 64, value.stBlocks)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 72, value.stAtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 80, value.stAtimeNsec)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 88, value.stMtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 96, value.stMtimeNsec)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 104, value.stCtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 112, value.stCtimeNsec)
+                    (PrimitiveArrayLayouts.longArray(3)).writeBytes(buf, offset + 120, value.unused)
                 }
             }
     }
 }
 
-public data class LibcXmmreg(
-    public var element: UIntArray = UIntArray(4),
+public open class LibcXmmreg(
+    public var element: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is LibcXmmreg) return false
-        if (!this.element.contentEquals(other.element)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.element.contentHashCode()
+    public open fun clone(): LibcXmmreg = LibcXmmreg(element)
 
     public companion object {
         public fun typeLayout(): TypeLayout<LibcXmmreg> =
@@ -299,36 +298,36 @@ public data class LibcXmmreg(
     }
 }
 
-public class UserRegsStruct(
-    public var r15: CUlong = 0uL,
-    public var r14: CUlong = 0uL,
-    public var r13: CUlong = 0uL,
-    public var r12: CUlong = 0uL,
-    public var rbp: CUlong = 0uL,
-    public var rbx: CUlong = 0uL,
-    public var r11: CUlong = 0uL,
-    public var r10: CUlong = 0uL,
-    public var r9: CUlong = 0uL,
-    public var r8: CUlong = 0uL,
-    public var rax: CUlong = 0uL,
-    public var rcx: CUlong = 0uL,
-    public var rdx: CUlong = 0uL,
-    public var rsi: CUlong = 0uL,
-    public var rdi: CUlong = 0uL,
-    public var origRax: CUlong = 0uL,
-    public var rip: CUlong = 0uL,
-    public var cs: CUlong = 0uL,
-    public var eflags: CUlong = 0uL,
-    public var rsp: CUlong = 0uL,
-    public var ss: CUlong = 0uL,
-    public var fsBase: CUlong = 0uL,
-    public var gsBase: CUlong = 0uL,
-    public var ds: CUlong = 0uL,
-    public var es: CUlong = 0uL,
-    public var fs: CUlong = 0uL,
-    public var gs: CUlong = 0uL,
+public open class UserRegsStruct(
+    public var r15: CUlong,
+    public var r14: CUlong,
+    public var r13: CUlong,
+    public var r12: CUlong,
+    public var rbp: CUlong,
+    public var rbx: CUlong,
+    public var r11: CUlong,
+    public var r10: CUlong,
+    public var r9: CUlong,
+    public var r8: CUlong,
+    public var rax: CUlong,
+    public var rcx: CUlong,
+    public var rdx: CUlong,
+    public var rsi: CUlong,
+    public var rdi: CUlong,
+    public var origRax: CUlong,
+    public var rip: CUlong,
+    public var cs: CUlong,
+    public var eflags: CUlong,
+    public var rsp: CUlong,
+    public var ss: CUlong,
+    public var fsBase: CUlong,
+    public var gsBase: CUlong,
+    public var ds: CUlong,
+    public var es: CUlong,
+    public var fs: CUlong,
+    public var gs: CUlong,
 ) {
-    public fun clone(): UserRegsStruct = UserRegsStruct(r15, r14, r13, r12, rbp, rbx, r11, r10, r9, r8, rax, rcx, rdx, rsi, rdi, origRax, rip, cs, eflags, rsp, ss, fsBase, gsBase, ds, es, fs, gs)
+    public open fun clone(): UserRegsStruct = UserRegsStruct(r15, r14, r13, r12, rbp, rbx, r11, r10, r9, r8, rax, rcx, rdx, rsi, rdi, origRax, rip, cs, eflags, rsp, ss, fsBase, gsBase, ds, es, fs, gs)
 
     public companion object {
         public fun typeLayout(): TypeLayout<UserRegsStruct> =
@@ -457,7 +456,7 @@ public class UserRegsStruct(
     }
 }
 
-public class User internal constructor(
+public open class User internal constructor(
     public var regs: UserRegsStruct,
     public var uFpvalid: CInt,
     public var i387: UserFpregsStruct,
@@ -482,27 +481,7 @@ public class User internal constructor(
     public var uFpstate: MutPtr = uFpstateCtorArg
         internal set
 
-    public constructor() : this(
-        regs = UserRegsStruct(),
-        uFpvalid = 0,
-        i387 = UserFpregsStruct(),
-        uTsize = 0uL,
-        uDsize = 0uL,
-        uSsize = 0uL,
-        startCode = 0uL,
-        startStack = 0uL,
-        signal = 0L,
-        reserved = 0,
-        uAr0CtorArg = MutPtr(0L),
-        uFpstateCtorArg = MutPtr(0L),
-        magic = 0uL,
-        uComm = UByteArray(32),
-        uDebugreg = ULongArray(8),
-        errorCode = 0uL,
-        faultAddress = 0uL,
-    )
-
-    public fun clone(): User = User(regs, uFpvalid, i387, uTsize, uDsize, uSsize, startCode, startStack, signal, reserved, uAr0, uFpstate, magic, uComm, uDebugreg, errorCode, faultAddress)
+    public open fun clone(): User = User(regs, uFpvalid, i387, uTsize, uDsize, uSsize, startCode, startStack, signal, reserved, uAr0, uFpstate, magic, uComm, uDebugreg, errorCode, faultAddress)
 
     public companion object {
         public fun typeLayout(): TypeLayout<User> =
@@ -590,23 +569,23 @@ public class User internal constructor(
             }
 
         public operator fun invoke(
-            regs: UserRegsStruct = UserRegsStruct(),
-            uFpvalid: CInt = 0,
-            i387: UserFpregsStruct = UserFpregsStruct(),
-            uTsize: CUlong = 0uL,
-            uDsize: CUlong = 0uL,
-            uSsize: CUlong = 0uL,
-            startCode: CUlong = 0uL,
-            startStack: CUlong = 0uL,
-            signal: CLong = 0L,
-            reserved: CInt = 0,
-            uAr0: MutPtr = MutPtr(0L),
-            uFpstate: MutPtr = MutPtr(0L),
-            magic: CUlong = 0uL,
-            uComm: UByteArray = UByteArray(32),
-            uDebugreg: ULongArray = ULongArray(8),
-            errorCode: CUlong = 0uL,
-            faultAddress: CUlong = 0uL,
+            regs: UserRegsStruct,
+            uFpvalid: CInt,
+            i387: UserFpregsStruct,
+            uTsize: CUlong,
+            uDsize: CUlong,
+            uSsize: CUlong,
+            startCode: CUlong,
+            startStack: CUlong,
+            signal: CLong,
+            reserved: CInt,
+            uAr0: MutPtr,
+            uFpstate: MutPtr,
+            magic: CUlong,
+            uComm: UByteArray,
+            uDebugreg: ULongArray,
+            errorCode: CUlong,
+            faultAddress: CUlong,
         ): User = User(
             regs = regs,
             uFpvalid = uFpvalid,
@@ -629,26 +608,12 @@ public class User internal constructor(
     }
 }
 
-public data class LibcFpxreg(
-    public var significand: UShortArray = UShortArray(4),
-    public var exponent: UShort = 0u,
-    public var padding: UShortArray = UShortArray(3),
+public open class LibcFpxreg(
+    public var significand: UShortArray,
+    public var exponent: UShort,
+    public var padding: UShortArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is LibcFpxreg) return false
-        if (!this.significand.contentEquals(other.significand)) return false
-        if (this.exponent != other.exponent) return false
-        if (!this.padding.contentEquals(other.padding)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.significand.contentHashCode()
-        result = 31 * result + this.exponent.hashCode()
-        result = 31 * result + this.padding.contentHashCode()
-        return result
-    }
+    public open fun clone(): LibcFpxreg = LibcFpxreg(significand, exponent, padding)
 
     public companion object {
         public fun typeLayout(): TypeLayout<LibcFpxreg> =
@@ -681,50 +646,20 @@ public data class LibcFpxreg(
     }
 }
 
-public data class LibcFpstate(
-    public var cwd: UShort = 0u,
-    public var swd: UShort = 0u,
-    public var ftw: UShort = 0u,
-    public var fop: UShort = 0u,
-    public var rip: ULong = 0uL,
-    public var rdp: ULong = 0uL,
-    public var mxcsr: UInt = 0u,
-    public var mxcrMask: UInt = 0u,
-    public var st: List<LibcFpxreg> = List(8) { LibcFpxreg() },
-    public var xmm: List<LibcXmmreg> = List(16) { LibcXmmreg() },
-    public var private: UIntArray = UIntArray(24),
+public open class LibcFpstate(
+    public var cwd: UShort,
+    public var swd: UShort,
+    public var ftw: UShort,
+    public var fop: UShort,
+    public var rip: ULong,
+    public var rdp: ULong,
+    public var mxcsr: UInt,
+    public var mxcrMask: UInt,
+    public var st: List<LibcFpxreg>,
+    public var xmm: List<LibcXmmreg>,
+    public var private: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is LibcFpstate) return false
-        if (this.cwd != other.cwd) return false
-        if (this.swd != other.swd) return false
-        if (this.ftw != other.ftw) return false
-        if (this.fop != other.fop) return false
-        if (this.rip != other.rip) return false
-        if (this.rdp != other.rdp) return false
-        if (this.mxcsr != other.mxcsr) return false
-        if (this.mxcrMask != other.mxcrMask) return false
-        if (this.st != other.st) return false
-        if (this.xmm != other.xmm) return false
-        if (!this.private.contentEquals(other.private)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cwd.hashCode()
-        result = 31 * result + this.swd.hashCode()
-        result = 31 * result + this.ftw.hashCode()
-        result = 31 * result + this.fop.hashCode()
-        result = 31 * result + this.rip.hashCode()
-        result = 31 * result + this.rdp.hashCode()
-        result = 31 * result + this.mxcsr.hashCode()
-        result = 31 * result + this.mxcrMask.hashCode()
-        result = 31 * result + this.st.hashCode()
-        result = 31 * result + this.xmm.hashCode()
-        result = 31 * result + this.private.contentHashCode()
-        return result
-    }
+    public open fun clone(): LibcFpstate = LibcFpstate(cwd, swd, ftw, fop, rip, rdp, mxcsr, mxcrMask, st, xmm, private)
 
     public companion object {
         public fun typeLayout(): TypeLayout<LibcFpstate> =
@@ -789,7 +724,7 @@ public data class LibcFpstate(
     }
 }
 
-public class McontextT internal constructor(
+public open class McontextT internal constructor(
     public var gregs: LongArray,
     fpregsCtorArg: MutPtr,
     public var private: ULongArray,
@@ -797,37 +732,7 @@ public class McontextT internal constructor(
     public var fpregs: MutPtr = fpregsCtorArg
         internal set
 
-    public constructor() : this(
-        gregs = LongArray(23),
-        fpregsCtorArg = MutPtr(0L),
-        private = ULongArray(8),
-    )
-
-    public operator fun component1(): LongArray = this.gregs
-
-    public operator fun component2(): MutPtr = this.fpregs
-
-    public operator fun component3(): ULongArray = this.private
-
-    public fun copy(gregs: LongArray = this.gregs, fpregs: MutPtr = this.fpregs, private: ULongArray = this.private): McontextT = McontextT(gregs = gregs, fpregsCtorArg = fpregs, private = private)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is McontextT) return false
-        if (!this.gregs.contentEquals(other.gregs)) return false
-        if (this.fpregs != other.fpregs) return false
-        if (!this.private.contentEquals(other.private)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.gregs.contentHashCode()
-        result = 31 * result + this.fpregs.hashCode()
-        result = 31 * result + this.private.contentHashCode()
-        return result
-    }
-
-    public fun clone(): McontextT = McontextT(gregs, fpregs, private)
+    public open fun clone(): McontextT = McontextT(gregs, fpregs, private)
 
     public companion object {
         public fun typeLayout(): TypeLayout<McontextT> =
@@ -859,9 +764,9 @@ public class McontextT internal constructor(
             }
 
         public operator fun invoke(
-            gregs: LongArray = LongArray(23),
-            fpregs: MutPtr = MutPtr(0L),
-            private: ULongArray = ULongArray(8),
+            gregs: LongArray,
+            fpregs: MutPtr,
+            private: ULongArray,
         ): McontextT = McontextT(
             gregs = gregs,
             fpregsCtorArg = fpregs,
@@ -870,7 +775,7 @@ public class McontextT internal constructor(
     }
 }
 
-public class UcontextT internal constructor(
+public open class UcontextT internal constructor(
     public var ucFlags: CUlong,
     ucLinkCtorArg: MutPtr,
     public var ucStack: StackT,
@@ -884,61 +789,16 @@ public class UcontextT internal constructor(
     public var ucMcontext: McontextT = ucMcontextCtorArg
         internal set
 
-    public constructor() : this(
-        ucFlags = 0uL,
-        ucLinkCtorArg = MutPtr(0L),
-        ucStack = StackT(),
-        ucMcontextCtorArg = McontextT(),
-        ucSigmask64 = CAnonymousUcSigmask(),
-        fpregsMem = LibcFpstate(),
-    )
-
-    public operator fun component1(): CUlong = this.ucFlags
-
-    public operator fun component2(): MutPtr = this.ucLink
-
-    public operator fun component3(): StackT = this.ucStack
-
-    public operator fun component4(): McontextT = this.ucMcontext
-
-    public operator fun component5(): CAnonymousUcSigmask = this.ucSigmask64
-
-    public operator fun component6(): LibcFpstate = this.fpregsMem
-
-    public fun copy(ucFlags: CUlong = this.ucFlags, ucLink: MutPtr = this.ucLink, ucStack: StackT = this.ucStack, ucMcontext: McontextT = this.ucMcontext, ucSigmask64: CAnonymousUcSigmask = this.ucSigmask64, fpregsMem: LibcFpstate = this.fpregsMem): UcontextT = UcontextT(ucFlags = ucFlags, ucLinkCtorArg = ucLink, ucStack = ucStack, ucMcontextCtorArg = ucMcontext, ucSigmask64 = ucSigmask64, fpregsMem = fpregsMem)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UcontextT) return false
-        if (this.ucFlags != other.ucFlags) return false
-        if (this.ucLink != other.ucLink) return false
-        if (this.ucStack != other.ucStack) return false
-        if (this.ucMcontext != other.ucMcontext) return false
-        if (this.ucSigmask64 != other.ucSigmask64) return false
-        if (this.fpregsMem != other.fpregsMem) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ucFlags.hashCode()
-        result = 31 * result + this.ucLink.hashCode()
-        result = 31 * result + this.ucStack.hashCode()
-        result = 31 * result + this.ucMcontext.hashCode()
-        result = 31 * result + this.ucSigmask64.hashCode()
-        result = 31 * result + this.fpregsMem.hashCode()
-        return result
-    }
-
-    public fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucMcontext, ucSigmask64, fpregsMem)
+    public open fun clone(): UcontextT = UcontextT(ucFlags, ucLink, ucStack, ucMcontext, ucSigmask64, fpregsMem)
 
     public companion object {
         public operator fun invoke(
-            ucFlags: CUlong = 0uL,
-            ucLink: MutPtr = MutPtr(0L),
-            ucStack: StackT = StackT(),
-            ucMcontext: McontextT = McontextT(),
-            ucSigmask64: CAnonymousUcSigmask = CAnonymousUcSigmask(),
-            fpregsMem: LibcFpstate = LibcFpstate(),
+            ucFlags: CUlong,
+            ucLink: MutPtr,
+            ucStack: StackT,
+            ucMcontext: McontextT,
+            ucSigmask64: CAnonymousUcSigmask,
+            fpregsMem: LibcFpstate,
         ): UcontextT = UcontextT(
             ucFlags = ucFlags,
             ucLinkCtorArg = ucLink,
@@ -950,50 +810,20 @@ public class UcontextT internal constructor(
     }
 }
 
-public data class UserFpregsStruct(
-    public var cwd: CUshort = 0u,
-    public var swd: CUshort = 0u,
-    public var ftw: CUshort = 0u,
-    public var fop: CUshort = 0u,
-    public var rip: CUlong = 0uL,
-    public var rdp: CUlong = 0uL,
-    public var mxcsr: CUint = 0u,
-    public var mxcrMask: CUint = 0u,
-    public var stSpace: UIntArray = UIntArray(32),
-    public var xmmSpace: UIntArray = UIntArray(64),
-    public var padding: UIntArray = UIntArray(24),
+public open class UserFpregsStruct(
+    public var cwd: CUshort,
+    public var swd: CUshort,
+    public var ftw: CUshort,
+    public var fop: CUshort,
+    public var rip: CUlong,
+    public var rdp: CUlong,
+    public var mxcsr: CUint,
+    public var mxcrMask: CUint,
+    public var stSpace: UIntArray,
+    public var xmmSpace: UIntArray,
+    public var padding: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is UserFpregsStruct) return false
-        if (this.cwd != other.cwd) return false
-        if (this.swd != other.swd) return false
-        if (this.ftw != other.ftw) return false
-        if (this.fop != other.fop) return false
-        if (this.rip != other.rip) return false
-        if (this.rdp != other.rdp) return false
-        if (this.mxcsr != other.mxcsr) return false
-        if (this.mxcrMask != other.mxcrMask) return false
-        if (!this.stSpace.contentEquals(other.stSpace)) return false
-        if (!this.xmmSpace.contentEquals(other.xmmSpace)) return false
-        if (!this.padding.contentEquals(other.padding)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.cwd.hashCode()
-        result = 31 * result + this.swd.hashCode()
-        result = 31 * result + this.ftw.hashCode()
-        result = 31 * result + this.fop.hashCode()
-        result = 31 * result + this.rip.hashCode()
-        result = 31 * result + this.rdp.hashCode()
-        result = 31 * result + this.mxcsr.hashCode()
-        result = 31 * result + this.mxcrMask.hashCode()
-        result = 31 * result + this.stSpace.contentHashCode()
-        result = 31 * result + this.xmmSpace.contentHashCode()
-        result = 31 * result + this.padding.contentHashCode()
-        return result
-    }
+    public open fun clone(): UserFpregsStruct = UserFpregsStruct(cwd, swd, ftw, fop, rip, rdp, mxcsr, mxcrMask, stSpace, xmmSpace, padding)
 
     public companion object {
         public fun typeLayout(): TypeLayout<UserFpregsStruct> =
@@ -1058,15 +888,13 @@ public data class UserFpregsStruct(
     }
 }
 
-public data class CAnonymousUcSigmask(
-    public var ucSigmask: SigsetT = SigsetT(),
-    public var ucSigmask64: Sigset64T = Sigset64T(),
+public open class CAnonymousUcSigmask(
+    public var ucSigmask: SigsetT? = null,
+    public var ucSigmask64: Sigset64T? = null,
 ) {
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_uc_sigmask").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_uc_sigmask").finishNonExhaustive()
 
-    public fun eq(other: CAnonymousUcSigmask): Boolean = this.ucSigmask == other.ucSigmask
+    public open fun eq(other: CAnonymousUcSigmask): Boolean = this.ucSigmask == other.ucSigmask
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1075,37 +903,23 @@ public data class CAnonymousUcSigmask(
     }
 }
 
-public data class MaxAlignT(
-    public var priv: DoubleArray = DoubleArray(4),
+public open class MaxAlignT internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MaxAlignT) return false
-        if (!this.priv.contentEquals(other.priv)) return false
-        return true
-    }
+    public var priv: DoubleArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.priv.contentHashCode()
+    internal constructor(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+
+    public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
+
+    public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<MaxAlignT> =
-            object : TypeLayout<MaxAlignT> {
-                override val alignBytes: Long = 16L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.doubleArray(4)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.doubleArray(4)).writeNative(addr, value.priv)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.doubleArray(4)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.doubleArray(4)).writeBytes(buf, offset, value.priv)
-                }
-            }
+        public operator fun invoke(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(priv, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }

@@ -4,7 +4,8 @@ package io.github.kotlinmania.rustlang.libm.math.fminfmax
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fminSpecTest(f: (F, F) -> F) {
     // Note that (YaN, sNaN) and (sNaN, YaN) results differ from 754-2008. This is intentional,
@@ -15,7 +16,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fminSpecTest(f: (F, F) -> 
         run {
             val l = value
             val r = res
-            check(l.biteq(r)) { ("fmin(${Hex(x)}, ${Hex(y)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("fmin(${Hex(x)}, ${Hex(y)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
     }
     // Ordering between zeros does not matter
@@ -48,7 +49,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fmaxSpecTest(f: (F, F) -> 
         run {
             val l = value
             val r = res
-            check(l.biteq(r)) { ("fmax(${Hex(x)}, ${Hex(y)}) (${Hex(x.toBits())}, ${Hex(y.toBits())})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("fmax(${Hex(x)}, ${Hex(y)}) (${Hex(x.toBits())}, ${Hex(y.toBits())})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
     }
     // Ordering between zeros

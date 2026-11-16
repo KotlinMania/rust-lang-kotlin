@@ -2,11 +2,10 @@
 package io.github.kotlinmania.rustlang.core.pin
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
@@ -1027,13 +1026,13 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class Pin<Ptr>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Ptr>,
-) : DerefPure, LegacyReceiver, Pointer {
+    public val fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout(),
+) : DerefPure, LegacyReceiver, fmt.Pointer {
     public var pointer: Ptr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(pointer: Ptr, fieldLayout: TypeLayout<Ptr>) : this(allocateNativeCell(pointer, fieldLayout), fieldLayout)
+    public constructor(pointer: Ptr, fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout()) : this(allocateNativeCell(pointer, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Pin<Ptr>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Pin<Ptr>(ptr, layout) }, { it.pointer })
 
@@ -1049,7 +1048,7 @@ public open class Pin<Ptr>(
 
     public open fun ne(other: Pin<Q>): Boolean = Ptr.Target.ne(this, other)
 
-    public open fun partialCmp(other: Pin<Q>): Ordering? = Ptr.Target.partialCmp(this, other)
+    public open fun partialCmp(other: Pin<Q>): cmp.Ordering? = Ptr.Target.partialCmp(this, other)
 
     public open fun lt(other: Pin<Q>): Boolean = Ptr.Target.lt(this, other)
 
@@ -1059,7 +1058,7 @@ public open class Pin<Ptr>(
 
     public open fun ge(other: Pin<Q>): Boolean = Ptr.Target.ge(this, other)
 
-    public open fun cmp(other: Pin<Ptr>): Ordering = Ptr.Target.cmp(this, other)
+    public open fun cmp(other: Pin<Ptr>): cmp.Ordering = Ptr.Target.cmp(this, other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1191,7 +1190,7 @@ public open class Pin<Ptr>(
 
     public open fun deref(): Target = Pin.getRef(this.asRef())
 
-    public open fun derefMut(typeLayoutPtr: TypeLayout<Ptr>): Target {
+    public open fun derefMut(typeLayoutPtr: TypeLayout<Ptr> = UnresolvedTypeLayout()): Target {
         // SAFETY: Pin and PinHelper have the same layout, so this is equivalent to
         // `self.pointer` which is safe because `Target: Unpin`.
         return (RustMutableReference(MutPtr((((MutPtr(this.fieldStorage.rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), TransparentTypeLayout(typeLayoutPtr, { ptr, layout -> PinHelper<Ptr>(ptr, layout) }, { it.pointer }))).derefMut()
@@ -1235,7 +1234,7 @@ public open class Pin<Ptr>(
          * var pinned: Pin<RustMutableReference<UByte>> = Pin.new(RustMutableReference(localStorageL5C0.asMutPtr(), localStorageL5C0.layout))
          * ```
          */
-        public fun <Ptr> new(pointer: Ptr, fieldLayout: TypeLayout<Ptr>): Pin<Ptr> {
+        public fun <Ptr> new(pointer: Ptr, fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout()): Pin<Ptr> {
             // SAFETY: the value pointed to is `Unpin`, and so has no requirements
             // around pinning.
             return Pin.newUnchecked(pointer, fieldLayout = fieldLayout)
@@ -1397,7 +1396,7 @@ public open class Pin<Ptr>(
          * }
          * ```
          */
-        public fun <Target, Ptr> newUnchecked(pointer: Ptr, fieldLayout: TypeLayout<Ptr>): Pin<Ptr> = Pin(pointer = pointer, fieldLayout = fieldLayout)
+        public fun <Target, Ptr> newUnchecked(pointer: Ptr, fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout()): Pin<Ptr> = Pin(pointer = pointer, fieldLayout = fieldLayout)
 
         /**
          * Unwraps this `Pin<Ptr>`, returning the underlying `Ptr`.
@@ -1445,7 +1444,7 @@ public fun <T, U> Pin<T>.mapUnchecked(func: (T) -> U): Pin<U> {
     val newPointer = func(pointer)
     // SAFETY: the safety contract for `newUnchecked` must be
     // upheld by the caller.
-    return Pin.newUnchecked(newPointer, fieldLayout = ObjectSlotLayout<T>())
+    return Pin.newUnchecked(newPointer, fieldLayout = UnresolvedTypeLayout<T>())
 }
 
 /**
@@ -1525,7 +1524,7 @@ public fun <T, U> Pin<T>.mapUncheckedMut(func: (T) -> U): Pin<U> {
     val newPointer = func(pointer)
     // SAFETY: as the value of `this` is guaranteed to not have
     // been moved out, this call to `newUnchecked` is safe.
-    return Pin.newUnchecked(newPointer, fieldLayout = ObjectSlotLayout<T>())
+    return Pin.newUnchecked(newPointer, fieldLayout = UnresolvedTypeLayout<T>())
 }
 
 /**
@@ -1534,7 +1533,7 @@ public fun <T, U> Pin<T>.mapUncheckedMut(func: (T) -> U): Pin<U> {
  * This is safe because `T` is borrowed immutably for the `static` scope, which
  * never ends.
  */
-public fun <T> Pin.Companion.staticRef(r: T, fieldLayout: TypeLayout<T>): Pin<T> {
+public fun <T> Pin.Companion.staticRef(r: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): Pin<T> {
     // SAFETY: The static borrow guarantees the data will not be
     // moved/invalidated until it gets dropped (which is never).
     return Pin.newUnchecked(r, fieldLayout = fieldLayout)
@@ -1546,7 +1545,7 @@ public fun <T> Pin.Companion.staticRef(r: T, fieldLayout: TypeLayout<T>): Pin<T>
  * This is safe because `T` is borrowed for the `static` scope, which
  * never ends.
  */
-public fun <T> Pin.Companion.staticMut(r: T, fieldLayout: TypeLayout<T>): Pin<T> {
+public fun <T> Pin.Companion.staticMut(r: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): Pin<T> {
     // SAFETY: The static borrow guarantees the data will not be
     // moved/invalidated until it gets dropped (which is never).
     return Pin.newUnchecked(r, fieldLayout = fieldLayout)
@@ -1574,13 +1573,13 @@ public fun <T> Pin.Companion.staticMut(r: T, fieldLayout: TypeLayout<T>): Pin<T>
  */
 public open class PinHelper<Ptr>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Ptr>,
-) : PinDerefMutHelper<Any?, Target> {
+    public val fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout(),
+) : PinDerefMutHelper<Target> {
     public var pointer: Ptr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(pointer: Ptr, fieldLayout: TypeLayout<Ptr>) : this(allocateNativeCell(pointer, fieldLayout), fieldLayout)
+    public constructor(pointer: Ptr, fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout()) : this(allocateNativeCell(pointer, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PinHelper<Ptr>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PinHelper<Ptr>(ptr, layout) }, { it.pointer })
 
@@ -1765,5 +1764,5 @@ public open class PinMacroHelper<T>(
  */
 public fun <T> pinNewUncheckedInHelper(pinned: PinMacroHelper<T>): Pin<T> {
     // SAFETY: Ensured by the caller.
-    return Pin.newUnchecked(pinned.value, fieldLayout = ObjectSlotLayout<Ptr>())
+    return Pin.newUnchecked(pinned.value, fieldLayout = UnresolvedTypeLayout<Ptr>())
 }

@@ -1,9 +1,9 @@
 // port-lint: source new/linux_uapi/linux/mount.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.mount
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.libc.*
@@ -96,12 +96,14 @@ public val MOUNT_ATTR_IDMAP: ULong = 0x00100000uL
 
 public val MOUNT_ATTR_NOSYMFOLLOW: ULong = 0x00200000uL
 
-public data class MountAttr(
-    public var attrSet: U64 = 0uL,
-    public var attrClr: U64 = 0uL,
-    public var propagation: U64 = 0uL,
-    public var usernsFd: U64 = 0uL,
+public open class MountAttr(
+    public var attrSet: U64,
+    public var attrClr: U64,
+    public var propagation: U64,
+    public var usernsFd: U64,
 ) {
+    public open fun clone(): MountAttr = MountAttr(attrSet, attrClr, propagation, usernsFd)
+
     public companion object {
         public fun typeLayout(): TypeLayout<MountAttr> =
             object : TypeLayout<MountAttr> {

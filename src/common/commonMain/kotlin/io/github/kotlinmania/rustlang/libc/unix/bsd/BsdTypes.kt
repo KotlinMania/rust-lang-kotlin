@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd
 
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
 public typealias OffT = Long
 

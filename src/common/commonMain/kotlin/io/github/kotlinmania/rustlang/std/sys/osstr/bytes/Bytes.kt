@@ -7,11 +7,15 @@ import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
@@ -26,13 +30,13 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
 
 public open class Buf internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<UByte>>,
+    public val fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout(),
 ) : IntoInner<List<UByte>>, FromInner<List<UByte>, Buf>, AsInner<List<UByte>> {
     public var inner: List<UByte>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Buf> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Buf(ptr, layout) }, { it.inner })
 
@@ -40,13 +44,9 @@ public open class Buf internal constructor(
 
     public override fun asInner(): List<UByte> = this.inner
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.asSlice()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append((this.asSlice()).toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok(Unit) }
 
     public open fun clone(): Buf = Buf(inner = this.inner.toMutableList(), fieldLayout = this.fieldLayout)
 
@@ -142,19 +142,19 @@ public open class Buf internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner, fieldLayout)
+        public operator fun invoke(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(fieldStorage, fieldLayout)
 
-        public fun fromInner(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
+        public fun fromInner(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
 
-        public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = s, fieldLayout = fieldLayout)
+        public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(inner = s, fieldLayout = fieldLayout)
 
-        public fun fromString(s: String, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = s.intoBytes(), fieldLayout = fieldLayout)
+        public fun fromString(s: String, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(inner = s.intoBytes(), fieldLayout = fieldLayout)
 
-        public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<List<UByte>>): Buf = Buf(inner = ArrayList(capacity), fieldLayout = fieldLayout)
+        public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf = Buf(inner = ArrayList(capacity), fieldLayout = fieldLayout)
 
-        public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<List<UByte>>): Buf {
+        public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Buf {
             val inner: List<UByte> = transmute(boxed)
             return Buf(inner = inner.intoVec(), fieldLayout = fieldLayout)
         }
@@ -163,23 +163,19 @@ public open class Buf internal constructor(
 
 public open class Slice internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<UByte>>,
+    public val fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout(),
 ) : CloneToUninit {
     public var inner: List<UByte>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.inner.utf8Chunks().debug()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner.utf8Chunks().debug()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append((ByteStr.new(this.inner)).toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((ByteStr.new(this.inner)).toString()); Result.Ok(Unit) }
 
     public open fun asEncodedBytes(): List<UByte> = this.inner
 
@@ -204,9 +200,9 @@ public open class Slice internal constructor(
             run {
                 val matchVal = String.fromUtf8(after1)
                 when {
-                    matchVal is Result.Ok<*> -> { return Unit }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.validUpTo() != 0 -> {
-                        val err = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Ok -> { return Unit }
+                    matchVal is Result.Err && (matchVal as Result.Err).error.validUpTo() != 0 -> {
+                        val err = matchVal.error
                         return Unit
                     }
                     else -> Unit
@@ -271,9 +267,9 @@ public open class Slice internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>>): Slice = Slice(inner, fieldLayout)
+        public operator fun invoke(inner: List<UByte>, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Slice = Slice(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>>): Slice = Slice(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UByte>> = UnresolvedTypeLayout()): Slice = Slice(fieldStorage, fieldLayout)
 
         public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(s)
 

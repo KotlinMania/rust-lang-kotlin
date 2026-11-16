@@ -5,13 +5,16 @@ import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -56,7 +59,7 @@ public open class Filter<I, P>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var iter: I,
     public var predicate: P,
-) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Item> {
+) : SourceIter<Source>, InPlaceIterable, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Filter.next()) {
@@ -69,7 +72,7 @@ public open class Filter<I, P>(
     public open fun clone(): Filter<I, P> = Filter(iter, predicate)
 
     public open fun nextChunkDropless(n: Int): Result<List<Item>, IntoIter<Item>> {
-        val array: List<MaybeUninit<Item>>  = List(n) { MaybeUninit.uninit(ObjectSlotLayout<Item>()) }
+        val array: List<MaybeUninit<Item>>  = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Item>()) }
         var initialized = 0
         val result =
             this.iter.tryForEach({ element ->
@@ -88,11 +91,11 @@ public open class Filter<I, P>(
         return when (result) {
             is ControlFlow.Break -> {
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok(MaybeUninit.arrayAssumeInit(array))
+                Result.Ok<List<Item>, IntoIter<Item>>(MaybeUninit.arrayAssumeInit(array))
             }
             is ControlFlow.Continue -> {
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
+                Result.Err<List<Item>, IntoIter<Item>>(IntoIter.newUnchecked(array, 0 until initialized))
             }
         }
     }
@@ -183,9 +186,9 @@ public open class Filter<I, P>(
 
         public fun <I, P> new(iter: I, predicate: P): Filter<I, P> = Filter(iter = iter, predicate = predicate)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 

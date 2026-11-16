@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
@@ -12,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
 import io.github.kotlinmania.rustlang.std.thread.LocalKey
-import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.std.time.Instant
@@ -79,9 +79,9 @@ public open class Context(
                     // The deadline has been reached. Try aborting select.
                     return run {
                         val matchVal = this.trySelect(Selected.Aborted)
-                        when (matchVal) { is Result.Ok<*> -> {
+                        when (matchVal) { is Result.Ok -> {
                             Selected.Aborted
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val s = matchVal.error
                             s
                         } }
@@ -136,7 +136,7 @@ public open class Context(
         /**
          * Creates a new `Context`.
          */
-        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = currentOrUnnamed(), threadId = currentThreadId()))
+        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = thread.currentOrUnnamed(), threadId = currentThreadId()))
     }
 }
 
@@ -144,8 +144,8 @@ public open class Context(
  * Inner representation of `Context`.
  */
 public open class Inner internal constructor(
-    selectCtorArg: Atomic<Int>,
-    packetCtorArg: Atomic<MutPtr>,
+    selectCtorArg: Atomic<Int, Align8<Int>>,
+    packetCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
     /**
      * Thread handle.
      */
@@ -158,19 +158,19 @@ public open class Inner internal constructor(
     /**
      * Selected operation.
      */
-    public var select: Atomic<Int> = selectCtorArg
+    public var select: Atomic<Int, Align8<Int>> = selectCtorArg
         internal set
 
     /**
      * A slot into which another thread may store a pointer to its `Packet`.
      */
-    public var packet: Atomic<MutPtr> = packetCtorArg
+    public var packet: Atomic<MutPtr, Align8<MutPtr>> = packetCtorArg
         internal set
 
     public companion object {
         public operator fun invoke(
-            select: Atomic<Int>,
-            packet: Atomic<MutPtr>,
+            select: Atomic<Int, Align8<Int>>,
+            packet: Atomic<MutPtr, Align8<MutPtr>>,
             thread: Thread,
             threadId: Int,
         ): Inner = Inner(

@@ -8,42 +8,42 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
 // and method calls usually handle the LHS implicitly.
 // But this is not the case with arithmetic ops.
 
-public fun <Mask, T> Simd<T, N>.add(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.add(rhs)
+public fun <Mask, T> Simd<T>.add(rhs: Simd<T>, n: Int): Simd<T> = this.add(rhs)
 
-public fun <Mask, T> Simd<T, N>.addSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.add(rhs)
+public fun <Mask, T> Simd<T>.addSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.add(rhs)
 
-public fun <Mask, T> Simd<T, N>.mul(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.mul(rhs)
+public fun <Mask, T> Simd<T>.mul(rhs: Simd<T>, n: Int): Simd<T> = this.mul(rhs)
 
-public fun <Mask, T> Simd<T, N>.mulSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.mul(rhs)
+public fun <Mask, T> Simd<T>.mulSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.mul(rhs)
 
-public fun <Mask, T> Simd<T, N>.sub(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.sub(rhs)
+public fun <Mask, T> Simd<T>.sub(rhs: Simd<T>, n: Int): Simd<T> = this.sub(rhs)
 
-public fun <Mask, T> Simd<T, N>.subSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.sub(rhs)
+public fun <Mask, T> Simd<T>.subSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.sub(rhs)
 
-public fun <Mask, T> Simd<T, N>.div(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.div(rhs)
+public fun <Mask, T> Simd<T>.div(rhs: Simd<T>, n: Int): Simd<T> = this.div(rhs)
 
-public fun <Mask, T> Simd<T, N>.divSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.div(rhs)
+public fun <Mask, T> Simd<T>.divSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.div(rhs)
 
-public fun <Mask, T> Simd<T, N>.rem(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.rem(rhs)
+public fun <Mask, T> Simd<T>.rem(rhs: Simd<T>, n: Int): Simd<T> = this.rem(rhs)
 
-public fun <Mask, T> Simd<T, N>.remSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.rem(rhs)
+public fun <Mask, T> Simd<T>.remSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.rem(rhs)
 
-public fun <Mask, T> Simd<T, N>.bitand(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.bitand(rhs)
+public fun <Mask, T> Simd<T>.bitand(rhs: Simd<T>, n: Int): Simd<T> = this.bitand(rhs)
 
-public fun <Mask, T> Simd<T, N>.bitandSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.bitand(rhs)
+public fun <Mask, T> Simd<T>.bitandSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.bitand(rhs)
 
-public fun <Mask, T> Simd<T, N>.bitor(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.bitor(rhs)
+public fun <Mask, T> Simd<T>.bitor(rhs: Simd<T>, n: Int): Simd<T> = this.bitor(rhs)
 
-public fun <Mask, T> Simd<T, N>.bitorSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.bitor(rhs)
+public fun <Mask, T> Simd<T>.bitorSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.bitor(rhs)
 
-public fun <Mask, T> Simd<T, N>.bitxor(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.bitxor(rhs)
+public fun <Mask, T> Simd<T>.bitxor(rhs: Simd<T>, n: Int): Simd<T> = this.bitxor(rhs)
 
-public fun <Mask, T> Simd<T, N>.bitxorSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.bitxor(rhs)
+public fun <Mask, T> Simd<T>.bitxorSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.bitxor(rhs)
 
-public fun <Mask, T> Simd<T, N>.shl(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.shl(rhs)
+public fun <Mask, T> Simd<T>.shl(rhs: Simd<T>, n: Int): Simd<T> = this.shl(rhs)
 
-public fun <Mask, T> Simd<T, N>.shlSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.shl(rhs)
+public fun <Mask, T> Simd<T>.shlSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.shl(rhs)
 
-public fun <Mask, T> Simd<T, N>.shr(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.shr(rhs)
+public fun <Mask, T> Simd<T>.shr(rhs: Simd<T>, n: Int): Simd<T> = this.shr(rhs)
 
-public fun <Mask, T> Simd<T, N>.shrSimdTN(rhs: Simd<T, N>, n: Int): Simd<T> where T : SimdElement<Any?> = this.shr(rhs)
+public fun <Mask, T> Simd<T>.shrSimdTN(rhs: Simd<T>, n: Int): Simd<T> = this.shr(rhs)

@@ -9,10 +9,11 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -112,7 +113,7 @@ public typealias Owned = OsString
  */
 public open class OsString(
     public var inner: Buf,
-) : Appendable, Borrow<OsStr>, AsRef<OsStr>, FromInner<Buf, OsString>, IntoInner<Buf>, FromStr {
+) : Appendable, Borrow<OsStr>, AsRef<OsStr>, FromInner<Buf, OsString>, IntoInner<Buf>, FromStr<Nothing> {
     /**
      * Converts to an [OsStr] slice.
      *
@@ -487,9 +488,7 @@ public open class OsString(
         this.inner = source.inner
     }
 
-    public open fun fmt(formatter: StringBuilder) {
-        formatter.append((this).toString())
-    }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok(Unit) }
 
     public open fun eq(other: OsString): Boolean = (this == other).toUByte()
 
@@ -517,8 +516,9 @@ public open class OsString(
         return state
     }
 
-    public open fun writeStr(s: String) {
+    public open fun writeStr(s: String): Result<Unit, Error> {
         this.push(s)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public open fun eq(other: OsStr): Boolean = OsStr.eq(this, other)
@@ -675,7 +675,7 @@ public open class OsString(
 
         public fun fromInner(buf: Buf): OsString = OsString(inner = buf)
 
-        public fun fromStr(s: String): Result<OsString, Nothing> = Result.Ok(OsString.from(s))
+        public fun fromStr(s: String): Result<OsString, Nothing> = Result.Ok<OsString, Nothing>(OsString.from(s))
 
         public fun <I : Iterable<OsString>> fromIter(iter: I): OsString {
             val iterator = iter.iterator()
@@ -743,13 +743,13 @@ public open class OsString(
  */
 public open class OsStr internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Slice>,
+    public val fieldLayout: TypeLayout<Slice> = UnresolvedTypeLayout(),
 ) : CloneToUninit, ToOwned, AsRef<OsStr>, AsInner<Slice> {
     public var inner: Slice
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: Slice, fieldLayout: TypeLayout<Slice>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Slice, fieldLayout: TypeLayout<Slice> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<OsStr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> OsStr(ptr, layout) }, { it.inner })
 
@@ -1207,9 +1207,7 @@ public open class OsStr internal constructor(
         return state
     }
 
-    public open fun fmt(formatter: StringBuilder) {
-        formatter.append((this.inner).toString())
-    }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok(Unit) }
 
     public open fun toOwned(): OsString = this.toOsString()
 
@@ -1222,9 +1220,9 @@ public open class OsStr internal constructor(
     public override fun asInner(): Slice = this.inner
 
     public companion object {
-        public operator fun invoke(inner: Slice, fieldLayout: TypeLayout<Slice>): OsStr = OsStr(inner, fieldLayout)
+        public operator fun invoke(inner: Slice, fieldLayout: TypeLayout<Slice> = UnresolvedTypeLayout()): OsStr = OsStr(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Slice>): OsStr = OsStr(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Slice> = UnresolvedTypeLayout()): OsStr = OsStr(fieldStorage, fieldLayout)
 
         /**
          * Coerces into an `OsStr` slice.
@@ -1283,7 +1281,7 @@ public open class OsStr internal constructor(
         public fun fromInner(inner: Slice): OsStr {
             // SAFETY: OsStr is just a wrapper of Slice,
             // therefore converting &Slice to &OsStr is safe.
-            return (ObjectSlotLayout<OsStr>()).readNative((((constPtrFromRustCast(inner)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            return (UnresolvedTypeLayout<OsStr>()).readNative((((constPtrFromRustCast(inner)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         }
 
         public fun fromInnerMut(inner: Slice): RustMutableReference<OsStr> {
@@ -1291,7 +1289,7 @@ public open class OsStr internal constructor(
             // therefore converting Slice to OsStr is safe.
             // Any method that mutates OsStr must be careful not to
             // break platform-specific encoding, in particular Wtf8 on Windows.
-            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<OsStr>())
+            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<OsStr>())
         }
 
         /**
@@ -1440,13 +1438,9 @@ public fun OsStr.partialCmp(other: OsString): Ordering? = OsStr.partialCmp(this,
 public open class Display(
     public var osStr: OsStr,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.osStr).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append((this.osStr.inner).toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.osStr.inner).toString()); Result.Ok(Unit) }
 }
 
 public fun joinSSlice(slice: List<S>, sep: OsStr): OsString {

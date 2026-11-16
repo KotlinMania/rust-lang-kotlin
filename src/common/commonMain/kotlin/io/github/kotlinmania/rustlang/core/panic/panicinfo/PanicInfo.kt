@@ -1,7 +1,6 @@
 // port-lint: source panic/panic_info.rs
 package io.github.kotlinmania.rustlang.core.panic.panicinfo
 
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -15,7 +14,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * [std.panic.PanicHookInfo]: ../../std/panic/struct.PanicHookInfo.html
  */
 public open class PanicInfo(
-    public var message: Arguments,
+    public var message: fmt.Arguments,
     public var location: Location,
     public var canUnwind: Boolean,
     public var forceNoBacktrace: Boolean,
@@ -100,14 +99,14 @@ public open class PanicInfo(
 
     public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> {
         formatter.append("panicked at ")
-        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
         formatter.append(":\n")
-        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(Unit)
+        when (val tryResult = formatter.writeFmt(this.message)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     public companion object {
-        public fun new(message: Arguments, location: Location, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicInfo = PanicInfo(location = location, message = message, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
+        public fun new(message: fmt.Arguments, location: Location, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicInfo = PanicInfo(location = location, message = message, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
     }
 }
 
@@ -120,7 +119,7 @@ public open class PanicInfo(
  * See [PanicInfo.message].
  */
 public open class PanicMessage(
-    public var message: Arguments,
+    public var message: fmt.Arguments,
 ) {
     /**
      * Gets the formatted message, if it has no arguments to be formatted at runtime.

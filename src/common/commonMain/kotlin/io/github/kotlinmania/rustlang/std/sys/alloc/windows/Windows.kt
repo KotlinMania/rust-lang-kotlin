@@ -190,7 +190,7 @@ public fun allocate(layout: Layout, zeroed: Boolean): MutPtr {
         // SAFETY: Because the size and alignment of a header is <= `MIN_ALIGN` and `aligned`
         // is aligned to at least `MIN_ALIGN` and has at least `MIN_ALIGN` bytes of padding before
         // it, it is safe to write a header directly before it.
-        write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
+        ptr.write(MutPtr(((MutPtr(aligned.rawAddress, aligned.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), Header(ptr), typeLayoutT = Header.typeLayout())
         // SAFETY: The returned pointer does not point to the start of an allocated block,
         // but there is a header readable directly before it containing the location of the start
         // of the block.
@@ -217,7 +217,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
         // The location of the start of the block is stored in the padding before `ptr`.
         // SAFETY: Because of the contract of `System`, `ptr` is guaranteed to be non-null
         // and have a header readable directly before it.
-        read(MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), typeLayoutT = Header.typeLayout()).first
+        ptr.read((MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes))).asConstPtr(), typeLayoutT = Header.typeLayout()).first
     }
     // because `ptr` has been successfully allocated with this allocator,
     // there must be a valid process heap.

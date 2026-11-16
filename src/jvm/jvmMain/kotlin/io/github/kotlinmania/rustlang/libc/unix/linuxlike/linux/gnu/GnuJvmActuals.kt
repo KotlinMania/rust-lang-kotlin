@@ -2,20 +2,20 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.MqdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.Sigval
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.MqdT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 
@@ -455,7 +455,7 @@ public actual fun ntpGettime(buf: MutPtr): CInt =
     UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuNtpGettime(buf.rawAddress)
 
 public actual fun clockAdjtime(clkId: ClockidT, buf: MutPtr): CInt =
-    UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuClockAdjtime(clkId.toInt(), buf.rawAddress)
+    UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuClockAdjtime(clkId, buf.rawAddress)
 
 public actual fun fanotifyMark(fd: CInt, flags: CUint, mask: ULong, dirfd: CInt, path: ConstPtr): CInt =
     UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuFanotifyMark(fd, flags.toInt(), mask.toLong(), dirfd, path.rawAddress)
@@ -523,13 +523,13 @@ public actual fun pthreadRwlockattrGetkindNp(attr: ConstPtr, value: MutPtr): CIn
 public actual fun pthreadRwlockattrSetkindNp(attr: MutPtr, value: CInt): CInt =
     UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp(attr.rawAddress, value)
 
-public actual fun pthreadSigqueue(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt, value: Sigval): CInt =
+public actual fun pthreadSigqueue(thread: PthreadT, sig: CInt, value: Sigval): CInt =
     0
 
-public actual fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr): CInt =
+public actual fun pthreadTryjoinNp(thread: PthreadT, retval: MutPtr): CInt =
     UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(thread.toLong(), retval.rawAddress)
 
-public actual fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
+public actual fun pthreadTimedjoinNp(thread: PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
     UnixLinuxlikeLinuxGnuJniBridge.libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(thread.toLong(), retval.rawAddress, abstime.rawAddress)
 
 public actual fun mallinfo(): Mallinfo =

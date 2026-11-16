@@ -2,23 +2,23 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TimerT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 @kotlin.wasm.WasmImport("kmcore", "libcUnixLinuxlikeAndroidSetpwent")
@@ -228,7 +228,7 @@ public actual fun signalfd(fd: CInt, mask: ConstPtr, flags: CInt): CInt =
 private external fun wasiLibcUnixLinuxlikeAndroidTimerfdCreate(clock: Int, flags: Int): Int
 
 public actual fun timerfdCreate(clock: ClockidT, flags: CInt): CInt =
-    wasiLibcUnixLinuxlikeAndroidTimerfdCreate(clock.toInt(), flags).toInt()
+    wasiLibcUnixLinuxlikeAndroidTimerfdCreate(clock, flags).toInt()
 
 public actual fun timerfdGettime(fd: CInt, currentValue: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidTimerfdGettime")

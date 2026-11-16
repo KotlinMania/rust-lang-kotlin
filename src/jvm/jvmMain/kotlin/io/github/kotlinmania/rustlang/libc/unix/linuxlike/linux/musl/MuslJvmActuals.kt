@@ -2,19 +2,19 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
 
 private object UnixLinuxlikeLinuxMuslJniBridge {
     init {
@@ -228,7 +228,7 @@ public actual fun adjtimex(buf: MutPtr): CInt =
     UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslAdjtimex(buf.rawAddress)
 
 public actual fun clockAdjtime(clkId: ClockidT, buf: MutPtr): CInt =
-    UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslClockAdjtime(clkId.toInt(), buf.rawAddress)
+    UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslClockAdjtime(clkId, buf.rawAddress)
 
 public actual fun ctermid(s: MutPtr): MutPtr =
     MutPtr(UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslCtermid(s.rawAddress))
@@ -289,8 +289,8 @@ public actual fun endutxent() {
 public actual fun utmpxname(file: ConstPtr): CInt =
     UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslUtmpxname(file.rawAddress)
 
-public actual fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr): CInt =
+public actual fun pthreadTryjoinNp(thread: PthreadT, retval: MutPtr): CInt =
     UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslPthreadTryjoinNp(thread.rawAddress, retval.rawAddress)
 
-public actual fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
+public actual fun pthreadTimedjoinNp(thread: PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
     UnixLinuxlikeLinuxMuslJniBridge.libcUnixLinuxlikeLinuxMuslPthreadTimedjoinNp(thread.rawAddress, retval.rawAddress, abstime.rawAddress)

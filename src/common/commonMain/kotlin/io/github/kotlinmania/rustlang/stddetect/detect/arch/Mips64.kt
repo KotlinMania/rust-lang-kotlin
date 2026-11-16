@@ -28,8 +28,8 @@ public sealed class Feature {
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "msa" -> Result.Ok(Feature::msa)
-                else -> Result.Err(Unit)
+                "msa" -> Result.Ok<Feature, Unit>(Feature::msa)
+                else -> Result.Err<Feature, Unit>(Unit)
             }
     }
 }
@@ -38,4 +38,4 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun msa(): Boolean = checkFor(Feature::msa)
+public fun msa(): Boolean = checkFor(::msa)

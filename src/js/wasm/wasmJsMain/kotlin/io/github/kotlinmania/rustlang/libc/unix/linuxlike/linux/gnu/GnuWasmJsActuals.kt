@@ -2,20 +2,20 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.MqdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.Sigval
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.MqdT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.Off64T
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 
@@ -422,7 +422,7 @@ public actual fun ntpGettime(buf: MutPtr): CInt =
     if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuNtpGettime(buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clockAdjtime(clkId: ClockidT, buf: MutPtr): CInt =
-    if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuClockAdjtime(clkId.toInt(), buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuClockAdjtime(clkId, buf.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fanotifyMark(fd: CInt, flags: CUint, mask: ULong, dirfd: CInt, path: ConstPtr): CInt =
     if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuFanotifyMark(fd, flags.toInt(), mask.toString(), dirfd, path.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -502,14 +502,14 @@ public actual fun pthreadRwlockattrGetkindNp(attr: ConstPtr, value: MutPtr): CIn
 public actual fun pthreadRwlockattrSetkindNp(attr: MutPtr, value: CInt): CInt =
     if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp(attr.rawAddress.toString(), value) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun pthreadSigqueue(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt, value: Sigval): CInt =
+public actual fun pthreadSigqueue(thread: PthreadT, sig: CInt, value: Sigval): CInt =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun pthreadTryjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr): CInt =
-    if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(thread.toString(), retval.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun pthreadTryjoinNp(thread: PthreadT, retval: MutPtr): CInt =
+    if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(thread.toLong().toString(), retval.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun pthreadTimedjoinNp(thread: io.github.kotlinmania.rustlang.libc.PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
-    if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(thread.toString(), retval.rawAddress.toString(), abstime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun pthreadTimedjoinNp(thread: PthreadT, retval: MutPtr, abstime: ConstPtr): CInt =
+    if (unixLinuxlikeLinuxGnuNapiAvailable) wasmLibcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(thread.toLong().toString(), retval.rawAddress.toString(), abstime.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun mallinfo(): Mallinfo =
     throw UnsupportedOperationException("Native FFI addon is not available")

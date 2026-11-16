@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.std.os.darwin.fs
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.std.fs.FileTimes
@@ -72,7 +72,7 @@ public interface MetadataExt {
     public fun stQspare(): ULongArray
 }
 
-public fun Metadata.asRawStat(): Stat = (ObjectSlotLayout<Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+public fun Metadata.asRawStat(): Stat = (UnresolvedTypeLayout<Stat>()).readNative((((constPtrFromRustCast(this.asInner().asInner())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
 public fun Metadata.stDev(): ULong = (this.asInner().asInner().stDev).toULong()
 

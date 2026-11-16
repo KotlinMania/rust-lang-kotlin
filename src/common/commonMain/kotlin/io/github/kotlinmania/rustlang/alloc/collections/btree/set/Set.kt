@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
@@ -120,7 +121,7 @@ public class DebugTuple(
  */
 public open class BTreeSet<T, A : AllocatorClone>(
     public var map: MutableMap<T, SetValZST>,
-) : Sub<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitXor<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitAnd<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, BitOr<BTreeSet<T, A>, Any?, BTreeSet<T, A>>, Iterable<T> {
+) : Sub<BTreeSet<T, A>, BTreeSet<T, A>>, BitXor<BTreeSet<T, A>, BTreeSet<T, A>>, BitAnd<BTreeSet<T, A>, BTreeSet<T, A>>, BitOr<BTreeSet<T, A>, BTreeSet<T, A>>, Iterable<T> {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public override fun hashCode(): Int {
@@ -1097,9 +1098,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun bitor(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.union(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
 
     public companion object {
         /**
@@ -1146,9 +1145,7 @@ public open class Iter<T> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(this.iter).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(this.iter).finish()
 
     public open fun clone(): Iter<T> = Iter(iter = this.iter.clone())
 
@@ -1318,9 +1315,7 @@ public open class Difference<T, A : AllocatorClone> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Difference").field(this.inner).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Difference").field(this.inner).finish()
 
     public open fun clone(): Difference<T, A> =
         Difference(inner = when (val matchVal = this.inner) {
@@ -1480,7 +1475,7 @@ public sealed class DifferenceInner<T, A : AllocatorClone> {
     public data class Iterate<T, A : AllocatorClone>(public var value: Iter<T>) : DifferenceInner<T, A>()
 
     // Explicit Debug impl necessary because of issue #26925
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is DifferenceInner.Stitch -> {
                 val selfIter = this.selfIter
@@ -1497,7 +1492,6 @@ public sealed class DifferenceInner<T, A : AllocatorClone> {
                 DebugTuple(f, "Iterate").field(x).finish()
             }
         }
-    }
 }
 
 /**
@@ -1529,9 +1523,7 @@ public open class SymmetricDifference<T> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "SymmetricDifference").field(this.value).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "SymmetricDifference").field(this.value).finish()
 
     public open fun clone(): SymmetricDifference<T> = SymmetricDifference(this.value.clone())
 
@@ -1586,9 +1578,7 @@ public open class Intersection<T, A : AllocatorClone> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Intersection").field(this.inner).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Intersection").field(this.inner).finish()
 
     public open fun clone(): Intersection<T, A> =
         Intersection(inner = when (val matchVal = this.inner) {
@@ -1711,7 +1701,7 @@ public sealed class IntersectionInner<T, A : AllocatorClone> {
     public data class Answer<T, A : AllocatorClone>(public var value: T?) : IntersectionInner<T, A>()
 
     // Explicit Debug impl necessary because of issue #26925
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is IntersectionInner.Stitch -> {
                 val a = this.a
@@ -1728,7 +1718,6 @@ public sealed class IntersectionInner<T, A : AllocatorClone> {
                 DebugTuple(f, "Answer").field(x).finish()
             }
         }
-    }
 }
 
 /**
@@ -1760,9 +1749,7 @@ public open class Union<T> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Union").field(this.value).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Union").field(this.value).finish()
 
     public open fun clone(): Union<T> = Union(this.value.clone())
 
@@ -1807,16 +1794,16 @@ public val ITER_PERFORMANCE_TIPPING_SIZE_DIFF: Int = 16
  * var set: MutableSet<Int> = mutableSetOf()
  * ```
  */
-public fun <T> BTreeSet.Companion.new(): BTreeSet<T> = BTreeSet(map = mutableMapOf())
+public fun <T> BTreeSet.Companion.new(): BTreeSet<T, Global> = BTreeSet(map = mutableMapOf())
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet<T> {
+public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet<T, Global> {
     val inputs: Vec  = iter.iterator().collect()
     if (inputs.isEmpty()) {
         return BTreeSet.new()
     }
     // use stable sort to preserve the insertion order.
     inputs.sort()
-    return BTreeSet.fromSortedIter(inputs.intoIter(), Global)
+    return BTreeSet.fromSortedIter(inputs.intoIter(), Global())
 }
 
 /**
@@ -1833,13 +1820,13 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet
  * check(set1 == set2)
  * ```
  */
-public fun <T> fromBTreeSetT(arr: List<T>, n: Int): BTreeSet<T> {
+public fun <T> fromBTreeSetT(arr: List<T>, n: Int): BTreeSet<T, Global> {
     if (n == 0) {
         return BTreeSet.new()
     }
     // use stable sort to preserve the insertion order.
     arr.sort()
-    return BTreeSet.fromSortedIter(IntoIterator.IntoIter(arr), Global)
+    return BTreeSet.fromSortedIter(IntoIterator.IntoIter(arr), Global())
 }
 
 /**
@@ -1867,9 +1854,7 @@ public open class ExtractIf<T, R, F, A : AllocatorClone> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "ExtractIf").field("peek", this.inner.peek().map({ (k, _) -> k })).finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ExtractIf").field("peek", this.inner.peek().map({ (k, _) -> k })).finishNonExhaustive()
 
     public open fun next(): T? {
         val pred = this.pred
@@ -1895,7 +1880,7 @@ public open class ExtractIf<T, R, F, A : AllocatorClone> internal constructor(
 /**
  * Creates an empty `BTreeSet`.
  */
-public fun <T> defaultBTreeSetT(): BTreeSet<T> = BTreeSet.new()
+public fun <T> defaultBTreeSetT(): BTreeSet<T, Global> = BTreeSet.new()
 
 /**
  * A cursor over a `BTreeSet`.
@@ -1915,9 +1900,7 @@ public open class Cursor<K> internal constructor(
 
     public open fun clone(): Cursor<K> = Cursor(inner)
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("Cursor")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("Cursor"); Result.Ok(Unit) }
 
     /**
      * Advances the cursor to the next gap, returning the element that it
@@ -1980,9 +1963,7 @@ public open class CursorMut<K, A> internal constructor(
     public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMut<K, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("CursorMut")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("CursorMut"); Result.Ok(Unit) }
 
     public companion object {
         public operator fun <K, A> invoke(
@@ -2022,9 +2003,7 @@ public open class CursorMutKey<K, A> internal constructor(
     public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMutKey<K, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("CursorMutKey")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("CursorMutKey"); Result.Ok(Unit) }
 
     public companion object {
         public operator fun <K, A> invoke(

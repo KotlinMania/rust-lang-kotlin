@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
@@ -896,7 +896,7 @@ public actual fun getrusage(resource: CInt, usage: MutPtr): CInt =
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
     libcWasiGettimeofday(tp.rawAddress.toCPointer<ByteVar>(), tz.rawAddress.toCPointer<ByteVar>())
 
-public actual fun times(buf: MutPtr): io.github.kotlinmania.rustlang.libc.ClockT =
+public actual fun times(buf: MutPtr): ClockT =
     libcWasiTimes(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
@@ -983,17 +983,17 @@ public actual fun abs(i: CInt): CInt =
 public actual fun labs(i: CLong): CLong =
     libcWasiLabs(i)
 
-public actual fun duplocale(base: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
+public actual fun duplocale(base: LocaleT): LocaleT =
     MutPtr(libcWasiDuplocale(base.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun freelocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT) {
+public actual fun freelocale(loc: LocaleT) {
     libcWasiFreelocale(loc.rawAddress.toCPointer<ByteVar>())
 }
 
-public actual fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
+public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
     MutPtr(libcWasiNewlocale(mask, locale.rawAddress.toCPointer<ByteVar>(), base.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun uselocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
+public actual fun uselocale(loc: LocaleT): LocaleT =
     MutPtr(libcWasiUselocale(loc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun schedYield(): CInt =
@@ -1005,10 +1005,10 @@ public actual fun getcwd(buf: MutPtr, size: SizeT): MutPtr =
 public actual fun chdir(dir: ConstPtr): CInt =
     libcWasiChdir(dir.rawAddress.toCPointer<ByteVar>())
 
-public actual fun nlLanginfo(item: io.github.kotlinmania.rustlang.libc.NlItem): MutPtr =
+public actual fun nlLanginfo(item: NlItem): MutPtr =
     MutPtr(libcWasiNlLanginfo(item)?.toLong() ?: 0L)
 
-public actual fun nlLanginfoL(item: io.github.kotlinmania.rustlang.libc.NlItem, loc: io.github.kotlinmania.rustlang.libc.LocaleT): MutPtr =
+public actual fun nlLanginfoL(item: NlItem, loc: LocaleT): MutPtr =
     MutPtr(libcWasiNlLanginfoL(item, loc.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: ConstPtr): CInt =

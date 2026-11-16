@@ -2,21 +2,21 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.KeyT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 
 private val unixLinuxlikeLinuxNapiAddon: dynamic =
@@ -148,7 +148,7 @@ public actual fun signalfd(fd: CInt, mask: ConstPtr, flags: CInt): CInt =
     if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxSignalfd(fd, mask.rawAddress.toString(), flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdCreate(clockid: ClockidT, flags: CInt): CInt =
-    if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxTimerfdCreate(clockid.toInt(), flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxTimerfdCreate(clockid, flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdGettime(fd: CInt, currValue: MutPtr): CInt =
     if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxTimerfdGettime(fd, currValue.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -282,7 +282,7 @@ public actual fun schedGetscheduler(pid: PidT): CInt =
     if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxSchedGetscheduler(pid) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clockNanosleep(clkId: ClockidT, flags: CInt, rqtp: ConstPtr, rmtp: MutPtr): CInt =
-    if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxClockNanosleep(clkId.toInt(), flags, rqtp.rawAddress.toString(), rmtp.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxClockNanosleep(clkId, flags, rqtp.rawAddress.toString(), rmtp.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun umount2(target: ConstPtr, flags: CInt): CInt =
     if (unixLinuxlikeLinuxNapiAddon != null) (unixLinuxlikeLinuxNapiAddon.libcUnixLinuxlikeLinuxUmount2(target.rawAddress.toString(), flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")

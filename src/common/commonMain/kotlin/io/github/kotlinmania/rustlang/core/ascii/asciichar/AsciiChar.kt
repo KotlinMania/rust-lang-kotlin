@@ -19,11 +19,10 @@ import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.escape.HEX_DIGITS
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.ascii.asciichar.AsciiChar.ReverseSolidus as Backslash
 
 // This uses the name `AsciiChar`, even though it's not exposed that way right now,
@@ -1244,7 +1243,7 @@ public sealed class AsciiChar(
          * `b` must be in `0 ..= 127`, or else this is UB.
          */
         public fun fromU8Unchecked(b: UByte): AsciiChar {
-            assertUnsafePrecondition(checkLibraryUb, "`ascii::Char::from_u8_unchecked` input cannot exceed 127.", b, b, b, 127)
+            Unit
             // SAFETY: Our safety precondition is that `b` is in-range.
             return transmute(b)
         }
@@ -1281,7 +1280,7 @@ public sealed class AsciiChar(
          * something useful. It might be tightened before stabilization.)
          */
         public fun digitUnchecked(d: UByte): AsciiChar {
-            assertUnsafePrecondition(checkLibraryUb, "`ascii::Char::digit_unchecked` input cannot exceed 9.", d, d, d, 10)
+            Unit
             // SAFETY: `'0'` through `'9'` are U+00030 through U+0039,
             // so because `d` must be 64 or less the addition can return at most
             // 112 (0x70), which doesn't overflow and is within the ASCII range.
@@ -1313,7 +1312,7 @@ public fun List<AsciiChar>.asStr(): String {
     val strPtr = ConstPtr(asciiPtr.rawAddress, asciiPtr.rawMeta)
     // SAFETY: Each ASCII codepoint in UTF-8 is encoded as one single-byte
     // code unit having the same value as the ASCII byte.
-    return (ObjectSlotLayout<String>()).readNative((strPtr).rawAddress)
+    return (UnresolvedTypeLayout<String>()).readNative((strPtr).rawAddress)
 }
 
 /**

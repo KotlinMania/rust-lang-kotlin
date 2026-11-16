@@ -178,11 +178,11 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
                     if ((run {
                         index += 1
                         if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                            return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = null))
                         }
                         v[index]
                     }).toByte() >= (-64).toByte()) {
-                        return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1))
+                        return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 1))
                     }
                 }
                 3 -> {
@@ -190,7 +190,7 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
                         val matchVal = Pair(first, run {
                         index += 1
                         if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                            return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = null))
                         }
                         v[index]
                     })
@@ -199,17 +199,17 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
                             matchVal.first in 0xE1..0xEC && matchVal.second in 0x80..0xBF -> {}
                             matchVal.first == 0xED && matchVal.second in 0x80..0x9F -> {}
                             matchVal.first in 0xEE..0xEF && matchVal.second in 0x80..0xBF -> {}
-                            else -> { return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
+                            else -> { return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
                         }
                     }
                     if ((run {
                         index += 1
                         if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                            return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = null))
                         }
                         v[index]
                     }).toByte() >= (-64).toByte()) {
-                        return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 2))
+                        return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 2))
                     }
                 }
                 4 -> {
@@ -217,7 +217,7 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
                         val matchVal1 = Pair(first, run {
                         index += 1
                         if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                            return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = null))
                         }
                         v[index]
                     })
@@ -225,29 +225,29 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
                             matchVal1.first == 0xF0 && matchVal1.second in 0x90..0xBF -> {}
                             matchVal1.first in 0xF1..0xF3 && matchVal1.second in 0x80..0xBF -> {}
                             matchVal1.first == 0xF4 && matchVal1.second in 0x80..0x8F -> {}
-                            else -> { return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
+                            else -> { return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
                         }
                     }
                     if ((run {
                         index += 1
                         if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                            return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = null))
                         }
                         v[index]
                     }).toByte() >= (-64).toByte()) {
-                        return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 2))
+                        return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 2))
                     }
                     if ((run {
                         index += 1
                         if (index >= len) {
-                            return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = null))
+                            return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = null))
                         }
                         v[index]
                     }).toByte() >= (-64).toByte()) {
-                        return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 3))
+                        return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 3))
                     }
                 }
-                else -> { return Result.Err(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
+                else -> { return Result.Err<Unit, Utf8Error>(Utf8Error(validUpTo = oldOffset, errorLen = 1)) }
             }
             index += 1
         } else {
@@ -281,7 +281,7 @@ public fun runUtf8Validation(v: List<UByte>): Result<Unit, Utf8Error> {
             }
         }
     }
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Utf8Error>(Unit)
 }
 
 /**

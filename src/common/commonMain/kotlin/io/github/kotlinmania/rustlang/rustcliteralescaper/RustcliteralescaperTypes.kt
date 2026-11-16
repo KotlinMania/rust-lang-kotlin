@@ -2,11 +2,13 @@ package io.github.kotlinmania.rustlang.rustcliteralescaper
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.iter.Chars
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
 
 /**
  * Errors and warnings that can occur during string, char, and byte unescaping.
@@ -162,13 +164,13 @@ public sealed class MixedUnit {
      * `MixedUnit.Char('¥')`, and it will be appended to the relevant byte
      * string as the two-byte UTF-8 sequence `[0xc2, 0xa5]`
      */
-    public class Char internal constructor(valueCtorArg: NonZero<Char>) : MixedUnit() {
-        public var value: NonZero<Char> = valueCtorArg
+    public class Char internal constructor(valueCtorArg: NonZero<Char, NonZeroCharInner>) : MixedUnit() {
+        public var value: NonZero<Char, NonZeroCharInner> = valueCtorArg
             internal set
 
-        public operator fun component1(): NonZero<Char> = this.value
+        public operator fun component1(): NonZero<Char, NonZeroCharInner> = this.value
 
-        public fun copy(value: NonZero<Char> = this.value): Char = Char(valueCtorArg = value)
+        public fun copy(value: NonZero<Char, NonZeroCharInner> = this.value): Char = Char(valueCtorArg = value)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -181,7 +183,7 @@ public sealed class MixedUnit {
 
         public companion object {
             public operator fun invoke(
-                value: NonZero<Char>,
+                value: NonZero<Char, NonZeroCharInner>,
             ): Char = Char(
                 valueCtorArg = value,
             )
@@ -194,13 +196,13 @@ public sealed class MixedUnit {
      * `MixedUnit.HighByte(0xa5)`, and it will be appended to the relevant
      * byte string as the single byte `0xa5`.
      */
-    public class HighByte internal constructor(valueCtorArg: NonZero<UByte>) : MixedUnit() {
-        public var value: NonZero<UByte> = valueCtorArg
+    public class HighByte internal constructor(valueCtorArg: NonZero<UByte, NonZeroU8Inner>) : MixedUnit() {
+        public var value: NonZero<UByte, NonZeroU8Inner> = valueCtorArg
             internal set
 
-        public operator fun component1(): NonZero<UByte> = this.value
+        public operator fun component1(): NonZero<UByte, NonZeroU8Inner> = this.value
 
-        public fun copy(value: NonZero<UByte> = this.value): HighByte = HighByte(valueCtorArg = value)
+        public fun copy(value: NonZero<UByte, NonZeroU8Inner> = this.value): HighByte = HighByte(valueCtorArg = value)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -213,7 +215,7 @@ public sealed class MixedUnit {
 
         public companion object {
             public operator fun invoke(
-                value: NonZero<UByte>,
+                value: NonZero<UByte, NonZeroU8Inner>,
             ): HighByte = HighByte(
                 valueCtorArg = value,
             )
@@ -223,18 +225,18 @@ public sealed class MixedUnit {
     public fun rustEquals(other: MixedUnit): Boolean = this == other
 
     public companion object {
-        public fun from(c: NonZero<Char>): MixedUnit = MixedUnit.Char(c)
+        public fun from(c: NonZero<Char, NonZeroCharInner>): MixedUnit = MixedUnit.Char(c)
 
-        public fun fromNonZeroUByte(byte: NonZero<UByte>): MixedUnit =
+        public fun fromNonZeroUByte(byte: NonZero<UByte, NonZeroU8Inner>): MixedUnit =
             if (byte.get().isAscii()) {
-                MixedUnit.Char(NonZero.new(byte.get().toInt().toChar()).unwrap())
+                MixedUnit.Char((NonZero.new<NonZeroCharInner, Char>(byte.get().toInt().toChar()))!!)
             } else {
                 MixedUnit.HighByte(byte)
             }
 
-        public fun tryFrom(c: Char): Result<MixedUnit, EscapeError> = NonZero.new(c).map({ MixedUnit.Char(it) }).okOr(EscapeError.NulInCStr)
+        public fun tryFrom(c: Char): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroCharInner, Char>(c))?.let({ MixedUnit.Char(it) })?.let { Result.Ok(it) } ?: Result.Err(EscapeError.NulInCStr))
 
-        public fun tryFrom(byte: UByte): Result<MixedUnit, EscapeError> = NonZero.new(byte).map(From::from).okOr(EscapeError.NulInCStr)
+        public fun tryFrom(byte: UByte): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroU8Inner, UByte>(byte))?.let(From::from)?.let { Result.Ok(it) } ?: Result.Err(EscapeError.NulInCStr))
     }
 }
 
@@ -250,7 +252,7 @@ public interface Unescape<Unit> {
     /**
      * Converts non-zero bytes to the unit type
      */
-    public fun nonzeroByte2unit(b: NonZero<UByte>)
+    public fun nonzeroByte2unit(b: NonZero<UByte, NonZeroU8Inner>)
 
     /**
      * Converts chars to the unit type
@@ -272,19 +274,19 @@ public interface Unescape<Unit> {
      */
     public fun unescapeSingle(chars: Chars): Result<Unit, EscapeError> {
         val res =
-            when (val tryResult = when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.ZeroChars))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+            when (val tryResult = when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.ZeroChars))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }) {
                 '\\' -> this.unescape1(chars)
-                '\n', '\t', '\'' -> Result.Err(EscapeError.EscapeOnlyChar)
-                '\r' -> Result.Err(EscapeError.BareCarriageReturn)
+                '\n', '\t', '\'' -> Result.Err<Unit, EscapeError>(EscapeError.EscapeOnlyChar)
+                '\r' -> Result.Err<Unit, EscapeError>(EscapeError.BareCarriageReturn)
                 else -> {
                     val c = matchVal
                     this.char2unit(c)
                 }
-            }) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            }) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }
         if (chars.next() != null) {
-            return Result.Err(EscapeError.MoreThanOneChar)
+            return Result.Err<Unit, EscapeError>(EscapeError.MoreThanOneChar)
         }
-        return Result.Ok(res)
+        return Result.Ok<Unit, EscapeError>(res)
     }
 
     /**
@@ -292,21 +294,21 @@ public interface Unescape<Unit> {
      */
     public fun unescape1(chars: Chars): Result<Unit, EscapeError> {
         // Previous character was '\\', unescape what follows.
-        val c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.LoneSlash))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.LoneSlash))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }
         return if (c == '0') {
             Unescape.ZERO_RESULT
         } else {
             simpleEscape(c).map({ b -> this.nonzeroByte2unit(b) }).orElse(closure@{ c1 -> when (c1) {
-                'x' -> this.hex2unit(when (val tryResult = hexEscape(chars)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) })
+                'x' -> this.hex2unit(when (val tryResult = hexEscape(chars)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) })
                 'u' -> this.unicode2unit(run {
-                    val value = when (val tryResult = unicodeEscape(chars)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                    val value = when (val tryResult = unicodeEscape(chars)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
                     if (value > Char.MAX_VALUE.toUInt()) {
                         Result.Err(EscapeError.OutOfRangeUnicodeEscape)
                     } else {
                         Char.fromU32(value).okOr(EscapeError.LoneSurrogateUnicodeEscape)
                     }
                 })
-                else -> Result.Err(EscapeError.InvalidEscape)
+                else -> Result.Err<Unit, EscapeError>(EscapeError.InvalidEscape)
             } })
         }
     }
@@ -319,9 +321,9 @@ public interface Unescape<Unit> {
      * which are returned via `callback`.
      */
     public fun unescape(src: String, callback: (IntRange, Result<Unit, EscapeError>) -> Unit) {
-        val chars = src.rustStrChars()
+        val chars = src.chars()
         while (true) {
-            val matchVal = chars.nextCodeOrNull()?.toChar()
+            val matchVal = chars.next()
             if (matchVal == null) break
             val c = matchVal
             val start = src.length - chars.asStr().length - c.lenUtf8()
@@ -330,7 +332,7 @@ public interface Unescape<Unit> {
                     '\\' -> {
                         when (val matchVal1 = chars.asStr().encodeToByteArray().map { it.toUByte() }.first()) {
                             is Some -> {
-                                chars.nextCodeOrNull()?.toChar()
+                                chars.next()
                                 // skip whitespace for backslash newline, see [Rust language reference]
                                 // (https://doc.rust-lang.org/reference/tokens.html#string-literals).
                                 val callbackErr = { range, err -> callback(range, Result.Err(err)) }

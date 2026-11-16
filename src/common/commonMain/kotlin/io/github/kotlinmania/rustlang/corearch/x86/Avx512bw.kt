@@ -5,8 +5,9 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -4036,7 +4037,7 @@ public fun mmMaskReduceOrEpi8(k: Mmask16, a: M128i): Byte = run { val _simdArg0 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi16&expand=3368)
  */
-public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqu16
 
@@ -4045,7 +4046,7 @@ public fun mm512LoaduEpi16(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(me
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi16&expand=3365)
  */
-public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M256i>())
 
 // should be vmovdqu16
 
@@ -4054,7 +4055,7 @@ public fun mm256LoaduEpi16(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(me
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi16&expand=3362)
  */
-public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M128i>())
 
 // should be vmovdqu8
 
@@ -4063,7 +4064,7 @@ public fun mmLoaduEpi16(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi8&expand=3395)
  */
-public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqu8
 
@@ -4072,7 +4073,7 @@ public fun mm512LoaduEpi8(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(mem
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi8&expand=3392)
  */
-public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M256i>())
 
 // should be vmovdqu8
 
@@ -4081,7 +4082,7 @@ public fun mm256LoaduEpi8(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(mem
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi8&expand=3389)
  */
-public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M128i>())
 
 // should be vmovdqu16
 
@@ -4091,7 +4092,7 @@ public fun mmLoaduEpi8(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAdd
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi16&expand=5622)
  */
 public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqu16
@@ -4102,7 +4103,7 @@ public fun mm512StoreuEpi16(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi16&expand=5620)
  */
 public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M256i>())
 }
 
 // should be vmovdqu16
@@ -4113,7 +4114,7 @@ public fun mm256StoreuEpi16(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi16&expand=5618)
  */
 public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M128i>())
 }
 
 // should be vmovdqu8
@@ -4124,7 +4125,7 @@ public fun mmStoreuEpi16(memAddr: MutPtr, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi8&expand=5640)
  */
 public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqu8
@@ -4135,7 +4136,7 @@ public fun mm512StoreuEpi8(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi8&expand=5638)
  */
 public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M256i>())
 }
 
 // should be vmovdqu8
@@ -4146,7 +4147,7 @@ public fun mm256StoreuEpi8(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi8&expand=5636)
  */
 public fun mmStoreuEpi8(memAddr: MutPtr, a: M128i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -7307,7 +7308,7 @@ public fun mmMaskTestnEpi8Mask(k: Mmask16, a: M128i, b: M128i): Mmask16 {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask64&expand=5578)
  */
 public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
-    write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask64>())
+    write(memAddr, a, typeLayoutT = UnresolvedTypeLayout<Mmask64>())
 }
 
 // should be kmovd
@@ -7318,7 +7319,7 @@ public fun storeMask64(memAddr: MutPtr, a: Mmask64) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_store_mask32&expand=5577)
  */
 public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
-    write(memAddr, a, typeLayoutT = ObjectSlotLayout<Mmask32>())
+    write(memAddr, a, typeLayoutT = UnresolvedTypeLayout<Mmask32>())
 }
 
 // should be kmovq
@@ -7328,7 +7329,7 @@ public fun storeMask32(memAddr: MutPtr, a: Mmask32) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask64&expand=3318)
  */
-public fun loadMask64(memAddr: ConstPtr): Mmask64 = read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask64>())
+public fun loadMask64(memAddr: ConstPtr): Mmask64 = read(memAddr, typeLayoutT = UnresolvedTypeLayout<Mmask64>())
 
 // should be kmovd
 
@@ -7337,7 +7338,7 @@ public fun loadMask64(memAddr: ConstPtr): Mmask64 = read(memAddr, typeLayoutT = 
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask32&expand=3317)
  */
-public fun loadMask32(memAddr: ConstPtr): Mmask32 = read(memAddr, typeLayoutT = ObjectSlotLayout<Mmask32>())
+public fun loadMask32(memAddr: ConstPtr): Mmask32 = read(memAddr, typeLayoutT = UnresolvedTypeLayout<Mmask32>())
 
 /**
  * Compute the absolute differences of packed unsigned 8-bit integers in a and b, then horizontally sum each consecutive 8 differences to produce eight unsigned 16-bit integers, and pack these unsigned 16-bit integers in the low 16 bits of 64-bit elements in dst.
@@ -7910,7 +7911,7 @@ public fun mm512Kunpackd(a: Mmask64, b: Mmask64): Mmask64 = ((a and 0xffffffffuL
 public fun mm512Cvtepi16Epi8(a: M512i): M256i =
     run {
         val a1 = a.asI16x32()
-        transmute<I8x32>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -7943,7 +7944,7 @@ public fun mm512MaskzCvtepi16Epi8(k: Mmask32, a: M512i): M256i =
 public fun mm256Cvtepi16Epi8(a: M256i): M128i =
     run {
         val a1 = a.asI16x16()
-        transmute<I8x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -7977,7 +7978,7 @@ public fun mmCvtepi16Epi8(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
         val v256: I16x16 = run { val _simdArg0 = a1; val _simdArg1 = i16x8.ZERO; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 8, 8, 8, 8, 8, 8, 8)); _simdArg0 }
-        transmute<I8x16>(run { val _simdArg0 = v256; _simdArg0 })
+        transmute(run { val _simdArg0 = v256; _simdArg0 })
     }
 
 /**
@@ -8004,7 +8005,7 @@ public fun mmMaskzCvtepi16Epi8(k: Mmask8, a: M128i): M128i = mmMaskCvtepi16Epi8(
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi16_epi8&expand=1807)
  */
-public fun mm512Cvtsepi16Epi8(a: M512i): M256i = run { val _simdArg0 = simdImax(simdImin(a.asI16x32(), i16x32.splat(((Byte.MAX_VALUE as Any?) as M256i))), i16x32.splat(((Byte.MIN_VALUE as Any?) as M256i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x32>()).alignBytes)); val res = (ObjectSlotLayout<I8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x32>()).alignBytes)); res } }.asM256i()
+public fun mm512Cvtsepi16Epi8(a: M512i): M256i = run { val _simdArg0 = simdImax(simdImin(a.asI16x32(), i16x32.splat(((Byte.MAX_VALUE as Any?) as M256i))), i16x32.splat(((Byte.MIN_VALUE as Any?) as M256i))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x32>()).alignBytes)); res } }.asM256i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8025,7 +8026,7 @@ public fun mm512MaskzCvtsepi16Epi8(k: Mmask32, a: M512i): M256i = run { val _sim
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi16_epi8&expand=1804)
  */
-public fun mm256Cvtsepi16Epi8(a: M256i): M128i = run { val _simdArg0 = simdImax(simdImin(a.asI16x16(), i16x16.splat(((Byte.MAX_VALUE as Any?) as M128i))), i16x16.splat(((Byte.MIN_VALUE as Any?) as M128i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x16>()).alignBytes)); val res = (ObjectSlotLayout<I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I8x16>()).alignBytes)); res } }.asM128i()
+public fun mm256Cvtsepi16Epi8(a: M256i): M128i = run { val _simdArg0 = simdImax(simdImin(a.asI16x16(), i16x16.splat(((Byte.MAX_VALUE as Any?) as M128i))), i16x16.splat(((Byte.MIN_VALUE as Any?) as M128i))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x16>()).alignBytes)); res } }.asM128i()
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8067,7 +8068,7 @@ public fun mmMaskzCvtsepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovswb
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi16_epi8&expand=2042)
  */
-public fun mm512Cvtusepi16Epi8(a: M512i): M256i = run { val _simdArg0 = simdImin(a.asU16x32(), u16x32.splat(((UByte.MAX_VALUE as Any?) as M256i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x32>()).alignBytes)); val res = (ObjectSlotLayout<U8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x32>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x32>()).alignBytes)); res } }.asM256i()
+public fun mm512Cvtusepi16Epi8(a: M512i): M256i = run { val _simdArg0 = simdImin(a.asU16x32(), u16x32.splat(((UByte.MAX_VALUE as Any?) as M256i))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x32>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x32>()).alignBytes)); res } }.asM256i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8088,7 +8089,7 @@ public fun mm512MaskzCvtusepi16Epi8(k: Mmask32, a: M512i): M256i = run { val _si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi16_epi8&expand=2039)
  */
-public fun mm256Cvtusepi16Epi8(a: M256i): M128i = run { val _simdArg0 = simdImin(a.asU16x16(), u16x16.splat(((UByte.MAX_VALUE as Any?) as M128i))); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<U8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x16>()).alignBytes)); val res = (ObjectSlotLayout<U8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<U8x16>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<U8x16>()).alignBytes)); res } }.asM128i()
+public fun mm256Cvtusepi16Epi8(a: M256i): M128i = run { val _simdArg0 = simdImin(a.asU16x16(), u16x16.splat(((UByte.MAX_VALUE as Any?) as M128i))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<U8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U8x16>()).alignBytes)); res } }.asM128i()
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8133,7 +8134,7 @@ public fun mmMaskzCvtusepi16Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovus
 public fun mm512Cvtepi8Epi16(a: M256i): M512i =
     run {
         val a1 = a.asI8x32()
-        transmute<I16x32>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -8210,7 +8211,7 @@ public fun mmMaskzCvtepi8Epi16(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu8Epi16(a: M256i): M512i =
     run {
         val a1 = a.asU8x32()
-        transmute<I16x32>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**

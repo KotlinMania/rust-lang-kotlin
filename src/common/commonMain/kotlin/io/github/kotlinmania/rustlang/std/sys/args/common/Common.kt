@@ -1,6 +1,8 @@
 // port-lint: source sys/args/common.rs
 package io.github.kotlinmania.rustlang.std.sys.args.common
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -18,9 +20,7 @@ public open class Args(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.iter.toList().fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.iter.toList().fmt(f)
 
     public open fun next(): OsString? = this.iter.removeFirstOrNull()
 
@@ -32,7 +32,7 @@ public open class Args(
 
     public open fun last(): OsString? = this.iter.last()
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.iter.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBy(n)
 
     public open fun <B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.iter.tryFold(init, f)
 
@@ -40,7 +40,7 @@ public open class Args(
 
     public open fun nextBack(): OsString? = this.iter.removeLastOrNull()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.iter.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBackBy(n)
 
     public open fun len(): Int = this.iter.size
 

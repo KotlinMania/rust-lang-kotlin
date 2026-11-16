@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.arch.powerpc
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.RlimT
-import io.github.kotlinmania.rustlang.libc.SpeedT
-import io.github.kotlinmania.rustlang.libc.TcflagT
 import io.github.kotlinmania.rustlang.libc.types.u32CastIoctl
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TcflagT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.RlimitResourceT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.RlimT
 
 // Ioctl Constants
 // RLIMIT Constants
@@ -152,13 +152,13 @@ public val TIOCM_RI: CInt = TIOCM_RNG
 
 public val TIOCM_DSR: CInt = 0x100
 
-public val BOTHER: SpeedT = 31uL
+public val BOTHER: SpeedT = 31u
 
-public val IBSHIFT: TcflagT = 16uL
+public val IBSHIFT: TcflagT = 16u
 
-public val IUCLC: TcflagT = 4096uL
+public val IUCLC: TcflagT = 4096u
 
-public val XCASE: TcflagT = 16384uL
+public val XCASE: TcflagT = 16384u
 
 public val RLIMIT_CPU: RlimitResourceT = 0u
 

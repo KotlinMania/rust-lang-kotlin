@@ -1,7 +1,7 @@
 // port-lint: source float/complex/div.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.complex.div
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.fmax
+import io.github.kotlinmania.rustlang.compilerbuiltins.math.fmax
 import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.ilogb
 import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.scalbn
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float

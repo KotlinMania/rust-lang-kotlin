@@ -1,7 +1,7 @@
 // port-lint: source slice/sort/stable/tiny.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
@@ -31,8 +31,8 @@ public fun <T> mergesort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
         run {
             val vBase = v.asMutPtr()
             val vA = vBase
-            val vB = MutPtr((vBase).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-            if (isLess((ObjectSlotLayout<T>()).readNative((vB).rawAddress), (ObjectSlotLayout<T>()).readNative((vA).rawAddress))) {
+            val vB = MutPtr((vBase).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+            if (isLess((UnresolvedTypeLayout<T>()).readNative((vB).rawAddress), (UnresolvedTypeLayout<T>()).readNative((vA).rawAddress))) {
                 swapNonoverlapping(vA, vB, 1)
             }
         }

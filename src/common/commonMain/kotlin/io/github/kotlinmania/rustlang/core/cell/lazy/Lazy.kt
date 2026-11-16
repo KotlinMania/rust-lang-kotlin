@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.core.cell.lazy
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -169,11 +169,11 @@ public open class LazyCell<T, F> internal constructor(
             when (val matchVal = thisRef.state.intoInner()) {
                 is State.Init -> {
                     val (data) = matchVal
-                    Result.Ok(data)
+                    Result.Ok<T, () -> T>(data)
                 }
                 is State.Uninit -> {
                     val (f) = matchVal
-                    Result.Err(f)
+                    Result.Err<T, () -> T>(f)
                 }
                 State.Poisoned -> panicPoisoned()
             }
@@ -265,7 +265,7 @@ public open class LazyCell<T, F> internal constructor(
                     public open fun drop() {
                         // SAFETY: Invariant states it is valid, and we don't drop the old value.
                         run {
-                            (ObjectSlotLayout<State<T, () -> T>>()).writeNative((this.value).rawAddress, State.Poisoned)
+                            (UnresolvedTypeLayout<State<T, () -> T>>()).writeNative((this.value).rawAddress, State.Poisoned)
                         }
                     }
                 }
@@ -275,7 +275,7 @@ unreachableUnchecked()
                 // SAFETY: We never drop the state after we read `f`, and we write a valid value back
                 // in any case, panic or success. `f` can't access the `LazyCell` because it is mutably
                 // borrowed.
-                val f1 = read(f, typeLayoutT = ObjectSlotLayout<State<T, () -> T>>())
+                val f1 = read(f, typeLayoutT = UnresolvedTypeLayout<State<T, () -> T>>())
                 // INVARIANT: Initiated from mutable reference, don't drop because we read it.
                 val guard = PoisonOnPanic(state)
                 val data = f1()
@@ -397,7 +397,7 @@ unreachableUnchecked()
 /**
  * Creates a new lazy value using `Default` as the initializing function.
  */
-public fun <T> defaultLazyCellT(defaultTFn: () -> T): LazyCell<T> = LazyCell.new(defaultTFn)
+public fun <T> defaultLazyCellT(defaultTFn: () -> T): LazyCell<T, () -> T> = LazyCell.new(defaultTFn)
 
 public fun panicPoisoned(): Nothing {
     error("LazyCell instance has previously been poisoned")

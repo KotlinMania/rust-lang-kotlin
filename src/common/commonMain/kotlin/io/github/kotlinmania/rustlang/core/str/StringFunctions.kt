@@ -4,10 +4,12 @@ import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.constEvalSelect
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.option.Option
@@ -16,9 +18,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
@@ -53,7 +53,6 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 public fun sliceErrorFail(s: String, begin: Int, end: Int): Nothing = constEvalSelect(Triple(s, begin, end), ::sliceErrorFailCt, ::sliceErrorFailRt)
 
@@ -80,7 +79,7 @@ public fun sliceErrorFailRt(s: String, begin: Int, end: Int): Nothing {
         val floor = s.floorCharBoundary(begin)
         val ceil = s.ceilCharBoundary(begin)
         val range = floor until ceil
-        val ch = s.substring(floor until ceil).chars().nextCodeOrNull()?.toChar()!!
+        val ch = s.substring(floor until ceil).chars().next()!!
         error("start byte index $begin is not a char boundary; it is inside $ch (bytes $range of string)")
     }
     // 5. end is inside a character.
@@ -473,7 +472,7 @@ public fun String.asBytesMut(): MutableList<UByte> {
     // has the same layout as `[UByte]` (only std can make this guarantee).
     // The pointer dereference is safe since it comes from a mutable reference which
     // is guaranteed to be valid for writes.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<UByte>>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UByte>>())
 }
 
 /**
@@ -877,9 +876,9 @@ public fun String.splitAtMutChecked(mid: Int): Pair<String, String>? {
 public fun String.splitAtUnchecked(mid: Int): Pair<String, String> {
     val len = this.length
     val ptr = this.asPtr()
-    assertUnsafePrecondition(checkLibraryUb, "str::split_at_unchecked requires the index to be on a UTF-8 boundary", it, this, mid, mid, it, isCharBoundary, mid)
+    Unit
     // SAFETY: caller guarantees `mid` is on a char boundary.
-    return Pair(fromUtf8Unchecked(rawSliceList(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8Unchecked(rawSliceList(ConstPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
+    return Pair(fromUtf8Unchecked(linearSliceView(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8Unchecked(linearSliceView(ConstPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
 }
 
 /**
@@ -893,9 +892,9 @@ public fun String.splitAtUnchecked(mid: Int): Pair<String, String> {
 public fun String.splitAtMutUnchecked(mid: Int): Pair<String, String> {
     val len = this.length
     val ptr = this.asMutPtr()
-    assertUnsafePrecondition(checkLibraryUb, "str::split_at_mut_unchecked requires the index to be on a UTF-8 boundary", it, this, mid, mid, it, isCharBoundary, mid)
+    Unit
     // SAFETY: caller guarantees `mid` is on a char boundary.
-    return Pair(fromUtf8UncheckedMut(rawMutSliceList(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8UncheckedMut(rawMutSliceList(MutPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
+    return Pair(fromUtf8UncheckedMut(linearMutSliceView(ptr, mid.toInt(), PrimitiveLayouts.U8)), fromUtf8UncheckedMut(linearMutSliceView(MutPtr((ptr).rawAddress + ((mid).toLong() * (PrimitiveLayouts.U8).strideBytes)), (len - mid).toInt(), PrimitiveLayouts.U8)))
 }
 
 /**
@@ -2435,7 +2434,7 @@ public fun String.asAscii(): List<io.github.kotlinmania.rustlang.core.ascii.Char
  * Every character in this string must be ASCII, or else this is UB.
  */
 public fun String.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.core.ascii.Char> {
-    assertUnsafePrecondition(checkLibraryUb, "as_ascii_unchecked requires that the string is valid ASCII", it, this, it, isAscii)
+    Unit
     // SAFETY: the caller promised that every byte of this string slice
     // is ASCII.
     return this.encodeToByteArray().map { it.toUByte() }.asAsciiUnchecked()

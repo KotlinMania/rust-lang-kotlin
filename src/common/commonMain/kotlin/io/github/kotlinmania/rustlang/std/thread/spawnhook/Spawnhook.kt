@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.thread.spawnhook
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
+import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sync.UniqueArc
 import io.github.kotlinmania.rustlang.std.thread.LocalKey
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner

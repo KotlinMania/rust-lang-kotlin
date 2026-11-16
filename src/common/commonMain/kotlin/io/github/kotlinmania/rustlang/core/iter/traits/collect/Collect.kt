@@ -180,7 +180,7 @@ public interface FromIterator<T, SelfType> {
  * `Item`:
  *
  * ```kotlin
- * fun <T> collectAsStrings(collection: T): List<String> {
+ * fun <Item, IntoIter, T> collectAsStrings(collection: T): List<String> {
  *     return collection.iterator().map({ item -> "$item" }).toMutableList()
  * }
  * ```
@@ -455,25 +455,25 @@ public fun <A, B, C, D, ExA, ExB, ExC, ExD, Iter : IntoIterator<List<Any?>, Any?
 }
 
 public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendOne(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
 }
 
 public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendReserve(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
 }
 
 public fun <A, B, C, D, ExA, ExB, ExC, ExD> List<Any?>.extendOneUnchecked(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
     }
 }
 
@@ -488,28 +488,28 @@ public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE, Iter : IntoIterator<List<Any
 }
 
 public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendOneABCDE(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
 }
 
 public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendReserveABCDE(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, ExA, ExB, ExC, ExD, ExE> List<Any?>.extendOneUncheckedABCDE(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
     }
 }
 
@@ -524,31 +524,31 @@ public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF, Iter : IntoIterator<
 }
 
 public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendOneABCDEF(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
 }
 
 public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendReserveABCDEF(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, ExA, ExB, ExC, ExD, ExE, ExF> List<Any?>.extendOneUncheckedABCDEF(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
     }
 }
 
@@ -563,34 +563,34 @@ public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG, Iter : IntoI
 }
 
 public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.extendOneABCDEFG(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
-    this.field6.extendOne(item.field6)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
+    this[6].extendOne(item[6])
 }
 
 public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.extendReserveABCDEFG(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
-    this.field6.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
+    this[6].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, ExA, ExB, ExC, ExD, ExE, ExF, ExG> List<Any?>.extendOneUncheckedABCDEFG(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
-        this.field6.extendOneUnchecked(item.field6)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
+        this[6].extendOneUnchecked(item[6])
     }
 }
 
@@ -605,37 +605,37 @@ public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, Iter
 }
 
 public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List<Any?>.extendOneABCDEFGH(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
-    this.field6.extendOne(item.field6)
-    this.field7.extendOne(item.field7)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
+    this[6].extendOne(item[6])
+    this[7].extendOne(item[7])
 }
 
 public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List<Any?>.extendReserveABCDEFGH(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
-    this.field6.extendReserve(additional)
-    this.field7.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
+    this[6].extendReserve(additional)
+    this[7].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH> List<Any?>.extendOneUncheckedABCDEFGH(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
-        this.field6.extendOneUnchecked(item.field6)
-        this.field7.extendOneUnchecked(item.field7)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
+        this[6].extendOneUnchecked(item[6])
+        this[7].extendOneUnchecked(item[7])
     }
 }
 
@@ -650,40 +650,40 @@ public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, E
 }
 
 public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI> List<Any?>.extendOneABCDEFGHI(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
-    this.field6.extendOne(item.field6)
-    this.field7.extendOne(item.field7)
-    this.field8.extendOne(item.field8)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
+    this[6].extendOne(item[6])
+    this[7].extendOne(item[7])
+    this[8].extendOne(item[8])
 }
 
 public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI> List<Any?>.extendReserveABCDEFGHI(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
-    this.field6.extendReserve(additional)
-    this.field7.extendReserve(additional)
-    this.field8.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
+    this[6].extendReserve(additional)
+    this[7].extendReserve(additional)
+    this[8].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI> List<Any?>.extendOneUncheckedABCDEFGHI(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
-        this.field6.extendOneUnchecked(item.field6)
-        this.field7.extendOneUnchecked(item.field7)
-        this.field8.extendOneUnchecked(item.field8)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
+        this[6].extendOneUnchecked(item[6])
+        this[7].extendOneUnchecked(item[7])
+        this[8].extendOneUnchecked(item[8])
     }
 }
 
@@ -698,43 +698,43 @@ public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ> List<Any?>.extendOneABCDEFGHIJ(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
-    this.field6.extendOne(item.field6)
-    this.field7.extendOne(item.field7)
-    this.field8.extendOne(item.field8)
-    this.field9.extendOne(item.field9)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
+    this[6].extendOne(item[6])
+    this[7].extendOne(item[7])
+    this[8].extendOne(item[8])
+    this[9].extendOne(item[9])
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ> List<Any?>.extendReserveABCDEFGHIJ(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
-    this.field6.extendReserve(additional)
-    this.field7.extendReserve(additional)
-    this.field8.extendReserve(additional)
-    this.field9.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
+    this[6].extendReserve(additional)
+    this[7].extendReserve(additional)
+    this[8].extendReserve(additional)
+    this[9].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ> List<Any?>.extendOneUncheckedABCDEFGHIJ(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
-        this.field6.extendOneUnchecked(item.field6)
-        this.field7.extendOneUnchecked(item.field7)
-        this.field8.extendOneUnchecked(item.field8)
-        this.field9.extendOneUnchecked(item.field9)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
+        this[6].extendOneUnchecked(item[6])
+        this[7].extendOneUnchecked(item[7])
+        this[8].extendOneUnchecked(item[8])
+        this[9].extendOneUnchecked(item[9])
     }
 }
 
@@ -749,46 +749,46 @@ public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, 
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK> List<Any?>.extendOneABCDEFGHIJK(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
-    this.field6.extendOne(item.field6)
-    this.field7.extendOne(item.field7)
-    this.field8.extendOne(item.field8)
-    this.field9.extendOne(item.field9)
-    this.field10.extendOne(item.field10)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
+    this[6].extendOne(item[6])
+    this[7].extendOne(item[7])
+    this[8].extendOne(item[8])
+    this[9].extendOne(item[9])
+    this[10].extendOne(item[10])
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK> List<Any?>.extendReserveABCDEFGHIJK(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
-    this.field6.extendReserve(additional)
-    this.field7.extendReserve(additional)
-    this.field8.extendReserve(additional)
-    this.field9.extendReserve(additional)
-    this.field10.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
+    this[6].extendReserve(additional)
+    this[7].extendReserve(additional)
+    this[8].extendReserve(additional)
+    this[9].extendReserve(additional)
+    this[10].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK> List<Any?>.extendOneUncheckedABCDEFGHIJK(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
-        this.field6.extendOneUnchecked(item.field6)
-        this.field7.extendOneUnchecked(item.field7)
-        this.field8.extendOneUnchecked(item.field8)
-        this.field9.extendOneUnchecked(item.field9)
-        this.field10.extendOneUnchecked(item.field10)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
+        this[6].extendOneUnchecked(item[6])
+        this[7].extendOneUnchecked(item[7])
+        this[8].extendOneUnchecked(item[8])
+        this[9].extendOneUnchecked(item[9])
+        this[10].extendOneUnchecked(item[10])
     }
 }
 
@@ -803,49 +803,49 @@ public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, Ex
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL> List<Any?>.extendOneABCDEFGHIJKL(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
-    this.field3.extendOne(item.field3)
-    this.field4.extendOne(item.field4)
-    this.field5.extendOne(item.field5)
-    this.field6.extendOne(item.field6)
-    this.field7.extendOne(item.field7)
-    this.field8.extendOne(item.field8)
-    this.field9.extendOne(item.field9)
-    this.field10.extendOne(item.field10)
-    this.field11.extendOne(item.field11)
+    this[0].extendOne(item[0])
+    this[1].extendOne(item[1])
+    this[2].extendOne(item[2])
+    this[3].extendOne(item[3])
+    this[4].extendOne(item[4])
+    this[5].extendOne(item[5])
+    this[6].extendOne(item[6])
+    this[7].extendOne(item[7])
+    this[8].extendOne(item[8])
+    this[9].extendOne(item[9])
+    this[10].extendOne(item[10])
+    this[11].extendOne(item[11])
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL> List<Any?>.extendReserveABCDEFGHIJKL(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
-    this.field3.extendReserve(additional)
-    this.field4.extendReserve(additional)
-    this.field5.extendReserve(additional)
-    this.field6.extendReserve(additional)
-    this.field7.extendReserve(additional)
-    this.field8.extendReserve(additional)
-    this.field9.extendReserve(additional)
-    this.field10.extendReserve(additional)
-    this.field11.extendReserve(additional)
+    this[0].extendReserve(additional)
+    this[1].extendReserve(additional)
+    this[2].extendReserve(additional)
+    this[3].extendReserve(additional)
+    this[4].extendReserve(additional)
+    this[5].extendReserve(additional)
+    this[6].extendReserve(additional)
+    this[7].extendReserve(additional)
+    this[8].extendReserve(additional)
+    this[9].extendReserve(additional)
+    this[10].extendReserve(additional)
+    this[11].extendReserve(additional)
 }
 
 public fun <A, B, C, D, E, F, G, H, I, J, K, L, ExA, ExB, ExC, ExD, ExE, ExF, ExG, ExH, ExI, ExJ, ExK, ExL> List<Any?>.extendOneUncheckedABCDEFGHIJKL(item: List<Any?>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C>, ExD : Extend<D>, ExE : Extend<E>, ExF : Extend<F>, ExG : Extend<G>, ExH : Extend<H>, ExI : Extend<I>, ExJ : Extend<J>, ExK : Extend<K>, ExL : Extend<L> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
-        this.field3.extendOneUnchecked(item.field3)
-        this.field4.extendOneUnchecked(item.field4)
-        this.field5.extendOneUnchecked(item.field5)
-        this.field6.extendOneUnchecked(item.field6)
-        this.field7.extendOneUnchecked(item.field7)
-        this.field8.extendOneUnchecked(item.field8)
-        this.field9.extendOneUnchecked(item.field9)
-        this.field10.extendOneUnchecked(item.field10)
-        this.field11.extendOneUnchecked(item.field11)
+        this[0].extendOneUnchecked(item[0])
+        this[1].extendOneUnchecked(item[1])
+        this[2].extendOneUnchecked(item[2])
+        this[3].extendOneUnchecked(item[3])
+        this[4].extendOneUnchecked(item[4])
+        this[5].extendOneUnchecked(item[5])
+        this[6].extendOneUnchecked(item[6])
+        this[7].extendOneUnchecked(item[7])
+        this[8].extendOneUnchecked(item[8])
+        this[9].extendOneUnchecked(item[9])
+        this[10].extendOneUnchecked(item[10])
+        this[11].extendOneUnchecked(item[11])
     }
 }
 

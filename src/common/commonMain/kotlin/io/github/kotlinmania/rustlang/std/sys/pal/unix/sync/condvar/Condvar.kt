@@ -6,9 +6,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_REALTIME
-import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
 import io.github.kotlinmania.rustlang.libc.pthreadCondBroadcast
 import io.github.kotlinmania.rustlang.libc.pthreadCondDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadCondInit
@@ -18,6 +15,9 @@ import io.github.kotlinmania.rustlang.libc.pthreadCondWait
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrInit
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrSetclock
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_COND_INITIALIZER

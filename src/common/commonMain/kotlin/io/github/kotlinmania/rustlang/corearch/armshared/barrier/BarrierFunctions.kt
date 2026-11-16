@@ -1,6 +1,8 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier
 
-import io.github.kotlinmania.rustlang.corearch.armshared.Sealed
+import io.github.kotlinmania.rustlang.corearch.armshared.Dmb
+import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
+import io.github.kotlinmania.rustlang.corearch.armshared.Isb
 import io.github.kotlinmania.rustlang.corearch.dmb as underlyingDmb
 import io.github.kotlinmania.rustlang.corearch.dsb as underlyingDsb
 import io.github.kotlinmania.rustlang.corearch.isb as underlyingIsb
@@ -17,7 +19,7 @@ import io.github.kotlinmania.rustlang.corearch.isb as underlyingIsb
  *
  * The __dmb() intrinsic also acts as a compiler memory barrier of the appropriate type.
  */
-public fun <A> dmb(arg: A) where A : Sealed.Dmb {
+public fun <A> dmb(arg: A) where A : Dmb {
     arg.underlyingDmb()
 }
 
@@ -30,7 +32,7 @@ public fun <A> dmb(arg: A) where A : Sealed.Dmb {
  *
  * The __dsb() intrinsic also acts as a compiler memory barrier of the appropriate type.
  */
-public fun <A> dsb(arg: A) where A : Sealed.Dsb {
+public fun <A> dsb(arg: A) where A : Dsb {
     arg.underlyingDsb()
 }
 
@@ -49,7 +51,7 @@ public fun <A> dsb(arg: A) where A : Sealed.Dsb {
  * The only supported argument for the __isb() intrinsic is 15, corresponding to the SY (full
  * system) scope of the ISB instruction.
  */
-public fun <A> isb(arg: A) where A : Sealed.Isb {
+public fun <A> isb(arg: A) where A : Isb {
     arg.underlyingIsb()
 }
 

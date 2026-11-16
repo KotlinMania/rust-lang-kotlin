@@ -5,10 +5,10 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.num.wrapping.Wrapping
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
 /**
  * Trait to represent types that can be created by summing up an iterator.
@@ -275,7 +275,7 @@ public fun <I : Iterator<F128>> productF128(iter: I): F128 = iter.fold(1.0, { a,
  * check(res1 == Result.failure("Negative element found"))
  * ```
  */
-public fun <T, U, E, I> sumResultTE(iter: I): Result<T, E> where T : Sum<U, T>, I : Iterator<Result<U, E>> = tryProcess(iter, { i -> i.sum() })
+public fun <T, U, E, I> sumResultTE(iter: I): Result<T, E> where T : Sum<U, T>, I : Iterator<Result<U, E>> = Iter.tryProcess(iter, { i -> i.sum() })
 
 /**
  * Takes each element in the [Iterator]: if it is an [Err], no further
@@ -296,7 +296,7 @@ public fun <T, U, E, I> sumResultTE(iter: I): Result<T, E> where T : Sum<U, T>, 
  * check(total1.isErr())
  * ```
  */
-public fun <T, U, E, I> productResultTE(iter: I): Result<T, E> where T : Product<U, T>, I : Iterator<Result<U, E>> = tryProcess(iter, { i -> i.product() })
+public fun <T, U, E, I> productResultTE(iter: I): Result<T, E> where T : Product<U, T>, I : Iterator<Result<U, E>> = Iter.tryProcess(iter, { i -> i.product() })
 
 /**
  * Takes each element in the [Iterator]: if it is a [None], no further
@@ -317,7 +317,7 @@ public fun <T, U, E, I> productResultTE(iter: I): Result<T, E> where T : Product
  * check(total1 == null)
  * ```
  */
-public fun <T, U, I> sumOptionT(iter: I): T? where T : Sum<U, T>, I : Iterator<U?> = tryProcess(iter, { i -> i.sum() })
+public fun <T, U, I> sumOptionT(iter: I): T? where T : Sum<U, T>, I : Iterator<U?> = Iter.tryProcess(iter, { i -> i.sum() })
 
 /**
  * Takes each element in the [Iterator]: if it is a [None], no further
@@ -338,4 +338,4 @@ public fun <T, U, I> sumOptionT(iter: I): T? where T : Sum<U, T>, I : Iterator<U
  * check(total1 == null)
  * ```
  */
-public fun <T, U, I> productOptionT(iter: I): T? where T : Product<U, T>, I : Iterator<U?> = tryProcess(iter, { i -> i.product() })
+public fun <T, U, I> productOptionT(iter: I): T? where T : Product<U, T>, I : Iterator<U?> = Iter.tryProcess(iter, { i -> i.product() })

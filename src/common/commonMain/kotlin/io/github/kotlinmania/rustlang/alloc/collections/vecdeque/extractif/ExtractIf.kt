@@ -3,8 +3,10 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.extractif
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.ops.range.Range
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -111,7 +113,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             if (drained) {
                 this.del += 1
                 // SAFETY: We never touch this element again after returning it.
-                return ptr.read(cur)
+                return read(cur)
             } else if (this.del > 0) {
                 val holeSlot = this.vec.toWrappedIndex(i - this.del)
                 // SAFETY: `self.del` > 0, so the hole slot must not overlap with current element.
@@ -135,7 +137,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
         this.vec.len = this.oldLen - this.del
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val peek =
             if (this.idx < this.end) {
                 val idx = this.vec.toWrappedIndex(this.idx)
@@ -152,7 +154,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             } else {
                 null
             }
-        DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive()
+        return DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive()
     }
 
     public companion object {
@@ -174,7 +176,7 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
 
         public fun <T, F, A : Allocator, R : RangeBounds<Int>> new(vec: VecDeque<T, A>, pred: F, range: R): ExtractIf<T, F, A> {
             val oldLen = vec.len()
-            val structVal = Range(range, 0 until oldLen)
+            val structVal = Slice.range(range, 0 until oldLen)
             val start = structVal.start
             val end = structVal.end
             // Guard against the deque getting leaked (leak amplification)

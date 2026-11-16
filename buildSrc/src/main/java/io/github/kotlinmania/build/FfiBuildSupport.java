@@ -556,6 +556,8 @@ public final class FfiBuildSupport {
                     cmd.add(outFile.getAbsolutePath());
                     if (isWindowsHost) {
                         cmd.add("-lws2_32");
+                    } else if (!isMacHost) {
+                        cmd.add("-lm");
                     }
                     task.getExecOperations().exec(s -> s.commandLine(cmd)).assertNormalExitValue();
                 } finally {
@@ -734,6 +736,7 @@ public final class FfiBuildSupport {
                         for (File asmObj : asmObjs) {
                             cmd.add(asmObj.getAbsolutePath());
                         }
+                        cmd.add("-lm");
                         cmd.addAll(List.of("-o", output.getAbsolutePath()));
                         task.getExecOperations().exec(s -> s.commandLine(cmd)).assertNormalExitValue();
                     } finally {

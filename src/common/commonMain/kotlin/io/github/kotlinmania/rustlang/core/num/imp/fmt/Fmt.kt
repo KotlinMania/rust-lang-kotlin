@@ -52,13 +52,13 @@ public sealed class Part {
             when (this) {
                 is Part.Zero -> {
                     val (nzeroes) = this
-                    for (idx in ((out).slice(0 until nzeroes)).indices) {
-                        ((out).slice(0 until nzeroes))[idx] = 48u
+                    for (idx in ((out).subList(0, nzeroes)).indices) {
+                        ((out).subList(0, nzeroes))[idx] = 48u
                     }
                 }
                 is Part.Num -> {
                     val (v) = this
-                    for (c in ((out).slice(0 until len)).iterMut().rev()) {
+                    for (c in ((out).subList(0, len)).iterMut().rev()) {
                         c = 48u + (v % 10u).toUByte()
                         v /= 10u
                     }

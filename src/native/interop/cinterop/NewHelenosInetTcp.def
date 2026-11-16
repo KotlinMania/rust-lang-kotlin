@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.helenos.inet.tcp.cinterop
-headers = new_helenos_inet_tcp_wrapper.h
-headerFilter = new_helenos_inet_tcp_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = new_helenos_inet_tcp_wrapper.a

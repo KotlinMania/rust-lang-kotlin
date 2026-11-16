@@ -2,9 +2,10 @@
 package io.github.kotlinmania.rustlang.alloc.borrow
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow.*
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // A module for working with borrowed data.
 
@@ -278,31 +279,29 @@ public sealed class Cow<B> : Borrow<B> {
 
     public open fun partialCmp(other: Cow<B>): Ordering? = PartialOrd.partialCmp(this, other)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Borrowed -> {
                 val (b) = this
-                f.append((b).toString())
+                run { f.append((b).toString()); Result.Ok(Unit) }
             }
             is Owned -> {
                 val (o) = this
-                f.append((o).toString())
+                run { f.append((o).toString()); Result.Ok(Unit) }
             }
         }
-    }
 
-    public open fun fmtDisplay(f: StringBuilder) {
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Borrowed -> {
                 val (b) = this
-                f.append((b).toString())
+                run { f.append((b).toString()); Result.Ok(Unit) }
             }
             is Owned -> {
                 val (o) = this
-                f.append((o).toString())
+                run { f.append((o).toString()); Result.Ok(Unit) }
             }
         }
-    }
 
     public override fun hashCode(): Int {
         var state = 0

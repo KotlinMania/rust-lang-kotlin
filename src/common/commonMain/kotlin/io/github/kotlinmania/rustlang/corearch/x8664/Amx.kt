@@ -1,7 +1,7 @@
 // port-lint: source x86_64/amx.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.F16x32
@@ -60,7 +60,7 @@ public fun tileLoadd(base: ConstPtr, stride: Int, dst: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_loadd&igExpand=6877)
  */
 public fun tileLoadd(dst: MutPtr, base: ConstPtr, stride: Int) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloadd64Internal((ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloadd64Internal((UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
 }
 
 /**
@@ -117,7 +117,7 @@ public fun tileStreamLoadd(base: ConstPtr, stride: Int, dst: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_stream_loadd&igExpand=6883)
  */
 public fun tileStreamLoadd(dst: MutPtr, base: ConstPtr, stride: Int) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloaddt164Internal((ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloaddt164Internal((UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
 }
 
 /**
@@ -139,7 +139,7 @@ public fun tileZero(dst: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_zero&igExpand=6885)
  */
 public fun tileZero(dst: MutPtr) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tilezeroInternal((ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).colsb)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tilezeroInternal((UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).colsb)
 }
 
 /**
@@ -171,7 +171,7 @@ public fun tileDpbf16ps(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_dpbf16ps&igExpand=6864)
  */
 public fun tileDpbf16ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbf16psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbf16psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -205,7 +205,7 @@ public fun tileDpbssd(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_dpbssd&igExpand=6866)
  */
 public fun tileDpbssd(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbssdInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbssdInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -239,7 +239,7 @@ public fun tileDpbsud(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_dpbsud&igExpand=6868)
  */
 public fun tileDpbsud(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbsudInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbsudInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -273,7 +273,7 @@ public fun tileDpbusd(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_dpbusd&igExpand=6870)
  */
 public fun tileDpbusd(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbusdInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbusdInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -307,7 +307,7 @@ public fun tileDpbuud(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_dpbuud&igExpand=6872)
  */
 public fun tileDpbuud(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbuudInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbuudInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -339,7 +339,7 @@ public fun tileDpfp16ps(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_dpfp16ps&igExpand=6874)
  */
 public fun tileDpfp16ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpfp16psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpfp16psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -379,7 +379,7 @@ public fun tileCmmimfp16ps(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_cmmimfp16ps&igExpand=6860)
  */
 public fun tileCmmimfp16ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tcmmimfp16psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tcmmimfp16psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -419,7 +419,7 @@ public fun tileCmmrlfp16ps(dst: Int, a: Int, b: Int) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=__tile_cmmrlfp16ps&igExpand=6862)
  */
 public fun tileCmmrlfp16ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tcmmrlfp16psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tcmmrlfp16psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -449,7 +449,7 @@ public fun tileDpbf8ps(dst: Int, a: Int, b: Int) {
  * The shape of the tile is specified in the struct of [tile1024i]. The register of the tile is allocated by the compiler.
  */
 public fun tileDpbf8ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbf8psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbf8psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -479,7 +479,7 @@ public fun tileDpbhf8ps(dst: Int, a: Int, b: Int) {
  * The shape of the tile is specified in the struct of [tile1024i]. The register of the tile is allocated by the compiler.
  */
 public fun tileDpbhf8ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbhf8psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdpbhf8psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -509,7 +509,7 @@ public fun tileDphbf8ps(dst: Int, a: Int, b: Int) {
  * The shape of the tile is specified in the struct of [tile1024i]. The register of the tile is allocated by the compiler.
  */
 public fun tileDphbf8ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdphbf8psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdphbf8psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -539,7 +539,7 @@ public fun tileDphf8ps(dst: Int, a: Int, b: Int) {
  * The shape of the tile is specified in the struct of [tile1024i]. The register of the tile is allocated by the compiler.
  */
 public fun tileDphf8ps(dst: MutPtr, a: Tile1024i, b: Tile1024i) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdphf8psInternal(a.rows, b.colsb, a.colsb, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tdphf8psInternal(a.rows, b.colsb, a.colsb, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile, a.tile, b.tile)
 }
 
 /**
@@ -564,7 +564,7 @@ public fun tileLoaddrs(base: ConstPtr, stride: Int, dst: Int) {
  * before it is written, assuming it is ever written in the future.
  */
 public fun tileLoaddrs(dst: MutPtr, base: ConstPtr, stride: Int) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloaddrs64Internal((ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloaddrs64Internal((UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
 }
 
 /**
@@ -593,7 +593,7 @@ public fun tileStreamLoaddrs(base: ConstPtr, stride: Int, dst: Int) {
  * before it is written, assuming it is ever written in the future.
  */
 public fun tileStreamLoaddrs(dst: MutPtr, base: ConstPtr, stride: Int) {
-    (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloaddrst164Internal((ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (ObjectSlotLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
+    (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).tile = tileloaddrst164Internal((UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).rows, (UnresolvedTypeLayout<Tile1024i>()).readNative((dst).rawAddress).colsb, base, stride.toULong())
 }
 
 /**

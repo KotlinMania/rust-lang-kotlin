@@ -3,15 +3,15 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.time
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.nichetypes.Nanoseconds
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.clockGettime
-import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
 import io.github.kotlinmania.rustlang.libc.timespec.default
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.libc.wasi.TimeT
 import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.io.ErrorKind
@@ -56,16 +56,16 @@ public open class Timespec(
                     check(this.tvSec > Long.MIN_VALUE)
                     Pair(subGeToUnsigned(this.tvSec - 1L, other.tvSec), this.tvNsec.asInner() + (NSEC_PER_SEC.toUInt()) - other.tvNsec.asInner())
                 }
-            Result.Ok(Duration.new(secs, nsec))
+            Result.Ok<Duration, Duration>(Duration.new(secs, nsec))
         } else {
             run {
                 val matchVal = other.subTimespec(this)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val d = matchVal.value
-                    Result.Err(d)
-                }; is Result.Err<*> -> {
+                    Result.Err<Duration, Duration>(d)
+                }; is Result.Err -> {
                     val d1 = matchVal.error
-                    Result.Ok(d1)
+                    Result.Ok<Duration, Duration>(d1)
                 } }
             }
         }
@@ -107,7 +107,7 @@ public open class Timespec(
     // is 2^64 nanoseconds
     public open fun toTimespecCapped(): io.github.kotlinmania.rustlang.libc.unix.Timespec? {
         // Check if timeout in nanoseconds would fit into an u64
-        if (rustCheckedAdd((this.tvNsec.asInner().toULong()), ((rustCheckedMul((this.tvSec.toULong()), NSEC_PER_SEC) ?: return null)).toULong()) == null) {
+        if ((this.tvNsec.asInner().toULong()).checkedAdd((((this.tvSec.toULong()).checkedMul(NSEC_PER_SEC) ?: return null)).toULong()) == null) {
             return null
         }
         return this.toTimespec()
@@ -145,9 +145,9 @@ public open class Timespec(
                     Pair(tvSec, tvNsec)
                 }
             return if (tvNsec1 >= 0 && tvNsec1 < NSEC_PER_SEC.toLong()) {
-                Result.Ok(Timespec.newUnchecked(tvSec1, tvNsec1))
+                Result.Ok<Timespec, Error>(Timespec.newUnchecked(tvSec1, tvNsec1))
             } else {
-                Result.Err(constError(ErrorKind.InvalidData, "invalid timestamp"))
+                Result.Err<Timespec, Error>(constError(ErrorKind.InvalidData, "invalid timestamp"))
             }
         }
 

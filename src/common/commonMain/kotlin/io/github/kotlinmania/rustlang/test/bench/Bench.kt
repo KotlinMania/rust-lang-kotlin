@@ -1,7 +1,7 @@
 // port-lint: source bench.rs
 package io.github.kotlinmania.rustlang.test.bench
 
-import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.core.num.pow
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
@@ -12,8 +12,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 import io.github.kotlinmania.rustlang.test.Sender
 import io.github.kotlinmania.rustlang.test.event.CompletedTest
 import io.github.kotlinmania.rustlang.test.options.BenchMode
-import io.github.kotlinmania.rustlang.test.stats.Summary
-import io.github.kotlinmania.rustlang.test.stats.winsorize
+import io.github.kotlinmania.rustlang.test.stats.Stats
 import io.github.kotlinmania.rustlang.test.testresult.TestResult
 import io.github.kotlinmania.rustlang.test.types.TestDesc
 import io.github.kotlinmania.rustlang.test.types.TestId
@@ -83,7 +82,7 @@ public fun fmtThousandsSep(n: Double, sep: Char): String {
     var output = ""
     var trailing = false
     for (pow in listOf(9, 6, 3, 0)) {
-        val base = rustPow(10, pow.toUInt())
+        val base = 10.pow(pow.toUInt())
         if (pow == 0 || trailing || n1 / base.toDouble() >= 1.0) {
             run {
                 val matchVal = Pair(pow, trailing)
@@ -135,14 +134,14 @@ public fun <T> iter(inner: () -> T): Summary {
         for (idx in samples.indices) {
             samples[idx] = nsIterInner(inner, n).toDouble() / n.toDouble()
         }
-        winsorize(samples, 5.0)
-        val summ = Summary.new(samples)
+        Stats.winsorize(samples, 5.0)
+        val summ = Stats.Summary.new(samples)
         for (idx1 in samples.indices) {
             val ns = nsIterInner(inner, 5uL * n)
             samples[idx1] = ns.toDouble() / (5 * n).toDouble()
         }
-        winsorize(samples, 5.0)
-        val summ5 = Summary.new(samples)
+        Stats.winsorize(samples, 5.0)
+        val summ5 = Stats.Summary.new(samples)
         val loopRun = loopStart.elapsed()
         // If we've run for 100ms and seem to have converged to a
         // stable median.
@@ -178,20 +177,20 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
     val testResult =
         when {
             // bs.bench(f) {
-            result is Result.Ok<*> && result.value is Result.Ok<*> && (result.value as Result.Ok<*>).value != null -> {
+            result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value != null -> {
                 val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter
                 val bs1 = BenchSamples(nsIterSumm = nsIterSumm, mbS = mbS.toInt())
                 TestResult.TrBench(bs1)
             }
-            result is Result.Ok<*> && result.value is Result.Ok<*> && (result.value as Result.Ok<*>).value == null -> {
+            result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value == null -> {
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
-                val bs2 = BenchSamples(nsIterSumm = Summary.new(samples), mbS = 0)
+                val bs2 = BenchSamples(nsIterSumm = Stats.Summary.new(samples), mbS = 0)
                 TestResult.TrBench(bs2)
             }
-            result is Result.Err<*> -> TestResult.TrFailed
+            result is Result.Err -> TestResult.TrFailed
             else -> TestResult.TrFailed
         }
     val stdout = data.lock().unwrap().toVec()

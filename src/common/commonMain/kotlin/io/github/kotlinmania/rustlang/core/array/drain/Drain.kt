@@ -2,7 +2,10 @@
 package io.github.kotlinmania.rustlang.core.array.drain
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.conjureZst
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.function.FnMut
 import io.github.kotlinmania.rustlang.core.ops.function.FnOnce
@@ -10,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 
 /**
  * See [Drain.new]; this is our fake iterator.
@@ -32,15 +34,15 @@ public open class Drain<T, F>(
     public var endOrLen: MutPtr,
     public var f: F,
     public var l: Unit,
-) : FnOnce<Int<Drain<T, F>>, Any?, U>, FnMut<Int<Drain<T, F>>> {
+) : FnOnce<Int<Drain<T, F>>, U>, FnMut<Int<Drain<T, F>>> {
     /**
      * This implementation is useless.
      */
     public override fun callOnce(args: Int): U = this.callMut(args)
 
     // Note(const-Note): ideally this would be an unchecked fn `next()`, and to use it you would instead `| _ | unchecked { drain.next() }`.
-    public override fun callMut(tupleArg0: Int): U =
-        if (T.IS_ZST) {
+    public override fun callMut(tupleArg0: Int, typeLayoutT: TypeLayout<T>): U =
+        if (((typeLayoutT).sizeBytes == 0L)) {
             val len = transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
             // SAFETY:
             // The caller guarantees that this is never called more than N times
@@ -58,13 +60,13 @@ public open class Drain<T, F>(
             (this.f)(p.read())
         }
 
-    public open fun drop() {
+    public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         val slice =
-            if (T.IS_ZST) {
-                rawMutSliceList(this.ptr.asPtr(), (transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)).toInt(), PrimitiveLayouts.U8)
+            if (((typeLayoutT).sizeBytes == 0L)) {
+                linearMutSliceView(this.ptr.asPtr(), (transmuteWithLayouts(this.endOrLen, PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)).toInt(), PrimitiveLayouts.U8)
             } else {
                 // SAFETY: we cant read more than N elements
-                rawMutSliceList(this.ptr.asPtr(), this.endOrLen.offsetFromUnsigned(this.ptr.asPtr()).toInt(), PrimitiveLayouts.U8)
+                linearMutSliceView(this.ptr.asPtr(), this.endOrLen.offsetFromUnsigned((this.ptr.asPtr()).asConstPtr()).toInt(), PrimitiveLayouts.U8)
             }
         // SAFETY: By the type invariant, we're allowed to drop all these. (we own it, after all)
         dropInPlace(slice)
@@ -83,7 +85,7 @@ public open class Drain<T, F>(
          *
          * SAFETY: must only be called `N` times. Thou shalt not drop the array either.
          */
-        public fun <T, U> new(array: List<T>, f: (T) -> U, n: Int): Drain<T, F> {
+        public fun <T, U> new(array: List<T>, f: (T) -> U, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Drain<T, F> {
             // dont drop the array, transfers "ownership" to Self
             val ptr: NonNull = NonNull.fromMut(array).cast()
             // SAFETY:
@@ -92,7 +94,7 @@ public open class Drain<T, F>(
             // for direct pointer equality with `ptr` to check if the drainer is done.
             return run {
                 val endOrLen =
-                    if (T.IS_ZST) {
+                    if (((typeLayoutT).sizeBytes == 0L)) {
                         withoutProvenanceMut(n)
                     } else {
                         ptr.asPtr().add(n)

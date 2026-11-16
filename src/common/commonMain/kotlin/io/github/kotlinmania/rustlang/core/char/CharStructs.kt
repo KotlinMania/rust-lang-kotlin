@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.iteratorGetUnchecked as underlyingIteratorGetUnchecked
@@ -55,7 +56,7 @@ public open class EscapeUnicode internal constructor(
 
     public open fun last(): Char? = this.value.nextBack()?.let(Char::from)
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -114,7 +115,7 @@ public open class EscapeDefault internal constructor(
 
     public open fun last(): Char? = this.value.nextBack()?.let(Char::from)
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -232,7 +233,7 @@ public open class ToUppercase(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -240,7 +241,7 @@ public open class ToUppercase(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -291,7 +292,7 @@ public open class ToTitlecase(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -299,7 +300,7 @@ public open class ToTitlecase(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -350,7 +351,7 @@ public open class ToLowercase(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -358,7 +359,7 @@ public open class ToLowercase(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -409,7 +410,7 @@ public open class ToCasefold(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -417,7 +418,7 @@ public open class ToCasefold(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -463,7 +464,7 @@ public open class CaseMappingIter internal constructor(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char {
         // SAFETY: just forwarding requirements to caller
@@ -474,7 +475,7 @@ public open class CaseMappingIter internal constructor(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -488,7 +489,7 @@ public open class CaseMappingIter internal constructor(
         for (c in this.value.clone()) {
             f.append(c)
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     public companion object {

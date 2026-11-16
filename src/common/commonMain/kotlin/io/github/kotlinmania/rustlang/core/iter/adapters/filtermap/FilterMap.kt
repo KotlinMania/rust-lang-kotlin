@@ -6,14 +6,17 @@ import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -60,7 +63,7 @@ public typealias Source<I> = I.Source
 public open class FilterMap<I, F>(
     public var iter: I,
     public var f: F,
-) : TrustedFused, SourceIter<Any?, Source>, InPlaceIterable, Iterable<B> {
+) : TrustedFused, SourceIter<Source>, InPlaceIterable, Iterable<B> {
     override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
         override fun computeNext() {
             when (val v = this@FilterMap.next()) {
@@ -90,7 +93,7 @@ public open class FilterMap<I, F>(
                 }
             }
         }
-        var array: List<MaybeUninit<B>> = List(n) { MaybeUninit.uninit(ObjectSlotLayout<B>()) }
+        var array: List<MaybeUninit<B>> = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<B>()) }
         val guard = Guard(array = array, initialized = 0)
         val result =
             this.iter.tryForEach({ element ->
@@ -100,8 +103,8 @@ public open class FilterMap<I, F>(
                 // SAFETY: Loop conditions ensure the index is in bounds.
                 run {
                     val optPayloadAt: ConstPtr = (addrOf(value)).byteAdd(0).cast()
-                    val dst = MutPtr((guard.array.asMutPtr()).rawAddress + ((idx).toLong() * (ObjectSlotLayout<MaybeUninit<T>>()).strideBytes))
-                    copyNonoverlapping(optPayloadAt, dst, 1, typeLayoutT = ObjectSlotLayout<MaybeUninit<B>>())
+                    val dst = MutPtr((guard.array.asMutPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))
+                    copyNonoverlapping(optPayloadAt, dst, 1, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<B>>())
                     forget(value)
                 }
                 if (guard.initialized < n) {
@@ -114,12 +117,12 @@ public open class FilterMap<I, F>(
         return when (result) {
             is ControlFlow.Break -> {
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok(MaybeUninit.arrayAssumeInit(array))
+                Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array))
             }
             is ControlFlow.Continue -> {
                 val initialized = guard1.initialized
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
+                Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized))
             }
         }
     }
@@ -135,7 +138,7 @@ public open class FilterMap<I, F>(
     public open fun <Acc> fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
 
     public open fun nextBack(): B? {
-        fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B> =
+        fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
             { x -> when (val matchVal = f(x)) {
                 null -> ControlFlow.Continue()
                 else -> {
@@ -183,9 +186,9 @@ public open class FilterMap<I, F>(
 
         public fun <I, F> new(iter: I, f: F): FilterMap<I, F> = FilterMap(iter = iter, f = f)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 

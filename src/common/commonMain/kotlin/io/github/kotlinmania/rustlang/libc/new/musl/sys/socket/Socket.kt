@@ -1,20 +1,20 @@
 // port-lint: source new/musl/sys/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.musl.sys.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 
 // Header: `sys / socket.h`
 //
 // * Headers: <https://git.musl-libc.org/cgit/musl/blob/arch/include/sys/socket.h> (official)
 // * Headers: <https://github.com/kraj/musl/blob/kraj/master/include/sys/socket.h> (mirror)
 
-public class Msghdr internal constructor(
+public open class Msghdr internal constructor(
     msgNameCtorArg: MutPtr,
     public var msgNamelen: SocklenT,
     msgIovCtorArg: MutPtr,
@@ -34,67 +34,7 @@ public class Msghdr internal constructor(
     public var msgControl: MutPtr = msgControlCtorArg
         internal set
 
-    public constructor() : this(
-        msgNameCtorArg = MutPtr(0L),
-        msgNamelen = 0u,
-        msgIovCtorArg = MutPtr(0L),
-        msgIovlen = 0,
-        pad1 = 0,
-        msgControlCtorArg = MutPtr(0L),
-        msgControllen = 0u,
-        pad2 = 0,
-        msgFlags = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.msgName
-
-    public operator fun component2(): SocklenT = this.msgNamelen
-
-    public operator fun component3(): MutPtr = this.msgIov
-
-    public operator fun component4(): CInt = this.msgIovlen
-
-    public operator fun component5(): CInt = this.pad1
-
-    public operator fun component6(): MutPtr = this.msgControl
-
-    public operator fun component7(): SocklenT = this.msgControllen
-
-    public operator fun component8(): CInt = this.pad2
-
-    public operator fun component9(): CInt = this.msgFlags
-
-    public fun copy(msgName: MutPtr = this.msgName, msgNamelen: SocklenT = this.msgNamelen, msgIov: MutPtr = this.msgIov, msgIovlen: CInt = this.msgIovlen, pad1: CInt = this.pad1, msgControl: MutPtr = this.msgControl, msgControllen: SocklenT = this.msgControllen, pad2: CInt = this.pad2, msgFlags: CInt = this.msgFlags): Msghdr = Msghdr(msgNameCtorArg = msgName, msgNamelen = msgNamelen, msgIovCtorArg = msgIov, msgIovlen = msgIovlen, pad1 = pad1, msgControlCtorArg = msgControl, msgControllen = msgControllen, pad2 = pad2, msgFlags = msgFlags)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Msghdr) return false
-        if (this.msgName != other.msgName) return false
-        if (this.msgNamelen != other.msgNamelen) return false
-        if (this.msgIov != other.msgIov) return false
-        if (this.msgIovlen != other.msgIovlen) return false
-        if (this.pad1 != other.pad1) return false
-        if (this.msgControl != other.msgControl) return false
-        if (this.msgControllen != other.msgControllen) return false
-        if (this.pad2 != other.pad2) return false
-        if (this.msgFlags != other.msgFlags) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.msgName.hashCode()
-        result = 31 * result + this.msgNamelen.hashCode()
-        result = 31 * result + this.msgIov.hashCode()
-        result = 31 * result + this.msgIovlen.hashCode()
-        result = 31 * result + this.pad1.hashCode()
-        result = 31 * result + this.msgControl.hashCode()
-        result = 31 * result + this.msgControllen.hashCode()
-        result = 31 * result + this.pad2.hashCode()
-        result = 31 * result + this.msgFlags.hashCode()
-        return result
-    }
-
-    public fun clone(): Msghdr = Msghdr(msgName, msgNamelen, msgIov, msgIovlen, pad1, msgControl, msgControllen, pad2, msgFlags)
+    public open fun clone(): Msghdr = Msghdr(msgName, msgNamelen, msgIov, msgIovlen, pad1, msgControl, msgControllen, pad2, msgFlags)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Msghdr> =
@@ -150,15 +90,15 @@ public class Msghdr internal constructor(
             }
 
         public operator fun invoke(
-            msgName: MutPtr = MutPtr(0L),
-            msgNamelen: SocklenT = 0u,
-            msgIov: MutPtr = MutPtr(0L),
-            msgIovlen: CInt = 0,
-            pad1: CInt = 0,
-            msgControl: MutPtr = MutPtr(0L),
-            msgControllen: SocklenT = 0u,
-            pad2: CInt = 0,
-            msgFlags: CInt = 0,
+            msgName: MutPtr,
+            msgNamelen: SocklenT,
+            msgIov: MutPtr,
+            msgIovlen: CInt,
+            pad1: CInt,
+            msgControl: MutPtr,
+            msgControllen: SocklenT,
+            pad2: CInt,
+            msgFlags: CInt,
         ): Msghdr = Msghdr(
             msgNameCtorArg = msgName,
             msgNamelen = msgNamelen,
@@ -173,12 +113,14 @@ public class Msghdr internal constructor(
     }
 }
 
-public data class Cmsghdr(
-    public var cmsgLen: SocklenT = 0u,
-    public var pad1: CInt = 0,
-    public var cmsgLevel: CInt = 0,
-    public var cmsgType: CInt = 0,
+public open class Cmsghdr(
+    public var cmsgLen: SocklenT,
+    public var pad1: CInt,
+    public var cmsgLevel: CInt,
+    public var cmsgType: CInt,
 ) {
+    public open fun clone(): Cmsghdr = Cmsghdr(cmsgLen, pad1, cmsgLevel, cmsgType)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Cmsghdr> =
             object : TypeLayout<Cmsghdr> {
@@ -214,10 +156,12 @@ public data class Cmsghdr(
     }
 }
 
-public data class Mmsghdr(
-    public var msgHdr: io.github.kotlinmania.rustlang.libc.Msghdr = io.github.kotlinmania.rustlang.libc.Msghdr(),
-    public var msgLen: CUint = 0u,
+public open class Mmsghdr(
+    public var msgHdr: Msghdr,
+    public var msgLen: CUint,
 ) {
+    public open fun clone(): Mmsghdr = Mmsghdr(msgHdr, msgLen)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Mmsghdr> =
             object : TypeLayout<Mmsghdr> {

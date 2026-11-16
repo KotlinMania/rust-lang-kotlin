@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.CInt
@@ -52,77 +52,77 @@ public open class PidFd(
     public open fun pid(): Result<UInt, Error> {
         // since kernel 6.13
         // https://lore.kernel.org/all/20241010155401.2268522-1-luca.boccassi@gmail.com/
-        val localStorageL31C8 = AddressableLocal(PidfdInfo(), ObjectSlotLayout<PidfdInfo>())
+        val localStorageL31C8 = AddressableLocal(PidfdInfo(), UnresolvedTypeLayout<PidfdInfo>())
         val pidfdInfo by localStorageL31C8
         pidfdInfo.mask = PIDFD_INFO_PID.toULong()
         run {
             val matchVal = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL31C8.asMutPtr(), localStorageL31C8.layout)))
             when {
-                matchVal is Result.Ok<*> -> {}
-                matchVal is Result.Err<*> && when (val matchVal1 = (matchVal as Result.Err<*>).error.rawOsError()) {
+                matchVal is Result.Ok -> {}
+                matchVal is Result.Err && when (val matchVal1 = (matchVal as Result.Err).error.rawOsError()) {
                     EINVAL, ENOTTY -> true
                     else -> false
                 } -> {
-                    val e = (matchVal as Result.Err<*>).error
+                    val e = matchVal.error
                     // kernel doesn't support that ioctl, try the glibc helper that looks at procfs
                     weak(pidfdGetpid, pidfd, RawFd, libc, pidT)
                     when (val matchVal2 = pidfdGetpid.get()) {
                         null -> {}
                         else -> {
                             val pidfdGetpid = matchVal2
-                            val pid: CInt = when (val tryResult = cvt(pidfdGetpid(this.value.asRawFd()))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                            return Result.Ok(pid.toUInt())
+                            val pid: CInt = when (val tryResult = cvt(pidfdGetpid(this.value.asRawFd()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UInt, Error>(tryResult.error) }
+                            return Result.Ok<UInt, Error>(pid.toUInt())
                         }
                     }
-                    return Result.Err(e)
+                    return Result.Err<UInt, Error>(e)
                 }
                 else -> {
-                    val e1 = (matchVal as Result.Err<*>).error
-                    return Result.Err(e1)
+                    val e1 = matchVal.error
+                    return Result.Err<UInt, Error>(e1)
                 }
             }
         }
-        return Result.Ok(pidfdInfo.pid)
+        return Result.Ok<UInt, Error>(pidfdInfo.pid)
     }
 
     public open fun exitForReapedChild(): Result<ExitStatus, Error> {
         // since kernel 6.15
         // https://lore.kernel.org/linux-fsdevel/20250305-work-pidfs-killOnLastClose-v3-0-c8c3d8361705@kernel.org/T/
-        val localStorageL56C8 = AddressableLocal(PidfdInfo(), ObjectSlotLayout<PidfdInfo>())
+        val localStorageL56C8 = AddressableLocal(PidfdInfo(), UnresolvedTypeLayout<PidfdInfo>())
         val pidfdInfo by localStorageL56C8
         pidfdInfo.mask = PIDFD_INFO_EXIT.toULong()
-        when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL56C8.asMutPtr(), localStorageL56C8.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(ExitStatus.new(pidfdInfo.exitCode))
+        when (val tryResult = cvt(Ioctl(this.value.asRawFd(), PIDFD_GET_INFO, RustMutableReference(localStorageL56C8.asMutPtr(), localStorageL56C8.layout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus, Error>(tryResult.error) }
+        return Result.Ok<ExitStatus, Error>(ExitStatus.new(pidfdInfo.exitCode))
     }
 
     public open fun waitid(options: CInt): Result<ExitStatus?, Error> {
-        val localStorageL63C8 = AddressableLocal(SiginfoT(), ObjectSlotLayout<SiginfoT>())
+        val localStorageL63C8 = AddressableLocal(SiginfoT(), UnresolvedTypeLayout<SiginfoT>())
         val siginfo by localStorageL63C8
         val r = cvtR({ io.github.kotlinmania.rustlang.libc.waitid(P_PIDFD, this.value.asRawFd().toUInt(), RustMutableReference(localStorageL63C8.asMutPtr(), localStorageL63C8.layout), options) })
         when {
-            r is Result.Err<*> && (r as Result.Err<*>).error.rawOsError() == ECHILD -> {
-                val waitidErr = (r as Result.Err<*>).error
+            r is Result.Err && (r as Result.Err).error.rawOsError() == ECHILD -> {
+                val waitidErr = r.error
                 // already reaped
                 run {
                     val matchVal = this.exitForReapedChild()
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val exitStatus = matchVal.value
-                        return Result.Ok(exitStatus)
-                    }; is Result.Err<*> -> {
-                        return Result.Err(waitidErr)
+                        return Result.Ok<ExitStatus?, Error>(exitStatus)
+                    }; is Result.Err -> {
+                        return Result.Err<ExitStatus?, Error>(waitidErr)
                     } }
                 }
             }
-            r is Result.Err<*> -> {
-                val e = (r as Result.Err<*>).error
-                return Result.Err(e)
+            r is Result.Err -> {
+                val e = r.error
+                return Result.Err<ExitStatus?, Error>(e)
             }
             else -> {}
         }
         return if (siginfo.siPid() == 0) {
-            Result.Ok(null)
+            Result.Ok<ExitStatus?, Error>(null)
         } else {
-            Result.Ok(ExitStatus.fromWaitidSiginfo(siginfo))
+            Result.Ok<ExitStatus?, Error>(ExitStatus.fromWaitidSiginfo(siginfo))
         }
     }
 
@@ -135,12 +135,12 @@ public open class PidFd(
     }
 
     public open fun wait(): Result<ExitStatus, Error> {
-        val r = when (val tryResult = this.waitid(WEXITED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val r = when (val tryResult = this.waitid(WEXITED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ExitStatus, Error>(tryResult.error) }
         return when (r) {
             null -> error("waitid with WEXITED should not return None")
             else -> {
                 val exitStatus = r
-                Result.Ok(exitStatus)
+                Result.Ok<ExitStatus, Error>(exitStatus)
             }
         }
     }
@@ -157,8 +157,8 @@ public open class PidFd(
         @kotlin.test.Test
         public fun currentProcess(): Result<PidFd, Error> {
             val pid = id()
-            val pidfd = when (val tryResult = cvt(syscall(SysPidfdOpen, pid.toLong(), 0L))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            return Result.Ok(PidFd.fromRawFd(pidfd.toInt()))
+            val pidfd = when (val tryResult = cvt(syscall(SysPidfdOpen, pid.toLong(), 0L))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PidFd, Error>(tryResult.error) }
+            return Result.Ok<PidFd, Error>(PidFd.fromRawFd(pidfd.toInt()))
         }
 
         public fun fromInner(inner: FileDesc): PidFd = PidFd(inner)

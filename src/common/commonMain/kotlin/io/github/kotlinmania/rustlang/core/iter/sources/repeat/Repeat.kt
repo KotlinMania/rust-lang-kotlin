@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.iter.sources.repeat
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -85,9 +86,9 @@ public open class Repeat<A>(
 
     public override fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         // Advancing an infinite iterator of a single element is a no-op.
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
     }
 
     public override fun nth(n: Int): A? = this.element.clone()
@@ -116,9 +117,9 @@ public open class Repeat<A>(
 
     public open fun nextBack(): A? = this.element.clone()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         // Advancing an infinite iterator of a single element is a no-op.
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
     }
 
     public open fun nthBack(n: Int): A? = this.element.clone()

@@ -7,12 +7,14 @@ import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
@@ -28,13 +30,13 @@ import io.github.kotlinmania.rustlang.std.sys.IntoInner
 
 public open class Buf internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Wtf8Buf>,
+    public val fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout(),
 ) : IntoInner<Wtf8Buf>, FromInner<Wtf8Buf, Buf>, AsInner<Wtf8> {
     public var inner: Wtf8Buf
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Buf> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Buf(ptr, layout) }, { it.inner })
 
@@ -42,13 +44,9 @@ public open class Buf internal constructor(
 
     public override fun asInner(): Wtf8 = this.inner
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 
     public open fun clone(): Buf = Buf(inner = this.inner.clone(), fieldLayout = this.fieldLayout)
 
@@ -152,19 +150,19 @@ public open class Buf internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner, fieldLayout)
+        public operator fun invoke(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(fieldStorage, fieldLayout)
 
-        public fun fromInner(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
+        public fun fromInner(inner: Wtf8Buf, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(inner = inner, fieldLayout = fieldLayout)
 
-        public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.fromBytesUnchecked(s), fieldLayout = fieldLayout)
+        public fun fromEncodedBytesUnchecked(s: List<UByte>, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(inner = Wtf8Buf.fromBytesUnchecked(s), fieldLayout = fieldLayout)
 
-        public fun fromString(s: String, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.fromString(s), fieldLayout = fieldLayout)
+        public fun fromString(s: String, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(inner = Wtf8Buf.fromString(s), fieldLayout = fieldLayout)
 
-        public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<Wtf8Buf>): Buf = Buf(inner = Wtf8Buf.withCapacity(capacity), fieldLayout = fieldLayout)
+        public fun withCapacity(capacity: Int, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf = Buf(inner = Wtf8Buf.withCapacity(capacity), fieldLayout = fieldLayout)
 
-        public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<Wtf8Buf>): Buf {
+        public fun fromBox(boxed: Slice, fieldLayout: TypeLayout<Wtf8Buf> = UnresolvedTypeLayout()): Buf {
             val inner: Wtf8 = transmute(boxed)
             return Buf(inner = Wtf8Buf.fromBox(inner), fieldLayout = fieldLayout)
         }
@@ -173,23 +171,19 @@ public open class Buf internal constructor(
 
 public open class Slice internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Wtf8>,
+    public val fieldLayout: TypeLayout<Wtf8> = UnresolvedTypeLayout(),
 ) : CloneToUninit {
     public var inner: Wtf8
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: Wtf8, fieldLayout: TypeLayout<Wtf8> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Slice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Slice(ptr, layout) }, { it.inner })
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 
     public open fun asEncodedBytes(): List<UByte> = this.inner.asBytes()
 
@@ -203,7 +197,7 @@ public open class Slice internal constructor(
 
     public open fun toStringLossy(): String = this.inner.toStringLossy()
 
-    public open fun toOwned(): Buf = Buf(inner = this.inner.toOwned(), fieldLayout = ObjectSlotLayout<Wtf8Buf>())
+    public open fun toOwned(): Buf = Buf(inner = this.inner.toOwned(), fieldLayout = UnresolvedTypeLayout<Wtf8Buf>())
 
     public open fun cloneInto(buf: RustMutableReference<Buf>) {
         this.inner.cloneInto((buf).read().inner)
@@ -227,9 +221,9 @@ public open class Slice internal constructor(
         this.inner.makeAsciiUppercase()
     }
 
-    public open fun toAsciiLowercase(): Buf = Buf(inner = this.inner.toAsciiLowercase(), fieldLayout = ObjectSlotLayout<Wtf8Buf>())
+    public open fun toAsciiLowercase(): Buf = Buf(inner = this.inner.toAsciiLowercase(), fieldLayout = UnresolvedTypeLayout<Wtf8Buf>())
 
-    public open fun toAsciiUppercase(): Buf = Buf(inner = this.inner.toAsciiUppercase(), fieldLayout = ObjectSlotLayout<Wtf8Buf>())
+    public open fun toAsciiUppercase(): Buf = Buf(inner = this.inner.toAsciiUppercase(), fieldLayout = UnresolvedTypeLayout<Wtf8Buf>())
 
     public open fun isAscii(): Boolean = this.inner.isAscii()
 
@@ -241,9 +235,9 @@ public open class Slice internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(inner: Wtf8, fieldLayout: TypeLayout<Wtf8>): Slice = Slice(inner, fieldLayout)
+        public operator fun invoke(inner: Wtf8, fieldLayout: TypeLayout<Wtf8> = UnresolvedTypeLayout()): Slice = Slice(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8>): Slice = Slice(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Wtf8> = UnresolvedTypeLayout()): Slice = Slice(fieldStorage, fieldLayout)
 
         public fun fromEncodedBytesUnchecked(s: List<UByte>): Slice = transmute(Wtf8.fromBytesUnchecked(s))
 

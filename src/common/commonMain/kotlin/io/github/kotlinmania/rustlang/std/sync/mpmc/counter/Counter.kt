@@ -1,23 +1,25 @@
 // port-lint: source sync/mpmc/counter.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc.counter
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
 
 /**
  * Reference counter internals.
  */
 public open class Counter<C> internal constructor(
-    sendersCtorArg: Atomic<Int>,
-    receiversCtorArg: Atomic<Int>,
-    destroyCtorArg: Atomic<Boolean>,
+    sendersCtorArg: Atomic<Int, Align8<Int>>,
+    receiversCtorArg: Atomic<Int, Align8<Int>>,
+    destroyCtorArg: Atomic<Boolean, Align1<UByte>>,
     /**
      * The internal channel.
      */
@@ -26,26 +28,26 @@ public open class Counter<C> internal constructor(
     /**
      * The number of senders associated with the channel.
      */
-    public var senders: Atomic<Int> = sendersCtorArg
+    public var senders: Atomic<Int, Align8<Int>> = sendersCtorArg
         internal set
 
     /**
      * The number of receivers associated with the channel.
      */
-    public var receivers: Atomic<Int> = receiversCtorArg
+    public var receivers: Atomic<Int, Align8<Int>> = receiversCtorArg
         internal set
 
     /**
      * Set to `true` if the last sender or the last receiver reference deallocates the channel.
      */
-    public var destroy: Atomic<Boolean> = destroyCtorArg
+    public var destroy: Atomic<Boolean, Align1<UByte>> = destroyCtorArg
         internal set
 
     public companion object {
         public operator fun <C> invoke(
-            senders: Atomic<Int>,
-            receivers: Atomic<Int>,
-            destroy: Atomic<Boolean>,
+            senders: Atomic<Int, Align8<Int>>,
+            receivers: Atomic<Int, Align8<Int>>,
+            destroy: Atomic<Boolean, Align1<UByte>>,
             chan: C,
         ): Counter<C> = Counter<C>(
             sendersCtorArg = senders,
@@ -78,7 +80,7 @@ public open class Sender<C> internal constructor(
     /**
      * Returns the internal `Counter`.
      */
-    public open fun counter(): Counter<C> = (ObjectSlotLayout<Counter<C>>()).readNative((this.counter).rawAddress)
+    public open fun counter(): Counter<C> = (UnresolvedTypeLayout<Counter<C>>()).readNative((this.counter).rawAddress)
 
     /**
      * Acquires another sender reference.
@@ -89,7 +91,7 @@ public open class Sender<C> internal constructor(
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            abort()
+            Process.abort()
         }
         return Sender(counter = this.counter)
     }
@@ -153,7 +155,7 @@ public open class Receiver<C> internal constructor(
     /**
      * Returns the internal `Counter`.
      */
-    public open fun counter(): Counter<C> = (ObjectSlotLayout<Counter<C>>()).readNative((this.counter).rawAddress)
+    public open fun counter(): Counter<C> = (UnresolvedTypeLayout<Counter<C>>()).readNative((this.counter).rawAddress)
 
     /**
      * Acquires another receiver reference.
@@ -164,7 +166,7 @@ public open class Receiver<C> internal constructor(
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            abort()
+            Process.abort()
         }
         return Receiver(counter = this.counter)
     }

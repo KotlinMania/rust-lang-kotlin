@@ -7,15 +7,17 @@ import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdEq
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVtable
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TraitImpl
 import io.github.kotlinmania.rustlang.core.mem.typeinfo.TypeKind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -25,8 +27,6 @@ import io.github.kotlinmania.rustlang.core.ptr.metadata.Pointee
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Utilities for dynamic typing or type reflection.
 //
@@ -298,7 +298,7 @@ public inline fun <reified T> Any.downcastMut(): T? =
  * The contained value must be of type `T`. Calling this method
  * with the incorrect type is *undefined behavior*.
  */
-public fun <T> Any.downcastUncheckedRef(typeLayoutT: TypeLayout<T>): T {
+public fun <T> Any.downcastUncheckedRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     if (false) {
         check(this.isMatch<T>())
     }
@@ -327,7 +327,7 @@ public fun <T> Any.downcastUncheckedRef(typeLayoutT: TypeLayout<T>): T {
  * The contained value must be of type `T`. Calling this method
  * with the incorrect type is *undefined behavior*.
  */
-public fun <T> Any.downcastUncheckedMut(typeLayoutT: TypeLayout<T>): T {
+public fun <T> Any.downcastUncheckedMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     if (false) {
         check(this.isMatch<T>())
     }
@@ -614,7 +614,7 @@ public open class TypeId internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("TypeId(${this.asU128()})")
+    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = f.writeFmt("TypeId(${this.asU128()})")
 
     public companion object {
         public fun typeLayout(): TypeLayout<TypeId> =
@@ -824,6 +824,7 @@ public interface TryAsDynCompatible : Pointee<DynMetadata<TryAsDynCompatible>>
  *
  * ```kotlin
  * import core.any.tryAsDyn
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * @feature(tryAsDyn)
@@ -847,8 +848,8 @@ public interface TryAsDynCompatible : Pointee<DynMetadata<TryAsDynCompatible>>
  *                 // SAFETY: x and y are valid for reads of sizeOf::<T>() bytes
  *                 // BytewiseEq trait guarantees we can interperet these bytes as u8's
  *                 // and compare them for equality
- *                 val x1 = sliceFromRawParts(ConstPtr(((x)).rawAddress), sizeOfVal(x))
- *                 val y1 = sliceFromRawParts(ConstPtr(((y)).rawAddress), sizeOfVal(y))
+ *                 val x1 = sliceFromRawParts(ConstPtr(((x)).rawAddress), sizeOfVal(x, typeLayoutT = UnresolvedTypeLayout<T>()))
+ *                 val y1 = sliceFromRawParts(ConstPtr(((y)).rawAddress), sizeOfVal(y, typeLayoutT = UnresolvedTypeLayout<T>()))
  *                 x1 == y1
  *             }
  *         } else {
@@ -919,12 +920,12 @@ public fun <T, U : TryAsDynCompatible> tryAsDyn(t: T): U? {
         null -> null
         else -> {
             val dynMetadata = vtable
-            val pointer = rawSliceList((constPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
+            val pointer = linearSliceView((constPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
             // SAFETY: `t` is a reference to a type, so we know it is valid.
             // `dynMetadata` is a vtable for T, implementing the trait of `U`.
             // `T` is sized here because `traitInfoOf` only returns `Some` for sized types,
             // so the thin data pointer fully describes the value.
-            (ObjectSlotLayout<T>()).readNative((pointer).rawAddress)
+            (UnresolvedTypeLayout<T>()).readNative((pointer).rawAddress)
         }
     }
 }
@@ -943,12 +944,12 @@ public fun <T, U : TryAsDynCompatible> tryAsDynMut(t: T): U? {
         null -> null
         else -> {
             val dynMetadata = vtable
-            val pointer = rawMutSliceList((mutPtrFromRustCast(t)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
+            val pointer = linearMutSliceView((mutPtrFromRustCast(t)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, dynMetadata.toInt(), PrimitiveLayouts.UNIT)
             // SAFETY: `t` is a reference to a type, so we know it is valid.
             // `dynMetadata` is a vtable for T, implementing the trait of `U`.
             // `T` is sized here because `traitInfoOf` only returns `Some` for sized types,
             // so the thin data pointer fully describes the value.
-            RustMutableReference(MutPtr((pointer).rawAddress), ObjectSlotLayout<T>())
+            RustMutableReference(MutPtr((pointer).rawAddress), UnresolvedTypeLayout<T>())
         }
     }
 }

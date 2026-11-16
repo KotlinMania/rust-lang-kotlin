@@ -16,19 +16,22 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRange
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.End
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.StartInclusive
@@ -48,7 +51,6 @@ import io.github.kotlinmania.rustlang.core.ptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.simd.SimdElement
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.index.range
 import io.github.kotlinmania.rustlang.core.slice.iter.ArrayWindows
@@ -79,8 +81,6 @@ import io.github.kotlinmania.rustlang.core.slice.rotate.ptrRotate
 import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.partialSort
 import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 /**
  * Calculates the direction and split point of a one-sided range.
@@ -141,15 +141,15 @@ public fun <I : GetDisjointMutIndex<I>> getDisjointCheckValid(indices: List<I>, 
     // of instructions without additional branching.
     for ((i, idx) in indices.mapIndexed { index, item -> Pair(index, item) }) {
         if (!idx.isInBounds(len)) {
-            return Result.Err(GetDisjointMutError.IndexOutOfBounds)
+            return Result.Err<Unit, GetDisjointMutError>(GetDisjointMutError.IndexOutOfBounds)
         }
-        for (idx2 in ((indices).slice(0 until i))) {
+        for (idx2 in ((indices).subList(0, i))) {
             if (idx.isOverlapping(idx2)) {
-                return Result.Err(GetDisjointMutError.OverlappingIndices)
+                return Result.Err<Unit, GetDisjointMutError>(GetDisjointMutError.OverlappingIndices)
             }
         }
     }
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, GetDisjointMutError>(Unit)
 }
 
 /**
@@ -522,7 +522,7 @@ public fun <T> List<T>.splitFirstChunkMut(n: Int): Pair<List<T>, MutableList<T>>
  * ```
  */
 public fun <T> List<T>.splitLastChunk(n: Int): Pair<List<T>, List<T>>? {
-    val index = rustCheckedSub(this.size, n) ?: return null
+    val index = this.size.checkedSub(n) ?: return null
     val (init, last) = this.splitAt(index)
     // SAFETY: We explicitly check for the correct number of elements,
     // and do not let the references outlive the slice.
@@ -554,7 +554,7 @@ public fun <T> List<T>.splitLastChunk(n: Int): Pair<List<T>, List<T>>? {
  * ```
  */
 public fun <T> List<T>.splitLastChunkMut(n: Int): Pair<MutableList<T>, List<T>>? {
-    val index = rustCheckedSub(this.size, n) ?: return null
+    val index = this.size.checkedSub(n) ?: return null
     val (init, last) = this.splitAtMut(index)
     // SAFETY: We explicitly check for the correct number of elements,
     // do not let the reference outlive the slice,
@@ -580,7 +580,7 @@ public fun <T> List<T>.splitLastChunkMut(n: Int): Pair<MutableList<T>, List<T>>?
  */
 public fun <T> List<T>.lastChunk(n: Int): List<T>? {
     // Note(const-Note): Without const traits, we need this instead of `get`.
-    val index = rustCheckedSub(this.size, n) ?: return null
+    val index = this.size.checkedSub(n) ?: return null
     val (_, last) = this.splitAt(index)
     // SAFETY: We explicitly check for the correct number of elements,
     // and do not let the references outlive the slice.
@@ -610,7 +610,7 @@ public fun <T> List<T>.lastChunk(n: Int): List<T>? {
  */
 public fun <T> List<T>.lastChunkMut(n: Int): List<T>? {
     // Note(const-Note): Without const traits, we need this instead of `get`.
-    val index = rustCheckedSub(this.size, n) ?: return null
+    val index = this.size.checkedSub(n) ?: return null
     val (_, last) = this.splitAtMut(index)
     // SAFETY: We explicitly check for the correct number of elements,
     // do not let the reference outlive the slice,
@@ -838,7 +838,7 @@ public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
     // the end of the address space.
     //
     // See the documentation of [pointer.add].
-    val end = ConstPtr((start).rawAddress + ((this.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+    val end = ConstPtr((start).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
     return start until end
 }
 
@@ -863,7 +863,7 @@ public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
 public fun <T> List<T>.asMutPtrRange(): Range<MutPtr> {
     val start = this.asMutPtr()
     // SAFETY: See asPtrRange() above for why `add` here is safe.
-    val end = MutPtr((start).rawAddress + ((this.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+    val end = MutPtr((start).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
     return start until end
 }
 
@@ -960,11 +960,11 @@ public fun <T> List<T>.swap(a: Int, b: Int) {
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
 public fun <T> List<T>.swapUnchecked(a: Int, b: Int) {
-    assertUnsafePrecondition(checkLibraryUb, "slice::swap_unchecked requires that the indices are within the slice", len, this, len, a, a, b, b, a, len, b, len)
+    Unit
     val ptr = this.asMutPtr()
     // SAFETY: caller has to guarantee that `a<self.len()` and `b<self.len()`
     run {
-        swap(MutPtr((ptr).rawAddress + ((a).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((ptr).rawAddress + ((b).toLong() * (ObjectSlotLayout<T>()).strideBytes)))
+        swap(MutPtr((ptr).rawAddress + ((a).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), MutPtr((ptr).rawAddress + ((b).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)))
     }
 }
 
@@ -1006,7 +1006,7 @@ public fun <T> List<T>.reverse() {
     val end = structVal.end
     // These slices will skip the middle item for an odd length,
     // since that one doesn't need to move.
-    val (frontHalf, backHalf) = Pair(rawMutSliceList(start, halfLen.toInt(), PrimitiveLayouts.U8), rawMutSliceList(end.sub(halfLen), halfLen.toInt(), PrimitiveLayouts.U8))
+    val (frontHalf, backHalf) = Pair(linearMutSliceView(start, halfLen.toInt(), PrimitiveLayouts.U8), linearMutSliceView(end.sub(halfLen), halfLen.toInt(), PrimitiveLayouts.U8))
     // Introducing a function boundary here means that the two halves
     // get `noalias` markers, allowing better optimization as LLVM
     // knows that they're disjoint, unlike in the original slice.
@@ -1103,7 +1103,7 @@ public fun <T> List<T>.iterMut(): IterMut<T> = IterMut.new(this)
  * ```
  */
 public fun <T> List<T>.windows(size: Int): Windows<T> {
-    val size1 = NonZero.new(size).expect("window size must be non-zero")
+    val size1 = (NonZero.new<NonZeroI32Inner, Int>(size) ?: error("window size must be non-zero"))
     return Windows.new(this, size1)
 }
 
@@ -1314,12 +1314,12 @@ public fun <T> List<T>.chunksExactMut(chunkSize: Int): ChunksExactMut<T> {
  * ```
  */
 public fun <T> List<T>.asChunksUnchecked(n: Int): List<List<T>> {
-    assertUnsafePrecondition(checkLanguageUb, "slice::as_chunks_unchecked requires `N != 0` and the slice to split exactly into `N`-element chunks", n, n, len, this, len, n, 0, len, isMultipleOf, n)
+    Unit
     // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
     val newLen = exactDiv(this.size, n)
     // SAFETY: We cast a slice of `newLen * N` elements into
     // a slice of `newLen` many `N` elements chunks.
-    return rawSliceList(ConstPtr((this.asPtr()).rawAddress), newLen.toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(ConstPtr((this.asPtr()).rawAddress), newLen.toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -1462,12 +1462,12 @@ public fun <T> List<T>.asRchunks(n: Int): Pair<List<T>, List<List<T>>> {
  * ```
  */
 public fun <T> List<T>.asChunksUncheckedMut(n: Int): MutableList<List<T>> {
-    assertUnsafePrecondition(checkLanguageUb, "slice::as_chunks_unchecked requires `N != 0` and the slice to split exactly into `N`-element chunks", n, n, len, this, len, n, 0, len, isMultipleOf, n)
+    Unit
     // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
     val newLen = exactDiv(this.size, n)
     // SAFETY: We cast a slice of `newLen * N` elements into
     // a slice of `newLen` many `N` elements chunks.
-    return rawMutSliceList(MutPtr((this.asMutPtr()).rawAddress), newLen.toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(MutPtr((this.asMutPtr()).rawAddress), newLen.toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -1966,9 +1966,9 @@ public fun <T> List<T>.splitAtUnchecked(mid: Int): Pair<List<T>, List<T>> {
     // `(self.getUnchecked(.. mid), self.getUnchecked(mid ..))`
     val len = this.size
     val ptr = this.asPtr()
-    assertUnsafePrecondition(checkLibraryUb, "slice::split_at_unchecked requires the index to be within the slice", mid, mid, len, len, mid, len)
+    Unit
     // SAFETY: Caller has to check that `0 <= mid <= self.len()`
-    return Pair(rawSliceList(ptr, mid.toInt(), ObjectSlotLayout<T>()), rawSliceList(ConstPtr((ptr).rawAddress + ((mid).toLong() * (ObjectSlotLayout<T>()).strideBytes)), uncheckedSub(len, mid).toInt(), ObjectSlotLayout<T>()))
+    return Pair(linearSliceView(ptr, mid.toInt(), UnresolvedTypeLayout<T>()), linearSliceView(ConstPtr((ptr).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), uncheckedSub(len, mid).toInt(), UnresolvedTypeLayout<T>()))
 }
 
 /**
@@ -2007,12 +2007,12 @@ public fun <T> List<T>.splitAtUnchecked(mid: Int): Pair<List<T>, List<T>> {
 public fun <T> List<T>.splitAtMutUnchecked(mid: Int): Pair<MutableList<T>, MutableList<T>> {
     val len = this.size
     val ptr = this.asMutPtr()
-    assertUnsafePrecondition(checkLibraryUb, "slice::split_at_mut_unchecked requires the index to be within the slice", mid, mid, len, len, mid, len)
+    Unit
     // SAFETY: Caller has to check that `0 <= mid <= self.len()`.
     //
     // `[ptr; mid]` and `[mid; len]` are not overlapping, so returning a mutable reference
     // is fine.
-    return Pair(rawMutSliceList(ptr, mid.toInt(), ObjectSlotLayout<T>()), rawMutSliceList(MutPtr((ptr).rawAddress + ((mid).toLong() * (ObjectSlotLayout<T>()).strideBytes)), uncheckedSub(len, mid).toInt(), ObjectSlotLayout<T>()))
+    return Pair(linearMutSliceView(ptr, mid.toInt(), UnresolvedTypeLayout<T>()), linearMutSliceView(MutPtr((ptr).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), uncheckedSub(len, mid).toInt(), UnresolvedTypeLayout<T>()))
 }
 
 /**
@@ -2366,7 +2366,7 @@ public fun <T> List<T>.rsplitnMut(n: Int, pred: (T) -> Boolean): RSplitNMut<T, (
 public fun <T> List<T>.splitOnce(pred: (T) -> Boolean): Pair<List<T>, List<T>>? {
     val index = (this.indexOfFirst(pred).takeIf { it >= 0 } ?: return null)
     // Slice bounds checks optimized are away (as of June 2026)
-    return Pair(((this).slice(0 until index)), ((this).slice(index + 1 until this.size)))
+    return Pair(((this).subList(0, index)), ((this).subList(index + 1, (this).size)))
 }
 
 /**
@@ -2388,7 +2388,7 @@ public fun <T> List<T>.splitOnce(pred: (T) -> Boolean): Pair<List<T>, List<T>>? 
 public fun <T> List<T>.rsplitOnce(pred: (T) -> Boolean): Pair<List<T>, List<T>>? {
     val index = (this.iter().indexOfLast(pred).takeIf { it >= 0 } ?: return null)
     // Slice bounds checks optimized are away (as of June 2026)
-    return Pair(((this).slice(0 until index)), ((this).slice(index + 1 until this.size)))
+    return Pair(((this).subList(0, index)), ((this).subList(index + 1, (this).size)))
 }
 
 /**
@@ -2447,7 +2447,7 @@ public fun <T> List<T>.contains(x: T): Boolean = x.sliceContains(this)
  */
 public fun <T> List<T>.startsWith(needle: List<T>): Boolean {
     val n = needle.size
-    return this.size >= n && needle == ((this).slice(0 until n))
+    return this.size >= n && needle == ((this).subList(0, n))
 }
 
 /**
@@ -2475,7 +2475,7 @@ public fun <T> List<T>.startsWith(needle: List<T>): Boolean {
  */
 public fun <T> List<T>.endsWith(needle: List<T>): Boolean {
     val (m, n) = Pair(this.size, needle.size)
-    return m >= n && needle == ((this).slice(m - n until this.size))
+    return m >= n && needle == ((this).subList(m - n, (this).size))
 }
 
 /**
@@ -2763,7 +2763,7 @@ public fun <T> List<T>.binarySearch(x: T): Result<Int, Int> = this.binarySearchB
 public fun <T> List<T>.binarySearchBy(f: (T) -> Ordering): Result<Int, Int> {
     var size = this.size
     if (size == 0) {
-        return Result.Err(0)
+        return Result.Err<Int, Int>(0)
     }
     var base = 0
     // This loop intentionally doesn't have an early exit if the comparison
@@ -2796,13 +2796,13 @@ public fun <T> List<T>.binarySearchBy(f: (T) -> Ordering): Result<Int, Int> {
     return if (cmp1 == Equal) {
         // SAFETY: same as the `getUnchecked` above.
         assertUnchecked(base < this.size)
-        Result.Ok(base)
+        Result.Ok<Int, Int>(base)
     } else {
         val result = base + (if (cmp1 == Less) 1 else 0)
         // SAFETY: same as the `getUnchecked` above.
         // Note that this is `<=`, unlike the assume in the `Ok` path.
         assertUnchecked(result <= this.size)
-        Result.Err(result)
+        Result.Err<Int, Int>(result)
     }
 }
 
@@ -3500,12 +3500,12 @@ public fun <T> List<T>.partitionDedupBy(sameBucket: (T, T) -> Boolean): Pair<Mut
     // The explanation is simply that `nextRead >= nextWrite` is always true,
     // thus `nextRead> nextWrite - 1` is too.
     while (nextRead < len) {
-        val ptrRead = MutPtr((ptr).rawAddress + ((nextRead).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        val prevPtrWrite = MutPtr((ptr).rawAddress + ((nextWrite - 1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        if (!sameBucket(RustMutableReference(MutPtr((ptrRead).rawAddress), ObjectSlotLayout<T>()), RustMutableReference(MutPtr((prevPtrWrite).rawAddress), ObjectSlotLayout<T>()))) {
+        val ptrRead = MutPtr((ptr).rawAddress + ((nextRead).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        val prevPtrWrite = MutPtr((ptr).rawAddress + ((nextWrite - 1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        if (!sameBucket(RustMutableReference(MutPtr((ptrRead).rawAddress), UnresolvedTypeLayout<T>()), RustMutableReference(MutPtr((prevPtrWrite).rawAddress), UnresolvedTypeLayout<T>()))) {
             if (nextRead != nextWrite) {
-                val ptrWrite = MutPtr((prevPtrWrite).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-                io.github.kotlinmania.rustlang.core.mem.swap(RustMutableReference(MutPtr((ptrRead).rawAddress), ObjectSlotLayout<T>()), RustMutableReference(MutPtr((ptrWrite).rawAddress), ObjectSlotLayout<T>()))
+                val ptrWrite = MutPtr((prevPtrWrite).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+                io.github.kotlinmania.rustlang.core.mem.swap(RustMutableReference(MutPtr((ptrRead).rawAddress), UnresolvedTypeLayout<T>()), RustMutableReference(MutPtr((ptrWrite).rawAddress), UnresolvedTypeLayout<T>()))
             }
             nextWrite += 1
         }
@@ -3580,7 +3580,7 @@ public fun <T> List<T>.rotateLeft(mid: Int) {
     // SAFETY: The range `[p.add(mid) - mid, p.add(mid) + k)` is trivially
     // valid for reading and writing, as required by `ptrRotate`.
     run {
-        ptrRotate(mid, MutPtr((p).rawAddress + ((mid).toLong() * (ObjectSlotLayout<T>()).strideBytes)), k)
+        ptrRotate(mid, MutPtr((p).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), k)
     }
 }
 
@@ -3625,7 +3625,7 @@ public fun <T> List<T>.rotateRight(k: Int) {
     // SAFETY: The range `[p.add(mid) - mid, p.add(mid) + k)` is trivially
     // valid for reading and writing, as required by `ptrRotate`.
     run {
-        ptrRotate(mid, MutPtr((p).rawAddress + ((mid).toLong() * (ObjectSlotLayout<T>()).strideBytes)), k)
+        ptrRotate(mid, MutPtr((p).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), k)
     }
 }
 
@@ -3689,7 +3689,7 @@ public fun <T> List<T>.rotateRight(k: Int) {
  * ```
  */
 public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
-    return when (val matchVal = rustCheckedSub(this.size, n)) {
+    return when (val matchVal = this.size.checkedSub(n)) {
         null -> {
             // SAFETY: Having checked that the slice is strictly shorter than the
             // inserted/returned arrays, it means we'll be copying the whole slice
@@ -3706,14 +3706,14 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
             run {
                 val len = this.size
                 val slice = this.asMutPtr()
-                val localStorageL4053C16 = AddressableLocal(inserted, ObjectSlotLayout<Any?>())
+                val localStorageL4053C16 = AddressableLocal(inserted, UnresolvedTypeLayout<Any?>())
                 val inserted1 by localStorageL4053C16
                 val inserted2 = ConstPtr(((localStorageL4053C16.asConstPtr())).rawAddress)
-                val returned = MaybeUninit.uninit(ObjectSlotLayout<List<T>>())
+                val returned = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
                 val ptr = returned.asMutPtr().cast()
                 ptr.copyFromNonoverlapping(slice, len)
                 ptr.add(len).copyFromNonoverlapping(inserted2, n - len)
-                kmCopyNonoverlapping((inserted2.add(n - len)).rawAddress, (slice).rawAddress, (len).toLong() * (ObjectSlotLayout<T>()).sizeBytes)
+                kmCopyNonoverlapping((inserted2.add(n - len)).rawAddress, (slice).rawAddress, (len).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
                 returned.assumeInit()
             }
         }
@@ -3731,8 +3731,8 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
             run {
                 val ptr1 = this.asMutPtr()
                 val returned1 = ptr1.castArray().read()
-                kmCopy((MutPtr((ptr1).rawAddress + ((n).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress, (ptr1).rawAddress, (shift).toLong() * (ObjectSlotLayout<T>()).sizeBytes)
-                MutPtr((ptr1).rawAddress + ((shift).toLong() * (ObjectSlotLayout<T>()).strideBytes)).castArray().write(inserted)
+                kmCopy((MutPtr((ptr1).rawAddress + ((n).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (ptr1).rawAddress, (shift).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
+                MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray().write(inserted)
                 returned1
             }
         }
@@ -3795,7 +3795,7 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
  * ```
  */
 public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int): List<T> {
-    return when (val matchVal = rustCheckedSub(this.size, n)) {
+    return when (val matchVal = this.size.checkedSub(n)) {
         null -> {
             // SAFETY: Having checked that the slice is strictly shorter than the
             // inserted/returned arrays, it means we'll be copying the whole slice
@@ -3812,14 +3812,14 @@ public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int): List<T> {
             run {
                 val len = this.size
                 val slice = this.asMutPtr()
-                val localStorageL4157C16 = AddressableLocal(inserted, ObjectSlotLayout<Any?>())
+                val localStorageL4157C16 = AddressableLocal(inserted, UnresolvedTypeLayout<Any?>())
                 val inserted1 by localStorageL4157C16
                 val inserted2 = ConstPtr(((localStorageL4157C16.asConstPtr())).rawAddress)
-                val returned = MaybeUninit.uninit(ObjectSlotLayout<List<T>>())
+                val returned = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
                 val ptr = returned.asMutPtr().cast()
                 ptr.add(n - len).copyFromNonoverlapping(slice, len)
                 ptr.copyFromNonoverlapping(inserted2.add(len), n - len)
-                kmCopyNonoverlapping((inserted2).rawAddress, (slice).rawAddress, (len).toLong() * (ObjectSlotLayout<T>()).sizeBytes)
+                kmCopyNonoverlapping((inserted2).rawAddress, (slice).rawAddress, (len).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
                 returned.assumeInit()
             }
         }
@@ -3836,8 +3836,8 @@ public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int): List<T> {
             // And none of this can panic, so there's no risk of intermediate unwinds.
             run {
                 val ptr1 = this.asMutPtr()
-                val returned1 = MutPtr((ptr1).rawAddress + ((shift).toLong() * (ObjectSlotLayout<T>()).strideBytes)).castArray().read()
-                kmCopy((ptr1).rawAddress, (MutPtr((ptr1).rawAddress + ((n).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress, (shift).toLong() * (ObjectSlotLayout<T>()).sizeBytes)
+                val returned1 = MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray().read()
+                kmCopy((ptr1).rawAddress, (MutPtr((ptr1).rawAddress + ((n).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (shift).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
                 ptr1.castArray().write(inserted)
                 returned1
             }
@@ -4034,9 +4034,9 @@ public fun <T, R : RangeBounds<Int<R>>> List<T>.copyWithin(src: R, dest: Int) {
     run {
         // Derive both `srcPtr` and `destPtr` from the same loan
         val ptr = this.asMutPtr()
-        val srcPtr = MutPtr((ptr).rawAddress + ((srcStart).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        val destPtr = MutPtr((ptr).rawAddress + ((dest).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        copy(srcPtr, destPtr, count)
+        val srcPtr = MutPtr((ptr).rawAddress + ((srcStart).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        val destPtr = MutPtr((ptr).rawAddress + ((dest).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        copy((srcPtr).asConstPtr(), destPtr, count)
     }
 }
 
@@ -4100,7 +4100,7 @@ public fun <T> List<T>.swapWithSlice(other: MutableList<T>) {
 /**
  * Function to calculate lengths of the middle and trailing slice for `alignTo { , _mut }`.
  */
-public fun <T, U> List<T>.alignToOffsets(typeLayoutT: TypeLayout<T>, typeLayoutU: TypeLayout<U>): Pair<Int, Int> {
+public fun <T, U> List<T>.alignToOffsets(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout()): Pair<Int, Int> {
     // What we gonna do about `rest` is figure out what multiple of `U`s we can put in a
     // lowest number of `T`s. And how many `T`s we need for each such "multiple".
     //
@@ -4171,9 +4171,9 @@ public fun <T, U> List<T>.alignToOffsets(typeLayoutT: TypeLayout<T>, typeLayoutU
  * }
  * ```
  */
-public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U>): Triple<List<T>, List<U>, List<T>> {
+public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout(), typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<List<T>, List<U>, List<T>> {
     // Note that most of this function will be constant-evaluated,
-    if (U.IS_ZST || T.IS_ZST) {
+    if (((typeLayoutU).sizeBytes == 0L) || ((typeLayoutT).sizeBytes == 0L)) {
         // handle ZSTs specially, which is – don't handle them at all.
         return Triple(this, listOf(), listOf())
     }
@@ -4189,7 +4189,7 @@ public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U>): Triple<List<T>, L
         val (usLen, tsLen) = rest.alignToOffsets<U>()
         // SAFETY: now `rest` is definitely aligned, so `fromRawParts` below is okay,
         // since the caller guarantees that we can reinterpret `T` to `U` safely.
-        Triple(left, rawSliceList(constPtrFromRustCast(rest.asPtr()), usLen.toInt(), typeLayoutU), rawSliceList(rest.asPtr().add(rest.len() - tsLen), tsLen.toInt(), PrimitiveLayouts.U8))
+        Triple(left, linearSliceView(constPtrFromRustCast(rest.asPtr()), usLen.toInt(), typeLayoutU), linearSliceView(rest.asPtr().add(rest.len() - tsLen), tsLen.toInt(), PrimitiveLayouts.U8))
     }
 }
 
@@ -4227,9 +4227,9 @@ public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U>): Triple<List<T>, L
  * }
  * ```
  */
-public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U>): Triple<MutableList<T>, MutableList<U>, MutableList<T>> {
+public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout(), typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, MutableList<U>, MutableList<T>> {
     // Note that most of this function will be constant-evaluated,
-    if (U.IS_ZST || T.IS_ZST) {
+    if (((typeLayoutU).sizeBytes == 0L) || ((typeLayoutT).sizeBytes == 0L)) {
         // handle ZSTs specially, which is – don't handle them at all.
         return Triple(this, listOf(), listOf())
     }
@@ -4253,7 +4253,7 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U>): Triple<Mutable
         val mutPtr = rest.asMutPtr()
         // We can't use `rest` again after this, that would invalidate its alias `mutPtr`!
         // SAFETY: see comments for `alignTo`.
-        Triple(left, rawMutSliceList(mutPtrFromRustCast(mutPtr), usLen.toInt(), typeLayoutU), rawMutSliceList(mutPtr.add(restLen - tsLen), tsLen.toInt(), PrimitiveLayouts.U8))
+        Triple(left, linearMutSliceView(mutPtrFromRustCast(mutPtr), usLen.toInt(), typeLayoutU), linearMutSliceView(mutPtr.add(restLen - tsLen), tsLen.toInt(), PrimitiveLayouts.U8))
     }
 }
 
@@ -4278,7 +4278,6 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U>): Triple<Mutable
  *
  * ```kotlin
  * import core.simd.prelude.*
- * import slice
  *
  * @feature(portableSimd)
  * public fun doctestEntry() {
@@ -4296,12 +4295,12 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U>): Triple<Mutable
  *     val it = prefix.iter().chain(suffix).copied()
  *     check(it.collect<Vec>() == mutableListOf(1, 2, 3))
  *     val numbers: List<Float> = (1 until 101).map({ x -> ((x as Any?) as Any?) }).toMutableList()
- *     check(basicSimdSum(((numbers).slice(1 until 99))) == 4949.0f.toFloat())
+ *     check(basicSimdSum(((numbers).subList(1, 99))) == 4949.0f.toFloat())
  * }
  * ```
  */
-public fun <T> List<T>.asSimd(lanes: Int, typeLayoutT: TypeLayout<T>): Triple<List<T>, List<Simd<T>>, List<T>> where T : SimdElement {
-    when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = ObjectSlotLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
+public fun <T> List<T>.asSimd(lanes: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<List<T>, List<Simd<T>>, List<T>> {
+    when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = UnresolvedTypeLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
         else -> {
             val leftVal = matchVal.first
             val rightVal = matchVal.second
@@ -4336,8 +4335,8 @@ public fun <T> List<T>.asSimd(lanes: Int, typeLayoutT: TypeLayout<T>): Triple<Li
  * be lifted in a way that would make it possible to see panics from this
  * method for something like `LANES == 3`.
  */
-public fun <T> List<T>.asSimdMut(lanes: Int, typeLayoutT: TypeLayout<T>): Triple<MutableList<T>, MutableList<Simd<T>>, MutableList<T>> where T : SimdElement {
-    when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = ObjectSlotLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
+public fun <T> List<T>.asSimdMut(lanes: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, MutableList<Simd<T>>, MutableList<T>> {
+    when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = UnresolvedTypeLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
         else -> {
             val leftVal = matchVal.first
             val rightVal = matchVal.second
@@ -4382,7 +4381,7 @@ public fun <T> List<T>.isSorted(): Boolean {
     var i = 0
     // Check in chunks for autovectorization.
     while (i < this.size - CHUNK_SIZE) {
-        val chunk = ((this).slice(i until i + CHUNK_SIZE))
+        val chunk = ((this).subList(i, i + CHUNK_SIZE))
         if (!chunk.windows(2).fold(true, { acc, w -> acc and (w[0] <= w[1]) })) {
             return false
         }
@@ -4390,7 +4389,7 @@ public fun <T> List<T>.isSorted(): Boolean {
         // Overlap the next chunk with the last element of our last chunk.
         i += CHUNK_SIZE - 1
     }
-    return ((this).slice(i until this.size)).windows(2).all({ w -> w[0] <= w[1] })
+    return ((this).subList(i, (this).size)).windows(2).all({ w -> w[0] <= w[1] })
 }
 
 /**
@@ -4769,7 +4768,7 @@ public fun <T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int): Lis
     // or generate worse code otherwise. This is also why we need to go
     // through a raw pointer here.
     val slice: MutPtr = this
-    val arr: MaybeUninit<List<Output>>  = MaybeUninit.uninit(ObjectSlotLayout<List<Output>>())
+    val arr: MaybeUninit<List<Output>>  = MaybeUninit.uninit(UnresolvedTypeLayout<List<Output>>())
     val arrPtr = arr.asMutPtr()
     // SAFETY: We expect `indices` to contain disjunct values that are
     // in bounds of `self`.
@@ -4837,10 +4836,10 @@ public fun <T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int): Lis
  * ```
  */
 public fun <T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Any?> {
-    when (val tryResult = getDisjointCheckValid(indices, this.size)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    when (val tryResult = getDisjointCheckValid(indices, this.size)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.error) }
     // SAFETY: The `getDisjointCheckValid()` call checked that all indices
     // are disjunct and in bounds.
-    return Result.Ok(this.getDisjointUncheckedMut(indices))
+    return Result.Ok<List<Output>, GetDisjointMutError>(this.getDisjointUncheckedMut(indices))
 }
 
 /**
@@ -4869,13 +4868,11 @@ public fun <T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<
  * ```kotlin
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
- * import slice
- *
  * public fun doctestEntry() {
  *     val arr: List<UIntArray> = listOf(uintArrayOf(0u, 1u), uintArrayOf(2u, 3u))
  *     val flatArr: List<UInt> = arr.asFlattened()
- *     val okElm: UIntArray = ((flatArr).slice(0 until 2)).toUIntArray()
- *     val weirdElm: UIntArray = ((flatArr).slice(1 until 3)).toUIntArray()
+ *     val okElm: UIntArray = ((flatArr).subList(0, 2)).toUIntArray()
+ *     val weirdElm: UIntArray = ((flatArr).subList(1, 3)).toUIntArray()
  *     check(okElm == listOf(0, 1))
  *     check(weirdElm == listOf(1, 2))
  *     check(arr.elementOffset(okElm) == 0)
@@ -4885,8 +4882,8 @@ public fun <T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<
  * }
  * ```
  */
-public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T>): Int? {
-    if (T.IS_ZST) {
+public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int? {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         error("elements are zero-sized")
     }
     val selfStart = (this.asPtr()).rawAddress.toInt()
@@ -4938,7 +4935,6 @@ public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T>): In
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * import ops.Range
- * import slice
  *
  * public fun doctestEntry() {
  *     val arr: List<UByteArray> = listOf(ubyteArrayOf(0u, 1u, 2u, 3u), ubyteArrayOf(4u, 5u, 6u, 7u))
@@ -4946,22 +4942,22 @@ public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T>): In
  *     // This sub-slice is aligned with the first element of `arr`:
  *     // &[[0, 1, 2, 3], [4, 5, 6, 7]]
  *     // &[[0, 1, 2, 3]]
- *     val alignedElem: UByteArray = ((flattened).slice(0 until 4)).toUByteArray()
+ *     val alignedElem: UByteArray = ((flattened).subList(0, 4)).toUByteArray()
  *     val alignedSlice: List<UByteArray> = alignedElem
  *     // `alignedSlice` is `arr[0 .. 1]`
  *     check(arr.subsliceRange(alignedSlice) == Range(start = 0, end = 1))
  *     // This sub-slice is **not** aligned to the elements of `arr`, despite pointing inside it:
  *     // &[[0, 1, 2, 3], [4, 5, 6, 7]]
  *     // &[[1, 2, 3,   4]]
- *     val misalignedElem: UByteArray = ((flattened).slice(1 until 5)).toUByteArray()
+ *     val misalignedElem: UByteArray = ((flattened).subList(1, 5)).toUByteArray()
  *     val misalignedSlice: List<UByteArray> = misalignedElem
  *     // `misalignedSlice` has no corresponding slice of `arr`
  *     check(arr.subsliceRange(misalignedSlice) == null)
  * }
  * ```
  */
-public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<T>): range.Range<Int>? {
-    if (T.IS_ZST) {
+public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): range.Range<Int>? {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         error("elements are zero-sized")
     }
     val selfStart = (this.asPtr()).rawAddress.toInt()
@@ -5010,6 +5006,7 @@ public fun <T> List<T>.asMutSlice(): MutableList<T> = this
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import mem.MaybeUninit
  *
@@ -5020,7 +5017,7 @@ public fun <T> List<T>.asMutSlice(): MutableList<T> = this
  *             return BumpAllocator(memory = memory)
  *         }
  *
- *         public open fun <T> tryAllocUninit(typeLayoutT: TypeLayout<T>): MaybeUninit<T>? {
+ *         public open fun <T> tryAllocUninit(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T>? {
  *             val firstEnd = this.memory.asPtr().alignOffset(alignOf<T>(typeLayoutT = typeLayoutT)) + sizeOf<T>(typeLayoutT = typeLayoutT)
  *             val prefix = (this.memory.splitOffMut(0 until firstEnd) ?: return null)
  *             return prefix.alignToUninitMut<T>().second[0]
@@ -5078,17 +5075,17 @@ public fun <T, U> List<MaybeUninit<T>>.alignToUninitMut(): Triple<List<MaybeUnin
  * }
  * ```
  */
-public fun <T> List<List<T>>.asFlattened(n: Int): List<T> {
+public fun <T> List<List<T>>.asFlattened(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     val len =
-        if (T.IS_ZST) {
-            (rustCheckedMul(this.size, n) ?: error("slice len overflow"))
+        if (((typeLayoutT).sizeBytes == 0L)) {
+            (this.size.checkedMul(n) ?: error("slice len overflow"))
         } else {
             // SAFETY: `self.len() * N` cannot overflow because `self` is
             // already in the address space.
             this.size.uncheckedMul(n)
         }
     // SAFETY: `[T]` is layout-identical to `[T; N]`
-    return rawSliceList(ConstPtr((this.asPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(ConstPtr((this.asPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -5122,17 +5119,17 @@ public fun <T> List<List<T>>.asFlattened(n: Int): List<T> {
  * check(array == listOf(listOf(6, 7, 8), listOf(9, 10, 11), listOf(12, 13, 14)))
  * ```
  */
-public fun <T> List<List<T>>.asFlattenedMut(n: Int): MutableList<T> {
+public fun <T> List<List<T>>.asFlattenedMut(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
     val len =
-        if (T.IS_ZST) {
-            (rustCheckedMul(this.size, n) ?: error("slice len overflow"))
+        if (((typeLayoutT).sizeBytes == 0L)) {
+            (this.size.checkedMul(n) ?: error("slice len overflow"))
         } else {
             // SAFETY: `self.len() * N` cannot overflow because `self` is
             // already in the address space.
             this.size.uncheckedMul(n)
         }
     // SAFETY: `[T]` is layout-identical to `[T; N]`
-    return rawMutSliceList(MutPtr((this.asMutPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(MutPtr((this.asMutPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -5168,7 +5165,7 @@ public fun <T> List<T>.specCloneFrom(src: List<T>) {
     // to make it easier for the optimizer to elide bounds checking.
     // But since it can't be relied on we also have an explicit specialization for T: Copy.
     val len = this.size
-    val src1 = ((src).slice(0 until len))
+    val src1 = ((src).subList(0, len))
     for (i in 0 until len) {
         this[i].cloneFrom(src1[i])
     }

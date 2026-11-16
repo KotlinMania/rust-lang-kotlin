@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.std.os.windows.ffi
 
 import io.github.kotlinmania.rustlang.alloc.wtf8.Wtf8Buf
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.sys.FromInner
@@ -137,9 +139,7 @@ public open class EncodeWide(
 
     public open fun clone(): EncodeWide = EncodeWide(inner)
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 
     public open fun next(): UShort? = this.inner.next()
 

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.process.unsupported
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
@@ -100,7 +101,7 @@ public open class Command(
     public open fun spawn(default: Stdio, needsStdin: Boolean): Result<Pair<Process, StdioPipes>, Error> = unsupported()
 
     // show all attributes
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         if (f.alternate()) {
             val debugCommand = DebugStruct(f, "Command")
             debugCommand.field("program", this.program).field("args", this.args)
@@ -155,11 +156,11 @@ public open class Command(
                 f.append("[${this.program}] ")
             }
             f.append("${this.args[0]}")
-            for (arg in ((this.args).slice(1 until this.args.size))) {
+            for (arg in ((this.args).subList(1, (this.args).size))) {
                 f.append(" $arg")
             }
+            Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
         }
-    }
 
     public companion object {
         public fun new(program: OsStr): Command = Command(program = program.toOwned(), args = mutableListOf(program.toOwned()), env = Default.default(), cwd = null, stdin = null, stdout = null, stderr = null)
@@ -191,13 +192,11 @@ public fun output(cmd: Command): Result<Triple<ExitStatus, List<UByte>, List<UBy
 public open class ExitStatus {
     public open fun clone(): ExitStatus = ExitStatus()
 
-    public open fun exitOk(): Result<Unit, ExitStatusError> = Result.Ok(Unit)
+    public open fun exitOk(): Result<Unit, ExitStatusError> = Result.Ok<Unit, ExitStatusError>(Unit)
 
     public open fun code(): Int? = 0
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("<dummy exit status>")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("<dummy exit status>"); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<ExitStatus> =
@@ -229,13 +228,11 @@ public open class ExitStatusError(
 
     public open fun eq(other: ExitStatusError): Boolean = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public open fun into(): ExitStatus = this.value
 
-    public open fun code(): NonZero<Int>? = this.value
+    public open fun code(): NonZero<Int, NonZeroI32Inner>? = this.value
 }
 
 public open class ExitCode(
@@ -321,9 +318,7 @@ public open class CommandArgs internal constructor(
 
     public open fun isEmpty(): Boolean = this.iter.isEmpty()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(ArrayDeque(this.iter)).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(ArrayDeque(this.iter)).finish()
 
     public companion object {
         public operator fun invoke(

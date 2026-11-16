@@ -1,18 +1,18 @@
 // port-lint: source new/apple/xnu/sys/sockio.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.sockio
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.Ifaliasreq
-import io.github.kotlinmania.rustlang.libc.Ifconf
-import io.github.kotlinmania.rustlang.libc.Ifreq
 import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.IOC_IN
 import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.IOC_INOUT
 import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.ioc
 import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.ior
 import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iow
 import io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom.iowr
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Ifaliasreq
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Ifconf
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Ifreq
 
 // Header: `sys / sockio.h`
 //

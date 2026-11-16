@@ -3,8 +3,10 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -22,9 +24,9 @@ public typealias Source<I> = I.Source
  */
 public open class ArrayChunks<I> internal constructor(
     public var iter: I,
-    remainderCtorArg: IntoIter<Item, N>?,
+    remainderCtorArg: IntoIter<Item>?,
 ) {
-    public var remainder: IntoIter<Item, N>? = remainderCtorArg
+    public var remainder: IntoIter<Item>? = remainderCtorArg
         internal set
 
     public open fun clone(): ArrayChunks<I> = ArrayChunks(iter, remainder)
@@ -32,7 +34,7 @@ public open class ArrayChunks<I> internal constructor(
     public companion object {
         public operator fun <I> invoke(
             iter: I,
-            remainder: IntoIter<Item, N>?,
+            remainder: IntoIter<Item>?,
         ): ArrayChunks<I> = ArrayChunks<I>(
             iter = iter,
             remainderCtorArg = remainder,
@@ -40,7 +42,7 @@ public open class ArrayChunks<I> internal constructor(
     }
 }
 
-public fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I, N> {
+public fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I> {
     check(n != 0) { "chunk size must be non-zero" }
     return ArrayChunks(iter = iter, remainder = null)
 }
@@ -58,7 +60,7 @@ public fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I, 
  * check(rem.next() == null)
  * ```
  */
-public fun <Item, I> ArrayChunks<I, N>.intoRemainder(n: Int): IntoIter<Item> {
+public fun <Item, I> ArrayChunks<I>.intoRemainder(n: Int): IntoIter<Item> {
     if (this.remainder == null) {
         while (true) {
             val matchVal = this.next()
@@ -68,24 +70,24 @@ public fun <Item, I> ArrayChunks<I, N>.intoRemainder(n: Int): IntoIter<Item> {
     return this.remainder.unwrapOrDefault()
 }
 
-public fun <Item, I> ArrayChunks<I, N>.next(n: Int): List<Item>? = this.tryForEach(ControlFlow.Break).breakValue()
+public fun <Item, I> ArrayChunks<I>.next(n: Int): List<Item>? = this.tryForEach(ControlFlow.Break).breakValue()
 
-public fun <Item, I> ArrayChunks<I, N>.sizeHint(n: Int): Pair<Int, Int?> {
+public fun <Item, I> ArrayChunks<I>.sizeHint(n: Int): Pair<Int, Int?> {
     val (lower, upper) = this.iter.sizeHint()
     return Pair(lower / n, upper.map({ n -> n / n }))
 }
 
-public fun <Item, I> ArrayChunks<I, N>.count(n: Int): Int = this.iter.count() / n
+public fun <Item, I> ArrayChunks<I>.count(n: Int): Int = this.iter.count() / n
 
-public fun <Item, I, B, R> ArrayChunks<I, N>.tryFold(init: B, f: (B, List<I.Item>) -> R, n: Int): R where R : Try<R, B, Any?> {
+public fun <Item, I, B, R> ArrayChunks<I>.tryFold(init: B, f: (B, List<Item>) -> R, n: Int): R where R : Try<R, B, Any?> {
     var acc = init
     while (true) {
         run {
             val matchVal = this.iter.nextChunk()
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 val chunk = matchVal.value
-                acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            }; is Result.Err<*> -> {
+                acc = when (val tryResult = f(acc, chunk)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            }; is Result.Err -> {
                 val remainder = matchVal.error
                 // Make sure to not overwrite `self.remainder` with an empty array
                 // when `next` is called after `ArrayChunks` exhaustion.
@@ -96,11 +98,11 @@ public fun <Item, I, B, R> ArrayChunks<I, N>.tryFold(init: B, f: (B, List<I.Item
     }
 }
 
-public fun <Item, I, B> ArrayChunks<I, N>.fold(init: B, f: (B, List<I.Item>) -> B, n: Int): B = ArrayChunks.fold(this, init, f)
+public fun <Item, I, B> ArrayChunks<I>.fold(init: B, f: (B, List<Item>) -> B, n: Int): B = ArrayChunks.fold(this, init, f)
 
-public fun <I> ArrayChunks<I, N>.nextBack(n: Int): Item? = this.tryRfold({ x -> ControlFlow.Break(x) }).breakValue()
+public fun <I> ArrayChunks<I>.nextBack(n: Int): Item? = this.tryRfold({ x -> ControlFlow.Break(x) }).breakValue()
 
-public fun <I, B, R> ArrayChunks<I, N>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> {
+public fun <I, B, R> ArrayChunks<I>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> {
     // We are iterating from the back we need to first handle the remainder.
     this.nextBackRemainder()
     var acc = init
@@ -109,19 +111,19 @@ public fun <I, B, R> ArrayChunks<I, N>.tryRfold(init: B, f: (B, Item) -> R, n: I
     // (assuming correct `I as ExactSizeIterator` impl).
     while (true) {
         val matchVal = this.iter.nextChunkBack()
-        if (matchVal !is Result.Ok<*>) break
-        val chunk = (matchVal as Result.Ok<*>).value
-        acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        if (matchVal !is Result.Ok) break
+        val chunk = (matchVal as Result.Ok).value
+        acc = when (val tryResult = f(acc, chunk)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return acc
 }
 
-public fun <I, Aaa> ArrayChunks<I, N>.rfold(init: Aaa, fold: (Aaa, Item) -> Aaa, n: Int): Aaa = this.tryRfold(init, NeverShortCircuit.wrapMut2(fold)).first
+public fun <I, Aaa> ArrayChunks<I>.rfold(init: Aaa, fold: (Aaa, Item) -> Aaa, n: Int): Aaa = this.tryRfold(init, NeverShortCircuit.wrapMut2(fold)).first
 
 /**
  * Updates `self.remainder` such that `self.iter.len` is divisible by `N`.
  */
-public fun <I> ArrayChunks<I, N>.nextBackRemainder(n: Int) {
+public fun <I> ArrayChunks<I>.nextBackRemainder(n: Int) {
     // Make sure to not override `self.remainder` with an empty array
     // when `nextBack` is called after `ArrayChunks` exhaustion.
     if (this.remainder != null) {
@@ -137,24 +139,24 @@ public fun <I> ArrayChunks<I, N>.nextBackRemainder(n: Int) {
     this.remainder = remainder
 }
 
-public fun <I> ArrayChunks<I, N>.len(n: Int): Int = this.iter.len() / n
+public fun <I> ArrayChunks<I>.len(n: Int): Int = this.iter.len() / n
 
-public fun <I> ArrayChunks<I, N>.isEmpty(n: Int): Boolean = this.iter.len() < n
+public fun <I> ArrayChunks<I>.isEmpty(n: Int): Boolean = this.iter.len() < n
 
 public interface SpecFold<T> {
     public fun <B> fold(init: B, f: (B, Item) -> B): B
 }
 
-public fun <Item, I, B> ArrayChunks<I, N>.fold(init: B, f: (B, Item) -> B, n: Int): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
+public fun <Item, I, B> ArrayChunks<I>.fold(init: B, f: (B, Item) -> B, n: Int): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
 
-public fun <Source, Item, I> ArrayChunks<I, N>.asInner(n: Int): Source where I : SourceIter<Any?> {
+public fun <Source, Item, I> ArrayChunks<I>.asInner(n: Int): Source where I : SourceIter<Any?> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
     return this.iter.asInner()
 }
 
-public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-public val MERGE_BY: NonZero<Int>? = run {
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = run {
     val matchVal = Pair(I.MERGE_BY, NonZero.new(N))
     when {
         matchVal.first != null && matchVal.second != null -> {

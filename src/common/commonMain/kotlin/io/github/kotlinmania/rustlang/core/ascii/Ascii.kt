@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.ascii
 
 import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
 import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -80,11 +81,11 @@ public open class EscapeDefault internal constructor(
 
     public open fun last(): UByte? = this.value.nextBack()
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun nextBack(): UByte? = this.value.nextBack()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 

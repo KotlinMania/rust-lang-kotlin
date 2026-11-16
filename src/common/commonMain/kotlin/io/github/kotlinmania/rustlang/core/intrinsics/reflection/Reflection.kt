@@ -1,9 +1,8 @@
 // port-lint: source intrinsics/reflection.rs
 package io.github.kotlinmania.rustlang.core.intrinsics.reflection
 
-import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.any.TypeId
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmute
 
 // Intrinsics for compile time reflection
 //
@@ -20,5 +19,5 @@ import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 public fun typeIdEq(a: TypeId, b: TypeId): Boolean {
     // SAFETY: we know `TypeId` is 16 bytes of initialized data.
     // This is runtime-only code so we do not have to worry about provenance.
-    return transmute<U128>(a) == transmute<U128>(b)
+    return transmute(a) == transmute(b)
 }

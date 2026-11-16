@@ -19,7 +19,7 @@ public typealias Item<I> = I.Item
  */
 public open class FromIter<I>(
     public var iter: I,
-) : AsyncIterator<Any?, Item> {
+) : AsyncIterator<Item> {
     public open fun clone(): FromIter<I> = FromIter(iter)
 
     public override fun pollNext(cx: Context): Poll<Item?> = Poll.Ready(this.iter.next())

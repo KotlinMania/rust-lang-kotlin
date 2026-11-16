@@ -1,8 +1,10 @@
 // port-lint: source thread/id.rs
 package io.github.kotlinmania.rustlang.std.thread.id
 
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -35,12 +37,12 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
  * ```
  */
 public open class ThreadId internal constructor(
-    valueCtorArg: NonZero<ULong>,
+    valueCtorArg: NonZero<ULong, NonZeroU64Inner>,
 ) {
-    public var value: NonZero<ULong> = valueCtorArg
+    public var value: NonZero<ULong, NonZeroU64Inner> = valueCtorArg
         internal set
 
-    public var field0: NonZero<ULong>
+    public var field0: NonZero<ULong, NonZeroU64Inner>
         get() = value
         set(v) {
             value = v
@@ -58,11 +60,11 @@ public open class ThreadId internal constructor(
      * it is not guaranteed which values new threads will return, and this may
      * change across Rust versions.
      */
-    public open fun asU64(): NonZero<ULong> = this.value
+    public open fun asU64(): NonZero<ULong, NonZeroU64Inner> = this.value
 
     public companion object {
         public operator fun invoke(
-            value: NonZero<ULong>,
+            value: NonZero<ULong, NonZeroU64Inner>,
         ): ThreadId = ThreadId(
             valueCtorArg = value,
         )
@@ -72,15 +74,15 @@ public open class ThreadId internal constructor(
             fun exhausted(): Nothing {
                 error("failed to generate unique thread ID: bitspace exhausted")
             }
-            val COUNTER: Atomic<ULong>  = AtomicU64.new(0)
+            val COUNTER: Atomic<ULong, Align8<ULong>>  = AtomicU64.new(0)
             var last = COUNTER.load(Ordering.Relaxed)
             while (true) {
                 val id = last.checkedAdd(1) ?: exhausted()
                 run {
                     val matchVal = COUNTER.compareExchangeWeak(last, id, Ordering.Relaxed, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
-                        return ThreadId(NonZero.new(id).unwrap())
-                    }; is Result.Err<*> -> {
+                    when (matchVal) { is Result.Ok -> {
+                        return ThreadId(NonZero.new(id)!!)
+                    }; is Result.Err -> {
                         val id1 = matchVal.error
                         last = id1
                     } }
@@ -88,6 +90,6 @@ public open class ThreadId internal constructor(
             }
         }
 
-        public fun fromU64(v: ULong): ThreadId? = NonZero.new(v).map({ ThreadId(it) })
+        public fun fromU64(v: ULong): ThreadId? = (NonZero.new<NonZeroU64Inner, ULong>(v))?.let({ ThreadId(it) })
     }
 }

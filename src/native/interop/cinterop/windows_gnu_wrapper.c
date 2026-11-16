@@ -71,8 +71,8 @@ int32_t libcWindowsGnuStrncasecmp(const char* s1, const char* s2, uint64_t n) {
     return -1;
 }
 
-void* libcWindowsGnuWmemchr(void* cx, int32_t c, uint64_t n) {
-    typedef void* (*km_fn_t)(void*, int32_t, uint64_t);
+void* libcWindowsGnuWmemchr(void* cx, uint16_t c, uint64_t n) {
+    typedef void* (*km_fn_t)(void*, uint16_t, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {

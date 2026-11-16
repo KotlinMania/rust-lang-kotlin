@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
+
 public fun testMm512Permutex2varEpi8() {
     val a = mm512SetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63)
     val idx = mm512SetEpi8(1, (1 shl 6).toByte(), 2, (1 shl 6).toByte(), 3, (1 shl 6).toByte(), 4, (1 shl 6).toByte(), 5, (1 shl 6).toByte(), 6, (1 shl 6).toByte(), 7, (1 shl 6).toByte(), 8, (1 shl 6).toByte(), 9, (1 shl 6).toByte(), 10, (1 shl 6).toByte(), 11, (1 shl 6).toByte(), 12, (1 shl 6).toByte(), 13, (1 shl 6).toByte(), 14, (1 shl 6).toByte(), 15, (1 shl 6).toByte(), 16, (1 shl 6).toByte(), 17, (1 shl 6).toByte(), 18, (1 shl 6).toByte(), 19, (1 shl 6).toByte(), 20, (1 shl 6).toByte(), 21, (1 shl 6).toByte(), 22, (1 shl 6).toByte(), 23, (1 shl 6).toByte(), 24, (1 shl 6).toByte(), 25, (1 shl 6).toByte(), 26, (1 shl 6).toByte(), 27, (1 shl 6).toByte(), 28, (1 shl 6).toByte(), 29, (1 shl 6).toByte(), 30, (1 shl 6).toByte(), 31, (1 shl 6).toByte(), 32, (1 shl 6).toByte())
@@ -136,7 +138,7 @@ public fun testMm512PermutexvarEpi8() {
     val a = transmute(aArr)
     val r = mm512PermutexvarEpi8(idx, a)
     val eArr = fromFn({ i -> aArr[(idxArr[i] and 0x3Fu.toUByte()).toInt()] })
-    val e = transmute<ByteArray>(eArr)
+    val e = transmute(eArr)
     assertEqM512i(r, e)
 }
 
@@ -167,7 +169,7 @@ public fun testMm256PermutexvarEpi8() {
     val a = transmute(aArr)
     val r = mm256PermutexvarEpi8(idx, a)
     val eArr = fromFn({ i -> aArr[(idxArr[i] and 0x1Fu.toUByte()).toInt()] })
-    val e = transmute<ByteArray>(eArr)
+    val e = transmute(eArr)
     assertEqM256i(r, e)
 }
 
@@ -198,7 +200,7 @@ public fun testMmPermutexvarEpi8() {
     val a = transmute(aArr)
     val r = mmPermutexvarEpi8(idx, a)
     val eArr = fromFn({ i -> aArr[(idxArr[i] and 0xFu.toUByte()).toInt()] })
-    val e = transmute<ByteArray>(eArr)
+    val e = transmute(eArr)
     assertEqM128i(r, e)
 }
 

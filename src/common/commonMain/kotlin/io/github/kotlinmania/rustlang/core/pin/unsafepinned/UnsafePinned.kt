@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.pin.unsafepinned
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -55,13 +56,13 @@ public class DebugStruct(
  */
 public open class UnsafePinned<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UnsafeCell<T>>,
+    public val fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout(),
 ) {
     public var value: UnsafeCell<T>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<UnsafePinned<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafePinned<T>(ptr, layout) }, { it.value })
 
@@ -136,9 +137,9 @@ public open class UnsafePinned<T> internal constructor(
     // @unstable(feature = "unsafePinned", issue = "125735")
 
     public companion object {
-        public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>>): UnsafePinned<T> = UnsafePinned<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): UnsafePinned<T> = UnsafePinned<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<T>>): UnsafePinned<T> = UnsafePinned<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): UnsafePinned<T> = UnsafePinned<T>(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of `UnsafePinned` which will wrap the specified value.
@@ -146,7 +147,7 @@ public open class UnsafePinned<T> internal constructor(
          * All access to the inner value through `UnsafePinned<T>` or `UnsafePinned<T>` or
          * `Pin<UnsafePinned<T>>` requires `unchecked` code.
          */
-        public fun <T> new(value: T, fieldLayout: TypeLayout<T>): UnsafePinned<T> = UnsafePinned(value = UnsafeCell.new(value), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T>(ptr, layout) }, { it.value }))
+        public fun <T> new(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): UnsafePinned<T> = UnsafePinned(value = UnsafeCell.new(value), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T>(ptr, layout) }, { it.value }))
 
         /**
          * Gets an immutable pointer to the wrapped value.
@@ -172,11 +173,11 @@ public open class UnsafePinned<T> internal constructor(
         /**
          * Creates an `UnsafePinned`, with the `Default` value for T.
          */
-        public fun <T> default(fieldLayout: TypeLayout<T>, defaultTFn: () -> T): UnsafePinned<T> = UnsafePinned.new(defaultTFn(), fieldLayout = fieldLayout)
+        public fun <T> default(fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(), defaultTFn: () -> T): UnsafePinned<T> = UnsafePinned.new(defaultTFn(), fieldLayout = fieldLayout)
 
         /**
          * Creates a new `UnsafePinned<T>` containing the given value.
          */
-        public fun <T> from(value: T, fieldLayout: TypeLayout<T>): UnsafePinned<T> = UnsafePinned.new(value, fieldLayout = fieldLayout)
+        public fun <T> from(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): UnsafePinned<T> = UnsafePinned.new(value, fieldLayout = fieldLayout)
     }
 }

@@ -1,30 +1,32 @@
 // port-lint: source vec/into_iter.rs
 package io.github.kotlinmania.rustlang.alloc.vec.intoiter
 
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -91,9 +93,7 @@ public open class IntoIter<T, A : Allocator>(
     // Manually mirroring what `List` has,
     // because otherwise we get `T: RefUnwindSafe` from `NonNull`.
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IntoIter").field(this.asSlice()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.asSlice()).finish()
 
     /**
      * Returns the remaining items of this iterator as a slice.
@@ -110,7 +110,7 @@ public open class IntoIter<T, A : Allocator>(
      */
     public open fun asSlice(): List<T> {
         // ignore-tidy-undocumented-unchecked
-        return rawSliceList(this.ptr.asPtr(), this.len().toInt(), PrimitiveLayouts.U8)
+        return Slice.fromRawParts(this.ptr.asPtr(), this.len())
     }
 
     /**
@@ -222,12 +222,12 @@ public open class IntoIter<T, A : Allocator>(
         RawVec.fromNonnullIn(this.buf, this.cap, alloc)
     }
 
-    public open fun intoVecdeque(): VecDeque<T, A> {
+    public open fun intoVecdeque(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): VecDeque<T, A> {
         // Keep our `Drop` impl from dropping the elements and the allocator
         val thisRef = this
         val buf = thisRef.buf.asPtr()
         val initialized =
-            if (T.IS_ZST || thisRef.len() == 0) {
+            if (((typeLayoutT).sizeBytes == 0L) || thisRef.len() == 0) {
                 // All the pointers are the same for ZSTs, so it's fine to
                 // say that they're all at the beginning of the "allocation".
                 // For non-ZSTs, we have length 0, so we can choose the (empty)
@@ -261,9 +261,9 @@ public open class IntoIter<T, A : Allocator>(
 
     public open fun asRef(): List<T> = this.asSlice()
 
-    public open fun next(typeLayoutT: TypeLayout<T>): T? {
+    public open fun next(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? {
         val ptr =
-            if (T.IS_ZST) {
+            if (((typeLayoutT).sizeBytes == 0L)) {
                 if (((this.ptr.asPtr()).rawAddress.toULong() == ((this.end).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong())) {
                     return null
                 }
@@ -272,7 +272,7 @@ public open class IntoIter<T, A : Allocator>(
                 this.end = ConstPtr((this.end).rawAddress - ((1).toLong()))
                 this.ptr
             } else {
-                if (this.ptr == (ObjectSlotLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
+                if (this.ptr == (UnresolvedTypeLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
                     return null
                 }
                 val old = this.ptr
@@ -284,21 +284,21 @@ public open class IntoIter<T, A : Allocator>(
         return ptr.read()
     }
 
-    public open fun sizeHint(typeLayoutT: TypeLayout<T>): Pair<Int, Int?> {
+    public open fun sizeHint(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Pair<Int, Int?> {
         val exact =
-            if (T.IS_ZST) {
+            if (((typeLayoutT).sizeBytes == 0L)) {
                 (this.end).rawAddress.toInt().wrappingSub(this.ptr.asPtr().addr())
             } else {
                 // ignore-tidy-undocumented-unchecked
-                (ObjectSlotLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress).offsetFromUnsigned(this.ptr)
+                (UnresolvedTypeLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress).offsetFromUnsigned(this.ptr)
             }
         return Pair(exact, exact)
     }
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBy(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val stepSize = this.len().min(n)
         val toDrop = this.ptr.asPtr().castSlice(stepSize)
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             // See `next` for why we sub `end` here.
             this.end = ConstPtr((this.end).rawAddress - ((stepSize).toLong()))
         } else {
@@ -309,47 +309,47 @@ public open class IntoIter<T, A : Allocator>(
         run {
             dropInPlace(toDrop)
         }
-        return NonZero.new(n - stepSize).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - stepSize))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public open fun count(): Int = this.len()
 
     public open fun last(): T? = this.nextBack()
 
-    public open fun nextChunk(n: Int): Result<List<T>, IntoIter<T>> {
-        val rawAry = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, IntoIter<T>>>()) }
+    public open fun nextChunk(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
+        val rawAry = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
         val len = this.len()
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
-            return Result.Ok(rawAry.transpose().assumeInit())
+            return Result.Ok<List<T>, IntoIter<T>>(rawAry.transpose().assumeInit())
         }
         if (len < n) {
             // SAFETY: `len` indicates that this many elements are available and we
             // just checked that it fits into the array.
             run {
-                copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
+                copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
         // the array.
         return run {
-            copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), n)
+            copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), n)
             this.ptr = this.ptr.add(n)
-            Result.Ok(rawAry.transpose().assumeInit())
+            Result.Ok<List<T>, IntoIter<T>>(rawAry.transpose().assumeInit())
         }
     }
 
-    public open fun <B> fold(accum: B, f: (B, T) -> B, typeLayoutT: TypeLayout<T>): B {
+    public open fun <B> fold(accum: B, f: (B, T) -> B, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): B {
         var accum1 = accum
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             while (((this.ptr.asPtr()).rawAddress.toULong() != (MutPtr((this.end).rawAddress)).rawAddress.toULong())) {
                 // SAFETY: we just checked that `self.ptr` is in bounds.
                 val tmp = this.ptr.read()
@@ -359,7 +359,7 @@ public open class IntoIter<T, A : Allocator>(
             }
         } else {
             // SAFETY: `self.end` can only be null if `T` is a ZST.
-            while (this.ptr != (ObjectSlotLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
+            while (this.ptr != (UnresolvedTypeLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
                 // SAFETY: we just checked that `self.ptr` is in bounds.
                 val tmp1 = this.ptr.read()
                 // SAFETY: the maximum this can be is `self.end`.
@@ -375,25 +375,25 @@ public open class IntoIter<T, A : Allocator>(
         return accum1
     }
 
-    public open fun <B, R> tryFold(accum: B, f: (B, T) -> R, typeLayoutT: TypeLayout<T>, fromOutputRFn: (B) -> R): R where R : Try<B> {
+    public open fun <B, R> tryFold(accum: B, f: (B, T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), fromOutputRFn: (B) -> R): R where R : Try<B> {
         var accum1 = accum
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             while (((this.ptr.asPtr()).rawAddress.toULong() != (MutPtr((this.end).rawAddress)).rawAddress.toULong())) {
                 // SAFETY: we just checked that `self.ptr` is in bounds.
                 val tmp = this.ptr.read()
                 // See `next` for why we subtract from `end` here.
                 this.end = ConstPtr((this.end).rawAddress - ((1).toLong()))
-                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             }
         } else {
             // SAFETY: `self.end` can only be null if `T` is a ZST.
-            while (this.ptr != (ObjectSlotLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
+            while (this.ptr != (UnresolvedTypeLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
                 // SAFETY: we just checked that `self.ptr` is in bounds.
                 val tmp1 = this.ptr.read()
                 // SAFETY: the maximum this can be is `self.end`.
                 // Increment `self.ptr` first to avoid double dropping in the event of a panic.
                 this.ptr = this.ptr.add(1)
-                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             }
         }
         return fromOutputRFn(accum1)
@@ -411,8 +411,8 @@ public open class IntoIter<T, A : Allocator>(
         return this.ptr.add(i).read()
     }
 
-    public open fun nextBack(typeLayoutT: TypeLayout<T>): T? {
-        return if (T.IS_ZST) {
+    public open fun nextBack(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? {
+        return if (((typeLayoutT).sizeBytes == 0L)) {
             if (((this.ptr.asPtr()).rawAddress.toULong() == ((this.end).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong())) {
                 return null
             }
@@ -422,9 +422,9 @@ public open class IntoIter<T, A : Allocator>(
             // `self.end`. We track our length using the byte offset from `self.ptr` to `self.end`,
             // so the end pointer may not be suitably aligned for T.
             // ignore-tidy-undocumented-unchecked
-            read(this.ptr.asPtr())
+            read((this.ptr.asPtr()).asConstPtr())
         } else {
-            if (this.ptr == (ObjectSlotLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
+            if (this.ptr == (UnresolvedTypeLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)) {
                 return null
             }
             // ignore-tidy-undocumented-unchecked
@@ -435,48 +435,48 @@ public open class IntoIter<T, A : Allocator>(
         }
     }
 
-    public open fun nextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
-        val rawAry = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, IntoIter<T>>>()) }
+    public open fun nextChunkBack(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
+        val rawAry = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
         val len = this.len()
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             if (len < n) {
                 this.forgetRemainingElements()
                 // SAFETY: ZSTs can be conjured ex nihilo, only the amount has to be correct
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, n - len until n))
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
-            return Result.Ok(MaybeUninit.arrayAssumeInit(rawAry))
+            return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry))
         }
         if (len < n) {
             // SAFETY: `len` indicates that this many elements are available
             // and we just checked that it fits into the array.
             run {
-                copyNonoverlapping(this.ptr.asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
+                copyNonoverlapping((this.ptr.asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), len)
                 this.forgetRemainingElements()
-                return Result.Err(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
+                return Result.Err<List<T>, IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawAry, 0 until len))
             }
         }
         // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
         // the array.
         return run {
-            copyNonoverlapping(this.ptr.add(len - n).asPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), n)
-            this.end = ConstPtr((this.end).rawAddress - ((n).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-            Result.Ok(MaybeUninit.arrayAssumeInit(rawAry))
+            copyNonoverlapping((this.ptr.add(len - n).asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), n)
+            this.end = ConstPtr((this.end).rawAddress - ((n).toLong() * (typeLayoutT).strideBytes))
+            Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry))
         }
     }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val stepSize = this.len().min(n)
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             // SAFETY: same as for advanceBy()
             this.end = ConstPtr((this.end).rawAddress - ((stepSize).toLong()))
         } else {
             // SAFETY: same as for advanceBy()
-            this.end = ConstPtr((this.end).rawAddress - ((stepSize).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            this.end = ConstPtr((this.end).rawAddress - ((stepSize).toLong() * (typeLayoutT).strideBytes))
         }
         val toDrop =
-            if (T.IS_ZST) {
+            if (((typeLayoutT).sizeBytes == 0L)) {
                 // ZST may cause unalignment
                 NonNull.dangling().asPtr().castSlice(stepSize)
             } else {
@@ -486,14 +486,14 @@ public open class IntoIter<T, A : Allocator>(
         run {
             dropInPlace(toDrop)
         }
-        return NonZero.new(n - stepSize).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - stepSize))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
-    public open fun isEmpty(typeLayoutT: TypeLayout<T>): Boolean =
-        if (T.IS_ZST) {
+    public open fun isEmpty(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean =
+        if (((typeLayoutT).sizeBytes == 0L)) {
             ((this.ptr.asPtr()).rawAddress.toULong() == ((this.end).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong())
         } else {
-            this.ptr == (ObjectSlotLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            this.ptr == (UnresolvedTypeLayout<NonNull>()).readNative(((((addrOf(this.end))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         }
 
     public open fun clone(): IntoIter<T, A> = this.asSlice().toVecIn(this.alloc.deref().clone()).intoIter()
@@ -544,9 +544,9 @@ public open class IntoIter<T, A : Allocator>(
 
         // In addition to the SAFETY invariants of the following three unchecked traits
         // also refer to the vec.inPlaceCollect module documentation to get an overview
-        public val EXPAND_BY: NonZero<Int>? = NonZero.new(1)
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = NonZero.new(1)
 
-        public val MERGE_BY: NonZero<Int>? = NonZero.new(1)
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = NonZero.new(1)
     }
 }
 
@@ -555,4 +555,4 @@ public interface NonDrop
 // T: Copy as approximation for !Drop since getUnchecked does not advance self.ptr
 // and thus we can't implement drop-handling
 
-public fun <T> IntoIter<T>.asIntoIter(): IntoIter<T> = this
+public fun <T> IntoIter<T, Global>.asIntoIter(): IntoIter<T, Global> = this

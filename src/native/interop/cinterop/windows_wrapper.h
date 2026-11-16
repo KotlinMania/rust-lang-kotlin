@@ -9,6 +9,13 @@
 extern "C" {
 #endif
 
+int32_t libcWindowsPrintf(const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
+int32_t libcWindowsFprintf(void* stream, const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
+int32_t libcWindowsSnprintf(char* buffer, uint64_t count, const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
+int32_t libcWindowsSprintf(char* buffer, const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
+int32_t libcWindowsScanf(const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
+int32_t libcWindowsSscanf(const char* buffer, const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
+int32_t libcWindowsFscanf(void* stream, const char* format, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
 int32_t libcWindowsIsalnum(int32_t c);
 int32_t libcWindowsIsalpha(int32_t c);
 int32_t libcWindowsIscntrl(int32_t c);

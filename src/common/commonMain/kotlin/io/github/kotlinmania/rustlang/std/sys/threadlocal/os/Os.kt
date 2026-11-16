@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.os
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -75,7 +75,7 @@ public open class Value<T>(
     }
 }
 
-public fun <T> valueAlign(typeLayoutT: TypeLayout<T>): Int = alignOf<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT))
+public fun <T> valueAlign(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int = alignOf<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT))
 
 /**
  * Equivalent to `Holder<Value<T>, System>`, but potentially over-aligned.
@@ -95,10 +95,10 @@ public open class AlignedSystemBox<T> internal constructor(
     }
 }
 
-public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayoutT: TypeLayout<T>): AlignedSystemBox<T, Align> {
+public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): AlignedSystemBox<T> {
     val layout =
         when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
-            is Result.Ok<*> -> {
+            is Result.Ok -> {
                 val v1 = matchVal.value
                 v1
             }
@@ -122,7 +122,7 @@ public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayou
         }
     // We use the System allocator here to avoid interfering with a potential
     // Global allocator using thread-local storage.
-    val ptr: MutPtr = (System.alloc(layout)).cast()
+    val ptr: MutPtr = (System().alloc(layout)).cast()
     val ptr1 = NonNull.new(ptr) ?: run {
     when (val matchVal2 = panicOutput()) {
         null -> {}
@@ -140,19 +140,19 @@ public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayou
     return AlignedSystemBox(ptr = ptr1)
 }
 
-public fun <T> AlignedSystemBox.Companion.intoRaw(b: AlignedSystemBox<T, Align>, align: Int): MutPtr {
+public fun <T> AlignedSystemBox.Companion.intoRaw(b: AlignedSystemBox<T>, align: Int): MutPtr {
     val md = b
     return md.ptr.asPtr()
 }
 
-public fun <T> AlignedSystemBox.Companion.fromRaw(ptr: MutPtr, align: Int): AlignedSystemBox<T, Align> = AlignedSystemBox(ptr = NonNull.newUnchecked(ptr))
+public fun <T> AlignedSystemBox.Companion.fromRaw(ptr: MutPtr, align: Int): AlignedSystemBox<T> = AlignedSystemBox(ptr = NonNull.newUnchecked(ptr))
 
-public fun <T> AlignedSystemBox<T, Align>.deref(align: Int): Value<T> = (this.ptr.asPtr())
+public fun <T> AlignedSystemBox<T>.deref(align: Int): Value<T> = (this.ptr.asPtr())
 
-public fun <T> AlignedSystemBox<T, Align>.drop(align: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> AlignedSystemBox<T>.drop(align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     val layout =
         when (val matchVal = Layout.new<Value<T>>(typeLayoutT = Value.typeLayout<T>(typeLayoutT = typeLayoutT)).alignTo(align)) {
-            is Result.Ok<*> -> {
+            is Result.Ok -> {
                 val v = matchVal.value
                 v
             }
@@ -176,9 +176,9 @@ public fun <T> AlignedSystemBox<T, Align>.drop(align: Int, typeLayoutT: TypeLayo
         }
     run {
         val unwindResult = catchUnwind(AssertUnwindSafe({ this.ptr.dropInPlace() }))
-        System.dealloc(this.ptr.asPtr().cast(), layout)
-        if (unwindResult is Result.Err<*>) {
-            val payload = (unwindResult as Result.Err<*>).error
+        System().dealloc(this.ptr.asPtr().cast(), layout)
+        if (unwindResult is Result.Err) {
+            val payload = unwindResult.error
             resumeUnwind(payload)
         }
     }
@@ -194,13 +194,13 @@ public fun <T> Storage.Companion.new(align: Int): Storage<T> = Storage(key = Laz
  * The resulting pointer may not be used after reentrant inialialization
  * or thread destruction has occurred.
  */
-public fun <T> Storage<T, Align>.get(i: T?, f: () -> T, align: Int): ConstPtr {
+public fun <T> Storage<T>.get(i: T?, f: () -> T, align: Int): ConstPtr {
     val key = this.key.force()
     val ptr = (get(key)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     return if ((ptr).rawAddress.toInt() > 1) {
         // SAFETY: the check ensured the pointer is safe (its destructor
         // is not running) + it is coming from a trusted source (self).
-        (ObjectSlotLayout<Value<T>>()).readNative((ptr).rawAddress).value
+        (UnresolvedTypeLayout<Value<T>>()).readNative((ptr).rawAddress).value
     } else {
         // SAFETY: trivially correct.
         Storage.tryInitialize(key, ptr, i, f)
@@ -212,7 +212,7 @@ public fun <T> Storage<T, Align>.get(i: T?, f: () -> T, align: Int): ConstPtr {
  * * `key` must be the result of calling `self.key.force()`
  * * `ptr` must be the current value associated with `key`.
  */
-public fun <T> Storage.Companion.tryInitialize(key: Key, ptr: MutPtr, i: T?, f: () -> T, align: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> Storage.Companion.tryInitialize(key: Key, ptr: MutPtr, i: T?, f: () -> T, align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     if ((ptr).rawAddress.toInt() == 1) {
         // destructor is running
         return ConstPtr(0L)
@@ -255,7 +255,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
         val ptr1 = AlignedSystemBox.fromRaw(MutPtr(ptr.rawAddress, ptr.rawMeta))
         val key = ptr1.key
         // SAFETY: `key` is the TLS key `ptr` was stored under.
-        set(key, withoutProvenanceMut(1))
+        set(key, ptr.withoutProvenanceMut(1))
         (ptr1).let { }
         // SAFETY: `key` is the TLS key `ptr` was stored under.
         set(key, MutPtr(0L))

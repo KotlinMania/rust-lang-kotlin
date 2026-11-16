@@ -3,6 +3,7 @@
 package io.github.kotlinmania.rustlang.core.intrinsics
 
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.LongVar
 import kotlinx.cinterop.UByteVar
 import kotlinx.cinterop.ULongVar
 import kotlinx.cinterop.alloc
@@ -136,3 +137,361 @@ public actual inline fun kmSimdFmaF32x4(dstAddr: Long, aAddr: Long, bAddr: Long,
     io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSimdFmaF32x4(dstAddr, aAddr, bAddr, cAddr)
 public actual inline fun kmSimdDotF32(aAddr: Long, bAddr: Long, len: Long): Float =
     io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSimdDotF32(aAddr, bAddr, len)
+
+public actual inline fun kmCtpopU8(value: UByte): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtpopU8(value)
+public actual inline fun kmCtpopU16(value: UShort): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtpopU16(value)
+public actual inline fun kmCtpopU32(value: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtpopU32(value)
+public actual inline fun kmCtpopU128(lo: ULong, hi: ULong): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtpopU128(lo, hi)
+public actual inline fun kmCtlzU8(value: UByte): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtlzU8(value)
+public actual inline fun kmCtlzU16(value: UShort): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtlzU16(value)
+public actual inline fun kmCtlzU32(value: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtlzU32(value)
+public actual inline fun kmCtlzU128(lo: ULong, hi: ULong): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCtlzU128(lo, hi)
+public actual inline fun kmCttzU8(value: UByte): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCttzU8(value)
+public actual inline fun kmCttzU16(value: UShort): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCttzU16(value)
+public actual inline fun kmCttzU32(value: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCttzU32(value)
+public actual inline fun kmCttzU128(lo: ULong, hi: ULong): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCttzU128(lo, hi)
+public actual fun kmBswapU128(lo: ULong, hi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmBswapU128Out(lo, hi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmBitreverseU8(value: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmBitreverseU8(value)
+public actual inline fun kmBitreverseU16(value: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmBitreverseU16(value)
+public actual inline fun kmBitreverseU32(value: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmBitreverseU32(value)
+public actual fun kmBitreverseU128(lo: ULong, hi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmBitreverseU128Out(lo, hi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmRotateLeftU8(value: UByte, n: UInt): UByte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateLeftU8(value, n)
+public actual inline fun kmRotateLeftU16(value: UShort, n: UInt): UShort = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateLeftU16(value, n)
+public actual inline fun kmRotateLeftU32(value: UInt, n: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateLeftU32(value, n)
+public actual inline fun kmRotateLeftU64(value: ULong, n: UInt): ULong = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateLeftU64(value, n)
+public actual fun kmRotateLeftU128(lo: ULong, hi: ULong, n: UInt): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateLeftU128Out(lo, hi, n, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmRotateRightU8(value: UByte, n: UInt): UByte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateRightU8(value, n)
+public actual inline fun kmRotateRightU16(value: UShort, n: UInt): UShort = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateRightU16(value, n)
+public actual inline fun kmRotateRightU32(value: UInt, n: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateRightU32(value, n)
+public actual inline fun kmRotateRightU64(value: ULong, n: UInt): ULong = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateRightU64(value, n)
+public actual fun kmRotateRightU128(lo: ULong, hi: ULong, n: UInt): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRotateRightU128Out(lo, hi, n, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmAddWithOverflowU8(a: UByte, b: UByte): OverflowU8Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowU8Packed(a, b)
+    return OverflowU8Outcome(packed.toUByte(), (packed shr 32) != 0uL)
+}
+public actual fun kmAddWithOverflowU16(a: UShort, b: UShort): OverflowU16Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowU16Packed(a, b)
+    return OverflowU16Outcome(packed.toUShort(), (packed shr 32) != 0uL)
+}
+public actual fun kmAddWithOverflowU32(a: UInt, b: UInt): OverflowU32Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowU32Packed(a, b)
+    return OverflowU32Outcome(packed.toUInt(), (packed shr 32) != 0uL)
+}
+public actual fun kmAddWithOverflowU64(a: ULong, b: ULong): OverflowU64Outcome =
+    memScoped {
+        val outVal = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowU64Out(a, b, outVal.ptr)
+        OverflowU64Outcome(outVal.value, ovf != 0u.toUByte())
+    }
+public actual fun kmAddWithOverflowU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowU128Outcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowU128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        OverflowU128Outcome(outLo.value, outHi.value, ovf != 0u.toUByte())
+    }
+public actual fun kmAddWithOverflowI8(a: Byte, b: Byte): OverflowI8Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowI8Packed(a, b)
+    return OverflowI8Outcome(packed.toByte(), (packed shr 32) != 0uL)
+}
+public actual fun kmAddWithOverflowI16(a: Short, b: Short): OverflowI16Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowI16Packed(a, b)
+    return OverflowI16Outcome(packed.toShort(), (packed shr 32) != 0uL)
+}
+public actual fun kmAddWithOverflowI32(a: Int, b: Int): OverflowI32Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowI32Packed(a, b)
+    return OverflowI32Outcome(packed.toInt(), (packed shr 32) != 0uL)
+}
+public actual fun kmAddWithOverflowI64(a: Long, b: Long): OverflowI64Outcome =
+    memScoped {
+        val outVal = alloc<LongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowI64Out(a, b, outVal.ptr)
+        OverflowI64Outcome(outVal.value, ovf != 0u.toUByte())
+    }
+public actual fun kmAddWithOverflowI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowI128Outcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmAddWithOverflowI128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        OverflowI128Outcome(outLo.value, outHi.value, ovf != 0u.toUByte())
+    }
+public actual fun kmSubWithOverflowU8(a: UByte, b: UByte): OverflowU8Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowU8Packed(a, b)
+    return OverflowU8Outcome(packed.toUByte(), (packed shr 32) != 0uL)
+}
+public actual fun kmSubWithOverflowU16(a: UShort, b: UShort): OverflowU16Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowU16Packed(a, b)
+    return OverflowU16Outcome(packed.toUShort(), (packed shr 32) != 0uL)
+}
+public actual fun kmSubWithOverflowU32(a: UInt, b: UInt): OverflowU32Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowU32Packed(a, b)
+    return OverflowU32Outcome(packed.toUInt(), (packed shr 32) != 0uL)
+}
+public actual fun kmSubWithOverflowU64(a: ULong, b: ULong): OverflowU64Outcome =
+    memScoped {
+        val outVal = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowU64Out(a, b, outVal.ptr)
+        OverflowU64Outcome(outVal.value, ovf != 0u.toUByte())
+    }
+public actual fun kmSubWithOverflowU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowU128Outcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowU128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        OverflowU128Outcome(outLo.value, outHi.value, ovf != 0u.toUByte())
+    }
+public actual fun kmSubWithOverflowI8(a: Byte, b: Byte): OverflowI8Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowI8Packed(a, b)
+    return OverflowI8Outcome(packed.toByte(), (packed shr 32) != 0uL)
+}
+public actual fun kmSubWithOverflowI16(a: Short, b: Short): OverflowI16Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowI16Packed(a, b)
+    return OverflowI16Outcome(packed.toShort(), (packed shr 32) != 0uL)
+}
+public actual fun kmSubWithOverflowI32(a: Int, b: Int): OverflowI32Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowI32Packed(a, b)
+    return OverflowI32Outcome(packed.toInt(), (packed shr 32) != 0uL)
+}
+public actual fun kmSubWithOverflowI64(a: Long, b: Long): OverflowI64Outcome =
+    memScoped {
+        val outVal = alloc<LongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowI64Out(a, b, outVal.ptr)
+        OverflowI64Outcome(outVal.value, ovf != 0u.toUByte())
+    }
+public actual fun kmSubWithOverflowI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowI128Outcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSubWithOverflowI128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        OverflowI128Outcome(outLo.value, outHi.value, ovf != 0u.toUByte())
+    }
+public actual fun kmMulWithOverflowU8(a: UByte, b: UByte): OverflowU8Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowU8Packed(a, b)
+    return OverflowU8Outcome(packed.toUByte(), (packed shr 32) != 0uL)
+}
+public actual fun kmMulWithOverflowU16(a: UShort, b: UShort): OverflowU16Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowU16Packed(a, b)
+    return OverflowU16Outcome(packed.toUShort(), (packed shr 32) != 0uL)
+}
+public actual fun kmMulWithOverflowU32(a: UInt, b: UInt): OverflowU32Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowU32Packed(a, b)
+    return OverflowU32Outcome(packed.toUInt(), (packed shr 32) != 0uL)
+}
+public actual fun kmMulWithOverflowU64(a: ULong, b: ULong): OverflowU64Outcome =
+    memScoped {
+        val outVal = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowU64Out(a, b, outVal.ptr)
+        OverflowU64Outcome(outVal.value, ovf != 0u.toUByte())
+    }
+public actual fun kmMulWithOverflowU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowU128Outcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowU128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        OverflowU128Outcome(outLo.value, outHi.value, ovf != 0u.toUByte())
+    }
+public actual fun kmMulWithOverflowI8(a: Byte, b: Byte): OverflowI8Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowI8Packed(a, b)
+    return OverflowI8Outcome(packed.toByte(), (packed shr 32) != 0uL)
+}
+public actual fun kmMulWithOverflowI16(a: Short, b: Short): OverflowI16Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowI16Packed(a, b)
+    return OverflowI16Outcome(packed.toShort(), (packed shr 32) != 0uL)
+}
+public actual fun kmMulWithOverflowI32(a: Int, b: Int): OverflowI32Outcome {
+    val packed = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowI32Packed(a, b)
+    return OverflowI32Outcome(packed.toInt(), (packed shr 32) != 0uL)
+}
+public actual fun kmMulWithOverflowI64(a: Long, b: Long): OverflowI64Outcome =
+    memScoped {
+        val outVal = alloc<LongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowI64Out(a, b, outVal.ptr)
+        OverflowI64Outcome(outVal.value, ovf != 0u.toUByte())
+    }
+public actual fun kmMulWithOverflowI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowI128Outcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        val ovf = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMulWithOverflowI128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        OverflowI128Outcome(outLo.value, outHi.value, ovf != 0u.toUByte())
+    }
+public actual inline fun kmSaturatingAddU8(a: UByte, b: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddU8(a, b)
+public actual inline fun kmSaturatingAddU16(a: UShort, b: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddU16(a, b)
+public actual inline fun kmSaturatingAddU32(a: UInt, b: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddU32(a, b)
+public actual inline fun kmSaturatingAddU64(a: ULong, b: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddU64(a, b)
+public actual fun kmSaturatingAddU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddU128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmSaturatingAddI8(a: Byte, b: Byte): Byte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddI8(a, b)
+public actual inline fun kmSaturatingAddI16(a: Short, b: Short): Short = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddI16(a, b)
+public actual inline fun kmSaturatingAddI32(a: Int, b: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddI32(a, b)
+public actual inline fun kmSaturatingAddI64(a: Long, b: Long): Long = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddI64(a, b)
+public actual fun kmSaturatingAddI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): I128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingAddI128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        I128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmSaturatingSubU8(a: UByte, b: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubU8(a, b)
+public actual inline fun kmSaturatingSubU16(a: UShort, b: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubU16(a, b)
+public actual inline fun kmSaturatingSubU32(a: UInt, b: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubU32(a, b)
+public actual inline fun kmSaturatingSubU64(a: ULong, b: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubU64(a, b)
+public actual fun kmSaturatingSubU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubU128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmSaturatingSubI8(a: Byte, b: Byte): Byte = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubI8(a, b)
+public actual inline fun kmSaturatingSubI16(a: Short, b: Short): Short = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubI16(a, b)
+public actual inline fun kmSaturatingSubI32(a: Int, b: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubI32(a, b)
+public actual inline fun kmSaturatingSubI64(a: Long, b: Long): Long = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubI64(a, b)
+public actual fun kmSaturatingSubI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): I128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSaturatingSubI128Out(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        I128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmU128Add(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmU128AddOut(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmU128Sub(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmU128SubOut(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmU128Mul(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmU128MulOut(aLo, aHi, bLo, bHi, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmU128DivRem(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128DivRemOutcome =
+    memScoped {
+        val qLo = alloc<ULongVar>()
+        val qHi = alloc<ULongVar>()
+        val rLo = alloc<ULongVar>()
+        val rHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmU128DivRemOut(aLo, aHi, bLo, bHi, qLo.ptr, qHi.ptr, rLo.ptr, rHi.ptr)
+        U128DivRemOutcome(qLo.value, qHi.value, rLo.value, rHi.value)
+    }
+public actual fun kmI128DivRem(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): I128DivRemOutcome =
+    memScoped {
+        val qLo = alloc<ULongVar>()
+        val qHi = alloc<ULongVar>()
+        val rLo = alloc<ULongVar>()
+        val rHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmI128DivRemOut(aLo, aHi, bLo, bHi, qLo.ptr, qHi.ptr, rLo.ptr, rHi.ptr)
+        I128DivRemOutcome(qLo.value, qHi.value, rLo.value, rHi.value)
+    }
+public actual fun kmU128Shl(aLo: ULong, aHi: ULong, shift: UInt): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmU128ShlOut(aLo, aHi, shift, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmU128Shr(aLo: ULong, aHi: ULong, shift: UInt): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmU128ShrOut(aLo, aHi, shift, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmI128Shr(aLo: ULong, aHi: ULong, shift: UInt): I128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmI128ShrOut(aLo, aHi, shift, outLo.ptr, outHi.ptr)
+        I128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual inline fun kmSinf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSinf32(x)
+public actual inline fun kmSinf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmSinf64(x)
+public actual inline fun kmCosf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCosf32(x)
+public actual inline fun kmCosf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCosf64(x)
+public actual inline fun kmExpf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmExpf32(x)
+public actual inline fun kmExpf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmExpf64(x)
+public actual inline fun kmExp2f32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmExp2f32(x)
+public actual inline fun kmExp2f64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmExp2f64(x)
+public actual inline fun kmLogf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmLogf32(x)
+public actual inline fun kmLogf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmLogf64(x)
+public actual inline fun kmLog2f32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmLog2f32(x)
+public actual inline fun kmLog2f64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmLog2f64(x)
+public actual inline fun kmLog10f32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmLog10f32(x)
+public actual inline fun kmLog10f64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmLog10f64(x)
+public actual inline fun kmTruncf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmTruncf32(x)
+public actual inline fun kmTruncf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmTruncf64(x)
+public actual inline fun kmRoundf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRoundf32(x)
+public actual inline fun kmRoundf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRoundf64(x)
+public actual inline fun kmRoundTiesEvenf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRoundTiesEvenf32(x)
+public actual inline fun kmRoundTiesEvenf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmRoundTiesEvenf64(x)
+public actual inline fun kmCeilf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCeilf32(x)
+public actual inline fun kmCeilf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCeilf64(x)
+public actual inline fun kmFloorf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmFloorf32(x)
+public actual inline fun kmFloorf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmFloorf64(x)
+public actual inline fun kmFabsf32(x: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmFabsf32(x)
+public actual inline fun kmFabsf64(x: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmFabsf64(x)
+public actual inline fun kmPowf32(a: Float, b: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmPowf32(a, b)
+public actual inline fun kmPowf64(a: Double, b: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmPowf64(a, b)
+public actual inline fun kmPowif32(x: Float, exp: Int): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmPowif32(x, exp)
+public actual inline fun kmPowif64(x: Double, exp: Int): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmPowif64(x, exp)
+public actual inline fun kmCopysignf32(a: Float, b: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCopysignf32(a, b)
+public actual inline fun kmCopysignf64(a: Double, b: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmCopysignf64(a, b)
+public actual inline fun kmMinnumf32(a: Float, b: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMinnumf32(a, b)
+public actual inline fun kmMinnumf64(a: Double, b: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMinnumf64(a, b)
+public actual inline fun kmMaxnumf32(a: Float, b: Float): Float = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMaxnumf32(a, b)
+public actual inline fun kmMaxnumf64(a: Double, b: Double): Double = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmMaxnumf64(a, b)
+public actual inline fun kmFloatToU64Unchecked(v: Float): ULong = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmFloatToU64Unchecked(v)
+public actual inline fun kmDoubleToU64Unchecked(v: Double): ULong = io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmDoubleToU64Unchecked(v)
+public actual fun kmFloatToU128Unchecked(v: Float): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmFloatToU128UncheckedOut(v, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }
+public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome =
+    memScoped {
+        val outLo = alloc<ULongVar>()
+        val outHi = alloc<ULongVar>()
+        io.github.kotlinmania.rustlang.core.intrinsics.cinterop.kmDoubleToU128UncheckedOut(v, outLo.ptr, outHi.ptr)
+        U128ValueOutcome(outLo.value, outHi.value)
+    }

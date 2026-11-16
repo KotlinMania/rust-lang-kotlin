@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.core.task.wake.Context
  */
 public open class Ready<T>(
     public var value: T?,
-) : Future<Any?, T> {
+) : Future<T> {
     public var field0: T?
         get() = value
         set(v) {

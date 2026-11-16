@@ -1,7 +1,7 @@
 // port-lint: tests capture.rs
 package io.github.kotlinmania.rustlang.backtrace.capture
 
-import io.github.kotlinmania.rustlang.backtrace.trace
+import io.github.kotlinmania.rustlang.backtrace.backtrace.trace
 
 public class CaptureInlineTests {
     @kotlin.test.Test

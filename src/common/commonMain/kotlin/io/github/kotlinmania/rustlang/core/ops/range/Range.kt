@@ -1,10 +1,10 @@
 // port-lint: source ops/range.rs
 package io.github.kotlinmania.rustlang.core.ops.range
 
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Excluded
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Included
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Unbounded
@@ -120,10 +120,10 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(Unit)
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -165,7 +165,7 @@ public open class Range<Idx>(
      * check((Float.NaN until 5.0).isEmpty())
      * ```
      */
-    public open fun isEmpty(): Boolean = !((compareNaturalOrder(this.start, this.end) < 0))
+    public open fun isEmpty(): Boolean = !((kmCompareValues(this.start, this.end) < 0))
 
     public companion object {
         public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<Range<Idx>> =
@@ -240,9 +240,9 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(Unit)
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -332,9 +332,9 @@ public open class RangeTo<Idx>(
     public open fun clone(): RangeTo<Idx> = RangeTo(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(Unit)
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -492,13 +492,13 @@ public open class RangeInclusive<Idx>(
     public open fun intoInner(): Pair<Idx, Idx> = Pair(this.start, this.end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
         if (this.exhausted) {
-            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -560,7 +560,7 @@ public open class RangeInclusive<Idx>(
      * check(r.isEmpty())
      * ```
      */
-    public open fun isEmpty(): Boolean = this.exhausted || !((compareNaturalOrder(this.start, this.end) <= 0))
+    public open fun isEmpty(): Boolean = this.exhausted || !((kmCompareValues(this.start, this.end) <= 0))
 
     public companion object {
         public fun <Idx> typeLayout(typeLayoutIdx: TypeLayout<Idx>): TypeLayout<RangeInclusive<Idx>> =
@@ -680,9 +680,9 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(Unit)
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -960,22 +960,22 @@ public interface RangeBounds<T> {
         (when (val matchVal = this.startBound()) {
             is Included -> {
                 val (start) = matchVal
-                (compareNaturalOrder(start, item) <= 0)
+                (kmCompareValues(start, item) <= 0)
             }
             is Excluded -> {
                 val (start1) = matchVal
-                (compareNaturalOrder(start1, item) < 0)
+                (kmCompareValues(start1, item) < 0)
             }
             Unbounded -> true
         }) &&
             (when (val matchVal1 = this.endBound()) {
                 is Included -> {
                     val (end) = matchVal1
-                    (compareNaturalOrder(item, end) <= 0)
+                    (kmCompareValues(item, end) <= 0)
                 }
                 is Excluded -> {
                     val (end1) = matchVal1
-                    (compareNaturalOrder(item, end1) < 0)
+                    (kmCompareValues(item, end1) < 0)
                 }
                 Unbounded -> true
             })
@@ -1050,22 +1050,22 @@ public interface RangeBounds<T> {
                 matchVal.first is Included && matchVal.second is Excluded -> {
                     val (start) = matchVal.first as Included<T>
                     val (end) = matchVal.second as Excluded<T>
-                    (compareNaturalOrder(start, end) < 0)
+                    (kmCompareValues(start, end) < 0)
                 }
                 matchVal.first is Excluded && matchVal.second is Included -> {
                     val (start1) = matchVal.first as Excluded<T>
                     val (end1) = matchVal.second as Included<T>
-                    (compareNaturalOrder(start1, end1) < 0)
+                    (kmCompareValues(start1, end1) < 0)
                 }
                 matchVal.first is Excluded && matchVal.second is Excluded -> {
                     val (start2) = matchVal.first as Excluded<T>
                     val (end2) = matchVal.second as Excluded<T>
-                    (compareNaturalOrder(start2, end2) < 0)
+                    (kmCompareValues(start2, end2) < 0)
                 }
                 else -> {
                     val (start3) = matchVal.first as Included<T>
                     val (end3) = matchVal.second as Included<T>
-                    (compareNaturalOrder(start3, end3) <= 0)
+                    (kmCompareValues(start3, end3) <= 0)
                 }
             }
         }

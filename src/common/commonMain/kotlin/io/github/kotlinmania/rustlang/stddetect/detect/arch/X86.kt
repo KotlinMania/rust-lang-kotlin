@@ -428,85 +428,85 @@ public sealed class Feature {
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "aes" -> Result.Ok(Feature::aes)
-                "pclmulqdq" -> Result.Ok(Feature::pclmulqdq)
-                "rdrand" -> Result.Ok(Feature::rdrand)
-                "rdseed" -> Result.Ok(Feature::rdseed)
-                "tsc" -> Result.Ok(Feature::tsc)
-                "mmx" -> Result.Ok(Feature::mmx)
-                "sse" -> Result.Ok(Feature::sse)
-                "sse2" -> Result.Ok(Feature::sse2)
-                "sse3" -> Result.Ok(Feature::sse3)
-                "ssse3" -> Result.Ok(Feature::ssse3)
-                "sse4.1" -> Result.Ok(Feature::sse41)
-                "sse4.2" -> Result.Ok(Feature::sse42)
-                "sse4a" -> Result.Ok(Feature::sse4a)
-                "sha" -> Result.Ok(Feature::sha)
-                "avx" -> Result.Ok(Feature::avx)
-                "avx2" -> Result.Ok(Feature::avx2)
-                "sha512" -> Result.Ok(Feature::sha512)
-                "sm3" -> Result.Ok(Feature::sm3)
-                "sm4" -> Result.Ok(Feature::sm4)
-                "avx512f" -> Result.Ok(Feature::avx512f)
-                "avx512cd" -> Result.Ok(Feature::avx512cd)
-                "avx512er" -> Result.Ok(Feature::avx512er)
-                "avx512pf" -> Result.Ok(Feature::avx512pf)
-                "avx512bw" -> Result.Ok(Feature::avx512bw)
-                "avx512dq" -> Result.Ok(Feature::avx512dq)
-                "avx512vl" -> Result.Ok(Feature::avx512vl)
-                "avx512ifma" -> Result.Ok(Feature::avx512ifma)
-                "avx512vbmi" -> Result.Ok(Feature::avx512vbmi)
-                "avx512vpopcntdq" -> Result.Ok(Feature::avx512vpopcntdq)
-                "avx512vbmi2" -> Result.Ok(Feature::avx512vbmi2)
-                "gfni" -> Result.Ok(Feature::gfni)
-                "vaes" -> Result.Ok(Feature::vaes)
-                "vpclmulqdq" -> Result.Ok(Feature::vpclmulqdq)
-                "avx512vnni" -> Result.Ok(Feature::avx512vnni)
-                "avx512bitalg" -> Result.Ok(Feature::avx512bitalg)
-                "avx512bf16" -> Result.Ok(Feature::avx512bf16)
-                "avx512vp2intersect" -> Result.Ok(Feature::avx512vp2intersect)
-                "avx512fp16" -> Result.Ok(Feature::avx512fp16)
-                "avxifma" -> Result.Ok(Feature::avxifma)
-                "avxneconvert" -> Result.Ok(Feature::avxneconvert)
-                "avxvnni" -> Result.Ok(Feature::avxvnni)
-                "avxvnniint16" -> Result.Ok(Feature::avxvnniint16)
-                "avxvnniint8" -> Result.Ok(Feature::avxvnniint8)
-                "amx-tile" -> Result.Ok(Feature::amxTile)
-                "amx-int8" -> Result.Ok(Feature::amxInt8)
-                "amx-bf16" -> Result.Ok(Feature::amxBf16)
-                "amx-fp16" -> Result.Ok(Feature::amxFp16)
-                "amx-complex" -> Result.Ok(Feature::amxComplex)
-                "amx-avx512" -> Result.Ok(Feature::amxAvx512)
-                "amx-fp8" -> Result.Ok(Feature::amxFp8)
-                "amx-movrs" -> Result.Ok(Feature::amxMovrs)
-                "apxf" -> Result.Ok(Feature::apxf)
-                "avx10.1" -> Result.Ok(Feature::avx101)
-                "avx10.2" -> Result.Ok(Feature::avx102)
-                "f16c" -> Result.Ok(Feature::f16c)
-                "fma" -> Result.Ok(Feature::fma)
-                "bmi1" -> Result.Ok(Feature::bmi1)
-                "bmi2" -> Result.Ok(Feature::bmi2)
-                "lzcnt" -> Result.Ok(Feature::lzcnt)
-                "tbm" -> Result.Ok(Feature::tbm)
-                "popcnt" -> Result.Ok(Feature::popcnt)
-                "fxsr" -> Result.Ok(Feature::fxsr)
-                "xsave" -> Result.Ok(Feature::xsave)
-                "xsaveopt" -> Result.Ok(Feature::xsaveopt)
-                "xsaves" -> Result.Ok(Feature::xsaves)
-                "xsavec" -> Result.Ok(Feature::xsavec)
-                "cmpxchg16b" -> Result.Ok(Feature::cmpxchg16b)
-                "clflushopt" -> Result.Ok(Feature::clflushopt)
-                "kl" -> Result.Ok(Feature::kl)
-                "widekl" -> Result.Ok(Feature::widekl)
-                "adx" -> Result.Ok(Feature::adx)
-                "rtm" -> Result.Ok(Feature::rtm)
-                "movbe" -> Result.Ok(Feature::movbe)
-                "movdir64b" -> Result.Ok(Feature::movdir64b)
-                "movdiri" -> Result.Ok(Feature::movdiri)
-                "movrs" -> Result.Ok(Feature::movrs)
-                "ermsb" -> Result.Ok(Feature::ermsb)
-                "xop" -> Result.Ok(Feature::xop)
-                else -> Result.Err(Unit)
+                "aes" -> Result.Ok<Feature, Unit>(Feature::aes)
+                "pclmulqdq" -> Result.Ok<Feature, Unit>(Feature::pclmulqdq)
+                "rdrand" -> Result.Ok<Feature, Unit>(Feature::rdrand)
+                "rdseed" -> Result.Ok<Feature, Unit>(Feature::rdseed)
+                "tsc" -> Result.Ok<Feature, Unit>(Feature::tsc)
+                "mmx" -> Result.Ok<Feature, Unit>(Feature::mmx)
+                "sse" -> Result.Ok<Feature, Unit>(Feature::sse)
+                "sse2" -> Result.Ok<Feature, Unit>(Feature::sse2)
+                "sse3" -> Result.Ok<Feature, Unit>(Feature::sse3)
+                "ssse3" -> Result.Ok<Feature, Unit>(Feature::ssse3)
+                "sse4.1" -> Result.Ok<Feature, Unit>(Feature::sse41)
+                "sse4.2" -> Result.Ok<Feature, Unit>(Feature::sse42)
+                "sse4a" -> Result.Ok<Feature, Unit>(Feature::sse4a)
+                "sha" -> Result.Ok<Feature, Unit>(Feature::sha)
+                "avx" -> Result.Ok<Feature, Unit>(Feature::avx)
+                "avx2" -> Result.Ok<Feature, Unit>(Feature::avx2)
+                "sha512" -> Result.Ok<Feature, Unit>(Feature::sha512)
+                "sm3" -> Result.Ok<Feature, Unit>(Feature::sm3)
+                "sm4" -> Result.Ok<Feature, Unit>(Feature::sm4)
+                "avx512f" -> Result.Ok<Feature, Unit>(Feature::avx512f)
+                "avx512cd" -> Result.Ok<Feature, Unit>(Feature::avx512cd)
+                "avx512er" -> Result.Ok<Feature, Unit>(Feature::avx512er)
+                "avx512pf" -> Result.Ok<Feature, Unit>(Feature::avx512pf)
+                "avx512bw" -> Result.Ok<Feature, Unit>(Feature::avx512bw)
+                "avx512dq" -> Result.Ok<Feature, Unit>(Feature::avx512dq)
+                "avx512vl" -> Result.Ok<Feature, Unit>(Feature::avx512vl)
+                "avx512ifma" -> Result.Ok<Feature, Unit>(Feature::avx512ifma)
+                "avx512vbmi" -> Result.Ok<Feature, Unit>(Feature::avx512vbmi)
+                "avx512vpopcntdq" -> Result.Ok<Feature, Unit>(Feature::avx512vpopcntdq)
+                "avx512vbmi2" -> Result.Ok<Feature, Unit>(Feature::avx512vbmi2)
+                "gfni" -> Result.Ok<Feature, Unit>(Feature::gfni)
+                "vaes" -> Result.Ok<Feature, Unit>(Feature::vaes)
+                "vpclmulqdq" -> Result.Ok<Feature, Unit>(Feature::vpclmulqdq)
+                "avx512vnni" -> Result.Ok<Feature, Unit>(Feature::avx512vnni)
+                "avx512bitalg" -> Result.Ok<Feature, Unit>(Feature::avx512bitalg)
+                "avx512bf16" -> Result.Ok<Feature, Unit>(Feature::avx512bf16)
+                "avx512vp2intersect" -> Result.Ok<Feature, Unit>(Feature::avx512vp2intersect)
+                "avx512fp16" -> Result.Ok<Feature, Unit>(Feature::avx512fp16)
+                "avxifma" -> Result.Ok<Feature, Unit>(Feature::avxifma)
+                "avxneconvert" -> Result.Ok<Feature, Unit>(Feature::avxneconvert)
+                "avxvnni" -> Result.Ok<Feature, Unit>(Feature::avxvnni)
+                "avxvnniint16" -> Result.Ok<Feature, Unit>(Feature::avxvnniint16)
+                "avxvnniint8" -> Result.Ok<Feature, Unit>(Feature::avxvnniint8)
+                "amx-tile" -> Result.Ok<Feature, Unit>(Feature::amxTile)
+                "amx-int8" -> Result.Ok<Feature, Unit>(Feature::amxInt8)
+                "amx-bf16" -> Result.Ok<Feature, Unit>(Feature::amxBf16)
+                "amx-fp16" -> Result.Ok<Feature, Unit>(Feature::amxFp16)
+                "amx-complex" -> Result.Ok<Feature, Unit>(Feature::amxComplex)
+                "amx-avx512" -> Result.Ok<Feature, Unit>(Feature::amxAvx512)
+                "amx-fp8" -> Result.Ok<Feature, Unit>(Feature::amxFp8)
+                "amx-movrs" -> Result.Ok<Feature, Unit>(Feature::amxMovrs)
+                "apxf" -> Result.Ok<Feature, Unit>(Feature::apxf)
+                "avx10.1" -> Result.Ok<Feature, Unit>(Feature::avx101)
+                "avx10.2" -> Result.Ok<Feature, Unit>(Feature::avx102)
+                "f16c" -> Result.Ok<Feature, Unit>(Feature::f16c)
+                "fma" -> Result.Ok<Feature, Unit>(Feature::fma)
+                "bmi1" -> Result.Ok<Feature, Unit>(Feature::bmi1)
+                "bmi2" -> Result.Ok<Feature, Unit>(Feature::bmi2)
+                "lzcnt" -> Result.Ok<Feature, Unit>(Feature::lzcnt)
+                "tbm" -> Result.Ok<Feature, Unit>(Feature::tbm)
+                "popcnt" -> Result.Ok<Feature, Unit>(Feature::popcnt)
+                "fxsr" -> Result.Ok<Feature, Unit>(Feature::fxsr)
+                "xsave" -> Result.Ok<Feature, Unit>(Feature::xsave)
+                "xsaveopt" -> Result.Ok<Feature, Unit>(Feature::xsaveopt)
+                "xsaves" -> Result.Ok<Feature, Unit>(Feature::xsaves)
+                "xsavec" -> Result.Ok<Feature, Unit>(Feature::xsavec)
+                "cmpxchg16b" -> Result.Ok<Feature, Unit>(Feature::cmpxchg16b)
+                "clflushopt" -> Result.Ok<Feature, Unit>(Feature::clflushopt)
+                "kl" -> Result.Ok<Feature, Unit>(Feature::kl)
+                "widekl" -> Result.Ok<Feature, Unit>(Feature::widekl)
+                "adx" -> Result.Ok<Feature, Unit>(Feature::adx)
+                "rtm" -> Result.Ok<Feature, Unit>(Feature::rtm)
+                "movbe" -> Result.Ok<Feature, Unit>(Feature::movbe)
+                "movdir64b" -> Result.Ok<Feature, Unit>(Feature::movdir64b)
+                "movdiri" -> Result.Ok<Feature, Unit>(Feature::movdiri)
+                "movrs" -> Result.Ok<Feature, Unit>(Feature::movrs)
+                "ermsb" -> Result.Ok<Feature, Unit>(Feature::ermsb)
+                "xop" -> Result.Ok<Feature, Unit>(Feature::xop)
+                else -> Result.Err<Feature, Unit>(Unit)
             }
     }
 }
@@ -515,466 +515,466 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun aes(): Boolean = checkFor(Feature::aes)
+public fun aes(): Boolean = checkFor(::aes)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun pclmulqdq(): Boolean = checkFor(Feature::pclmulqdq)
+public fun pclmulqdq(): Boolean = checkFor(::pclmulqdq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rdrand(): Boolean = checkFor(Feature::rdrand)
+public fun rdrand(): Boolean = checkFor(::rdrand)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rdseed(): Boolean = checkFor(Feature::rdseed)
+public fun rdseed(): Boolean = checkFor(::rdseed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun tsc(): Boolean = checkFor(Feature::tsc)
+public fun tsc(): Boolean = checkFor(::tsc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun mmx(): Boolean = checkFor(Feature::mmx)
+public fun mmx(): Boolean = checkFor(::mmx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse(): Boolean = checkFor(Feature::sse)
+public fun sse(): Boolean = checkFor(::sse)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse2(): Boolean = checkFor(Feature::sse2)
+public fun sse2(): Boolean = checkFor(::sse2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse3(): Boolean = checkFor(Feature::sse3)
+public fun sse3(): Boolean = checkFor(::sse3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ssse3(): Boolean = checkFor(Feature::ssse3)
+public fun ssse3(): Boolean = checkFor(::ssse3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse41(): Boolean = checkFor(Feature::sse41)
+public fun sse41(): Boolean = checkFor(::sse41)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse42(): Boolean = checkFor(Feature::sse42)
+public fun sse42(): Boolean = checkFor(::sse42)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sse4a(): Boolean = checkFor(Feature::sse4a)
+public fun sse4a(): Boolean = checkFor(::sse4a)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sha(): Boolean = checkFor(Feature::sha)
+public fun sha(): Boolean = checkFor(::sha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx(): Boolean = checkFor(Feature::avx)
+public fun avx(): Boolean = checkFor(::avx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx2(): Boolean = checkFor(Feature::avx2)
+public fun avx2(): Boolean = checkFor(::avx2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sha512(): Boolean = checkFor(Feature::sha512)
+public fun sha512(): Boolean = checkFor(::sha512)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sm3(): Boolean = checkFor(Feature::sm3)
+public fun sm3(): Boolean = checkFor(::sm3)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun sm4(): Boolean = checkFor(Feature::sm4)
+public fun sm4(): Boolean = checkFor(::sm4)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512f(): Boolean = checkFor(Feature::avx512f)
+public fun avx512f(): Boolean = checkFor(::avx512f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512cd(): Boolean = checkFor(Feature::avx512cd)
+public fun avx512cd(): Boolean = checkFor(::avx512cd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512er(): Boolean = checkFor(Feature::avx512er)
+public fun avx512er(): Boolean = checkFor(::avx512er)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512pf(): Boolean = checkFor(Feature::avx512pf)
+public fun avx512pf(): Boolean = checkFor(::avx512pf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512bw(): Boolean = checkFor(Feature::avx512bw)
+public fun avx512bw(): Boolean = checkFor(::avx512bw)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512dq(): Boolean = checkFor(Feature::avx512dq)
+public fun avx512dq(): Boolean = checkFor(::avx512dq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vl(): Boolean = checkFor(Feature::avx512vl)
+public fun avx512vl(): Boolean = checkFor(::avx512vl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512ifma(): Boolean = checkFor(Feature::avx512ifma)
+public fun avx512ifma(): Boolean = checkFor(::avx512ifma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vbmi(): Boolean = checkFor(Feature::avx512vbmi)
+public fun avx512vbmi(): Boolean = checkFor(::avx512vbmi)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vpopcntdq(): Boolean = checkFor(Feature::avx512vpopcntdq)
+public fun avx512vpopcntdq(): Boolean = checkFor(::avx512vpopcntdq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vbmi2(): Boolean = checkFor(Feature::avx512vbmi2)
+public fun avx512vbmi2(): Boolean = checkFor(::avx512vbmi2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun gfni(): Boolean = checkFor(Feature::gfni)
+public fun gfni(): Boolean = checkFor(::gfni)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vaes(): Boolean = checkFor(Feature::vaes)
+public fun vaes(): Boolean = checkFor(::vaes)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vpclmulqdq(): Boolean = checkFor(Feature::vpclmulqdq)
+public fun vpclmulqdq(): Boolean = checkFor(::vpclmulqdq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vnni(): Boolean = checkFor(Feature::avx512vnni)
+public fun avx512vnni(): Boolean = checkFor(::avx512vnni)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512bitalg(): Boolean = checkFor(Feature::avx512bitalg)
+public fun avx512bitalg(): Boolean = checkFor(::avx512bitalg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512bf16(): Boolean = checkFor(Feature::avx512bf16)
+public fun avx512bf16(): Boolean = checkFor(::avx512bf16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512vp2intersect(): Boolean = checkFor(Feature::avx512vp2intersect)
+public fun avx512vp2intersect(): Boolean = checkFor(::avx512vp2intersect)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx512fp16(): Boolean = checkFor(Feature::avx512fp16)
+public fun avx512fp16(): Boolean = checkFor(::avx512fp16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxifma(): Boolean = checkFor(Feature::avxifma)
+public fun avxifma(): Boolean = checkFor(::avxifma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxneconvert(): Boolean = checkFor(Feature::avxneconvert)
+public fun avxneconvert(): Boolean = checkFor(::avxneconvert)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxvnni(): Boolean = checkFor(Feature::avxvnni)
+public fun avxvnni(): Boolean = checkFor(::avxvnni)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxvnniint16(): Boolean = checkFor(Feature::avxvnniint16)
+public fun avxvnniint16(): Boolean = checkFor(::avxvnniint16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avxvnniint8(): Boolean = checkFor(Feature::avxvnniint8)
+public fun avxvnniint8(): Boolean = checkFor(::avxvnniint8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxTile(): Boolean = checkFor(Feature::amxTile)
+public fun amxTile(): Boolean = checkFor(::amxTile)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxInt8(): Boolean = checkFor(Feature::amxInt8)
+public fun amxInt8(): Boolean = checkFor(::amxInt8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxBf16(): Boolean = checkFor(Feature::amxBf16)
+public fun amxBf16(): Boolean = checkFor(::amxBf16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxFp16(): Boolean = checkFor(Feature::amxFp16)
+public fun amxFp16(): Boolean = checkFor(::amxFp16)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxComplex(): Boolean = checkFor(Feature::amxComplex)
+public fun amxComplex(): Boolean = checkFor(::amxComplex)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxAvx512(): Boolean = checkFor(Feature::amxAvx512)
+public fun amxAvx512(): Boolean = checkFor(::amxAvx512)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxFp8(): Boolean = checkFor(Feature::amxFp8)
+public fun amxFp8(): Boolean = checkFor(::amxFp8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun amxMovrs(): Boolean = checkFor(Feature::amxMovrs)
+public fun amxMovrs(): Boolean = checkFor(::amxMovrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun apxf(): Boolean = checkFor(Feature::apxf)
+public fun apxf(): Boolean = checkFor(::apxf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx101(): Boolean = checkFor(Feature::avx101)
+public fun avx101(): Boolean = checkFor(::avx101)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun avx102(): Boolean = checkFor(Feature::avx102)
+public fun avx102(): Boolean = checkFor(::avx102)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f16c(): Boolean = checkFor(Feature::f16c)
+public fun f16c(): Boolean = checkFor(::f16c)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fma(): Boolean = checkFor(Feature::fma)
+public fun fma(): Boolean = checkFor(::fma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun bmi1(): Boolean = checkFor(Feature::bmi1)
+public fun bmi1(): Boolean = checkFor(::bmi1)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun bmi2(): Boolean = checkFor(Feature::bmi2)
+public fun bmi2(): Boolean = checkFor(::bmi2)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lzcnt(): Boolean = checkFor(Feature::lzcnt)
+public fun lzcnt(): Boolean = checkFor(::lzcnt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun tbm(): Boolean = checkFor(Feature::tbm)
+public fun tbm(): Boolean = checkFor(::tbm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun popcnt(): Boolean = checkFor(Feature::popcnt)
+public fun popcnt(): Boolean = checkFor(::popcnt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun fxsr(): Boolean = checkFor(Feature::fxsr)
+public fun fxsr(): Boolean = checkFor(::fxsr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsave(): Boolean = checkFor(Feature::xsave)
+public fun xsave(): Boolean = checkFor(::xsave)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsaveopt(): Boolean = checkFor(Feature::xsaveopt)
+public fun xsaveopt(): Boolean = checkFor(::xsaveopt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsaves(): Boolean = checkFor(Feature::xsaves)
+public fun xsaves(): Boolean = checkFor(::xsaves)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xsavec(): Boolean = checkFor(Feature::xsavec)
+public fun xsavec(): Boolean = checkFor(::xsavec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun cmpxchg16b(): Boolean = checkFor(Feature::cmpxchg16b)
+public fun cmpxchg16b(): Boolean = checkFor(::cmpxchg16b)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun clflushopt(): Boolean = checkFor(Feature::clflushopt)
+public fun clflushopt(): Boolean = checkFor(::clflushopt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun kl(): Boolean = checkFor(Feature::kl)
+public fun kl(): Boolean = checkFor(::kl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun widekl(): Boolean = checkFor(Feature::widekl)
+public fun widekl(): Boolean = checkFor(::widekl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun adx(): Boolean = checkFor(Feature::adx)
+public fun adx(): Boolean = checkFor(::adx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rtm(): Boolean = checkFor(Feature::rtm)
+public fun rtm(): Boolean = checkFor(::rtm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movbe(): Boolean = checkFor(Feature::movbe)
+public fun movbe(): Boolean = checkFor(::movbe)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movdir64b(): Boolean = checkFor(Feature::movdir64b)
+public fun movdir64b(): Boolean = checkFor(::movdir64b)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movdiri(): Boolean = checkFor(Feature::movdiri)
+public fun movdiri(): Boolean = checkFor(::movdiri)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun movrs(): Boolean = checkFor(Feature::movrs)
+public fun movrs(): Boolean = checkFor(::movrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ermsb(): Boolean = checkFor(Feature::ermsb)
+public fun ermsb(): Boolean = checkFor(::ermsb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun xop(): Boolean = checkFor(Feature::xop)
+public fun xop(): Boolean = checkFor(::xop)

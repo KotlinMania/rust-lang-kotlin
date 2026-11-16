@@ -2,25 +2,25 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.PthreadKeyT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SpeedT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ClockT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
@@ -1475,7 +1475,7 @@ public actual fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, n: SizeT): MutPt
 public actual fun getpwnam(name: ConstPtr): MutPtr =
     MutPtr(UnixJniBridge.libcUnixGetpwnam(name.rawAddress))
 
-public actual fun getpwuid(uid: io.github.kotlinmania.rustlang.libc.UidT): MutPtr =
+public actual fun getpwuid(uid: UidT): MutPtr =
     MutPtr(UnixJniBridge.libcUnixGetpwuid(uid))
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
@@ -1587,10 +1587,10 @@ public actual fun rewinddir(dirp: MutPtr) {
 public actual fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: CInt): CInt =
     UnixJniBridge.libcUnixFchmodat(dirfd, pathname.rawAddress, mode.toInt(), flags)
 
-public actual fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT): CInt =
+public actual fun fchown(fd: CInt, owner: UidT, group: GidT): CInt =
     UnixJniBridge.libcUnixFchown(fd, owner, group)
 
-public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT, flags: CInt): CInt =
+public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: UidT, group: GidT, flags: CInt): CInt =
     UnixJniBridge.libcUnixFchownat(dirfd, pathname.rawAddress, owner, group, flags)
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
@@ -1764,7 +1764,7 @@ public actual fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt =
 public actual fun tcgetpgrp(fd: CInt): PidT =
     UnixJniBridge.libcUnixTcgetpgrp(fd)
 
-public actual fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.libc.PidT): CInt =
+public actual fun tcsetpgrp(fd: CInt, pgrp: PidT): CInt =
     UnixJniBridge.libcUnixTcsetpgrp(fd, pgrp)
 
 public actual fun ttyname(fd: CInt): MutPtr =
@@ -1858,16 +1858,16 @@ public actual fun realpath(pathname: ConstPtr, resolved: MutPtr): MutPtr =
     MutPtr(UnixJniBridge.libcUnixRealpath(pathname.rawAddress, resolved.rawAddress))
 
 public actual fun times(buf: MutPtr): ClockT =
-    UnixJniBridge.libcUnixTimes(buf.rawAddress).toULong()
+    UnixJniBridge.libcUnixTimes(buf.rawAddress)
 
 public actual fun pthreadSelf(): PthreadT =
-    MutPtr(UnixJniBridge.libcUnixPthreadSelf())
+    UnixJniBridge.libcUnixPthreadSelf().toULong()
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    UnixJniBridge.libcUnixPthreadEqual(t1.rawAddress, t2.rawAddress)
+    UnixJniBridge.libcUnixPthreadEqual(t1.toLong(), t2.toLong())
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    UnixJniBridge.libcUnixPthreadJoin(native.rawAddress, value.rawAddress)
+    UnixJniBridge.libcUnixPthreadJoin(native.toLong(), value.rawAddress)
 
 public actual fun pthreadExit(value: MutPtr): Nothing {
     UnixJniBridge.libcUnixPthreadExit(value.rawAddress)
@@ -1890,7 +1890,7 @@ public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
     UnixJniBridge.libcUnixPthreadAttrSetdetachstate(attr.rawAddress, state)
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    UnixJniBridge.libcUnixPthreadDetach(thread.rawAddress)
+    UnixJniBridge.libcUnixPthreadDetach(thread.toLong())
 
 public actual fun schedYield(): CInt =
     UnixJniBridge.libcUnixSchedYield()
@@ -1899,13 +1899,13 @@ public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallba
     UnixJniBridge.libcUnixPthreadKeyCreate(key.rawAddress, 0L)
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    UnixJniBridge.libcUnixPthreadKeyDelete(key)
+    UnixJniBridge.libcUnixPthreadKeyDelete(key.toInt())
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    MutPtr(UnixJniBridge.libcUnixPthreadGetspecific(key))
+    MutPtr(UnixJniBridge.libcUnixPthreadGetspecific(key.toInt()))
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    UnixJniBridge.libcUnixPthreadSetspecific(key, value.rawAddress)
+    UnixJniBridge.libcUnixPthreadSetspecific(key.toInt(), value.rawAddress)
 
 public actual fun pthreadMutexInit(lock: MutPtr, attr: ConstPtr): CInt =
     UnixJniBridge.libcUnixPthreadMutexInit(lock.rawAddress, attr.rawAddress)
@@ -2174,7 +2174,7 @@ public actual fun tcflow(fd: CInt, action: CInt): CInt =
 public actual fun tcflush(fd: CInt, action: CInt): CInt =
     UnixJniBridge.libcUnixTcflush(fd, action)
 
-public actual fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.libc.PidT =
+public actual fun tcgetsid(fd: CInt): PidT =
     UnixJniBridge.libcUnixTcgetsid(fd)
 
 public actual fun tcsendbreak(fd: CInt, duration: CInt): CInt =
@@ -2234,7 +2234,7 @@ public actual fun adjtime(delta: ConstPtr, olddelta: MutPtr): CInt =
 public actual fun stpncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
     MutPtr(UnixJniBridge.libcUnixStpncpy(dst.rawAddress, src.rawAddress, n.toLong()))
 
-public actual fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.libc.Sigval): CInt =
+public actual fun sigqueue(pid: PidT, sig: CInt, value: Sigval): CInt =
     0
 
 public actual fun confstr(name: CInt, buf: MutPtr, len: SizeT): SizeT =

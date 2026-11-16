@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // An encapsulation of `BufReader`s buffer management logic.
@@ -81,21 +81,21 @@ public open class Buffer internal constructor(
         }
 
     public open fun unconsume(amt: Int) {
-        this.pos = rustSaturatingSub(this.pos, amt)
+        this.pos = this.pos.saturatingSub(amt)
     }
 
     /**
      * Read more bytes into the buffer without discarding any of its contents
      */
     public open fun readMore(reader: Read): Result<Int> {
-        val buf = BorrowedBuf.from(((this.buf).slice(this.filled until this.buf.size)))
+        val buf = BorrowedBuf.from(((this.buf).subList(this.filled, (this.buf).size)))
         if (this.initialized) {
             // SAFETY: `self.initialized` is only set after `self.buf` was
             // fully initialized, and once `self.buf` is fully initialized
             // no part will become uninitialized.
             buf.setInit()
         }
-        when (val tryResult = reader.readBuf(buf.unfilled())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = reader.readBuf(buf.unfilled())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         this.filled += buf.len()
         this.initialized = buf.isInit()
         return Result.Ok(buf.len())
@@ -128,7 +128,7 @@ public open class Buffer internal constructor(
             this.pos = 0
             this.filled = buf.len()
             this.initialized = buf.isInit()
-            when (val tryResult = result) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = result) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(this.buffer())
     }
@@ -154,10 +154,10 @@ public open class Buffer internal constructor(
         public fun tryWithCapacity(capacity: Int): Result<Buffer> =
             run {
                 val matchVal = Box.tryNewUninitSlice(capacity)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val buf = matchVal.value
                     Result.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     Result.Err(constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))
                 } }
             }

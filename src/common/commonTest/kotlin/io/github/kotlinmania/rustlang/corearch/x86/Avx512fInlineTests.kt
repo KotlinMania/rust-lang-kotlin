@@ -5,11 +5,11 @@ import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -5644,7 +5644,7 @@ public fun testMm512LoaduPd() {
 
 public fun testMm512StoreuPd() {
     val a = mm512Set1Pd(9.0)
-    val localStorageL52910C8 = AddressableLocal(mm512UndefinedPd(), ObjectSlotLayout<M512d>())
+    val localStorageL52910C8 = AddressableLocal(mm512UndefinedPd(), UnresolvedTypeLayout<M512d>())
     val r by localStorageL52910C8
     run {
         mm512StoreuPd((MutPtr(localStorageL52910C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -5662,7 +5662,7 @@ public fun testMm512LoaduPs() {
 
 public fun testMm512StoreuPs() {
     val a = mm512Set1Ps(9.0f)
-    val localStorageL52933C8 = AddressableLocal(mm512UndefinedPs(), ObjectSlotLayout<M512>())
+    val localStorageL52933C8 = AddressableLocal(mm512UndefinedPs(), UnresolvedTypeLayout<M512>())
     val r by localStorageL52933C8
     run {
         mm512StoreuPs((MutPtr(localStorageL52933C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -5692,13 +5692,13 @@ public fun testMm512MaskzLoaduEpi32() {
 public fun testMm512MaskLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5714,13 +5714,13 @@ public fun testMm512MaskLoadEpi32() {
 public fun testMm512MaskzLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5746,13 +5746,13 @@ public fun testMm512MaskStoreuEpi32() {
 public fun testMm512MaskStoreEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5788,13 +5788,13 @@ public fun testMm512MaskzLoaduEpi64() {
 public fun testMm512MaskLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5810,13 +5810,13 @@ public fun testMm512MaskLoadEpi64() {
 public fun testMm512MaskzLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5842,13 +5842,13 @@ public fun testMm512MaskStoreuEpi64() {
 public fun testMm512MaskStoreEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5885,13 +5885,13 @@ public fun testMm512MaskzLoaduPs() {
 public fun testMm512MaskLoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5907,13 +5907,13 @@ public fun testMm512MaskLoadPs() {
 public fun testMm512MaskzLoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5939,13 +5939,13 @@ public fun testMm512MaskStoreuPs() {
 public fun testMm512MaskStorePs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -5981,13 +5981,13 @@ public fun testMm512MaskzLoaduPd() {
 public fun testMm512MaskLoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6003,13 +6003,13 @@ public fun testMm512MaskLoadPd() {
 public fun testMm512MaskzLoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6035,13 +6035,13 @@ public fun testMm512MaskStoreuPd() {
 public fun testMm512MaskStorePd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6077,13 +6077,13 @@ public fun testMm256MaskzLoaduEpi32() {
 public fun testMm256MaskLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6099,13 +6099,13 @@ public fun testMm256MaskLoadEpi32() {
 public fun testMm256MaskzLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6131,13 +6131,13 @@ public fun testMm256MaskStoreuEpi32() {
 public fun testMm256MaskStoreEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6173,13 +6173,13 @@ public fun testMm256MaskzLoaduEpi64() {
 public fun testMm256MaskLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6195,13 +6195,13 @@ public fun testMm256MaskLoadEpi64() {
 public fun testMm256MaskzLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6227,13 +6227,13 @@ public fun testMm256MaskStoreuEpi64() {
 public fun testMm256MaskStoreEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6269,13 +6269,13 @@ public fun testMm256MaskzLoaduPs() {
 public fun testMm256MaskLoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6291,13 +6291,13 @@ public fun testMm256MaskLoadPs() {
 public fun testMm256MaskzLoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6323,13 +6323,13 @@ public fun testMm256MaskStoreuPs() {
 public fun testMm256MaskStorePs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6365,13 +6365,13 @@ public fun testMm256MaskzLoaduPd() {
 public fun testMm256MaskLoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6387,13 +6387,13 @@ public fun testMm256MaskLoadPd() {
 public fun testMm256MaskzLoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6419,13 +6419,13 @@ public fun testMm256MaskStoreuPd() {
 public fun testMm256MaskStorePd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 32L)), AlignedTypeLayout(fieldLayout, 32L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6461,13 +6461,13 @@ public fun testMmMaskzLoaduEpi32() {
 public fun testMmMaskLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6483,13 +6483,13 @@ public fun testMmMaskLoadEpi32() {
 public fun testMmMaskzLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6515,13 +6515,13 @@ public fun testMmMaskStoreuEpi32() {
 public fun testMmMaskStoreEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6557,13 +6557,13 @@ public fun testMmMaskzLoaduEpi64() {
 public fun testMmMaskLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6579,13 +6579,13 @@ public fun testMmMaskLoadEpi64() {
 public fun testMmMaskzLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6611,13 +6611,13 @@ public fun testMmMaskStoreuEpi64() {
 public fun testMmMaskStoreEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6653,13 +6653,13 @@ public fun testMmMaskzLoaduPs() {
 public fun testMmMaskLoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6675,13 +6675,13 @@ public fun testMmMaskLoadPs() {
 public fun testMmMaskzLoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6707,13 +6707,13 @@ public fun testMmMaskStoreuPs() {
 public fun testMmMaskStorePs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6749,13 +6749,13 @@ public fun testMmMaskzLoaduPd() {
 public fun testMmMaskLoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6771,13 +6771,13 @@ public fun testMmMaskLoadPd() {
 public fun testMmMaskzLoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6792,13 +6792,13 @@ public fun testMmMaskzLoadPd() {
 public fun testMmMaskLoadSs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<Float>,
+        public val fieldLayout: TypeLayout<Float> = UnresolvedTypeLayout(),
     ) {
         public var data: Float
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: Float, fieldLayout: TypeLayout<Float>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: Float, fieldLayout: TypeLayout<Float> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6813,13 +6813,13 @@ public fun testMmMaskLoadSs() {
 public fun testMmMaskzLoadSs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<Float>,
+        public val fieldLayout: TypeLayout<Float> = UnresolvedTypeLayout(),
     ) {
         public var data: Float
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: Float, fieldLayout: TypeLayout<Float>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: Float, fieldLayout: TypeLayout<Float> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6833,13 +6833,13 @@ public fun testMmMaskzLoadSs() {
 public fun testMmMaskLoadSd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<Double>,
+        public val fieldLayout: TypeLayout<Double> = UnresolvedTypeLayout(),
     ) {
         public var data: Double
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: Double, fieldLayout: TypeLayout<Double>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: Double, fieldLayout: TypeLayout<Double> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6854,13 +6854,13 @@ public fun testMmMaskLoadSd() {
 public fun testMmMaskzLoadSd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<Double>,
+        public val fieldLayout: TypeLayout<Double> = UnresolvedTypeLayout(),
     ) {
         public var data: Double
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: Double, fieldLayout: TypeLayout<Double>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: Double, fieldLayout: TypeLayout<Double> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6885,13 +6885,13 @@ public fun testMmMaskStoreuPd() {
 public fun testMmMaskStorePd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6908,13 +6908,13 @@ public fun testMmMaskStorePd() {
 public fun testMmMaskStoreSs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<Float>,
+        public val fieldLayout: TypeLayout<Float> = UnresolvedTypeLayout(),
     ) {
         public var data: Float
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: Float, fieldLayout: TypeLayout<Float>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: Float, fieldLayout: TypeLayout<Float> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -6933,13 +6933,13 @@ public fun testMmMaskStoreSs() {
 public fun testMmMaskStoreSd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<Double>,
+        public val fieldLayout: TypeLayout<Double> = UnresolvedTypeLayout(),
     ) {
         public var data: Double
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: Double, fieldLayout: TypeLayout<Double>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: Double, fieldLayout: TypeLayout<Double> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -10331,13 +10331,13 @@ public fun testMmMaskTestnEpi32Mask() {
 public fun testMm512StreamPs() {
     open class Memory(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
     }
@@ -10356,13 +10356,13 @@ public fun testMm512StreamPs() {
 public fun testMm512StreamPd() {
     open class Memory(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
     }
@@ -10381,13 +10381,13 @@ public fun testMm512StreamPd() {
 public fun testMm512StreamSi512() {
     open class Memory(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
     }
@@ -10968,7 +10968,7 @@ public fun testMmLoaduEpi32() {
 
 public fun testMm512MaskCvtepi32StoreuEpi16() {
     val a = mm512Set1Epi32(9)
-    val localStorageL59020C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL59020C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL59020C8
     run {
         mm512MaskCvtepi32StoreuEpi16((MutPtr(localStorageL59020C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
@@ -10979,7 +10979,7 @@ public fun testMm512MaskCvtepi32StoreuEpi16() {
 
 public fun testMm256MaskCvtepi32StoreuEpi16() {
     val a = mm256Set1Epi32(9)
-    val localStorageL59031C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59031C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59031C8
     run {
         mm256MaskCvtepi32StoreuEpi16((MutPtr(localStorageL59031C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -10990,7 +10990,7 @@ public fun testMm256MaskCvtepi32StoreuEpi16() {
 
 public fun testMmMaskCvtepi32StoreuEpi16() {
     val a = mmSet1Epi32(9)
-    val localStorageL59042C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59042C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59042C8
     run {
         mmMaskCvtepi32StoreuEpi16((MutPtr(localStorageL59042C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11001,7 +11001,7 @@ public fun testMmMaskCvtepi32StoreuEpi16() {
 
 public fun testMm512MaskCvtsepi32StoreuEpi16() {
     val a = mm512Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59053C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL59053C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL59053C8
     run {
         mm512MaskCvtsepi32StoreuEpi16((MutPtr(localStorageL59053C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
@@ -11012,7 +11012,7 @@ public fun testMm512MaskCvtsepi32StoreuEpi16() {
 
 public fun testMm256MaskCvtsepi32StoreuEpi16() {
     val a = mm256Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59068C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59068C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59068C8
     run {
         mm256MaskCvtsepi32StoreuEpi16((MutPtr(localStorageL59068C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11023,7 +11023,7 @@ public fun testMm256MaskCvtsepi32StoreuEpi16() {
 
 public fun testMmMaskCvtsepi32StoreuEpi16() {
     val a = mmSet1Epi32(Int.MAX_VALUE)
-    val localStorageL59079C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59079C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59079C8
     run {
         mmMaskCvtsepi32StoreuEpi16((MutPtr(localStorageL59079C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11034,7 +11034,7 @@ public fun testMmMaskCvtsepi32StoreuEpi16() {
 
 public fun testMm512MaskCvtusepi32StoreuEpi16() {
     val a = mm512Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59090C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL59090C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL59090C8
     run {
         mm512MaskCvtusepi32StoreuEpi16((MutPtr(localStorageL59090C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
@@ -11045,7 +11045,7 @@ public fun testMm512MaskCvtusepi32StoreuEpi16() {
 
 public fun testMm256MaskCvtusepi32StoreuEpi16() {
     val a = mm256Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59105C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59105C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59105C8
     run {
         mm256MaskCvtusepi32StoreuEpi16((MutPtr(localStorageL59105C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11056,7 +11056,7 @@ public fun testMm256MaskCvtusepi32StoreuEpi16() {
 
 public fun testMmMaskCvtusepi32StoreuEpi16() {
     val a = mmSet1Epi32(Int.MAX_VALUE)
-    val localStorageL59116C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59116C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59116C8
     run {
         mmMaskCvtusepi32StoreuEpi16((MutPtr(localStorageL59116C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11067,7 +11067,7 @@ public fun testMmMaskCvtusepi32StoreuEpi16() {
 
 public fun testMm512MaskCvtepi32StoreuEpi8() {
     val a = mm512Set1Epi32(9)
-    val localStorageL59136C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59136C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59136C8
     run {
         mm512MaskCvtepi32StoreuEpi8((MutPtr(localStorageL59136C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
@@ -11078,7 +11078,7 @@ public fun testMm512MaskCvtepi32StoreuEpi8() {
 
 public fun testMm256MaskCvtepi32StoreuEpi8() {
     val a = mm256Set1Epi32(9)
-    val localStorageL59147C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59147C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59147C8
     run {
         mm256MaskCvtepi32StoreuEpi8((MutPtr(localStorageL59147C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11089,7 +11089,7 @@ public fun testMm256MaskCvtepi32StoreuEpi8() {
 
 public fun testMmMaskCvtepi32StoreuEpi8() {
     val a = mmSet1Epi32(9)
-    val localStorageL59158C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59158C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59158C8
     run {
         mmMaskCvtepi32StoreuEpi8((MutPtr(localStorageL59158C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11100,7 +11100,7 @@ public fun testMmMaskCvtepi32StoreuEpi8() {
 
 public fun testMm512MaskCvtsepi32StoreuEpi8() {
     val a = mm512Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59169C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59169C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59169C8
     run {
         mm512MaskCvtsepi32StoreuEpi8((MutPtr(localStorageL59169C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
@@ -11111,7 +11111,7 @@ public fun testMm512MaskCvtsepi32StoreuEpi8() {
 
 public fun testMm256MaskCvtsepi32StoreuEpi8() {
     val a = mm256Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59180C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59180C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59180C8
     run {
         mm256MaskCvtsepi32StoreuEpi8((MutPtr(localStorageL59180C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11122,7 +11122,7 @@ public fun testMm256MaskCvtsepi32StoreuEpi8() {
 
 public fun testMmMaskCvtsepi32StoreuEpi8() {
     val a = mmSet1Epi32(Int.MAX_VALUE)
-    val localStorageL59197C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59197C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59197C8
     run {
         mmMaskCvtsepi32StoreuEpi8((MutPtr(localStorageL59197C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11133,7 +11133,7 @@ public fun testMmMaskCvtsepi32StoreuEpi8() {
 
 public fun testMm512MaskCvtusepi32StoreuEpi8() {
     val a = mm512Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59214C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59214C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59214C8
     run {
         mm512MaskCvtusepi32StoreuEpi8((MutPtr(localStorageL59214C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
@@ -11144,7 +11144,7 @@ public fun testMm512MaskCvtusepi32StoreuEpi8() {
 
 public fun testMm256MaskCvtusepi32StoreuEpi8() {
     val a = mm256Set1Epi32(Int.MAX_VALUE)
-    val localStorageL59225C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59225C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59225C8
     run {
         mm256MaskCvtusepi32StoreuEpi8((MutPtr(localStorageL59225C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11155,7 +11155,7 @@ public fun testMm256MaskCvtusepi32StoreuEpi8() {
 
 public fun testMmMaskCvtusepi32StoreuEpi8() {
     val a = mmSet1Epi32(Int.MAX_VALUE)
-    val localStorageL59242C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL59242C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59242C8
     run {
         mmMaskCvtusepi32StoreuEpi8((MutPtr(localStorageL59242C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11166,7 +11166,7 @@ public fun testMmMaskCvtusepi32StoreuEpi8() {
 
 public fun testMm512StoreuEpi32() {
     val a = mm512Set1Epi32(9)
-    val localStorageL59259C8 = AddressableLocal(mm512UndefinedEpi32(), ObjectSlotLayout<M512i>())
+    val localStorageL59259C8 = AddressableLocal(mm512UndefinedEpi32(), UnresolvedTypeLayout<M512i>())
     val r by localStorageL59259C8
     run {
         mm512StoreuEpi32((MutPtr(localStorageL59259C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11176,7 +11176,7 @@ public fun testMm512StoreuEpi32() {
 
 public fun testMm256StoreuEpi32() {
     val a = mm256Set1Epi32(9)
-    val localStorageL59269C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL59269C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL59269C8
     run {
         mm256StoreuEpi32((MutPtr(localStorageL59269C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11186,7 +11186,7 @@ public fun testMm256StoreuEpi32() {
 
 public fun testMmStoreuEpi32() {
     val a = mmSet1Epi32(9)
-    val localStorageL59279C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59279C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59279C8
     run {
         mmStoreuEpi32((MutPtr(localStorageL59279C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11204,7 +11204,7 @@ public fun testMm512LoaduSi512() {
 
 public fun testMm512StoreuSi512() {
     val a = mm512Set1Epi32(9)
-    val localStorageL59298C8 = AddressableLocal(mm512UndefinedEpi32(), ObjectSlotLayout<M512i>())
+    val localStorageL59298C8 = AddressableLocal(mm512UndefinedEpi32(), UnresolvedTypeLayout<M512i>())
     val r by localStorageL59298C8
     run {
         mm512StoreuSi512(MutPtr(localStorageL59298C8.asMutPtr().rawAddress), a)
@@ -11215,13 +11215,13 @@ public fun testMm512StoreuSi512() {
 public fun testMm512LoadSi512() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11234,7 +11234,7 @@ public fun testMm512LoadSi512() {
 
 public fun testMm512StoreSi512() {
     val a = mm512Set1Epi32(9)
-    val localStorageL59323C8 = AddressableLocal(mm512UndefinedEpi32(), ObjectSlotLayout<M512i>())
+    val localStorageL59323C8 = AddressableLocal(mm512UndefinedEpi32(), UnresolvedTypeLayout<M512i>())
     val r by localStorageL59323C8
     run {
         mm512StoreSi512(MutPtr(localStorageL59323C8.asMutPtr().rawAddress), a)
@@ -11245,13 +11245,13 @@ public fun testMm512StoreSi512() {
 public fun testMm512LoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11265,13 +11265,13 @@ public fun testMm512LoadEpi32() {
 public fun testMm256LoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11285,13 +11285,13 @@ public fun testMm256LoadEpi32() {
 public fun testMmLoadEpi32() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<IntArray>,
+        public val fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout(),
     ) {
         public var data: IntArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: IntArray, fieldLayout: TypeLayout<IntArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11304,7 +11304,7 @@ public fun testMmLoadEpi32() {
 
 public fun testMm512StoreEpi32() {
     val a = mm512Set1Epi32(9)
-    val localStorageL59376C8 = AddressableLocal(mm512UndefinedEpi32(), ObjectSlotLayout<M512i>())
+    val localStorageL59376C8 = AddressableLocal(mm512UndefinedEpi32(), UnresolvedTypeLayout<M512i>())
     val r by localStorageL59376C8
     run {
         mm512StoreEpi32((MutPtr(localStorageL59376C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11314,7 +11314,7 @@ public fun testMm512StoreEpi32() {
 
 public fun testMm256StoreEpi32() {
     val a = mm256Set1Epi32(9)
-    val localStorageL59386C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL59386C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL59386C8
     run {
         mm256StoreEpi32((MutPtr(localStorageL59386C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11324,7 +11324,7 @@ public fun testMm256StoreEpi32() {
 
 public fun testMmStoreEpi32() {
     val a = mmSet1Epi32(9)
-    val localStorageL59396C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL59396C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL59396C8
     run {
         mmStoreEpi32((MutPtr(localStorageL59396C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11335,13 +11335,13 @@ public fun testMmStoreEpi32() {
 public fun testMm512LoadPs() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11354,7 +11354,7 @@ public fun testMm512LoadPs() {
 
 public fun testMm512StorePs() {
     val a = mm512Set1Ps(9.0f)
-    val localStorageL59425C8 = AddressableLocal(mm512UndefinedPs(), ObjectSlotLayout<M512>())
+    val localStorageL59425C8 = AddressableLocal(mm512UndefinedPs(), UnresolvedTypeLayout<M512>())
     val r by localStorageL59425C8
     run {
         mm512StorePs((MutPtr(localStorageL59425C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)

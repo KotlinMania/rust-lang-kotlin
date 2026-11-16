@@ -2,25 +2,25 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.PthreadKeyT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SpeedT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ClockT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
@@ -387,7 +387,7 @@ public actual fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, n: SizeT): MutPt
 public actual fun getpwnam(name: ConstPtr): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixGetpwnam")
 
-public actual fun getpwuid(uid: io.github.kotlinmania.rustlang.libc.UidT): MutPtr =
+public actual fun getpwuid(uid: UidT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixGetpwuid")
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
@@ -520,10 +520,10 @@ public actual fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixFchown")
 private external fun wasiLibcUnixFchown(fd: Int, owner: Int, group: Int): Int
 
-public actual fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT): CInt =
+public actual fun fchown(fd: CInt, owner: UidT, group: GidT): CInt =
     wasiLibcUnixFchown(fd, owner, group).toInt()
 
-public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT, flags: CInt): CInt =
+public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: UidT, group: GidT, flags: CInt): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFchownat")
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
@@ -784,7 +784,7 @@ public actual fun tcgetpgrp(fd: CInt): PidT =
 @kotlin.wasm.WasmImport("kmcore", "libcUnixTcsetpgrp")
 private external fun wasiLibcUnixTcsetpgrp(fd: Int, pgrp: Int): Int
 
-public actual fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.libc.PidT): CInt =
+public actual fun tcsetpgrp(fd: CInt, pgrp: PidT): CInt =
     wasiLibcUnixTcsetpgrp(fd, pgrp).toInt()
 
 public actual fun ttyname(fd: CInt): MutPtr =
@@ -947,7 +947,7 @@ public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallba
 private external fun wasiLibcUnixPthreadKeyDelete(key: Int): Int
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    wasiLibcUnixPthreadKeyDelete(key).toInt()
+    wasiLibcUnixPthreadKeyDelete(key.toInt()).toInt()
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixPthreadGetspecific")
@@ -1253,7 +1253,7 @@ public actual fun tcflush(fd: CInt, action: CInt): CInt =
 @kotlin.wasm.WasmImport("kmcore", "libcUnixTcgetsid")
 private external fun wasiLibcUnixTcgetsid(fd: Int): Int
 
-public actual fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.libc.PidT =
+public actual fun tcgetsid(fd: CInt): PidT =
     wasiLibcUnixTcgetsid(fd).toInt()
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixTcsendbreak")
@@ -1336,7 +1336,7 @@ public actual fun adjtime(delta: ConstPtr, olddelta: MutPtr): CInt =
 public actual fun stpncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixStpncpy")
 
-public actual fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.libc.Sigval): CInt =
+public actual fun sigqueue(pid: PidT, sig: CInt, value: Sigval): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixSigqueue")
 
 public actual fun confstr(name: CInt, buf: MutPtr, len: SizeT): SizeT =

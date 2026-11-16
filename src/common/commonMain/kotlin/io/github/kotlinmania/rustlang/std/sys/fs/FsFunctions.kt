@@ -4,10 +4,10 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.FilePermissions
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileTimes
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.ReadDir
-import io.github.kotlinmania.rustlang.std.sys.fs.windows.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.link
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.lstat
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.readdir

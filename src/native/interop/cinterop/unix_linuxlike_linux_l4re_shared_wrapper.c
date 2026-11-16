@@ -1580,8 +1580,8 @@ int32_t libcUnixLinuxlikeLinuxL4reSharedPrctl(int32_t option, int32_t km_vac, in
     return -1;
 }
 
-int32_t libcUnixLinuxlikeLinuxL4reSharedPpoll(void* fds, uint32_t nfds, void* timeout, void* sigmask) {
-    typedef int32_t (*km_fn_t)(void*, uint32_t, void*, void*);
+int32_t libcUnixLinuxlikeLinuxL4reSharedPpoll(void* fds, uint64_t nfds, void* timeout, void* sigmask) {
+    typedef int32_t (*km_fn_t)(void*, uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {

@@ -5,10 +5,10 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.callerLocation
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -155,7 +155,7 @@ public open class Location internal constructor(
         // overflow.
         val cstrLen = sizeOfValRaw(filename).uncheckedAdd(1)
         // SAFETY: The filename is valid for `filenameLen + 1` bytes.
-        val slice = rawSliceList(filename.cast(), cstrLen.toInt(), PrimitiveLayouts.U8)
+        val slice = linearSliceView(filename.cast(), cstrLen.toInt(), PrimitiveLayouts.U8)
         // SAFETY: The filename is guaranteed to have a trailing nul byte and no interior nul bytes.
         return CStr.fromBytesWithNulUnchecked(slice)
     }

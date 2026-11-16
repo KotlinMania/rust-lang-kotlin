@@ -3,7 +3,9 @@ package io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray
 
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
@@ -25,7 +27,7 @@ public open class CStringArray internal constructor(
      */
     public open fun write(index: Int, item: CString) {
         val argc = this.ptrs.size - 1
-        val ptr = ((this.ptrs).slice(0 until argc))[index]
+        val ptr = ((this.ptrs).subList(0, argc))[index]
         val old = replace(ptr, item.intoRaw())
         // SAFETY:
         // `CStringArray` owns all of its strings, and they were all transformed
@@ -55,19 +57,17 @@ public open class CStringArray internal constructor(
     /**
      * Returns an iterator over all `CStr`s contained in this array.
      */
-    public open fun iter(): CStringIter = CStringIter(iter = ((this.ptrs).slice(0 until this.ptrs.size - 1)).iter())
+    public open fun iter(): CStringIter = CStringIter(iter = ((this.ptrs).subList(0, this.ptrs.size - 1)).iter())
 
     public open fun index(index: Int): CStr {
-        val ptr = ((this.ptrs).slice(0 until this.ptrs.size - 1))[index]
+        val ptr = ((this.ptrs).subList(0, this.ptrs.size - 1))[index]
         // SAFETY:
         // `CStringArray` owns all of its strings. Also, this is not the null
         // pointer since the indexing above would have failed.
         return CStr.fromPtr(ptr)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     // SAFETY: `CStringArray` is basically just a `List<CString>`
 
@@ -77,7 +77,7 @@ public open class CStringArray internal constructor(
         // SAFETY:
         // `CStringArray` owns all of its strings, and they were all transformed
         // into pointers using `CString.intoRaw`.
-        ((this.ptrs).slice(0 until this.ptrs.size - 1)).forEach({ p -> (CString.fromRaw(p.castMut())).let { } })
+        ((this.ptrs).subList(0, this.ptrs.size - 1)).forEach({ p -> (CString.fromRaw(p.castMut())).let { } })
     }
 
     public companion object {

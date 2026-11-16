@@ -2,12 +2,14 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -87,7 +89,7 @@ public fun interface FnCallback {
  */
 public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     // SAFETY: this pointer is provided by the system and will always point to a valid `siginfoT`.
-    val faultAddr = (ObjectSlotLayout<SiginfoT>()).readNative((info).rawAddress).siAddr().addr()
+    val faultAddr = (UnresolvedTypeLayout<SiginfoT>()).readNative((info).rawAddress).siAddr().addr()
     // `withCurrentInfo` expects that the process aborts after it is
     // called. If the signal was not caused by a memory access, this might
     // not be true. We detect this by noticing that the `siAddr` field is
@@ -134,14 +136,14 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     }
     // Unregister ourselves by reverting back to the default behavior.
     // SAFETY: assuming all platforms define struct sigaction as "zero-initializable"
-    val action: Sigaction  = MaybeUninit.zeroed(ObjectSlotLayout<Sigaction>()).assumeInit()
+    val action: Sigaction  = MaybeUninit.zeroed(UnresolvedTypeLayout<Sigaction>()).assumeInit()
     action.saSigaction = SIG_DFL
     // SAFETY: pray this is a well-behaved POSIX implementation of fn sigaction
     Sigaction(signum, action, MutPtr(0L))
     // See comment above for why this function returns.
 }
 
-public var PAGE_SIZE: Atomic<Int> = AtomicUsize.new(0)
+public var PAGE_SIZE: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
 
 // Store a pointer to the allocation for the main thread's altstack so that
 // tools like valgrind don't complain about a leaked unreachable allocation.
@@ -149,9 +151,9 @@ public var PAGE_SIZE: Atomic<Int> = AtomicUsize.new(0)
 // If the main thread exits, the process will terminate so there's no use in
 // freeing resources. It also means that the altstack is still installed
 // while TLS destructors are run on the main thread (c.f. #111272).
-public var MAIN_ALTSTACK: Atomic<MutPtr> = AtomicPtr.new(MutPtr(0L))
+public var MAIN_ALTSTACK: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(MutPtr(0L))
 
-public var NEED_ALTSTACK: Atomic<Boolean> = AtomicBool.new(false)
+public var NEED_ALTSTACK: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(false)
 
 /**
  * # Safety
@@ -171,7 +173,7 @@ public fun init() {
         return
     }
     // SAFETY: C structures are always zero-initializable.
-    val action: Sigaction  = MaybeUninit.zeroed(ObjectSlotLayout<Sigaction>()).assumeInit()
+    val action: Sigaction  = MaybeUninit.zeroed(UnresolvedTypeLayout<Sigaction>()).assumeInit()
     for (signal in listOf(SIGSEGV, SIGBUS)) {
         // SAFETY: just fetches the current signal handler into action
         Sigaction(signal, MutPtr(0L), action)
@@ -297,7 +299,7 @@ public fun dropHandler(data: MutPtr) {
         // SAFETY:
         // This allocation was created by us in `getStack` and, as the
         // alternate signal stack is now disabled, is no longer in use.
-        munmap(MutPtr((data).rawAddress - ((pageSize).toLong() * (ObjectSlotLayout<CVoid>()).strideBytes)), sigstackSize + pageSize)
+        munmap(MutPtr((data).rawAddress - ((pageSize).toLong() * (UnresolvedTypeLayout<CVoid>()).strideBytes)), sigstackSize + pageSize)
     }
     deleteCurrentInfo()
 }

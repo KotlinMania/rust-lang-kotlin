@@ -3,20 +3,18 @@
 
 package io.github.kotlinmania.rustlang.libc.new.musl.signal
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.Sigval
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
+import io.github.kotlinmania.rustlang.libc.unix.Sigval
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.ClockT
 
 // Header source: `include / signal.h`
 //
@@ -26,57 +24,59 @@ import io.github.kotlinmania.rustlang.libc.UidT
 // `mips *` targets swap the `sErrno` and `sCode` fields otherwise this
 // struct is target-agnostic (see
 // <https://www.openwall.com/lists/musl/2016/01/27/1/2>)
-public data class SiginfoT(
-    public var siSigno: CInt = 0,
-    public var siCode: CInt = 0,
-    public var siErrno: CInt = 0,
-    public var siFields: CAnonymousSiginfoTSiFields = CAnonymousSiginfoTSiFields(),
+public open class SiginfoT(
+    public var siSigno: CInt,
+    public var siCode: CInt,
+    public var siErrno: CInt,
+    public var siFields: CAnonymousSiginfoTSiFields,
 ) {
-    public fun siPid(): PidT = this.siFields.siCommon.first.piduid.siPid
+    public open fun clone(): SiginfoT = SiginfoT(siSigno, siCode, siErrno, siFields)
 
-    public fun siUid(): UidT = this.siFields.siCommon.first.piduid.siUid
+    public open fun siPid(): PidT = this.siFields.siCommon.first.piduid.siPid
 
-    public fun siStatus(): CInt = this.siFields.siCommon.second.sigchld.siStatus
+    public open fun siUid(): UidT = this.siFields.siCommon.first.piduid.siUid
 
-    public fun siUtime(): ClockT = this.siFields.siCommon.second.sigchld.siUtime
+    public open fun siStatus(): CInt = this.siFields.siCommon.second.sigchld.siStatus
 
-    public fun siStime(): ClockT = this.siFields.siCommon.second.sigchld.siStime
+    public open fun siUtime(): ClockT = this.siFields.siCommon.second.sigchld.siUtime
 
-    public fun siValue(): Sigval = this.siFields.siCommon.second.siValue
+    public open fun siStime(): ClockT = this.siFields.siCommon.second.sigchld.siStime
 
-    public fun siAddr(): MutPtr = this.siFields.sigfault.siAddr
+    public open fun siValue(): Sigval = this.siFields.siCommon.second.siValue
 
-    public fun siAddrLsb(): CShort = this.siFields.sigfault.siAddrLsb
+    public open fun siAddr(): MutPtr = this.siFields.sigfault.siAddr
 
-    public fun siLower(): MutPtr = this.siFields.sigfault.first.addrBand.siLower
+    public open fun siAddrLsb(): CShort = this.siFields.sigfault.siAddrLsb
 
-    public fun siUpper(): MutPtr = this.siFields.sigfault.first.addrBand.siUpper
+    public open fun siLower(): MutPtr = this.siFields.sigfault.first.addrBand.siLower
 
-    public fun siPkey(): CUint = this.siFields.sigfault.first.siPkey
+    public open fun siUpper(): MutPtr = this.siFields.sigfault.first.addrBand.siUpper
 
-    public fun siBand(): CLong = this.siFields.sigpoll.siBand
+    public open fun siPkey(): CUint = this.siFields.sigfault.first.siPkey
 
-    public fun siFd(): CInt = this.siFields.sigpoll.siFd
+    public open fun siBand(): CLong = this.siFields.sigpoll.siBand
 
-    public fun siTimerid(): CInt = this.siFields.siCommon.first.timer.siTimerid
+    public open fun siFd(): CInt = this.siFields.sigpoll.siFd
 
-    public fun siOverrun(): CInt = this.siFields.siCommon.first.timer.siOverrun
+    public open fun siTimerid(): CInt = this.siFields.siCommon.first.timer.siTimerid
 
-    public fun siPtr(): MutPtr = this.siFields.siCommon.second.siValue.sivalPtr
+    public open fun siOverrun(): CInt = this.siFields.siCommon.first.timer.siOverrun
 
-    public fun siInt(): CInt {
+    public open fun siPtr(): MutPtr = this.siFields.siCommon.second.siValue.sivalPtr
+
+    public open fun siInt(): CInt {
         // DIFF(main): sigval is a union on `main`, struct on `libc - 0.2`. The cast means
         // this can't be const at the MSRV.
         return this.siFields.siCommon.second.siValue.sivalPtr.rawAddress.toInt()
     }
 
-    public fun siCallAddr(): MutPtr = this.siFields.sigsys.siCallAddr
+    public open fun siCallAddr(): MutPtr = this.siFields.sigsys.siCallAddr
 
-    public fun siSyscall(): CInt = this.siFields.sigsys.siSyscall
+    public open fun siSyscall(): CInt = this.siFields.sigsys.siSyscall
 
-    public fun siArch(): CUint = this.siFields.sigsys.siArch
+    public open fun siArch(): CUint = this.siFields.sigsys.siArch
 
-    public fun eq(other: SiginfoT): Boolean = Triple(this.siSigno, this.siErrno, this.siCode) == Triple(other.siSigno, other.siErrno, other.siCode)
+    public open fun eq(other: SiginfoT): Boolean = Triple(this.siSigno, this.siErrno, this.siCode) == Triple(other.siSigno, other.siErrno, other.siCode)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -87,40 +87,22 @@ public data class SiginfoT(
     }
 }
 
-public data class CAnonymousSiginfoTSiFields(
-    public var pad: UByteArray = UByteArray((128 - 2 * sizeOf<CInt>(typeLayoutT = ObjectSlotLayout<CInt>()) - sizeOf<CLong>(typeLayoutT = ObjectSlotLayout<CLong>())).toInt()),
-    public var siCommon: CAnonymousSiFieldsSiCommon = CAnonymousSiFieldsSiCommon(),
-    public var sigfault: CAnonymousSiFieldsSigfault = CAnonymousSiFieldsSigfault(),
-    public var sigpoll: CAnonymousSiFieldsSigpoll = CAnonymousSiFieldsSigpoll(),
-    public var sigsys: CAnonymousSiFieldsSigsys = CAnonymousSiFieldsSigsys(),
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousSiginfoTSiFields) return false
-        if (!this.pad.contentEquals(other.pad)) return false
-        if (this.siCommon != other.siCommon) return false
-        if (this.sigfault != other.sigfault) return false
-        if (this.sigpoll != other.sigpoll) return false
-        if (this.sigsys != other.sigsys) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.pad.contentHashCode()
-        result = 31 * result + this.siCommon.hashCode()
-        result = 31 * result + this.sigfault.hashCode()
-        result = 31 * result + this.sigpoll.hashCode()
-        result = 31 * result + this.sigsys.hashCode()
-        return result
-    }
-}
-
-public data class CAnonymousSiFieldsSiCommon(
-    public var first: CAnonymousSiCommonFirst = CAnonymousSiCommonFirst(),
-    public var second: CAnonymousSiCommonSecond = CAnonymousSiCommonSecond(),
+public open class CAnonymousSiginfoTSiFields(
+    public var pad: UByteArray? = null,
+    public var siCommon: CAnonymousSiFieldsSiCommon? = null,
+    public var sigfault: CAnonymousSiFieldsSigfault? = null,
+    public var sigpoll: CAnonymousSiFieldsSigpoll? = null,
+    public var sigsys: CAnonymousSiFieldsSigsys? = null,
 )
 
-public class CAnonymousSiFieldsSigfault internal constructor(
+public open class CAnonymousSiFieldsSiCommon(
+    public var first: CAnonymousSiCommonFirst,
+    public var second: CAnonymousSiCommonSecond,
+) {
+    public open fun clone(): CAnonymousSiFieldsSiCommon = CAnonymousSiFieldsSiCommon(first, second)
+}
+
+public open class CAnonymousSiFieldsSigfault internal constructor(
     siAddrCtorArg: MutPtr,
     public var siAddrLsb: CShort,
     public var first: CAnonymousSigfaultFirst,
@@ -128,43 +110,13 @@ public class CAnonymousSiFieldsSigfault internal constructor(
     public var siAddr: MutPtr = siAddrCtorArg
         internal set
 
-    public constructor() : this(
-        siAddrCtorArg = MutPtr(0L),
-        siAddrLsb = 0,
-        first = CAnonymousSigfaultFirst(),
-    )
-
-    public operator fun component1(): MutPtr = this.siAddr
-
-    public operator fun component2(): CShort = this.siAddrLsb
-
-    public operator fun component3(): CAnonymousSigfaultFirst = this.first
-
-    public fun copy(siAddr: MutPtr = this.siAddr, siAddrLsb: CShort = this.siAddrLsb, first: CAnonymousSigfaultFirst = this.first): CAnonymousSiFieldsSigfault = CAnonymousSiFieldsSigfault(siAddrCtorArg = siAddr, siAddrLsb = siAddrLsb, first = first)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousSiFieldsSigfault) return false
-        if (this.siAddr != other.siAddr) return false
-        if (this.siAddrLsb != other.siAddrLsb) return false
-        if (this.first != other.first) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.siAddr.hashCode()
-        result = 31 * result + this.siAddrLsb.hashCode()
-        result = 31 * result + this.first.hashCode()
-        return result
-    }
-
-    public fun clone(): CAnonymousSiFieldsSigfault = CAnonymousSiFieldsSigfault(siAddr, siAddrLsb, first)
+    public open fun clone(): CAnonymousSiFieldsSigfault = CAnonymousSiFieldsSigfault(siAddr, siAddrLsb, first)
 
     public companion object {
         public operator fun invoke(
-            siAddr: MutPtr = MutPtr(0L),
-            siAddrLsb: CShort = 0,
-            first: CAnonymousSigfaultFirst = CAnonymousSigfaultFirst(),
+            siAddr: MutPtr,
+            siAddrLsb: CShort,
+            first: CAnonymousSigfaultFirst,
         ): CAnonymousSiFieldsSigfault = CAnonymousSiFieldsSigfault(
             siAddrCtorArg = siAddr,
             siAddrLsb = siAddrLsb,
@@ -173,10 +125,12 @@ public class CAnonymousSiFieldsSigfault internal constructor(
     }
 }
 
-public data class CAnonymousSiFieldsSigpoll(
-    public var siBand: CLong = 0L,
-    public var siFd: CInt = 0,
+public open class CAnonymousSiFieldsSigpoll(
+    public var siBand: CLong,
+    public var siFd: CInt,
 ) {
+    public open fun clone(): CAnonymousSiFieldsSigpoll = CAnonymousSiFieldsSigpoll(siBand, siFd)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousSiFieldsSigpoll> =
             object : TypeLayout<CAnonymousSiFieldsSigpoll> {
@@ -204,7 +158,7 @@ public data class CAnonymousSiFieldsSigpoll(
     }
 }
 
-public class CAnonymousSiFieldsSigsys internal constructor(
+public open class CAnonymousSiFieldsSigsys internal constructor(
     siCallAddrCtorArg: MutPtr,
     public var siSyscall: CInt,
     public var siArch: CUint,
@@ -212,37 +166,7 @@ public class CAnonymousSiFieldsSigsys internal constructor(
     public var siCallAddr: MutPtr = siCallAddrCtorArg
         internal set
 
-    public constructor() : this(
-        siCallAddrCtorArg = MutPtr(0L),
-        siSyscall = 0,
-        siArch = 0u,
-    )
-
-    public operator fun component1(): MutPtr = this.siCallAddr
-
-    public operator fun component2(): CInt = this.siSyscall
-
-    public operator fun component3(): CUint = this.siArch
-
-    public fun copy(siCallAddr: MutPtr = this.siCallAddr, siSyscall: CInt = this.siSyscall, siArch: CUint = this.siArch): CAnonymousSiFieldsSigsys = CAnonymousSiFieldsSigsys(siCallAddrCtorArg = siCallAddr, siSyscall = siSyscall, siArch = siArch)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousSiFieldsSigsys) return false
-        if (this.siCallAddr != other.siCallAddr) return false
-        if (this.siSyscall != other.siSyscall) return false
-        if (this.siArch != other.siArch) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.siCallAddr.hashCode()
-        result = 31 * result + this.siSyscall.hashCode()
-        result = 31 * result + this.siArch.hashCode()
-        return result
-    }
-
-    public fun clone(): CAnonymousSiFieldsSigsys = CAnonymousSiFieldsSigsys(siCallAddr, siSyscall, siArch)
+    public open fun clone(): CAnonymousSiFieldsSigsys = CAnonymousSiFieldsSigsys(siCallAddr, siSyscall, siArch)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousSiFieldsSigsys> =
@@ -274,9 +198,9 @@ public class CAnonymousSiFieldsSigsys internal constructor(
             }
 
         public operator fun invoke(
-            siCallAddr: MutPtr = MutPtr(0L),
-            siSyscall: CInt = 0,
-            siArch: CUint = 0u,
+            siCallAddr: MutPtr,
+            siSyscall: CInt,
+            siArch: CUint,
         ): CAnonymousSiFieldsSigsys = CAnonymousSiFieldsSigsys(
             siCallAddrCtorArg = siCallAddr,
             siSyscall = siSyscall,
@@ -285,25 +209,27 @@ public class CAnonymousSiFieldsSigsys internal constructor(
     }
 }
 
-public data class CAnonymousSiCommonFirst(
-    public var piduid: CAnonymousFirstPiduid = CAnonymousFirstPiduid(),
-    public var timer: CAnonymousFirstTimer = CAnonymousFirstTimer(),
+public open class CAnonymousSiCommonFirst(
+    public var piduid: CAnonymousFirstPiduid? = null,
+    public var timer: CAnonymousFirstTimer? = null,
 )
 
-public data class CAnonymousSiCommonSecond(
-    public var siValue: Sigval = Sigval(),
-    public var sigchld: CAnonymousSecondSigchld = CAnonymousSecondSigchld(),
+public open class CAnonymousSiCommonSecond(
+    public var siValue: Sigval? = null,
+    public var sigchld: CAnonymousSecondSigchld? = null,
 )
 
-public data class CAnonymousSigfaultFirst(
-    public var addrBand: CAnonymousFirstAddrBand = CAnonymousFirstAddrBand(),
-    public var siPkey: CUint = 0u,
+public open class CAnonymousSigfaultFirst(
+    public var addrBand: CAnonymousFirstAddrBand? = null,
+    public var siPkey: CUint? = null,
 )
 
-public data class CAnonymousFirstPiduid(
-    public var siPid: PidT = 0,
-    public var siUid: UidT = 0,
+public open class CAnonymousFirstPiduid(
+    public var siPid: PidT,
+    public var siUid: UidT,
 ) {
+    public open fun clone(): CAnonymousFirstPiduid = CAnonymousFirstPiduid(siPid, siUid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousFirstPiduid> =
             object : TypeLayout<CAnonymousFirstPiduid> {
@@ -331,10 +257,12 @@ public data class CAnonymousFirstPiduid(
     }
 }
 
-public data class CAnonymousFirstTimer(
-    public var siTimerid: CInt = 0,
-    public var siOverrun: CInt = 0,
+public open class CAnonymousFirstTimer(
+    public var siTimerid: CInt,
+    public var siOverrun: CInt,
 ) {
+    public open fun clone(): CAnonymousFirstTimer = CAnonymousFirstTimer(siTimerid, siOverrun)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousFirstTimer> =
             object : TypeLayout<CAnonymousFirstTimer> {
@@ -362,11 +290,13 @@ public data class CAnonymousFirstTimer(
     }
 }
 
-public data class CAnonymousSecondSigchld(
-    public var siStatus: CInt = 0,
-    public var siUtime: ClockT = 0uL,
-    public var siStime: ClockT = 0uL,
+public open class CAnonymousSecondSigchld(
+    public var siStatus: CInt,
+    public var siUtime: ClockT,
+    public var siStime: ClockT,
 ) {
+    public open fun clone(): CAnonymousSecondSigchld = CAnonymousSecondSigchld(siStatus, siUtime, siStime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousSecondSigchld> =
             object : TypeLayout<CAnonymousSecondSigchld> {
@@ -375,30 +305,30 @@ public data class CAnonymousSecondSigchld(
                 override fun readNative(addr: Long): CAnonymousSecondSigchld =
                     CAnonymousSecondSigchld(
                         (PrimitiveLayouts.I32).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
+                        (PrimitiveLayouts.I64).readNative(addr + 8L),
+                        (PrimitiveLayouts.I64).readNative(addr + 16L),
                     )
                 override fun writeNative(addr: Long, value: CAnonymousSecondSigchld) {
                     (PrimitiveLayouts.I32).writeNative(addr, value.siStatus)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.siUtime)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.siStime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 8L, value.siUtime)
+                    (PrimitiveLayouts.I64).writeNative(addr + 16L, value.siStime)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): CAnonymousSecondSigchld =
                     CAnonymousSecondSigchld(
                         (PrimitiveLayouts.I32).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.I64).readBytes(buf, offset + 16),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: CAnonymousSecondSigchld) {
                     (PrimitiveLayouts.I32).writeBytes(buf, offset, value.siStatus)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.siUtime)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.siStime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.siUtime)
+                    (PrimitiveLayouts.I64).writeBytes(buf, offset + 16, value.siStime)
                 }
             }
     }
 }
 
-public class CAnonymousFirstAddrBand internal constructor(
+public open class CAnonymousFirstAddrBand internal constructor(
     siLowerCtorArg: MutPtr,
     siUpperCtorArg: MutPtr,
 ) {
@@ -408,32 +338,7 @@ public class CAnonymousFirstAddrBand internal constructor(
     public var siUpper: MutPtr = siUpperCtorArg
         internal set
 
-    public constructor() : this(
-        siLowerCtorArg = MutPtr(0L),
-        siUpperCtorArg = MutPtr(0L),
-    )
-
-    public operator fun component1(): MutPtr = this.siLower
-
-    public operator fun component2(): MutPtr = this.siUpper
-
-    public fun copy(siLower: MutPtr = this.siLower, siUpper: MutPtr = this.siUpper): CAnonymousFirstAddrBand = CAnonymousFirstAddrBand(siLowerCtorArg = siLower, siUpperCtorArg = siUpper)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CAnonymousFirstAddrBand) return false
-        if (this.siLower != other.siLower) return false
-        if (this.siUpper != other.siUpper) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.siLower.hashCode()
-        result = 31 * result + this.siUpper.hashCode()
-        return result
-    }
-
-    public fun clone(): CAnonymousFirstAddrBand = CAnonymousFirstAddrBand(siLower, siUpper)
+    public open fun clone(): CAnonymousFirstAddrBand = CAnonymousFirstAddrBand(siLower, siUpper)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousFirstAddrBand> =
@@ -461,8 +366,8 @@ public class CAnonymousFirstAddrBand internal constructor(
             }
 
         public operator fun invoke(
-            siLower: MutPtr = MutPtr(0L),
-            siUpper: MutPtr = MutPtr(0L),
+            siLower: MutPtr,
+            siUpper: MutPtr,
         ): CAnonymousFirstAddrBand = CAnonymousFirstAddrBand(
             siLowerCtorArg = siLower,
             siUpperCtorArg = siUpper,

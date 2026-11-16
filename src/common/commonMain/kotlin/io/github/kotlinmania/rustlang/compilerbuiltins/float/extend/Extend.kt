@@ -5,8 +5,8 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.wrappingShl
 
 /**
  * Generic conversion from a narrower to a wider IEEE-754 floating-point type
@@ -38,8 +38,8 @@ public fun <F : Float, R : Float> extend(a: F, fromBitsRFn: (Int) -> R): R {
         // exponent into the proper position and rebiasing the exponent.
         val absDst: Int = aAbs.cast().toInt()
         val biasDst: Int = expBiasDelta.cast()
-        absResult = rustWrappingShl(absDst, sigBitsDelta.toUInt())
-        absResult += rustWrappingShl(biasDst, dstSigBits.toUInt())
+        absResult = absDst.wrappingShl(sigBitsDelta.toUInt())
+        absResult += biasDst.wrappingShl(dstSigBits.toUInt())
     } else if (aAbs >= srcInfinity) {
         // a is NaN or infinity.
         // Conjure the result by beginning with infinity, then setting the qNaN
@@ -48,21 +48,21 @@ public fun <F : Float, R : Float> extend(a: F, fromBitsRFn: (Int) -> R): R {
         val qnanDst: Int = (aAbs and srcQnan).cast()
         val nanCodeDst: Int = (aAbs and srcNanCode).cast()
         val infExpDst: Int = dstInfExp.cast()
-        absResult = rustWrappingShl(infExpDst, dstSigBits.toUInt())
-        absResult = absResult or rustWrappingShl(qnanDst, sigBitsDelta.toUInt())
-        absResult = absResult or rustWrappingShl(nanCodeDst, sigBitsDelta.toUInt())
+        absResult = infExpDst.wrappingShl(dstSigBits.toUInt())
+        absResult = absResult or qnanDst.wrappingShl(sigBitsDelta.toUInt())
+        absResult = absResult or nanCodeDst.wrappingShl(sigBitsDelta.toUInt())
     } else if (aAbs != srcZero) {
         // a is denormal.
         // Renormalize the significand and clear the leading bit, then insert
         // the correct adjusted exponent in the destination type.
-        val scale = rustLeadingZeros(aAbs) - srcMinNormal.leadingZeros()
+        val scale = aAbs.leadingZeros() - srcMinNormal.leadingZeros()
         val absDst1: Int = aAbs.cast().toInt()
         val biasDst1: Int = (expBiasDelta - scale + 1u).cast()
-        absResult = rustWrappingShl(absDst1, sigBitsDelta + scale)
-        absResult = (absResult xor dstMinNormal) or (rustWrappingShl(biasDst1, dstSigBits.toUInt()))
+        absResult = absDst1.wrappingShl(sigBitsDelta + scale)
+        absResult = (absResult xor dstMinNormal) or (biasDst1.wrappingShl(dstSigBits.toUInt()))
     }
     val signResult: Int = (a.toBits() and srcSignMask).cast()
-    return fromBitsRFn(absResult or (rustWrappingShl(signResult, (dstBits - srcBits).toUInt())))
+    return fromBitsRFn(absResult or (signResult.wrappingShl((dstBits - srcBits).toUInt())))
 }
 
 public fun extendsfdf2(a: Float): Double = extend(a)

@@ -4,13 +4,13 @@
 package io.github.kotlinmania.rustlang.core.time
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.fmt.Alignment
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.f32.MIN_EXP
 import io.github.kotlinmania.rustlang.core.num.nichetypes.Nanoseconds
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.Div
@@ -21,8 +21,8 @@ import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
 
 // Temporal quantification.
 //
@@ -99,7 +99,7 @@ public val DAYS_PER_WEEK: ULong = 7uL
 public open class Duration(
     public var secs: ULong,
     public var nanos: Nanoseconds,
-) : Add<Duration, Any?, Duration>, AddAssign<Duration>, Sub<Duration, Any?, Duration>, SubAssign<Duration>, Mul<UInt, Any?, Duration>, MulAssign<UInt>, Div<UInt, Any?, Duration>, DivAssign<UInt>, Sum<Duration, Duration> {
+) : Add<Duration, Duration>, AddAssign<Duration>, Sub<Duration, Duration>, SubAssign<Duration>, Mul<UInt, Duration>, MulAssign<UInt>, Div<UInt, Duration>, DivAssign<UInt>, Sum<Duration, Duration> {
     public open fun clone(): Duration = Duration(secs, nanos)
 
     /**
@@ -281,7 +281,7 @@ public open class Duration(
      * ```
      */
     public open fun checkedAdd(rhs: Duration): Duration? {
-        return when (val matchVal = rustCheckedAdd(this.secs, rhs.secs)) {
+        return when (val matchVal = this.secs.checkedAdd(rhs.secs)) {
             null -> {
                 null
             }
@@ -290,7 +290,7 @@ public open class Duration(
                 var nanos = this.nanos.asInner() + rhs.nanos.asInner()
                 if (nanos >= NANOS_PER_SEC) {
                     nanos -= NANOS_PER_SEC
-                    val newSecs = secs.checkedAdd(1) ?: return null
+                    val newSecs = secs.checkedAdd(1uL) ?: return null
                     secs = newSecs
                 }
                 if (false) {
@@ -337,7 +337,7 @@ public open class Duration(
      * ```
      */
     public open fun checkedSub(rhs: Duration): Duration? {
-        return when (val matchVal = rustCheckedSub(this.secs, rhs.secs)) {
+        return when (val matchVal = this.secs.checkedSub(rhs.secs)) {
             null -> {
                 null
             }
@@ -346,7 +346,7 @@ public open class Duration(
                 val nanos =
                     if (this.nanos.asInner() >= rhs.nanos.asInner()) {
                         this.nanos.asInner() - rhs.nanos.asInner()
-                    } else when (val matchVal1 = secs.checkedSub(1)) {
+                    } else when (val matchVal1 = secs.checkedSub(1uL)) {
                         null -> {
                             return null
                         }
@@ -405,7 +405,7 @@ public open class Duration(
         val extraSecs = totalNanos / (NANOS_PER_SEC.toULong())
         val nanos = (totalNanos % (NANOS_PER_SEC.toULong())).toUInt()
         // Note(const-Note): use `andThen` once that is possible.
-        when (val matchVal = rustCheckedMul(this.secs, rhs.toULong())) {
+        when (val matchVal = this.secs.checkedMul(rhs.toULong())) {
             null -> {}
             else -> {
                 val s = matchVal
@@ -817,13 +817,13 @@ public open class Duration(
                 ""
             }
         return if (this.secs > 0uL) {
-            run { fmtDecimal(f, this.secs, this.nanos.asInner(), NANOS_PER_SEC / 10u, prefix, "s"); Result.Ok(Unit) }
+            fmtDecimal(f, this.secs, this.nanos.asInner(), NANOS_PER_SEC / 10u, prefix, "s")
         } else if (this.nanos.asInner() >= NANOS_PER_MILLI) {
-            run { fmtDecimal(f, (this.nanos.asInner() / NANOS_PER_MILLI).toULong(), this.nanos.asInner() % NANOS_PER_MILLI, NANOS_PER_MILLI / 10u, prefix, "ms"); Result.Ok(Unit) }
+            fmtDecimal(f, (this.nanos.asInner() / NANOS_PER_MILLI).toULong(), this.nanos.asInner() % NANOS_PER_MILLI, NANOS_PER_MILLI / 10u, prefix, "ms")
         } else if (this.nanos.asInner() >= NANOS_PER_MICRO) {
-            run { fmtDecimal(f, (this.nanos.asInner() / NANOS_PER_MICRO).toULong(), this.nanos.asInner() % NANOS_PER_MICRO, NANOS_PER_MICRO / 10u, prefix, "µs"); Result.Ok(Unit) }
+            fmtDecimal(f, (this.nanos.asInner() / NANOS_PER_MICRO).toULong(), this.nanos.asInner() % NANOS_PER_MICRO, NANOS_PER_MICRO / 10u, prefix, "µs")
         } else {
-            run { fmtDecimal(f, this.nanos.asInner().toULong(), 0u, 1u, prefix, "ns"); Result.Ok(Unit) }
+            fmtDecimal(f, this.nanos.asInner().toULong(), 0u, 1u, prefix, "ns")
         }
     }
 
@@ -1042,7 +1042,7 @@ public open class Duration(
                 // SAFETY: nanos < NANOS_PER_SEC, therefore nanos is within the valid range
                 Duration(secs = secs, nanos = Nanoseconds.newUnchecked(nanos))
             } else {
-                val secs1 = (rustCheckedAdd(secs, (nanos / NANOS_PER_SEC).toULong()) ?: error("adding carry-over seconds from nanoseconds should not exceed u64::MAX"))
+                val secs1 = (secs.checkedAdd((nanos / NANOS_PER_SEC).toULong()) ?: error("adding carry-over seconds from nanoseconds should not exceed u64::MAX"))
                 val nanos1 = nanos % NANOS_PER_SEC
                 // SAFETY: nanos % NANOS_PER_SEC < NANOS_PER_SEC, therefore nanos is within the valid range
                 Duration(secs = secs1, nanos = Nanoseconds.newUnchecked(nanos1))
@@ -1156,7 +1156,7 @@ public open class Duration(
          */
         public fun fromNanosU128(nanos: U128): Duration {
             val NANOS_PER_SEC: U128 = U128.fromUInt(NANOS_PER_SEC)
-            val secs = ULong.tryFrom(nanos / NANOS_PER_SEC) ?: error("overflow in `Duration::from_nanos_u128`")
+            val secs = when (val tryResult = ULong.tryFrom(nanos / NANOS_PER_SEC)) { is Result.Ok -> tryResult.value; is Result.Err -> error("overflow in `Duration::from_nanos_u128`") }
             val subsecNanos = (nanos % NANOS_PER_SEC).toUInt()
             // SAFETY: x % 1_000_000_000 < 1_000_000_000 also, subsecNanos >= 0 since u128 >=0 and u32 >=0
             val subsecNanos1 = Nanoseconds.newUnchecked(subsecNanos)
@@ -1305,10 +1305,10 @@ public open class Duration(
         public fun fromSecsF64(secs: Double): Duration =
             run {
                 val matchVal = Duration.tryFromSecsF64(secs)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val v = matchVal.value
                     v
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     val e = matchVal.error
                     error("$e")
                 } }
@@ -1346,10 +1346,10 @@ public open class Duration(
         public fun fromSecsF32(secs: kotlin.Float): Duration =
             run {
                 val matchVal = Duration.tryFromSecsF32(secs)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val v = matchVal.value
                     v
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     val e = matchVal.error
                     error("$e")
                 } }
@@ -1360,10 +1360,10 @@ public open class Duration(
                 var totalSecs: ULong = 0uL
                 var totalNanos: ULong = 0uL
                 for (entry in iter) {
-                    totalSecs = (rustCheckedAdd(totalSecs, entry.secs.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
-                    totalNanos = when (val matchVal = rustCheckedAdd(totalNanos, entry.nanos.asInner().toULong())) {
+                    totalSecs = (totalSecs.checkedAdd(entry.secs.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
+                    totalNanos = when (val matchVal = totalNanos.checkedAdd(entry.nanos.asInner().toULong())) {
                         null -> {
-                            totalSecs = (rustCheckedAdd(totalSecs, totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
+                            totalSecs = (totalSecs.checkedAdd(totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
                             (totalNanos % NANOS_PER_SEC.toULong()) + entry.nanos.asInner().toULong()
                         }
                         else -> {
@@ -1372,7 +1372,7 @@ public open class Duration(
                         }
                     }
                 }
-                totalSecs = (rustCheckedAdd(totalSecs, totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
+                totalSecs = (totalSecs.checkedAdd(totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
                 totalNanos %= NANOS_PER_SEC.toULong()
                 Duration.new(totalSecs, totalNanos.toUInt())
             }
@@ -1382,10 +1382,10 @@ public open class Duration(
                 var totalSecs: ULong = 0uL
                 var totalNanos: ULong = 0uL
                 for (entry in iter) {
-                    totalSecs = (rustCheckedAdd(totalSecs, entry.secs.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
-                    totalNanos = when (val matchVal = rustCheckedAdd(totalNanos, entry.nanos.asInner().toULong())) {
+                    totalSecs = (totalSecs.checkedAdd(entry.secs.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
+                    totalNanos = when (val matchVal = totalNanos.checkedAdd(entry.nanos.asInner().toULong())) {
                         null -> {
-                            totalSecs = (rustCheckedAdd(totalSecs, totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
+                            totalSecs = (totalSecs.checkedAdd(totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
                             (totalNanos % NANOS_PER_SEC.toULong()) + entry.nanos.asInner().toULong()
                         }
                         else -> {
@@ -1394,7 +1394,7 @@ public open class Duration(
                         }
                     }
                 }
-                totalSecs = (rustCheckedAdd(totalSecs, totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
+                totalSecs = (totalSecs.checkedAdd(totalNanos / NANOS_PER_SEC.toULong()) ?: error("sum over duration iterator should not overflow u64::MAX"))
                 totalNanos %= NANOS_PER_SEC.toULong()
                 Duration.new(totalSecs, totalNanos.toUInt())
             }
@@ -1456,7 +1456,7 @@ public open class Duration(
                 val MANT_MASK: UInt = (1u shl 23) - 1u
                 val EXP_MASK: UInt = (1u shl 8) - 1u
                 if (secs < 0.0f) {
-                    return Result.Err(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.Negative))
+                    return Result.Err<Duration, TryFromFloatSecsError>(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.Negative))
                 }
                 val bits = secs.toRawBits().toUInt()
                 val mant = (bits and MANT_MASK) or (MANT_MASK + 1u)
@@ -1505,9 +1505,9 @@ public open class Duration(
                         val secs2 = ULong.from(mant) shl (exp - 23).toInt()
                         Pair(secs2, 0)
                     } else {
-                        return Result.Err(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.OverflowOrNan))
+                        return Result.Err<Duration, TryFromFloatSecsError>(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.OverflowOrNan))
                     }
-                Result.Ok(Duration.new(secs3, nanos4))
+                Result.Ok<Duration, TryFromFloatSecsError>(Duration.new(secs3, nanos4))
             }
         }
 
@@ -1576,7 +1576,7 @@ public open class Duration(
                 val MANT_MASK: ULong = (1uL shl 52) - 1uL
                 val EXP_MASK: ULong = (1uL shl 11) - 1uL
                 if (secs < 0.0) {
-                    return Result.Err(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.Negative))
+                    return Result.Err<Duration, TryFromFloatSecsError>(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.Negative))
                 }
                 val bits = secs.toRawBits().toULong()
                 val mant = (bits and MANT_MASK) or (MANT_MASK + 1uL)
@@ -1625,9 +1625,9 @@ public open class Duration(
                         val secs2 = ULong.from(mant) shl (exp - 52).toInt()
                         Pair(secs2, 0)
                     } else {
-                        return Result.Err(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.OverflowOrNan))
+                        return Result.Err<Duration, TryFromFloatSecsError>(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.OverflowOrNan))
                     }
-                Result.Ok(Duration.new(secs3, nanos4))
+                Result.Ok<Duration, TryFromFloatSecsError>(Duration.new(secs3, nanos4))
             }
         }
     }
@@ -1650,7 +1650,7 @@ public fun UInt.mul(rhs: Duration): Duration = rhs * this
  * A prefix and postfix may be added. The whole thing is padded
  * to the formatter's `width`, if specified.
  */
-public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt, divisor: UInt, prefix: String, postfix: String) {
+public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt, divisor: UInt, prefix: String, postfix: String): Result<Unit, Error> {
     var fractionalPart1 = fractionalPart
     var divisor1 = divisor
     // Encode the fractional part into a temporary buffer. The buffer
@@ -1717,7 +1717,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                     // `fractionalPart` into the `integerPart` will cause the
                     // `integerPart` itself to overflow. Avoid this by using an
                     // `Option<ULong>`, with `None` representing `ULong.MAX + 1`.
-                    rustCheckedAdd(integerPart, 1uL)
+                    integerPart.checkedAdd(1uL)
                 } else {
                     integerPart
                 }
@@ -1735,9 +1735,9 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
         closure@{ f1: StringBuilder ->
             if (integerPart1 != null) {
                 val integerPart2 = integerPart1
-                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt("$prefix$integerPart2")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
             } else {
-                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt("${prefix}18446744073709551616")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
             }
             // Write the decimal point and the fractional part (if any).
             if (end > 0) {
@@ -1745,11 +1745,11 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 // it was initialized with '0's, so it contains valid UTF8.
                 val s = fromUtf8Unchecked(((buf).sliceArray(0 until end)))
                 // If the user request a precision > 9, we pad '0's at the end.
-                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = f1.writeFmt(".$s")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
             }
             f1.writeFmt("$postfix")
         }
-    when (val matchVal = f.width()) {
+    return when (val matchVal = f.width()) {
         null -> {
             // No `width` specified. There's no need to calculate the
             // length of the output in this case, just emit it.
@@ -1762,7 +1762,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
             // It consists of 4 parts:
             // 1. The prefix: is either "+" or "", so we can just use len().
             // 2. The postfix: can be "µs" so we have to count UTF8 characters.
-            var actualW = prefix.length + postfix.rustStrChars().count()
+            var actualW = prefix.length + postfix.chars().count()
             // 3. The integer part:
             if (integerPart1 != null) {
                 val integerPart2 = integerPart1
@@ -1791,9 +1791,9 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 emitWithoutPadding(f)
             } else {
                 // We need to add padding. Use the `Formatter.padding` helper function.
-                val defaultAlign = Alignment.Left
-                val postPadding = f.padding((requestedW - actualW).toUShort(), defaultAlign)
-                emitWithoutPadding(f)
+                val defaultAlign = fmt.Alignment.Left
+                val postPadding = when (val tryResult = f.padding((requestedW - actualW).toUShort(), defaultAlign)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = emitWithoutPadding(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 postPadding.write(f)
             }
         }
@@ -1835,7 +1835,7 @@ public open class DisplaySeconds(
             } else {
                 ""
             }
-        return run { fmtDecimal(f, this.value.secs, this.value.nanos.asInner(), NANOS_PER_SEC / 10u, prefix, "s"); Result.Ok(Unit) }
+        return fmtDecimal(f, this.value.secs, this.value.nanos.asInner(), NANOS_PER_SEC / 10u, prefix, "s")
     }
 }
 

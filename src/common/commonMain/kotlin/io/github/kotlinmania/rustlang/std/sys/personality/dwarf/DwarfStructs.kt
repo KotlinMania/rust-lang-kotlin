@@ -2,6 +2,7 @@ package io.github.kotlinmania.rustlang.std.sys.personality.dwarf
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
@@ -16,7 +17,7 @@ public open class DwarfReader internal constructor(
      *
      * DWARF streams are "packed", so all types must be read at align 1.
      */
-    public open fun <T> read(typeLayoutT: TypeLayout<T>): T =
+    public open fun <T> read(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T =
         run {
             val result = (typeLayoutT).readNative((ConstPtr((this.ptr).rawAddress)).rawAddress)
             this.ptr = ConstPtr((this.ptr).rawAddress + ((sizeOf<T>(typeLayoutT = typeLayoutT)).toLong()))

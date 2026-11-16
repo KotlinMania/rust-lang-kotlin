@@ -1,6 +1,7 @@
 // port-lint: source sys/helpers/wstr.rs
 package io.github.kotlinmania.rustlang.std.sys.helpers.wstr
 
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -15,12 +16,12 @@ public open class WStrUnits internal constructor(
     lpwstrCtorArg: NonNull,
     // ...and the memory it points to must be valid for this scope.
     public var lifetime: Unit,
-) : Iterable<NonZero<UShort>> {
+) : Iterable<NonZero<UShort, NonZeroU16Inner>> {
     // The pointer must never be null...
     public var lpwstr: NonNull = lpwstrCtorArg
         internal set
 
-    override fun iterator(): Iterator<NonZero<UShort>> = object : AbstractIterator<NonZero<UShort>>() {
+    override fun iterator(): Iterator<NonZero<UShort, NonZeroU16Inner>> = object : AbstractIterator<NonZero<UShort, NonZeroU16Inner>>() {
         override fun computeNext() {
             when (val v = this@WStrUnits.next()) {
                 null -> done()
@@ -29,17 +30,17 @@ public open class WStrUnits internal constructor(
         }
     }
 
-    public open fun peek(): NonZero<UShort>? {
+    public open fun peek(): NonZero<UShort, NonZeroU16Inner>? {
         // SAFETY: It's always safe to read the current item because we don't
         // ever move out of the array's bounds.
-        return NonZero.new(this.lpwstr.asPtr())
+        return NonZero.new<NonZeroU16Inner, UShort>(this.lpwstr.asPtr())
     }
 
     /**
      * Advance the iterator while `predicate` returns true.
      * Returns the number of items it advanced by.
      */
-    public open fun advanceWhile(predicate: (NonZero<UShort>) -> Boolean): Int {
+    public open fun advanceWhile(predicate: (NonZero<UShort, NonZeroU16Inner>) -> Boolean): Int {
         var counter = 0
         while (true) {
             val matchVal = this.peek()
@@ -54,7 +55,7 @@ public open class WStrUnits internal constructor(
         return counter
     }
 
-    public open fun next(): NonZero<UShort>? {
+    public open fun next(): NonZero<UShort, NonZeroU16Inner>? {
         // SAFETY: If NULL is reached we immediately return.
         // Therefore it's safe to advance the pointer after that.
         return run {

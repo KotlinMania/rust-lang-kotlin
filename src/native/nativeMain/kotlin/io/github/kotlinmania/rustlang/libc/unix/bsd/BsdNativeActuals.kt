@@ -2,22 +2,22 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.NlItem
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.NlItem
 import io.github.kotlinmania.rustlang.libc.unix.bsd.cinterop.libcUnixBsdAbs
 import io.github.kotlinmania.rustlang.libc.unix.bsd.cinterop.libcUnixBsdAcct
 import io.github.kotlinmania.rustlang.libc.unix.bsd.cinterop.libcUnixBsdArc4random
@@ -238,7 +238,7 @@ public actual fun futimes(fd: CInt, times: ConstPtr): CInt =
 public actual fun nlLanginfo(item: NlItem): MutPtr =
     MutPtr(libcUnixBsdNlLanginfo(item)?.toLong() ?: 0L)
 
-public actual fun bind(socket: CInt, address: ConstPtr, addressLen: io.github.kotlinmania.rustlang.libc.SocklenT): CInt =
+public actual fun bind(socket: CInt, address: ConstPtr, addressLen: SocklenT): CInt =
     libcUnixBsdBind(socket, address.rawAddress.toCPointer<ByteVar>(), addressLen)
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
@@ -284,11 +284,11 @@ public actual fun semOpen(name: ConstPtr, oflag: CInt, vararg variadicArgs: Long
 public actual fun getgrnam(name: ConstPtr): MutPtr =
     MutPtr(libcUnixBsdGetgrnam(name.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun pthreadCancel(thread: io.github.kotlinmania.rustlang.libc.PthreadT): CInt =
-    libcUnixBsdPthreadCancel(thread)
+public actual fun pthreadCancel(thread: PthreadT): CInt =
+    libcUnixBsdPthreadCancel(thread.toLong().toCPointer<ByteVar>())
 
-public actual fun pthreadKill(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt): CInt =
-    libcUnixBsdPthreadKill(thread, sig)
+public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
+    libcUnixBsdPthreadKill(thread.toLong().toCPointer<ByteVar>(), sig)
 
 public actual fun schedGetPriorityMin(policy: CInt): CInt =
     libcUnixBsdSchedGetPriorityMin(policy)

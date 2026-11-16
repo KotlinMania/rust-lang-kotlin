@@ -2,9 +2,14 @@
 package io.github.kotlinmania.rustlang.std.num.f16
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCosf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLogf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSinf32
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
+import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
 import io.github.kotlinmania.rustlang.std.sys.cmath.acosf
 import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf
 import io.github.kotlinmania.rustlang.std.sys.cmath.asinf
@@ -22,9 +27,6 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
-import kotlin.math.cos
-import kotlin.math.ln
-import kotlin.math.sin
 
 // Constants for the `f16` half-precision floating point type.
 //
@@ -61,7 +63,7 @@ import kotlin.math.sin
  * }
  * ```
  */
-public fun F16.powf(n: F16): F16 = powf(this, n)
+public fun F16.powf(n: F16): F16 = floatBinaryWithLayout("powf", this, n, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns `e ^(self)`, (the exponential function).
@@ -87,7 +89,7 @@ public fun F16.powf(n: F16): F16 = powf(this, n)
  * }
  * ```
  */
-public fun F16.exp(): F16 = exp(this)
+public fun F16.exp(): F16 = floatUnaryWithLayout("exp", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns `2 ^(self)`.
@@ -111,7 +113,7 @@ public fun F16.exp(): F16 = exp(this)
  * }
  * ```
  */
-public fun F16.exp2(): F16 = exp2(this)
+public fun F16.exp2(): F16 = floatUnaryWithLayout("exp2", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the natural logarithm of the number.
@@ -150,7 +152,7 @@ public fun F16.exp2(): F16 = exp2(this)
  * }
  * ```
  */
-public fun F16.ln(): F16 = log(this)
+public fun F16.ln(): F16 = floatUnaryWithLayout("log", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -191,7 +193,7 @@ public fun F16.ln(): F16 = log(this)
  * }
  * ```
  */
-public fun F16.log(base: F16): F16 = F16.fromFloat(ln(this.toFloat())) / F16.fromFloat(ln(base.toFloat()))
+public fun F16.log(base: F16): F16 = F16.fromFloat(kmLogf32(this.toFloat())) / F16.fromFloat(kmLogf32(base.toFloat()))
 
 /**
  * Returns the base 2 logarithm of the number.
@@ -228,7 +230,7 @@ public fun F16.log(base: F16): F16 = F16.fromFloat(ln(this.toFloat())) / F16.fro
  * }
  * ```
  */
-public fun F16.log2(): F16 = log2(this)
+public fun F16.log2(): F16 = floatUnaryWithLayout("log2", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -265,7 +267,7 @@ public fun F16.log2(): F16 = log2(this)
  * }
  * ```
  */
-public fun F16.log10(): F16 = log10(this)
+public fun F16.log10(): F16 = floatUnaryWithLayout("log10", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Compute the distance between the origin and a point (`x`, `y`) on the
@@ -319,7 +321,7 @@ public fun F16.hypot(other: F16): F16 = F16.fromFloat(hypotf(this.toFloat(), oth
  * }
  * ```
  */
-public fun F16.sin(): F16 = sin(this)
+public fun F16.sin(): F16 = floatUnaryWithLayout("sin", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -342,7 +344,7 @@ public fun F16.sin(): F16 = sin(this)
  * }
  * ```
  */
-public fun F16.cos(): F16 = cos(this)
+public fun F16.cos(): F16 = floatUnaryWithLayout("cos", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -526,7 +528,7 @@ public fun F16.atan2(other: F16): F16 = F16.fromFloat(atan2f(this.toFloat(), oth
  * }
  * ```
  */
-public fun F16.sinCos(): Pair<F16, F16> = Pair(F16.fromFloat(sin(this.toFloat())), F16.fromFloat(cos(this.toFloat())))
+public fun F16.sinCos(): Pair<F16, F16> = Pair(F16.fromFloat(kmSinf32(this.toFloat())), F16.fromFloat(kmCosf32(this.toFloat())))
 
 /**
  * Returns `e ^(self) - 1` in a way that is accurate even if the

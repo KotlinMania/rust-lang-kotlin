@@ -1,5 +1,8 @@
 package io.github.kotlinmania.rustlang.backtrace
 
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
+import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
+
 /**
  * A "Maybe" LockGuard
  */

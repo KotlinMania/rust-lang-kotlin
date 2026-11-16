@@ -8,13 +8,13 @@ public interface SpecArrayClone<T> {
 }
 
 public interface SpecNextChunk<T, SelfType> : Iterator<T> {
-    public fun specNextChunk(): Result<List<T>, IntoIter<T, N>>
+    public fun specNextChunk(): Result<List<T>, IntoIter<T>>
 
     public fun next(): T?
 }
 
 public interface SpecNextChunkBack<T, SelfType> {
-    public fun specNextChunkBack(): Result<List<T>, IntoIter<T, N>>
+    public fun specNextChunkBack(): Result<List<T>, IntoIter<T>>
 
     public fun next(): T?
 

@@ -1,7 +1,7 @@
 // port-lint: source math/support/modular.rs
 package io.github.kotlinmania.rustlang.libm.math.support.modular
 
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
@@ -21,8 +21,8 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 public fun <D, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, Any?>, U : Int<U> {
     var e1 = e
     var y1 = y
-    check((compareNaturalOrder(y1, U.MAX shr 2) <= 0))
-    check((compareNaturalOrder(x, (y1 shl 1)) < 0))
+    check((kmCompareValues(y1, U.MAX shr 2) <= 0))
+    check((kmCompareValues(x, (y1 shl 1)) < 0))
     val v0 = U.ZERO
     val v1 = U.ONE
     // power of two divisors

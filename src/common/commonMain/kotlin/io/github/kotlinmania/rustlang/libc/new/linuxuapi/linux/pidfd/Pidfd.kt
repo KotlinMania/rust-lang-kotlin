@@ -1,7 +1,7 @@
 // port-lint: source new/linux_uapi/linux/pidfd.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.pidfd
 
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.libc.*
@@ -39,22 +39,24 @@ public val PIDFD_INFO_EXIT: CUint = 1u shl 3
 
 public val PIDFD_INFO_SIZE_VER0: CUint = 64u
 
-public data class PidfdInfo(
-    public var mask: U64 = 0uL,
-    public var cgroupid: U64 = 0uL,
-    public var pid: U32 = 0u,
-    public var tgid: U32 = 0u,
-    public var ppid: U32 = 0u,
-    public var ruid: U32 = 0u,
-    public var rgid: U32 = 0u,
-    public var euid: U32 = 0u,
-    public var egid: U32 = 0u,
-    public var suid: U32 = 0u,
-    public var sgid: U32 = 0u,
-    public var fsuid: U32 = 0u,
-    public var fsgid: U32 = 0u,
-    public var exitCode: S32 = 0,
+public open class PidfdInfo(
+    public var mask: U64,
+    public var cgroupid: U64,
+    public var pid: U32,
+    public var tgid: U32,
+    public var ppid: U32,
+    public var ruid: U32,
+    public var rgid: U32,
+    public var euid: U32,
+    public var egid: U32,
+    public var suid: U32,
+    public var sgid: U32,
+    public var fsuid: U32,
+    public var fsgid: U32,
+    public var exitCode: S32,
 ) {
+    public open fun clone(): PidfdInfo = PidfdInfo(mask, cgroupid, pid, tgid, ppid, ruid, rgid, euid, egid, suid, sgid, fsuid, fsgid, exitCode)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PidfdInfo> =
             object : TypeLayout<PidfdInfo> {

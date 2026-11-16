@@ -2,21 +2,21 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.IpcPerm
-import io.github.kotlinmania.rustlang.libc.MsglenT
-import io.github.kotlinmania.rustlang.libc.MsgqnumT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.MsglenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.MsgqnumT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.TimeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64.aarch64.IpcPerm
 
-public class StackT internal constructor(
+public open class StackT internal constructor(
     ssSpCtorArg: MutPtr,
     public var ssFlags: CInt,
     public var ssSize: SizeT,
@@ -24,37 +24,7 @@ public class StackT internal constructor(
     public var ssSp: MutPtr = ssSpCtorArg
         internal set
 
-    public constructor() : this(
-        ssSpCtorArg = MutPtr(0L),
-        ssFlags = 0,
-        ssSize = 0uL,
-    )
-
-    public operator fun component1(): MutPtr = this.ssSp
-
-    public operator fun component2(): CInt = this.ssFlags
-
-    public operator fun component3(): SizeT = this.ssSize
-
-    public fun copy(ssSp: MutPtr = this.ssSp, ssFlags: CInt = this.ssFlags, ssSize: SizeT = this.ssSize): StackT = StackT(ssSpCtorArg = ssSp, ssFlags = ssFlags, ssSize = ssSize)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is StackT) return false
-        if (this.ssSp != other.ssSp) return false
-        if (this.ssFlags != other.ssFlags) return false
-        if (this.ssSize != other.ssSize) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.ssSp.hashCode()
-        result = 31 * result + this.ssFlags.hashCode()
-        result = 31 * result + this.ssSize.hashCode()
-        return result
-    }
-
-    public fun clone(): StackT = StackT(ssSp, ssFlags, ssSize)
+    public open fun clone(): StackT = StackT(ssSp, ssFlags, ssSize)
 
     public companion object {
         public fun typeLayout(): TypeLayout<StackT> =
@@ -86,9 +56,9 @@ public class StackT internal constructor(
             }
 
         public operator fun invoke(
-            ssSp: MutPtr = MutPtr(0L),
-            ssFlags: CInt = 0,
-            ssSize: SizeT = 0uL,
+            ssSp: MutPtr,
+            ssFlags: CInt,
+            ssSize: SizeT,
         ): StackT = StackT(
             ssSpCtorArg = ssSp,
             ssFlags = ssFlags,
@@ -97,17 +67,10 @@ public class StackT internal constructor(
     }
 }
 
-public data class PthreadAttrT(
-    public var size: ULongArray = ULongArray(7),
+public open class PthreadAttrT(
+    public var size: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadAttrT) return false
-        if (!this.size.contentEquals(other.size)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.contentHashCode()
+    public open fun clone(): PthreadAttrT = PthreadAttrT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadAttrT> =
@@ -132,17 +95,10 @@ public data class PthreadAttrT(
     }
 }
 
-public data class SigsetT(
-    public var value: ULongArray = ULongArray(16),
+public open class SigsetT(
+    public var value: ULongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SigsetT) return false
-        if (!this.value.contentEquals(other.value)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.value.contentHashCode()
+    public open fun clone(): SigsetT = SigsetT(value)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SigsetT> =
@@ -167,44 +123,41 @@ public data class SigsetT(
     }
 }
 
-public data class ShmidDs(
-    public var shmPerm: IpcPerm = IpcPerm(),
-    public var shmSegsz: SizeT = 0uL,
-    public var shmAtime: TimeT = 0L,
-    public var shmDtime: TimeT = 0L,
-    public var shmCtime: TimeT = 0L,
-    public var shmCpid: PidT = 0,
-    public var shmLpid: PidT = 0,
-    public var shmNattch: CUlong = 0uL,
-    public var pad1: CUlong = 0uL,
-    public var pad2: CUlong = 0uL,
-)
-
-public data class MsqidDs(
-    public var msgPerm: IpcPerm = IpcPerm(),
-    public var msgStime: TimeT = 0L,
-    public var msgRtime: TimeT = 0L,
-    public var msgCtime: TimeT = 0L,
-    public var msgCbytes: CUlong = 0uL,
-    public var msgQnum: MsgqnumT = 0uL,
-    public var msgQbytes: MsglenT = 0uL,
-    public var msgLspid: PidT = 0,
-    public var msgLrpid: PidT = 0,
-    public var pad1: CUlong = 0uL,
-    public var pad2: CUlong = 0uL,
-)
-
-public data class SemT(
-    public var value: IntArray = IntArray(8),
+public open class ShmidDs(
+    public var shmPerm: IpcPerm,
+    public var shmSegsz: SizeT,
+    public var shmAtime: TimeT,
+    public var shmDtime: TimeT,
+    public var shmCtime: TimeT,
+    public var shmCpid: PidT,
+    public var shmLpid: PidT,
+    public var shmNattch: CUlong,
+    public var pad1: CUlong,
+    public var pad2: CUlong,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SemT) return false
-        if (!this.value.contentEquals(other.value)) return false
-        return true
-    }
+    public open fun clone(): ShmidDs = ShmidDs(shmPerm, shmSegsz, shmAtime, shmDtime, shmCtime, shmCpid, shmLpid, shmNattch, pad1, pad2)
+}
 
-    override fun hashCode(): Int = this.value.contentHashCode()
+public open class MsqidDs(
+    public var msgPerm: IpcPerm,
+    public var msgStime: TimeT,
+    public var msgRtime: TimeT,
+    public var msgCtime: TimeT,
+    public var msgCbytes: CUlong,
+    public var msgQnum: MsgqnumT,
+    public var msgQbytes: MsglenT,
+    public var msgLspid: PidT,
+    public var msgLrpid: PidT,
+    public var pad1: CUlong,
+    public var pad2: CUlong,
+) {
+    public open fun clone(): MsqidDs = MsqidDs(msgPerm, msgStime, msgRtime, msgCtime, msgCbytes, msgQnum, msgQbytes, msgLspid, msgLrpid, pad1, pad2)
+}
+
+public open class SemT(
+    public var value: IntArray,
+) {
+    public open fun clone(): SemT = SemT(value)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SemT> =

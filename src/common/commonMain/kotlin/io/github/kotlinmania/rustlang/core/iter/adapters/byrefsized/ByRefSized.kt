@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/by_ref_sized.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized
 
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -36,7 +37,7 @@ public open class ByRefSized<I>(
 
     public open fun sizeHint(sizeHintIFn: (I) -> Pair<Int, Int?>): Pair<Int, Int?> = sizeHintIFn(this.value)
 
-    public open fun advanceBy(n: Int, advanceByIFn: (I, Int) -> Result<Unit, NonZero<Int>>): Result<Unit, NonZero<Int>> = advanceByIFn(this.value, n)
+    public open fun advanceBy(n: Int, advanceByIFn: (I, Int) -> Result<Unit, NonZero<Int, NonZeroUsizeInner>>): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = advanceByIFn(this.value, n)
 
     public open fun nth(n: Int, nthIFn: (I, Int) -> Item?): Item? = nthIFn(this.value, n)
 
@@ -49,7 +50,7 @@ public open class ByRefSized<I>(
 
     public open fun nextBack(nextBackIFn: (I) -> Item?): Item? = nextBackIFn(this.value)
 
-    public open fun advanceBackBy(n: Int, advanceBackByIFn: (I, Int) -> Result<Unit, NonZero<Int>>): Result<Unit, NonZero<Int>> = advanceBackByIFn(this.value, n)
+    public open fun advanceBackBy(n: Int, advanceBackByIFn: (I, Int) -> Result<Unit, NonZero<Int, NonZeroUsizeInner>>): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = advanceBackByIFn(this.value, n)
 
     public open fun nthBack(n: Int, nthBackIFn: (I, Int) -> Item?): Item? = nthBackIFn(this.value, n)
 

@@ -5,12 +5,12 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.coldPath
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
@@ -44,7 +44,7 @@ public fun readUsizeUnaligned(x: ConstPtr): Int {
  * `loadSz`. The offset pointers must both be `T`-aligned. Returns the new offset, advanced by the
  * chunk size if a load happened.
  */
-public fun <T> loadChunkAligned(src: ConstPtr, dst: MutPtr, loadSz: Int, offset: Int, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> loadChunkAligned(src: ConstPtr, dst: MutPtr, loadSz: Int, offset: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     val chunkSz = sizeOf<T>(typeLayoutT = typeLayoutT)
     return if ((loadSz and chunkSz) != 0) {
         (typeLayoutT).writeNative((MutPtr((MutPtr((dst).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress, (typeLayoutT).readNative((ConstPtr((ConstPtr((src).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress))
@@ -133,7 +133,7 @@ public fun copyForward(dest: MutPtr, src: ConstPtr, n: Int) {
         var srcUsize = MutPtr(src2.rawAddress, src2.rawMeta)
         val destEnd = (MutPtr((dest2).rawAddress + ((n2).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
         while (((destUsize).rawAddress.toULong() < (destEnd).rawAddress.toULong())) {
-            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned(srcUsize))
+            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned((srcUsize).asConstPtr()))
             destUsize = MutPtr((destUsize).rawAddress + ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
             srcUsize = MutPtr((srcUsize).rawAddress + ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
         }
@@ -141,7 +141,7 @@ public fun copyForward(dest: MutPtr, src: ConstPtr, n: Int) {
     if (n1 >= WORD_COPY_THRESHOLD) {
         // Align dest
         // Because of n >= 2 * WORD_SIZE, dstMisalignment < n
-        val destMisalignment = rustWrappingNeg((dest1.rawAddress.toInt())) and WORD_MASK
+        val destMisalignment = (dest1.rawAddress.toInt()).wrappingNeg() and WORD_MASK
         copyForwardBytes(dest1, src1, destMisalignment)
         dest1 = MutPtr((dest1).rawAddress + ((destMisalignment).toLong() * (PrimitiveLayouts.U8).strideBytes))
         src1 = ConstPtr((src1).rawAddress + ((destMisalignment).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -198,7 +198,7 @@ public fun copyBackward(dest: MutPtr, src: ConstPtr, n: Int) {
         while (((destStart).rawAddress.toULong() < (destUsize).rawAddress.toULong())) {
             destUsize = MutPtr((destUsize).rawAddress - ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
             srcUsize = MutPtr((srcUsize).rawAddress - ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
-            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned(srcUsize))
+            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned((srcUsize).asConstPtr()))
         }
     }
     var dest2 = MutPtr((dest1).rawAddress + ((n1).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -254,7 +254,7 @@ public fun setBytes(s: MutPtr, c: UByte, n: Int) {
     if (n1 >= WORD_COPY_THRESHOLD) {
         // Align s
         // Because of n >= 2 * WORD_SIZE, dstMisalignment < n
-        val misalignment = rustWrappingNeg((s1.rawAddress.toInt())) and WORD_MASK
+        val misalignment = (s1.rawAddress.toInt()).wrappingNeg() and WORD_MASK
         setBytesBytes(s1, c, misalignment)
         s1 = MutPtr((s1).rawAddress + ((misalignment).toLong() * (PrimitiveLayouts.U8).strideBytes))
         n1 -= misalignment
@@ -284,9 +284,9 @@ public fun compareBytes(s1: ConstPtr, s2: ConstPtr, n: Int): CInt {
 public fun cStringLength(s: ConstPtr): Int {
     var s1 = s
     var n = 0
-    while ((ObjectSlotLayout<CChar>()).readNative((s1).rawAddress) != 0u.toUByte()) {
+    while ((UnresolvedTypeLayout<CChar>()).readNative((s1).rawAddress) != 0u.toUByte()) {
         n += 1
-        s1 = ConstPtr((s1).rawAddress + ((1).toLong() * (ObjectSlotLayout<CChar>()).strideBytes))
+        s1 = ConstPtr((s1).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<CChar>()).strideBytes))
     }
     return n
 }

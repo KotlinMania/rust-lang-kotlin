@@ -75,3 +75,18 @@ public open class System(
         public fun new(): System = System(priv = Unit)
     }
 }
+
+public fun acquireGlobalLock() {
+    // single threaded, no need!
+    check(!false)
+}
+
+public fun releaseGlobalLock() {
+    // single threaded, no need!
+    check(!false)
+}
+
+public fun enableAllocAfterFork() {
+    // single threaded, no need!
+    check(!false)
+}

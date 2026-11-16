@@ -1,25 +1,26 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.CMSG_ALIGN
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TimerT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Cmsghdr
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Msghdr
 
@@ -39,9 +40,9 @@ public fun interface DlIteratePhdrCallbackCallback {
 // following are only available on newer Linux versions than the versions
 // currently used in CI in some configurations, so we define them here.
 public fun cmsgNxthdr(mhdr: ConstPtr, cmsg: ConstPtr): MutPtr {
-    val next = MutPtr((cmsg.rawAddress.toInt() + CMSG_ALIGN(((ObjectSlotLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt())).toLong())
-    val max = ((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress.toInt() + ((ObjectSlotLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt()
-    return if ((MutPtr((next).rawAddress + ((1).toLong() * (ObjectSlotLayout<Cmsghdr>()).strideBytes))).rawAddress.toInt() > max) {
+    val next = MutPtr((cmsg.rawAddress.toInt() + CMSG_ALIGN(((UnresolvedTypeLayout<Cmsghdr>()).readNative((cmsg).rawAddress).cmsgLen).toInt())).toLong())
+    val max = ((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControl).rawAddress.toInt() + ((UnresolvedTypeLayout<Msghdr>()).readNative((mhdr).rawAddress).msgControllen).toInt()
+    return if ((MutPtr((next).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<Cmsghdr>()).strideBytes))).rawAddress.toInt() > max) {
         MutPtr(0L)
     } else {
         next
@@ -95,15 +96,15 @@ public fun nlaAlign(len: CInt): CInt = ((len) + NLA_ALIGNTO - 1) and (NLA_ALIGNT
 
 public fun soEeOffender(ee: ConstPtr): MutPtr = (ConstPtr((ee).rawAddress + ((1).toLong() * (SockExtendedErr.typeLayout()).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
 
-public fun makedev(ma: CUint, mi: CUint): io.github.kotlinmania.rustlang.libc.DevT {
+public fun makedev(ma: CUint, mi: CUint): DevT {
     val ma1 = ma.toULong()
     val mi1 = mi.toULong()
     return ((ma1 and 0xfffuL) shl 8) or (mi1 and 0xffuL) or ((mi1 and 0xfff00uL) shl 12)
 }
 
-public fun major(dev: io.github.kotlinmania.rustlang.libc.DevT): CInt = ((dev shr 8) and 0xfffuL).toInt()
+public fun major(dev: DevT): CInt = ((dev shr 8) and 0xfffuL).toInt()
 
-public fun minor(dev: io.github.kotlinmania.rustlang.libc.DevT): CInt = ((dev and 0xffuL) or ((dev shr 12) and 0xfff00uL)).toInt()
+public fun minor(dev: DevT): CInt = ((dev and 0xffuL) or ((dev shr 12) and 0xfff00uL)).toInt()
 
 public expect fun setpwent()
 

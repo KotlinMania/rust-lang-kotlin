@@ -30,7 +30,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public fun ok(sym: String, expected: String): Boolean =
     run {
         val matchVal = tryDemangle(sym)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             val s = matchVal.value
             if (s.toString() == expected) {
                 true
@@ -38,7 +38,7 @@ public fun ok(sym: String, expected: String): Boolean =
                 println("\n$s\n!=\n$expected\n")
                 false
             }
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             println("error demangling")
             false
         } }
@@ -47,13 +47,19 @@ public fun ok(sym: String, expected: String): Boolean =
 public fun okErr(sym: String): Boolean =
     run {
         val matchVal = tryDemangle(sym)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             println("succeeded in demangling")
             false
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             demangle(sym).toString() == sym
         } }
     }
+
+public fun demangleStr(input: String): String {
+    val output = mutableListOf()
+    demangleLine(input, output, false)
+    return String.fromUtf8(output).unwrap()
+}
 
 public class RustcdemangleInlineTests {
     @kotlin.test.Test
@@ -206,5 +212,15 @@ public class RustcdemangleInlineTests {
             val (s1, suffix1) = Pair(demangle("_RMC0FGZZZ_Eu").toString(), "{size limit reached}")
             check(s1.endsWith(suffix1)) { "$s1 should've ended in $suffix1" }
         }
+    }
+
+    @kotlin.test.Test
+    public fun findMultiple() {
+        check(demangleStr("_ZN3fooE.llvm moocow _ZN3fooE.llvm") == "foo.llvm moocow foo.llvm")
+    }
+
+    @kotlin.test.Test
+    public fun interleavedNewLegacy() {
+        check(demangleStr("_ZN3fooE.llvm moocow _RNvMNtNtNtNtCs8a2262Dv4r_3mio3sys4unix8selector5epollNtB2_8Selector6select _ZN3fooE.llvm") == "foo.llvm moocow <mio::sys::unix::selector::epoll::Selector>::select foo.llvm")
     }
 }

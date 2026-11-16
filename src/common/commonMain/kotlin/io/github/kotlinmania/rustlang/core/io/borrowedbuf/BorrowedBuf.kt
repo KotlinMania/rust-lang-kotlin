@@ -2,18 +2,18 @@
 package io.github.kotlinmania.rustlang.core.io.borrowedbuf
 
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -76,7 +76,7 @@ public open class BorrowedBuf<T>(
      */
     public var init: Boolean,
 ) {
-    public open fun fmt(f: Formatter): Result<Unit, Unit> = run { BorrowedBufDebug(init = this.init, filled = this.filled, capacity = this.capacity()).fmt(f); Result.Ok(Unit) }
+    public open fun fmt(f: Formatter): Result<Unit, Unit> = BorrowedBufDebug(init = this.init, filled = this.filled, capacity = this.capacity()).fmt(f)
 
     /**
      * Returns the total capacity of the buffer.
@@ -171,7 +171,7 @@ public open class BorrowedBuf<T>(
         /**
          * Creates a new `BorrowedBuf` from a fully initialized slice.
          */
-        public fun <T> from(slice: MutableList<T>, typeLayoutT: TypeLayout<T>): BorrowedBuf<T> = BorrowedBuf(buf = RustMutableReference(MutPtr((((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<List<MaybeUninit<T>>>()), filled = 0, init = true)
+        public fun <T> from(slice: MutableList<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): BorrowedBuf<T> = BorrowedBuf(buf = RustMutableReference(MutPtr((((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<MaybeUninit<T>>>()), filled = 0, init = true)
 
         /**
          * Creates a new `BorrowedBuf` from an uninitialized buffer.
@@ -187,7 +187,7 @@ public open class BorrowedBuf<T>(
             val filled = buf.filled()
             val init = buf.isBufInit()
             val len = buf.bufLen()
-            return BorrowedBuf(buf = rawMutSliceList(buf.buf.asPtr().add(filled), (len - filled).toInt(), PrimitiveLayouts.U8), filled = 0, init = init)
+            return BorrowedBuf(buf = linearMutSliceView(buf.buf.asPtr().add(filled), (len - filled).toInt(), PrimitiveLayouts.U8), filled = 0, init = init)
         }
     }
 }
@@ -291,7 +291,7 @@ public open class BorrowedCursor<T> internal constructor(
     public open fun bufMut(): MutableList<MaybeUninit<T>> {
         val len = this.bufLen()
         // SAFETY: `buf` points to `len` elements that this cursor borrows exclusively.
-        return rawMutSliceList(this.buf.asPtr(), len.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.buf.asPtr(), len.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun bufLen(): Int {

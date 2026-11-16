@@ -78,9 +78,7 @@ public open class File(
 
     public open fun setTimes(times: FileTimes): Result<Unit, Error> = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
         public fun open(path: Path, opts: OpenOptions): Result<File, Error> = unsupported()
@@ -135,9 +133,7 @@ public open class ReadDir(
 
     public open fun dir(): Result<Dir, Error> = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public open fun next(): Result<DirEntry, Error>? = this.value
 }
@@ -241,9 +237,7 @@ public open class FilePermissions(
 
     public open fun eq(other: FilePermissions): Boolean = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 }
 
 public open class FileType(
@@ -270,9 +264,7 @@ public open class FileType(
         return 0
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.value
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 }
 
 public open class DirBuilder {

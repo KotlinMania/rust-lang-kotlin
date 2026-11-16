@@ -1,11 +1,11 @@
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.libc.*
@@ -539,49 +539,49 @@ public val RUSAGE_INFO_V3: CInt = 3
 public val RUSAGE_INFO_V4: CInt = 4
 
 // copyfile.h
-public val COPYFILE_ACL: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 0
+public val COPYFILE_ACL: CopyfileFlagsT = 1u shl 0
 
-public val COPYFILE_STAT: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 1
+public val COPYFILE_STAT: CopyfileFlagsT = 1u shl 1
 
-public val COPYFILE_XATTR: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 2
+public val COPYFILE_XATTR: CopyfileFlagsT = 1u shl 2
 
-public val COPYFILE_DATA: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 3
+public val COPYFILE_DATA: CopyfileFlagsT = 1u shl 3
 
-public val COPYFILE_SECURITY: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = COPYFILE_STAT or COPYFILE_ACL
+public val COPYFILE_SECURITY: CopyfileFlagsT = COPYFILE_STAT or COPYFILE_ACL
 
-public val COPYFILE_METADATA: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = COPYFILE_SECURITY or COPYFILE_XATTR
+public val COPYFILE_METADATA: CopyfileFlagsT = COPYFILE_SECURITY or COPYFILE_XATTR
 
-public val COPYFILE_RECURSIVE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 15
+public val COPYFILE_RECURSIVE: CopyfileFlagsT = 1u shl 15
 
-public val COPYFILE_CHECK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 16
+public val COPYFILE_CHECK: CopyfileFlagsT = 1u shl 16
 
-public val COPYFILE_EXCL: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 17
+public val COPYFILE_EXCL: CopyfileFlagsT = 1u shl 17
 
-public val COPYFILE_NOFOLLOW_SRC: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 18
+public val COPYFILE_NOFOLLOW_SRC: CopyfileFlagsT = 1u shl 18
 
-public val COPYFILE_NOFOLLOW_DST: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 19
+public val COPYFILE_NOFOLLOW_DST: CopyfileFlagsT = 1u shl 19
 
-public val COPYFILE_MOVE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 20
+public val COPYFILE_MOVE: CopyfileFlagsT = 1u shl 20
 
-public val COPYFILE_UNLINK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 21
+public val COPYFILE_UNLINK: CopyfileFlagsT = 1u shl 21
 
-public val COPYFILE_NOFOLLOW: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = COPYFILE_NOFOLLOW_SRC or COPYFILE_NOFOLLOW_DST
+public val COPYFILE_NOFOLLOW: CopyfileFlagsT = COPYFILE_NOFOLLOW_SRC or COPYFILE_NOFOLLOW_DST
 
-public val COPYFILE_PACK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 22
+public val COPYFILE_PACK: CopyfileFlagsT = 1u shl 22
 
-public val COPYFILE_UNPACK: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 23
+public val COPYFILE_UNPACK: CopyfileFlagsT = 1u shl 23
 
-public val COPYFILE_CLONE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 24
+public val COPYFILE_CLONE: CopyfileFlagsT = 1u shl 24
 
-public val COPYFILE_CLONE_FORCE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 25
+public val COPYFILE_CLONE_FORCE: CopyfileFlagsT = 1u shl 25
 
-public val COPYFILE_RUN_IN_PLACE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 26
+public val COPYFILE_RUN_IN_PLACE: CopyfileFlagsT = 1u shl 26
 
-public val COPYFILE_DATA_SPARSE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 27
+public val COPYFILE_DATA_SPARSE: CopyfileFlagsT = 1u shl 27
 
-public val COPYFILE_PRESERVE_DST_TRACKED: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 28
+public val COPYFILE_PRESERVE_DST_TRACKED: CopyfileFlagsT = 1u shl 28
 
-public val COPYFILE_VERBOSE: io.github.kotlinmania.rustlang.libc.CopyfileFlagsT = 1u shl 30
+public val COPYFILE_VERBOSE: CopyfileFlagsT = 1u shl 30
 
 public val COPYFILE_RECURSE_ERROR: CInt = 0
 
@@ -1036,61 +1036,61 @@ public val PATH_BSHELL: ConstPtr = cstr("/bin/sh\u0000".encodeToByteArray())
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_EXTENDED_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadExtendedPolicyDataT>(typeLayoutT = ThreadExtendedPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_EXTENDED_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadExtendedPolicyDataT>(typeLayoutT = ThreadExtendedPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_TIME_CONSTRAINT_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadTimeConstraintPolicyDataT>(typeLayoutT = ThreadTimeConstraintPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_TIME_CONSTRAINT_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadTimeConstraintPolicyDataT>(typeLayoutT = ThreadTimeConstraintPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_PRECEDENCE_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadPrecedencePolicyDataT>(typeLayoutT = ThreadPrecedencePolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_PRECEDENCE_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadPrecedencePolicyDataT>(typeLayoutT = ThreadPrecedencePolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_AFFINITY_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadAffinityPolicyDataT>(typeLayoutT = ThreadAffinityPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_AFFINITY_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadAffinityPolicyDataT>(typeLayoutT = ThreadAffinityPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_BACKGROUND_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadBackgroundPolicyDataT>(typeLayoutT = ThreadBackgroundPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_BACKGROUND_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadBackgroundPolicyDataT>(typeLayoutT = ThreadBackgroundPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_LATENCY_QOS_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadLatencyQosPolicyDataT>(typeLayoutT = ThreadLatencyQosPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_LATENCY_QOS_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadLatencyQosPolicyDataT>(typeLayoutT = ThreadLatencyQosPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_THROUGHPUT_QOS_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadThroughputQosPolicyDataT>(typeLayoutT = ThreadThroughputQosPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_THROUGHPUT_QOS_POLICY_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadThroughputQosPolicyDataT>(typeLayoutT = ThreadThroughputQosPolicy.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_BASIC_INFO_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadBasicInfoDataT>(typeLayoutT = ThreadBasicInfo.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_BASIC_INFO_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadBasicInfoDataT>(typeLayoutT = ThreadBasicInfo.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_IDENTIFIER_INFO_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadIdentifierInfoDataT>(typeLayoutT = ThreadIdentifierInfo.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_IDENTIFIER_INFO_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadIdentifierInfoDataT>(typeLayoutT = ThreadIdentifierInfo.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val THREAD_EXTENDED_INFO_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadExtendedInfoDataT>(typeLayoutT = ThreadExtendedInfo.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val THREAD_EXTENDED_INFO_COUNT: MachMsgTypeNumberT = (sizeOf<ThreadExtendedInfoDataT>(typeLayoutT = ThreadExtendedInfo.typeLayout()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
@@ -1108,4 +1108,4 @@ public val MACH_TASK_BASIC_INFO_COUNT: UInt = (sizeOf<MachTaskBasicInfoDataT>(ty
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val HOST_VM_INFO64_COUNT: MachMsgTypeNumberT = (sizeOf<VmStatistics64DataT>(typeLayoutT = ObjectSlotLayout<VmStatistics64>()) / sizeOf<IntegerT>(typeLayoutT = ObjectSlotLayout<CInt>())).toUInt()
+public val HOST_VM_INFO64_COUNT: MachMsgTypeNumberT = (sizeOf<VmStatistics64DataT>(typeLayoutT = UnresolvedTypeLayout<VmStatistics64>()) / sizeOf<IntegerT>(typeLayoutT = UnresolvedTypeLayout<CInt>())).toUInt()

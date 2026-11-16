@@ -2,20 +2,20 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.KeyT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.KeyT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.cinterop.libcUnixLinuxlikeLinuxAccept4
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.cinterop.libcUnixLinuxlikeLinuxClockNanosleep
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.cinterop.libcUnixLinuxlikeLinuxClone
@@ -277,7 +277,7 @@ public actual fun signalfd(fd: CInt, mask: ConstPtr, flags: CInt): CInt =
     libcUnixLinuxlikeLinuxSignalfd(fd, mask.rawAddress.toCPointer<ByteVar>(), flags)
 
 public actual fun timerfdCreate(clockid: ClockidT, flags: CInt): CInt =
-    libcUnixLinuxlikeLinuxTimerfdCreate(clockid.toInt(), flags)
+    libcUnixLinuxlikeLinuxTimerfdCreate(clockid, flags)
 
 public actual fun timerfdGettime(fd: CInt, currValue: MutPtr): CInt =
     libcUnixLinuxlikeLinuxTimerfdGettime(fd, currValue.rawAddress.toCPointer<ByteVar>())
@@ -407,7 +407,7 @@ public actual fun schedGetscheduler(pid: PidT): CInt =
     libcUnixLinuxlikeLinuxSchedGetscheduler(pid)
 
 public actual fun clockNanosleep(clkId: ClockidT, flags: CInt, rqtp: ConstPtr, rmtp: MutPtr): CInt =
-    libcUnixLinuxlikeLinuxClockNanosleep(clkId.toInt(), flags, rqtp.rawAddress.toCPointer<ByteVar>(), rmtp.rawAddress.toCPointer<ByteVar>())
+    libcUnixLinuxlikeLinuxClockNanosleep(clkId, flags, rqtp.rawAddress.toCPointer<ByteVar>(), rmtp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun umount2(target: ConstPtr, flags: CInt): CInt =
     libcUnixLinuxlikeLinuxUmount2(target.rawAddress.toCPointer<ByteVar>(), flags)

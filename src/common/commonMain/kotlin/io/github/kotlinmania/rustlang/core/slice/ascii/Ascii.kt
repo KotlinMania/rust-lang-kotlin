@@ -5,15 +5,13 @@ package io.github.kotlinmania.rustlang.core.slice.ascii
 
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
 import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
-import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.iter.adapters.filter.Filter
-import io.github.kotlinmania.rustlang.core.iter.adapters.flatten.FlatMap
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mmLoaduSi128
 import io.github.kotlinmania.rustlang.core.mmMovemaskEpi8
@@ -95,7 +93,7 @@ public fun List<UByte>.asAsciiUnchecked(): List<io.github.kotlinmania.rustlang.c
     val bytePtr: ConstPtr = this
     val asciiPtr = ConstPtr(bytePtr.rawAddress, bytePtr.rawMeta)
     // SAFETY: The caller promised all the bytes are ASCII
-    return (ObjectSlotLayout<List<io.github.kotlinmania.rustlang.core.ascii.Char>>()).readNative((asciiPtr).rawAddress)
+    return (UnresolvedTypeLayout<List<io.github.kotlinmania.rustlang.core.ascii.Char>>()).readNative((asciiPtr).rawAddress)
 }
 
 /**
@@ -469,7 +467,7 @@ public open class SplitAsciiWhitespace internal constructor(
     }
 }
 
-public open class EscapeByte : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any?, EscapeDefault> {
+public open class EscapeByte : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, EscapeDefault> {
     public open fun clone(): EscapeByte = EscapeByte()
 
     public override fun call(tupleArg0: UByte): EscapeDefault = escapeDefault(byte)
@@ -565,7 +563,7 @@ public open class EscapeAscii internal constructor(
         for (byte1 in back1) {
             f.append(byte1.toInt().toChar())
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EscapeAscii").finishNonExhaustive()

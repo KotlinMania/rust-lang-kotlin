@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.core.num.imp.intsqrt
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingMul
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
-import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.overflowingMul
+import io.github.kotlinmania.rustlang.core.num.overflowingSub
+import io.github.kotlinmania.rustlang.core.num.pow
 
 // These functions use the [Karatsuba square root algorithm][1] to compute the
 // [integer square root](https://en.wikipedia.org/wiki/IntegerSquareRoot)
@@ -54,9 +54,9 @@ public val U8_ISQRT_WITH_REMAINDER: List<Pair<UByte, UByte>> =
         var n: Int = 0
         var isqrtN: Int = 0
         while (n < result.size) {
-            result[n] = Pair(isqrtN.toUByte(), (n - rustPow(isqrtN, 2u)).toUByte())
+            result[n] = Pair(isqrtN.toUByte(), (n - isqrtN.pow(2u)).toUByte())
             n += 1
-            if (n == rustPow((isqrtN + 1), 2u)) {
+            if (n == (isqrtN + 1).pow(2u)) {
                 isqrtN += 1
             }
         }
@@ -101,7 +101,7 @@ public fun u16Stages(n: UShort): UShort {
         val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
         val q = numerator / denominator
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-        val (sSquared, overflow) = rustOverflowingMul(s2, s2)
+        val (sSquared, overflow) = s2.overflowingMul(s2)
         if (overflow || sSquared > n) {
             s2 -= 1u
         }
@@ -144,7 +144,7 @@ public fun u32Stages(n: UInt): UInt {
         val q = numerator / denominator
         val u = numerator % denominator
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-        var (r2, overflow) = rustOverflowingSub((((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)), q * q)
+        var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
             r2 = r2.wrappingAdd(2u * s2 - 1u)
             s2 -= 1u
@@ -164,7 +164,7 @@ public fun u32Stages(n: UInt): UInt {
         val denominator1 = (s3.toUInt()) shl 1
         val q1 = numerator1 / denominator1
         var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
-        val (sSquared, overflow1) = rustOverflowingMul(s4, s4)
+        val (sSquared, overflow1) = s4.overflowingMul(s4)
         if (overflow1 || sSquared > n) {
             s4 -= 1u
         }
@@ -207,7 +207,7 @@ public fun u64Stages(n: ULong): ULong {
         val q = numerator / denominator
         val u = numerator % denominator
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-        var (r2, overflow) = rustOverflowingSub((((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)), q * q)
+        var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
             r2 = r2.wrappingAdd(2u * s2 - 1u)
             s2 -= 1u
@@ -231,7 +231,7 @@ public fun u64Stages(n: ULong): ULong {
         val q1 = numerator1 / denominator1
         val u1 = numerator1 % denominator1
         var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
-        var (r4, overflow1) = rustOverflowingSub(((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)), q1 * q1)
+        var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
         if (overflow1) {
             r4 = r4.wrappingAdd(2u * s4 - 1u)
             s4 -= 1u
@@ -251,7 +251,7 @@ public fun u64Stages(n: ULong): ULong {
         val denominator2 = (s5.toULong()) shl 1
         val q2 = numerator2 / denominator2
         var s6 = (s5 shl QUARTER_BITS.toInt()).toULong() + q2
-        val (sSquared, overflow2) = rustOverflowingMul(s6, s6)
+        val (sSquared, overflow2) = s6.overflowingMul(s6)
         if (overflow2 || sSquared > n) {
             s6 -= 1uL
         }
@@ -294,7 +294,7 @@ public fun u128Stages(n: U128): U128 {
         val q = numerator / denominator
         val u = numerator % denominator
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-        var (r2, overflow) = rustOverflowingSub((((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)), q * q)
+        var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
             r2 = r2.wrappingAdd(2u * s2 - 1u)
             s2 -= 1u
@@ -318,7 +318,7 @@ public fun u128Stages(n: U128): U128 {
         val q1 = numerator1 / denominator1
         val u1 = numerator1 % denominator1
         var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
-        var (r4, overflow1) = rustOverflowingSub(((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)), q1 * q1)
+        var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
         if (overflow1) {
             r4 = r4.wrappingAdd(2u * s4 - 1u)
             s4 -= 1u
@@ -342,7 +342,7 @@ public fun u128Stages(n: U128): U128 {
         val q2 = numerator2 / denominator2
         val u2 = numerator2 % denominator2
         var s6 = (s5 shl QUARTER_BITS.toInt()).toULong() + q2
-        var (r6, overflow2) = rustOverflowingSub(((u2 shl QUARTER_BITS.toInt()) or (lo2 and LOWEST_QUARTER_1_BITS)), q2 * q2)
+        var (r6, overflow2) = ((u2 shl QUARTER_BITS.toInt()) or (lo2 and LOWEST_QUARTER_1_BITS)).overflowingSub(q2 * q2)
         if (overflow2) {
             r6 = r6.wrappingAdd(2uL * s6 - 1uL)
             s6 -= 1uL
@@ -362,7 +362,7 @@ public fun u128Stages(n: U128): U128 {
         val denominator3 = (U128.fromLong(s7.toLong())) shl 1
         val q3 = numerator3 / denominator3
         var s8 = U128.fromLong((s7 shl QUARTER_BITS.toInt()).toLong()) + q3
-        val (sSquared, overflow3) = rustOverflowingMul(s8, s8)
+        val (sSquared, overflow3) = s8.overflowingMul(s8)
         if (overflow3 || sSquared > n) {
             s8 -= U128(0x0uL, 0x1uL)
         }
@@ -381,7 +381,7 @@ public fun u16(n: UShort): UShort {
         u8(n1.toUByte()).toUShort()
     } else {
         val EVEN_MAKING_BITMASK: UInt = 1u.inv()
-        val normalizationShift = rustLeadingZeros(n1) and EVEN_MAKING_BITMASK
+        val normalizationShift = n1.leadingZeros() and EVEN_MAKING_BITMASK
         n1 = n1 shl normalizationShift.toInt()
         val s = u16Stages(n1)
         val denormalizationShift = normalizationShift shr 1
@@ -400,7 +400,7 @@ public fun u32(n: UInt): UInt {
         u16(n1.toUShort()).toUInt()
     } else {
         val EVEN_MAKING_BITMASK: UInt = 1u.inv()
-        val normalizationShift = rustLeadingZeros(n1) and EVEN_MAKING_BITMASK
+        val normalizationShift = n1.leadingZeros() and EVEN_MAKING_BITMASK
         n1 = n1 shl normalizationShift.toInt()
         val s = u32Stages(n1)
         val denormalizationShift = normalizationShift shr 1
@@ -419,7 +419,7 @@ public fun u64(n: ULong): ULong {
         u32(n1.toUInt()).toULong()
     } else {
         val EVEN_MAKING_BITMASK: UInt = 1u.inv()
-        val normalizationShift = rustLeadingZeros(n1) and EVEN_MAKING_BITMASK
+        val normalizationShift = n1.leadingZeros() and EVEN_MAKING_BITMASK
         n1 = n1 shl normalizationShift.toInt()
         val s = u64Stages(n1)
         val denormalizationShift = normalizationShift shr 1
@@ -438,7 +438,7 @@ public fun u128(n: U128): U128 {
         U128.fromULong(u64(n1.toULong()))
     } else {
         val EVEN_MAKING_BITMASK: UInt = 1u.inv()
-        val normalizationShift = rustLeadingZeros(n1) and EVEN_MAKING_BITMASK
+        val normalizationShift = n1.leadingZeros() and EVEN_MAKING_BITMASK
         n1 = n1 shl normalizationShift.toInt()
         val s = u128Stages(n1)
         val denormalizationShift = normalizationShift shr 1

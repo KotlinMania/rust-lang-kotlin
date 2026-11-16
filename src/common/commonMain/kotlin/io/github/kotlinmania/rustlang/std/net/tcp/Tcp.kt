@@ -583,15 +583,13 @@ public open class TcpStream(
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value.fmt(f)
 
     public companion object {
         /**
@@ -1021,9 +1019,7 @@ public open class TcpListener(
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value.fmt(f)
 
     public companion object {
         /**

@@ -3,23 +3,34 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
-import io.github.kotlinmania.rustlang.core.num.rustWrappingAbs
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.num.wrappingAbs
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
-import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.round
-import kotlin.math.sqrt
-import kotlin.math.truncate
 
 // This module implements the [WebAssembly `SIMD128` ISA].
 //
@@ -116,7 +127,7 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testStore() {
         run {
-            val localStorageL4351C12 = AddressableLocal(i8x16Splat(0), ObjectSlotLayout<V128>())
+            val localStorageL4351C12 = AddressableLocal(i8x16Splat(0), UnresolvedTypeLayout<V128>())
             val spot by localStorageL4351C12
             v128Store(RustMutableReference(localStorageL4351C12.asMutPtr(), localStorageL4351C12.layout), i8x16Splat(1))
             compareBytes(spot, i8x16Splat(1))
@@ -536,7 +547,7 @@ public class Simd128InlineTests {
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingAdd(v1[i], v2[i])
+                val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
@@ -547,7 +558,7 @@ public class Simd128InlineTests {
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingAdd(v11[i1], v21[i1].toByte())
+                val expected1 = v11[i1].saturatingAdd(v21[i1].toByte())
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
@@ -558,7 +569,7 @@ public class Simd128InlineTests {
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected2 = rustSaturatingAdd(v12[i2], v22[i2].toByte())
+                val expected2 = v12[i2].saturatingAdd(v22[i2].toByte())
                 check(actual2 == expected2)
             }
         }
@@ -575,7 +586,7 @@ public class Simd128InlineTests {
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingAdd(v1[i], v2[i])
+                val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
@@ -586,7 +597,7 @@ public class Simd128InlineTests {
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingAdd(v11[i1], v21[i1].toUByte())
+                val expected1 = v11[i1].saturatingAdd(v21[i1].toUByte())
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
@@ -597,7 +608,7 @@ public class Simd128InlineTests {
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected2 = rustSaturatingAdd(v12[i2], v22[i2])
+                val expected2 = v12[i2].saturatingAdd(v22[i2])
                 check(actual2 == expected2)
             }
         }
@@ -653,7 +664,7 @@ public class Simd128InlineTests {
             var v3 = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingSub(v1[i], v2[i])
+                val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
@@ -664,7 +675,7 @@ public class Simd128InlineTests {
             var v31 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingSub(v11[i1], v21[i1].toByte())
+                val expected1 = v11[i1].saturatingSub(v21[i1].toByte())
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
@@ -675,7 +686,7 @@ public class Simd128InlineTests {
             var v32 = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected2 = rustSaturatingSub(v12[i2], v22[i2].toByte())
+                val expected2 = v12[i2].saturatingSub(v22[i2].toByte())
                 check(actual2 == expected2)
             }
         }
@@ -692,7 +703,7 @@ public class Simd128InlineTests {
             var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingSub(v1[i], v2[i])
+                val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
@@ -703,7 +714,7 @@ public class Simd128InlineTests {
             var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingSub(v11[i1], v21[i1].toUByte())
+                val expected1 = v11[i1].saturatingSub(v21[i1].toUByte())
                 check(actual1 == expected1)
             }
             val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
@@ -714,7 +725,7 @@ public class Simd128InlineTests {
             var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
             v32 = transmute(v3V1282)
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected2 = rustSaturatingSub(v12[i2], v22[i2])
+                val expected2 = v12[i2].saturatingSub(v22[i2])
                 check(actual2 == expected2)
             }
         }
@@ -954,7 +965,7 @@ public class Simd128InlineTests {
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingAdd(v1[i], v2[i])
+                val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
@@ -965,7 +976,7 @@ public class Simd128InlineTests {
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingAdd(v11[i1], v21[i1].toShort())
+                val expected1 = v11[i1].saturatingAdd(v21[i1].toShort())
                 check(actual1 == expected1)
             }
         }
@@ -982,7 +993,7 @@ public class Simd128InlineTests {
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingAdd(v1[i], v2[i])
+                val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
@@ -993,7 +1004,7 @@ public class Simd128InlineTests {
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingAdd(v11[i1], v21[i1])
+                val expected1 = v11[i1].saturatingAdd(v21[i1])
                 check(actual1 == expected1)
             }
         }
@@ -1038,7 +1049,7 @@ public class Simd128InlineTests {
             var v3 = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingSub(v1[i], v2[i])
+                val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
@@ -1049,7 +1060,7 @@ public class Simd128InlineTests {
             var v31 = shortArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingSub(v11[i1], v21[i1].toShort())
+                val expected1 = v11[i1].saturatingSub(v21[i1].toShort())
                 check(actual1 == expected1)
             }
         }
@@ -1066,7 +1077,7 @@ public class Simd128InlineTests {
             var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustSaturatingSub(v1[i], v2[i])
+                val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
             val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
@@ -1077,7 +1088,7 @@ public class Simd128InlineTests {
             var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustSaturatingSub(v11[i1], v21[i1])
+                val expected1 = v11[i1].saturatingSub(v21[i1])
                 check(actual1 == expected1)
             }
         }
@@ -1720,7 +1731,7 @@ public class Simd128InlineTests {
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMin0 = (v1[i]); val rhsMin0 = (v2[i].toFloat()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected = kmMinnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
@@ -1731,7 +1742,7 @@ public class Simd128InlineTests {
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMin0 = (v11[i1]); val rhsMin0 = (v21[i1].toFloat()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected1 = kmMinnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
             }
         }
@@ -1748,7 +1759,7 @@ public class Simd128InlineTests {
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMax0 = (v1[i]); val rhsMax0 = (v2[i].toFloat()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected = kmMaxnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
@@ -1759,7 +1770,7 @@ public class Simd128InlineTests {
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMax0 = (v11[i1]); val rhsMax0 = (v21[i1].toFloat()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected1 = kmMaxnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
             }
         }
@@ -1776,7 +1787,7 @@ public class Simd128InlineTests {
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMin0 = (v1[i]); val rhsMin0 = (v2[i].toFloat()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected = kmMinnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
@@ -1787,7 +1798,7 @@ public class Simd128InlineTests {
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMin0 = (v11[i1]); val rhsMin0 = (v21[i1].toFloat()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected1 = kmMinnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
             }
         }
@@ -1804,7 +1815,7 @@ public class Simd128InlineTests {
             var v3 = floatArrayOf(-1.0f, 2.0f, 3.0f, 4.0f)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMax0 = (v1[i]); val rhsMax0 = (v2[i].toFloat()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected = kmMaxnumf32(v1[i], v2[i].toFloat())
                 check(actual == expected)
             }
             val v11 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
@@ -1815,7 +1826,7 @@ public class Simd128InlineTests {
             var v31 = floatArrayOf(Float.POSITIVE_INFINITY, -0.0f, Float.NEGATIVE_INFINITY, 3.0f)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMax0 = (v11[i1]); val rhsMax0 = (v21[i1].toFloat()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected1 = kmMaxnumf32(v11[i1], v21[i1].toFloat())
                 check(actual1 == expected1)
             }
         }
@@ -1944,7 +1955,7 @@ public class Simd128InlineTests {
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMin0 = (v1[i]); val rhsMin0 = (v2[i].toDouble()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected = kmMinnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
@@ -1955,7 +1966,7 @@ public class Simd128InlineTests {
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMin0 = (v11[i1]); val rhsMin0 = (v21[i1].toDouble()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected1 = kmMinnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
             }
         }
@@ -1972,7 +1983,7 @@ public class Simd128InlineTests {
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMax0 = (v1[i]); val rhsMax0 = (v2[i].toDouble()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected = kmMaxnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
@@ -1983,7 +1994,7 @@ public class Simd128InlineTests {
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMax0 = (v11[i1]); val rhsMax0 = (v21[i1].toDouble()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected1 = kmMaxnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
             }
         }
@@ -2000,7 +2011,7 @@ public class Simd128InlineTests {
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMin0 = (v1[i]); val rhsMin0 = (v2[i].toDouble()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected = kmMinnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
@@ -2011,7 +2022,7 @@ public class Simd128InlineTests {
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMin0 = (v11[i1]); val rhsMin0 = (v21[i1].toDouble()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+                val expected1 = kmMinnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
             }
         }
@@ -2028,7 +2039,7 @@ public class Simd128InlineTests {
             var v3 = doubleArrayOf(-1.0, 2.0)
             v3 = transmute(v3V128)
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = run { val lhsMax0 = (v1[i]); val rhsMax0 = (v2[i].toDouble()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected = kmMaxnumf64(v1[i], v2[i].toDouble())
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
@@ -2039,7 +2050,7 @@ public class Simd128InlineTests {
             var v31 = doubleArrayOf(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)
             v31 = transmute(v3V1281)
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = run { val lhsMax0 = (v11[i1]); val rhsMax0 = (v21[i1].toDouble()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+                val expected1 = kmMaxnumf64(v11[i1], v21[i1].toDouble())
                 check(actual1 == expected1)
             }
         }
@@ -2054,7 +2065,7 @@ public class Simd128InlineTests {
             var v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingAbs(v1[i])
+                val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
@@ -2063,7 +2074,7 @@ public class Simd128InlineTests {
             var v21 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingAbs(v11[i1])
+                val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
@@ -2072,7 +2083,7 @@ public class Simd128InlineTests {
             var v22 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
             v22 = transmute(v2V1282)
             for ((i2, actual2) in v22.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected2 = rustWrappingAbs(v12[i2])
+                val expected2 = v12[i2].wrappingAbs()
                 check(actual2 == expected2)
             }
         }
@@ -2087,7 +2098,7 @@ public class Simd128InlineTests {
             var v2 = byteArrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingNeg(v1[i])
+                val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
@@ -2096,7 +2107,7 @@ public class Simd128InlineTests {
             var v21 = byteArrayOf((-2).toByte(), (-3).toByte(), (-4).toByte(), (-5).toByte(), (-6).toByte(), (-7).toByte(), (-8).toByte(), (-9).toByte(), (-10).toByte(), (-11).toByte(), (-12).toByte(), (-13).toByte(), (-14).toByte(), (-15).toByte(), (-16).toByte(), (-18).toByte())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingNeg(v11[i1])
+                val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
             }
             val v12 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
@@ -2105,7 +2116,7 @@ public class Simd128InlineTests {
             var v22 = byteArrayOf((-127).toByte(), (-44).toByte(), 43, 126, 4, (-128).toByte(), 127, (-59).toByte(), (-43).toByte(), 39, (-69).toByte(), 79, (-3).toByte(), 35, 83, 13)
             v22 = transmute(v2V1282)
             for ((i2, actual2) in v22.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected2 = rustWrappingNeg(v12[i2])
+                val expected2 = v12[i2].wrappingNeg()
                 check(actual2 == expected2)
             }
         }
@@ -2120,7 +2131,7 @@ public class Simd128InlineTests {
             var v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingAbs(v1[i])
+                val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
@@ -2129,7 +2140,7 @@ public class Simd128InlineTests {
             var v21 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingAbs(v11[i1])
+                val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
             }
         }
@@ -2144,7 +2155,7 @@ public class Simd128InlineTests {
             var v2 = shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingNeg(v1[i])
+                val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
@@ -2153,7 +2164,7 @@ public class Simd128InlineTests {
             var v21 = shortArrayOf(2, 0x7fff, (0.inv()).toShort(), 4, 42, (-5).toShort(), 33, (-4847).toShort())
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingNeg(v11[i1])
+                val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
             }
         }
@@ -2168,7 +2179,7 @@ public class Simd128InlineTests {
             var v2 = intArrayOf(1, 2, 3, 4)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingAbs(v1[i])
+                val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
@@ -2177,7 +2188,7 @@ public class Simd128InlineTests {
             var v21 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingAbs(v11[i1])
+                val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
             }
         }
@@ -2192,7 +2203,7 @@ public class Simd128InlineTests {
             var v2 = intArrayOf(1, 2, 3, 4)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingNeg(v1[i])
+                val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
@@ -2201,7 +2212,7 @@ public class Simd128InlineTests {
             var v21 = intArrayOf(Int.MIN_VALUE, Int.MAX_VALUE, 0, 4)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingNeg(v11[i1])
+                val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
             }
         }
@@ -2216,7 +2227,7 @@ public class Simd128InlineTests {
             var v2 = longArrayOf(1L, 2L)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingAbs(v1[i])
+                val expected = v1[i].wrappingAbs()
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
@@ -2225,7 +2236,7 @@ public class Simd128InlineTests {
             var v21 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingAbs(v11[i1])
+                val expected1 = v11[i1].wrappingAbs()
                 check(actual1 == expected1)
             }
         }
@@ -2240,7 +2251,7 @@ public class Simd128InlineTests {
             var v2 = longArrayOf(1L, 2L)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = rustWrappingNeg(v1[i])
+                val expected = v1[i].wrappingNeg()
                 check(actual == expected)
             }
             val v11 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
@@ -2249,7 +2260,7 @@ public class Simd128InlineTests {
             var v21 = longArrayOf(Long.MIN_VALUE, Long.MAX_VALUE)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = rustWrappingNeg(v11[i1])
+                val expected1 = v11[i1].wrappingNeg()
                 check(actual1 == expected1)
             }
         }
@@ -2264,7 +2275,7 @@ public class Simd128InlineTests {
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = ceil(v1[i])
+                val expected = kmCeilf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
@@ -2273,7 +2284,7 @@ public class Simd128InlineTests {
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = ceil(v11[i1])
+                val expected1 = kmCeilf32(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2288,7 +2299,7 @@ public class Simd128InlineTests {
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = floor(v1[i])
+                val expected = kmFloorf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
@@ -2297,7 +2308,7 @@ public class Simd128InlineTests {
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = floor(v11[i1])
+                val expected1 = kmFloorf32(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2312,7 +2323,7 @@ public class Simd128InlineTests {
             var v2 = floatArrayOf(1.0f, 2.0f, 2.5f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = truncate(v1[i])
+                val expected = kmTruncf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
@@ -2321,7 +2332,7 @@ public class Simd128InlineTests {
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = truncate(v11[i1])
+                val expected1 = kmTruncf32(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2336,7 +2347,7 @@ public class Simd128InlineTests {
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = round(v1[i])
+                val expected = kmRoundf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
@@ -2345,7 +2356,7 @@ public class Simd128InlineTests {
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = round(v11[i1])
+                val expected1 = kmRoundf32(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2360,7 +2371,7 @@ public class Simd128InlineTests {
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = abs(v1[i])
+                val expected = kmFabsf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
@@ -2369,7 +2380,7 @@ public class Simd128InlineTests {
             var v21 = floatArrayOf(0.0f, -0.3f, Float.POSITIVE_INFINITY, -0.0f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = abs(v11[i1])
+                val expected1 = kmFabsf32(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2408,7 +2419,7 @@ public class Simd128InlineTests {
             var v2 = floatArrayOf(1.0f, 2.0f, 2.6f, 3.3f)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = sqrt(v1[i])
+                val expected = kmSqrtf32(v1[i])
                 check(actual == expected)
             }
             val v11 = floatArrayOf(0.0f, 0.3f, Float.POSITIVE_INFINITY, 0.1f)
@@ -2417,7 +2428,7 @@ public class Simd128InlineTests {
             var v21 = floatArrayOf(0.0f, 0.3f, Float.POSITIVE_INFINITY, 0.1f)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = sqrt(v11[i1])
+                val expected1 = kmSqrtf32(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2432,7 +2443,7 @@ public class Simd128InlineTests {
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = ceil(v1[i])
+                val expected = kmCeilf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
@@ -2441,7 +2452,7 @@ public class Simd128InlineTests {
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = ceil(v11[i1])
+                val expected1 = kmCeilf64(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2456,7 +2467,7 @@ public class Simd128InlineTests {
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = floor(v1[i])
+                val expected = kmFloorf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
@@ -2465,7 +2476,7 @@ public class Simd128InlineTests {
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = floor(v11[i1])
+                val expected1 = kmFloorf64(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2480,7 +2491,7 @@ public class Simd128InlineTests {
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = truncate(v1[i])
+                val expected = kmTruncf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
@@ -2489,7 +2500,7 @@ public class Simd128InlineTests {
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = truncate(v11[i1])
+                val expected1 = kmTruncf64(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2504,7 +2515,7 @@ public class Simd128InlineTests {
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = round(v1[i])
+                val expected = kmRoundf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
@@ -2513,7 +2524,7 @@ public class Simd128InlineTests {
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = round(v11[i1])
+                val expected1 = kmRoundf64(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2528,7 +2539,7 @@ public class Simd128InlineTests {
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = abs(v1[i])
+                val expected = kmFabsf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
@@ -2537,7 +2548,7 @@ public class Simd128InlineTests {
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, -0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = abs(v11[i1])
+                val expected1 = kmFabsf64(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -2576,7 +2587,7 @@ public class Simd128InlineTests {
             var v2 = doubleArrayOf(1.0, 2.3)
             v2 = transmute(v2V128)
             for ((i, actual) in v2.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected = sqrt(v1[i])
+                val expected = kmSqrtf64(v1[i])
                 check(actual == expected)
             }
             val v11 = doubleArrayOf(Double.POSITIVE_INFINITY, 0.1)
@@ -2585,7 +2596,7 @@ public class Simd128InlineTests {
             var v21 = doubleArrayOf(Double.POSITIVE_INFINITY, 0.1)
             v21 = transmute(v2V1281)
             for ((i1, actual1) in v21.mapIndexed { index, item -> Pair(index, item) }) {
-                val expected1 = sqrt(v11[i1])
+                val expected1 = kmSqrtf64(v11[i1])
                 check(actual1 == expected1)
             }
         }
@@ -4526,8 +4537,8 @@ public class Simd128InlineTests {
         run {
             val a: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
             val b: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            val low = transmute<ShortArray>(i16x8ExtmulLowI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
-            val high = transmute<ShortArray>(i16x8ExtmulHighI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+            val low = transmute(i16x8ExtmulLowI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
+            val high = transmute(i16x8ExtmulHighI8x16(i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), i8x16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)))
             val half = a.size / 2
             for (i in 0 until half) {
                 check(((a[i].toShort()) * (b[i].toShort())).toShort() == low[i])
@@ -4537,8 +4548,8 @@ public class Simd128InlineTests {
         run {
             val a1: ByteArray = byteArrayOf((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0)
             val b1: ByteArray = byteArrayOf((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)
-            val low1 = transmute<ShortArray>(i16x8ExtmulLowI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
-            val high1 = transmute<ShortArray>(i16x8ExtmulHighI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
+            val low1 = transmute(i16x8ExtmulLowI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
+            val high1 = transmute(i16x8ExtmulHighI8x16(i8x16((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0), i8x16((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)))
             val half1 = a1.size / 2
             for (i1 in 0 until half1) {
                 check(((a1[i1].toShort()) * (b1[i1].toShort())).toShort() == low1[i1])
@@ -4548,8 +4559,8 @@ public class Simd128InlineTests {
         run {
             val a2: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val b2: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val low2 = transmute<UShortArray>(u16x8ExtmulLowU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
-            val high2 = transmute<UShortArray>(u16x8ExtmulHighU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val low2 = transmute(u16x8ExtmulLowU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val high2 = transmute(u16x8ExtmulHighU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
             val half2 = a2.size / 2
             for (i2 in 0 until half2) {
                 check(((a2[i2].toUShort()) * (b2[i2].toUShort())).toUShort() == low2[i2])
@@ -4559,8 +4570,8 @@ public class Simd128InlineTests {
         run {
             val a3: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
             val b3: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
-            val low3 = transmute<UShortArray>(u16x8ExtmulLowU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
-            val high3 = transmute<UShortArray>(u16x8ExtmulHighU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
+            val low3 = transmute(u16x8ExtmulLowU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
+            val high3 = transmute(u16x8ExtmulHighU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)))
             val half3 = a3.size / 2
             for (i3 in 0 until half3) {
                 check(((a3[i3].toUShort()) * (b3[i3].toUShort())).toUShort() == low3[i3])
@@ -4570,8 +4581,8 @@ public class Simd128InlineTests {
         run {
             val a4: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
             val b4: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            val low4 = transmute<IntArray>(i32x4ExtmulLowI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
-            val high4 = transmute<IntArray>(i32x4ExtmulHighI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
+            val low4 = transmute(i32x4ExtmulLowI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
+            val high4 = transmute(i32x4ExtmulHighI16x8(i16x8(0, 0, 0, 0, 0, 0, 0, 0), i16x8(0, 0, 0, 0, 0, 0, 0, 0)))
             val half4 = a4.size / 2
             for (i4 in 0 until half4) {
                 check(((a4[i4].toInt()) * (b4[i4].toInt())) == low4[i4])
@@ -4581,8 +4592,8 @@ public class Simd128InlineTests {
         run {
             val a5: ShortArray = shortArrayOf((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87)
             val b5: ShortArray = shortArrayOf(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())
-            val low5 = transmute<IntArray>(i32x4ExtmulLowI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
-            val high5 = transmute<IntArray>(i32x4ExtmulHighI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
+            val low5 = transmute(i32x4ExtmulLowI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
+            val high5 = transmute(i32x4ExtmulHighI16x8(i16x8((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87), i16x8(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())))
             val half5 = a5.size / 2
             for (i5 in 0 until half5) {
                 check(((a5[i5].toInt()) * (b5[i5].toInt())) == low5[i5])
@@ -4592,8 +4603,8 @@ public class Simd128InlineTests {
         run {
             val a6: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
             val b6: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val low6 = transmute<UIntArray>(u32x4ExtmulLowU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
-            val high6 = transmute<UIntArray>(u32x4ExtmulHighU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val low6 = transmute(u32x4ExtmulLowU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
+            val high6 = transmute(u32x4ExtmulHighU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)))
             val half6 = a6.size / 2
             for (i6 in 0 until half6) {
                 check(((a6[i6].toUInt()) * (b6[i6].toUInt())) == low6[i6])
@@ -4603,8 +4614,8 @@ public class Simd128InlineTests {
         run {
             val a7: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
             val b7: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
-            val low7 = transmute<UIntArray>(u32x4ExtmulLowU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
-            val high7 = transmute<UIntArray>(u32x4ExtmulHighU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
+            val low7 = transmute(u32x4ExtmulLowU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
+            val high7 = transmute(u32x4ExtmulHighU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)))
             val half7 = a7.size / 2
             for (i7 in 0 until half7) {
                 check(((a7[i7].toUInt()) * (b7[i7].toUInt())) == low7[i7])
@@ -4614,8 +4625,8 @@ public class Simd128InlineTests {
         run {
             val a8: IntArray = intArrayOf(0, 0, 0, 0)
             val b8: IntArray = intArrayOf(0, 0, 0, 0)
-            val low8 = transmute<LongArray>(i64x2ExtmulLowI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
-            val high8 = transmute<LongArray>(i64x2ExtmulHighI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
+            val low8 = transmute(i64x2ExtmulLowI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
+            val high8 = transmute(i64x2ExtmulHighI32x4(i32x4(0, 0, 0, 0), i32x4(0, 0, 0, 0)))
             val half8 = a8.size / 2
             for (i8 in 0 until half8) {
                 check(((a8[i8].toLong()) * (b8[i8].toLong())) == low8[i8])
@@ -4625,8 +4636,8 @@ public class Simd128InlineTests {
         run {
             val a9: IntArray = intArrayOf(-1, 0, Int.MAX_VALUE, 19931)
             val b9: IntArray = intArrayOf(1, 1, Int.MIN_VALUE, 29391)
-            val low9 = transmute<LongArray>(i64x2ExtmulLowI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
-            val high9 = transmute<LongArray>(i64x2ExtmulHighI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
+            val low9 = transmute(i64x2ExtmulLowI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
+            val high9 = transmute(i64x2ExtmulHighI32x4(i32x4(-1, 0, Int.MAX_VALUE, 19931), i32x4(1, 1, Int.MIN_VALUE, 29391)))
             val half9 = a9.size / 2
             for (i9 in 0 until half9) {
                 check(((a9[i9].toLong()) * (b9[i9].toLong())) == low9[i9])
@@ -4636,8 +4647,8 @@ public class Simd128InlineTests {
         run {
             val a10: IntArray = intArrayOf(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff)
             val b10: IntArray = intArrayOf(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)
-            val low10 = transmute<LongArray>(i64x2ExtmulLowI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
-            val high10 = transmute<LongArray>(i64x2ExtmulHighI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
+            val low10 = transmute(i64x2ExtmulLowI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
+            val high10 = transmute(i64x2ExtmulHighI32x4(i32x4(Int.MAX_VALUE, 3003183, 3 shl 20, 0xffffff), i32x4(Int.MAX_VALUE, Int.MIN_VALUE, -40042, 300)))
             val half10 = a10.size / 2
             for (i10 in 0 until half10) {
                 check(((a10[i10].toLong()) * (b10[i10].toLong())) == low10[i10])
@@ -4647,8 +4658,8 @@ public class Simd128InlineTests {
         run {
             val a11: UIntArray = uintArrayOf(0u, 0u, 0u, 0u)
             val b11: UIntArray = uintArrayOf(0u, 0u, 0u, 0u)
-            val low11 = transmute<ULongArray>(u64x2ExtmulLowU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
-            val high11 = transmute<ULongArray>(u64x2ExtmulHighU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
+            val low11 = transmute(u64x2ExtmulLowU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
+            val high11 = transmute(u64x2ExtmulHighU32x4(u32x4(0u, 0u, 0u, 0u), u32x4(0u, 0u, 0u, 0u)))
             val half11 = a11.size / 2
             for (i11 in 0 until half11) {
                 check(((a11[i11].toULong()) * (b11[i11].toULong())) == low11[i11])
@@ -4658,8 +4669,8 @@ public class Simd128InlineTests {
         run {
             val a12: UIntArray = uintArrayOf(1u, 0u, UInt.MAX_VALUE, 19931u)
             val b12: UIntArray = uintArrayOf(1u, 1u, 3u, 29391u)
-            val low12 = transmute<ULongArray>(u64x2ExtmulLowU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
-            val high12 = transmute<ULongArray>(u64x2ExtmulHighU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
+            val low12 = transmute(u64x2ExtmulLowU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
+            val high12 = transmute(u64x2ExtmulHighU32x4(u32x4(1u, 0u, UInt.MAX_VALUE, 19931u), u32x4(1u, 1u, 3u, 29391u)))
             val half12 = a12.size / 2
             for (i12 in 0 until half12) {
                 check(((a12[i12].toULong()) * (b12[i12].toULong())) == low12[i12])
@@ -4669,8 +4680,8 @@ public class Simd128InlineTests {
         run {
             val a13: UIntArray = uintArrayOf(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu)
             val b13: UIntArray = uintArrayOf(UInt.MAX_VALUE, 3000u, 40042u, 300u)
-            val low13 = transmute<ULongArray>(u64x2ExtmulLowU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
-            val high13 = transmute<ULongArray>(u64x2ExtmulHighU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
+            val low13 = transmute(u64x2ExtmulLowU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
+            val high13 = transmute(u64x2ExtmulHighU32x4(u32x4(UInt.MAX_VALUE, 3003183u, 3u shl 20, 0xffffffu), u32x4(UInt.MAX_VALUE, 3000u, 40042u, 300u)))
             val half13 = a13.size / 2
             for (i13 in 0 until half13) {
                 check(((a13[i13].toULong()) * (b13[i13].toULong())) == low13[i13])
@@ -4685,7 +4696,7 @@ public class Simd128InlineTests {
             val aV = i16x8(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7])
             val bV = i16x8(b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7])
             val result = i16x8Q15mulrSat(aV, bV)
-            val result1 = transmute<V128, ShortArray>(result)
+            val result1 = transmute(result)
             for ((i, a1, b1) in (a.zip(b)).mapIndexed { index, item -> Pair(index, item) }) {
                 check(result1[i] == (((a1.toInt()) * (b1.toInt()) + 0x4000) shr 15).toShort())
             }
@@ -4699,8 +4710,8 @@ public class Simd128InlineTests {
     public fun testExtadd() {
         run {
             val a: ByteArray = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-            val aV = transmute<V128>(a)
-            val r = transmute<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV))
+            val aV = transmute(a)
+            val r = transmute(i16x8ExtaddPairwiseI8x16(aV))
             val half = a.size / 2
             for (i in 0 until half) {
                 check(((a[2 * i].toShort()) + (a[2 * i + 1].toShort())).toShort() == r[i])
@@ -4708,8 +4719,8 @@ public class Simd128InlineTests {
         }
         run {
             val a1: ByteArray = byteArrayOf((-1).toByte(), (-2).toByte(), 3, 100, 124, (-38).toByte(), 33, 87, 92, 108, 22, 8, (-43).toByte(), (-128).toByte(), 22, 0)
-            val aV1 = transmute<V128>(a1)
-            val r1 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV1))
+            val aV1 = transmute(a1)
+            val r1 = transmute(i16x8ExtaddPairwiseI8x16(aV1))
             val half1 = a1.size / 2
             for (i1 in 0 until half1) {
                 check(((a1[2 * i1].toShort()) + (a1[2 * i1 + 1].toShort())).toShort() == r1[i1])
@@ -4717,8 +4728,8 @@ public class Simd128InlineTests {
         }
         run {
             val a2: ByteArray = byteArrayOf((-5).toByte(), (-2).toByte(), 6, 10, 45, (-4).toByte(), 4, (-2).toByte(), 0, 88, 92, (-102).toByte(), (-98).toByte(), 83, 73, 54)
-            val aV2 = transmute<V128>(a2)
-            val r2 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseI8x16(aV2))
+            val aV2 = transmute(a2)
+            val r2 = transmute(i16x8ExtaddPairwiseI8x16(aV2))
             val half2 = a2.size / 2
             for (i2 in 0 until half2) {
                 check(((a2[2 * i2].toShort()) + (a2[2 * i2 + 1].toShort())).toShort() == r2[i2])
@@ -4726,8 +4737,8 @@ public class Simd128InlineTests {
         }
         run {
             val a3: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val aV3 = transmute<V128>(a3)
-            val r3 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV3))
+            val aV3 = transmute(a3)
+            val r3 = transmute(i16x8ExtaddPairwiseU8x16(aV3))
             val half3 = a3.size / 2
             for (i3 in 0 until half3) {
                 check(((a3[2 * i3].toShort()) + (a3[2 * i3 + 1].toShort())).toShort() == r3[i3])
@@ -4735,8 +4746,8 @@ public class Simd128InlineTests {
         }
         run {
             val a4: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
-            val aV4 = transmute<V128>(a4)
-            val r4 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV4))
+            val aV4 = transmute(a4)
+            val r4 = transmute(i16x8ExtaddPairwiseU8x16(aV4))
             val half4 = a4.size / 2
             for (i4 in 0 until half4) {
                 check(((a4[2 * i4].toShort()) + (a4[2 * i4 + 1].toShort())).toShort() == r4[i4])
@@ -4744,8 +4755,8 @@ public class Simd128InlineTests {
         }
         run {
             val a5: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
-            val aV5 = transmute<V128>(a5)
-            val r5 = transmute<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV5))
+            val aV5 = transmute(a5)
+            val r5 = transmute(i16x8ExtaddPairwiseU8x16(aV5))
             val half5 = a5.size / 2
             for (i5 in 0 until half5) {
                 check(((a5[2 * i5].toShort()) + (a5[2 * i5 + 1].toShort())).toShort() == r5[i5])
@@ -4753,8 +4764,8 @@ public class Simd128InlineTests {
         }
         run {
             val a6: ShortArray = shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0)
-            val aV6 = transmute<V128>(a6)
-            val r6 = transmute<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV6))
+            val aV6 = transmute(a6)
+            val r6 = transmute(i32x4ExtaddPairwiseI16x8(aV6))
             val half6 = a6.size / 2
             for (i6 in 0 until half6) {
                 check(((a6[2 * i6].toInt()) + (a6[2 * i6 + 1].toInt())) == r6[i6])
@@ -4762,8 +4773,8 @@ public class Simd128InlineTests {
         }
         run {
             val a7: ShortArray = shortArrayOf((-1).toShort(), 0, Short.MAX_VALUE, 19931, (-2259).toShort(), 64, 200, 87)
-            val aV7 = transmute<V128>(a7)
-            val r7 = transmute<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV7))
+            val aV7 = transmute(a7)
+            val r7 = transmute(i32x4ExtaddPairwiseI16x8(aV7))
             val half7 = a7.size / 2
             for (i7 in 0 until half7) {
                 check(((a7[2 * i7].toInt()) + (a7[2 * i7 + 1].toInt())) == r7[i7])
@@ -4771,8 +4782,8 @@ public class Simd128InlineTests {
         }
         run {
             val a8: ShortArray = shortArrayOf(1, 1, Short.MIN_VALUE, 29391, 105, 2, 100, (-2).toShort())
-            val aV8 = transmute<V128>(a8)
-            val r8 = transmute<V128, IntArray>(i32x4ExtaddPairwiseI16x8(aV8))
+            val aV8 = transmute(a8)
+            val r8 = transmute(i32x4ExtaddPairwiseI16x8(aV8))
             val half8 = a8.size / 2
             for (i8 in 0 until half8) {
                 check(((a8[2 * i8].toInt()) + (a8[2 * i8 + 1].toInt())) == r8[i8])
@@ -4780,8 +4791,8 @@ public class Simd128InlineTests {
         }
         run {
             val a9: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val aV9 = transmute<V128>(a9)
-            val r9 = transmute<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV9))
+            val aV9 = transmute(a9)
+            val r9 = transmute(i32x4ExtaddPairwiseU16x8(aV9))
             val half9 = a9.size / 2
             for (i9 in 0 until half9) {
                 check(((a9[2 * i9].toInt()) + (a9[2 * i9 + 1].toInt())) == r9[i9])
@@ -4789,8 +4800,8 @@ public class Simd128InlineTests {
         }
         run {
             val a10: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
-            val aV10 = transmute<V128>(a10)
-            val r10 = transmute<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV10))
+            val aV10 = transmute(a10)
+            val r10 = transmute(i32x4ExtaddPairwiseU16x8(aV10))
             val half10 = a10.size / 2
             for (i10 in 0 until half10) {
                 check(((a10[2 * i10].toInt()) + (a10[2 * i10 + 1].toInt())) == r10[i10])
@@ -4798,8 +4809,8 @@ public class Simd128InlineTests {
         }
         run {
             val a11: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
-            val aV11 = transmute<V128>(a11)
-            val r11 = transmute<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV11))
+            val aV11 = transmute(a11)
+            val r11 = transmute(i32x4ExtaddPairwiseU16x8(aV11))
             val half11 = a11.size / 2
             for (i11 in 0 until half11) {
                 check(((a11[2 * i11].toInt()) + (a11[2 * i11 + 1].toInt())) == r11[i11])

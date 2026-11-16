@@ -4,6 +4,12 @@ package io.github.kotlinmania.rustlang.core.num.imp.intlog10
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU128Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 
 // These functions compute the integer logarithm of their type, assuming
@@ -96,37 +102,37 @@ public fun u128Impl(value: U128): UInt {
     return log + u64Impl(value1.toULong())
 }
 
-public fun u8(value: NonZero<UByte>): UInt {
+public fun u8(value: NonZero<UByte, NonZeroU8Inner>): UInt {
     val result = u8Impl(value.get())
     assertUnchecked(result <= u8Impl(UByte.MAX_VALUE))
     return result
 }
 
-public fun u16(value: NonZero<UShort>): UInt {
+public fun u16(value: NonZero<UShort, NonZeroU16Inner>): UInt {
     val result = u16Impl(value.get())
     assertUnchecked(result <= u16Impl(UShort.MAX_VALUE))
     return result
 }
 
-public fun u32(value: NonZero<UInt>): UInt {
+public fun u32(value: NonZero<UInt, NonZeroU32Inner>): UInt {
     val result = u32Impl(value.get())
     assertUnchecked(result <= u32Impl(UInt.MAX_VALUE))
     return result
 }
 
-public fun u64(value: NonZero<ULong>): UInt {
+public fun u64(value: NonZero<ULong, NonZeroU64Inner>): UInt {
     val result = u64Impl(value.get())
     assertUnchecked(result <= u64Impl(ULong.MAX_VALUE))
     return result
 }
 
-public fun u128(value: NonZero<U128>): UInt {
+public fun u128(value: NonZero<U128, NonZeroU128Inner>): UInt {
     val result = u128Impl(value.get())
     assertUnchecked(result <= u128Impl(U128.MAX_VALUE))
     return result
 }
 
-public fun usize(value: NonZero<Int>): UInt {
+public fun usize(value: NonZero<Int, NonZeroUsizeInner>): UInt {
     val implFn = ::u64
     // SAFETY: We have selected the correct `implFn`, so the converting `val` to the argument is
     // safe.

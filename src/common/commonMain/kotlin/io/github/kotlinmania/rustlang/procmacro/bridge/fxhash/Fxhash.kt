@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.fxhash
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
 
 // This is a copy of the `rustcHash` crate, adapted to work as a module.
 //
@@ -35,7 +35,7 @@ public open class FxHasher(
 ) {
     public open fun addToHash(i: Int) {
         val K: Int = 0x517cc1b727220a95L.toInt()
-        this.hash = rustRotateLeft(this.hash, 5u).bitxor(i).wrappingMul(K)
+        this.hash = this.hash.rotateLeft(5u).bitxor(i).wrappingMul(K)
     }
 
     public open fun write(bytes: List<UByte>) {
@@ -43,16 +43,16 @@ public open class FxHasher(
         val hash = FxHasher(hash = this.hash)
         check(sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) <= 8)
         while (bytes1.size >= sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)) {
-            hash.addToHash(run { val bytesTmp0 = ((bytes1).slice(0 until sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))); ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) })
-            bytes1 = ((bytes1).slice(sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) until bytes1.size))
+            hash.addToHash(run { val bytesTmp0 = ((bytes1).subList(0, sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))); ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) })
+            bytes1 = ((bytes1).subList(sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64), (bytes1).size))
         }
         if ((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) > 4) && (bytes1.size >= 4)) {
-            hash.addToHash((run { val bytesTmp1 = ((bytes1).slice(0 until 4)); ((bytesTmp1[3].toUInt() shl 24) or (bytesTmp1[2].toUInt() shl 16) or (bytesTmp1[1].toUInt() shl 8) or bytesTmp1[0].toUInt()) }).toInt())
-            bytes1 = ((bytes1).slice(4 until bytes1.size))
+            hash.addToHash((run { val bytesTmp1 = ((bytes1).subList(0, 4)); ((bytesTmp1[3].toUInt() shl 24) or (bytesTmp1[2].toUInt() shl 16) or (bytesTmp1[1].toUInt() shl 8) or bytesTmp1[0].toUInt()) }).toInt())
+            bytes1 = ((bytes1).subList(4, (bytes1).size))
         }
         if ((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) > 2) && bytes1.size >= 2) {
-            hash.addToHash((run { val bytesTmp2 = ((bytes1).slice(0 until 2)); ((bytesTmp2[1].toInt() shl 8) or bytesTmp2[0].toInt()).toUShort() }).toInt())
-            bytes1 = ((bytes1).slice(2 until bytes1.size))
+            hash.addToHash((run { val bytesTmp2 = ((bytes1).subList(0, 2)); ((bytesTmp2[1].toInt() shl 8) or bytesTmp2[0].toInt()).toUShort() }).toInt())
+            bytes1 = ((bytes1).subList(2, (bytes1).size))
         }
         if ((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) > 1) && !bytes1.isEmpty()) {
             hash.addToHash(bytes1[0].toInt())

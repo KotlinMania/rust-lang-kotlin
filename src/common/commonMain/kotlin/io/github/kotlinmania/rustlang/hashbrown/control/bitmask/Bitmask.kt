@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.hashbrown.control.bitmask
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.hashbrown.control.group.BITMASK_ITER_MASK
 import io.github.kotlinmania.rustlang.hashbrown.control.group.BITMASK_STRIDE
 import io.github.kotlinmania.rustlang.hashbrown.control.group.BitMaskWord
@@ -75,16 +75,16 @@ public open class BitMask(
         // instead. Since we only have 1 bit set in each byte on ARM, we can
         // use swapBytes (REV) + leadingZeroes instead.
         return if (false && BITMASK_STRIDE % 8 == 0) {
-            rustLeadingZeros(run { val swapVal0 = (this.value); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }).toInt() / BITMASK_STRIDE
+            (run { val swapVal0 = (this.value); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }).leadingZeros().toInt() / BITMASK_STRIDE
         } else {
-            rustTrailingZeros(this.value).toInt() / BITMASK_STRIDE
+            this.value.trailingZeros().toInt() / BITMASK_STRIDE
         }
     }
 
     /**
      * Returns the number of leading zeroes in the `BitMask`.
      */
-    public open fun leadingZeros(): Int = rustLeadingZeros(this.value).toInt() / BITMASK_STRIDE
+    public open fun leadingZeros(): Int = this.value.leadingZeros().toInt() / BITMASK_STRIDE
 
     public open fun intoIter(): BitMaskIter {
         // A BitMask only requires each element (group of bits) to be non-zero.

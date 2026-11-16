@@ -3,11 +3,11 @@
 
 package io.github.kotlinmania.rustlang.core.slice.sort.stable.drift
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.findExistingRun
@@ -53,9 +53,9 @@ public fun <T> sort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, eag
     // depth of the merge node that merges runs[i] with the run that comes after
     // it.
     var stackLen = 0
-    val runStorage = MaybeUninit.uninit(ObjectSlotLayout<List<DriftsortRun>>())
+    val runStorage = MaybeUninit.uninit(UnresolvedTypeLayout<List<DriftsortRun>>())
     val runs: MutPtr = runStorage.asMutPtr().cast()
-    val desiredDepthStorage = MaybeUninit.uninit(ObjectSlotLayout<UByteArray>())
+    val desiredDepthStorage = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     val desiredDepths: MutPtr = desiredDepthStorage.asMutPtr().cast()
     var scanIdx = 0
     var prevRun = DriftsortRun.newSorted(0)
@@ -159,7 +159,7 @@ public fun mergeTreeScaleFactor(n: Int): ULong {
 public fun mergeTreeDepth(left: Int, mid: Int, right: Int, scaleFactor: ULong): UByte {
     val x = left.toULong() + mid.toULong()
     val y = mid.toULong() + right.toULong()
-    return rustLeadingZeros(((scaleFactor * x) xor (scaleFactor * y))).toUByte()
+    return ((scaleFactor * x) xor (scaleFactor * y)).leadingZeros().toUByte()
 }
 
 public fun sqrtApprox(n: Int): Int {
@@ -216,7 +216,7 @@ public fun <T> createRun(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
         // SAFETY: findExistingRun promises to return a valid runLen.
         if (runLen >= minGoodRunLen) {
             if (wasReversed) {
-                ((v).slice(0 until runLen)).reverse()
+                ((v).subList(0, runLen)).reverse()
             }
             return DriftsortRun.newSorted(runLen)
         }

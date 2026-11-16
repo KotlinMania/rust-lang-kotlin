@@ -3,13 +3,16 @@ package io.github.kotlinmania.rustlang.backtrace.symbolize
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.fmt.Debug
 import io.github.kotlinmania.rustlang.core.fmt.Display
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.rustcdemangle.Demangle
 import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
+import io.github.kotlinmania.rustlang.std.path.Path
 
 public fun interface FnCallback {
-    public operator fun invoke(arg0: String, arg1: StringBuilder)
+    public operator fun invoke(arg0: String, arg1: StringBuilder): Result<Unit, Error>
 }
 
 public class DebugStruct(
@@ -109,7 +112,7 @@ public open class Symbol(
      */
     public open fun filename(): Path? = this.inner.filename()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "Symbol")
         when (val matchVal = this.name()) {
             null -> {}
@@ -139,7 +142,25 @@ public open class Symbol(
                 d.field("lineno", lineno)
             }
         }
-        d.finish()
+        return d.finish()
+    }
+}
+
+// Maybe a parsed C++ symbol, if parsing the mangled symbol as Rust
+// failed.
+public open class OptionCppSymbol(
+    public var value: BorrowedSymbol?,
+) {
+    public var field0: BorrowedSymbol?
+        get() = value
+        set(v) {
+            value = v
+        }
+
+    public companion object {
+        public fun parse(input: List<UByte>): OptionCppSymbol = OptionCppSymbol(BorrowedSymbol.new(input).ok())
+
+        public fun none(): OptionCppSymbol = OptionCppSymbol(null)
     }
 }
 
@@ -150,6 +171,7 @@ public open class Symbol(
 public open class SymbolName(
     public var bytes: List<UByte>,
     public var demangled: Demangle?,
+    public var cppDemangled: OptionCppSymbol,
 ) {
     /**
      * Returns the raw (mangled) symbol name as a `String` if the symbol is valid utf-8.
@@ -163,7 +185,7 @@ public open class SymbolName(
      */
     public open fun asBytes(): List<UByte> = this.bytes
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         when (val matchVal = this.demangled) {
             null -> {}
             else -> {
@@ -171,10 +193,23 @@ public open class SymbolName(
                 return s.fmt(f)
             }
         }
-        formatSymbolName(Display::fmt, this.bytes, f)
+        when (val matchVal1 = this.cppDemangled.value) {
+            null -> {}
+            else -> {
+                val cpp = matchVal1
+                when (val matchVal2 = cpp.demangle()) {
+                    is Ok -> {
+                        val s1 = matchVal2.value
+                        return s1.fmt(f)
+                    }
+                    else -> {}
+                }
+            }
+        }
+        return formatSymbolName(Display::fmt, this.bytes, f)
     }
 
-    public open fun fmtDebug(f: StringBuilder) {
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> {
         when (val matchVal = this.demangled) {
             null -> {}
             else -> {
@@ -182,7 +217,20 @@ public open class SymbolName(
                 return s.fmt(f)
             }
         }
-        formatSymbolName(Debug::fmt, this.bytes, f)
+        when (val matchVal1 = this.cppDemangled.value) {
+            null -> {}
+            else -> {
+                val cpp = matchVal1
+                when (val matchVal2 = cpp.demangle()) {
+                    is Ok -> {
+                        val s1 = matchVal2.value
+                        return s1.fmt(f)
+                    }
+                    else -> {}
+                }
+            }
+        }
+        return formatSymbolName(Debug::fmt, this.bytes, f)
     }
 
     public companion object {
@@ -192,6 +240,12 @@ public open class SymbolName(
         public fun new(bytes: List<UByte>): SymbolName {
             val strBytes = String.fromUtf8(bytes).ok()
             val demangled = strBytes.andThen({ s -> tryDemangle(s).ok() })
+            val cpp =
+                if (demangled == null) {
+                    OptionCppSymbol.parse(bytes)
+                } else {
+                    OptionCppSymbol.none()
+                }
             return SymbolName(bytes = bytes, demangled = demangled, cppDemangled = cpp)
         }
     }

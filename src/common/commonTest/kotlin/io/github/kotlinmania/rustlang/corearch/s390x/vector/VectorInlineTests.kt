@@ -4,21 +4,23 @@
 package io.github.kotlinmania.rustlang.corearch.s390x.vector
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asPtr
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import kotlin.math.sqrt
 
 // s390x vector intrinsics.
 //
@@ -27,7 +29,7 @@ import kotlin.math.sqrt
 // [Reference Summary]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf
 // [IBM docs]: https://www.ibm.com/docs/en/zos/2.4.0?topic=support-vector-built-in-functions
 
-public fun ShuffleMask<N>.asArray(n: Int): UIntArray = transmute(this)
+public fun ShuffleMask.asArray(n: Int): UIntArray = transmute(this)
 
 public fun vecAddI32x4I32x4() {
     val x = VectorSignedInt.from(i32x4.new(1, 2, 3, 4))
@@ -589,7 +591,7 @@ public fun testVecPermF32x4() {
 
 public fun testVecSqrt() {
     val a: STL = f32x4.new(3.1415927f, 1.0, 25.0, 2.0).into()
-    val d = f32x4.new(sqrt(3.1415927f), 1.0, 5.0, 1.4142135f)
+    val d = f32x4.new(kmSqrtf32(3.1415927f), 1.0, 5.0, 1.4142135f)
     val r = f32x4.from(vecSqrt(a))
     check(d == r)
 }
@@ -789,7 +791,7 @@ public fun testVectorStore() {
 public fun testVectorLcbb() {
     open class Align64<T>(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<T>,
+        public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
     ) {
         public var field0: T
             get() = value
@@ -801,11 +803,11 @@ public fun testVectorLcbb() {
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align64<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align64<T>(ptr, layout) }, { it.value })
     }
-    val ARRAY: Align64<UByteArray>  = Align64(List(128) { 0 }, fieldLayout = ObjectSlotLayout<T>())
+    val ARRAY: Align64<UByteArray>  = Align64(List(128) { 0 }, fieldLayout = UnresolvedTypeLayout<T>())
     check(lcbb(ARRAY.first[64 until ARRAY.first.size].asPtr(), 64) == 16u)
     check(lcbb(ARRAY.first[63 until ARRAY.first.size].asPtr(), 64) == 1u)
     check(lcbb(ARRAY.first[56 until ARRAY.first.size].asPtr(), 64) == 8u)
@@ -909,12 +911,12 @@ public fun testVecAddcU128() {
         val a = U128.MAX_VALUE
         val b = U128(0x0uL, 0x1uL)
         val d: U128 = transmute(vecAddcU128(transmute(a), transmute(b)))
-        check(rustCheckedAdd(a, b) == null)
+        check(a.checkedAdd(b) == null)
         check(d == U128(0x0uL, 0x1uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
         val d1: U128 = transmute(vecAddcU128(transmute(a1), transmute(b1)))
-        check(rustCheckedAdd(a1, b1) != null)
+        check(a1.checkedAdd(b1) != null)
         check(d1 == U128(0x0uL, 0x0uL))
     }
 }
@@ -924,12 +926,12 @@ public fun testVecSubcU128() {
         val a = U128(0x0uL, 0x0uL)
         val b = U128(0x0uL, 0x1uL)
         val d: U128 = transmute(vecSubcU128(transmute(a), transmute(b)))
-        check(rustCheckedSub(a, b) == null)
+        check(a.checkedSub(b) == null)
         check(d == U128(0x0uL, 0x0uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
         val d1: U128 = transmute(vecSubcU128(transmute(a1), transmute(b1)))
-        check(rustCheckedSub(a1, b1) != null)
+        check(a1.checkedSub(b1) != null)
         check(d1 == U128(0x0uL, 0x1uL))
     }
 }
@@ -1251,13 +1253,13 @@ public fun testVecMsumU128() {
     val b = VectorUnsignedLongLong(listOf(3, 4))
     run {
         val c: VectorUnsignedChar = transmute(U128(0x0uL, 0x64uL))
-        val d: U128 = transmute(vecMsumU128(a, b, c, 0))
+        val d: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x0uL)))
         check(d == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) + U128(0x0uL, 0x64uL))
-        val d1: U128 = transmute(vecMsumU128(a, b, c, 4))
+        val d1: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x4uL)))
         check(d1 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) * U128(0x0uL, 0x2uL) + U128(0x0uL, 0x64uL))
-        val d2: U128 = transmute(vecMsumU128(a, b, c, 8))
+        val d2: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0x8uL)))
         check(d2 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) * U128(0x0uL, 0x2uL) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) + U128(0x0uL, 0x64uL))
-        val d3: U128 = transmute(vecMsumU128(a, b, c, 12))
+        val d3: U128 = transmute(vecMsumU128(a, b, c, U128(0x0uL, 0xcuL)))
         check(d3 == (U128(0x0uL, 0x1uL) * U128(0x0uL, 0x3uL)) * U128(0x0uL, 0x2uL) + (U128(0x0uL, 0x2uL) * U128(0x0uL, 0x4uL)) * U128(0x0uL, 0x2uL) + U128(0x0uL, 0x64uL))
     }
 }

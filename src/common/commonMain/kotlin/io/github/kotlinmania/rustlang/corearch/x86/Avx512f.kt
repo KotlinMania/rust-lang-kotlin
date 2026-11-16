@@ -6,8 +6,9 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -1108,8 +1109,8 @@ public fun mmMaskzSubPd(k: Mmask8, a: M128d, b: M128d): M128d =
  */
 public fun mm512MulEpi32(a: M512i, b: M512i): M512i =
     run {
-        val a1 = run { val _simdArg0 = run { val _simdArg0 = a.asI64x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x8>()).alignBytes)); val res = (ObjectSlotLayout<I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x8>()).alignBytes)); val res = (ObjectSlotLayout<I64x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x8>()).alignBytes)); res } }
-        val b1 = run { val _simdArg0 = run { val _simdArg0 = b.asI64x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I32x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x8>()).alignBytes)); val res = (ObjectSlotLayout<I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I32x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I32x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<I64x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x8>()).alignBytes)); val res = (ObjectSlotLayout<I64x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<I64x8>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<I64x8>()).alignBytes)); res } }
+        val a1 = run { val _simdArg0 = run { val _simdArg0 = a.asI64x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x8>()).alignBytes)); res } }
+        val b1 = run { val _simdArg0 = run { val _simdArg0 = b.asI64x8(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x8>()).alignBytes)); res } }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x8>()).alignBytes)); res } }
         transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
     }
 
@@ -8819,7 +8820,7 @@ public fun mm512MaskCvtpdPslo(src: M512, k: Mmask8, v2: M512d): M512 =
 public fun mm512Cvtepi8Epi32(a: M128i): M512i =
     run {
         val a1 = a.asI8x16()
-        transmute<I32x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -8897,7 +8898,7 @@ public fun mm512Cvtepi8Epi64(a: M128i): M512i =
     run {
         val a1 = a.asI8x16()
         val v64: I8x8 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
-        transmute<I64x8>(run { val _simdArg0 = v64; _simdArg0 })
+        transmute(run { val _simdArg0 = v64; _simdArg0 })
     }
 
 /**
@@ -8974,7 +8975,7 @@ public fun mmMaskzCvtepi8Epi64(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu8Epi32(a: M128i): M512i =
     run {
         val a1 = a.asU8x16()
-        transmute<I32x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9052,7 +9053,7 @@ public fun mm512Cvtepu8Epi64(a: M128i): M512i =
     run {
         val a1 = a.asU8x16()
         val v64: U8x8 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
-        transmute<I64x8>(run { val _simdArg0 = v64; _simdArg0 })
+        transmute(run { val _simdArg0 = v64; _simdArg0 })
     }
 
 /**
@@ -9129,7 +9130,7 @@ public fun mmMaskzCvtepu8Epi64(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepi16Epi32(a: M256i): M512i =
     run {
         val a1 = a.asI16x16()
-        transmute<I32x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9206,7 +9207,7 @@ public fun mmMaskzCvtepi16Epi32(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepi16Epi64(a: M128i): M512i =
     run {
         val a1 = a.asI16x8()
-        transmute<I64x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9283,7 +9284,7 @@ public fun mmMaskzCvtepi16Epi64(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu16Epi32(a: M256i): M512i =
     run {
         val a1 = a.asU16x16()
-        transmute<I32x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9360,7 +9361,7 @@ public fun mmMaskzCvtepu16Epi32(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu16Epi64(a: M128i): M512i =
     run {
         val a1 = a.asU16x8()
-        transmute<I64x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9437,7 +9438,7 @@ public fun mmMaskzCvtepu16Epi64(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepi32Epi64(a: M256i): M512i =
     run {
         val a1 = a.asI32x8()
-        transmute<I64x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9514,7 +9515,7 @@ public fun mmMaskzCvtepi32Epi64(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepu32Epi64(a: M256i): M512i =
     run {
         val a1 = a.asU32x8()
-        transmute<I64x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9591,7 +9592,7 @@ public fun mmMaskzCvtepu32Epi64(k: Mmask8, a: M128i): M128i =
 public fun mm512Cvtepi32Ps(a: M512i): M512 =
     run {
         val a1 = a.asI32x16()
-        transmute<F32x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9668,7 +9669,7 @@ public fun mmMaskzCvtepi32Ps(k: Mmask8, a: M128i): M128 =
 public fun mm512Cvtepi32Pd(a: M256i): M512d =
     run {
         val a1 = a.asI32x8()
-        transmute<F64x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9745,7 +9746,7 @@ public fun mmMaskzCvtepi32Pd(k: Mmask8, a: M128i): M128d =
 public fun mm512Cvtepu32Ps(a: M512i): M512 =
     run {
         val a1 = a.asU32x16()
-        transmute<F32x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9779,7 +9780,7 @@ public fun mm512MaskzCvtepu32Ps(k: Mmask16, a: M512i): M512 =
 public fun mm256Cvtepu32Ps(a: M256i): M256 =
     run {
         val a1 = a.asU32x8()
-        transmute<F32x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9815,7 +9816,7 @@ public fun mm256MaskzCvtepu32Ps(k: Mmask8, a: M256i): M256 =
 public fun mmCvtepu32Ps(a: M128i): M128 =
     run {
         val a1 = a.asU32x4()
-        transmute<F32x4>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9852,7 +9853,7 @@ public fun mmMaskzCvtepu32Ps(k: Mmask8, a: M128i): M128 =
 public fun mm512Cvtepu32Pd(a: M256i): M512d =
     run {
         val a1 = a.asU32x8()
-        transmute<F64x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9885,7 +9886,7 @@ public fun mm512MaskzCvtepu32Pd(k: Mmask8, a: M256i): M512d =
 public fun mm256Cvtepu32Pd(a: M128i): M256d =
     run {
         val a1 = a.asU32x4()
-        transmute<F64x4>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -9919,7 +9920,7 @@ public fun mmCvtepu32Pd(a: M128i): M128d =
     run {
         val a1 = a.asU32x4()
         val u64: U32x2 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(listOf(0, 1)); _simdArg0 }
-        transmute<F64x2>(run { val _simdArg0 = u64; _simdArg0 })
+        transmute(run { val _simdArg0 = u64; _simdArg0 })
     }
 
 /**
@@ -9953,7 +9954,7 @@ public fun mm512Cvtepi32loPd(v2: M512i): M512d =
     run {
         val v21 = v2.asI32x16()
         val v256: I32x8 = run { val _simdArg0 = v21; val _simdArg1 = v21; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
-        transmute<F64x8>(run { val _simdArg0 = v256; _simdArg0 })
+        transmute(run { val _simdArg0 = v256; _simdArg0 })
     }
 
 /**
@@ -9976,7 +9977,7 @@ public fun mm512Cvtepu32loPd(v2: M512i): M512d =
     run {
         val v21 = v2.asU32x16()
         val v256: U32x8 = run { val _simdArg0 = v21; val _simdArg1 = v21; val _simdArg2 = SimdShuffleIdx(listOf(0, 1, 2, 3, 4, 5, 6, 7)); _simdArg0 }
-        transmute<F64x8>(run { val _simdArg0 = v256; _simdArg0 })
+        transmute(run { val _simdArg0 = v256; _simdArg0 })
     }
 
 /**
@@ -9998,7 +9999,7 @@ public fun mm512MaskCvtepu32loPd(src: M512d, k: Mmask8, v2: M512i): M512d =
 public fun mm512Cvtepi32Epi16(a: M512i): M256i =
     run {
         val a1 = a.asI32x16()
-        transmute<I16x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -10031,7 +10032,7 @@ public fun mm512MaskzCvtepi32Epi16(k: Mmask16, a: M512i): M256i =
 public fun mm256Cvtepi32Epi16(a: M256i): M128i =
     run {
         val a1 = a.asI32x8()
-        transmute<I16x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -10085,7 +10086,7 @@ public fun mmMaskzCvtepi32Epi16(k: Mmask8, a: M128i): M128i = transmute(vpmovdw1
 public fun mm512Cvtepi32Epi8(a: M512i): M128i =
     run {
         val a1 = a.asI32x16()
-        transmute<I8x16>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -10160,7 +10161,7 @@ public fun mmMaskzCvtepi32Epi8(k: Mmask8, a: M128i): M128i = transmute(vpmovdb12
 public fun mm512Cvtepi64Epi32(a: M512i): M256i =
     run {
         val a1 = a.asI64x8()
-        transmute<I32x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -10193,7 +10194,7 @@ public fun mm512MaskzCvtepi64Epi32(k: Mmask8, a: M512i): M256i =
 public fun mm256Cvtepi64Epi32(a: M256i): M128i =
     run {
         val a1 = a.asI64x4()
-        transmute<I32x4>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -10247,7 +10248,7 @@ public fun mmMaskzCvtepi64Epi32(k: Mmask8, a: M128i): M128i = transmute(vpmovqd1
 public fun mm512Cvtepi64Epi16(a: M512i): M128i =
     run {
         val a1 = a.asI64x8()
-        transmute<I16x8>(run { val _simdArg0 = a1; _simdArg0 })
+        transmute(run { val _simdArg0 = a1; _simdArg0 })
     }
 
 /**
@@ -22217,7 +22218,7 @@ public fun kshiftriMask16(a: Mmask16, count: UInt): Mmask16 = a.unboundedShr(cou
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask16)
  */
-public fun loadMask16(memAddr: ConstPtr): Mmask16 = (ObjectSlotLayout<Mmask16>()).readNative((memAddr).rawAddress)
+public fun loadMask16(memAddr: ConstPtr): Mmask16 = (UnresolvedTypeLayout<Mmask16>()).readNative((memAddr).rawAddress)
 
 /**
  * Store 16-bit mask to memory
@@ -22226,7 +22227,7 @@ public fun loadMask16(memAddr: ConstPtr): Mmask16 = (ObjectSlotLayout<Mmask16>()
  */
 public fun storeMask16(memAddr: MutPtr, a: Mmask16) {
     val memAddr1 = memAddr
-    (ObjectSlotLayout<Mmask16>()).writeNative((memAddr1).rawAddress, a)
+    (UnresolvedTypeLayout<Mmask16>()).writeNative((memAddr1).rawAddress, a)
 }
 
 // generate normal and code instead of kmovw
@@ -25906,7 +25907,7 @@ public fun mm512Undefined(): M512 = M512()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi32&expand=3377)
  */
-public fun mm512LoaduEpi32(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi32(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqu32
 
@@ -25915,7 +25916,7 @@ public fun mm512LoaduEpi32(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(me
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi32&expand=3374)
  */
-public fun mm256LoaduEpi32(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi32(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M256i>())
 
 // should be vmovdqu32
 
@@ -25924,7 +25925,7 @@ public fun mm256LoaduEpi32(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(me
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi32&expand=3371)
  */
-public fun mmLoaduEpi32(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi32(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 32-bit integers in a to packed 16-bit integers with truncation, and store the active results (those with their respective bit set in writemask k) to unaligned memory at baseAddr.
@@ -26339,7 +26340,7 @@ public fun mmMaskCvtusepi64StoreuEpi32(memAddr: MutPtr, k: Mmask8, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi32&expand=5628)
  */
 public fun mm512StoreuEpi32(memAddr: MutPtr, a: M512i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqu32
@@ -26350,7 +26351,7 @@ public fun mm512StoreuEpi32(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi32&expand=5626)
  */
 public fun mm256StoreuEpi32(memAddr: MutPtr, a: M256i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M256i>())
 }
 
 // should be vmovdqu32
@@ -26361,7 +26362,7 @@ public fun mm256StoreuEpi32(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi32&expand=5624)
  */
 public fun mmStoreuEpi32(memAddr: MutPtr, a: M128i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M128i>())
 }
 
 // should be vmovdqu64
@@ -26371,7 +26372,7 @@ public fun mmStoreuEpi32(memAddr: MutPtr, a: M128i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_epi64&expand=3386)
  */
-public fun mm512LoaduEpi64(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduEpi64(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqu64
 
@@ -26380,7 +26381,7 @@ public fun mm512LoaduEpi64(memAddr: ConstPtr): M512i = readUnaligned(ConstPtr(me
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_loadu_epi64&expand=3383)
  */
-public fun mm256LoaduEpi64(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoaduEpi64(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M256i>())
 
 // should be vmovdqu64
 
@@ -26389,7 +26390,7 @@ public fun mm256LoaduEpi64(memAddr: ConstPtr): M256i = readUnaligned(ConstPtr(me
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_loadu_epi64&expand=3380)
  */
-public fun mmLoaduEpi64(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoaduEpi64(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M128i>())
 
 // should be vmovdqu64
 
@@ -26399,7 +26400,7 @@ public fun mmLoaduEpi64(memAddr: ConstPtr): M128i = readUnaligned(ConstPtr(memAd
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_epi64&expand=5634)
  */
 public fun mm512StoreuEpi64(memAddr: MutPtr, a: M512i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqu64
@@ -26410,7 +26411,7 @@ public fun mm512StoreuEpi64(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_storeu_epi64&expand=5632)
  */
 public fun mm256StoreuEpi64(memAddr: MutPtr, a: M256i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M256i>())
 }
 
 // should be vmovdqu64
@@ -26421,7 +26422,7 @@ public fun mm256StoreuEpi64(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_epi64&expand=5630)
  */
 public fun mmStoreuEpi64(memAddr: MutPtr, a: M128i) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M128i>())
 }
 
 // should be vmovdqu32
@@ -26431,7 +26432,7 @@ public fun mmStoreuEpi64(memAddr: MutPtr, a: M128i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_si512&expand=3420)
  */
-public fun mm512LoaduSi512(memAddr: ConstPtr): M512i = readUnaligned(memAddr, typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoaduSi512(memAddr: ConstPtr): M512i = readUnaligned(memAddr, typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqu32
 
@@ -26441,7 +26442,7 @@ public fun mm512LoaduSi512(memAddr: ConstPtr): M512i = readUnaligned(memAddr, ty
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_si512&expand=5657)
  */
 public fun mm512StoreuSi512(memAddr: MutPtr, a: M512i) {
-    writeUnaligned(memAddr, a, typeLayoutT = ObjectSlotLayout<M512i>())
+    writeUnaligned(memAddr, a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 /**
@@ -26451,7 +26452,7 @@ public fun mm512StoreuSi512(memAddr: MutPtr, a: M512i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_pd)
  */
-public fun mm512LoaduPd(memAddr: ConstPtr): M512d = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512d>())
+public fun mm512LoaduPd(memAddr: ConstPtr): M512d = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512d>())
 
 /**
  * Stores 512-bits (composed of 8 packed double-precision (64-bit)
@@ -26461,7 +26462,7 @@ public fun mm512LoaduPd(memAddr: ConstPtr): M512d = readUnaligned(ConstPtr(memAd
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_pd)
  */
 public fun mm512StoreuPd(memAddr: MutPtr, a: M512d) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512d>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512d>())
 }
 
 /**
@@ -26471,7 +26472,7 @@ public fun mm512StoreuPd(memAddr: MutPtr, a: M512d) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_loadu_ps)
  */
-public fun mm512LoaduPs(memAddr: ConstPtr): M512 = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512>())
+public fun mm512LoaduPs(memAddr: ConstPtr): M512 = readUnaligned(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512>())
 
 /**
  * Stores 512-bits (composed of 16 packed single-precision (32-bit)
@@ -26481,7 +26482,7 @@ public fun mm512LoaduPs(memAddr: ConstPtr): M512 = readUnaligned(ConstPtr(memAdd
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_storeu_ps)
  */
 public fun mm512StoreuPs(memAddr: MutPtr, a: M512) {
-    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512>())
+    writeUnaligned(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512>())
 }
 
 // should be vmovdqa32
@@ -26491,7 +26492,7 @@ public fun mm512StoreuPs(memAddr: MutPtr, a: M512) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_load_si512&expand=3345)
  */
-public fun mm512LoadSi512(memAddr: ConstPtr): M512i = read(memAddr, typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoadSi512(memAddr: ConstPtr): M512i = read(memAddr, typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqa32
 
@@ -26501,7 +26502,7 @@ public fun mm512LoadSi512(memAddr: ConstPtr): M512i = read(memAddr, typeLayoutT 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_store_si512&expand=5598)
  */
 public fun mm512StoreSi512(memAddr: MutPtr, a: M512i) {
-    write(memAddr, a, typeLayoutT = ObjectSlotLayout<M512i>())
+    write(memAddr, a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqa32
@@ -26511,7 +26512,7 @@ public fun mm512StoreSi512(memAddr: MutPtr, a: M512i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_load_epi32&expand=3304)
  */
-public fun mm512LoadEpi32(memAddr: ConstPtr): M512i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoadEpi32(memAddr: ConstPtr): M512i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqa32
 
@@ -26520,7 +26521,7 @@ public fun mm512LoadEpi32(memAddr: ConstPtr): M512i = read(ConstPtr(memAddr.rawA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_load_epi32&expand=3301)
  */
-public fun mm256LoadEpi32(memAddr: ConstPtr): M256i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoadEpi32(memAddr: ConstPtr): M256i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M256i>())
 
 // should be vmovdqa32
 
@@ -26529,7 +26530,7 @@ public fun mm256LoadEpi32(memAddr: ConstPtr): M256i = read(ConstPtr(memAddr.rawA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_load_epi32&expand=3298)
  */
-public fun mmLoadEpi32(memAddr: ConstPtr): M128i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoadEpi32(memAddr: ConstPtr): M128i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M128i>())
 
 // should be vmovdqa32
 
@@ -26539,7 +26540,7 @@ public fun mmLoadEpi32(memAddr: ConstPtr): M128i = read(ConstPtr(memAddr.rawAddr
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_store_epi32&expand=5569)
  */
 public fun mm512StoreEpi32(memAddr: MutPtr, a: M512i) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqa32
@@ -26550,7 +26551,7 @@ public fun mm512StoreEpi32(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_store_epi32&expand=5567)
  */
 public fun mm256StoreEpi32(memAddr: MutPtr, a: M256i) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M256i>())
 }
 
 // should be vmovdqa32
@@ -26561,7 +26562,7 @@ public fun mm256StoreEpi32(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_store_epi32&expand=5565)
  */
 public fun mmStoreEpi32(memAddr: MutPtr, a: M128i) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M128i>())
 }
 
 // should be vmovdqa64
@@ -26571,7 +26572,7 @@ public fun mmStoreEpi32(memAddr: MutPtr, a: M128i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_load_epi64&expand=3313)
  */
-public fun mm512LoadEpi64(memAddr: ConstPtr): M512i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512i>())
+public fun mm512LoadEpi64(memAddr: ConstPtr): M512i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512i>())
 
 // should be vmovdqa64
 
@@ -26580,7 +26581,7 @@ public fun mm512LoadEpi64(memAddr: ConstPtr): M512i = read(ConstPtr(memAddr.rawA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_load_epi64&expand=3310)
  */
-public fun mm256LoadEpi64(memAddr: ConstPtr): M256i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M256i>())
+public fun mm256LoadEpi64(memAddr: ConstPtr): M256i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M256i>())
 
 // should be vmovdqa64
 
@@ -26589,7 +26590,7 @@ public fun mm256LoadEpi64(memAddr: ConstPtr): M256i = read(ConstPtr(memAddr.rawA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_load_epi64&expand=3307)
  */
-public fun mmLoadEpi64(memAddr: ConstPtr): M128i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M128i>())
+public fun mmLoadEpi64(memAddr: ConstPtr): M128i = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M128i>())
 
 // should be vmovdqa64
 
@@ -26599,7 +26600,7 @@ public fun mmLoadEpi64(memAddr: ConstPtr): M128i = read(ConstPtr(memAddr.rawAddr
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_store_epi64&expand=5575)
  */
 public fun mm512StoreEpi64(memAddr: MutPtr, a: M512i) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512i>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512i>())
 }
 
 // should be vmovdqa64
@@ -26610,7 +26611,7 @@ public fun mm512StoreEpi64(memAddr: MutPtr, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_store_epi64&expand=5573)
  */
 public fun mm256StoreEpi64(memAddr: MutPtr, a: M256i) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M256i>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M256i>())
 }
 
 // should be vmovdqa64
@@ -26621,7 +26622,7 @@ public fun mm256StoreEpi64(memAddr: MutPtr, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_store_epi64&expand=5571)
  */
 public fun mmStoreEpi64(memAddr: MutPtr, a: M128i) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M128i>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -26629,7 +26630,7 @@ public fun mmStoreEpi64(memAddr: MutPtr, a: M128i) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_load_ps&expand=3336)
  */
-public fun mm512LoadPs(memAddr: ConstPtr): M512 = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512>())
+public fun mm512LoadPs(memAddr: ConstPtr): M512 = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512>())
 
 /**
  * Store 512-bits of integer data from a into memory. memAddr must be aligned on a 64-byte boundary or a general-protection exception may be generated.
@@ -26637,7 +26638,7 @@ public fun mm512LoadPs(memAddr: ConstPtr): M512 = read(ConstPtr(memAddr.rawAddre
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_store_ps&expand=5592)
  */
 public fun mm512StorePs(memAddr: MutPtr, a: M512) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512>())
 }
 
 // should be vmovapd
@@ -26647,7 +26648,7 @@ public fun mm512StorePs(memAddr: MutPtr, a: M512) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_load_pd&expand=3326)
  */
-public fun mm512LoadPd(memAddr: ConstPtr): M512d = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = ObjectSlotLayout<M512d>())
+public fun mm512LoadPd(memAddr: ConstPtr): M512d = read(ConstPtr(memAddr.rawAddress, memAddr.rawMeta), typeLayoutT = UnresolvedTypeLayout<M512d>())
 
 // should be vmovapd
 
@@ -26657,7 +26658,7 @@ public fun mm512LoadPd(memAddr: ConstPtr): M512d = read(ConstPtr(memAddr.rawAddr
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_store_pd&expand=5585)
  */
 public fun mm512StorePd(memAddr: MutPtr, a: M512d) {
-    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = ObjectSlotLayout<M512d>())
+    write(MutPtr(memAddr.rawAddress, memAddr.rawMeta), a, typeLayoutT = UnresolvedTypeLayout<M512d>())
 }
 
 /**

@@ -6,13 +6,17 @@ import io.github.kotlinmania.rustlang.backtrace.print.BacktraceFmt
 import io.github.kotlinmania.rustlang.backtrace.print.PrintFmt
 import io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
+import io.github.kotlinmania.rustlang.backtrace.symbolize.resolve
 import io.github.kotlinmania.rustlang.backtrace.symbolize.resolveFrame
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.path.Path
+import io.github.kotlinmania.rustlang.std.path.PathBuf
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -38,6 +42,8 @@ public class DebugStruct(
         finish()
     }
 }
+
+public typealias Value = TracePtr
 
 /**
  * Representation of an owned and self-contained backtrace.
@@ -94,7 +100,7 @@ public open class Backtrace(
     // more information on https://github.com/rust-lang/backtrace-rs/pull/526
     public open fun into(): List<BacktraceFrame> = this.frames.intoVec()
 
-    public open fun fmt(fmt: StringBuilder) {
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> {
         val style =
             if (fmt.alternate()) {
                 PrintFmt.Full
@@ -110,8 +116,8 @@ public open class Backtrace(
             closure@{ fmt1: StringBuilder, path: BytesOrWideString ->
                 val path1 = path.intoPathBuf()
                 if (style != PrintFmt.Full) {
-                    if (cwd is Result.Ok<*>) {
-                        val cwd1 = (cwd as Result.Ok<*>).value
+                    if (cwd is Result.Ok) {
+                        val cwd1 = cwd.value
                         when (val matchVal = path1.takeIf { it.startsWith(cwd1) }?.removePrefix(cwd1)) {
                             is Ok -> {
                                 val suffix = matchVal.value
@@ -124,11 +130,12 @@ public open class Backtrace(
                 fmt1.append((path1.display()).toString())
             }
         val f = BacktraceFmt.new(fmt, style, printPath)
-        f.addContext()
+        when (val tryResult = f.addContext()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         for (frame in this.frames) {
-            f.frame().backtraceFrame(frame)
+            when (val tryResult = f.frame().backtraceFrame(frame)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
-        f.finish()
+        when (val tryResult = f.finish()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public companion object {
@@ -221,7 +228,7 @@ public open class Backtrace(
 
 public open class TracePtr internal constructor(
     valueCtorArg: MutPtr,
-) {
+) : Deserialize, Serialize {
     public var value: MutPtr = valueCtorArg
         internal set
 
@@ -242,6 +249,8 @@ public open class TracePtr internal constructor(
      */
 
     public open fun intoVoid(): MutPtr = this.value
+
+    public open fun <S> serialize(serializer: S): Result<Ok, Error> where S : Serializer = serializer.serializeU64((this.value.rawAddress.toInt()).toULong())
 
     public companion object {
         public fun typeLayout(): TypeLayout<TracePtr> =
@@ -269,6 +278,33 @@ public open class TracePtr internal constructor(
         ): TracePtr = TracePtr(
             valueCtorArg = value,
         )
+
+        public fun fromAddr(addr: Int): TracePtr = TracePtr(MutPtr(addr.toLong()))
+
+        public fun <D> deserialize(deserializer: D): Result<TracePtr, Error> where D : Deserializer {
+            open class PrimitiveVisitor : Visitor {
+                public open fun expecting(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append("usize"); Result.Ok(Unit) }
+
+                public open fun <E> visitU8(v: UByte): Result<TracePtr, E> = Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
+
+                public open fun <E> visitU16(v: UShort): Result<TracePtr, E> = Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
+
+                public open fun <E> visitU32(v: UInt, invalidTypeEFn: (Any?, PrimitiveVisitor) -> Any?): Result<TracePtr, E> =
+                    if (32u >= 32u) {
+                        Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
+                    } else {
+                        Result.Err<TracePtr, E>(invalidTypeEFn(Unexpected.Unsigned(((v as Any?) as Result<TracePtr, E>)), this))
+                    }
+
+                public open fun <E> visitU64(v: ULong, invalidTypeEFn: (Any?, PrimitiveVisitor) -> Any?): Result<TracePtr, E> =
+                    if (32u >= 64u) {
+                        Result.Ok<TracePtr, E>(TracePtr(MutPtr((v.toInt()).toLong())))
+                    } else {
+                        Result.Err<TracePtr, E>(invalidTypeEFn(Unexpected.Unsigned(((v as Any?) as Result<TracePtr, E>)), this))
+                    }
+            }
+            return deserializer.deserializeU64(PrimitiveVisitor())
+        }
     }
 }
 
@@ -358,9 +394,7 @@ public open class BacktraceFrame(
         }
     }
 
-    public open fun fmt(fmt: StringBuilder) {
-        DebugStruct(fmt, "BacktraceFrame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish()
-    }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = DebugStruct(fmt, "BacktraceFrame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish()
 
     public companion object {
         public fun from(frame: Frame): BacktraceFrame = BacktraceFrame(frame = Frame.Raw(frame), symbols = null)
@@ -369,12 +403,17 @@ public open class BacktraceFrame(
 
 public sealed class Frame {
     public data class Raw(public var value: Frame) : Frame()
+    public data class Deserialized(public var ip: TracePtr, public var symbolAddress: TracePtr, public var moduleBaseAddress: TracePtr?) : Frame()
 
     public open fun ip(): MutPtr =
         when (this) {
             is Frame.Raw -> {
                 val (f) = this
                 f.ip()
+            }
+            is Frame.Deserialized -> {
+                val ip = this.ip
+                ip.intoVoid()
             }
         }
 
@@ -384,6 +423,10 @@ public sealed class Frame {
                 val (f) = this
                 f.symbolAddress()
             }
+            is Frame.Deserialized -> {
+                val symbolAddress = this.symbolAddress
+                symbolAddress.intoVoid()
+            }
         }
 
     public open fun moduleBaseAddress(): MutPtr? =
@@ -391,6 +434,10 @@ public sealed class Frame {
             is Frame.Raw -> {
                 val (f) = this
                 f.moduleBaseAddress()
+            }
+            is Frame.Deserialized -> {
+                val moduleBaseAddress = this.moduleBaseAddress
+                moduleBaseAddress.map({ addr -> addr.intoVoid() })
             }
         }
 
@@ -407,6 +454,10 @@ public sealed class Frame {
             is Frame.Raw -> {
                 val (f) = this
                 resolveFrame(f, sym)
+            }
+            is Frame.Deserialized -> {
+                val ip = this.ip
+                resolve(ip.intoVoid(), sym)
             }
         }
         return symbols.intoBoxedSlice()
@@ -483,7 +534,23 @@ public open class BacktraceSymbol(
      */
     public open fun colno(): UInt? = this.colno
 
-    public open fun fmt(fmt: StringBuilder) {
-        DebugStruct(fmt, "BacktraceSymbol").field("name", this.name()).field("addr", this.addr()).field("filename", this.filename()).field("lineno", this.lineno()).field("colno", this.colno()).finish()
-    }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> = DebugStruct(fmt, "BacktraceSymbol").field("name", this.name()).field("addr", this.addr()).field("filename", this.filename()).field("lineno", this.lineno()).field("colno", this.colno()).finish()
+}
+
+public open class SerializedFrame(
+    public var ip: Int,
+    public var symbolAddress: Int,
+    public var moduleBaseAddress: Int?,
+    public var symbols: List<BacktraceSymbol>?,
+)
+
+public fun <S> BacktraceFrame.serialize(s: S): Result<Ok, Error> where S : Serializer {
+    val frame = this.frame
+    val symbols = this.symbols
+    return SerializedFrame(ip = frame.ip().rawAddress.toInt(), symbolAddress = frame.symbolAddress().rawAddress.toInt(), moduleBaseAddress = frame.moduleBaseAddress().map({ symA -> symA.toInt() }), symbols = symbols).serialize(s)
+}
+
+public fun <D> deserializeBacktraceFrame(d: D): Result<BacktraceFrame, Error> where D : Deserializer {
+    val frame: SerializedFrame = when (val tryResult = SerializedFrame.deserialize(d)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<BacktraceFrame, Error>(tryResult.error) }
+    return Result.Ok<BacktraceFrame, Error>(BacktraceFrame(frame = Frame.Deserialized(ip = TracePtr.fromAddr(frame.ip), symbolAddress = TracePtr.fromAddr(frame.symbolAddress), moduleBaseAddress = frame.moduleBaseAddress?.let(TracePtr::fromAddr)), symbols = frame.symbols))
 }

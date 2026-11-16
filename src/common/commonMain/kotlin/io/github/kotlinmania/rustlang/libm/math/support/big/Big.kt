@@ -3,17 +3,19 @@ package io.github.kotlinmania.rustlang.libm.math.support.big
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingMul
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingSub
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.overflowingMul
+import io.github.kotlinmania.rustlang.core.num.overflowingSub
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.ops.bit.Shl
 import io.github.kotlinmania.rustlang.core.ops.bit.Shr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
@@ -29,7 +31,7 @@ public val U128_LO_MASK: U128 = U128.fromULong(ULong.MAX_VALUE)
 public open class U256(
     public var hi: U128,
     public var lo: U128,
-) : MinInt<U256, Any?, Any?, I256, U256>, BitOr<Any?, U256>, Not<Any?, U256>, Add<U256, U256>, Sub<U256, U256>, Shl<UInt, U256>, Shr<UInt, U256>, DInt<U256, Any?, U128> {
+) : MinInt<U256, I256, U256>, BitOr<U256>, Not<U256>, Add<U256, U256>, Sub<U256, U256>, Shl<UInt, U256>, Shr<UInt, U256>, DInt<U256, U128> {
     public open fun clone(): U256 = U256(hi, lo)
 
     /**
@@ -50,14 +52,14 @@ public open class U256(
     }
 
     public open fun add(rhs: U256): U256 {
-        val (lo, carry) = rustOverflowingAdd(this.lo, rhs.lo)
+        val (lo, carry) = this.lo.overflowingAdd(rhs.lo)
         val (hi, of) = this.hi.carryingAdd(rhs.hi, carry)
         check(!of) { "attempt to add with overflow" }
         return U256(lo = lo, hi = hi)
     }
 
     public open fun sub(rhs: U256): U256 {
-        val (lo, borrow) = rustOverflowingSub(this.lo, rhs.lo)
+        val (lo, borrow) = this.lo.overflowingSub(rhs.lo)
         val (hi, of) = this.hi.borrowingSub(rhs.hi, borrow)
         check(!of) { "attempt to subtract with overflow" }
         return U256(lo = lo, hi = hi)
@@ -107,13 +109,9 @@ public open class U256(
 
     public override fun hi(): U128 = this.hi
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtLowerHex(f: StringBuilder) {
-        cfgSelectNofmt(feature, "compiler-builtins", f, unsupportedBranch, pfx, f, alternate, "0x", "", write, f, "{pfx}{:032x}{:032x}", this, hi, this, lo)
-    }
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = cfgSelectNofmt(feature, "compiler-builtins", f, unsupportedBranch, pfx, f, alternate, "0x", "", write, f, "{pfx}{:032x}{:032x}", this, hi, this, lo)
 
     public companion object {
         public fun typeLayout(): TypeLayout<U256> =
@@ -164,7 +162,7 @@ public open class U256(
 public open class I256(
     public var hi: I128,
     public var lo: U128,
-) : MinInt<I256, Any?, Any?, U256, U256>, BitOr<Any?, I256>, Not<Any?, I256>, Add<I256, I256>, Sub<I256, I256>, Shl<UInt, I256>, Shr<UInt, I256>, DInt<I256, Any?, I128> {
+) : MinInt<I256, U256, U256>, BitOr<I256>, Not<I256>, Add<I256, I256>, Sub<I256, I256>, Shl<UInt, I256>, Shr<UInt, I256>, DInt<I256, I128> {
     public open fun clone(): I256 = I256(hi, lo)
 
     /**
@@ -185,14 +183,14 @@ public open class I256(
     }
 
     public open fun add(rhs: I256): I256 {
-        val (lo, carry) = rustOverflowingAdd(this.lo, rhs.lo)
+        val (lo, carry) = this.lo.overflowingAdd(rhs.lo)
         val (hi, of) = this.hi.carryingAdd(rhs.hi, carry)
         check(!of) { "attempt to add with overflow" }
         return I256(lo = lo, hi = hi)
     }
 
     public open fun sub(rhs: I256): I256 {
-        val (lo, borrow) = rustOverflowingSub(this.lo, rhs.lo)
+        val (lo, borrow) = this.lo.overflowingSub(rhs.lo)
         val (hi, of) = this.hi.borrowingSub(rhs.hi, borrow)
         check(!of) { "attempt to subtract with overflow" }
         return I256(lo = lo, hi = hi)
@@ -242,13 +240,9 @@ public open class I256(
 
     public override fun hi(): I128 = this.hi
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.unsigned()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtLowerHex(f: StringBuilder) {
-        f.append((this.unsigned()).toString())
-    }
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<I256> =
@@ -302,10 +296,10 @@ public fun U128.zeroWidenMul(rhs: U128): U256 {
     val l1 = rhs and U128_LO_MASK
     val h0 = this shr 64
     val h1 = rhs shr 64
-    val pLl: U128 = rustOverflowingMul(l0, l1).first
-    val pLh: U128 = rustOverflowingMul(l0, h1).first
-    val pHl: U128 = rustOverflowingMul(h0, l1).first
-    val pHh: U128 = rustOverflowingMul(h0, h1).first
+    val pLl: U128 = l0.overflowingMul(l1).first
+    val pLh: U128 = l0.overflowingMul(h1).first
+    val pHl: U128 = h0.overflowingMul(l1).first
+    val pHh: U128 = h0.overflowingMul(h1).first
     val s0 = pHl + (pLl shr 64)
     val s1 = (pLl and U128_LO_MASK) + (s0 shl 64)
     val s2 = pLh + (s1 shr 64)

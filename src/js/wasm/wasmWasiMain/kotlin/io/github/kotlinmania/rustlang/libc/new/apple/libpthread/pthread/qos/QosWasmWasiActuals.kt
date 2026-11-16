@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.qos
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PthreadT
 import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.qos.QosClassT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun pthreadAttrSetQosClassNp(attr: MutPtr, cls: QosClassT, priority: CInt): CInt =

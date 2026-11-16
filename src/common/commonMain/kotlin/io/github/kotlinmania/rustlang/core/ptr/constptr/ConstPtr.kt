@@ -5,17 +5,18 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.transmute
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.alignOffset
@@ -27,9 +28,7 @@ import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.readVolatile
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 /**
  * # Examples
@@ -72,7 +71,7 @@ public fun ConstPtr.cast(): ConstPtr = ConstPtr(this.rawAddress, this.rawMeta)
  * check(unaligned.tryCastAligned<UInt>() == null)
  * ```
  */
-public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
+public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout()): ConstPtr? =
     if (this.isAlignedTo(alignOf<U>(typeLayoutT = typeLayoutU))) {
         ConstPtr((this).rawAddress)
     } else {
@@ -99,8 +98,8 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * @feature(setPtrValue)
@@ -110,7 +109,7 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
  *     val thin = ConstPtr(ptr.rawAddress, ptr.rawMeta)
  *     run {
  *         ptr = ConstPtr((thin).rawAddress + ((8).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(ptr)
- *         println("${(ObjectSlotLayout<Any>()).readNative((ptr).rawAddress)}")
+ *         println("${(UnresolvedTypeLayout<Any>()).readNative((ptr).rawAddress)}")
  *         // will print "3"
  *     }
  * }
@@ -141,7 +140,7 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): ConstPtr? =
  * }
  * ```
  */
-public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = rawSliceList(ConstPtr(this.rawAddress, this.rawMeta), metadata(meta).toInt(), PrimitiveLayouts.UNIT)
+public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = linearSliceView(ConstPtr(this.rawAddress, this.rawMeta), metadata(meta).toInt(), PrimitiveLayouts.UNIT)
 
 /**
  * Changes constness without changing the type.
@@ -258,7 +257,7 @@ public fun ConstPtr.toRawParts(): Pair<ConstPtr, Metadata> = Pair(this, metadata
  * [asUninitRef]: #method.asUninitRef
  * [asRefUnchecked]: #method.asRefUnchecked
  */
-public fun <T> ConstPtr.asRef(typeLayoutT: TypeLayout<T>): T? {
+public fun <T> ConstPtr.asRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? {
     // SAFETY: the caller must guarantee that `self` is valid
     // for a reference if it isn't null.
     return if (((this).rawAddress == 0L)) {
@@ -293,7 +292,7 @@ public fun <T> ConstPtr.asRef(typeLayoutT: TypeLayout<T>): T? {
  * }
  * ```
  */
-public fun <T> ConstPtr.asRefUnchecked(typeLayoutT: TypeLayout<T>): T {
+public fun <T> ConstPtr.asRefUnchecked(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must guarantee that `self` is valid for a reference
     return (typeLayoutT).readNative((this).rawAddress)
 }
@@ -321,13 +320,13 @@ public fun <T> ConstPtr.asRefUnchecked(typeLayoutT: TypeLayout<T>): T {
  * }
  * ```
  */
-public fun <T> ConstPtr.asUninitRef(typeLayoutT: TypeLayout<T>): MaybeUninit<T>? {
+public fun <T> ConstPtr.asUninitRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T>? {
     // SAFETY: the caller must guarantee that `self` meets all the
     // requirements for a reference.
     return if (((this).rawAddress == 0L)) {
         null
     } else {
-        (ObjectSlotLayout<MaybeUninit<T>>()).readNative(((ConstPtr(this.rawAddress, this.rawMeta))).rawAddress)
+        (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative(((ConstPtr(this.rawAddress, this.rawMeta))).rawAddress)
     }
 }
 
@@ -350,16 +349,16 @@ public fun <T> ConstPtr.asUninitRef(typeLayoutT: TypeLayout<T>): MaybeUninit<T>?
  * }
  * ```
  */
-public fun <T> ConstPtr.offset(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> ConstPtr.offset(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     fun runtimeOffsetNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         // We can use constEvalSelect here because this is only for UB checks.
         return run {
-            val byteOffset = rustCheckedMul(count1, size) ?: return false
+            val byteOffset = count1.checkedMul(size) ?: return false
             val (_, overflow) = (thisRef).rawAddress.toInt().overflowingAddSigned(byteOffset)
             !overflow
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::offset requires the address calculation to not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeOffsetNowrap, thisRef, count, size)
+    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
     return ConstPtr(this.rawAddress + (count).toLong() * 1L)
 }
@@ -442,7 +441,7 @@ public fun ConstPtr.byteOffset(count: Int): ConstPtr {
  * }
  * ```
  */
-public fun <T> ConstPtr.wrappingOffset(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> ConstPtr.wrappingOffset(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     // SAFETY: the `arithOffset` intrinsic has no prerequisites to be called.
     return ConstPtr(this.rawAddress + (count).toLong() * 1L)
 }
@@ -587,7 +586,7 @@ public fun ConstPtr.mask(mask: Int): ConstPtr = ConstPtr(ConstPtr((this).rawAddr
  * }
  * ```
  */
-public fun <T> ConstPtr.offsetFrom(origin: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> ConstPtr.offsetFrom(origin: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     val pointeeSize = sizeOf<T>(typeLayoutT = typeLayoutT)
     check(0 < pointeeSize && pointeeSize <= Int.MAX_VALUE)
     // SAFETY: the caller must uphold the safety contract for `ptrOffsetFrom`.
@@ -675,9 +674,9 @@ public fun ConstPtr.byteOffsetFrom(origin: ConstPtr): Int {
  * // ptr1.offsetFromUnsigned(ptr2)
  * ```
  */
-public fun <T> ConstPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> ConstPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     fun runtimePtrGe(thisRef: ConstPtr, origin1: ConstPtr): Boolean = ((thisRef).rawAddress.toULong() >= (origin1).rawAddress.toULong())
-    assertUnsafePrecondition(checkLanguageUb, "ptr::offset_from_unsigned requires `self >= origin`", thisRef, this, origin, origin, runtimePtrGe, thisRef, origin)
+    Unit
     val pointeeSize = sizeOf<T>(typeLayoutT = typeLayoutT)
     check(0 < pointeeSize && pointeeSize <= Int.MAX_VALUE)
     // SAFETY: the caller must uphold the safety contract for `ptrOffsetFromUnsigned`.
@@ -779,15 +778,15 @@ public fun ConstPtr.guaranteedNe(other: ConstPtr): Boolean? =
  * }
  * ```
  */
-public fun <T> ConstPtr.add(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> ConstPtr.add(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     fun runtimeAddNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         return run {
-            val byteOffset = rustCheckedMul(count1, size) ?: return false
+            val byteOffset = count1.checkedMul(size) ?: return false
             val (_, overflow) = (thisRef).rawAddress.toInt().overflowingAdd(byteOffset)
             byteOffset <= (Int.MAX_VALUE) && !overflow
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::add requires that the address calculation does not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeAddNowrap, thisRef, count, size)
+    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
     return ConstPtr(this.rawAddress + (count).toLong() * 1L)
 }
@@ -831,22 +830,22 @@ public fun ConstPtr.byteAdd(count: Int): ConstPtr {
  * }
  * ```
  */
-public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     fun runtimeSubNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         return run {
-            val byteOffset = rustCheckedMul(count1, size) ?: return false
+            val byteOffset = count1.checkedMul(size) ?: return false
             byteOffset <= (Int.MAX_VALUE) && (thisRef).rawAddress.toInt() >= byteOffset
         }
     }
-    assertUnsafePrecondition(checkLanguageUb, "ptr::sub requires that the address calculation does not overflow", thisRef, this, count, count, size, sizeOf, T, runtimeSubNowrap, thisRef, count, size)
-    return if (T.IS_ZST) {
+    Unit
+    return if (((typeLayoutT).sizeBytes == 0L)) {
         // Pointer arithmetic does nothing when the pointee is a ZST.
         this
     } else {
         // SAFETY: the caller must uphold the safety contract for `offset`.
         // Because the pointee is *not* a ZST, that means that `count` is
         // at most `Long.MAX`, and thus the negation cannot overflow.
-        ConstPtr(this.rawAddress + (uncheckedSub(0, count)).toLong() * 1L)
+        ConstPtr(this.rawAddress + (((0) - (count))).toLong() * 1L)
     }
 }
 
@@ -927,7 +926,7 @@ public fun ConstPtr.byteSub(count: Int): ConstPtr {
  * }
  * ```
  */
-public fun <T> ConstPtr.wrappingAdd(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr = ConstPtr((this).rawAddress + ((count).toLong() * (typeLayoutT).strideBytes))
+public fun <T> ConstPtr.wrappingAdd(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr = ConstPtr((this).rawAddress + ((count).toLong() * (typeLayoutT).strideBytes))
 
 /**
  * Adds an unsigned offset in bytes to a pointer using wrapping arithmetic.
@@ -1000,7 +999,7 @@ public fun ConstPtr.wrappingByteAdd(count: Int): ConstPtr = ConstPtr((ConstPtr((
  * }
  * ```
  */
-public fun <T> ConstPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T>): ConstPtr = ConstPtr((this).rawAddress + ((rustWrappingNeg((count))).toLong() * (typeLayoutT).strideBytes))
+public fun <T> ConstPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr = ConstPtr((this).rawAddress + (((count).wrappingNeg()).toLong() * (typeLayoutT).strideBytes))
 
 /**
  * Subtracts an unsigned offset in bytes from a pointer using wrapping arithmetic.
@@ -1023,7 +1022,7 @@ public fun ConstPtr.wrappingByteSub(count: Int): ConstPtr = ConstPtr((ConstPtr((
  *
  * See [ptr.read] for safety concerns and examples.
  */
-public fun <T> ConstPtr.read(typeLayoutT: TypeLayout<T>): T {
+public fun <T> ConstPtr.read(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `read`.
     return read(this)
 }
@@ -1040,7 +1039,7 @@ public fun <T> ConstPtr.read(typeLayoutT: TypeLayout<T>): T {
  *
  * See [ptr.readVolatile] for safety concerns and examples.
  */
-public fun <T> ConstPtr.readVolatile(typeLayoutT: TypeLayout<T>): T {
+public fun <T> ConstPtr.readVolatile(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `readVolatile`.
     return readVolatile(this)
 }
@@ -1055,7 +1054,7 @@ public fun <T> ConstPtr.readVolatile(typeLayoutT: TypeLayout<T>): T {
  *
  * See [ptr.readUnaligned] for safety concerns and examples.
  */
-public fun <T> ConstPtr.readUnaligned(typeLayoutT: TypeLayout<T>): T {
+public fun <T> ConstPtr.readUnaligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `readUnaligned`.
     return readUnaligned(this)
 }
@@ -1070,7 +1069,7 @@ public fun <T> ConstPtr.readUnaligned(typeLayoutT: TypeLayout<T>): T {
  *
  * See [ptr.copy] for safety concerns and examples.
  */
-public fun <T> ConstPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ConstPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copy`.
     copy(this, dest, count)
 }
@@ -1085,7 +1084,7 @@ public fun <T> ConstPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout
  *
  * See [ptr.copyNonoverlapping] for safety concerns and examples.
  */
-public fun <T> ConstPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ConstPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
     copyNonoverlapping(this, dest, count)
 }
@@ -1134,7 +1133,7 @@ public fun <T> ConstPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayou
  * }
  * ```
  */
-public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     if (!align.isPowerOfTwo()) {
         error("align_offset: align is not a power-of-two")
     }
@@ -1154,13 +1153,14 @@ public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * // On some platforms, the alignment of i32 is less than 4.
  * @repr(align(4))
- * open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int>) {
+ * open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) {
  *     public var field0: Int
  *         get() = value
  *         set(v) {
@@ -1171,7 +1171,7 @@ public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int
  *         get() = fieldLayout.readNative(fieldStorage.rawAddress)
  *         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
  *
- *     public constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+ *     public constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
  *
  *     public fun pointerLayout(): TypeLayout<AlignedI32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value })
  * }
@@ -1181,7 +1181,7 @@ public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int
  * check(!ConstPtr((ptr).rawAddress + ((1).toLong())).isAligned())
  * ```
  */
-public fun <T> ConstPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.isAlignedTo(alignOf<T>(typeLayoutT = typeLayoutT))
+public fun <T> ConstPtr.isAligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = this.isAlignedTo(alignOf<T>(typeLayoutT = typeLayoutT))
 
 /**
  * Returns whether the pointer is aligned to `align`.
@@ -1201,6 +1201,7 @@ public fun <T> ConstPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.is
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -1209,7 +1210,7 @@ public fun <T> ConstPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.is
  * public fun doctestEntry() {
  *     // On some platforms, the alignment of i32 is less than 4.
  *     @repr(align(4))
- *     open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int>) {
+ *     open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) {
  *         public var field0: Int
  *             get() = value
  *             set(v) {
@@ -1220,7 +1221,7 @@ public fun <T> ConstPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.is
  *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
  *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
  *
- *         public constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+ *         public constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
  *
  *         public fun pointerLayout(): TypeLayout<AlignedI32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value })
  *     }
@@ -1442,7 +1443,7 @@ public fun ConstPtr.asSlice(n: Int): ConstPtr = this
 /**
  * For thin pointers, equality is by address, as produced by the [`const.T.addr`](pointer.addr) method.
  */
-public fun <T> ConstPtr.eq(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (typeLayoutT).readNative((this).rawAddress) == (typeLayoutT).readNative((other).rawAddress)
+public fun <T> ConstPtr.eq(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (typeLayoutT).readNative((this).rawAddress) == (typeLayoutT).readNative((other).rawAddress)
 
 /**
  * Pointer equality is an equivalence relation.
@@ -1465,13 +1466,13 @@ public fun ConstPtr.cmp(other: ConstPtr): Ordering =
  */
 public fun ConstPtr.partialCmp(other: ConstPtr): Ordering? = this.cmp(other)
 
-public fun <T> ConstPtr.lt(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
+public fun <T> ConstPtr.lt(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
 
-public fun <T> ConstPtr.le(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
+public fun <T> ConstPtr.le(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
 
-public fun <T> ConstPtr.gt(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
+public fun <T> ConstPtr.gt(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
 
-public fun <T> ConstPtr.ge(other: ConstPtr, typeLayoutT: TypeLayout<T>): Boolean = (compareNaturalOrder((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
+public fun <T> ConstPtr.ge(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
 
 /**
  * Returns the default value of [`nullVal`][ptr.nullVal].

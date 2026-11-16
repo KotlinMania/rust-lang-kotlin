@@ -1806,7 +1806,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_l
 JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_linux_gnu_UnixLinuxlikeLinuxGnuJniBridge_libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(JNIEnv* km_env, jclass km_clazz, jlong thread, jlong retval) {
     (void)km_env;
     (void)km_clazz;
-    typedef int32_t (*km_fn_t)(uint64_t, void*);
+    typedef int32_t (*km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -1828,7 +1828,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_l
 #endif
     int32_t km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((uint64_t)thread, (void*)(uintptr_t)retval);
+        km_res = km_fn_ptr((void*)(uintptr_t)thread, (void*)(uintptr_t)retval);
     } else {
         errno = ENOSYS;
         km_res = ENOSYS;
@@ -1839,7 +1839,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_l
 JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_linux_gnu_UnixLinuxlikeLinuxGnuJniBridge_libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(JNIEnv* km_env, jclass km_clazz, jlong thread, jlong retval, jlong abstime) {
     (void)km_env;
     (void)km_clazz;
-    typedef int32_t (*km_fn_t)(uint64_t, void*, void*);
+    typedef int32_t (*km_fn_t)(void*, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -1861,7 +1861,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_l
 #endif
     int32_t km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((uint64_t)thread, (void*)(uintptr_t)retval, (void*)(uintptr_t)abstime);
+        km_res = km_fn_ptr((void*)(uintptr_t)thread, (void*)(uintptr_t)retval, (void*)(uintptr_t)abstime);
     } else {
         errno = ENOSYS;
         km_res = ENOSYS;

@@ -59,9 +59,9 @@ public open class RwLock(
             if ((hasSlept && isReadLockableAfterWakeup(state)) || isReadLockable(state)) {
                 run {
                     val matchVal = this.state.compareExchangeWeak(state, state + READ_LOCKED, Acquire, Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val s = matchVal.error
                         state = s
                         continue
@@ -134,9 +134,9 @@ public open class RwLock(
             if (isUnlocked(state)) {
                 run {
                     val matchVal = this.state.compareExchangeWeak(state, state or WRITE_LOCKED or otherWritersWaiting, Acquire, Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         return
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val s = matchVal.error
                         state = s
                         continue
@@ -194,10 +194,10 @@ public open class RwLock(
         if (state1 == WRITERS_WAITING) {
             run {
                 val matchVal = this.state.compareExchange(state1, 0, Relaxed, Relaxed)
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     this.wakeWriter()
                     return
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     val s = matchVal.error
                     // Maybe some readers are now waiting too. So, continue to the next `if`.
                     state1 = s

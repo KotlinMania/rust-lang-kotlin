@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.sync.futex.wasm
 
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
 
@@ -33,7 +34,7 @@ public typealias SmallPrimitive = UInt
  *
  * Returns false on timeout, and true in all other cases.
  */
-public fun futexWait(futex: Atomic<UInt>, expected: UInt, timeout: Duration?): Boolean {
+public fun futexWait(futex: Atomic<UInt, Align4<UInt>>, expected: UInt, timeout: Duration?): Boolean {
     val timeout1 = (timeout?.let({ t -> t.asNanos().tryInto().ok() }) ?: -1)
     return wasm.memoryAtomicWait32((constPtrFromRustCast(futex)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, expected.toInt(), timeout1) < 2
 }
@@ -44,12 +45,12 @@ public fun futexWait(futex: Atomic<UInt>, expected: UInt, timeout: Duration?): B
  * Returns true if this actually woke up such a thread,
  * or false if no thread was waiting on this futex.
  */
-public fun futexWake(futex: Atomic<UInt>): Boolean = wasm.memoryAtomicNotify((constPtrFromRustCast(futex)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 1) > 0
+public fun futexWake(futex: Atomic<UInt, Align4<UInt>>): Boolean = wasm.memoryAtomicNotify((constPtrFromRustCast(futex)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 1) > 0
 
 /**
  * Wakes up all threads that are waiting on `futexWait` on this futex.
  */
-public fun futexWakeAll(futex: Atomic<UInt>) {
+public fun futexWakeAll(futex: Atomic<UInt, Align4<UInt>>) {
     run {
         wasm.memoryAtomicNotify((constPtrFromRustCast(futex)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, Int.MAX_VALUE.toUInt())
     }

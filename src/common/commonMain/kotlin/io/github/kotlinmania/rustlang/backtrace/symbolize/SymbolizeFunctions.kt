@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize
 
 import io.github.kotlinmania.rustlang.backtrace.backtrace.Frame
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -145,28 +146,29 @@ public fun resolveFrameUnsynchronized(frame: Frame, cb: (Symbol) -> Unit) {
     io.github.kotlinmania.rustlang.backtrace.symbolize.noop.resolve(ResolveWhat.Frame(frame), cb)
 }
 
-public fun formatSymbolName(fmt: FnCallback, bytes: List<UByte>, f: StringBuilder) {
+public fun formatSymbolName(fmt: FnCallback, bytes: List<UByte>, f: StringBuilder): Result<Unit, Error> {
     var bytes1 = bytes
     while (bytes1.size > 0) {
         run {
             val matchVal = String.fromUtf8(bytes1)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 val name = matchVal.value
-                fmt(name, f)
+                when (val tryResult = fmt(name, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 break
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val err = matchVal.error
-                fmt("�", f)
+                when (val tryResult = fmt("�", f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 when (val matchVal1 = err.errorLen()) {
                     null -> { break }
                     else -> {
                         val len = matchVal1
-                        bytes1 = ((bytes1).slice(err.validUpTo() + len until bytes1.size))
+                        bytes1 = ((bytes1).subList(err.validUpTo() + len, (bytes1).size))
                     }
                 }
             } }
         }
     }
+    return Result.Ok<Unit, Error>(Unit)
 }
 
 /**

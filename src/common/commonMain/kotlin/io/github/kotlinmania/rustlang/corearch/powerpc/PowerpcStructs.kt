@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.powerpc
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -16,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  */
 public open class Ppcf128 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Ppcf128>,
+    public val fieldLayout: TypeLayout<Ppcf128> = UnresolvedTypeLayout(),
 ) {
     public var field0: Ppcf128
         get() = value
@@ -28,7 +29,7 @@ public open class Ppcf128 internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Ppcf128> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Ppcf128(ptr, layout) }, { it.value })
 
@@ -58,8 +59,8 @@ public open class Ppcf128 internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128>): Ppcf128 = Ppcf128(value, fieldLayout)
+        public operator fun invoke(value: Ppcf128, fieldLayout: TypeLayout<Ppcf128> = UnresolvedTypeLayout()): Ppcf128 = Ppcf128(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Ppcf128>): Ppcf128 = Ppcf128(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Ppcf128> = UnresolvedTypeLayout()): Ppcf128 = Ppcf128(fieldStorage, fieldLayout)
     }
 }

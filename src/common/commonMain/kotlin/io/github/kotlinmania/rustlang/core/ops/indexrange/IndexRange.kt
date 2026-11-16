@@ -2,12 +2,10 @@
 package io.github.kotlinmania.rustlang.core.ops.indexrange
 
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -43,7 +41,7 @@ public open class IndexRange(
     public open fun len(): Int {
         // SAFETY: By invariant, this cannot wrap
         // Using the intrinsic because a UB check here impedes LLVM optimization. (#131563)
-        return uncheckedSub(this.end, this.start)
+        return ((this.end) - (this.start))
     }
 
     /**
@@ -87,7 +85,7 @@ public open class IndexRange(
                 // SAFETY: We just checked that this will be between start and end,
                 // and thus the addition cannot overflow.
                 // Using the intrinsic avoids a superfluous UB check.
-                uncheckedAdd(this.start, n)
+                ((this.start) + (n))
             } else {
                 this.end
             }
@@ -109,7 +107,7 @@ public open class IndexRange(
                 // SAFETY: We just checked that this will be between start and end,
                 // and thus the subtraction cannot overflow.
                 // Using the intrinsic avoids a superfluous UB check.
-                uncheckedSub(this.end, n)
+                ((this.end) - (n))
             } else {
                 this.start
             }
@@ -136,9 +134,9 @@ public open class IndexRange(
         return Pair(len, len)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val taken = this.takePrefix(n)
-        return NonZero.new(n - taken.len()).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - taken.len()))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun <B> fold(init: B, f: (B, Int) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
@@ -151,7 +149,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum1
     }
@@ -164,9 +162,9 @@ public open class IndexRange(
             null
         }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val taken = this.takeSuffix(n)
-        return NonZero.new(n - taken.len()).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - taken.len()))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public open fun <B> rfold(init: B, f: (B, Int) -> B): B = this.tryRfold(init, NeverShortCircuit.wrapMut2(f)).first
@@ -179,7 +177,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextBackUnchecked()
-            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum1
     }
@@ -218,7 +216,7 @@ public open class IndexRange(
          * - `start <= end`
          */
         public fun newUnchecked(start: Int, end: Int): IndexRange {
-            ubChecks.assertUnsafePrecondition(checkLibraryUb, "IndexRange::new_unchecked requires `start <= end`", start, start, end, end, start, end)
+            Unit
             return IndexRange(start = start, end = end)
         }
 

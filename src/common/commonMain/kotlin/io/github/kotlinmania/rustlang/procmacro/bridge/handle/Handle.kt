@@ -1,6 +1,7 @@
 // port-lint: source bridge/handle.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.handle
 
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -8,7 +9,7 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
 
 // Server-side handles and storage for per-handle data.
 
-public typealias Handle = NonZero<UInt>
+public typealias Handle = NonZero<UInt, NonZeroU32Inner>
 
 /**
  * A store that associates values of type `T` with numeric handles. A value can

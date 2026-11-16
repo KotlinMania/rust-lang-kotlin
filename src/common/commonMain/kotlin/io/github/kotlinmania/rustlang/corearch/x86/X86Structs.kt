@@ -4,17 +4,18 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -61,7 +62,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  */
 public open class X87F80 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<X87F80>,
+    public val fieldLayout: TypeLayout<X87F80> = UnresolvedTypeLayout(),
 ) {
     public var field0: X87F80
         get() = value
@@ -73,7 +74,7 @@ public open class X87F80 internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: X87F80, fieldLayout: TypeLayout<X87F80>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: X87F80, fieldLayout: TypeLayout<X87F80> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<X87F80> = TransparentTypeLayout(fieldLayout, { ptr, layout -> X87F80(ptr, layout) }, { it.value })
 
@@ -91,13 +92,13 @@ public open class X87F80 internal constructor(
      */
     public open fun toNeBytes(): UByteArray {
         // SAFETY: the first 10 bytes are initialized.
-        return (ObjectSlotLayout<UByteArray>()).readNative((ConstPtr(((addrOf(this))).rawAddress)).rawAddress)
+        return (UnresolvedTypeLayout<UByteArray>()).readNative((ConstPtr(((addrOf(this))).rawAddress)).rawAddress)
     }
 
     public companion object {
-        public operator fun invoke(value: X87F80, fieldLayout: TypeLayout<X87F80>): X87F80 = X87F80(value, fieldLayout)
+        public operator fun invoke(value: X87F80, fieldLayout: TypeLayout<X87F80> = UnresolvedTypeLayout()): X87F80 = X87F80(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<X87F80>): X87F80 = X87F80(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<X87F80> = UnresolvedTypeLayout()): X87F80 = X87F80(fieldStorage, fieldLayout)
 
         /**
          * Creates a floating point value from its representation as a byte array in native endian.
@@ -106,7 +107,7 @@ public open class X87F80 internal constructor(
             // SAFETY: we initialize the first 10 bytes, the remaining bytes remain uninitialized.
             // That is exactly the layout of x87F80.
             return run {
-                val thisRef = MaybeUninit.uninit(ObjectSlotLayout<X87F80>())
+                val thisRef = MaybeUninit.uninit(UnresolvedTypeLayout<X87F80>())
                 thisRef.asMutPtr().cast().write(bytes)
                 thisRef.assumeInit()
             }
@@ -1369,7 +1370,7 @@ public open class M512h(
  */
 public open class Bf16 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UShort>,
+    public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout(),
 ) {
     public var field0: UShort
         get() = value
@@ -1381,7 +1382,7 @@ public open class Bf16 internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Bf16> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Bf16(ptr, layout) }, { it.value })
 
@@ -1393,13 +1394,13 @@ public open class Bf16 internal constructor(
     public open fun toBits(): UShort = this.value
 
     public companion object {
-        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort>): Bf16 = Bf16(value, fieldLayout)
+        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): Bf16 = Bf16(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort>): Bf16 = Bf16(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): Bf16 = Bf16(fieldStorage, fieldLayout)
 
         /**
          * Raw transmutation from `UShort`
          */
-        public fun fromBits(bits: UShort, fieldLayout: TypeLayout<UShort>): Bf16 = Bf16(bits, fieldLayout = fieldLayout)
+        public fun fromBits(bits: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): Bf16 = Bf16(bits, fieldLayout = fieldLayout)
     }
 }

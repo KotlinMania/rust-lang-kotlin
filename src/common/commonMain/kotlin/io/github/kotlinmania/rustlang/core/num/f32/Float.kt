@@ -5,29 +5,26 @@ package io.github.kotlinmania.rustlang.core.num.f32
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
-import io.github.kotlinmania.rustlang.core.intrinsics.copysignf32
-import io.github.kotlinmania.rustlang.core.intrinsics.fabs
-import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fma
-import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
-import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fsubAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.maximumNumberNszF32
-import io.github.kotlinmania.rustlang.core.intrinsics.maximumf32
-import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF32
-import io.github.kotlinmania.rustlang.core.intrinsics.minimumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFmaf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowif32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fdimf
-import io.github.kotlinmania.rustlang.core.num.rustClassifyFloat
-import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
 import io.github.kotlinmania.rustlang.core.panic.constAssert
-import kotlin.math.abs
 
 // Constants for the `Float` single-precision floating point type.
 //
@@ -446,7 +443,7 @@ public fun kotlin.Float.isInfinite(): Boolean {
 public fun kotlin.Float.isFinite(): Boolean {
     // There's no need to handle NaN separately: if self is NaN,
     // the comparison is not true, exactly as desired.
-    return abs(this) < kotlin.Float.POSITIVE_INFINITY
+    return kmFabsf32(this) < kotlin.Float.POSITIVE_INFINITY
 }
 
 /**
@@ -469,7 +466,7 @@ public fun kotlin.Float.isFinite(): Boolean {
  * [subnormal]: https://en.wikipedia.org/wiki/DenormalNumber
  */
 public fun kotlin.Float.isSubnormal(): Boolean =
-    when (rustClassifyFloat(this)) {
+    when (this.classify()) {
         FpCategory.Subnormal -> true
         else -> false
     }
@@ -495,7 +492,7 @@ public fun kotlin.Float.isSubnormal(): Boolean =
  * [subnormal]: https://en.wikipedia.org/wiki/DenormalNumber
  */
 public fun kotlin.Float.isNormal(): Boolean =
-    when (rustClassifyFloat(this)) {
+    when (this.classify()) {
         FpCategory.Normal -> true
         else -> false
     }
@@ -551,7 +548,7 @@ public fun kotlin.Float.classify(): FpCategory {
  * check(!g.isSignPositive())
  * ```
  */
-public fun kotlin.Float.isSignPositive(): Boolean = !rustIsSignNegative(this)
+public fun kotlin.Float.isSignPositive(): Boolean = !this.isSignNegative()
 
 /**
  * Returns `true` if `self` has a negative sign, including `- 0.0`, NaNs with
@@ -753,7 +750,7 @@ public fun kotlin.Float.toRadians(): kotlin.Float {
  * check(x.max(Float.NaN) == x)
  * ```
  */
-public fun kotlin.Float.max(other: kotlin.Float): kotlin.Float = maximumNumberNszF32(this, other)
+public fun kotlin.Float.max(other: kotlin.Float): kotlin.Float = kmMaxnumf32(this, other)
 
 /**
  * Returns the minimum of the two numbers, ignoring NaN.
@@ -775,7 +772,7 @@ public fun kotlin.Float.max(other: kotlin.Float): kotlin.Float = maximumNumberNs
  * check(x.min(Float.NaN) == x)
  * ```
  */
-public fun kotlin.Float.min(other: kotlin.Float): kotlin.Float = minimumNumberNszF32(this, other)
+public fun kotlin.Float.min(other: kotlin.Float): kotlin.Float = kmMinnumf32(this, other)
 
 /**
  * Returns the maximum of the two numbers, propagating NaN.
@@ -800,7 +797,7 @@ public fun kotlin.Float.min(other: kotlin.Float): kotlin.Float = minimumNumberNs
  * }
  * ```
  */
-public fun kotlin.Float.maximum(other: kotlin.Float): kotlin.Float = maximumf32(this, other)
+public fun kotlin.Float.maximum(other: kotlin.Float): kotlin.Float = floatBinaryWithLayout("maximum", this, other, PrimitiveLayouts.F32)
 
 /**
  * Returns the minimum of the two numbers, propagating NaN.
@@ -825,7 +822,7 @@ public fun kotlin.Float.maximum(other: kotlin.Float): kotlin.Float = maximumf32(
  * }
  * ```
  */
-public fun kotlin.Float.minimum(other: kotlin.Float): kotlin.Float = minimumf32(this, other)
+public fun kotlin.Float.minimum(other: kotlin.Float): kotlin.Float = floatBinaryWithLayout("minimum", this, other, PrimitiveLayouts.F32)
 
 /**
  * Calculates the midpoint (average) between `self` and `rhs`.
@@ -1281,7 +1278,7 @@ public fun kotlin.Float.clamp(min: kotlin.Float, max: kotlin.Float): kotlin.Floa
  */
 public fun kotlin.Float.clampMagnitude(limit: kotlin.Float): kotlin.Float {
     check(limit >= 0.0f) { "limit must be non-negative and not NaN" }
-    val limit1 = abs(limit)
+    val limit1 = kmFabsf32(limit)
     // Canonicalises -0.0 to 0.0
     return this.clamp(-limit1, limit1)
 }
@@ -1332,7 +1329,7 @@ public fun <R> kotlin.Float.clampTo(range: R): kotlin.Float where R : ClampBound
  * check(Float.NaN.abs().isNan())
  * ```
  */
-public fun kotlin.Float.abs(): kotlin.Float = fabs(this)
+public fun kotlin.Float.abs(): kotlin.Float = kmFabsf32(this)
 
 /**
  * Returns a number that represents the sign of `self`.
@@ -1354,7 +1351,7 @@ public fun kotlin.Float.signum(): kotlin.Float =
     if (this.isNaN()) {
         kotlin.Float.NaN
     } else {
-        1.0f.copysign(this)
+        kmCopysignf32(1.0f, this)
     }
 
 /**
@@ -1383,42 +1380,42 @@ public fun kotlin.Float.signum(): kotlin.Float =
  * check(Float.NaN.copysign(1.0).isNan())
  * ```
  */
-public fun kotlin.Float.copysign(sign: kotlin.Float): kotlin.Float = copysignf32(this, sign)
+public fun kotlin.Float.copysign(sign: kotlin.Float): kotlin.Float = kmCopysignf32(this, sign)
 
 /**
  * Float addition that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun kotlin.Float.algebraicAdd(rhs: kotlin.Float): kotlin.Float = faddAlgebraic(this, rhs)
+public fun kotlin.Float.algebraicAdd(rhs: kotlin.Float): kotlin.Float = ((this) + (rhs))
 
 /**
  * Float subtraction that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun kotlin.Float.algebraicSub(rhs: kotlin.Float): kotlin.Float = fsubAlgebraic(this, rhs)
+public fun kotlin.Float.algebraicSub(rhs: kotlin.Float): kotlin.Float = ((this) - (rhs))
 
 /**
  * Float multiplication that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun kotlin.Float.algebraicMul(rhs: kotlin.Float): kotlin.Float = fmulAlgebraic(this, rhs)
+public fun kotlin.Float.algebraicMul(rhs: kotlin.Float): kotlin.Float = ((this) * (rhs))
 
 /**
  * Float division that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun kotlin.Float.algebraicDiv(rhs: kotlin.Float): kotlin.Float = fdivAlgebraic(this, rhs)
+public fun kotlin.Float.algebraicDiv(rhs: kotlin.Float): kotlin.Float = ((this) / (rhs))
 
 /**
  * Float remainder that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun kotlin.Float.algebraicRem(rhs: kotlin.Float): kotlin.Float = fremAlgebraic(this, rhs)
+public fun kotlin.Float.algebraicRem(rhs: kotlin.Float): kotlin.Float = ((this) % (rhs))
 
 /**
  * Computes `(self * a) + b` with nondeterministic rounding.
@@ -1456,7 +1453,7 @@ public fun kotlin.Float.algebraicRem(rhs: kotlin.Float): kotlin.Float = fremAlge
  *
  * [mulAdd]: ../std/primitive.f32.html#method.mulAdd
  */
-public fun kotlin.Float.mulAddRelaxed(a: kotlin.Float, b: kotlin.Float): kotlin.Float = fmuladd(this, a, b)
+public fun kotlin.Float.mulAddRelaxed(a: kotlin.Float, b: kotlin.Float): kotlin.Float = kmFmaf32(this, a, b)
 
 /**
  * Returns `self` if the value is not NaN, otherwise returns `replacement`
@@ -1505,7 +1502,7 @@ public fun kotlin.Float.nanTo(replacement: kotlin.Float): kotlin.Float =
  *
  * [f32.floor]: ../../../std/primitive.f32.html#method.floor
  */
-public fun floor(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.floor(x)
+public fun floor(x: kotlin.Float): kotlin.Float = kmFloorf32(x)
 
 /**
  * Experimental version of `ceil` in `core`. See [f32.ceil] for details.
@@ -1527,7 +1524,7 @@ public fun floor(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang
  *
  * [f32.ceil]: ../../../std/primitive.f32.html#method.ceil
  */
-public fun ceil(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.ceil(x)
+public fun ceil(x: kotlin.Float): kotlin.Float = kmCeilf32(x)
 
 /**
  * Experimental version of `round` in `core`. See [f32.round] for details.
@@ -1555,7 +1552,7 @@ public fun ceil(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.
  *
  * [f32.round]: ../../../std/primitive.f32.html#method.round
  */
-public fun round(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.round(x)
+public fun round(x: kotlin.Float): kotlin.Float = kmRoundf32(x)
 
 /**
  * Experimental version of `roundTiesEven` in `core`. See [f32.roundTiesEven] for
@@ -1582,7 +1579,7 @@ public fun round(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang
  *
  * [f32.roundTiesEven]: ../../../std/primitive.f32.html#method.roundTiesEven
  */
-public fun roundTiesEven(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(x)
+public fun roundTiesEven(x: kotlin.Float): kotlin.Float = kmRoundTiesEvenf32(x)
 
 /**
  * Experimental version of `trunc` in `core`. See [f32.trunc] for details.
@@ -1606,7 +1603,7 @@ public fun roundTiesEven(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.
  *
  * [f32.trunc]: ../../../std/primitive.f32.html#method.trunc
  */
-public fun trunc(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.trunc(x)
+public fun trunc(x: kotlin.Float): kotlin.Float = kmTruncf32(x)
 
 /**
  * Experimental version of `fract` in `core`. See [f32.fract] for details.
@@ -1660,7 +1657,7 @@ public fun fract(x: kotlin.Float): kotlin.Float = x - trunc(x)
  *
  * [f32.mulAdd]: ../../../std/primitive.f32.html#method.mulAdd
  */
-public fun mulAdd(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float = fma(x.toDouble(), y.toDouble(), z.toDouble()).toFloat()
+public fun mulAdd(x: kotlin.Float, y: kotlin.Float, z: kotlin.Float): kotlin.Float = kmFmaf32(x, y, z)
 
 /**
  * Experimental version of `divEuclid` in `core`. See [f32.divEuclid] for details.
@@ -1727,7 +1724,7 @@ public fun divEuclid(x: kotlin.Float, rhs: kotlin.Float): kotlin.Float {
 public fun remEuclid(x: kotlin.Float, rhs: kotlin.Float): kotlin.Float {
     val r = x % rhs
     return if (r < 0.0f) {
-        r + abs(rhs)
+        r + kmFabsf32(rhs)
     } else {
         r
     }
@@ -1753,7 +1750,7 @@ public fun remEuclid(x: kotlin.Float, rhs: kotlin.Float): kotlin.Float {
  *
  * [f32.powi]: ../../../std/primitive.f32.html#method.powi
  */
-public fun powi(x: kotlin.Float, n: Int): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.powi(x, n)
+public fun powi(x: kotlin.Float, n: Int): kotlin.Float = kmPowif32(x, n)
 
 /**
  * Experimental version of `sqrt` in `core`. See [f32.sqrt] for details.
@@ -1777,7 +1774,7 @@ public fun powi(x: kotlin.Float, n: Int): kotlin.Float = io.github.kotlinmania.r
  *
  * [f32.sqrt]: ../../../std/primitive.f32.html#method.sqrt
  */
-public fun sqrt(x: kotlin.Float): kotlin.Float = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(x)
+public fun sqrt(x: kotlin.Float): kotlin.Float = kmSqrtf32(x)
 
 /**
  * Experimental version of `absSub` in `core`. See [f32.absSub] for details.

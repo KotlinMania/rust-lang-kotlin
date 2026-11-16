@@ -1,6 +1,7 @@
 // port-lint: source loongarch64/lsx/generated.rs
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lsx
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 

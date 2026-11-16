@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.stable
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort.SMALL_SORT_GENERAL_SCRATCH_LEN
 import io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny.mergesort
 
@@ -14,9 +14,9 @@ import io.github.kotlinmania.rustlang.core.slice.sort.stable.tiny.mergesort
  * Upholds all safety properties outlined here:
  * <https://github.com/Voultapher/sort-research-rs/blob/main/writeup/sortSafety/text.md>
  */
-public fun <T, BufT : BufGuard<T, BufT>> sort(v: MutableList<T>, isLess: (T, T) -> Boolean, withCapacityBufTFn: (Int) -> BufT) {
+public fun <T, BufT : BufGuard<T, BufT>> sort(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), withCapacityBufTFn: (Int) -> BufT) {
     // Arrays of zero-sized types are always all-equal, and thus sorted.
-    if (T.IS_ZST) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         return
     }
     // Instrumenting the standard library showed that 90+% of the calls to sort
@@ -49,7 +49,7 @@ public fun <T, BufT : BufGuard<T, BufT>> sort(v: MutableList<T>, isLess: (T, T) 
  * Deliberately don't inline the main sorting routine entrypoint to ensure the
  * inlined insertion sort i-cache footprint remains minimal.
  */
-public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>, smallSortThresholdTFn: () -> T, withCapacityBufTFn: (Int) -> BufT) {
+public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), smallSortThresholdTFn: () -> T, withCapacityBufTFn: (Int) -> BufT) {
     // By allocating n elements of memory we can ensure the entire input can
     // be sorted using stable quicksort, which allows better performance on
     // random and low-cardinality distributions. However, we still want to
@@ -70,7 +70,7 @@ public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess
     // 8MB
     val maxFullAlloc = MAX_FULL_ALLOC_BYTES / sizeOf<T>(typeLayoutT = typeLayoutT)
     val len = v.size
-    val allocLen = max(max(len - len / 2, minOf(len, maxFullAlloc)), SMALL_SORT_GENERAL_SCRATCH_LEN)
+    val allocLen = cmp.max(cmp.max(len - len / 2, minOf(len, maxFullAlloc)), SMALL_SORT_GENERAL_SCRATCH_LEN)
     // For small inputs 4KiB of stack storage suffices, which allows us to avoid
     // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
     val stackBuf = AlignedStorage.new()

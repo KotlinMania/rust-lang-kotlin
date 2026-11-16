@@ -57,36 +57,36 @@ public interface SimdOrd<T> : SimdPartialOrd<T> {
     public fun simdClamp(min: T, max: T): T
 }
 
-public fun Simd<UByte, N>.simdLt(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
+public fun Simd<UByte>.simdLt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdLe(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
+public fun Simd<UByte>.simdLe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdGt(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
+public fun Simd<UByte>.simdGt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdGe(other: Simd<UByte, N>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
+public fun Simd<UByte>.simdGe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 })
 
-public fun Simd<UByte, N>.simdMax(other: Simd<UByte, N>, n: Int): Simd<UByte, N> = this.simdLt(other).select(other, this)
+public fun Simd<UByte>.simdMax(other: Simd<UByte>, n: Int): Simd<UByte> = this.simdLt(other).select(other, this)
 
-public fun Simd<UByte, N>.simdMin(other: Simd<UByte, N>, n: Int): Simd<UByte, N> = this.simdGt(other).select(other, this)
+public fun Simd<UByte>.simdMin(other: Simd<UByte>, n: Int): Simd<UByte> = this.simdGt(other).select(other, this)
 
-public fun Simd<UByte, N>.simdClamp(min: Simd<UByte, N>, max: Simd<UByte, N>, n: Int): Simd<UByte, N> {
+public fun Simd<UByte>.simdClamp(min: Simd<UByte>, max: Simd<UByte>, n: Int): Simd<UByte> {
     check(min.simdLe(max).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
     return this.simdMax(min).simdMin(max)
 }
 
-public fun Mask<Byte, N>.simdLt(other: Mask<Byte, N>, n: Int): Mask = this.inv() and other
+public fun Mask<Byte>.simdLt(other: Mask<Byte>, n: Int): Mask = this.inv() and other
 
-public fun Mask<Byte, N>.simdLe(other: Mask<Byte, N>, n: Int): Mask = this.inv() or other
+public fun Mask<Byte>.simdLe(other: Mask<Byte>, n: Int): Mask = this.inv() or other
 
-public fun Mask<Byte, N>.simdGt(other: Mask<Byte, N>, n: Int): Mask = this and other.inv()
+public fun Mask<Byte>.simdGt(other: Mask<Byte>, n: Int): Mask = this and other.inv()
 
-public fun Mask<Byte, N>.simdGe(other: Mask<Byte, N>, n: Int): Mask = this or other.inv()
+public fun Mask<Byte>.simdGe(other: Mask<Byte>, n: Int): Mask = this or other.inv()
 
-public fun Mask<Byte, N>.simdMax(other: Mask<Byte, N>, n: Int): Mask<Byte, N> = this or other
+public fun Mask<Byte>.simdMax(other: Mask<Byte>, n: Int): Mask<Byte> = this or other
 
-public fun Mask<Byte, N>.simdMin(other: Mask<Byte, N>, n: Int): Mask<Byte, N> = this and other
+public fun Mask<Byte>.simdMin(other: Mask<Byte>, n: Int): Mask<Byte> = this and other
 
-public fun Mask<Byte, N>.simdClamp(min: Mask<Byte, N>, max: Mask<Byte, N>, n: Int): Mask<Byte, N> {
+public fun Mask<Byte>.simdClamp(min: Mask<Byte>, max: Mask<Byte>, n: Int): Mask<Byte> {
     check(min.simdLe(max).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
     return this.simdMax(min).simdMin(max)
 }

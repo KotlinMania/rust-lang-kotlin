@@ -68,16 +68,16 @@ public sealed class Feature {
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "altivec" -> Result.Ok(Feature::altivec)
-                "vsx" -> Result.Ok(Feature::vsx)
-                "power8" -> Result.Ok(Feature::power8)
-                "power8-altivec" -> Result.Ok(Feature::power8Altivec)
-                "power8-vector" -> Result.Ok(Feature::power8Vector)
-                "power8-crypto" -> Result.Ok(Feature::power8Crypto)
-                "power9" -> Result.Ok(Feature::power9)
-                "power9-altivec" -> Result.Ok(Feature::power9Altivec)
-                "power9-vector" -> Result.Ok(Feature::power9Vector)
-                else -> Result.Err(Unit)
+                "altivec" -> Result.Ok<Feature, Unit>(Feature::altivec)
+                "vsx" -> Result.Ok<Feature, Unit>(Feature::vsx)
+                "power8" -> Result.Ok<Feature, Unit>(Feature::power8)
+                "power8-altivec" -> Result.Ok<Feature, Unit>(Feature::power8Altivec)
+                "power8-vector" -> Result.Ok<Feature, Unit>(Feature::power8Vector)
+                "power8-crypto" -> Result.Ok<Feature, Unit>(Feature::power8Crypto)
+                "power9" -> Result.Ok<Feature, Unit>(Feature::power9)
+                "power9-altivec" -> Result.Ok<Feature, Unit>(Feature::power9Altivec)
+                "power9-vector" -> Result.Ok<Feature, Unit>(Feature::power9Vector)
+                else -> Result.Err<Feature, Unit>(Unit)
             }
     }
 }
@@ -86,52 +86,52 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun altivec(): Boolean = checkFor(Feature::altivec)
+public fun altivec(): Boolean = checkFor(::altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vsx(): Boolean = checkFor(Feature::vsx)
+public fun vsx(): Boolean = checkFor(::vsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8(): Boolean = checkFor(Feature::power8)
+public fun power8(): Boolean = checkFor(::power8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Altivec(): Boolean = checkFor(Feature::power8Altivec)
+public fun power8Altivec(): Boolean = checkFor(::power8Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Vector(): Boolean = checkFor(Feature::power8Vector)
+public fun power8Vector(): Boolean = checkFor(::power8Vector)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Crypto(): Boolean = checkFor(Feature::power8Crypto)
+public fun power8Crypto(): Boolean = checkFor(::power8Crypto)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9(): Boolean = checkFor(Feature::power9)
+public fun power9(): Boolean = checkFor(::power9)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Altivec(): Boolean = checkFor(Feature::power9Altivec)
+public fun power9Altivec(): Boolean = checkFor(::power9Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Vector(): Boolean = checkFor(Feature::power9Vector)
+public fun power9Vector(): Boolean = checkFor(::power9Vector)

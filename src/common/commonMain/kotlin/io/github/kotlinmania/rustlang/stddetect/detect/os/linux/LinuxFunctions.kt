@@ -8,13 +8,13 @@ import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.open
 import io.github.kotlinmania.rustlang.libc.read
 import io.github.kotlinmania.rustlang.libc.wasi.O_RDONLY
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 
 public fun readFile(origPath: CStr): Result<List<UByte>, String> {
     return run {
         val file = open(origPath.asPtr(), O_RDONLY)
         if (file == -1) {
-            return Result.Err("Cannot open file at ${origPath.display()}")
+            return Result.Err<List<UByte>, String>("Cannot open file at ${origPath.display()}")
         }
         val data = mutableListOf<UByte>()
         while (true) {
@@ -23,7 +23,7 @@ public fun readFile(origPath: CStr): Result<List<UByte>, String> {
             when (val matchVal = read(file, mutPtrFromRustCast(spare.asMutPtr()), spare.len())) {
                 -1 -> {
                     close(file)
-                    return Result.Err("Error while reading from file at ${origPath.display()}")
+                    return Result.Err<List<UByte>, String>("Error while reading from file at ${origPath.display()}")
                 }
                 0 -> { break }
                 else -> {
@@ -33,11 +33,11 @@ public fun readFile(origPath: CStr): Result<List<UByte>, String> {
             }
         }
         close(file)
-        Result.Ok(data)
+        Result.Ok<List<UByte>, String>(data)
     }
 }
 
 /**
  * Performs run-time feature detection.
  */
-public fun detectFeatures(): Initializer = Cache.Initializer.default()
+public fun detectFeatures(): cache.Initializer = cache.Initializer.default()

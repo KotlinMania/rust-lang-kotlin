@@ -4,17 +4,17 @@
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu
 
 import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.imp.diyfloat.Fp
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -218,8 +218,8 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
     check(d.mant > 0uL)
     check(d.minus > 0uL)
     check(d.plus > 0uL)
-    check(rustCheckedAdd(d.mant, d.plus) != null)
-    check(rustCheckedSub(d.mant, d.minus) != null)
+    check(d.mant.checkedAdd(d.plus) != null)
+    check(d.mant.checkedSub(d.minus) != null)
     check(buf.size >= MAX_SIG_DIGITS)
     check(d.mant + d.plus < (1uL shl 61))
     // we need at least three bits of additional precision
@@ -341,7 +341,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
             // `plus1 % 10 ^ kappa<delta1 = plus1 - minus1`; we've found the correct `kappa`.
             val tenKappa1 = (tenKappa.toULong()) shl e
             // scale 10^kappa back to the shared exponent
-            return roundAndWeed(((buf).slice(0 until i)).assumeInitMut(), exp, plus1rem, delta1, plus1 - v1.f, tenKappa1, 1uL)
+            return roundAndWeed(((buf).subList(0, i)).assumeInitMut(), exp, plus1rem, delta1, plus1 - v1.f, tenKappa1, 1uL)
         }
         // break the loop when we have rendered all integral digits.
         // the exact number of digits is `maxKappa + 1` as `plus1<10 ^(maxKappa + 1)`.
@@ -390,7 +390,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
         if (r1 < threshold) {
             val tenKappa2 = 1 shl e
             // implicit divisor
-            return roundAndWeed(((buf).slice(0 until i)).assumeInitMut(), exp, r1, threshold, (plus1 - v1.f) * ulp, tenKappa2, ulp)
+            return roundAndWeed(((buf).subList(0, i)).assumeInitMut(), exp, r1, threshold, (plus1 - v1.f) * ulp, tenKappa2, ulp)
         }
         // restore invariants
         remainder1 = r1
@@ -406,7 +406,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
     // SAFETY: The borrow checker is not smart enough to let us use `buf`
     // in the second branch, so we launder the scope here. But we only re-use
     // `buf` if `formatShortestOpt` returned `None` so this is okay.
-    return when (val matchVal = formatShortestOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), ObjectSlotLayout<Any?>()))) {
+    return when (val matchVal = formatShortestOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), UnresolvedTypeLayout<Any?>()))) {
         null -> fallback(d, buf)
         else -> {
             val ret = matchVal
@@ -495,7 +495,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
         // `10 ^ kappa` did not overflow after all, the second check is fine.
         if (tenKappa - remainder > remainder && tenKappa - 2uL * remainder >= 2uL * ulp) {
             // SAFETY: our caller initialized that memory.
-            return Pair(((buf1).slice(0 until len1)).assumeInitRef(), exp1)
+            return Pair(((buf1).subList(0, len1)).assumeInitRef(), exp1)
         }
         // :<------- remainder ------>|   :
         // :                          |   :
@@ -515,7 +515,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
         // as `10 ^ kappa` is never zero). also note that `remainder - ulp <= 10 ^ kappa`,
         // so the second check does not overflow.
         if (remainder > ulp && tenKappa - (remainder - ulp) <= remainder - ulp) {
-            when (val matchVal = roundUp(((buf1).slice(0 until len1)).assumeInitMut())) {
+            when (val matchVal = roundUp(((buf1).subList(0, len1)).assumeInitMut())) {
                 null -> {}
                 else -> {
                     val c = matchVal
@@ -524,13 +524,13 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
                     // the additional digit can only be added when `exp == limit` (edge case).
                     exp1 += 1
                     if (exp1 > limit1 && len1 < buf1.size) {
-                        buf1[len1] = MaybeUninit.new(c, PrimitiveLayouts.U8)
+                        buf1[len1] = MaybeUninit.new(c, UnresolvedTypeLayout<Option>())
                         len1 += 1
                     }
                 }
             }
             // SAFETY: we and our caller initialized that memory.
-            return Pair(((buf1).slice(0 until len1)).assumeInitRef(), exp1)
+            return Pair(((buf1).subList(0, len1)).assumeInitRef(), exp1)
         }
         // otherwise we are doomed (i.e., some values between `v - 1 ulp` and `v + 1 ulp` are
         // rounding down and others are rounding up) and give up.
@@ -715,7 +715,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
     // SAFETY: The borrow checker is not smart enough to let us use `buf`
     // in the second branch, so we launder the scope here. But we only re-use
     // `buf` if `formatExactOpt` returned `None` so this is okay.
-    return when (val matchVal = formatExactOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), ObjectSlotLayout<Any?>()), limit)) {
+    return when (val matchVal = formatExactOpt(d, RustMutableReference(MutPtr(((mutPtrFromRustCast(buf))).rawAddress), UnresolvedTypeLayout<Any?>()), limit)) {
         null -> fallback(d, buf, limit)
         else -> {
             val ret = matchVal

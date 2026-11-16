@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -53,9 +53,9 @@ public open class ChildPipe internal constructor(
             // pipe semantics, which yields this error when *reading* from
             // a pipe after the other end has closed; we interpret that as
             // EOF on the pipe.
-            result is Result.Err<*> && (result as Result.Err<*>).error.kind() == ErrorKind.BrokenPipe -> {
-                val e = (result as Result.Err<*>).error
-                Result.Ok(0)
+            result is Result.Err && (result as Result.Err).error.kind() == ErrorKind.BrokenPipe -> {
+                val e = result.error
+                Result.Ok<Int, Error>(0)
             }
             else -> result
         }
@@ -75,20 +75,20 @@ public open class ChildPipe internal constructor(
             // pipe semantics, which yields this error when *reading* from
             // a pipe after the other end has closed; we interpret that as
             // EOF on the pipe.
-            result is Result.Err<*> && (result as Result.Err<*>).error.kind() == ErrorKind.BrokenPipe -> {
-                val e = (result as Result.Err<*>).error
-                Result.Ok(Unit)
+            result is Result.Err && (result as Result.Err).error.kind() == ErrorKind.BrokenPipe -> {
+                val e = result.error
+                Result.Ok<Unit, Error>(Unit)
             }
-            result is Result.Err<*> -> {
-                val e1 = (result as Result.Err<*>).error
-                Result.Err(e1)
+            result is Result.Err -> {
+                val e1 = result.error
+                Result.Err<Unit, Error>(e1)
             }
             else -> {
-                val n = (result as Result.Ok<*>).value
+                val n = result.value
                 run {
                     buf.advance(n)
                 }
-                Result.Ok(Unit)
+                Result.Ok<Unit, Error>(Unit)
             }
         }
     }
@@ -141,7 +141,7 @@ public open class ChildPipe internal constructor(
             // except for our `hEvent` field which we set to a valid AsyncResult pointer (see below)
             run {
                 val result = AsyncResult(error = error, transferred = transferred)
-                (ObjectSlotLayout<c.Overlapped>()).readNative((overlapped).rawAddress).hEvent.cast() = result
+                (UnresolvedTypeLayout<c.Overlapped>()).readNative((overlapped).rawAddress).hEvent.cast() = result
             }
         }
         // Use "alertable I/O" to synchronize the pipe I/O.
@@ -166,7 +166,7 @@ public open class ChildPipe internal constructor(
         // and can simply return it. Note that we must not return earlier,
         // while the I/O is still in progress.
         // The result that will be set from the asynchronous callback.
-        val localStorageL367C8 = AddressableLocal(null, ObjectSlotLayout<AsyncResult?>())
+        val localStorageL367C8 = AddressableLocal(null, UnresolvedTypeLayout<AsyncResult?>())
         val asyncResult by localStorageL367C8
         // STEP 1: Start the I/O operation.
         val overlapped: c.Overlapped  = c.Overlapped()
@@ -179,7 +179,7 @@ public open class ChildPipe internal constructor(
         if (result == c.FALSE) {
             // We can return here because the call failed.
             // After this we must not return until the I/O completes.
-            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            return Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
         // Wait indefinitely for the result.
         val result2 =
@@ -194,10 +194,10 @@ public open class ChildPipe internal constructor(
         // STEP 4: Return the result.
         // `asyncResult` is always `Some` at this point
         return when (val matchVal = result2.error) {
-            c.errorSuccess -> Result.Ok(result2.transferred.toInt())
+            c.errorSuccess -> Result.Ok<Int, Error>(result2.transferred.toInt())
             else -> {
                 val error = matchVal
-                Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
+                Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(((error as Any?) as Result<Int, Error>)))
             }
         }
     }
@@ -285,7 +285,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
         val PIPE_FS: Atomic<c.Handle>  = Atomic.new(MutPtr(0L))
         val ioStatus = c.IoStatusBlock.default()
         val objectAttributes = c.ObjectAttributes.default()
-        objectAttributes.length = sizeOf<c.ObjectAttributes>(typeLayoutT = ObjectSlotLayout<c.ObjectAttributes>()).toUInt()
+        objectAttributes.length = sizeOf<c.ObjectAttributes>(typeLayoutT = UnresolvedTypeLayout<c.ObjectAttributes>()).toUInt()
         val pipeFs1 =
             if (PIPE_FS.load(Relaxed) != null && !handle.isNull()) {
                 handle
@@ -297,16 +297,16 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
                 if (c.ntSuccess(status)) {
                     run {
                         val matchVal = PIPE_FS.compareExchange(MutPtr(0L), pipeFs, Relaxed, Relaxed)
-                        when (matchVal) { is Result.Ok<*> -> {
+                        when (matchVal) { is Result.Ok -> {
                             pipeFs
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val existing = matchVal.error
                             c.CloseHandle(pipeFs)
                             existing
                         } }
                     }
                 } else {
-                    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status).toInt()))
+                    return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status).toInt()))
                 }
             }
         // From now on we're using handles instead of paths to create and open pipes.
@@ -315,7 +315,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
         // for empty.Buffer instead of unicodeStr("").
         // There's no difference to the OS itself but it's possible that third party
         // DLLs which hook in to processes could be relying on the exact form of this string.
-        val localStorageL118C8 = AddressableLocal(c.UnicodeString.default(), ObjectSlotLayout<Any?>())
+        val localStorageL118C8 = AddressableLocal(c.UnicodeString.default(), UnresolvedTypeLayout<Any?>())
         objectAttributes.objectName = MutPtr(((localStorageL118C8.asConstPtr())).rawAddress)
         // Create our side of the pipe for async access.
         val ours1 = run {
@@ -342,7 +342,7 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
             if (c.ntSuccess(status1)) {
                 Handle.fromRawHandle(ours)
             } else {
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status1).toInt()))
+                return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status1).toInt()))
             }
         }
         // Open their side of the pipe for synchronous access.
@@ -364,10 +364,10 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
             if (c.ntSuccess(status2)) {
                 Handle.fromRawHandle(theirs)
             } else {
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status2).toInt()))
+                return Result.Err<Pipes, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(c.RtlNtStatusToDosError(status2).toInt()))
             }
         }
-        Result.Ok(Pipes(ours = ChildPipe(inner = ours1), theirs = ChildPipe(inner = theirs1)))
+        Result.Ok<Pipes, Error>(Pipes(ours = ChildPipe(inner = ours1), theirs = ChildPipe(inner = theirs1)))
     }
 }
 
@@ -380,9 +380,9 @@ public fun childPipe(oursReadable: Boolean, theirHandleInheritable: Boolean): Re
  */
 public fun spawnPipeRelay(source: ChildPipe, oursReadable: Boolean, theirHandleInheritable: Boolean): Result<ChildPipe, Error> {
     // We need this handle to live for the scope of the thread spawned below.
-    val source1 = when (val tryResult = source.tryClone()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val source1 = when (val tryResult = source.tryClone()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ChildPipe, Error>(tryResult.error) }
     // create a new pair of anon pipes.
-    val structVal = when (val tryResult = childPipe(oursReadable, theirHandleInheritable)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val structVal = when (val tryResult = childPipe(oursReadable, theirHandleInheritable)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ChildPipe, Error>(tryResult.error) }
     val theirs = structVal.theirs
     val ours = structVal.ours
     // Spawn a thread that passes messages from one pipe to the other.
@@ -397,16 +397,16 @@ public fun spawnPipeRelay(source: ChildPipe, oursReadable: Boolean, theirHandleI
         var buf = UByteArray(4096) { 0u.toUByte() }
         while (true) {
             val matchVal = reader.read(buf)
-            if (matchVal !is Result.Ok<*>) break
-            val len = (matchVal as Result.Ok<*>).value
+            if (matchVal !is Result.Ok) break
+            val len = (matchVal as Result.Ok).value
             if (len == 0) {
                 break
             }
             var start = 0
             while (true) {
                 val matchVal1 = writer.write(((buf).sliceArray(start until len)))
-                if (matchVal1 !is Result.Ok<*>) break
-                val written = (matchVal1 as Result.Ok<*>).value
+                if (matchVal1 !is Result.Ok) break
+                val written = (matchVal1 as Result.Ok).value
                 start += written
                 if (start == len) {
                     continue
@@ -416,14 +416,14 @@ public fun spawnPipeRelay(source: ChildPipe, oursReadable: Boolean, theirHandleI
         }
     })
     // Return the pipe that should be sent to the child process.
-    return Result.Ok(theirs)
+    return Result.Ok<ChildPipe, Error>(theirs)
 }
 
 public fun readOutput(p1: ChildPipe, v1: List<UByte>, p2: ChildPipe, v2: List<UByte>): Result<Unit, Error> {
     val p11 = p1.intoHandle()
     val p21 = p2.intoHandle()
-    val p12 = when (val tryResult = AsyncPipe.new(p11, v1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    val p22 = when (val tryResult = AsyncPipe.new(p21, v2)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val p12 = when (val tryResult = AsyncPipe.new(p11, v1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    val p22 = when (val tryResult = AsyncPipe.new(p21, v2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     val objs = listOf(p12.event.asRawHandle(), p22.event.asRawHandle())
     // In a loop we wait for either pipe's scheduled read operation to complete.
     // If the operation completes with 0 bytes, that means EOF was reached, in
@@ -436,15 +436,15 @@ public fun readOutput(p1: ChildPipe, v1: List<UByte>, p2: ChildPipe, v2: List<UB
     while (true) {
         val res = c.WaitForMultipleObjects(2, objs.asPtr(), c.FALSE, c.INFINITE)
         if (res == c.WAIT_OBJECT_0) {
-            if (!when (val tryResult = p12.result()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } || !when (val tryResult = p12.scheduleRead()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+            if (!when (val tryResult = p12.result()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) } || !when (val tryResult = p12.scheduleRead()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }) {
                 return p22.finish()
             }
         } else if (res == c.WAIT_OBJECT_0 + 1u) {
-            if (!when (val tryResult = p22.result()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } || !when (val tryResult = p22.scheduleRead()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+            if (!when (val tryResult = p22.result()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) } || !when (val tryResult = p22.scheduleRead()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }) {
                 return p12.finish()
             }
         } else {
-            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
     }
 }
@@ -484,7 +484,7 @@ public open class AsyncPipe internal constructor(
                         }
                     this.dst.reserve(additional)
                 }
-                when (val tryResult = this.pipe.readOverlapped(this.dst.spareCapacityMut(), this.overlapped)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.pipe.readOverlapped(this.dst.spareCapacityMut(), this.overlapped)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
             }
         // If this read finished immediately then our overlapped event will
         // remain signaled (it was signaled coming in here) and we'll progress
@@ -494,14 +494,14 @@ public open class AsyncPipe internal constructor(
         // to not signaled, so we flag ourselves into the reading state and move
         // on.
         this.state = when {
-            amt != null && amt == 0 -> { return Result.Ok(false) }
+            amt != null && amt == 0 -> { return Result.Ok<Boolean, Error>(false) }
             amt != null -> {
                 val amt1 = amt
                 State.Read(amt1)
             }
             else -> State.Reading
         }
-        return Result.Ok(true)
+        return Result.Ok<Boolean, Error>(true)
     }
 
     /**
@@ -520,8 +520,8 @@ public open class AsyncPipe internal constructor(
     public open fun result(): Result<Boolean, Error> {
         val amt1 =
             when (val matchVal = this.state) {
-                State.NotReading -> { return Result.Ok(true) }
-                State.Reading -> when (val tryResult = this.pipe.overlappedResult(this.overlapped, true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                State.NotReading -> { return Result.Ok<Boolean, Error>(true) }
+                State.Reading -> when (val tryResult = this.pipe.overlappedResult(this.overlapped, true)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                 is State.Read -> {
                     val (amt) = matchVal
                     amt
@@ -532,7 +532,7 @@ public open class AsyncPipe internal constructor(
             val len = this.dst.size
             this.dst.setLen(len + amt1)
         }
-        return Result.Ok((amt1 != 0).toUByte())
+        return Result.Ok<Boolean, Error>((amt1 != 0).toUByte())
     }
 
     /**
@@ -542,10 +542,10 @@ public open class AsyncPipe internal constructor(
      * if necessary to read all the remaining information.
      */
     public open fun finish(): Result<Unit, Error> {
-        while (when (val tryResult = this.result()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) } && when (val tryResult = this.scheduleRead()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+        while (when (val tryResult = this.result()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) } && when (val tryResult = this.scheduleRead()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }) {
             // ...
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public open fun drop() {
@@ -593,10 +593,10 @@ public open class AsyncPipe internal constructor(
             // WaitForMultipleObjects call above for pipes created initially,
             // and the only time an even will go back to "unset" will be once an
             // I/O operation is successfully scheduled (what we want).
-            val event = when (val tryResult = Handle.newEvent(true, true)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val event = when (val tryResult = Handle.newEvent(true, true)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<AsyncPipe, Error>(tryResult.error) }
             var overlapped: c.Overlapped = c.Overlapped()
             overlapped.hEvent = event.asRawHandle()
-            return Result.Ok(AsyncPipe(pipe = pipe, overlapped = overlapped, event = event, dst = dst, state = State.NotReading))
+            return Result.Ok<AsyncPipe, Error>(AsyncPipe(pipe = pipe, overlapped = overlapped, event = event, dst = dst, state = State.NotReading))
         }
     }
 }

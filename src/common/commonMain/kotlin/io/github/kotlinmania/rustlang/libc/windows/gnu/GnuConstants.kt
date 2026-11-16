@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.libc.windows.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.*
 
 // stdio file descriptor numbers

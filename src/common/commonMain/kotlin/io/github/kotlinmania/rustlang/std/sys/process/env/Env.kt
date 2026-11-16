@@ -1,11 +1,13 @@
 // port-lint: source sys/process/env.rs
 package io.github.kotlinmania.rustlang.std.sys.process.env
 
-import io.github.kotlinmania.rustlang.std.env.varsOs
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sync.mpmc.IntoIter
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.process.windows.EnvKey
 
 public class DebugStruct(
@@ -43,17 +45,17 @@ public open class CommandEnv(
 ) {
     public open fun clone(): CommandEnv = CommandEnv(clear, sawPath, vars)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val debugCommandEnv = DebugStruct(f, "CommandEnv")
         debugCommandEnv.field("clear", this.clear).field("vars", this.vars)
-        debugCommandEnv.finish()
+        return debugCommandEnv.finish()
     }
 
     // Capture the current environment with these changes applied
     public open fun capture(): MutableMap<EnvKey, OsString> {
         val result = mutableMapOf()
         if (!this.clear) {
-            for ((k, v) in varsOs()) {
+            for ((k, v) in Env.varsOs()) {
                 result.put(k.into(), v)
             }
         }

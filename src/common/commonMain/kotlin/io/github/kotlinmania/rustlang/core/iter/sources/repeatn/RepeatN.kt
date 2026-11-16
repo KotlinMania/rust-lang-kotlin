@@ -2,10 +2,11 @@
 package io.github.kotlinmania.rustlang.core.iter.sources.repeatn
 
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -81,17 +82,17 @@ public class DebugStruct(
 public fun <T> repeatN(element: T, count: Int): RepeatN<T> = RepeatN(inner = RepeatNInner.new(element, count))
 
 public open class RepeatNInner<T> internal constructor(
-    countCtorArg: NonZero<Int>,
+    countCtorArg: NonZero<Int, NonZeroUsizeInner>,
     public var element: T,
 ) {
-    public var count: NonZero<Int> = countCtorArg
+    public var count: NonZero<Int, NonZeroUsizeInner> = countCtorArg
         internal set
 
     public open fun clone(): RepeatNInner<T> = RepeatNInner(count, element)
 
     public companion object {
         public operator fun <T> invoke(
-            count: NonZero<Int>,
+            count: NonZero<Int, NonZeroUsizeInner>,
             element: T,
         ): RepeatNInner<T> = RepeatNInner<T>(
             countCtorArg = count,
@@ -99,7 +100,7 @@ public open class RepeatNInner<T> internal constructor(
         )
 
         public fun <T> new(element: T, count: Int): RepeatNInner<T>? {
-            val count1 = (NonZero.new(count) ?: return null)
+            val count1 = (NonZero.new<NonZeroI32Inner, Int>(count) ?: return null)
             return RepeatNInner(element = element, count = count1)
         }
     }
@@ -163,19 +164,19 @@ public open class RepeatN<A>(
         return Pair(len, len)
     }
 
-    public override fun advanceBy(skip: Int): Result<Unit, NonZero<Int>> {
-        val inner = this.inner ?: return NonZero.new(skip).map({ Result.Err(it) }).unwrapOr(Result.Ok(Unit))
+    public override fun advanceBy(skip: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+        val inner = this.inner ?: return ((NonZero.new<NonZeroUsizeInner, Int>(skip))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
         val len = inner!!.count.get()
         when (val matchVal = len.checkedSub(skip)?.let(NonZero::new)) {
             null -> {}
             else -> {
                 val newLen = matchVal
                 inner.count = newLen
-                return Result.Ok(Unit)
+                return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
             }
         }
         this.inner = null
-        return NonZero.new(skip - len).map({ Result.Err(it) }).unwrapOr(Result.Ok(Unit))
+        return ((NonZero.new<NonZeroUsizeInner, Int>(skip - len))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun last(): A? = this.takeElement()
@@ -186,7 +187,7 @@ public open class RepeatN<A>(
 
     public open fun nextBack(): A? = this.next()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.advanceBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.advanceBy(n)
 
     public open fun nthBack(n: Int): A? = this.nth(n)
 

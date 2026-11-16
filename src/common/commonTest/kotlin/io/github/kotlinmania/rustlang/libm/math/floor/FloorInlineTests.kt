@@ -6,7 +6,8 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.libm.math.generic.floor.floorStatus
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf128
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf16
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
@@ -20,14 +21,14 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F) -> F, cases: 
         run {
             val l = value
             val r = expRes
-            check(l.biteq(r)) { ("generic::floor_status($x) (${Hex(x)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("generic::floor_status($x) (${Hex(x)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         check(status == expStat)
         val value1 = f(x)
         run {
             val l1 = value1
             val r1 = expRes
-            check(l1.biteq(r1)) { ("floor($x) (${Hex(x)})").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("floor($x) (${Hex(x)})").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
     }
 }

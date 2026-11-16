@@ -27,7 +27,7 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
             while (true) {
                 run {
                     val matchVal = testNode.ascend()
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val parent = matchVal.value
                         val parent1 = parent.intoNode()
                         if (parent1.len() < CAPACITY) {
@@ -38,7 +38,7 @@ public fun <K, V, I, A : AllocatorClone> Root<K, V>.bulkPush(iter: I, length: Ru
                             // Go up again.
                             testNode = parent1.forgetType()
                         }
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         // We are at the top, create a new root node and push there.
                         openNode = this.pushInternalLevel(alloc.clone())
                         break

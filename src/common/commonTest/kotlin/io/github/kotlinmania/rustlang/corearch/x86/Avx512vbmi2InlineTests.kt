@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
-import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 
 public fun testMm512MaskCompressEpi16() {
     val src = mm512Set1Epi16(200)

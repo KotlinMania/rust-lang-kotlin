@@ -1,9 +1,10 @@
 // port-lint: source sys/sync/thread_parking/darwin.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.darwin
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.time.Duration
@@ -49,12 +50,12 @@ public val PARKED: Byte = (-1).toByte()
 
 public open class Parker internal constructor(
     semaphoreCtorArg: DispatchSemaphoreT,
-    stateCtorArg: Atomic<Byte>,
+    stateCtorArg: Atomic<Byte, Align1<Byte>>,
 ) {
     public var semaphore: DispatchSemaphoreT = semaphoreCtorArg
         internal set
 
-    public var state: Atomic<Byte> = stateCtorArg
+    public var state: Atomic<Byte, Align1<Byte>> = stateCtorArg
         internal set
 
     // Does not need `Pin`, but other implementation do.
@@ -124,7 +125,7 @@ public open class Parker internal constructor(
     public companion object {
         public operator fun invoke(
             semaphore: DispatchSemaphoreT,
-            state: Atomic<Byte>,
+            state: Atomic<Byte, Align1<Byte>>,
         ): Parker = Parker(
             semaphoreCtorArg = semaphore,
             stateCtorArg = state,
@@ -133,7 +134,7 @@ public open class Parker internal constructor(
         public fun newInPlace(parker: MutPtr) {
             val semaphore = dispatchSemaphoreCreate(0L)
             check(!semaphore.isNull()) { "failed to create dispatch semaphore for thread synchronization" }
-            (ObjectSlotLayout<Parker>()).writeNative((parker).rawAddress, Parker(semaphore = semaphore, state = AtomicI8.new(EMPTY)))
+            (UnresolvedTypeLayout<Parker>()).writeNative((parker).rawAddress, Parker(semaphore = semaphore, state = AtomicI8.new(EMPTY)))
         }
     }
 }

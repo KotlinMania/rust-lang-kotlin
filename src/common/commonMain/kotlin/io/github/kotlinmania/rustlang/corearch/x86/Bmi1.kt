@@ -1,7 +1,7 @@
 // port-lint: source x86/bmi1.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 
 // Bit Manipulation Instruction (BMI) Set 1.0.
 //
@@ -70,7 +70,7 @@ public fun blsrU32(x: UInt): UInt = x and ((x - 1u))
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_tzcnt_u16)
  */
-public fun tzcntU16(x: UShort): UShort = rustTrailingZeros(x).toUShort()
+public fun tzcntU16(x: UShort): UShort = x.trailingZeros().toUShort()
 
 /**
  * Counts the number of trailing least significant zero bits.
@@ -79,7 +79,7 @@ public fun tzcntU16(x: UShort): UShort = rustTrailingZeros(x).toUShort()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_tzcnt_u32)
  */
-public fun tzcntU32(x: UInt): UInt = rustTrailingZeros(x)
+public fun tzcntU32(x: UInt): UInt = x.trailingZeros()
 
 /**
  * Counts the number of trailing least significant zero bits.
@@ -88,6 +88,6 @@ public fun tzcntU32(x: UInt): UInt = rustTrailingZeros(x)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_tzcnt_32)
  */
-public fun mmTzcnt32(x: UInt): Int = rustTrailingZeros(x).toInt()
+public fun mmTzcnt32(x: UInt): Int = x.trailingZeros().toInt()
 
 public expect fun x86BmiBextr32(x: UInt, y: UInt): UInt

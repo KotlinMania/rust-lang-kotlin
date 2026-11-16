@@ -5,8 +5,9 @@ import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
 import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.maxBy
-import io.github.kotlinmania.rustlang.core.cmp.minBy
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
@@ -42,8 +43,11 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -282,21 +286,21 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         /**
          * Helper trait to specialize `advanceBy` via `tryFold` for `Sized` iterators.
          */
         interface SpecAdvanceBy {
-            public fun specAdvanceBy(n1: Int): Result<Unit, NonZero<Int>>
+            public fun specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
         }
-        fun <Item, I : Iterator<I, Any?>> I.specAdvanceBy(n1: Int): Result<Unit, NonZero<Int>> {
+        fun <Item, I : Iterator<I, Any?>> I.specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
             for (i in 0 until n1) {
                 if (this.next() == null) {
                     // SAFETY: `i` is always less than `n`.
-                    return Result.Err(NonZero.newUnchecked(n1 - i))
+                    return Result.Err<Unit, NonZero<Int, NonZeroUsizeInner>>(NonZero.newUnchecked<NonZeroUsizeInner, Int>(n1 - i))
                 }
             }
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
         }
         return this.specAdvanceBy(n)
     }
@@ -362,7 +366,7 @@ public interface Iterator<SelfType, Item> {
      *
      * `advanceNAndReturnFirst` is the equivalent of:
      * ```kotlin
-     * fun <I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
+     * fun <Item, I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
      *     val next = iter.next()
      *     if (n > 1) {
      *         iter.nth(n - 2)
@@ -2095,7 +2099,7 @@ public interface Iterator<SelfType, Item> {
             val matchVal = this.next()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum
     }
@@ -2390,7 +2394,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun all(f: (Item) -> Boolean): Boolean {
-        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit> =
+        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit, Unit> =
             { x ->
                 if (f1(x)) {
                     ControlFlow.Continue()
@@ -2436,7 +2440,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun any(f: (Item) -> Boolean): Boolean {
-        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit> =
+        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit, Unit> =
             { x ->
                 if (f1(x)) {
                     ControlFlow.Break()
@@ -2501,7 +2505,7 @@ public interface Iterator<SelfType, Item> {
      * Note that `iter.find(f)` is equivalent to `iter.filter(f).next()`.
      */
     public fun find(predicate: (Item) -> Boolean): Item? {
-        fun <T> check(predicate1: (T) -> Boolean): (Unit, T) -> ControlFlow<T> =
+        fun <T> check(predicate1: (T) -> Boolean): (Unit, T) -> ControlFlow<T, Unit> =
             { x ->
                 if (predicate1(x)) {
                     ControlFlow.Break(x)
@@ -2527,7 +2531,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <B> findMap(f: (Item) -> B?): B? {
-        fun <T, B> check(f1: (T) -> B?): (Unit, T) -> ControlFlow<B> =
+        fun <T, B> check(f1: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
             { x -> when (val matchVal = f1(x)) {
                 null -> ControlFlow.Continue()
                 else -> {
@@ -2791,7 +2795,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun maxBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> maxBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.maxBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -2834,7 +2838,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun minBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> minBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.minBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -3101,7 +3105,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <Item, IntoIter, I> cmpBy(other: I, cmp: (Item, I.Item) -> Ordering): Ordering {
-        fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering> =
+        fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering, Unit> =
             { x, y -> when (val matchVal = cmp1(x, y)) {
                 Ordering.Equal -> ControlFlow.Continue()
                 else -> {
@@ -3176,7 +3180,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <Item, IntoIter, I> partialCmpBy(other: I, partialCmp: (Item, I.Item) -> Ordering?): Ordering? {
-        fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?> =
+        fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?, Unit> =
             { x, y -> when (val matchVal = partialCmp1(x, y)) {
                 Ordering.Equal -> ControlFlow.Continue()
                 else -> {
@@ -3225,7 +3229,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <Item, IntoIter, I> eqBy(other: I, eq: (Item, I.Item) -> Boolean): Boolean {
-        fun <X, Y> compare(eq1: (Item, I.Item) -> Boolean): (X, Y) -> ControlFlow<Unit> =
+        fun <X, Y> compare(eq1: (Item, I.Item) -> Boolean): (X, Y) -> ControlFlow<Unit, Unit> =
             { x, y ->
                 if (eq1(x, y)) {
                     ControlFlow.Continue()
@@ -3407,12 +3411,12 @@ public interface Iterator<SelfType, Item> {
 }
 
 public interface SpecIterEq<B : Iterator<B, Any?>, Item, T> : Iterator<T, Any?> {
-    public fun specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit>): Boolean
+    public fun specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean
 }
 
-public fun <Item, A : Iterator<A, Any?>, B : Iterator<B, Any?>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit>): Boolean = iterEq(this, b, f)
+public fun <Item, A : Iterator<A, Any?>, B : Iterator<B, Any?>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean = iterEq(this, b, f)
 
-public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>): Boolean where A : Iterator<A, Any?>, A : TrustedLen<A>, B : Iterator<B, Any?>, B : TrustedLen<B> {
+public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Any?>, A : TrustedLen<A>, B : Iterator<B, Any?>, B : TrustedLen<B> {
     // we *can't* short-circuit if:
     run {
         val matchVal = Pair(this.sizeHint(), b.sizeHint())
@@ -3443,8 +3447,8 @@ public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>
  * Isolates the logic shared by ['cmpBy'](Iterator.cmpBy),
  * ['partialCmpBy'](Iterator.partialCmpBy), and ['eqBy'](Iterator.eqBy).
  */
-public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T>): ControlFlow<T, Ordering> where A : Iterator<A, Any?>, B : Iterator<B, Any?> {
-    fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T>): (X) -> ControlFlow<ControlFlow<T, Ordering>> where B : Iterator<B, Any?> =
+public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T, Unit>): ControlFlow<T, Ordering> where A : Iterator<A, Any?>, B : Iterator<B, Any?> {
+    fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T, Unit>): (X) -> ControlFlow<ControlFlow<T, Ordering>, Unit> where B : Iterator<B, Any?> =
         { x -> when (val matchVal = b1.next()) {
             null -> ControlFlow.Break(ControlFlow.Continue(Ordering.Greater))
             else -> {
@@ -3464,7 +3468,7 @@ public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> Contro
     }
 }
 
-public fun <Item, A, B> iterEq(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<Unit>): Boolean where A : Iterator<A, Any?>, B : Iterator<B, Any?> = iterCompare(a, b, f).continueValue().isSomeAnd({ ord -> ord == Ordering.Equal })
+public fun <Item, A, B> iterEq(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Any?>, B : Iterator<B, Any?> = iterCompare(a, b, f).continueValue().isSomeAnd({ ord -> ord == Ordering.Equal })
 
 /**
  * Helper trait to specialize `fold` and `tryFold` for `I where I: Sized`
@@ -3492,7 +3496,7 @@ public fun <Item, I : Iterator<I, Any?>, B, R> I.specTryFold(init: B, f: (B, Ite
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }

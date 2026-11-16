@@ -4,7 +4,7 @@
 package io.github.kotlinmania.rustlang.core.array.ascii
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
 /**
@@ -42,5 +42,5 @@ public fun UByteArray.asAsciiUnchecked(n: Int): List<io.github.kotlinmania.rustl
     val bytePtr: ConstPtr = this
     val asciiPtr = ConstPtr(bytePtr.rawAddress, bytePtr.rawMeta)
     // SAFETY: The caller promised all the bytes are ASCII
-    return (ObjectSlotLayout<List<io.github.kotlinmania.rustlang.core.ascii.Char>>()).readNative((asciiPtr).rawAddress)
+    return (UnresolvedTypeLayout<List<io.github.kotlinmania.rustlang.core.ascii.Char>>()).readNative((asciiPtr).rawAddress)
 }

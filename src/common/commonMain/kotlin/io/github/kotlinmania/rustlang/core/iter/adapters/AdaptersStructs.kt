@@ -1,8 +1,11 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters
 
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 
@@ -18,7 +21,7 @@ public typealias Source<I> = I.Source
 public open class GenericShunt<I, R>(
     public var iter: I,
     public var residual: R?,
-) : SourceIter<Any?, Source>, InPlaceIterable, Iterable<Output> {
+) : SourceIter<Source>, InPlaceIterable, Iterable<Output> {
     override fun iterator(): Iterator<Output> = object : AbstractIterator<Output>() {
         override fun computeNext() {
             when (val v = this@GenericShunt.next()) {
@@ -62,8 +65,8 @@ public open class GenericShunt<I, R>(
         // SAFETY: GenericShunt.next calls `I.tryForEach`, which has to advance `iter`
         // in order to return `Some(_)`. Since `iter` has type `I: InPlaceIterable` it's
         // guaranteed that at least one item will be moved out from the underlying source.
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }

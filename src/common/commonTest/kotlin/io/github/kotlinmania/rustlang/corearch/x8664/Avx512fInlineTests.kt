@@ -5,9 +5,9 @@ import io.github.kotlinmania.rustlang.core.hint.blackBox
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -11315,7 +11315,7 @@ public fun testMmLoaduEpi64() {
 
 public fun testMm512MaskCvtepi64StoreuEpi16() {
     val a = mm512Set1Epi64(9L)
-    val localStorageL12315C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL12315C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12315C8
     run {
         mm512MaskCvtepi64StoreuEpi16((MutPtr(localStorageL12315C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11326,7 +11326,7 @@ public fun testMm512MaskCvtepi64StoreuEpi16() {
 
 public fun testMm256MaskCvtepi64StoreuEpi16() {
     val a = mm256Set1Epi64x(9L)
-    val localStorageL12326C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12326C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12326C8
     run {
         mm256MaskCvtepi64StoreuEpi16((MutPtr(localStorageL12326C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11337,7 +11337,7 @@ public fun testMm256MaskCvtepi64StoreuEpi16() {
 
 public fun testMmMaskCvtepi64StoreuEpi16() {
     val a = mmSet1Epi64x(9L)
-    val localStorageL12337C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12337C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12337C8
     run {
         mmMaskCvtepi64StoreuEpi16((MutPtr(localStorageL12337C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11348,7 +11348,7 @@ public fun testMmMaskCvtepi64StoreuEpi16() {
 
 public fun testMm512MaskCvtsepi64StoreuEpi16() {
     val a = mm512Set1Epi64(Long.MAX_VALUE)
-    val localStorageL12348C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL12348C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12348C8
     run {
         mm512MaskCvtsepi64StoreuEpi16((MutPtr(localStorageL12348C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11359,7 +11359,7 @@ public fun testMm512MaskCvtsepi64StoreuEpi16() {
 
 public fun testMm256MaskCvtsepi64StoreuEpi16() {
     val a = mm256Set1Epi64x(Long.MAX_VALUE)
-    val localStorageL12359C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12359C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12359C8
     run {
         mm256MaskCvtsepi64StoreuEpi16((MutPtr(localStorageL12359C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11370,7 +11370,7 @@ public fun testMm256MaskCvtsepi64StoreuEpi16() {
 
 public fun testMmMaskCvtsepi64StoreuEpi16() {
     val a = mmSet1Epi64x(Long.MAX_VALUE)
-    val localStorageL12370C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12370C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12370C8
     run {
         mmMaskCvtsepi64StoreuEpi16((MutPtr(localStorageL12370C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11381,7 +11381,7 @@ public fun testMmMaskCvtsepi64StoreuEpi16() {
 
 public fun testMm512MaskCvtusepi64StoreuEpi16() {
     val a = mm512Set1Epi64(Long.MAX_VALUE)
-    val localStorageL12381C8 = AddressableLocal(mmUndefinedSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL12381C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12381C8
     run {
         mm512MaskCvtusepi64StoreuEpi16((MutPtr(localStorageL12381C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11392,7 +11392,7 @@ public fun testMm512MaskCvtusepi64StoreuEpi16() {
 
 public fun testMm256MaskCvtusepi64StoreuEpi16() {
     val a = mm256Set1Epi64x(Long.MAX_VALUE)
-    val localStorageL12392C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12392C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12392C8
     run {
         mm256MaskCvtusepi64StoreuEpi16((MutPtr(localStorageL12392C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11403,7 +11403,7 @@ public fun testMm256MaskCvtusepi64StoreuEpi16() {
 
 public fun testMmMaskCvtusepi64StoreuEpi16() {
     val a = mmSet1Epi64x(Long.MAX_VALUE)
-    val localStorageL12412C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12412C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12412C8
     run {
         mmMaskCvtusepi64StoreuEpi16((MutPtr(localStorageL12412C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11414,7 +11414,7 @@ public fun testMmMaskCvtusepi64StoreuEpi16() {
 
 public fun testMm512MaskCvtepi64StoreuEpi8() {
     val a = mm512Set1Epi64(9L)
-    val localStorageL12423C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12423C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12423C8
     run {
         mm512MaskCvtepi64StoreuEpi8((MutPtr(localStorageL12423C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11425,7 +11425,7 @@ public fun testMm512MaskCvtepi64StoreuEpi8() {
 
 public fun testMm256MaskCvtepi64StoreuEpi8() {
     val a = mm256Set1Epi64x(9L)
-    val localStorageL12434C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12434C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12434C8
     run {
         mm256MaskCvtepi64StoreuEpi8((MutPtr(localStorageL12434C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11436,7 +11436,7 @@ public fun testMm256MaskCvtepi64StoreuEpi8() {
 
 public fun testMmMaskCvtepi64StoreuEpi8() {
     val a = mmSet1Epi64x(9L)
-    val localStorageL12445C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12445C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12445C8
     run {
         mmMaskCvtepi64StoreuEpi8((MutPtr(localStorageL12445C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11447,7 +11447,7 @@ public fun testMmMaskCvtepi64StoreuEpi8() {
 
 public fun testMm512MaskCvtsepi64StoreuEpi8() {
     val a = mm512Set1Epi64(Long.MAX_VALUE)
-    val localStorageL12456C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12456C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12456C8
     run {
         mm512MaskCvtsepi64StoreuEpi8((MutPtr(localStorageL12456C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11458,7 +11458,7 @@ public fun testMm512MaskCvtsepi64StoreuEpi8() {
 
 public fun testMm256MaskCvtsepi64StoreuEpi8() {
     val a = mm256Set1Epi64x(Long.MAX_VALUE)
-    val localStorageL12473C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12473C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12473C8
     run {
         mm256MaskCvtsepi64StoreuEpi8((MutPtr(localStorageL12473C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11469,7 +11469,7 @@ public fun testMm256MaskCvtsepi64StoreuEpi8() {
 
 public fun testMmMaskCvtsepi64StoreuEpi8() {
     val a = mmSet1Epi64x(Long.MAX_VALUE)
-    val localStorageL12490C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12490C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12490C8
     run {
         mmMaskCvtsepi64StoreuEpi8((MutPtr(localStorageL12490C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11480,7 +11480,7 @@ public fun testMmMaskCvtsepi64StoreuEpi8() {
 
 public fun testMm512MaskCvtusepi64StoreuEpi8() {
     val a = mm512Set1Epi64(Long.MAX_VALUE)
-    val localStorageL12501C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12501C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12501C8
     run {
         mm512MaskCvtusepi64StoreuEpi8((MutPtr(localStorageL12501C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11491,7 +11491,7 @@ public fun testMm512MaskCvtusepi64StoreuEpi8() {
 
 public fun testMm256MaskCvtusepi64StoreuEpi8() {
     val a = mm256Set1Epi64x(Long.MAX_VALUE)
-    val localStorageL12518C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12518C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12518C8
     run {
         mm256MaskCvtusepi64StoreuEpi8((MutPtr(localStorageL12518C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11502,7 +11502,7 @@ public fun testMm256MaskCvtusepi64StoreuEpi8() {
 
 public fun testMmMaskCvtusepi64StoreuEpi8() {
     val a = mmSet1Epi64x(Long.MAX_VALUE)
-    val localStorageL12535C8 = AddressableLocal(mmSet1Epi8(0), ObjectSlotLayout<M128i>())
+    val localStorageL12535C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12535C8
     run {
         mmMaskCvtusepi64StoreuEpi8((MutPtr(localStorageL12535C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11513,7 +11513,7 @@ public fun testMmMaskCvtusepi64StoreuEpi8() {
 
 public fun testMm512MaskCvtepi64StoreuEpi32() {
     val a = mm512Set1Epi64(9L)
-    val localStorageL12552C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL12552C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL12552C8
     run {
         mm512MaskCvtepi64StoreuEpi32((MutPtr(localStorageL12552C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11524,7 +11524,7 @@ public fun testMm512MaskCvtepi64StoreuEpi32() {
 
 public fun testMm256MaskCvtepi64StoreuEpi32() {
     val a = mm256Set1Epi64x(9L)
-    val localStorageL12563C8 = AddressableLocal(mmSet1Epi32(0), ObjectSlotLayout<M128i>())
+    val localStorageL12563C8 = AddressableLocal(mmSet1Epi32(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12563C8
     run {
         mm256MaskCvtepi64StoreuEpi32((MutPtr(localStorageL12563C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11535,7 +11535,7 @@ public fun testMm256MaskCvtepi64StoreuEpi32() {
 
 public fun testMmMaskCvtepi64StoreuEpi32() {
     val a = mmSet1Epi64x(9L)
-    val localStorageL12574C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12574C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12574C8
     run {
         mmMaskCvtepi64StoreuEpi32((MutPtr(localStorageL12574C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11546,7 +11546,7 @@ public fun testMmMaskCvtepi64StoreuEpi32() {
 
 public fun testMm512MaskCvtsepi64StoreuEpi32() {
     val a = mm512Set1Epi64(Long.MAX_VALUE)
-    val localStorageL12585C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL12585C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL12585C8
     run {
         mm512MaskCvtsepi64StoreuEpi32((MutPtr(localStorageL12585C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11557,7 +11557,7 @@ public fun testMm512MaskCvtsepi64StoreuEpi32() {
 
 public fun testMm256MaskCvtsepi64StoreuEpi32() {
     val a = mm256Set1Epi64x(Long.MAX_VALUE)
-    val localStorageL12596C8 = AddressableLocal(mmSet1Epi32(0), ObjectSlotLayout<M128i>())
+    val localStorageL12596C8 = AddressableLocal(mmSet1Epi32(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12596C8
     run {
         mm256MaskCvtsepi64StoreuEpi32((MutPtr(localStorageL12596C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFu, a)
@@ -11568,7 +11568,7 @@ public fun testMm256MaskCvtsepi64StoreuEpi32() {
 
 public fun testMmMaskCvtsepi64StoreuEpi32() {
     val a = mmSet1Epi64x(Long.MAX_VALUE)
-    val localStorageL12607C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12607C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12607C8
     run {
         mmMaskCvtsepi64StoreuEpi32((MutPtr(localStorageL12607C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0x3u, a)
@@ -11579,7 +11579,7 @@ public fun testMmMaskCvtsepi64StoreuEpi32() {
 
 public fun testMm512MaskCvtusepi64StoreuEpi32() {
     val a = mm512Set1Epi64(Long.MAX_VALUE)
-    val localStorageL12618C8 = AddressableLocal(mm256UndefinedSi256(), ObjectSlotLayout<M256i>())
+    val localStorageL12618C8 = AddressableLocal(mm256UndefinedSi256(), UnresolvedTypeLayout<M256i>())
     val r by localStorageL12618C8
     run {
         mm512MaskCvtusepi64StoreuEpi32((MutPtr(localStorageL12618C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
@@ -11590,7 +11590,7 @@ public fun testMm512MaskCvtusepi64StoreuEpi32() {
 
 public fun testMm256MaskCvtusepi64StoreuEpi32() {
     val a = mm256Set1Epi64x(Long.MAX_VALUE)
-    val localStorageL12629C8 = AddressableLocal(mmSet1Epi32(0), ObjectSlotLayout<M128i>())
+    val localStorageL12629C8 = AddressableLocal(mmSet1Epi32(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12629C8
     run {
         mm256MaskCvtusepi64StoreuEpi32((MutPtr(localStorageL12629C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFu, a)
@@ -11601,7 +11601,7 @@ public fun testMm256MaskCvtusepi64StoreuEpi32() {
 
 public fun testMmMaskCvtusepi64StoreuEpi32() {
     val a = mmSet1Epi64x(Long.MAX_VALUE)
-    val localStorageL12640C8 = AddressableLocal(mmSet1Epi16(0), ObjectSlotLayout<M128i>())
+    val localStorageL12640C8 = AddressableLocal(mmSet1Epi16(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12640C8
     run {
         mmMaskCvtusepi64StoreuEpi32((MutPtr(localStorageL12640C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0x3u, a)
@@ -11612,7 +11612,7 @@ public fun testMmMaskCvtusepi64StoreuEpi32() {
 
 public fun testMm512StoreuEpi64() {
     val a = mm512Set1Epi64(9L)
-    val localStorageL12651C8 = AddressableLocal(mm512Set1Epi64(0L), ObjectSlotLayout<M512i>())
+    val localStorageL12651C8 = AddressableLocal(mm512Set1Epi64(0L), UnresolvedTypeLayout<M512i>())
     val r by localStorageL12651C8
     run {
         mm512StoreuEpi64((MutPtr(localStorageL12651C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11622,7 +11622,7 @@ public fun testMm512StoreuEpi64() {
 
 public fun testMm256StoreuEpi64() {
     val a = mm256Set1Epi64x(9L)
-    val localStorageL12661C8 = AddressableLocal(mm256Set1Epi64x(0L), ObjectSlotLayout<M256i>())
+    val localStorageL12661C8 = AddressableLocal(mm256Set1Epi64x(0L), UnresolvedTypeLayout<M256i>())
     val r by localStorageL12661C8
     run {
         mm256StoreuEpi64((MutPtr(localStorageL12661C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11632,7 +11632,7 @@ public fun testMm256StoreuEpi64() {
 
 public fun testMmStoreuEpi64() {
     val a = mmSet1Epi64x(9L)
-    val localStorageL12671C8 = AddressableLocal(mmSet1Epi64x(0L), ObjectSlotLayout<M128i>())
+    val localStorageL12671C8 = AddressableLocal(mmSet1Epi64x(0L), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12671C8
     run {
         mmStoreuEpi64((MutPtr(localStorageL12671C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11643,13 +11643,13 @@ public fun testMmStoreuEpi64() {
 public fun testMm512LoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11663,13 +11663,13 @@ public fun testMm512LoadEpi64() {
 public fun testMm256LoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11683,13 +11683,13 @@ public fun testMm256LoadEpi64() {
 public fun testMmLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11702,7 +11702,7 @@ public fun testMmLoadEpi64() {
 
 public fun testMm512StoreEpi64() {
     val a = mm512Set1Epi64(9L)
-    val localStorageL12722C8 = AddressableLocal(mm512Set1Epi64(0L), ObjectSlotLayout<M512i>())
+    val localStorageL12722C8 = AddressableLocal(mm512Set1Epi64(0L), UnresolvedTypeLayout<M512i>())
     val r by localStorageL12722C8
     run {
         mm512StoreEpi64((MutPtr(localStorageL12722C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11712,7 +11712,7 @@ public fun testMm512StoreEpi64() {
 
 public fun testMm256StoreEpi64() {
     val a = mm256Set1Epi64x(9L)
-    val localStorageL12732C8 = AddressableLocal(mm256Set1Epi64x(0L), ObjectSlotLayout<M256i>())
+    val localStorageL12732C8 = AddressableLocal(mm256Set1Epi64x(0L), UnresolvedTypeLayout<M256i>())
     val r by localStorageL12732C8
     run {
         mm256StoreEpi64((MutPtr(localStorageL12732C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11722,7 +11722,7 @@ public fun testMm256StoreEpi64() {
 
 public fun testMmStoreEpi64() {
     val a = mmSet1Epi64x(9L)
-    val localStorageL12742C8 = AddressableLocal(mmSet1Epi64x(0L), ObjectSlotLayout<M128i>())
+    val localStorageL12742C8 = AddressableLocal(mmSet1Epi64x(0L), UnresolvedTypeLayout<M128i>())
     val r by localStorageL12742C8
     run {
         mmStoreEpi64((MutPtr(localStorageL12742C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)
@@ -11733,13 +11733,13 @@ public fun testMmStoreEpi64() {
 public fun testMm512LoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11752,7 +11752,7 @@ public fun testMm512LoadPd() {
 
 public fun testMm512StorePd() {
     val a = mm512Set1Pd(9.0)
-    val localStorageL12767C8 = AddressableLocal(mm512UndefinedPd(), ObjectSlotLayout<M512d>())
+    val localStorageL12767C8 = AddressableLocal(mm512UndefinedPd(), UnresolvedTypeLayout<M512d>())
     val r by localStorageL12767C8
     run {
         mm512StorePd((MutPtr(localStorageL12767C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, a)

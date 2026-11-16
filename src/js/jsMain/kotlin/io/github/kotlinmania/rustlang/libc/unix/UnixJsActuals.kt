@@ -2,25 +2,25 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.PthreadKeyT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SpeedT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ClockT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
@@ -367,7 +367,7 @@ public actual fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, n: SizeT): MutPt
 public actual fun getpwnam(name: ConstPtr): MutPtr =
     if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixGetpwnam(name.rawAddress.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getpwuid(uid: io.github.kotlinmania.rustlang.libc.UidT): MutPtr =
+public actual fun getpwuid(uid: UidT): MutPtr =
     if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixGetpwuid(uid) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
@@ -483,10 +483,10 @@ public actual fun rewinddir(dirp: MutPtr) {
 public actual fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: CInt): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixFchmodat(dirfd, pathname.rawAddress.toString(), mode.toInt(), flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT): CInt =
+public actual fun fchown(fd: CInt, owner: UidT, group: GidT): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixFchown(fd, owner, group) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT, flags: CInt): CInt =
+public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: UidT, group: GidT, flags: CInt): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixFchownat(dirfd, pathname.rawAddress.toString(), owner, group, flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
@@ -660,7 +660,7 @@ public actual fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt =
 public actual fun tcgetpgrp(fd: CInt): PidT =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixTcgetpgrp(fd) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.libc.PidT): CInt =
+public actual fun tcsetpgrp(fd: CInt, pgrp: PidT): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixTcsetpgrp(fd, pgrp) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun ttyname(fd: CInt): MutPtr =
@@ -754,16 +754,16 @@ public actual fun realpath(pathname: ConstPtr, resolved: MutPtr): MutPtr =
     if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixRealpath(pathname.rawAddress.toString(), resolved.rawAddress.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun times(buf: MutPtr): ClockT =
-    if (unixNapiAddon != null) (unixNapiAddon.libcUnixTimes(buf.rawAddress.toString()) as String).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixTimes(buf.rawAddress.toString()) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSelf(): PthreadT =
-    if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixPthreadSelf() as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadSelf() as String).toLong().toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadEqual(t1.rawAddress.toString(), t2.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadEqual(t1.toLong().toString(), t2.toLong().toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadJoin(native.rawAddress.toString(), value.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadJoin(native.toLong().toString(), value.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadExit(value: MutPtr): Nothing {
     if (unixNapiAddon != null) {
@@ -790,7 +790,7 @@ public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadAttrSetdetachstate(attr.rawAddress.toString(), state) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadDetach(thread.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadDetach(thread.toLong().toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedYield(): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixSchedYield() as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -799,13 +799,13 @@ public actual fun pthreadKeyCreate(key: MutPtr, dtor: PthreadKeyCreateDtorCallba
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadKeyCreate(key.rawAddress.toString(), 0L.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadKeyDelete(key: PthreadKeyT): CInt =
-    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadKeyDelete(key) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadKeyDelete(key.toInt()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetspecific(key: PthreadKeyT): MutPtr =
-    if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixPthreadGetspecific(key) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixPthreadGetspecific(key.toInt()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetspecific(key: PthreadKeyT, value: ConstPtr): CInt =
-    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadSetspecific(key, value.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadSetspecific(key.toInt(), value.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexInit(lock: MutPtr, attr: ConstPtr): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixPthreadMutexInit(lock.rawAddress.toString(), attr.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -1086,7 +1086,7 @@ public actual fun tcflow(fd: CInt, action: CInt): CInt =
 public actual fun tcflush(fd: CInt, action: CInt): CInt =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixTcflush(fd, action) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.libc.PidT =
+public actual fun tcgetsid(fd: CInt): PidT =
     if (unixNapiAddon != null) (unixNapiAddon.libcUnixTcgetsid(fd) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun tcsendbreak(fd: CInt, duration: CInt): CInt =
@@ -1158,7 +1158,7 @@ public actual fun adjtime(delta: ConstPtr, olddelta: MutPtr): CInt =
 public actual fun stpncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
     if (unixNapiAddon != null) MutPtr((unixNapiAddon.libcUnixStpncpy(dst.rawAddress.toString(), src.rawAddress.toString(), n.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.libc.Sigval): CInt =
+public actual fun sigqueue(pid: PidT, sig: CInt, value: Sigval): CInt =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun confstr(name: CInt, buf: MutPtr, len: SizeT): SizeT =

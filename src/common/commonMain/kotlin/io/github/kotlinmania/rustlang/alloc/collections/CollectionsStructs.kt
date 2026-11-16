@@ -15,7 +15,7 @@ public open class TryReserveError(
      */
     public open fun kind(): TryReserveErrorKind = this.kind.clone()
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> {
         fmt.append("memory allocation failed")
         val reason =
             when (this.kind) {

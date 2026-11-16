@@ -20,15 +20,14 @@ import io.github.kotlinmania.rustlang.backtrace.windowssys.SYMOPT_DEFERRED_LOADS
 import io.github.kotlinmania.rustlang.backtrace.windowssys.TRUE
 import io.github.kotlinmania.rustlang.backtrace.windowssys.lstrlenW
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.asPtr
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 
 // A module to assist in managing dbghelp bindings on Windows
@@ -148,15 +147,15 @@ public open class Dbghelp internal constructor(
      */
     public open fun ensureOpen(): Result<Unit, Unit> {
         if (!this.dll.isNull()) {
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, Unit>(Unit)
         }
         val lib = "dbghelp.dll\u0000".encodeToByteArray()
         return run {
             this.dll = LoadLibraryA(lib.asPtr())
             if (this.dll.isNull()) {
-                Result.Err(Unit)
+                Result.Err<Unit, Unit>(Unit)
             } else {
-                Result.Ok(Unit)
+                Result.Ok<Unit, Unit>(Unit)
             }
         }
     }
@@ -167,7 +166,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetOptions\u0000"
                 this.symGetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetOptions>(this.symGetOptions)
+            transmute(this.symGetOptions)
         }
     }
 
@@ -177,7 +176,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetOptions\u0000"
                 this.symSetOptions = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymSetOptions>(this.symSetOptions)
+            transmute(this.symSetOptions)
         }
     }
 
@@ -187,7 +186,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymInitializeW\u0000"
                 this.symInitializeW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymInitializeW>(this.symInitializeW)
+            transmute(this.symInitializeW)
         }
     }
 
@@ -197,7 +196,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetSearchPathW\u0000"
                 this.symGetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetSearchPathW>(this.symGetSearchPathW)
+            transmute(this.symGetSearchPathW)
         }
     }
 
@@ -207,7 +206,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymSetSearchPathW\u0000"
                 this.symSetSearchPathW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymSetSearchPathW>(this.symSetSearchPathW)
+            transmute(this.symSetSearchPathW)
         }
     }
 
@@ -217,7 +216,7 @@ public open class Dbghelp internal constructor(
                 val name = "EnumerateLoadedModulesW64\u0000"
                 this.enumerateLoadedModulesW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, EnumerateLoadedModulesW64>(this.enumerateLoadedModulesW64)
+            transmute(this.enumerateLoadedModulesW64)
         }
     }
 
@@ -227,7 +226,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalk64\u0000"
                 this.stackWalk64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, StackWalk64>(this.stackWalk64)
+            transmute(this.stackWalk64)
         }
     }
 
@@ -237,7 +236,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFunctionTableAccess64\u0000"
                 this.symFunctionTableAccess64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymFunctionTableAccess64>(this.symFunctionTableAccess64)
+            transmute(this.symFunctionTableAccess64)
         }
     }
 
@@ -247,7 +246,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetModuleBase64\u0000"
                 this.symGetModuleBase64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetModuleBase64>(this.symGetModuleBase64)
+            transmute(this.symGetModuleBase64)
         }
     }
 
@@ -257,7 +256,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromAddrW\u0000"
                 this.symFromAddrW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymFromAddrW>(this.symFromAddrW)
+            transmute(this.symFromAddrW)
         }
     }
 
@@ -267,7 +266,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromAddrW64\u0000"
                 this.symGetLineFromAddrW64 = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetLineFromAddrW64>(this.symGetLineFromAddrW64)
+            transmute(this.symGetLineFromAddrW64)
         }
     }
 
@@ -277,7 +276,7 @@ public open class Dbghelp internal constructor(
                 val name = "StackWalkEx\u0000"
                 this.stackWalkEx = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, StackWalkEx>(this.stackWalkEx)
+            transmute(this.stackWalkEx)
         }
     }
 
@@ -287,7 +286,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymFromInlineContextW\u0000"
                 this.symFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymFromInlineContextW>(this.symFromInlineContextW)
+            transmute(this.symFromInlineContextW)
         }
     }
 
@@ -297,7 +296,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymGetLineFromInlineContextW\u0000"
                 this.symGetLineFromInlineContextW = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymGetLineFromInlineContextW>(this.symGetLineFromInlineContextW)
+            transmute(this.symGetLineFromInlineContextW)
         }
     }
 
@@ -307,7 +306,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymAddrIncludeInlineTrace\u0000"
                 this.symAddrIncludeInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymAddrIncludeInlineTrace>(this.symAddrIncludeInlineTrace)
+            transmute(this.symAddrIncludeInlineTrace)
         }
     }
 
@@ -317,7 +316,7 @@ public open class Dbghelp internal constructor(
                 val name = "SymQueryInlineTrace\u0000"
                 this.symQueryInlineTrace = (this.symbol(name.encodeToByteArray().map { it.toUByte() }) ?: return null)
             }
-            transmute<Int, SymQueryInlineTrace>(this.symQueryInlineTrace)
+            transmute(this.symQueryInlineTrace)
         }
     }
 
@@ -559,7 +558,7 @@ public fun init(): Result<Init, Unit> {
             val name = mutexName()
             lock = CreateMutexA(MutPtr(0L), FALSE, name.asPtr())
             if (lock.isNull()) {
-                return Result.Err(Unit)
+                return Result.Err<Init, Unit>(Unit)
             }
             when (val matchVal = LOCK.compareExchange(MutPtr(0L), lock, SeqCst, SeqCst)) {
                 is Err -> {
@@ -588,22 +587,22 @@ public fun init(): Result<Init, Unit> {
         // once, though, so we've got a global boolean indicating whether we're
         // done yet or not.
         // Note: https://github.com/rust-lang/backtrace-rs/issues/678
-        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Init, Unit>(tryResult.error) }
         if (INITIALIZED.inv()) {
             setOptionalOptions(ret.dbghelp())
             INITIALIZED = true
         }
-        Result.Ok(ret)
+        Result.Ok<Init, Unit>(ret)
     }
 }
 
 public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
     run {
-        val orig = ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetOptions() ?: return null)()
+        val orig = ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetOptions() ?: return null)()
         // Ensure that the `SYMOPT_DEFERRED_LOADS` flag is set, because
         // according to MSVC's own docs about this: "This is the fastest, most
         // efficient way to use the symbol handler.", so let's do that!
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetOptions() ?: return null)(orig or SYMOPT_DEFERRED_LOADS)
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetOptions() ?: return null)(orig or SYMOPT_DEFERRED_LOADS)
         // Actually initialize symbols with MSVC. Note that this can fail, but we
         // ignore it. There's not a ton of prior art for this per se, but LLVM
         // internally seems to ignore the return value here and one of the
@@ -616,7 +615,7 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
         // the time, but now that it's using this crate it means that someone will
         // get to initialization first and the other will pick up that
         // initialization.
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symInitializeW() ?: return null)(GetCurrentProcess(), MutPtr(0L), TRUE)
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symInitializeW() ?: return null)(GetCurrentProcess(), MutPtr(0L), TRUE)
         // The default search path for dbghelp will only look in the current working
         // directory and (possibly) `_NT_SYMBOL_PATH` and `_NT_ALT_SYMBOL_PATH`.
         // However, we also want to look in the directory of the executable
@@ -628,7 +627,7 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
         val searchPathBuf = mutableListOf<UShort>()
         searchPathBuf.resize(1024, 0)
         // Prefill the buffer with the current search path.
-        if (((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), null) == TRUE) {
+        if (((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symGetSearchPathW() ?: return null)(GetCurrentProcess(), searchPathBuf.asMutPtr(), null) == TRUE) {
             // Trim the buffer to the actual length of the string.
             val len = lstrlenW(searchPathBuf.asMutPtr())
             check(len >= 0)
@@ -639,13 +638,13 @@ public fun setOptionalOptions(dbghelp: MutPtr): Unit? {
             searchPathBuf.add(utf16Char('.'))
             searchPathBuf.add(utf16Char(';'))
         }
-        val localStorageL374C8 = AddressableLocal(SearchPath.new(searchPathBuf), ObjectSlotLayout<SearchPath>())
+        val localStorageL374C8 = AddressableLocal(SearchPath.new(searchPathBuf), UnresolvedTypeLayout<SearchPath>())
         val searchPath by localStorageL374C8
         // Update the search path to include the directory of the executable and each DLL.
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).enumerateLoadedModulesW64() ?: return null)(GetCurrentProcess(), ::enumLoadedModulesCallback, ((MutPtr(localStorageL374C8.asMutPtr().rawAddress))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).enumerateLoadedModulesW64() ?: return null)(GetCurrentProcess(), ::enumLoadedModulesCallback, ((MutPtr(localStorageL374C8.asMutPtr().rawAddress))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })
         val newSearchPath = searchPath.finalize()
         // Set the new search path.
-        ((ObjectSlotLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetSearchPathW() ?: return null)(GetCurrentProcess(), newSearchPath.asPtr())
+        ((UnresolvedTypeLayout<Dbghelp>()).readNative((dbghelp).rawAddress).symSetSearchPathW() ?: return null)(GetCurrentProcess(), newSearchPath.asPtr())
     }
     return Unit
 }
@@ -695,13 +694,13 @@ public fun enumLoadedModulesCallback(moduleName: Pcwstr, arg1: ULong, arg2: UInt
         // This should not happen, but if it does, we can just ignore it.
         return TRUE
     }
-    val moduleName1 = rawSliceList(moduleName, len.toInt(), PrimitiveLayouts.U8)
+    val moduleName1 = Slice.fromRawParts(moduleName, len)
     val pathSep = utf16Char('\\')
     val altPathSep = utf16Char('/')
     val endOfDirectory = moduleName1.iter().indexOfLast({ c -> c == pathSep || c == altPathSep }).takeIf { it >= 0 } ?: // `moduleName` being an absolute path, it should always contain at least one
 // path separator. If not, there is nothing we can do.
 return TRUE
-    val searchPath = RustMutableReference(MutPtr(((MutPtr(userContext.rawAddress, userContext.rawMeta))).rawAddress), ObjectSlotLayout<SearchPath>())
+    val searchPath = RustMutableReference(MutPtr(((MutPtr(userContext.rawAddress, userContext.rawMeta))).rawAddress), UnresolvedTypeLayout<SearchPath>())
     searchPath.add(moduleName1[0 until endOfDirectory])
     return TRUE
 }

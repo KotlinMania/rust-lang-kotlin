@@ -4,11 +4,12 @@ package io.github.kotlinmania.rustlang.core.task.wake
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.any.Any
 import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -448,13 +449,13 @@ public open class ContextBuilder(
  */
 public open class Waker internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<RawWaker>,
+    public val fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout(),
 ) : AsRef<LocalWaker> {
     public var waker: RawWaker
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>) : this(allocateNativeCell(waker, fieldLayout), fieldLayout)
+    internal constructor(waker: RawWaker, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()) : this(allocateNativeCell(waker, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Waker> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Waker(ptr, layout) }, { it.waker })
 
@@ -552,7 +553,7 @@ public open class Waker internal constructor(
      * import std.task.Waker
      *
      * open class Shared(public var waker: Waker)
-     * open class Waiter(public var shared: Mutex<Shared>) : Future {
+     * open class Waiter(public var shared: Mutex<Shared>) : Future<Unit> {
      *     public open fun poll(cx: Context): Poll<Unit> {
      *         var shared = this.shared.lock().unwrap()
      *         // update the waker
@@ -586,9 +587,9 @@ public open class Waker internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>): Waker = Waker(waker, fieldLayout)
+        public operator fun invoke(waker: RawWaker, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker = Waker(waker, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawWaker>): Waker = Waker(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker = Waker(fieldStorage, fieldLayout)
 
         /**
          * Creates a new `Waker` from the provided `data` pointer and `vtable`.
@@ -615,7 +616,7 @@ public open class Waker internal constructor(
          *
          * [Wake]: ../../alloc/task/trait.Wake.html
          */
-        public fun new(data: ConstPtr, vtable: RawWakerVTable, fieldLayout: TypeLayout<RawWaker>): Waker = Waker(waker = RawWaker(data = data, vtable = vtable), fieldLayout = fieldLayout)
+        public fun new(data: ConstPtr, vtable: RawWakerVTable, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker = Waker(waker = RawWaker(data = data, vtable = vtable), fieldLayout = fieldLayout)
 
         /**
          * Creates a new `Waker` from [RawWaker].
@@ -630,7 +631,7 @@ public open class Waker internal constructor(
          *
          * [Wake]: ../../alloc/task/trait.Wake.html
          */
-        public fun fromRaw(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>): Waker = Waker(waker = waker, fieldLayout = fieldLayout)
+        public fun fromRaw(waker: RawWaker, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker = Waker(waker = waker, fieldLayout = fieldLayout)
 
         // Note!  Much of the documentation for this method is duplicated
         // in the docs for `LocalWaker.noop`.
@@ -661,7 +662,7 @@ public open class Waker internal constructor(
          * check(future.asMut().poll(cx) == task.Poll.Ready(10))
          * ```
          */
-        public fun noop(fieldLayout: TypeLayout<RawWaker>): Waker {
+        public fun noop(fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker {
             val WAKER: Waker = Waker(waker = RawWaker.NOOP, fieldLayout = fieldLayout)
             return WAKER
         }
@@ -669,10 +670,10 @@ public open class Waker internal constructor(
         /**
          * Constructs a `Waker` from a function pointer.
          */
-        public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker>): Waker {
+        public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): Waker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, {})
+            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.
@@ -730,13 +731,13 @@ public open class Waker internal constructor(
  */
 public open class LocalWaker internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<RawWaker>,
+    public val fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout(),
 ) {
     public var waker: RawWaker
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>) : this(allocateNativeCell(waker, fieldLayout), fieldLayout)
+    internal constructor(waker: RawWaker, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()) : this(allocateNativeCell(waker, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<LocalWaker> = TransparentTypeLayout(fieldLayout, { ptr, layout -> LocalWaker(ptr, layout) }, { it.waker })
 
@@ -835,9 +836,9 @@ public open class LocalWaker internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>): LocalWaker = LocalWaker(waker, fieldLayout)
+        public operator fun invoke(waker: RawWaker, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker = LocalWaker(waker, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawWaker>): LocalWaker = LocalWaker(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker = LocalWaker(fieldStorage, fieldLayout)
 
         /**
          * Creates a new `LocalWaker` from the provided `data` pointer and `vtable`.
@@ -857,7 +858,7 @@ public open class LocalWaker internal constructor(
          * The behavior of the returned `Waker` is undefined if the contract defined
          * in [RawWakerVTable]s documentation is not upheld.
          */
-        public fun new(data: ConstPtr, vtable: RawWakerVTable, fieldLayout: TypeLayout<RawWaker>): LocalWaker = LocalWaker(waker = RawWaker(data = data, vtable = vtable), fieldLayout = fieldLayout)
+        public fun new(data: ConstPtr, vtable: RawWakerVTable, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker = LocalWaker(waker = RawWaker(data = data, vtable = vtable), fieldLayout = fieldLayout)
 
         /**
          * Creates a new `LocalWaker` from [RawWaker].
@@ -867,7 +868,7 @@ public open class LocalWaker internal constructor(
          * The behavior of the returned `LocalWaker` is undefined if the contract defined
          * in [RawWaker]s and [RawWakerVTable]s documentation is not upheld.
          */
-        public fun fromRaw(waker: RawWaker, fieldLayout: TypeLayout<RawWaker>): LocalWaker = LocalWaker(waker = waker, fieldLayout = fieldLayout)
+        public fun fromRaw(waker: RawWaker, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker = LocalWaker(waker = waker, fieldLayout = fieldLayout)
 
         // Note!  Much of the documentation for this method is duplicated
         // in the docs for `Waker.noop`.
@@ -904,7 +905,7 @@ public open class LocalWaker internal constructor(
          * }
          * ```
          */
-        public fun noop(fieldLayout: TypeLayout<RawWaker>): LocalWaker {
+        public fun noop(fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker {
             val WAKER: LocalWaker = LocalWaker(waker = RawWaker.NOOP, fieldLayout = fieldLayout)
             return WAKER
         }
@@ -912,10 +913,10 @@ public open class LocalWaker internal constructor(
         /**
          * Constructs a `LocalWaker` from a function pointer.
          */
-        public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker>): LocalWaker {
+        public fun fromFnPtr(f: FromFnPtrFCallback, fieldLayout: TypeLayout<RawWaker> = UnresolvedTypeLayout()): LocalWaker {
             // SAFETY: Unsafe is used for transmutes, pointer came from `fun()` so it
             // is sound to reinterpret it back to `fun()`.
-            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, { thisRef -> transmute<ConstPtr, FromFnPtrFCallback>(thisRef)() }, {})
+            val VTABLE: RawWakerVTable  = RawWakerVTable.new({ thisRef -> RawWaker.new(thisRef, VTABLE) }, { thisRef -> transmute(thisRef)() }, { thisRef -> transmute(thisRef)() }, {})
             val raw = RawWaker.new(constPtrFromRustCast(f), VTABLE)
             // SAFETY: `clone` is just a copy, `drop` is a no-op while `wake` and
             // `wakeByRef` just call the function pointer.

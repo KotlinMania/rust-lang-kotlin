@@ -2,6 +2,9 @@
 package io.github.kotlinmania.rustlang.libm.math.powf
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrtf
 import io.github.kotlinmania.rustlang.libm.math.fabs.fabsf
 import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbnf

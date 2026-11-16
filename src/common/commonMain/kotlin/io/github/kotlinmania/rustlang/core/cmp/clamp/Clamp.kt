@@ -3,6 +3,10 @@ package io.github.kotlinmania.rustlang.core.cmp.clamp
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf64
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
@@ -33,12 +37,12 @@ public fun <T> RangeFull.clamp(value: T): T = value
 // @unstable(feature = "f128", issue = "116909")
 public fun RangeFrom<F16>.clamp(value: F16): F16 {
     check(!this.start.isNan()) { "start was NaN" }
-    return run { val lhsMax0 = (value); val rhsMax0 = (F16.fromDouble(this.start.toDouble())); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+    return F16.fromFloat(kmMaxnumf32(value.toFloat(), (F16.fromDouble(this.start.toDouble())).toFloat()))
 }
 
 public fun RangeToInclusive<F16>.clamp(value: F16): F16 {
     check(!this.end.isNan()) { "end was NaN" }
-    return run { val lhsMin0 = (value); val rhsMin0 = (F16.fromDouble(this.end.toDouble())); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+    return F16.fromFloat(kmMinnumf32(value.toFloat(), (F16.fromDouble(this.end.toDouble())).toFloat()))
 }
 
 public fun RangeInclusive<F16>.clamp(value: F16): F16 {
@@ -49,12 +53,12 @@ public fun RangeInclusive<F16>.clamp(value: F16): F16 {
 
 public fun RangeFrom<kotlin.Float>.clamp(value: kotlin.Float): kotlin.Float {
     check(!this.start.isNan()) { "start was NaN" }
-    return run { val lhsMax0 = (value); val rhsMax0 = (this.start.toFloat()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+    return kmMaxnumf32(value, this.start.toFloat())
 }
 
 public fun RangeToInclusive<kotlin.Float>.clamp(value: kotlin.Float): kotlin.Float {
     check(!this.end.isNan()) { "end was NaN" }
-    return run { val lhsMin0 = (value); val rhsMin0 = (this.end.toFloat()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+    return kmMinnumf32(value, this.end.toFloat())
 }
 
 public fun RangeInclusive<kotlin.Float>.clamp(value: kotlin.Float): kotlin.Float {
@@ -65,12 +69,12 @@ public fun RangeInclusive<kotlin.Float>.clamp(value: kotlin.Float): kotlin.Float
 
 public fun RangeFrom<Double>.clamp(value: Double): Double {
     check(!this.start.isNan()) { "start was NaN" }
-    return run { val lhsMax0 = (value); val rhsMax0 = (this.start.toDouble()); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+    return kmMaxnumf64(value, this.start.toDouble())
 }
 
 public fun RangeToInclusive<Double>.clamp(value: Double): Double {
     check(!this.end.isNan()) { "end was NaN" }
-    return run { val lhsMin0 = (value); val rhsMin0 = (this.end.toDouble()); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+    return kmMinnumf64(value, this.end.toDouble())
 }
 
 public fun RangeInclusive<Double>.clamp(value: Double): Double {
@@ -81,12 +85,12 @@ public fun RangeInclusive<Double>.clamp(value: Double): Double {
 
 public fun RangeFrom<F128>.clamp(value: F128): F128 {
     check(!this.start.isNan()) { "start was NaN" }
-    return run { val lhsMax0 = (value); val rhsMax0 = (F128.fromDouble(this.start.toDouble())); when { lhsMax0.isNaN() -> rhsMax0; rhsMax0.isNaN() -> lhsMax0; else -> maxOf(lhsMax0, rhsMax0) } }
+    return F128.fromDouble(kmMaxnumf64(value.toDouble(), (F128.fromDouble(this.start.toDouble())).toDouble()))
 }
 
 public fun RangeToInclusive<F128>.clamp(value: F128): F128 {
     check(!this.end.isNan()) { "end was NaN" }
-    return run { val lhsMin0 = (value); val rhsMin0 = (F128.fromDouble(this.end.toDouble())); when { lhsMin0.isNaN() -> rhsMin0; rhsMin0.isNaN() -> lhsMin0; else -> minOf(lhsMin0, rhsMin0) } }
+    return F128.fromDouble(kmMinnumf64(value.toDouble(), (F128.fromDouble(this.end.toDouble())).toDouble()))
 }
 
 public fun RangeInclusive<F128>.clamp(value: F128): F128 {

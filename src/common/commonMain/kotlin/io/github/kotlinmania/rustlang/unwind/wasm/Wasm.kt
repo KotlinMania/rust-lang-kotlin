@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.unwind.wasm
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.unwind.types.UnwindException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.unwind.types.UnwindReasonCode
 // A shim for libunwind implemented in terms of the native wasm `throw` instruction.
 
 public fun unwindDeleteException(exception: MutPtr) {
-    when (val matchVal = (ObjectSlotLayout<UnwindException>()).readNative((exception).rawAddress).exceptionCleanup) {
+    when (val matchVal = (UnresolvedTypeLayout<UnwindException>()).readNative((exception).rawAddress).exceptionCleanup) {
         null -> {}
         else -> {
             val exceptionCleanup = matchVal
@@ -37,7 +37,7 @@ public fun unwindRaiseException(exception: MutPtr): UnwindReasonCode {
     /**
      * LLVM lowers this intrinsic to the `throw` instruction.
      */
-    fun wasmThrow(tag: Int, ptr: MutPtr): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); val res = (ObjectSlotLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); res }
+    fun wasmThrow(tag: Int, ptr: MutPtr): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); val res = (UnresolvedTypeLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); res }
     // The wasm `throw` instruction takes a "tag", which differentiates certain types of
     // exceptions from others. LLVM currently just identifies these via integers, with 0
     // corresponding to C++ exceptions and 1 to C setjmp()/longjmp(). Ideally, we'd be able

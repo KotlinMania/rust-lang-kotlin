@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 
 // Run-time feature detection for aarch64 on Darwin (macOS/iOS/tvOS/watchOS/visionOS).
 //
@@ -28,8 +28,8 @@ public fun sysctlbyname(name: CStr): Boolean {
 /**
  * Try to read the features using sysctlbyname.
  */
-public fun detectFeatures(): Initializer {
-    val value = Cache.Initializer.default()
+public fun detectFeatures(): cache.Initializer {
+    val value = cache.Initializer.default()
     var enableFeature =
         { f, enable ->
             if (enable) {

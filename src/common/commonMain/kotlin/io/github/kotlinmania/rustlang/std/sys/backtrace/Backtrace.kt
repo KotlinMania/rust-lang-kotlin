@@ -7,16 +7,14 @@ import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.std.env.currentDir
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromBytes
-import io.github.kotlinmania.rustlang.std.path.MAIN_SEPARATOR
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
+import io.github.kotlinmania.rustlang.std.os.windows.ffi.fromWide
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.threadinfo.LOCK
 
 // Common code for printing backtraces.
@@ -47,9 +45,9 @@ public open class BacktraceLock internal constructor(
         open class DisplayBacktrace(
             public var format: PrintFmt,
         ) {
-            public open fun fmt(fmt: StringBuilder) {
+            public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
                 // SAFETY: the backtrace lock is held
-                printFmt(fmt, this.format)
+                return printFmt(fmt, this.format)
             }
         }
         // There are issues currently linking libbacktrace into tests, and in
@@ -57,7 +55,7 @@ public open class BacktraceLock internal constructor(
         // test mode immediately return here to optimize away any references to the
         // libbacktrace symbols
         if (false) {
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, Error>(Unit)
         }
         return run { w.append("${DisplayBacktrace(format = format)}"); Result.Ok(Unit) }
     }
@@ -81,12 +79,12 @@ public fun lock(): BacktraceLock {
  *
  * This function is not Sync. The caller must hold a mutex lock, or there must be only one thread in the program.
  */
-public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
+public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
     // Always 'fail' to get the cwd when running under Miri -
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {
-            currentDir().ok()
+            Env.currentDir().ok()
         } else {
             null
         }
@@ -96,9 +94,9 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
         }
     fmt.appendLine("stack backtrace:")
     val btFmt = BacktraceFmt.new(fmt, printFmt, printPath)
-    btFmt.addContext()
+    when (val tryResult = btFmt.addContext()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.error) }
     var idx = 0
-    var res = Unit
+    var res = Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
     var omittedCount: Int = 0
     var firstOmit = true
     // If we're using a short backtrace, ignore all frames until we're told to start printing.
@@ -109,7 +107,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
         if (printFmt == PrintFmt.Short && idx > MAX_NB_FRAMES) {
             return@closure false
         }
-        if (true) {
+        if (false) {
             val frameIp = frame.ip()
             res = btFmt.formatter().appendLine("$idx: $frameIp")
         } else {
@@ -161,11 +159,12 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt) {
         idx += 1
         res.isOk()
     })
-    res
-    btFmt.finish()
+    when (val tryResult = res) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.error) }
+    when (val tryResult = btFmt.finish()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.error) }
     if (printFmt == PrintFmt.Short) {
         fmt.appendLine("note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.")
     }
+    return Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
 }
 
 /**
@@ -195,16 +194,16 @@ public fun <T> rustEndShortBacktrace(f: () -> T): T {
  *
  * See also `output`.
  */
-public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt: PrintFmt, cwd: PathBuf?) {
+public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt: PrintFmt, cwd: PathBuf?): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
     val file: Path =
         when (bows) {
             is BytesOrWideString.Bytes -> {
                 val (bytes) = bows
-                Path.new(OsStr.fromBytes(bytes)).into()
+                Path.new(fromBytes(bytes)).into()
             }
             is BytesOrWideString.Wide -> {
                 val (wide) = bows
-                OsString.fromWide(wide).into()
+                fromWide(wide).into()
             }
         }
     if (printFmt == PrintFmt.Short && file.isAbsolute()) {
@@ -217,7 +216,7 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
                         null -> {}
                         else -> {
                             val s = matchVal1
-                            return fmt.append(".$MAIN_SEPARATOR$s")
+                            return run { fmt.append(".${path.MAIN_SEPARATOR}$s"); Result.Ok(Unit) }
                         }
                     }
                 }
@@ -225,7 +224,7 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
             }
         }
     }
-    fmt.append((file.display()).toString())
+    return run { fmt.append((file.display()).toString()); Result.Ok(Unit) }
 }
 
 public fun setImageBase() {

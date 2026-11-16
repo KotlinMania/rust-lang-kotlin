@@ -2,23 +2,23 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.android
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.IdT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.IdT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TimerT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 
 @JsFun("() => { if (typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore !== null; if (typeof process === 'undefined' || !process.versions || !process.versions.node) { globalThis.__km_napi_kmcore = null; return false; } var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) { globalThis.__km_napi_kmcore = null; return false; } try { globalThis.__km_napi_kmcore = req('@kotlinmania/kmcore-native-bindings'); return true; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { globalThis.__km_napi_kmcore = req(c); return true; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } globalThis.__km_napi_kmcore = null; return false; }")
 private external fun initUnixLinuxlikeAndroidNapiAddon(): Boolean
@@ -703,7 +703,7 @@ public actual fun signalfd(fd: CInt, mask: ConstPtr, flags: CInt): CInt =
     if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSignalfd(fd, mask.rawAddress.toString(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdCreate(clock: ClockidT, flags: CInt): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdCreate(clock.toInt(), flags) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdCreate(clock, flags) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerfdGettime(fd: CInt, currentValue: MutPtr): CInt =
     if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdGettime(fd, currentValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -712,7 +712,7 @@ public actual fun timerfdSettime(fd: CInt, flags: CInt, newValue: ConstPtr, oldV
     if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerfdSettime(fd, flags, newValue.rawAddress.toString(), oldValue.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerCreate(clockid: ClockidT, sevp: MutPtr, timerid: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerCreate(clockid.toInt(), sevp.rawAddress.toString(), timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerCreate(clockid, sevp.rawAddress.toString(), timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun timerDelete(timerid: TimerT): CInt =
     if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidTimerDelete(timerid.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -817,7 +817,7 @@ public actual fun schedGetscheduler(pid: PidT): CInt =
     if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSchedGetscheduler(pid) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun clockNanosleep(clkId: ClockidT, flags: CInt, rqtp: ConstPtr, rmtp: MutPtr): CInt =
-    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidClockNanosleep(clkId.toInt(), flags, rqtp.rawAddress.toString(), rmtp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidClockNanosleep(clkId, flags, rqtp.rawAddress.toString(), rmtp.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun sethostname(name: ConstPtr, len: SizeT): CInt =
     if (unixLinuxlikeAndroidNapiAvailable) wasmLibcUnixLinuxlikeAndroidSethostname(name.rawAddress.toString(), len.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")

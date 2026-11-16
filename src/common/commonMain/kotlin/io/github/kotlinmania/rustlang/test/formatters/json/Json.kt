@@ -1,10 +1,12 @@
 // port-lint: source formatters/json.rs
 package io.github.kotlinmania.rustlang.test.formatters.json
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.test.TestDesc
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestDiscoveryState
 import io.github.kotlinmania.rustlang.test.console.ConsoleTestState
@@ -20,7 +22,7 @@ public open class JsonFormatter<T>(
         // self.out will take a lock, but that lock is released when writeAll returns. This
         // results in a race condition and json output may not end with a new line. We avoid this
         // by issuing `writeAll` calls line-by-line.
-        check(s.rustStrChars().last() == '\n')
+        check(s.chars().last() == '\n')
         return this.out.writeAll(s)
     }
 
@@ -158,7 +160,7 @@ public open class JsonFormatter<T>(
                 }
             }
         val newline = "\n"
-        when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return Result.Ok(state.failed == 0)
     }
 
@@ -185,7 +187,7 @@ public open class EscapedString<S : AsRef<String>>(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         var start = 0
         for ((i, byte) in this.value.bytes().mapIndexed { index, item -> Pair(index, item) }) {
             val escaped =
@@ -238,6 +240,7 @@ public open class EscapedString<S : AsRef<String>>(
         if (start != this.value.len()) {
             f.append(this.value[start until this.value.size])
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public companion object {

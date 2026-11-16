@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.mem.copy
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 /**
  * Turn a [VecDeque.T] into a [Vec.T].
@@ -39,7 +40,7 @@ public fun <T, A : Allocator> fromVecTA(other: VecDeque<T, A>): List<T> {
         val buf = other1.buf.ptr()
         val len = other1.len()
         val cap = other1.capacity()
-        val alloc = ptr.read(other1.allocator())
+        val alloc = read(other1.allocator())
         if (!other1.head.isZero()) {
             copy(buf.add(other1.head.asIndex()), buf, len)
         }

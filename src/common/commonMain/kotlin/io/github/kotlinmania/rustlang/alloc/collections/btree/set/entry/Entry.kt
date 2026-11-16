@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry
 import io.github.kotlinmania.rustlang.alloc.collections.btree.set.entry.Entry.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -168,7 +170,7 @@ public sealed class Entry<T, A : AllocatorClone> {
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Vacant -> {
                 val (v) = this
@@ -179,7 +181,6 @@ public sealed class Entry<T, A : AllocatorClone> {
                 DebugTuple(f, "Entry").field(o).finish()
             }
         }
-    }
 
     /**
      * Sets the value of the entry, and returns an `OccupiedEntry`.
@@ -306,9 +307,7 @@ public open class OccupiedEntry<T, A : AllocatorClone> internal constructor(
     public var inner: OccupiedEntry<T, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
 
     /**
      * Gets a reference to the value in the entry.
@@ -407,9 +406,7 @@ public open class VacantEntry<T, A : AllocatorClone> internal constructor(
     public var inner: VacantEntry<T, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "VacantEntry").field(this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.get()).finish()
 
     /**
      * Gets a reference to the value that would be used when inserting

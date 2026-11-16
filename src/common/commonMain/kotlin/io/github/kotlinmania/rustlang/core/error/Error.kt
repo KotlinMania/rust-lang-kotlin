@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.core.error
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -260,7 +260,7 @@ public fun <T : Error> Error.isMatch(): Boolean {
  * Returns some reference to the inner value if it is of type `T`, or
  * `None` if it isn't.
  */
-public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T>): T? =
+public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
     if (this.isMatch<T>()) {
         // SAFETY: `is` ensures this type cast is correct
         (typeLayoutT).readNative((((constPtrFromRustCast(this)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
@@ -272,7 +272,7 @@ public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T>): T? =
  * Returns some mutable reference to the inner value if it is of type `T`, or
  * `None` if it isn't.
  */
-public fun <T : Error> Error.downcastMut(typeLayoutT: TypeLayout<T>): T? =
+public fun <T : Error> Error.downcastMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
     if (this.isMatch<T>()) {
         // SAFETY: `is` ensures this type cast is correct
         RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), typeLayoutT)
@@ -397,7 +397,7 @@ public inline fun <reified T> requestRef(err: Error): T? = requestByTypeTag<Ref<
  * Request a specific value by tag from the `Error`.
  */
 public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
-    val tagged = Tagged(tagId = RustTypeId.of<I>(), value = TaggedOption(null, fieldLayout = ObjectSlotLayout<Reified?>()))
+    val tagged = Tagged(tagId = RustTypeId.of<I>(), value = TaggedOption(null, fieldLayout = UnresolvedTypeLayout<Reified?>()))
     err.provide(tagged.asRequest())
     return tagged.value.first
 }
@@ -484,7 +484,7 @@ public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
  */
 public open class Request internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Tagged<Erased>>,
+    public val fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout(),
 ) {
     public var field0: Tagged<Erased>
         get() = value
@@ -496,7 +496,7 @@ public open class Request internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Request> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Request(ptr, layout) }, { it.value })
 
@@ -817,9 +817,9 @@ public open class Request internal constructor(
     public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "Request").finishNonExhaustive()
 
     public companion object {
-        public operator fun invoke(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>>): Request = Request(value, fieldLayout)
+        public operator fun invoke(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Tagged<Erased>>): Request = Request(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(fieldStorage, fieldLayout)
     }
 }
 
@@ -844,7 +844,7 @@ public interface MaybeSizedType<out Reified>
  */
 public open class Value<T>(
     public var value: Unit,
-) : Type<Any?, T> {
+) : Type<T> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -857,7 +857,7 @@ public open class Value<T>(
  */
 public open class MaybeSizedValue<T>(
     public var value: Unit,
-) : MaybeSizedType<Any?, T> {
+) : MaybeSizedType<T> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -871,7 +871,7 @@ public open class MaybeSizedValue<T>(
  */
 public open class Ref<I>(
     public var value: Unit,
-) : Type<Any?, Reified> {
+) : Type<Reified> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -888,7 +888,7 @@ public open class Ref<I>(
  */
 public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Reified?>,
+    public val fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout(),
 ) : Erased {
     public var field0: I.Reified?
         get() = value
@@ -900,14 +900,14 @@ public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<TaggedOption<I, Reified>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> TaggedOption<I, Reified>(ptr, layout) }, { it.value })
 
     public companion object {
-        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
+        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
 
-        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
+        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
     }
 }
 
@@ -915,7 +915,7 @@ public fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMu
     val erased = ((this as Any?) as Tagged<Erased>)
     // SAFETY: transmuting `Tagged<dynamic Erased<> + >` to `Request<>` is safe since
     // `Request` is repr(transparent).
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(erased)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<Request>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(erased)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<Request>())
 }
 
 /**
@@ -937,7 +937,7 @@ public open class Tagged<E>(
 public fun <I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Type<Any?> =
     if (this.tagId == RustTypeId.of<I>()) {
         // SAFETY: Just checked whether we're pointing to an I.
-        (ObjectSlotLayout<Tagged<TaggedOption<I, Reified>>>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).value
+        (UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).value
     } else {
         null
     }
@@ -948,7 +948,7 @@ public fun <I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Ty
  */
 public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I, Reified>>? where I : Type<Any?> =
     if (this.tagId == RustTypeId.of<I>()) {
-        RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress)).rawAddress), ObjectSlotLayout<Tagged<TaggedOption<I, Reified>>>()).value
+        RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress)).rawAddress), UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).value
     } else {
         null
     }

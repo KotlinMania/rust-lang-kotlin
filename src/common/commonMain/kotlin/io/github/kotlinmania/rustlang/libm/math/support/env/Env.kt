@@ -1,9 +1,11 @@
 // port-lint: source math/support/env.rs
 package io.github.kotlinmania.rustlang.libm.math.support.env
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // Support for rounding directions and status flags as specified by IEEE 754.
 //
@@ -135,7 +137,7 @@ public open class Status(
 
     public open fun with(rhs: Status): Status = Status(this.value or rhs.value)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // shift -> flag map
         val names = listOf("INVALID", "DIVIDE_BY_ZERO", "OVERFLOW", "UNDERFLOW", "INEXACT")
         f.append("Status(")
@@ -159,6 +161,7 @@ public open class Status(
             f.append("OK")
         }
         f.append(")")
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public companion object {

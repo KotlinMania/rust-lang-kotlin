@@ -19,13 +19,13 @@ public open class Demangle(
      */
     public open fun asStr(): String = this.original
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         when (val matchVal = this.style) {
             null -> f.append(this.original)
             else -> {
                 val d = matchVal
                 val alternate = f.alternate()
-                var sizeLimitedFmt = SizeLimitedFmtAdapter(remaining = Result.Ok(MAX_SIZE), inner = f)
+                var sizeLimitedFmt = SizeLimitedFmtAdapter(remaining = Result.Ok<Int, SizeLimitExhausted>(MAX_SIZE), inner = f)
                 val fmtResult =
                     if (alternate) {
                         sizeLimitedFmt.append("$d")
@@ -39,24 +39,22 @@ public open class Demangle(
                 run {
                     val matchVal1 = Pair(fmtResult, sizeLimitResult)
                     when {
-                        matchVal1.first is Result.Err<*> && matchVal1.second is Result.Err<*> && (matchVal1.second as Result.Err<*>).error is SizeLimitExhausted -> {
-                            val SizeLimitExhausted = (matchVal1.second as Result.Err<*>).error
+                        matchVal1.first is Result.Err && matchVal1.second is Result.Err && (matchVal1.second as Result.Err).error is SizeLimitExhausted -> {
+                            val SizeLimitExhausted = (matchVal1.second as Result.Err).error
                             f.append("{size limit reached}")
                         }
                         else -> {
-                            fmtResult
+                            when (val tryResult = fmtResult) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                             sizeLimitResult.expect("`fmt::Error` from `SizeLimitedFmtAdapter` was discarded")
                         }
                     }
                 }
             }
         }
-        f.append(this.suffix)
+        return run { f.append(this.suffix); Result.Ok(Unit) }
     }
 
-    public open fun fmtDebug(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 }
 
 /**
@@ -117,15 +115,15 @@ public open class SizeLimitedFmtAdapter<F> internal constructor(
     public var remaining: Result<Int, SizeLimitExhausted> = remainingCtorArg
         internal set
 
-    public open fun writeStr(s: String) {
+    public open fun writeStr(s: String): Result<Unit, Error> {
         this.remaining = this.remaining.andThen({ r -> (r.checkedSub(s.length)?.let { Result.Ok(it) } ?: Result.Err(SizeLimitExhausted())) })
-        run {
+        return run {
             val matchVal = this.remaining
             when {
-                matchVal is Result.Ok<*> -> this.inner.append(s)
+                matchVal is Result.Ok -> run { this.inner.append(s); Result.Ok(Unit) }
                 else -> {
-                    val SizeLimitExhausted = (matchVal as Result.Err<*>).error
-                    Result.Err(Error)
+                    val SizeLimitExhausted = matchVal.error
+                    Result.Err<Unit, Error>(Error())
                 }
             }
         }

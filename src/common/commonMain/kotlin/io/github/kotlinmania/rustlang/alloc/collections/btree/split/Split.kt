@@ -2,12 +2,13 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.split
 
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Internal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.search.SearchResult.*
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.mem.dropguard.DropGuard
 
 /**
@@ -62,7 +63,7 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
     // A panic from a later `searchNode` comparison would unwind out of
     // that state and double-free the shared values (#158165), so abort
     // instead of exposing it.
-    val guard = DropGuard.new({ abortImmediate() })
+    val guard = DropGuard.new({ kmAbort() })
     while (true) {
         splitEdge.moveSuffix(rightNode)
         run {

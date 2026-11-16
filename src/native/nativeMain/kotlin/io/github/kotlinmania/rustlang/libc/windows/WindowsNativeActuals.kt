@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.windows
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
@@ -55,11 +55,13 @@ import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFgetpos
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFgets
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFileno
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFprintf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFputc
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFputs
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFread
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFree
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFreopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFscanf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFseek
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFsetpos
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsFstat
@@ -108,6 +110,7 @@ import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPclose
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPerror
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPipe
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPopen
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPrintf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPutchar
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPutenv
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsPutenvS
@@ -123,14 +126,18 @@ import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRemove
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRename
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRewind
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsRmdir
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsScanf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSendto
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetbuf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetlocale
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetsockopt
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSetvbuf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSignal
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSnprintf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSocket
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSprintf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSrand
+import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsSscanf
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStat
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrcat
 import io.github.kotlinmania.rustlang.libc.windows.cinterop.libcWindowsStrchr
@@ -188,6 +195,27 @@ import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toLong
+
+public actual fun printf(format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsPrintf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsFprintf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun snprintf(buffer: MutPtr, count: SizeT, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsSnprintf(buffer.rawAddress.toCPointer<ByteVar>(), count, format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun sprintf(buffer: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsSprintf(buffer.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun scanf(format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsScanf(format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun sscanf(buffer: ConstPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsSscanf(buffer.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
+
+public actual fun fscanf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
+    libcWindowsFscanf(stream.rawAddress.toCPointer<ByteVar>(), format.rawAddress.toCPointer<ByteVar>(), variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun isalnum(c: CInt): CInt =
     libcWindowsIsalnum(c)
@@ -676,10 +704,10 @@ public actual fun putenv(envstring: ConstPtr): CInt =
 public actual fun wputenv(envstring: ConstPtr): CInt =
     libcWindowsWputenv(envstring.rawAddress.toCPointer<ByteVar>())
 
-public actual fun putenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT =
+public actual fun putenvS(envstring: ConstPtr, valueString: ConstPtr): ErrnoT =
     libcWindowsPutenvS(envstring.rawAddress.toCPointer<ByteVar>(), valueString.rawAddress.toCPointer<ByteVar>())
 
-public actual fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): io.github.kotlinmania.rustlang.libc.ErrnoT =
+public actual fun wputenvS(envstring: ConstPtr, valueString: ConstPtr): ErrnoT =
     libcWindowsWputenvS(envstring.rawAddress.toCPointer<ByteVar>(), valueString.rawAddress.toCPointer<ByteVar>())
 
 public actual fun listen(s: Socket, backlog: CInt): CInt =

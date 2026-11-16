@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.core.num.imp.intbits.u128
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustWrappingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingAdd
 
 public val STAGES: Int = 128u.ilog2().toInt()
 
@@ -35,7 +35,7 @@ public fun extractImpl(x: U128, sparse: U128): U128 {
         val n = 1 shl stage.toInt()
         val q = x1 and masks[stage]
         if (false && 128u <= 64u) {
-            x1 = rustWrappingAdd((x1 and masks[stage].inv()), q shr n.toInt())
+            x1 = (x1 and masks[stage].inv()).wrappingAdd(q shr n.toInt())
         } else {
             x1 = x1 xor q
             x1 = x1 xor (q shr n.toInt())

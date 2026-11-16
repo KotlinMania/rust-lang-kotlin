@@ -3,11 +3,11 @@
 
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.s390.nptl.bits.structmutex
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PthreadMutexT
+import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadMutexT
 import io.github.kotlinmania.rustlang.libc.types.replaceArrayItems
 import io.github.kotlinmania.rustlang.libc.types.u8SliceCastCharSlice
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.x8664.notx32.SIZEOF_PTHREAD_MUTEX_T
@@ -19,9 +19,9 @@ public fun pthreadMutexInitializer(kind: CInt): PthreadMutexT {
     // offset of the `__kind` field.
     val kindOffset =
         if (true) {
-            4 * sizeOf<CInt>(typeLayoutT = ObjectSlotLayout<CInt>())
+            4 * sizeOf<CInt>(typeLayoutT = UnresolvedTypeLayout<CInt>())
         } else {
-            3 * sizeOf<CInt>(typeLayoutT = ObjectSlotLayout<CInt>())
+            3 * sizeOf<CInt>(typeLayoutT = UnresolvedTypeLayout<CInt>())
         }
     val size = List(SIZEOF_PTHREAD_MUTEX_T) { 0 }
     val kindBytes = run { val rawBits = kind.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }

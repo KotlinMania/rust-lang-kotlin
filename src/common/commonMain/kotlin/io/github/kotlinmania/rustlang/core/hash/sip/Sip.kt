@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -387,18 +387,18 @@ public open class Sip13Rounds : Sip {
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
         }
 
@@ -406,50 +406,50 @@ public open class Sip13Rounds : Sip {
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
         }
     }
@@ -477,34 +477,34 @@ public open class Sip24Rounds : Sip {
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
         }
 
@@ -512,66 +512,66 @@ public open class Sip24Rounds : Sip {
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
             run {
                 state.v0 = (state.v0 + (state.v1.toULong()))
                 state.v2 = (state.v2 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 13u)
+                state.v1 = state.v1.rotateLeft(13u)
                 state.v1 = state.v1 xor state.v0
-                state.v3 = rustRotateLeft(state.v3, 16u)
+                state.v3 = state.v3.rotateLeft(16u)
                 state.v3 = state.v3 xor state.v2
-                state.v0 = rustRotateLeft(state.v0, 32u)
+                state.v0 = state.v0.rotateLeft(32u)
                 state.v2 = (state.v2 + (state.v1.toULong()))
                 state.v0 = (state.v0 + (state.v3.toULong()))
-                state.v1 = rustRotateLeft(state.v1, 17u)
+                state.v1 = state.v1.rotateLeft(17u)
                 state.v1 = state.v1 xor state.v2
-                state.v3 = rustRotateLeft(state.v3, 21u)
+                state.v3 = state.v3.rotateLeft(21u)
                 state.v3 = state.v3 xor state.v0
-                state.v2 = rustRotateLeft(state.v2, 32u)
+                state.v2 = state.v2.rotateLeft(32u)
             }
         }
     }

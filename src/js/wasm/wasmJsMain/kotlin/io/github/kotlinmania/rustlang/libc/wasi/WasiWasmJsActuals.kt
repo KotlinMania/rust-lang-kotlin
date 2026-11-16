@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
@@ -1601,7 +1601,7 @@ public actual fun getrusage(resource: CInt, usage: MutPtr): CInt =
 public actual fun gettimeofday(tp: MutPtr, tz: MutPtr): CInt =
     if (wasiNapiAvailable) wasmLibcWasiGettimeofday(tp.rawAddress.toString(), tz.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun times(buf: MutPtr): io.github.kotlinmania.rustlang.libc.ClockT =
+public actual fun times(buf: MutPtr): ClockT =
     if (wasiNapiAvailable) wasmLibcWasiTimes(buf.rawAddress.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun strerrorR(errnum: CInt, buf: MutPtr, buflen: SizeT): CInt =
@@ -1688,10 +1688,10 @@ public actual fun abs(i: CInt): CInt =
 public actual fun labs(i: CLong): CLong =
     if (wasiNapiAvailable) wasmLibcWasiLabs(i.toString()).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun duplocale(base: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
+public actual fun duplocale(base: LocaleT): LocaleT =
     if (wasiNapiAvailable) MutPtr(wasmLibcWasiDuplocale(base.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun freelocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT) {
+public actual fun freelocale(loc: LocaleT) {
     if (wasiNapiAvailable) {
         wasmLibcWasiFreelocale(loc.rawAddress.toString())
     } else {
@@ -1699,10 +1699,10 @@ public actual fun freelocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT) {
     }
 }
 
-public actual fun newlocale(mask: CInt, locale: ConstPtr, base: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
+public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
     if (wasiNapiAvailable) MutPtr(wasmLibcWasiNewlocale(mask, locale.rawAddress.toString(), base.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun uselocale(loc: io.github.kotlinmania.rustlang.libc.LocaleT): io.github.kotlinmania.rustlang.libc.LocaleT =
+public actual fun uselocale(loc: LocaleT): LocaleT =
     if (wasiNapiAvailable) MutPtr(wasmLibcWasiUselocale(loc.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun schedYield(): CInt =
@@ -1714,10 +1714,10 @@ public actual fun getcwd(buf: MutPtr, size: SizeT): MutPtr =
 public actual fun chdir(dir: ConstPtr): CInt =
     if (wasiNapiAvailable) wasmLibcWasiChdir(dir.rawAddress.toString()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun nlLanginfo(item: io.github.kotlinmania.rustlang.libc.NlItem): MutPtr =
+public actual fun nlLanginfo(item: NlItem): MutPtr =
     if (wasiNapiAvailable) MutPtr(wasmLibcWasiNlLanginfo(item).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun nlLanginfoL(item: io.github.kotlinmania.rustlang.libc.NlItem, loc: io.github.kotlinmania.rustlang.libc.LocaleT): MutPtr =
+public actual fun nlLanginfoL(item: NlItem, loc: LocaleT): MutPtr =
     if (wasiNapiAvailable) MutPtr(wasmLibcWasiNlLanginfoL(item, loc.rawAddress.toString()).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun select(nfds: CInt, readfds: MutPtr, writefds: MutPtr, errorfds: MutPtr, timeout: ConstPtr): CInt =

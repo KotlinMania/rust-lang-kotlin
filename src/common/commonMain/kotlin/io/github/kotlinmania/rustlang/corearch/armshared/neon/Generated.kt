@@ -4,10 +4,11 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.neon
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -4865,7 +4866,7 @@ public fun vld1DupF32(ptr: ConstPtr): Float32x2T = transmute(f32x2.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>())))
+public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4873,7 +4874,7 @@ public fun vld1DupP16(ptr: ConstPtr): Poly16x4T = transmute(u16x4.splat(readUnal
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(u8x8.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>())))
+public fun vld1DupP8(ptr: ConstPtr): Poly8x8T = transmute(u8x8.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4937,7 +4938,7 @@ public fun vld1qDupF32(ptr: ConstPtr): Float32x4T = transmute(f32x4.splat(readUn
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>())))
+public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -4945,7 +4946,7 @@ public fun vld1qDupP16(ptr: ConstPtr): Poly16x8T = transmute(u16x8.splat(readUna
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(u8x16.splat(readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>())))
+public fun vld1qDupP8(ptr: ConstPtr): Poly8x16T = transmute(u8x16.splat(readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>())))
 
 /**
  * Load one single-element structure and Replicate to all lanes (of one register).
@@ -5198,7 +5199,7 @@ public fun vld1LaneP16(ptr: ConstPtr, src: Poly16x4T, lane: Int): Poly16x4T {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()); _simdArg0 }
 }
 
 /**
@@ -5211,7 +5212,7 @@ public fun vld1LaneP8(ptr: ConstPtr, src: Poly8x8T, lane: Int): Poly8x8T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()); _simdArg0 }
 }
 
 /**
@@ -5341,7 +5342,7 @@ public fun vld1qLaneP16(ptr: ConstPtr, src: Poly16x8T, lane: Int): Poly16x8T {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P16>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P16>()); _simdArg0 }
 }
 
 /**
@@ -5354,7 +5355,7 @@ public fun vld1qLaneP8(ptr: ConstPtr, src: Poly8x16T, lane: Int): Poly8x16T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P8>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P8>()); _simdArg0 }
 }
 
 /**
@@ -5471,7 +5472,7 @@ public fun vld1LaneP64(ptr: ConstPtr, src: Poly64x1T, lane: Int): Poly64x1T {
     run {
         check(lane == 0)
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P64>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P64>()); _simdArg0 }
 }
 
 /**
@@ -5484,7 +5485,7 @@ public fun vld1qLaneP64(ptr: ConstPtr, src: Poly64x2T, lane: Int): Poly64x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = ObjectSlotLayout<P64>()); _simdArg0 }
+    return run { val _simdArg0 = src; val _simdArg1 = lane.toUInt(); val _simdArg2 = readUnaligned(ptr, typeLayoutT = UnresolvedTypeLayout<P64>()); _simdArg0 }
 }
 
 /**
@@ -7626,7 +7627,7 @@ public fun vld4qDupP16(a: ConstPtr): Poly16x8x4T = transmute(vld4qDupS16(transmu
  */
 public fun vld4F16(a: ConstPtr): Float16x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -7642,7 +7643,7 @@ public fun vld4F16(a: ConstPtr): Float16x4x4T =
  */
 public fun vld4qF16(a: ConstPtr): Float16x8x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
@@ -7658,7 +7659,7 @@ public fun vld4qF16(a: ConstPtr): Float16x8x4T =
  */
 public fun vld4F32(a: ConstPtr): Float32x2x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
@@ -7674,7 +7675,7 @@ public fun vld4F32(a: ConstPtr): Float32x2x4T =
  */
 public fun vld4qF32(a: ConstPtr): Float32x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -7690,7 +7691,7 @@ public fun vld4qF32(a: ConstPtr): Float32x4x4T =
  */
 public fun vld4S8(a: ConstPtr): Int8x8x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
@@ -7706,7 +7707,7 @@ public fun vld4S8(a: ConstPtr): Int8x8x4T =
  */
 public fun vld4qS8(a: ConstPtr): Int8x16x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 16, 4, 2 > Unit)
@@ -7722,7 +7723,7 @@ public fun vld4qS8(a: ConstPtr): Int8x16x4T =
  */
 public fun vld4S16(a: ConstPtr): Int16x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -7738,7 +7739,7 @@ public fun vld4S16(a: ConstPtr): Int16x4x4T =
  */
 public fun vld4qS16(a: ConstPtr): Int16x8x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 8, 4, 2 > Unit)
@@ -7754,7 +7755,7 @@ public fun vld4qS16(a: ConstPtr): Int16x8x4T =
  */
 public fun vld4S32(a: ConstPtr): Int32x2x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
@@ -7770,7 +7771,7 @@ public fun vld4S32(a: ConstPtr): Int32x2x4T =
  */
 public fun vld4qS32(a: ConstPtr): Int32x4x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 4, 4, 2 > Unit)
@@ -8118,7 +8119,7 @@ public fun vld4qP16(a: ConstPtr): Poly16x8x4T = transmute(vld4qS16(transmute(a))
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vldrqP128(a: ConstPtr): P128 = (ObjectSlotLayout<P128>()).readNative((a).rawAddress)
+public fun vldrqP128(a: ConstPtr): P128 = (UnresolvedTypeLayout<P128>()).readNative((a).rawAddress)
 
 /**
  * Maximum (vector)
@@ -17661,7 +17662,7 @@ public fun vst1LaneP8(a: MutPtr, b: Poly8x8T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P8>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P8>())
 }
 
 /**
@@ -17674,7 +17675,7 @@ public fun vst1qLaneP8(a: MutPtr, b: Poly8x16T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P8>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P8>())
 }
 
 /**
@@ -17687,7 +17688,7 @@ public fun vst1LaneP16(a: MutPtr, b: Poly16x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 2)) { "LANE doesn't fit in 2 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P16>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P16>())
 }
 
 /**
@@ -17700,7 +17701,7 @@ public fun vst1qLaneP16(a: MutPtr, b: Poly16x8T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 3)) { "LANE doesn't fit in 3 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P16>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P16>())
 }
 
 /**
@@ -17713,7 +17714,7 @@ public fun vst1LaneP64(a: MutPtr, b: Poly64x1T, lane: Int) {
     run {
         check(lane == 0)
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P64>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P64>())
 }
 
 /**
@@ -18436,7 +18437,7 @@ public fun vst1qLaneP64(a: MutPtr, b: Poly64x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = ObjectSlotLayout<P64>())
+    writeUnaligned(a, run { val _simdArg0 = b; val _simdArg1 = lane.toUInt(); _simdArg0 }, typeLayoutT = UnresolvedTypeLayout<P64>())
 }
 
 /**
@@ -18470,7 +18471,7 @@ public fun vst2qF16(a: MutPtr, b: Float16x8x2T) {
 public fun vst2F32(a: MutPtr, b: Float32x2x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18483,7 +18484,7 @@ public fun vst2F32(a: MutPtr, b: Float32x2x2T) {
 public fun vst2qF32(a: MutPtr, b: Float32x4x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18496,7 +18497,7 @@ public fun vst2qF32(a: MutPtr, b: Float32x4x2T) {
 public fun vst2S8(a: MutPtr, b: Int8x8x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 8, 2, 8, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18509,7 +18510,7 @@ public fun vst2S8(a: MutPtr, b: Int8x8x2T) {
 public fun vst2qS8(a: MutPtr, b: Int8x16x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 16, 2, 16, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18522,7 +18523,7 @@ public fun vst2qS8(a: MutPtr, b: Int8x16x2T) {
 public fun vst2S16(a: MutPtr, b: Int16x4x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18535,7 +18536,7 @@ public fun vst2S16(a: MutPtr, b: Int16x4x2T) {
 public fun vst2qS16(a: MutPtr, b: Int16x8x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 8, 2, 8, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18548,7 +18549,7 @@ public fun vst2qS16(a: MutPtr, b: Int16x8x2T) {
 public fun vst2S32(a: MutPtr, b: Int32x2x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -18561,7 +18562,7 @@ public fun vst2S32(a: MutPtr, b: Int32x2x2T) {
 public fun vst2qS32(a: MutPtr, b: Int32x4x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 4, 2, 4, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19468,7 +19469,7 @@ public fun vst4F32(a: MutPtr, b: Float32x2x4T) {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19483,7 +19484,7 @@ public fun vst4qF32(a: MutPtr, b: Float32x4x4T) {
         val v0v1: Simd<Float> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Float> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19498,7 +19499,7 @@ public fun vst4S8(a: MutPtr, b: Int8x8x4T) {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v3: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 8, 4, 8, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19513,7 +19514,7 @@ public fun vst4qS8(a: MutPtr, b: Int8x16x4T) {
         val v0v1: Simd<Byte> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
         val v2v3: Simd<Byte> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(16 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 16, 4, 16, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19528,7 +19529,7 @@ public fun vst4S16(a: MutPtr, b: Int16x4x4T) {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19543,7 +19544,7 @@ public fun vst4qS16(a: MutPtr, b: Int16x8x4T) {
         val v0v1: Simd<Short> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val v2v3: Simd<Short> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(8 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 8, 4, 8, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19558,7 +19559,7 @@ public fun vst4S32(a: MutPtr, b: Int32x2x4T) {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19573,7 +19574,7 @@ public fun vst4qS32(a: MutPtr, b: Int32x4x4T) {
         val v0v1: Simd<Int> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val v2v3: Simd<Int> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(4 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 4, 4, 4, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -19945,7 +19946,7 @@ public fun vst4qP16(a: MutPtr, b: Poly16x8x4T) {
  */
 public fun vstrqP128(a: MutPtr, b: P128) {
     val a1 = a
-    (ObjectSlotLayout<P128>()).writeNative((a1).rawAddress, b)
+    (UnresolvedTypeLayout<P128>()).writeNative((a1).rawAddress, b)
 }
 
 /**

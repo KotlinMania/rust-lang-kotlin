@@ -8,7 +8,8 @@ import io.github.kotlinmania.rustlang.libm.math.generic.fma.fmaRound
 import io.github.kotlinmania.rustlang.libm.math.support.env.Round
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F, F) -> F, cases: List<List<Any?>>) {
@@ -17,7 +18,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F, F) -> F, c
         run {
             val l = value
             val r = expRes
-            check(l.biteq(r)) { ("fma($x, $y, $z) (${Hex(x)} ${Hex(y)} ${Hex(z)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("fma($x, $y, $z) (${Hex(x)} ${Hex(y)} ${Hex(z)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
     }
 }
@@ -72,7 +73,7 @@ public class FmaInlineTests {
             run {
                 val l = value
                 val r = res
-                check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+                check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
             }
             check(status == Status.UNDERFLOW)
         }

@@ -43,11 +43,11 @@ public open class TerseFormatter<T>(
         // but if this is the very first column, no short results will have been printed and we'll end up with *only* the progress on the line.
         // avoid this.
         if (this.testColumn != 0) {
-            when (val tryResult = this.writeProgress()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeProgress()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         this.testCount += 1
-        when (val tryResult = this.writePlain("$name --- ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("$name --- ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return this.writePlain("\n")
     }
 
@@ -56,21 +56,21 @@ public open class TerseFormatter<T>(
     public open fun writeBench(): Result<Unit> = this.writePretty("bench", CYAN)
 
     public open fun writeShortResult(result: String, color: Color): Result<Unit> {
-        when (val tryResult = this.writePretty(result, color)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePretty(result, color)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         this.testCount += 1
         this.testColumn += 1
         if (this.testColumn % QUIET_MODE_MAX_COLUMN == QUIET_MODE_MAX_COLUMN - 1) {
             // We insert a new line regularly in order to flush the
             // screen when dealing with line-buffered output (e.g., piping to
             // `stamp` in the Rust CI).
-            when (val tryResult = this.writeProgress()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeProgress()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
 
     public open fun writeProgress(): Result<Unit> {
         val out = " ${this.testCount}/${this.totalTestCount}\n"
-        when (val tryResult = this.writePlain(out)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain(out)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         this.testColumn = 0
         return Result.Ok(Unit)
     }
@@ -80,17 +80,17 @@ public open class TerseFormatter<T>(
             is OutputLocation.Pretty -> {
                 val (term) = matchVal
                 if (this.useColor) {
-                    when (val tryResult = term.fg(color)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = term.fg(color)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
-                when (val tryResult = term.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = term.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 if (this.useColor) {
-                    when (val tryResult = term.reset()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = term.reset()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
                 term.flush()
             }
             is OutputLocation.Raw -> {
                 val (stdout) = matchVal
-                when (val tryResult = stdout.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = stdout.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 stdout.flush()
             }
         }
@@ -98,12 +98,12 @@ public open class TerseFormatter<T>(
 
     public open fun writePlain(s: String): Result<Unit> {
         val s1 = s
-        when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return this.out.flush()
     }
 
     public open fun writeOutputs(state: ConsoleTestState): Result<Unit> {
-        when (val tryResult = this.writePlain("\nsuccesses:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\nsuccesses:\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         val successes = mutableListOf()
         var stdouts = ""
         for ((f, stdout) in state.notFailures) {
@@ -116,19 +116,19 @@ public open class TerseFormatter<T>(
             }
         }
         if (!stdouts.isEmpty()) {
-            when (val tryResult = this.writePlain("\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            when (val tryResult = this.writePlain(stdouts)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain(stdouts)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
-        when (val tryResult = this.writePlain("\nsuccesses:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\nsuccesses:\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         successes.sort()
         for (name in successes) {
-            when (val tryResult = this.writePlain("    $name\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("    $name\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
 
     public open fun writeFailures(state: ConsoleTestState): Result<Unit> {
-        when (val tryResult = this.writePlain("\nfailures:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\nfailures:\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         val failures = mutableListOf()
         var failOut = ""
         for ((f, stdout) in state.failures) {
@@ -141,13 +141,13 @@ public open class TerseFormatter<T>(
             }
         }
         if (!failOut.isEmpty()) {
-            when (val tryResult = this.writePlain("\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            when (val tryResult = this.writePlain(failOut)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain(failOut)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
-        when (val tryResult = this.writePlain("\nfailures:\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\nfailures:\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         failures.sort()
         for (name in failures) {
-            when (val tryResult = this.writePlain("    $name\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePlain("    $name\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
@@ -156,11 +156,11 @@ public open class TerseFormatter<T>(
         val name = desc.paddedName(this.maxNameLen, desc.name.padding())
         when (val matchVal = desc.testMode()) {
             null -> {
-                when (val tryResult = this.writePlain("test $name ... ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writePlain("test $name ... ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             }
             else -> {
                 val testMode = matchVal
-                when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             }
         }
         return Result.Ok(Unit)
@@ -195,7 +195,7 @@ public open class TerseFormatter<T>(
         // When running benchmarks, terse-mode should still print their name as if
         // it is the Pretty formatter.
         if (!this.isMultithreaded && desc.name.padding() == NamePadding.PadOnRight) {
-            when (val tryResult = this.writeTestName(desc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeTestName(desc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(Unit)
     }
@@ -216,9 +216,9 @@ public open class TerseFormatter<T>(
             is TestResult.TrBench -> {
                 val (bs) = result
                 if (this.isMultithreaded) {
-                    when (val tryResult = this.writeTestName(desc)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeTestName(desc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
-                when (val tryResult = this.writeBench()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writeBench()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 this.writePlain(": ${fmtBenchSamples(bs)}\n")
             }
         }
@@ -228,30 +228,30 @@ public open class TerseFormatter<T>(
 
     public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean> {
         if (state.options.displayOutput) {
-            when (val tryResult = this.writeOutputs(state)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeOutputs(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         val success = state.failed == 0
         if (!success) {
-            when (val tryResult = this.writeFailures(state)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writeFailures(state)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
-        when (val tryResult = this.writePlain("\ntest result: ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\ntest result: ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         if (success) {
             // There's no parallelism at this point so it's safe to use color
-            when (val tryResult = this.writePretty("ok", GREEN)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("ok", GREEN)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         } else {
-            when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = this.writePretty("FAILED", RED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         val s = ". ${state.passed} passed; ${state.failed} failed; ${state.ignored} ignored; ${state.measured} measured; ${state.filteredOut} filtered out"
-        when (val tryResult = this.writePlain(s)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain(s)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         when (val matchVal = state.execTime) {
             null -> {}
             else -> {
                 val execTime = matchVal
                 val timeStr = "; finished in $execTime"
-                when (val tryResult = this.writePlain(timeStr)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.writePlain(timeStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             }
         }
-        when (val tryResult = this.writePlain("\n\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writePlain("\n\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // Custom handling of cases where there is only 1 test to execute and that test was ignored.
         // We want to show more detailed information(why was the test ignored) for investigation purposes.
         if (this.totalTestCount == 1 && state.ignores.len() == 1) {
@@ -260,7 +260,7 @@ public open class TerseFormatter<T>(
                 null -> {}
                 else -> {
                     val im = matchVal1
-                    when (val tryResult = this.writePlain("test: ${testDesc.name}, ignore_message: $im\n\n")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writePlain("test: ${testDesc.name}, ignore_message: $im\n\n")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
             }
         }

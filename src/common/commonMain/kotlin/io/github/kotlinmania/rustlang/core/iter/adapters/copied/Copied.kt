@@ -9,11 +9,12 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.tryGetUnchecked
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -35,7 +36,7 @@ public typealias Source<I> = I.Source
  */
 public open class Copied<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Copied<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<T> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Copied<I>>, SourceIter<Source>, InPlaceIterable, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Copied.next()) {
@@ -51,7 +52,7 @@ public open class Copied<I>(
 
     public override fun next(): T? = this.it.next()
 
-    public override fun nextChunk(n: Int, specNextChunkIFn: (I) -> Result<List<T>, IntoIter<T, N>>): Result<List<T>, IntoIter<T>> = specNextChunkIFn(this.it)
+    public override fun nextChunk(n: Int, specNextChunkIFn: (I) -> Result<List<T>, IntoIter<T>>): Result<List<T>, IntoIter<T>> = specNextChunkIFn(this.it)
 
     public override fun sizeHint(): Pair<Int, Int?> = this.it.sizeHint()
 
@@ -65,7 +66,7 @@ public open class Copied<I>(
 
     public override fun count(): Int = this.it.count()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.it.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.it.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): T {
         // SAFETY: the caller must uphold the contract for
@@ -79,7 +80,7 @@ public open class Copied<I>(
 
     public open fun <Acc> rfold(init: Acc, f: (Acc, T) -> Acc): Acc = this.it.rfold(init, copyFold(f))
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.it.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.it.advanceBackBy(n)
 
     public open fun len(): Int = this.it.len()
 
@@ -124,9 +125,9 @@ public open class Copied<I>(
          */
         public fun <I> default(defaultIFn: () -> I): Copied<I> = Copied.new(defaultIFn())
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
@@ -135,25 +136,25 @@ public fun <T, Acc> copyFold(f: (Acc, T) -> Acc): (Acc, T) -> Acc = { acc, elt -
 public fun <T, Acc, R> copyTryFold(f: (Acc, T) -> R): (Acc, T) -> R = { acc, elt -> f(acc, elt) }
 
 public interface SpecNextChunk<T, SelfType> : Iterator<T> {
-    public fun specNextChunk(): Result<List<T>, IntoIter<T, N>>
+    public fun specNextChunk(): Result<List<T>, IntoIter<T>>
 
     public fun next(): T?
 }
 
 public fun <I, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T> = iterNextChunk(this.copied())
 
-public fun <T> Iter<T>.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
-    val rawArray = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>, IntoIter<T>>>()) }
+public fun <T> Iter<T>.specNextChunk(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<List<T>, IntoIter<T>> {
+    val rawArray = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>, IntoIter<T>>>()) }
     val len = this.len()
-    if (T.IS_ZST) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         if (len < n) {
             this.advanceBy(len)
             // SAFETY: ZSTs can be conjured ex nihilo; only the amount has to be correct
-            return Result.Err(IntoIter.newUnchecked(rawArray, 0 until len))
+            return Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(rawArray, 0 until len))
         }
         this.advanceBy(n)
         // SAFETY: ditto
-        return Result.Ok(MaybeUninit.arrayAssumeInit(rawArray))
+        return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray))
     }
     if (len < n) {
         // SAFETY: `len` indicates that this many elements are available and we just checked that
@@ -161,7 +162,7 @@ public fun <T> Iter<T>.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
         run {
             copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), len)
             this.advanceBy(len)
-            return Result.Err(IntoIter.newUnchecked(rawArray, 0 until len))
+            return Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(rawArray, 0 until len))
         }
     }
     // SAFETY: `len` is larger than the array size. Copy a fixed amount here to fully initialize
@@ -169,6 +170,6 @@ public fun <T> Iter<T>.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
     return run {
         copyNonoverlapping(this.asRef().asPtr(), mutPtrFromRustCast(rawArray.asMutPtr()), n)
         this.advanceBy(n)
-        Result.Ok(MaybeUninit.arrayAssumeInit(rawArray))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawArray))
     }
 }

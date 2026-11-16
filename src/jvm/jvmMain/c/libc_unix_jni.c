@@ -7488,7 +7488,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBri
 JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBridge_libcUnixTimes(JNIEnv* km_env, jclass km_clazz, jlong buf) {
     (void)km_env;
     (void)km_clazz;
-    typedef uint64_t (*km_fn_t)(void*);
+    typedef int64_t (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -7508,12 +7508,12 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBri
         km_fn_ptr = (km_fn_t)dlsym(RTLD_DEFAULT, "times");
     }
 #endif
-    uint64_t km_res;
+    int64_t km_res;
     if (km_fn_ptr != NULL) {
         km_res = km_fn_ptr((void*)(uintptr_t)buf);
     } else {
         errno = ENOSYS;
-        km_res = 0;
+        km_res = -1;
     }
     return (jlong)km_res;
 }
@@ -7914,7 +7914,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBrid
 JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBridge_libcUnixPthreadKeyDelete(JNIEnv* km_env, jclass km_clazz, jint key) {
     (void)km_env;
     (void)km_clazz;
-    typedef int32_t (*km_fn_t)(int32_t);
+    typedef int32_t (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -7936,7 +7936,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBrid
 #endif
     int32_t km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((int32_t)key);
+        km_res = km_fn_ptr((uint32_t)key);
     } else {
         errno = ENOSYS;
         km_res = ENOSYS;
@@ -7947,7 +7947,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBrid
 JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBridge_libcUnixPthreadGetspecific(JNIEnv* km_env, jclass km_clazz, jint key) {
     (void)km_env;
     (void)km_clazz;
-    typedef void* (*km_fn_t)(int32_t);
+    typedef void* (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -7969,7 +7969,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBri
 #endif
     void* km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((int32_t)key);
+        km_res = km_fn_ptr((uint32_t)key);
     } else {
         errno = ENOSYS;
         km_res = NULL;
@@ -7980,7 +7980,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBri
 JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBridge_libcUnixPthreadSetspecific(JNIEnv* km_env, jclass km_clazz, jint key, jlong value) {
     (void)km_env;
     (void)km_clazz;
-    typedef int32_t (*km_fn_t)(int32_t, void*);
+    typedef int32_t (*km_fn_t)(uint32_t, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -8002,7 +8002,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_UnixJniBrid
 #endif
     int32_t km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((int32_t)key, (void*)(uintptr_t)value);
+        km_res = km_fn_ptr((uint32_t)key, (void*)(uintptr_t)value);
     } else {
         errno = ENOSYS;
         km_res = ENOSYS;

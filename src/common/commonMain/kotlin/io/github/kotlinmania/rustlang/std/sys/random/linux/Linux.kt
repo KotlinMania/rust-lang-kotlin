@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.random.linux
 
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.libc.Poll
@@ -84,9 +85,9 @@ import io.github.kotlinmania.rustlang.std.sys.random.unixlegacy.DEVICE
 
 public fun getrandom(bytes: MutableList<UByte>, insecure: Boolean) {
     var bytes1 = bytes
-    val GETRANDOM_AVAILABLE: Atomic<Boolean>  = AtomicBool.new(true)
-    val GRND_INSECURE_AVAILABLE: Atomic<Boolean>  = AtomicBool.new(true)
-    val URANDOM_READY: Atomic<Boolean>  = AtomicBool.new(false)
+    val GETRANDOM_AVAILABLE: Atomic<Boolean, Align1<UByte>>  = AtomicBool.new(true)
+    val GRND_INSECURE_AVAILABLE: Atomic<Boolean, Align1<UByte>>  = AtomicBool.new(true)
+    val URANDOM_READY: Atomic<Boolean, Align1<UByte>>  = AtomicBool.new(false)
     val DEVICE: OnceLock<File>  = OnceLock.new()
     // A weak symbol allows interposition, e.g. for perf measurements that want to
     // disable randomness for consistency. Otherwise, we'll try a raw syscall.

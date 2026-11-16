@@ -6,13 +6,15 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
@@ -135,7 +137,7 @@ public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCirc
  * ```
  */
 public fun <R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Any?, Any?> {
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Output>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Output>()) }
     return when (val matchVal = tryFromFnErased(array, cb)) {
         is ControlFlow.Break -> {
             val (r) = matchVal
@@ -153,7 +155,7 @@ public fun <R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutputType<R, List<Outpu
  */
 public fun <T> fromRef(s: T): List<T> {
     // SAFETY: Converting `T` to `[T; 1]` is sound.
-    return (ObjectSlotLayout<List<T>>()).readNative((ConstPtr(((constPtrFromRustCast(s))).rawAddress)).rawAddress)
+    return (UnresolvedTypeLayout<List<T>>()).readNative((ConstPtr(((constPtrFromRustCast(s))).rawAddress)).rawAddress)
 }
 
 /**
@@ -161,7 +163,7 @@ public fun <T> fromRef(s: T): List<T> {
  */
 public fun <T> fromMut(s: T): List<T> {
     // SAFETY: Converting `T` to `[T; 1]` is sound.
-    return RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(s))).rawAddress)).rawAddress), ObjectSlotLayout<List<T>>())
+    return RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(s))).rawAddress)).rawAddress), UnresolvedTypeLayout<List<T>>())
 }
 
 /**
@@ -179,10 +181,10 @@ public fun <T> fromMut(s: T): List<T> {
  * not optimizing away.  So if you give it a shot, make sure to watch what
  * happens in the codegen tests.
  */
-public fun <R : Try<R, Any?, Any?>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual> {
+public fun <R : Try<R, Any?, Any?>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual, Unit> {
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = when (val tryResult = generator(guard.initialized).branch()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val item = when (val tryResult = generator(guard.initialized).branch()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -234,13 +236,13 @@ public fun <T> iterNextChunkErased(buffer: MutableList<MaybeUninit<T>>, iter: An
             // so we need to defuse the guard instead of using `?`.
             val initialized = guard.initialized
             forget(guard)
-            return Result.Err(initialized)
+            return Result.Err<Unit, Int>(initialized)
         }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
     forget(guard)
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Int>(Unit)
 }
 
 /**
@@ -285,13 +287,13 @@ public fun <T> iterNextChunkBackErased(buffer: MutableList<MaybeUninit<T>>, iter
         val item = iter.nextBack() ?: run {
             val initialized = guard.initialized
             forget(guard)
-            return Result.Err(initialized)
+            return Result.Err<Unit, Int>(initialized)
         }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
     forget(guard)
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Int>(Unit)
 }
 
 public fun <T> List<T>.asRefTSliceFromTArrayn(n: Int): List<T> = this
@@ -414,9 +416,9 @@ public fun <T> List<T>.geFromTArrayn(other: List<T>, n: Int): Boolean = List.ge(
 
 public fun <T> List<T>.gtFromTArrayn(other: List<T>, n: Int): Boolean = List.gt(this, other)
 
-public fun <T> List<T>.chainingLessFromTArrayn(other: List<T>, n: Int): ControlFlow<Boolean> = List.chainingLess(this, other)
+public fun <T> List<T>.chainingLessFromTArrayn(other: List<T>, n: Int): ControlFlow<Boolean, Unit> = List.chainingLess(this, other)
 
-public fun <T> List<T>.chainingGreaterFromTArrayn(other: List<T>, n: Int): ControlFlow<Boolean> = List.chainingGreater(this, other)
+public fun <T> List<T>.chainingGreaterFromTArrayn(other: List<T>, n: Int): ControlFlow<Boolean, Unit> = List.chainingGreater(this, other)
 
 /**
  * Implements comparison of arrays [lexicographically](Ord#lexicographical-comparison).
@@ -436,8 +438,8 @@ public fun <T> specArrayCloneCloneT(array: List<T>, n: Int): List<T> {
     // This works even for ZSTs, since in that case, add() is a no-op.
     return fromFn({ run {
         val old = ptr
-        ptr = ConstPtr((ptr).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        ((ObjectSlotLayout<T>()).readNative((old).rawAddress)).clone()
+        ptr = ConstPtr((ptr).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        ((UnresolvedTypeLayout<T>()).readNative((old).rawAddress)).clone()
     } })
 }
 
@@ -817,59 +819,59 @@ public fun <T> List<T>.rsplitArrayRef(n: Int, m: Int): Pair<List<T>, List<T>> = 
 public fun <T> List<T>.rsplitArrayMut(n: Int, m: Int): Pair<MutableList<T>, List<T>> = this.splitLastChunkMut().unwrap()
 
 public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIter<T>> {
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkErased(array, this)
-    return when (r) { is Result.Ok<*> -> {
+    return when (r) { is Result.Ok -> {
         // SAFETY: All elements of `array` were populated.
-        Result.Ok(MaybeUninit.arrayAssumeInit(array))
-    }; is Result.Err<*> -> {
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
+    }; is Result.Err -> {
         val initialized = r.error
         // SAFETY: Only the first `initialized` elements were populated
-        Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until initialized))
     } }
 }
 
 public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen<I> {
     val len = this.sizeHint().first
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get len items out of it.
         write(array, this, len)
         // SAFETY: Only the first `len` elements were populated
-        Result.Err(IntoIter.newUnchecked(array, 0 until len))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until len))
     } else {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get N items out of it.
         write(array, this, n)
         // SAFETY: All N items were populated
-        Result.Ok(MaybeUninit.arrayAssumeInit(array))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
     }
 }
 
 public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     val r = iterNextChunkBackErased(array, this)
-    return when (r) { is Result.Ok<*> -> {
+    return when (r) { is Result.Ok -> {
         // SAFETY: All elements of `array` were populated.
-        Result.Ok(MaybeUninit.arrayAssumeInit(array))
-    }; is Result.Err<*> -> {
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
+    }; is Result.Err -> {
         val initialized = r.error
         // SAFETY: Only the last `initialized` elements were populated
-        Result.Err(IntoIter.newUnchecked(array, n - initialized until n))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - initialized until n))
     } }
 }
 
 public fun <I : TrustedLen<I>, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
     val len = this.sizeHint().first
-    val array = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<T>()) }
+    val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get len items out of it.
         writeBack(array, this, len)
         // SAFETY: Only the last `len` elements were populated
-        Result.Err(IntoIter.newUnchecked(array, n - len until n))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - len until n))
     } else {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get N items out of it.
         writeBack(array, this, n)
         // SAFETY: All N items were populated
-        Result.Ok(MaybeUninit.arrayAssumeInit(array))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
     }
 }

@@ -2,16 +2,16 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
 public fun interface FnCallback {
     public operator fun invoke(ctx: MutPtr): CInt
@@ -113,15 +113,15 @@ public typealias ProcessorFlavorT = CInt
 
 public typealias ThreadFlavorT = NaturalT
 
-public typealias ThreadInspectT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias ThreadInspectT = MachPortT
 
-public typealias ThreadActT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias ThreadActT = MachPortT
 
 public typealias ThreadActArrayT = MutPtr
 
 public typealias PolicyT = CInt
 
-public typealias MachErrorT = io.github.kotlinmania.rustlang.libc.KernReturnT
+public typealias MachErrorT = KernReturnT
 
 public typealias MachVmAddressT = ULong
 
@@ -129,11 +129,11 @@ public typealias MachVmOffsetT = ULong
 
 public typealias MachVmSizeT = ULong
 
-public typealias VmMapT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias VmMapT = MachPortT
 
-public typealias MemEntryNamePortT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias MemEntryNamePortT = MachPortT
 
-public typealias MemoryObjectT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias MemoryObjectT = MachPortT
 
 public typealias MemoryObjectOffsetT = CUlonglong
 
@@ -141,7 +141,7 @@ public typealias VmInheritT = CUint
 
 public typealias VmProtT = CInt
 
-public typealias LedgerT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias LedgerT = MachPortT
 
 public typealias LedgerArrayT = MutPtr
 
@@ -195,7 +195,7 @@ public typealias ThreadExtendedInfoT = MutPtr
 
 public typealias ThreadExtendedInfoDataT = ThreadExtendedInfo
 
-public typealias ThreadT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias ThreadT = MachPortT
 
 public typealias ThreadPolicyFlavorT = NaturalT
 
@@ -269,9 +269,9 @@ public typealias VmStatistics64T = MutPtr
 
 public typealias VmStatistics64DataT = VmStatistics64
 
-public typealias TaskT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias TaskT = MachPortT
 
-public typealias TaskInspectT = io.github.kotlinmania.rustlang.libc.MachPortT
+public typealias TaskInspectT = MachPortT
 
 public typealias SysdirSearchPathEnumerationState = CUint
 
@@ -297,41 +297,45 @@ public typealias VolCapabilitiesSetT = UIntArray
 
 public typealias MachTimebaseInfoDataT = MachTimebaseInfo
 
-public enum class SysdirSearchPathDirectoryT(
+public sealed class SysdirSearchPathDirectoryT(
     public val value: UInt,
 ) {
-    SYSDIR_DIRECTORY_APPLICATION(1u),
-    SYSDIR_DIRECTORY_DEMO_APPLICATION(2u),
-    SYSDIR_DIRECTORY_DEVELOPER_APPLICATION(3u),
-    SYSDIR_DIRECTORY_ADMIN_APPLICATION(4u),
-    SYSDIR_DIRECTORY_LIBRARY(5u),
-    SYSDIR_DIRECTORY_DEVELOPER(6u),
-    SYSDIR_DIRECTORY_USER(7u),
-    SYSDIR_DIRECTORY_DOCUMENTATION(8u),
-    SYSDIR_DIRECTORY_DOCUMENT(9u),
-    SYSDIR_DIRECTORY_CORESERVICE(10u),
-    SYSDIR_DIRECTORY_AUTOSAVED_INFORMATION(11u),
-    SYSDIR_DIRECTORY_DESKTOP(12u),
-    SYSDIR_DIRECTORY_CACHES(13u),
-    SYSDIR_DIRECTORY_APPLICATION_SUPPORT(14u),
-    SYSDIR_DIRECTORY_DOWNLOADS(15u),
-    SYSDIR_DIRECTORY_INPUT_METHODS(16u),
-    SYSDIR_DIRECTORY_MOVIES(17u),
-    SYSDIR_DIRECTORY_MUSIC(18u),
-    SYSDIR_DIRECTORY_PICTURES(19u),
-    SYSDIR_DIRECTORY_PRINTER_DESCRIPTION(20u),
-    SYSDIR_DIRECTORY_SHARED_PUBLIC(21u),
-    SYSDIR_DIRECTORY_PREFERENCE_PANES(22u),
-    SYSDIR_DIRECTORY_ALL_APPLICATIONS(100u),
-    SYSDIR_DIRECTORY_ALL_LIBRARIES(101u),
+    public data object SysdirDirectoryApplication : SysdirSearchPathDirectoryT(1u)
+    public data object SysdirDirectoryDemoApplication : SysdirSearchPathDirectoryT(2u)
+    public data object SysdirDirectoryDeveloperApplication : SysdirSearchPathDirectoryT(3u)
+    public data object SysdirDirectoryAdminApplication : SysdirSearchPathDirectoryT(4u)
+    public data object SysdirDirectoryLibrary : SysdirSearchPathDirectoryT(5u)
+    public data object SysdirDirectoryDeveloper : SysdirSearchPathDirectoryT(6u)
+    public data object SysdirDirectoryUser : SysdirSearchPathDirectoryT(7u)
+    public data object SysdirDirectoryDocumentation : SysdirSearchPathDirectoryT(8u)
+    public data object SysdirDirectoryDocument : SysdirSearchPathDirectoryT(9u)
+    public data object SysdirDirectoryCoreservice : SysdirSearchPathDirectoryT(10u)
+    public data object SysdirDirectoryAutosavedInformation : SysdirSearchPathDirectoryT(11u)
+    public data object SysdirDirectoryDesktop : SysdirSearchPathDirectoryT(12u)
+    public data object SysdirDirectoryCaches : SysdirSearchPathDirectoryT(13u)
+    public data object SysdirDirectoryApplicationSupport : SysdirSearchPathDirectoryT(14u)
+    public data object SysdirDirectoryDownloads : SysdirSearchPathDirectoryT(15u)
+    public data object SysdirDirectoryInputMethods : SysdirSearchPathDirectoryT(16u)
+    public data object SysdirDirectoryMovies : SysdirSearchPathDirectoryT(17u)
+    public data object SysdirDirectoryMusic : SysdirSearchPathDirectoryT(18u)
+    public data object SysdirDirectoryPictures : SysdirSearchPathDirectoryT(19u)
+    public data object SysdirDirectoryPrinterDescription : SysdirSearchPathDirectoryT(20u)
+    public data object SysdirDirectorySharedPublic : SysdirSearchPathDirectoryT(21u)
+    public data object SysdirDirectoryPreferencePanes : SysdirSearchPathDirectoryT(22u)
+    public data object SysdirDirectoryAllApplications : SysdirSearchPathDirectoryT(100u)
+    public data object SysdirDirectoryAllLibraries : SysdirSearchPathDirectoryT(101u)
+
+    public open fun clone(): SysdirSearchPathDirectoryT = this
 }
 
-public enum class SysdirSearchPathDomainMaskT(
+public sealed class SysdirSearchPathDomainMaskT(
     public val value: UInt,
 ) {
-    SYSDIR_DOMAIN_MASK_USER((1u shl 0)),
-    SYSDIR_DOMAIN_MASK_LOCAL((1u shl 1)),
-    SYSDIR_DOMAIN_MASK_NETWORK((1u shl 2)),
-    SYSDIR_DOMAIN_MASK_SYSTEM((1u shl 3)),
-    SYSDIR_DOMAIN_MASK_ALL(0x0ffffu),
+    public data object SysdirDomainMaskUser : SysdirSearchPathDomainMaskT((1u shl 0))
+    public data object SysdirDomainMaskLocal : SysdirSearchPathDomainMaskT((1u shl 1))
+    public data object SysdirDomainMaskNetwork : SysdirSearchPathDomainMaskT((1u shl 2))
+    public data object SysdirDomainMaskSystem : SysdirSearchPathDomainMaskT((1u shl 3))
+    public data object SysdirDomainMaskAll : SysdirSearchPathDomainMaskT(0x0ffffu)
+
+    public open fun clone(): SysdirSearchPathDomainMaskT = this
 }

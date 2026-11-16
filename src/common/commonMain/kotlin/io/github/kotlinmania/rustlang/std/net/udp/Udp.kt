@@ -149,8 +149,8 @@ public open class UdpSocket(
      * [Issue #34202]: https://github.com/rust-lang/rust/issues/34202
      */
     public open fun <Iter, A : ToSocketAddrs<Any?>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
-        return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.next()) {
-            null -> Result.Err(constError(ErrorKind.InvalidInput, "no addresses to send data to"))
+        return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }.next()) {
+            null -> Result.Err<Int, Error>(constError(ErrorKind.InvalidInput, "no addresses to send data to"))
             else -> {
                 val addr1 = matchVal
                 this.value.sendTo(buf, addr1)
@@ -868,9 +868,7 @@ public open class UdpSocket(
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        this.value.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value.fmt(f)
 
     public companion object {
         /**

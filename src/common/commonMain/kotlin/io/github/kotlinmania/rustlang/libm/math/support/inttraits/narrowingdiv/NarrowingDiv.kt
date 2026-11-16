@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.support.inttraits.narrowingdiv
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.libm.math.support.big.U256
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
@@ -69,7 +69,7 @@ public fun U256.uncheckedNarrowingDivRem(n: H): Pair<H, H> {
     if (this.hi() >= n) {
         unreachableUnchecked()
     }
-    val lz = rustLeadingZeros(n)
+    val lz = n.leadingZeros()
     val a = this shl lz.toInt()
     val b = n shl lz.toInt()
     val ah = a.hi()
@@ -89,7 +89,7 @@ public fun U256.uncheckedNarrowingDivRem(n: H): Pair<H, H> {
  * Requires that `n.leadingZeros() == 0` and `a<n`.
  */
 public fun <D, U> divThreeDigitsByTwo(a0: U, a: D, n: D): Pair<U, D> where U : HInt<U, Any?> {
-    if (rustLeadingZeros(n) > 0u || a >= n) {
+    if (n.leadingZeros() > 0u || a >= n) {
         unreachableUnchecked()
     }
     // n = n1R + n0

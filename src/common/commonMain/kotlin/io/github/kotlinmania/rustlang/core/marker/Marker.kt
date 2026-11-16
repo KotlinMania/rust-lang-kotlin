@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.marker
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 
 // Primitive traits and types representing basic properties of types.
@@ -486,12 +487,12 @@ public interface Sync
  * `PhantomData` for the field `phantom`:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun <T> borrowVec(vec: List<T>): Slice<T> {
  *     val ptr = vec.asPtr()
- *     return Slice(start = ptr, end = ConstPtr((ptr).rawAddress + ((vec.size).toLong() * (ObjectSlotLayout<T>()).strideBytes)), phantom = Unit)
+ *     return Slice(start = ptr, end = ConstPtr((ptr).rawAddress + ((vec.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), phantom = Unit)
  * }
  * ```
  *
@@ -509,10 +510,11 @@ public interface Sync
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * open class ExternalResource<R>(public var resourceHandle: MutPtr, public var resourceType: Unit) {
- *     public open fun new(typeLayoutR: TypeLayout<R>): ExternalResource<R> {
+ *     public open fun new(typeLayoutR: TypeLayout<R> = UnresolvedTypeLayout()): ExternalResource<R> {
  *         val sizeOfRes = sizeOf<R>(typeLayoutT = typeLayoutR)
  *         return ExternalResource(resourceHandle = new(sizeOfRes), resourceType = Unit)
  *     }
@@ -545,9 +547,9 @@ public open class PhantomData<T> : Copy<PhantomData<T>>, TrivialClone<PhantomDat
 
     public open fun eq(other: PhantomData<T>): Boolean = true
 
-    public open fun partialCmp(other: PhantomData<T>): Ordering? = Option.Some(Ordering.Equal)
+    public open fun partialCmp(other: PhantomData<T>): cmp.Ordering? = Option.Some(cmp.Ordering.Equal)
 
-    public open fun cmp(other: PhantomData<T>): Ordering = Ordering.Equal
+    public open fun cmp(other: PhantomData<T>): cmp.Ordering = cmp.Ordering.Equal
 
     public override fun clone(): PhantomData<T> = PhantomData()
 

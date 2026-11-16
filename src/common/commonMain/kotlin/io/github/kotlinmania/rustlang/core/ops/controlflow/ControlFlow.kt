@@ -46,7 +46,7 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  *     public var left: TreeNode<T>?,
  *     public var right: TreeNode<T>?,
  * ) {
- *     public open fun <B> traverseInorder(f: (T) -> ControlFlow<B>): ControlFlow<B> {
+ *     public open fun <B> traverseInorder(f: (T) -> ControlFlow<B, Unit>): ControlFlow<B, Unit> {
  *         when (val matchVal = this.left) {
  *             null -> {}
  *             else -> {
@@ -86,7 +86,7 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  * [Break]: ControlFlow.Break
  * [Continue]: ControlFlow.Continue
  */
-public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, Any?, Any?, C, ControlFlow<B, Nothing>>, FromResidual<ControlFlow<B, Nothing>, ControlFlow<B, C>> {
+public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B, Nothing>>, FromResidual<ControlFlow<B, Nothing>, ControlFlow<B, C>> {
     /**
      * Move on to the next phase of the operation as normal.
      */
@@ -193,7 +193,7 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, Any?, Any?, C, Co
      *         return this.traverseInorder(f).breakOk()
      *     }
      *
-     *     public open fun <B> traverseInorder(f: (T) -> ControlFlow<B>): ControlFlow<B> {
+     *     public open fun <B> traverseInorder(f: (T) -> ControlFlow<B, Unit>): ControlFlow<B, Unit> {
      *         when (val matchVal = this.left) {
      *             null -> {}
      *             else -> {
@@ -225,11 +225,11 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, Any?, Any?, C, Co
         when (this) {
             is ControlFlow.Continue -> {
                 val (c) = this
-                Result.Err(c)
+                Result.Err<B, C>(c)
             }
             is ControlFlow.Break -> {
                 val (b) = this
-                Result.Ok(b)
+                Result.Ok<B, C>(b)
             }
         }
 
@@ -285,11 +285,11 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, Any?, Any?, C, Co
      *     public var left: TreeNode<T>?,
      *     public var right: TreeNode<T>?,
      * ) {
-     *     public open fun <B> validate(f: (T) -> ControlFlow<B>): Result<Unit> {
+     *     public open fun <B> validate(f: (T) -> ControlFlow<B, Unit>): Result<Unit> {
      *         return this.traverseInorder(f).continueOk()
      *     }
      *
-     *     public open fun <B> traverseInorder(f: (T) -> ControlFlow<B>): ControlFlow<B> {
+     *     public open fun <B> traverseInorder(f: (T) -> ControlFlow<B, Unit>): ControlFlow<B, Unit> {
      *         when (val matchVal = this.left) {
      *             null -> {}
      *             else -> {
@@ -329,11 +329,11 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, Any?, Any?, C, Co
         when (this) {
             is ControlFlow.Continue -> {
                 val (c) = this
-                Result.Ok(c)
+                Result.Ok<C, B>(c)
             }
             is ControlFlow.Break -> {
                 val (b) = this
-                Result.Err(b)
+                Result.Err<C, B>(b)
             }
         }
 
@@ -400,7 +400,7 @@ public fun <T> ControlFlow<T, T>.intoValue(): T =
 /**
  * Creates a `ControlFlow` from any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, R.Output> where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Any?, Any?> =
     when (val matchVal = branchRFn(r)) {
         is ControlFlow.Continue -> {
             val (v) = matchVal
@@ -415,7 +415,7 @@ public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.from
 /**
  * Converts a `ControlFlow` into any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow<R, R.Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Any?, Any?> =
     when (this) {
         is ControlFlow.Continue -> {
             val (v) = this

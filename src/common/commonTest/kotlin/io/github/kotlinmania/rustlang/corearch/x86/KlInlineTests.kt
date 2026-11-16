@@ -5,8 +5,8 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -37,7 +37,7 @@ public fun testMmEncodekey256U32() {
 }
 
 public fun testMmAesenc128klU8() {
-    val localStorageL387C8 = AddressableLocal(mmSetzeroSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL387C8 = AddressableLocal(mmSetzeroSi128(), UnresolvedTypeLayout<M128i>())
     val buffer by localStorageL387C8
     val key = encodekey128()
     for (unused in 0 until 100) {
@@ -52,7 +52,7 @@ public fun testMmAesenc128klU8() {
 }
 
 public fun testMmAesdec128klU8() {
-    val localStorageL404C8 = AddressableLocal(mmSetzeroSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL404C8 = AddressableLocal(mmSetzeroSi128(), UnresolvedTypeLayout<M128i>())
     val buffer by localStorageL404C8
     val key = encodekey128()
     for (unused in 0 until 100) {
@@ -67,7 +67,7 @@ public fun testMmAesdec128klU8() {
 }
 
 public fun testMmAesenc256klU8() {
-    val localStorageL421C8 = AddressableLocal(mmSetzeroSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL421C8 = AddressableLocal(mmSetzeroSi128(), UnresolvedTypeLayout<M128i>())
     val buffer by localStorageL421C8
     val key = encodekey256()
     for (unused in 0 until 100) {
@@ -82,7 +82,7 @@ public fun testMmAesenc256klU8() {
 }
 
 public fun testMmAesdec256klU8() {
-    val localStorageL438C8 = AddressableLocal(mmSetzeroSi128(), ObjectSlotLayout<M128i>())
+    val localStorageL438C8 = AddressableLocal(mmSetzeroSi128(), UnresolvedTypeLayout<M128i>())
     val buffer by localStorageL438C8
     val key = encodekey256()
     for (unused in 0 until 100) {

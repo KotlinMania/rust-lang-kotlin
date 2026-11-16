@@ -23,11 +23,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.removeKvTracking(handleEmptiedInternalRoot: () -> Unit, alloc: A): Pair<Pair<K, V>, Handle<NodeRef<Mut, K, V, Leaf>, Edge>> =
     when (val matchVal = this.force()) {
-        is Leaf -> {
+        is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf -> {
             val (node) = matchVal
             node.removeLeafKv(handleEmptiedInternalRoot, alloc)
         }
-        is Internal -> {
+        is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal -> {
             val (node1) = matchVal
             node1.removeInternalKv(handleEmptiedInternalRoot, alloc)
         }
@@ -44,7 +44,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
             run {
                 val matchVal = pos.intoNode().forgetType().chooseParentKv()
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value is Left -> {
+                    matchVal is Result.Ok && matchVal.value is Left -> {
                         check(leftParentKv.rightChildLen() == MIN_LEN - 1)
                         if (leftParentKv.canMerge()) {
                             leftParentKv.mergeTrackingChildEdge(Right(idx), alloc.clone())
@@ -53,7 +53,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                             leftParentKv.stealLeft(idx)
                         }
                     }
-                    matchVal is Result.Ok<*> && matchVal.value is Right -> {
+                    matchVal is Result.Ok && matchVal.value is Right -> {
                         check(rightParentKv.leftChildLen() == MIN_LEN - 1)
                         if (rightParentKv.canMerge()) {
                             rightParentKv.mergeTrackingChildEdge(Left(idx), alloc.clone())
@@ -64,7 +64,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                     }
                     // ignore-tidy-undocumented-unchecked
                     else -> {
-                        val pos1 = (matchVal as Result.Err<*>).error
+                        val pos1 = matchVal.error
                         Handle.newEdge(pos1, idx)
                     }
                 }

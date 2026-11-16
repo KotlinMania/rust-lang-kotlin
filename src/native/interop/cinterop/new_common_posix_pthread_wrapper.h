@@ -30,7 +30,7 @@ int32_t libcNewCommonPosixPthreadPthreadBarrierattrSetpshared(void* attr, int32_
 int32_t libcNewCommonPosixPthreadPthreadCancel(void* thread);
 int32_t libcNewCommonPosixPthreadPthreadCondattrGetclock(void* attr, void* clockId);
 int32_t libcNewCommonPosixPthreadPthreadCondattrGetpshared(void* attr, void* pshared);
-int32_t libcNewCommonPosixPthreadPthreadCondattrSetclock(void* attr, int32_t clockId);
+int32_t libcNewCommonPosixPthreadPthreadCondattrSetclock(void* attr, uint32_t clockId);
 int32_t libcNewCommonPosixPthreadPthreadCondattrSetpshared(void* attr, int32_t pshared);
 int32_t libcNewCommonPosixPthreadPthreadCreate(void* native, void* attr, void* f, void* value);
 int32_t libcNewCommonPosixPthreadPthreadGetcpuclockid(void* thread, void* clkId);

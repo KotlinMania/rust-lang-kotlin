@@ -4,18 +4,18 @@ package io.github.kotlinmania.rustlang.core.mem.alignment
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOfVal
 import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 /**
  * A type storing a `Int` which is a power of two, and thus
@@ -26,13 +26,13 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  */
 public open class Alignment internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<AlignmentEnum>,
+    public val fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout(),
 ) {
     public var innerReprTrick: AlignmentEnum
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum>) : this(allocateNativeCell(innerReprTrick, fieldLayout), fieldLayout)
+    internal constructor(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout()) : this(allocateNativeCell(innerReprTrick, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Alignment> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Alignment(ptr, layout) }, { it.innerReprTrick })
 
@@ -50,13 +50,13 @@ public open class Alignment internal constructor(
     /**
      * Returns the alignment as a <code>[NonZero]<[Int]></code>.
      */
-    public open fun asNonzeroUsize(): NonZero<Int> {
+    public open fun asNonzeroUsize(): NonZero<Int, NonZeroUsizeInner> {
         // This transmutes directly to avoid the UbCheck in `NonZero.newUnchecked`
         // since there's no way for the user to trip that check anyway -- the
         // validity invariant of the type would have to have been broken earlier --
         // and emitting it in an otherwise simple method is bad for compile time.
         // SAFETY: All the discriminants are non-zero.
-        return transmute<Alignment, NonZero<Int>>(this)
+        return transmute(this)
     }
 
     /**
@@ -91,6 +91,7 @@ public open class Alignment internal constructor(
      * import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
      * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
      * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
      * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
      * import std.mem.Alignment
@@ -99,7 +100,7 @@ public open class Alignment internal constructor(
      * @feature(ptrAlignmentType, ptrMask)
      * public fun doctestEntry() {
      *     @repr(align(1))
-     *     open class Align1(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UByte>) {
+     *     open class Align1(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) {
      *         public var field0: UByte
      *             get() = value
      *             set(v) {
@@ -110,12 +111,12 @@ public open class Alignment internal constructor(
      *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
      *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
      *
-     *         public constructor(value: UByte, fieldLayout: TypeLayout<UByte>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 1L)), AlignedTypeLayout(fieldLayout, 1L))
+     *         public constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 1L)), AlignedTypeLayout(fieldLayout, 1L))
      *
      *         public fun pointerLayout(): TypeLayout<Align1> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align1(ptr, layout) }, { it.value })
      *     }
      *     @repr(align(2))
-     *     open class Align2(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UShort>) {
+     *     open class Align2(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) {
      *         public var field0: UShort
      *             get() = value
      *             set(v) {
@@ -126,12 +127,12 @@ public open class Alignment internal constructor(
      *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
      *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
      *
-     *         public constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
+     *         public constructor(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
      *
      *         public fun pointerLayout(): TypeLayout<Align2> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align2(ptr, layout) }, { it.value })
      *     }
      *     @repr(align(4))
-     *     open class Align4(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UInt>) {
+     *     open class Align4(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) {
      *         public var field0: UInt
      *             get() = value
      *             set(v) {
@@ -142,7 +143,7 @@ public open class Alignment internal constructor(
      *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
      *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
      *
-     *         public constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+     *         public constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
      *
      *         public fun pointerLayout(): TypeLayout<Align4> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align4(ptr, layout) }, { it.value })
      *     }
@@ -163,9 +164,9 @@ public open class Alignment internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> = f.writeFmt("${this.asNonzeroUsize()} (1 << ${this.log2()})")
 
-    public open fun cmp(other: Alignment): Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
+    public open fun cmp(other: Alignment): cmp.Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
 
-    public open fun partialCmp(other: Alignment): Ordering? = this.cmp(other)
+    public open fun partialCmp(other: Alignment): cmp.Ordering? = this.cmp(other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -174,9 +175,9 @@ public open class Alignment internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum>): Alignment = Alignment(innerReprTrick, fieldLayout)
+        public operator fun invoke(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout()): Alignment = Alignment(innerReprTrick, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<AlignmentEnum>): Alignment = Alignment(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout()): Alignment = Alignment(fieldStorage, fieldLayout)
 
         /**
          * The smallest possible alignment, 1.
@@ -199,7 +200,7 @@ public open class Alignment internal constructor(
          * This provides the same numerical value as [alignOf],
          * but in an `Alignment` instead of a `Int`.
          */
-        public fun <T> of(): Alignment = T.ALIGNMENT
+        public fun <T> of(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Alignment = Alignment.newUnchecked((typeLayoutT).alignBytes.toInt())
 
         /**
          * Returns the [ABI]-required minimum alignment of the type of the value that `val` points to.
@@ -240,7 +241,7 @@ public open class Alignment internal constructor(
          * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
          */
         public fun <T> ofVal(value: T): Alignment {
-            val align = alignOfVal(value)
+            val align = alignOfVal(value, typeLayoutT = UnresolvedTypeLayout<T>())
             // SAFETY: `alignOfVal` returns valid alignment
             return Alignment.newUnchecked(align)
         }
@@ -325,10 +326,10 @@ public open class Alignment internal constructor(
          * It must *not* be zero.
          */
         public fun newUnchecked(align: Int): Alignment {
-            assertUnsafePrecondition(checkLanguageUb, "Alignment::new_unchecked requires a power of two", align, align, align, isPowerOfTwo)
+            Unit
             // SAFETY: By precondition, this must be a power of two, and
             // our variants encompass all possible powers of two.
-            return transmute<Int, Alignment>(align)
+            return transmute(align)
         }
 
         // Note(const-Note) Remove me once `Ord.max` is usable in const
@@ -339,7 +340,7 @@ public open class Alignment internal constructor(
                 b
             }
 
-        public fun tryFrom(align: NonZero<Int>): Result<Alignment, TryFromIntError> = align.get().tryInto()
+        public fun tryFrom(align: NonZero<Int, NonZeroUsizeInner>): Result<Alignment, TryFromIntError> = align.get().tryInto()
 
         public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
 
@@ -356,7 +357,7 @@ public fun alignmentCanBeStructurallyMatched(a: Alignment): Boolean =
         else -> false
     }
 
-public fun fromNonZeroInt(align: Alignment): NonZero<Int> = align.asNonzeroUsize()
+public fun fromNonZeroInt(align: Alignment): NonZero<Int, NonZeroUsizeInner> = align.asNonzeroUsize()
 
 public fun fromInt(align: Alignment): Int = align.asUsize()
 

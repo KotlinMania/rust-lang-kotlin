@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.compilerbuiltins.mem.x8664
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
@@ -24,12 +24,12 @@ public fun setBytes(dest: MutPtr, c: UByte, count: Int) {}
 public fun compareBytes(a: ConstPtr, b: ConstPtr, n: Int): Int {
     val a1 = a
     val b1 = b
-    fun <T> cmp(a2: ConstPtr, b2: ConstPtr, n1: Int, f: (ConstPtr, ConstPtr, Int) -> Int, typeLayoutT: TypeLayout<T>): Int {
+    fun <T> cmp(a2: ConstPtr, b2: ConstPtr, n1: Int, f: (ConstPtr, ConstPtr, Int) -> Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
         var a23 = a2
         var b23 = b2
         // Ensure T is not a ZST.
         check(sizeOf<T>(typeLayoutT = typeLayoutT) != 0)
-        val end = ConstPtr((a23).rawAddress + ((uncheckedDiv(n1, sizeOf<T>(typeLayoutT = typeLayoutT))).toLong() * (typeLayoutT).strideBytes))
+        val end = ConstPtr((a23).rawAddress + ((((n1) / (sizeOf<T>(typeLayoutT = typeLayoutT)))).toLong() * (typeLayoutT).strideBytes))
         while (((a23).rawAddress.toULong() != (end).rawAddress.toULong())) {
             if ((typeLayoutT).readNative((a23).rawAddress) != (typeLayoutT).readNative((b23).rawAddress)) {
                 return f(a23, b23, sizeOf<T>(typeLayoutT = typeLayoutT))
@@ -37,7 +37,7 @@ public fun compareBytes(a: ConstPtr, b: ConstPtr, n: Int): Int {
             a23 = ConstPtr((a23).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
             b23 = ConstPtr((b23).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         }
-        return f(a23, b23, uncheckedRem(n1, sizeOf<T>(typeLayoutT = typeLayoutT)))
+        return f(a23, b23, ((n1) % (sizeOf<T>(typeLayoutT = typeLayoutT))))
     }
     val c1 =
         closure@{ a2: ConstPtr, b2: ConstPtr, n1 ->
@@ -73,11 +73,11 @@ public fun cStringLength(s: ConstPtr): Int {
     // but they aren't cheap by themselves. Thus, possibly small strings
     // are handled in simple loops.
     for (unused in 0 until 4) {
-        if ((ObjectSlotLayout<CChar>()).readNative((s1).rawAddress) == 0u.toUByte()) {
+        if ((UnresolvedTypeLayout<CChar>()).readNative((s1).rawAddress) == 0u.toUByte()) {
             return n
         }
         n += 1
-        s1 = ConstPtr((s1).rawAddress + ((1).toLong() * (ObjectSlotLayout<CChar>()).strideBytes))
+        s1 = ConstPtr((s1).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<CChar>()).strideBytes))
     }
     // Shave off the least significant bits to align the address to a 16
     // byte boundary. The shaved off bits are used to correct the first iteration.
@@ -94,7 +94,7 @@ public fun cStringLength(s: ConstPtr): Int {
         return n + cmp.trailingZeros().toInt()
     }
     n += 16 - align
-    s2 = ConstPtr((s2).rawAddress + ((1).toLong() * (ObjectSlotLayout<M128i>()).strideBytes))
+    s2 = ConstPtr((s2).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<M128i>()).strideBytes))
     while (true) {
         val x1 = run {
             val r1: Any?
@@ -104,9 +104,9 @@ public fun cStringLength(s: ConstPtr): Int {
         val cmp1 = mmMovemaskEpi8(mmCmpeqEpi8(x1, zero)).toUInt()
         if (cmp1 == 0u) {
             n += 16
-            s2 = ConstPtr((s2).rawAddress + ((1).toLong() * (ObjectSlotLayout<M128i>()).strideBytes))
+            s2 = ConstPtr((s2).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<M128i>()).strideBytes))
         } else {
-            return n + rustTrailingZeros(cmp1).toInt()
+            return n + cmp1.trailingZeros().toInt()
         }
     }
 }

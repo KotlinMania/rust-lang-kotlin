@@ -24,6 +24,8 @@ int32_t libcUnixBsdAppleChflags(const char* path, uint32_t flags);
 int32_t libcUnixBsdAppleFchflags(int32_t fd, uint32_t flags);
 int32_t libcUnixBsdAppleLchflags(const char* path, uint32_t flags);
 int32_t libcUnixBsdAppleLchmod(const char* path, uint16_t mode);
+int32_t libcUnixBsdAppleClockGetres(uint32_t clkId, void* tp);
+int32_t libcUnixBsdAppleClockGettime(uint32_t clkId, void* tp);
 int32_t libcUnixBsdAppleLioListio(int32_t mode, void* aiocbList, int32_t nitems, void* sevp);
 int32_t libcUnixBsdAppleDirfd(void* dirp);
 int32_t libcUnixBsdAppleLutimes(const char* file, void* times);
@@ -249,6 +251,7 @@ int32_t libcUnixBsdAppleMknodat(int32_t dirfd, const char* pathname, uint16_t mo
 int32_t libcUnixBsdAppleFreadlink(int32_t fd, char* buf, uint64_t size);
 int32_t libcUnixBsdAppleExecvP(const char* file, const char* searchPath, void* argv);
 void libcUnixBsdAppleQsortR(void* base, uint64_t num, uint64_t size, void* arg, void* compar);
+int32_t libcUnixBsdAppleClockSettime(uint32_t clockId, void* tp);
 int32_t libcUnixBsdAppleProcListpids(uint32_t t, uint32_t typeinfo, void* buffer, int32_t buffersize);
 int32_t libcUnixBsdAppleProcListallpids(void* buffer, int32_t buffersize);
 int32_t libcUnixBsdAppleProcListpgrppids(int32_t pgrpid, void* buffer, int32_t buffersize);

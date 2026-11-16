@@ -2,16 +2,15 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.stackoverflow
 
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.thread.current.currentOsId
-import io.github.kotlinmania.rustlang.std.thread.current.withCurrentName
+import io.github.kotlinmania.rustlang.std.sys.thread.windows.Thread
 
 /**
  * Reserve stack space for use in stack overflow exceptions.
@@ -26,12 +25,12 @@ public fun reserveStack() {
 public fun vectoredHandler(exceptionInfo: MutPtr): Int {
     // SAFETY: It's up to the caller (which in this case is the OS) to ensure that `ExceptionInfo` is valid.
     return run {
-        val rec = (ObjectSlotLayout<c.ExceptionPointers>()).readNative((exceptionInfo).rawAddress).exceptionRecord
+        val rec = (UnresolvedTypeLayout<c.ExceptionPointers>()).readNative((exceptionInfo).rawAddress).exceptionRecord
         val code = rec.exceptionCode
         if (code == c.EXCEPTION_STACK_OVERFLOW.castUnsigned()) {
-            withCurrentName({ name ->
+            Thread.withCurrentName({ name ->
                 val name1 = name.unwrapOr("<unknown>")
-                val tid = currentOsId()
+                val tid = Thread.currentOsId()
                 when (val matchVal = panicOutput()) {
                     null -> {}
                     else -> {

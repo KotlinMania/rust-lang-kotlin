@@ -12,9 +12,9 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.OsStringExt
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.asBytes
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.fromVec
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock.RwLock
 import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
@@ -35,9 +35,9 @@ public fun env(): Env {
         if (input.isEmpty()) {
             return null
         }
-        val pos = memchr(61u, ((input).slice(1 until input.size)))?.let({ p -> p + 1 })
+        val pos = memchr(61u, ((input).subList(1, (input).size)))?.let({ p -> p + 1 })
         return pos?.let({ p ->
-            Pair(OsStringExt.fromVec(((input).slice(0 until p)).toMutableList()), OsStringExt.fromVec(((input).slice(p + 1 until input.size)).toMutableList()))
+            Pair(OsStringExt.fromVec(((input).subList(0, p)).toMutableList()), OsStringExt.fromVec(((input).subList(p + 1, (input).size)).toMutableList()))
         })
     }
     run {

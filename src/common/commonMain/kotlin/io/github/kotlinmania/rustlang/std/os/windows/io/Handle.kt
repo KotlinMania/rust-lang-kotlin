@@ -1,20 +1,22 @@
 // port-lint: source os/windows/io/handle.rs
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
-import io.github.kotlinmania.rustlang.std.io.IsTerminal
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
+import io.github.kotlinmania.rustlang.std.io.stdio.IsTerminal
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.StderrLock
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
@@ -122,54 +124,52 @@ public open class BorrowedHandle internal constructor(
         // if we passed it a null handle, but we can treat null as a valid
         // handle which doesn't do any I/O, and allow it to be duplicated.
         if (handle.isNull()) {
-            return Result.Ok(OwnedHandle.fromRawHandle(handle, fieldLayout = ObjectSlotLayout<RawHandle>()))
+            return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(handle, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
         }
         val ret = MutPtr(0L)
         when (val tryResult = cvt(run {
             val curProc = C.GetCurrentProcess()
             C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
-        })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(OwnedHandle.fromRawHandle(ret, fieldLayout = ObjectSlotLayout<RawHandle>()))
+        })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedHandle, Error>(tryResult.error) }
+        return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(ret, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
     }
 
     public override fun asRawHandle(): RawHandle = this.handle
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "BorrowedHandle").field("handle", this.handle).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "BorrowedHandle").field("handle", this.handle).finish()
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.IsTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public override fun asHandle(): BorrowedHandle = this
 
     public open fun asRef(): File {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<File>(typeLayoutT = ObjectSlotLayout<File>()))
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<File>(typeLayoutT = UnresolvedTypeLayout<File>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<File>()
-        return transmute<BorrowedHandle, File>(this)
+        return transmute(this)
     }
 
     public open fun asRefPipeWriter(): PipeWriter {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<PipeWriter>(typeLayoutT = ObjectSlotLayout<PipeWriter>()))
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<PipeWriter>(typeLayoutT = UnresolvedTypeLayout<PipeWriter>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<PipeWriter>()
-        return transmute<BorrowedHandle, PipeWriter>(this)
+        return transmute(this)
     }
 
     public open fun asRefPipeReader(): PipeReader {
         fun <T : AsHandle> typeCheck() {}
         run {
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<PipeReader>(typeLayoutT = ObjectSlotLayout<PipeReader>()))
-            check(sizeOf<RawHandle>(typeLayoutT = ObjectSlotLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = ObjectSlotLayout<BorrowedHandle>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<PipeReader>(typeLayoutT = UnresolvedTypeLayout<PipeReader>()))
+            check(sizeOf<RawHandle>(typeLayoutT = UnresolvedTypeLayout<RawHandle>()) == sizeOf<BorrowedHandle>(typeLayoutT = UnresolvedTypeLayout<BorrowedHandle>()))
         }
         typeCheck<PipeReader>()
-        return transmute<BorrowedHandle, PipeReader>(this)
+        return transmute(this)
     }
 
     public companion object {
@@ -226,13 +226,13 @@ public open class BorrowedHandle internal constructor(
  */
 public open class OwnedHandle internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<RawHandle>,
+    public val fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout(),
 ) : AsRawHandle, IntoRawHandle, FromRawHandle<OwnedHandle>, IsTerminal, AsHandle {
     public var handle: RawHandle
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(handle: RawHandle, fieldLayout: TypeLayout<RawHandle>) : this(allocateNativeCell(handle, fieldLayout), fieldLayout)
+    internal constructor(handle: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()) : this(allocateNativeCell(handle, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<OwnedHandle> = TransparentTypeLayout(fieldLayout, { ptr, layout -> OwnedHandle(ptr, layout) }, { it.handle })
 
@@ -258,11 +258,9 @@ public open class OwnedHandle internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OwnedHandle").field("handle", this.handle).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "OwnedHandle").field("handle", this.handle).finish()
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.IsTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
     public override fun asHandle(): BorrowedHandle {
         // Safety: `OwnedHandle` and `BorrowedHandle` have the same validity
@@ -272,31 +270,31 @@ public open class OwnedHandle internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(handle: RawHandle, fieldLayout: TypeLayout<RawHandle>): OwnedHandle = OwnedHandle(handle, fieldLayout)
+        public operator fun invoke(handle: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle(handle, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawHandle>): OwnedHandle = OwnedHandle(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle(fieldStorage, fieldLayout)
 
-        public fun tryFrom(handleOrNull: HandleOrNull, fieldLayout: TypeLayout<RawHandle>): Result<OwnedHandle, NullHandleError> {
+        public fun tryFrom(handleOrNull: HandleOrNull, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): Result<OwnedHandle, NullHandleError> {
             val handleOrNull1 = handleOrNull
             return if (handleOrNull1.isValid()) {
                 // SAFETY: The handle is not null.
-                Result.Ok(OwnedHandle.fromRawHandle(handleOrNull1.first, fieldLayout = fieldLayout))
+                Result.Ok<OwnedHandle, NullHandleError>(OwnedHandle.fromRawHandle(handleOrNull1.first, fieldLayout = fieldLayout))
             } else {
-                Result.Err(NullHandleError())
+                Result.Err<OwnedHandle, NullHandleError>(NullHandleError())
             }
         }
 
-        public fun tryFrom(handleOrInvalid: HandleOrInvalid, fieldLayout: TypeLayout<RawHandle>): Result<OwnedHandle, InvalidHandleError> {
+        public fun tryFrom(handleOrInvalid: HandleOrInvalid, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): Result<OwnedHandle, InvalidHandleError> {
             val handleOrInvalid1 = handleOrInvalid
             return if (handleOrInvalid1.isValid()) {
                 // SAFETY: The handle is not invalid.
-                Result.Ok(OwnedHandle.fromRawHandle(handleOrInvalid1.first, fieldLayout = fieldLayout))
+                Result.Ok<OwnedHandle, InvalidHandleError>(OwnedHandle.fromRawHandle(handleOrInvalid1.first, fieldLayout = fieldLayout))
             } else {
-                Result.Err(InvalidHandleError())
+                Result.Err<OwnedHandle, InvalidHandleError>(InvalidHandleError())
             }
         }
 
-        public fun fromRawHandle(handle: RawHandle, fieldLayout: TypeLayout<RawHandle>): OwnedHandle = OwnedHandle(handle = handle, fieldLayout = fieldLayout)
+        public fun fromRawHandle(handle: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle(handle = handle, fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`File`](fs.File)'s underlying file handle.
@@ -306,17 +304,17 @@ public open class OwnedHandle internal constructor(
         /**
          * Takes ownership of a [`ChildStdin`](process.ChildStdin)'s file handle.
          */
-        public fun from(childStdin: ChildStdin, fieldLayout: TypeLayout<RawHandle>): OwnedHandle = OwnedHandle.fromRawHandle(childStdin.intoRawHandle(), fieldLayout = fieldLayout)
+        public fun from(childStdin: ChildStdin, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStdin.intoRawHandle(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`ChildStdout`](process.ChildStdout)'s file handle.
          */
-        public fun from(childStdout: ChildStdout, fieldLayout: TypeLayout<RawHandle>): OwnedHandle = OwnedHandle.fromRawHandle(childStdout.intoRawHandle(), fieldLayout = fieldLayout)
+        public fun from(childStdout: ChildStdout, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStdout.intoRawHandle(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`ChildStderr`](process.ChildStderr)'s file handle.
          */
-        public fun from(childStderr: ChildStderr, fieldLayout: TypeLayout<RawHandle>): OwnedHandle = OwnedHandle.fromRawHandle(childStderr.intoRawHandle(), fieldLayout = fieldLayout)
+        public fun from(childStderr: ChildStderr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStderr.intoRawHandle(), fieldLayout = fieldLayout)
 
         public fun <T> from(joinHandle: JoinHandle<T>): OwnedHandle = joinHandle.intoInner().intoHandle().intoInner()
 
@@ -347,7 +345,7 @@ public open class OwnedHandle internal constructor(
  */
 public open class HandleOrNull internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<RawHandle>,
+    public val fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout(),
 ) {
     public var field0: RawHandle
         get() = value
@@ -359,7 +357,7 @@ public open class HandleOrNull internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: RawHandle, fieldLayout: TypeLayout<RawHandle>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<HandleOrNull> = TransparentTypeLayout(fieldLayout, { ptr, layout -> HandleOrNull(ptr, layout) }, { it.value })
 
@@ -374,9 +372,9 @@ public open class HandleOrNull internal constructor(
     public open fun isValid(): Boolean = (!this.value.isNull()).toUByte()
 
     public companion object {
-        public operator fun invoke(value: RawHandle, fieldLayout: TypeLayout<RawHandle>): HandleOrNull = HandleOrNull(value, fieldLayout)
+        public operator fun invoke(value: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): HandleOrNull = HandleOrNull(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawHandle>): HandleOrNull = HandleOrNull(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): HandleOrNull = HandleOrNull(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of `Self` from the given `RawHandle` returned
@@ -394,7 +392,7 @@ public open class HandleOrNull internal constructor(
          *
          * [here]: https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
          */
-        public fun fromRawHandle(handle: RawHandle, fieldLayout: TypeLayout<RawHandle>): HandleOrNull = HandleOrNull(handle, fieldLayout = fieldLayout)
+        public fun fromRawHandle(handle: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): HandleOrNull = HandleOrNull(handle, fieldLayout = fieldLayout)
     }
 }
 
@@ -416,7 +414,7 @@ public open class HandleOrNull internal constructor(
  */
 public open class HandleOrInvalid internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<RawHandle>,
+    public val fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout(),
 ) {
     public var field0: RawHandle
         get() = value
@@ -428,7 +426,7 @@ public open class HandleOrInvalid internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: RawHandle, fieldLayout: TypeLayout<RawHandle>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<HandleOrInvalid> = TransparentTypeLayout(fieldLayout, { ptr, layout -> HandleOrInvalid(ptr, layout) }, { it.value })
 
@@ -443,9 +441,9 @@ public open class HandleOrInvalid internal constructor(
     public open fun isValid(): Boolean = (this.value != C.INVALID_HANDLE_VALUE).toUByte()
 
     public companion object {
-        public operator fun invoke(value: RawHandle, fieldLayout: TypeLayout<RawHandle>): HandleOrInvalid = HandleOrInvalid(value, fieldLayout)
+        public operator fun invoke(value: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): HandleOrInvalid = HandleOrInvalid(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawHandle>): HandleOrInvalid = HandleOrInvalid(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): HandleOrInvalid = HandleOrInvalid(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of `Self` from the given `RawHandle` returned
@@ -464,7 +462,7 @@ public open class HandleOrInvalid internal constructor(
          *
          * [here]: https://devblogs.microsoft.com/oldnewthing/20040302-00/?p=40443
          */
-        public fun fromRawHandle(handle: RawHandle, fieldLayout: TypeLayout<RawHandle>): HandleOrInvalid = HandleOrInvalid(handle, fieldLayout = fieldLayout)
+        public fun fromRawHandle(handle: RawHandle, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): HandleOrInvalid = HandleOrInvalid(handle, fieldLayout = fieldLayout)
     }
 }
 
@@ -485,9 +483,7 @@ public open class NullHandleError(
 
     public open fun clone(): NullHandleError = NullHandleError(value)
 
-    public open fun fmt(fmt: StringBuilder) {
-        "A HandleOrNull could not be converted to a handle because it was null".fmt(fmt)
-    }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "A HandleOrNull could not be converted to a handle because it was null".fmt(fmt)
 
     public companion object {
         public fun typeLayout(): TypeLayout<NullHandleError> =
@@ -530,9 +526,7 @@ public open class InvalidHandleError(
 
     public open fun clone(): InvalidHandleError = InvalidHandleError(value)
 
-    public open fun fmt(fmt: StringBuilder) {
-        "A HandleOrInvalid could not be converted to a handle because it was INVALID_HANDLE_VALUE".fmt(fmt)
-    }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "A HandleOrInvalid could not be converted to a handle because it was INVALID_HANDLE_VALUE".fmt(fmt)
 
     public companion object {
         public fun typeLayout(): TypeLayout<InvalidHandleError> =
@@ -586,9 +580,9 @@ public interface AsHandle {
  * interface MyTrait : AsHandle
  * ```
  */
-public fun <T : AsHandle> Arc<T>.asHandle(): BorrowedHandle = this.asHandle()
+public fun <T : AsHandle> Arc<T, Global>.asHandle(): BorrowedHandle = this.asHandle()
 
-public fun <T : AsHandle> Rc.Rc<T>.asHandle(): BorrowedHandle = this.asHandle()
+public fun <T : AsHandle> Rc.Rc<T, Global>.asHandle(): BorrowedHandle = this.asHandle()
 
 public fun <T : AsHandle> Rc.UniqueRc<T>.asHandle(): BorrowedHandle = this.asHandle()
 

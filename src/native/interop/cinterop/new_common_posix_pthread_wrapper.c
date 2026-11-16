@@ -606,8 +606,8 @@ int32_t libcNewCommonPosixPthreadPthreadCondattrGetpshared(void* attr, void* psh
     return ENOSYS;
 }
 
-int32_t libcNewCommonPosixPthreadPthreadCondattrSetclock(void* attr, int32_t clockId) {
-    typedef int32_t (*km_fn_t)(void*, int32_t);
+int32_t libcNewCommonPosixPthreadPthreadCondattrSetclock(void* attr, uint32_t clockId) {
+    typedef int32_t (*km_fn_t)(void*, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {

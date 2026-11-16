@@ -69,7 +69,7 @@ int32_t libcUnixLinuxlikeLinuxL4reSharedSemTimedwait(void* sem, void* abstime);
 int32_t libcUnixLinuxlikeLinuxL4reSharedSemGetvalue(void* sem, void* sval);
 int32_t libcUnixLinuxlikeLinuxL4reSharedMount(const char* src, const char* target, const char* fstype, uint64_t flags, void* data);
 int32_t libcUnixLinuxlikeLinuxL4reSharedPrctl(int32_t option, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
-int32_t libcUnixLinuxlikeLinuxL4reSharedPpoll(void* fds, uint32_t nfds, void* timeout, void* sigmask);
+int32_t libcUnixLinuxlikeLinuxL4reSharedPpoll(void* fds, uint64_t nfds, void* timeout, void* sigmask);
 int32_t libcUnixLinuxlikeLinuxL4reSharedSethostname(const char* name, uint64_t len);
 int32_t libcUnixLinuxlikeLinuxL4reSharedSchedGetPriorityMin(int32_t policy);
 int32_t libcUnixLinuxlikeLinuxL4reSharedSysinfo(void* info);

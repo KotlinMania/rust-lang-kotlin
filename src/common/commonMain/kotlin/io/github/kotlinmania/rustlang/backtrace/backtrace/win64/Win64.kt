@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -68,7 +69,7 @@ public open class Frame internal constructor(
 // required by `CONTEXT`, is a Note in windows metadata right now
 public open class MyContext internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Context>,
+    public val fieldLayout: TypeLayout<Context> = UnresolvedTypeLayout(),
 ) {
     public var field0: Context
         get() = value
@@ -80,7 +81,7 @@ public open class MyContext internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Context, fieldLayout: TypeLayout<Context>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(value: Context, fieldLayout: TypeLayout<Context> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<MyContext> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MyContext(ptr, layout) }, { it.value })
 
@@ -89,9 +90,9 @@ public open class MyContext internal constructor(
     public open fun sp(): ULong = this.value.rsp
 
     public companion object {
-        public operator fun invoke(value: Context, fieldLayout: TypeLayout<Context>): MyContext = MyContext(value, fieldLayout)
+        public operator fun invoke(value: Context, fieldLayout: TypeLayout<Context> = UnresolvedTypeLayout()): MyContext = MyContext(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Context>): MyContext = MyContext(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Context> = UnresolvedTypeLayout()): MyContext = MyContext(fieldStorage, fieldLayout)
     }
 }
 

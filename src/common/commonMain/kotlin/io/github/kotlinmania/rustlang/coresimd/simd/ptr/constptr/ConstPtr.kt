@@ -1,7 +1,7 @@
 // port-lint: source simd/ptr/const_ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr.constptr
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.coresimd.Simd
@@ -85,28 +85,28 @@ public interface SimdConstPtr<SelfType, Usize, Isize, out CastPtr, out MutPtr, o
     public fun wrappingSub(count: Usize): SelfType
 }
 
-public fun Simd<ConstPtr, N>.isNull(n: Int): Mask<Int> = Simd.splat(ConstPtr(0L)).simdEq(this)
+public fun Simd<ConstPtr>.isNull(n: Int): Mask<Int> = Simd.splat(ConstPtr(0L)).simdEq(this)
 
-public fun Simd<ConstPtr, N>.cast(n: Int): Simd<ConstPtr> {
-    check(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()) == 0)
-    check(sizeOf<Metadata>(typeLayoutT = ObjectSlotLayout<Metadata>()) == 0)
+public fun Simd<ConstPtr>.cast(n: Int): Simd<ConstPtr> {
+    check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
+    check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
     // Safety: pointers can be cast
     return run { val _simdArg0 = this; _simdArg0 }
 }
 
-public fun Simd<ConstPtr, N>.castMut(n: Int): Simd<MutPtr> {
+public fun Simd<ConstPtr>.castMut(n: Int): Simd<MutPtr> {
     // Safety: pointers can be cast
     return run { val _simdArg0 = this; _simdArg0 }
 }
 
-public fun Simd<ConstPtr, N>.addr(n: Int): Simd<Int> {
+public fun Simd<ConstPtr>.addr(n: Int): Simd<Int> {
     // Note(strictProvenanceMagic): I am magic and should be a compiler intrinsic.
     // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
     // provenance).
     return transmuteCopy(this)
 }
 
-public fun Simd<ConstPtr, N>.withAddr(addr: Simd<Int, N>, n: Int): Simd<ConstPtr, N> {
+public fun Simd<ConstPtr>.withAddr(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
     // Note(strictProvenanceMagic): I am magic and should be a compiler intrinsic.
     //
     // In the mean-time, this operation is defined to be "as if" it was
@@ -115,16 +115,16 @@ public fun Simd<ConstPtr, N>.withAddr(addr: Simd<Int, N>, n: Int): Simd<ConstPtr
     return this.cast().wrappingOffset(addr.cast() - this.addr().cast()).cast()
 }
 
-public fun Simd<ConstPtr, N>.exposeProvenance(n: Int): Simd<Int> {
+public fun Simd<ConstPtr>.exposeProvenance(n: Int): Simd<Int> {
     // Safety: `self` is a pointer vector
     return run { val _simdArg0 = this; _simdArg0 }
 }
 
-public fun Simd<ConstPtr, N>.wrappingOffset(count: Simd<Int, N>, n: Int): Simd<ConstPtr, N> {
+public fun Simd<ConstPtr>.wrappingOffset(count: Simd<Int>, n: Int): Simd<ConstPtr> {
     // Safety: simdArithOffset takes a vector of pointers and a vector of offsets
     return run { val _simdArg0 = this; val _simdArg1 = count; _simdArg0 }
 }
 
-public fun Simd<ConstPtr, N>.wrappingAdd(count: Simd<Int, N>, n: Int): Simd<ConstPtr, N> = this.wrappingOffset(count.cast())
+public fun Simd<ConstPtr>.wrappingAdd(count: Simd<Int>, n: Int): Simd<ConstPtr> = this.wrappingOffset(count.cast())
 
-public fun Simd<ConstPtr, N>.wrappingSub(count: Simd<Int, N>, n: Int): Simd<ConstPtr, N> = this.wrappingOffset(-count.cast())
+public fun Simd<ConstPtr>.wrappingSub(count: Simd<Int>, n: Int): Simd<ConstPtr> = this.wrappingOffset(-count.cast())

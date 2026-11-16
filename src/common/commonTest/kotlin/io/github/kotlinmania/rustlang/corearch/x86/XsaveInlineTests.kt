@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -32,7 +33,7 @@ public open class XsaveArea(
 
 public open class AlignedArray internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByteArray>,
+    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByteArray
         get() = value
@@ -44,16 +45,16 @@ public open class AlignedArray internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+    internal constructor(value: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
     public fun pointerLayout(): TypeLayout<AlignedArray> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedArray(ptr, layout) }, { it.value })
 
     public open fun clone(): AlignedArray = AlignedArray(value, fieldLayout)
 
     public companion object {
-        public operator fun invoke(value: UByteArray, fieldLayout: TypeLayout<UByteArray>): AlignedArray = AlignedArray(value, fieldLayout)
+        public operator fun invoke(value: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): AlignedArray = AlignedArray(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray>): AlignedArray = AlignedArray(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): AlignedArray = AlignedArray(fieldStorage, fieldLayout)
     }
 }
 
@@ -65,7 +66,7 @@ public fun testXsave() {
     val b = XsaveArea.new()
     run {
         xsave(a.ptr(), m)
-        xrstor(a.ptr(), m)
+        xrstor((a.ptr()).asConstPtr(), m)
         xsave(b.ptr(), m)
     }
 }
@@ -86,7 +87,7 @@ public fun testXsaveopt() {
     val b = XsaveArea.new()
     run {
         xsaveopt(a.ptr(), m)
-        xrstor(a.ptr(), m)
+        xrstor((a.ptr()).asConstPtr(), m)
         xsaveopt(b.ptr(), m)
     }
 }
@@ -99,7 +100,7 @@ public fun testXsavec() {
     val b = XsaveArea.new()
     run {
         xsavec(a.ptr(), m)
-        xrstor(a.ptr(), m)
+        xrstor((a.ptr()).asConstPtr(), m)
         xsavec(b.ptr(), m)
     }
 }

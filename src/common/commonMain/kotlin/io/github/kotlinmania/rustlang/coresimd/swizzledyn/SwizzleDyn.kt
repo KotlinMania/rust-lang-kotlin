@@ -21,7 +21,7 @@ public fun interface FnCallback {
  * to unlock better performance, especially for larger vectors.
  * A planned compiler improvement will enable using `@targetFeature` instead.
  */
-public fun Simd<UByte, N>.swizzleDyn(idxs: Simd<UByte, N>, n: Int): Simd<UByte, N> {
+public fun Simd<UByte>.swizzleDyn(idxs: Simd<UByte>, n: Int): Simd<UByte> {
     // SAFETY: Intrinsics covered by cfg
     return when (n) {
         // Aarch64
@@ -77,7 +77,7 @@ public fun Simd<UByte, N>.swizzleDyn(idxs: Simd<UByte, N>, n: Int): Simd<UByte, 
  * Implements an arbitrary shuffle over double the native vector width
  * using 4 native-width shuffles
  */
-public fun swizzleDynSplit(bytes: Simd<UByte, N>, idxs: Simd<UByte, N>, n: Int, half: Int): Simd<UByte> {
+public fun swizzleDynSplit(bytes: Simd<UByte>, idxs: Simd<UByte>, n: Int, half: Int): Simd<UByte> {
     open class CombineHalves : Swizzle {
         public val INDEX: IntArray = run {
             val index = MutableList(n) { 0 }
@@ -109,7 +109,7 @@ public fun swizzleDynSplit(bytes: Simd<UByte, N>, idxs: Simd<UByte, N>, n: Int, 
  * # Safety
  * This requires AArch64 NEON to work
  */
-public fun aarch64Swizzle(bytes: Simd<UByte, N>, idxs: Simd<UByte, N>, n: Int): Simd<UByte> {
+public fun aarch64Swizzle(bytes: Simd<UByte>, idxs: Simd<UByte>, n: Int): Simd<UByte> {
     // SAFETY: Caller promised AArch64 NEON support
     return when (n) {
         8 -> transmuteCopy(vtbl1U8(transmuteCopy(bytes), transmuteCopy(idxs)))
@@ -224,7 +224,7 @@ public fun loong64LasxSwizzle(bytes: Simd<UByte>, idxs: Simd<UByte>): Simd<UByte
  * # Safety
  * The correctness of this function hinges on the sizes agreeing in actuality.
  */
-public fun <T> transize(f: (T, T) -> T, a: Simd<UByte, N>, b: Simd<UByte, N>, n: Int): Simd<UByte> {
+public fun <T> transize(f: (T, T) -> T, a: Simd<UByte>, b: Simd<UByte>, n: Int): Simd<UByte> {
     // SAFETY: Same obligation to use this function as to use mem.transmuteCopy.
     return transmuteCopy(f(transmuteCopy(a), transmuteCopy(b)))
 }
@@ -232,7 +232,7 @@ public fun <T> transize(f: (T, T) -> T, a: Simd<UByte, N>, b: Simd<UByte, N>, n:
 /**
  * Make indices that yield 0 for x86
  */
-public fun zeroingIdxs(idxs: Simd<UByte, N>, n: Int): Simd<UByte> {
+public fun zeroingIdxs(idxs: Simd<UByte>, n: Int): Simd<UByte> {
     // Adding this sets the high bit for indices N..=127, while PSHUFB ignores
     // the other changed bits. The OR preserves the high bit for indices 128..=255.
     val zeroingBits = idxs + Simd.splat((127 - n + 1).toUByte())

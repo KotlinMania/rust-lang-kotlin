@@ -121,10 +121,10 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_windows_gnu_Wind
     return (jint)km_res;
 }
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_windows_gnu_WindowsGnuJniBridge_libcWindowsGnuWmemchr(JNIEnv* km_env, jclass km_clazz, jlong cx, jint c, jlong n) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_windows_gnu_WindowsGnuJniBridge_libcWindowsGnuWmemchr(JNIEnv* km_env, jclass km_clazz, jlong cx, jshort c, jlong n) {
     (void)km_env;
     (void)km_clazz;
-    typedef void* (*km_fn_t)(void*, int32_t, uint64_t);
+    typedef void* (*km_fn_t)(void*, uint16_t, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -146,7 +146,7 @@ JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_libc_windows_gnu_Win
 #endif
     void* km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((void*)(uintptr_t)cx, (int32_t)c, (uint64_t)n);
+        km_res = km_fn_ptr((void*)(uintptr_t)cx, (uint16_t)c, (uint64_t)n);
     } else {
         errno = ENOSYS;
         km_res = NULL;

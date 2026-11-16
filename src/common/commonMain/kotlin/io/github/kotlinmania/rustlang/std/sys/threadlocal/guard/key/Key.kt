@@ -29,6 +29,6 @@ public fun enable() {
     // Setting the key value to something other than NULL will result in the
     // destructor being run at thread exit.
     run {
-        set(DTORS.force(), withoutProvenanceMut(1))
+        set(DTORS.force(), ptr.withoutProvenanceMut(1))
     }
 }

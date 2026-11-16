@@ -311,7 +311,7 @@ public fun F128.subF128(other: F128): Output = Sub.Sub(this, other)
  *
  * public fun doctestEntry() {
  *     open class Scalar(public var value: Int)
- *     open class Vector(public var value: List<Int>) : Mul<Scalar, Any?, Vector> {
+ *     open class Vector(public var value: List<Int>) : Mul<Scalar, Vector> {
  *         public open fun mul(rhs: Scalar): Vector {
  *             return Vector(value = this.value.map({ v -> v * rhs.value }).toMutableList())
  *         }
@@ -457,7 +457,7 @@ public fun F128.mulF128(other: F128): Output = Mul.Mul(this, other)
  *
  * public fun doctestEntry() {
  *     open class Scalar(public var value: Float)
- *     open class Vector(public var value: List<Float>) : Div<Scalar, Any?, Vector> {
+ *     open class Vector(public var value: List<Float>) : Div<Scalar, Vector> {
  *         public open fun div(rhs: Scalar): Vector {
  *             return Vector(value = this.value.map({ v -> v / rhs.value }).toMutableList())
  *         }
@@ -653,12 +653,12 @@ public fun F128.divF128(other: F128): Output = Div.Div(this, other)
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class SplitSlice<T>(public var slice: List<T>) : Rem<Int, Any?, SplitSlice<T>> {
+ *     open class SplitSlice<T>(public var slice: List<T>) : Rem<Int, SplitSlice<T>> {
  *         public open fun rem(modulus: Int): SplitSlice<T> {
  *             val len = this.slice.size
  *             val rem = len % modulus
  *             val start = len - rem
- *             return SplitSlice(slice = ((this.slice).slice(start until this.slice.size)))
+ *             return SplitSlice(slice = ((this.slice).subList(start, (this.slice).size)))
  *         }
  *     }
  *     // If we were to divide &[0, 1, 2, 3, 4, 5, 6, 7] into slices of size 3,

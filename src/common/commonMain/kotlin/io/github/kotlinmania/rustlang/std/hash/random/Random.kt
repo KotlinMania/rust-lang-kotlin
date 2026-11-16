@@ -2,8 +2,10 @@
 package io.github.kotlinmania.rustlang.std.hash.random
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.hash.BuildHasher
 import io.github.kotlinmania.rustlang.std.hash.SipHasher13
 import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
@@ -67,9 +69,7 @@ public open class RandomState(
 
     public open fun buildHasher(): DefaultHasher = DefaultHasher(SipHasher13.newWithKeys(this.k0, this.k1))
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "RandomState").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RandomState").finishNonExhaustive()
 
     public companion object {
         public fun typeLayout(): TypeLayout<RandomState> =

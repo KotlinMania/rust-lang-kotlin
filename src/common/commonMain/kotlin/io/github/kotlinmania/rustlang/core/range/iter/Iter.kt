@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.range.RangeFrom
@@ -75,7 +76,7 @@ public open class RangeIter<A>(
 
     public override fun isSorted(): Boolean = true
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): A {
         // SAFETY: The TrustedRandomAccess contract requires that callers only pass an index
@@ -89,7 +90,7 @@ public open class RangeIter<A>(
 
     public open fun nthBack(n: Int): A? = this.value.nthBack(n)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 }
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -180,13 +181,13 @@ public open class RangeInclusiveIter<A>(
 
     public override fun isSorted(): Boolean = true
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun nextBack(): A? = this.value.nextBack()
 
     public open fun nthBack(n: Int): A? = this.value.nthBack(n)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 }
 
 public fun <A : Step<A>> RangeInclusive<A>.intoIter(): RangeInclusiveIter<A> = RangeInclusiveIter(this.into())

@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.core.slice.rotate
 
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -26,8 +26,8 @@ public typealias BufType = IntArray
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
-    if (T.IS_ZST) {
+public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         return
     }
     // abort early if the rotate is a no-op
@@ -45,7 +45,7 @@ public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLa
         // `ratio * sizeOf<Int>() == sizeOf<T>()`. The check above guarantees
         // `mid` is aligned for `Int`, and preserving the total byte length introduces
         // no new overflow.
-        ptrRotateDispatch(left * ratio, MutPtr(mid.rawAddress, mid.rawMeta), right * ratio, typeLayoutT = ObjectSlotLayout<MaybeUninit<Int>>())
+        ptrRotateDispatch(left * ratio, MutPtr(mid.rawAddress, mid.rawMeta), right * ratio, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<Int>>())
     } else {
         // SAFETY: guaranteed by the caller
         ptrRotateDispatch(left, mid, right, typeLayoutT = typeLayoutT)
@@ -59,7 +59,7 @@ public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLa
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // `T` is not a zero-sized type, so it's okay to divide by its size.
     if (!false && constMin(left, right) <= sizeOf<BufType>(typeLayoutT = PrimitiveArrayLayouts.usize64Array((32).toInt())) / sizeOf<T>(typeLayoutT = typeLayoutT)) {
         // SAFETY: guaranteed by the caller
@@ -83,9 +83,9 @@ public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // The `[T; 0]` here is to ensure this is appropriately aligned for T
-    val rawarray = MaybeUninit.uninit(ObjectSlotLayout<Pair<BufType, List<T>>>())
+    val rawarray = MaybeUninit.uninit(UnresolvedTypeLayout<Pair<BufType, List<T>>>())
     val buf = mutPtrFromRustCast(rawarray.asMutPtr())
     // SAFETY: `mid - left <= mid - left + right<mid + right`
     val dim = MutPtr((MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes))).rawAddress + ((right).toLong() * (typeLayoutT).strideBytes))
@@ -103,18 +103,18 @@ public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT:
         // - `dim + left = mid - left + right + left = mid + right` and we write `[dim, dim+left)`
         run {
             // 1)
-            copyNonoverlapping(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), buf, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), buf, left, typeLayoutT = typeLayoutT)
             // 2)
-            copy(mid, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
+            copy((mid).asConstPtr(), MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
             // 3)
-            copyNonoverlapping(buf, dim, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((buf).asConstPtr(), dim, left, typeLayoutT = typeLayoutT)
         }
     } else {
         // SAFETY: same reasoning as above but with `left` and `right` reversed
         run {
-            copyNonoverlapping(mid, buf, right, typeLayoutT = typeLayoutT)
-            copy(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), dim, left, typeLayoutT = typeLayoutT)
-            copyNonoverlapping(buf, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((mid).asConstPtr(), buf, right, typeLayoutT = typeLayoutT)
+            copy((MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), dim, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((buf).asConstPtr(), MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
         }
     }
 }
@@ -156,7 +156,7 @@ public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT:
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateGcd(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateGcd(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // Algorithm 2
     // Microbenchmarks indicate that the average performance for random shifts is better all
     // the way until about `left + right == 32`, but the worst case performance breaks even
@@ -265,7 +265,7 @@ public fun <T> ptrRotateGcd(left: Int, mid: MutPtr, right: Int, typeLayoutT: Typ
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateSwap(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateSwap(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     var left1 = left
     var mid1 = mid
     var right1 = right

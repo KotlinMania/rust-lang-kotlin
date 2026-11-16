@@ -1,7 +1,7 @@
 // port-lint: source new/linux_uapi/asm/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.asm.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.*
 
 // Header: `include / uapi / asm - generic / socket.h`

@@ -14,7 +14,7 @@ public open class InPlaceDrop<T>(
 ) {
     public open fun len(): Int {
         // ignore-tidy-undocumented-unchecked
-        return this.dst.offsetFromUnsigned(this.inner)
+        return this.dst.offsetFromUnsigned((this.inner).asConstPtr())
     }
 
     public open fun drop() {

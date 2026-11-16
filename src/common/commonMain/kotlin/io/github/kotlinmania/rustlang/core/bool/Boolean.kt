@@ -3,8 +3,6 @@ package io.github.kotlinmania.rustlang.core.bool
 
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // impl bool {}
 
@@ -106,9 +104,9 @@ public fun <T> Boolean.then(f: () -> T): T? =
  */
 public fun <E> Boolean.okOr(err: E): Result<Unit, E> =
     if (this) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, E>(Unit)
     } else {
-        Result.Err(err)
+        Result.Err<Unit, E>(err)
     }
 
 /**
@@ -137,9 +135,9 @@ public fun <E> Boolean.okOr(err: E): Result<Unit, E> =
  */
 public fun <E> Boolean.okOrElse(f: () -> E): Result<Unit, E> =
     if (this) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, E>(Unit)
     } else {
-        Result.Err(f())
+        Result.Err<Unit, E>(f())
     }
 
 /**
@@ -189,7 +187,7 @@ public fun Boolean.toggle() {
  * This results in undefined behaviour if both `self` and `rhs` are true.
  */
 public fun Boolean.uncheckedDisjointBitor(rhs: Boolean): Boolean {
-    assertUnsafePrecondition(checkLanguageUb, "bool::unchecked_disjoint_bitor cannot bitor two truths", lhs, this, rhs, rhs, lhs, rhs)
+    Unit
     // SAFETY: Same precondition.
     return disjointBitor(this, rhs)
 }

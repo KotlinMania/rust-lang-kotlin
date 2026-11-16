@@ -1,6 +1,14 @@
 // port-lint: source num/f32.rs
 package io.github.kotlinmania.rustlang.std.num.f32
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCosf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExp2f32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExpf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog10f32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog2f32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLogf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSinf32
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -21,9 +29,6 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf
-import kotlin.math.cos
-import kotlin.math.ln
-import kotlin.math.sin
 
 // Constants for the `Float` single-precision floating point type.
 //
@@ -308,7 +313,7 @@ public fun Float.powi(n: Int): Float = Float.powi(this, n)
  * check(Float.powf(0.0, 0.0) == 1.0)
  * ```
  */
-public fun Float.powf(n: Float): Float = powf(this, n)
+public fun Float.powf(n: Float): Float = kmPowf32(this, n)
 
 /**
  * Returns the square root of a number.
@@ -353,7 +358,7 @@ public fun Float.sqrt(): Float = Float.sqrt(this)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.exp(): Float = exp(this)
+public fun Float.exp(): Float = kmExpf32(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -372,7 +377,7 @@ public fun Float.exp(): Float = exp(this)
  * check(absDifference <= 1e-5)
  * ```
  */
-public fun Float.exp2(): Float = exp2(this)
+public fun Float.exp2(): Float = kmExp2f32(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -401,7 +406,7 @@ public fun Float.exp2(): Float = exp2(this)
  * check((-42.0f).ln().isNan())
  * ```
  */
-public fun Float.ln(): Float = log(this)
+public fun Float.ln(): Float = kmLogf32(this)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -432,7 +437,7 @@ public fun Float.ln(): Float = log(this)
  * check((-42.0f).log(10.0).isNan())
  * ```
  */
-public fun Float.log(base: Float): Float = ln(this) / ln(base)
+public fun Float.log(base: Float): Float = kmLogf32(this) / kmLogf32(base)
 
 /**
  * Returns the base 2 logarithm of the number.
@@ -459,7 +464,7 @@ public fun Float.log(base: Float): Float = ln(this) / ln(base)
  * check((-42.0f).log2().isNan())
  * ```
  */
-public fun Float.log2(): Float = log2(this)
+public fun Float.log2(): Float = kmLog2f32(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -486,7 +491,7 @@ public fun Float.log2(): Float = log2(this)
  * check((-42.0f).log10().isNan())
  * ```
  */
-public fun Float.log10(): Float = log10(this)
+public fun Float.log10(): Float = kmLog10f32(this)
 
 /**
  * The positive difference of two numbers.
@@ -576,7 +581,7 @@ public fun Float.hypot(other: Float): Float = hypotf(this, other)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.sin(): Float = sin(this)
+public fun Float.sin(): Float = kmSinf32(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -594,7 +599,7 @@ public fun Float.sin(): Float = sin(this)
  * check(absDifference <= 1e-6)
  * ```
  */
-public fun Float.cos(): Float = cos(this)
+public fun Float.cos(): Float = kmCosf32(this)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -742,7 +747,7 @@ public fun Float.atan2(other: Float): Float = atan2f(this, other)
  * check(absDifference1 <= 1e-4)
  * ```
  */
-public fun Float.sinCos(): Pair<Float, Float> = Pair(sin(this), cos(this))
+public fun Float.sinCos(): Pair<Float, Float> = Pair(kmSinf32(this), kmCosf32(this))
 
 /**
  * Returns `e ^(self) - 1` in a way that is accurate even if the

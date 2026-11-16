@@ -3,23 +3,23 @@ package io.github.kotlinmania.rustlang.alloc.str
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.alloc.slice.Join
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
+import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.pattern.Utf8Pattern
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toCasefold
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toLower
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toUpper
@@ -89,7 +89,7 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // we would have run out of memory anyway and the rest of the function requires
     // the entire Vec pre-allocated for safety
     val reservedLen =
-        (rustCheckedMul(sepLen, iter.len())?.let({ n -> n.checkedAdd(first1.len()) })?.let({ n ->
+        (sepLen.checkedMul(iter.len())?.let({ n -> n.checkedAdd(first1.len()) })?.let({ n ->
             // iter starts from the second element as we've already taken the first
             // it's cloned so we can reuse the same iterator below
             iter.clone().map({ s -> s.borrow().asRef().len() }).tryFold(n, Int::checkedAdd)
@@ -106,13 +106,13 @@ public fun <B, T, S> joinGenericCopy(slice: List<S>, sep: List<T>): List<T> wher
     // to simplify implementation in specializeForLengths.
     // SAFETY: `sep` is a slice of `T`, so `sep.asPtr().cast()` is a valid pointer,
     // and `sep.len()` is the number of elements in the slice, so `fromRawParts` is safe.
-    val sepUninit = rawSliceList(sep.asPtr(), sep.size, PrimitiveLayouts.U8)
+    val sepUninit = linearSliceView(sep.asPtr(), sep.size, PrimitiveLayouts.U8)
     val iterUninit =
         iter.map({ it ->
             val it1 = it.borrow().asRef()
             // SAFETY: `it` is a slice of `T`, so `it.asPtr().cast()` is a valid pointer,
             // and `it.len()` is the number of elements in the slice, so `fromRawParts` is safe.
-            rawSliceList(it1.asPtr().cast(), it1.len().toInt(), PrimitiveLayouts.U8)
+            linearSliceView(it1.asPtr().cast(), it1.len().toInt(), PrimitiveLayouts.U8)
         })
     // copy separator and slices over without bounds checks.
     // `specializeForLengths` internally calls `s.borrow()`, but because it uses
@@ -229,7 +229,7 @@ public fun mapUppercaseSigma(from: String, i: Int): Char {
         }
     // See https://www.unicode.org/versions/latest/core-spec/chapter-3/#G54277
     // for the definition of `FinalSigma`.
-    val isWordFinal = caseIgnorableThenCased(from.substring(0 until i).rustStrChars().rev()) && !caseIgnorableThenCased(from.substring(i + '\u03a3'.lenUtf8()).rustStrChars())
+    val isWordFinal = caseIgnorableThenCased(from.substring(0 until i).chars().rev()) && !caseIgnorableThenCased(from.substring(i + '\u03a3'.lenUtf8()).chars())
     return if (isWordFinal) {
         '\u03c2'
     } else {
@@ -290,7 +290,7 @@ public fun String.intoBoxedBytes(): List<UByte> = this.into()
  * check(s == s.replace("cookie monster", "little lamb"))
  * ```
  */
-public fun <P : Pattern> String.replace(from: P, to: String): String {
+public fun <Searcher, P : Pattern<Any?>> String.replace(from: P, to: String): String {
     // Fast path for replacing a single ASCII character with another.
     when (val matchVal2 = when (val matchVal = from.asUtf8Pattern()) {
         is Utf8Pattern.StringPattern -> {
@@ -378,7 +378,7 @@ public fun <P : Pattern> String.replace(from: P, to: String): String {
  * check(s == s.replacen("cookie monster", "little lamb", 10))
  * ```
  */
-public fun <P : Pattern> String.replacen(pat: P, to: String, count: Int): String {
+public fun <Searcher, P : Pattern<Any?>> String.replacen(pat: P, to: String, count: Int): String {
     // Hope to reduce the times of re-allocation
     var result = ""
     var lastEnd = 0
@@ -986,7 +986,7 @@ public fun convertWhileAscii(s: String, convert: FnCallback): Pair<String, Strin
             break
         }
         for (j1 in 0 until N) {
-            outChunk[j1] = MaybeUninit.new(convert(chunk[j1]), ObjectSlotLayout<Pair<String, String>>())
+            outChunk[j1] = MaybeUninit.new(convert(chunk[j1]), UnresolvedTypeLayout<Pair<String, String>>())
         }
         asciiPrefixLen += N
         // SAFETY: checked in loop condition.
@@ -1002,7 +1002,7 @@ public fun convertWhileAscii(s: String, convert: FnCallback): Pair<String, Strin
         }
         // SAFETY: outSlice has at least same length as input slice
         run {
-            outSlice.getUncheckedMut(0) = MaybeUninit.new(convert(byte), ObjectSlotLayout<Pair<String, String>>())
+            outSlice.getUncheckedMut(0) = MaybeUninit.new(convert(byte), UnresolvedTypeLayout<Pair<String, String>>())
         }
         asciiPrefixLen += 1
         // SAFETY: slice has at least one byte, so slicing from 1.. is safe

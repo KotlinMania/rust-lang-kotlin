@@ -2,29 +2,29 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.BooleanT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.IntptrT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT
 
 private val unixBsdAppleNapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
 
-public actual var MACH_TASK_SELF: io.github.kotlinmania.rustlang.libc.MachPortT
+public actual var MACH_TASK_SELF: MachPortT
     get() = if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleGetMACHTASKSELF() as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
     set(value) {
         if (unixBsdAppleNapiAddon != null) {
@@ -78,11 +78,11 @@ public actual fun lchflags(path: ConstPtr, flags: CUint): CInt =
 public actual fun lchmod(path: ConstPtr, mode: ModeT): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleLchmod(path.rawAddress.toString(), mode.toInt()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun clockGetres(clkId: ClockidT, tp: MutPtr): CInt =
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleClockGetres(clkId.toInt(), tp.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun clockGettime(clkId: ClockidT, tp: MutPtr): CInt =
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleClockGettime(clkId.toInt(), tp.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun lioListio(mode: CInt, aiocbList: ConstPtr, nitems: CInt, sevp: MutPtr): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleLioListio(mode, aiocbList.rawAddress.toString(), nitems, sevp.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -224,25 +224,25 @@ public actual fun pthreadSetnameNp(name: ConstPtr): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadSetnameNp(name.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetnameNp(thread: PthreadT, name: MutPtr, len: SizeT): CInt =
-    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadGetnameNp(thread.rawAddress.toString(), name.rawAddress.toString(), len.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadGetnameNp(thread.toLong().toString(), name.rawAddress.toString(), len.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun pthreadMachThreadNp(thread: PthreadT): io.github.kotlinmania.rustlang.libc.MachPortT =
-    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadMachThreadNp(thread.rawAddress.toString()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun pthreadMachThreadNp(thread: PthreadT): MachPortT =
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadMachThreadNp(thread.toLong().toString()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun pthreadFromMachThreadNp(port: io.github.kotlinmania.rustlang.libc.MachPortT): PthreadT =
-    if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdApplePthreadFromMachThreadNp(port.toInt()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun pthreadFromMachThreadNp(port: MachPortT): PthreadT =
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadFromMachThreadNp(port.toInt()) as String).toLong().toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetStackaddrNp(thread: PthreadT): MutPtr =
-    if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdApplePthreadGetStackaddrNp(thread.rawAddress.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdApplePthreadGetStackaddrNp(thread.toLong().toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetStacksizeNp(thread: PthreadT): SizeT =
-    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadGetStacksizeNp(thread.rawAddress.toString()) as String).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadGetStacksizeNp(thread.toLong().toString()) as String).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMainNp(): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadMainNp() as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadThreadidNp(thread: PthreadT, threadId: MutPtr): CInt =
-    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadThreadidNp(thread.rawAddress.toString(), threadId.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadThreadidNp(thread.toLong().toString(), threadId.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadJitWriteProtectNp(enabled: CInt) {
     if (unixBsdAppleNapiAddon != null) {
@@ -255,7 +255,7 @@ public actual fun pthreadJitWriteProtectNp(enabled: CInt) {
 public actual fun pthreadJitWriteProtectSupportedNp(): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadJitWriteProtectSupportedNp() as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun pthreadJitWriteWithCallbackNp(callback: io.github.kotlinmania.rustlang.libc.PthreadJitWriteCallbackT, ctx: MutPtr): CInt =
+public actual fun pthreadJitWriteWithCallbackNp(callback: PthreadJitWriteCallbackT, ctx: MutPtr): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdApplePthreadJitWriteWithCallbackNp(0L.toString(), ctx.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadJitWriteFreezeCallbacksNp() {
@@ -319,19 +319,19 @@ public actual fun osUnfairLockAssertNotOwner(lock: OsUnfairLockT) {
     }
 }
 
-public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): io.github.kotlinmania.rustlang.libc.OsLogT =
+public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): OsLogT =
     if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdAppleOsLogCreate(subsystem.rawAddress.toString(), category.rawAddress.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun osLogTypeEnabled(oslog: io.github.kotlinmania.rustlang.libc.OsLogT, tpe: io.github.kotlinmania.rustlang.libc.OsLogTypeT): Boolean =
+public actual fun osLogTypeEnabled(oslog: OsLogT, tpe: OsLogTypeT): Boolean =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleOsLogTypeEnabled(oslog.rawAddress.toString(), tpe.toInt()) as Boolean) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun osSignpostIdMakeWithPointer(log: io.github.kotlinmania.rustlang.libc.OsLogT, ptr: ConstPtr): io.github.kotlinmania.rustlang.libc.OsSignpostIdT =
+public actual fun osSignpostIdMakeWithPointer(log: OsLogT, ptr: ConstPtr): OsSignpostIdT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleOsSignpostIdMakeWithPointer(log.rawAddress.toString(), ptr.rawAddress.toString()) as String).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun osSignpostIdGenerate(log: io.github.kotlinmania.rustlang.libc.OsLogT): io.github.kotlinmania.rustlang.libc.OsSignpostIdT =
+public actual fun osSignpostIdGenerate(log: OsLogT): OsSignpostIdT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleOsSignpostIdGenerate(log.rawAddress.toString()) as String).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun osSignpostEnabled(log: io.github.kotlinmania.rustlang.libc.OsLogT): Boolean =
+public actual fun osSignpostEnabled(log: OsLogT): Boolean =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleOsSignpostEnabled(log.rawAddress.toString()) as Boolean) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun threadPolicySet(thread: ThreadT, flavor: ThreadPolicyFlavorT, policyInfo: ThreadPolicyT, count: MachMsgTypeNumberT): KernReturnT =
@@ -437,10 +437,10 @@ public actual fun uselocale(loc: LocaleT): LocaleT =
 public actual fun querylocale(mask: CInt, loc: LocaleT): ConstPtr =
     if (unixBsdAppleNapiAddon != null) ConstPtr((unixBsdAppleNapiAddon.libcUnixBsdAppleQuerylocale(mask, loc.rawAddress.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun getpriority(which: CInt, who: io.github.kotlinmania.rustlang.libc.IdT): CInt =
+public actual fun getpriority(which: CInt, who: IdT): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleGetpriority(which, who.toInt()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun setpriority(which: CInt, who: io.github.kotlinmania.rustlang.libc.IdT, prio: CInt): CInt =
+public actual fun setpriority(which: CInt, who: IdT, prio: CInt): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleSetpriority(which, who.toInt(), prio) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getdomainname(name: MutPtr, len: CInt): CInt =
@@ -638,7 +638,7 @@ public actual fun copyfileStateGet(s: CopyfileStateT, flags: UInt, dst: MutPtr):
 public actual fun copyfileStateSet(s: CopyfileStateT, flags: UInt, src: ConstPtr): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleCopyfileStateSet(s.rawAddress.toString(), flags.toInt(), src.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun machErrorString(errorValue: io.github.kotlinmania.rustlang.libc.MachErrorT): MutPtr =
+public actual fun machErrorString(errorValue: MachErrorT): MutPtr =
     if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdAppleMachErrorString(errorValue) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun memsetS(s: MutPtr, smax: SizeT, c: CInt, n: SizeT): CInt =
@@ -778,43 +778,43 @@ public actual fun nsgetEnviron(): MutPtr =
 public actual fun nsgetProgname(): MutPtr =
     if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdAppleNsgetProgname() as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun machVmMap(targetTask: io.github.kotlinmania.rustlang.libc.VmMapT, address: MutPtr, size: io.github.kotlinmania.rustlang.libc.MachVmSizeT, mask: io.github.kotlinmania.rustlang.libc.MachVmOffsetT, flags: CInt, obj: io.github.kotlinmania.rustlang.libc.MemEntryNamePortT, offset: io.github.kotlinmania.rustlang.libc.MemoryObjectOffsetT, copy: BooleanT, curProtection: io.github.kotlinmania.rustlang.libc.VmProtT, maxProtection: io.github.kotlinmania.rustlang.libc.VmProtT, inheritance: io.github.kotlinmania.rustlang.libc.VmInheritT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun machVmMap(targetTask: VmMapT, address: MutPtr, size: MachVmSizeT, mask: MachVmOffsetT, flags: CInt, obj: MemEntryNamePortT, offset: MemoryObjectOffsetT, copy: BooleanT, curProtection: VmProtT, maxProtection: VmProtT, inheritance: VmInheritT): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleMachVmMap(targetTask.toInt(), address.rawAddress.toString(), size.toString(), mask.toString(), flags, obj.toInt(), offset.toString(), copy, curProtection, maxProtection, inheritance.toInt()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleVmAllocate(targetTask.toInt(), address.rawAddress.toString(), size.toString(), flags) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleVmDeallocate(targetTask.toInt(), address.toString(), size.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleHostStatistics64(hostPriv.toInt(), flavor, hostInfo64Out.rawAddress.toString(), hostInfo64OutCnt.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleHostProcessorInfo(host.toInt(), flavor, outProcessorCount.rawAddress.toString(), outProcessorInfo.rawAddress.toString(), outProcessorInfoCnt.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun taskForPid(host: io.github.kotlinmania.rustlang.libc.MachPortT, pid: PidT, task: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskForPid(host: MachPortT, pid: PidT, task: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleTaskForPid(host.toInt(), pid, task.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun taskInfo(host: io.github.kotlinmania.rustlang.libc.MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskInfo(host: MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleTaskInfo(host.toInt(), flavor.toInt(), taskInfoOut.rawAddress.toString(), taskInfoCount.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun taskCreate(targetTask: io.github.kotlinmania.rustlang.libc.TaskT, ledgers: io.github.kotlinmania.rustlang.libc.LedgerArrayT, ledgersCnt: io.github.kotlinmania.rustlang.libc.MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskCreate(targetTask: TaskT, ledgers: LedgerArrayT, ledgersCnt: MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleTaskCreate(targetTask.toInt(), ledgers.rawAddress.toString(), ledgersCnt.toInt(), inheritMemory, childTask.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun taskTerminate(targetTask: io.github.kotlinmania.rustlang.libc.TaskT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskTerminate(targetTask: TaskT): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleTaskTerminate(targetTask.toInt()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun taskThreads(targetTask: io.github.kotlinmania.rustlang.libc.TaskInspectT, actList: MutPtr, actListCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskThreads(targetTask: TaskInspectT, actList: MutPtr, actListCnt: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleTaskThreads(targetTask.toInt(), actList.rawAddress.toString(), actListCnt.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleHostStatistics(hostPriv.toInt(), flavor, hostInfoOut.rawAddress.toString(), hostInfoOutCnt.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState =
+public actual fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): SysdirSearchPathEnumerationState =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sysdirGetNextSearchPathEnumeration(state: io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState, path: MutPtr): io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState =
+public actual fun sysdirGetNextSearchPathEnumeration(state: SysdirSearchPathEnumerationState, path: MutPtr): SysdirSearchPathEnumerationState =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleSysdirGetNextSearchPathEnumeration(state.toInt(), path.rawAddress.toString()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun getattrlist(path: ConstPtr, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
@@ -870,8 +870,8 @@ public actual fun qsortR(base: MutPtr, num: SizeT, size: SizeT, arg: MutPtr, com
     }
 }
 
-public actual fun clockSettime(clockId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: ConstPtr): CInt =
-    throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun clockSettime(clockId: ClockidT, tp: ConstPtr): CInt =
+    if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleClockSettime(clockId.toInt(), tp.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun procListpids(t: UInt, typeinfo: UInt, buffer: MutPtr, buffersize: CInt): CInt =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleProcListpids(t.toInt(), typeinfo.toInt(), buffer.rawAddress.toString(), buffersize) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -927,7 +927,7 @@ public actual fun procSetthreadCsm(flags: UInt): CInt =
 public actual fun memmem(haystack: ConstPtr, haystacklen: SizeT, needle: ConstPtr, needlelen: SizeT): MutPtr =
     if (unixBsdAppleNapiAddon != null) MutPtr((unixBsdAppleNapiAddon.libcUnixBsdAppleMemmem(haystack.rawAddress.toString(), haystacklen.toString(), needle.rawAddress.toString(), needlelen.toString()) as String).toLong()) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun taskSetInfo(targetTask: io.github.kotlinmania.rustlang.libc.TaskT, flavor: io.github.kotlinmania.rustlang.libc.TaskFlavorT, taskInfoIn: io.github.kotlinmania.rustlang.libc.TaskInfoT, taskInfoInCnt: io.github.kotlinmania.rustlang.libc.MachMsgTypeNumberT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskSetInfo(targetTask: TaskT, flavor: TaskFlavorT, taskInfoIn: TaskInfoT, taskInfoInCnt: MachMsgTypeNumberT): KernReturnT =
     if (unixBsdAppleNapiAddon != null) (unixBsdAppleNapiAddon.libcUnixBsdAppleTaskSetInfo(targetTask.toInt(), flavor.toInt(), taskInfoIn.rawAddress.toString(), taskInfoInCnt.toInt()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun iconvOpen(tocode: ConstPtr, fromcode: ConstPtr): IconvT =

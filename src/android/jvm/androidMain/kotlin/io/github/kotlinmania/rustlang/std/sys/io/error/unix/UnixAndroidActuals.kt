@@ -20,7 +20,7 @@ private object SysIoErrorUnixJniBridge {
     external fun stdSysIoErrorUnixErrnoLocation(): Long
 }
 
-public actual var LIBC_ERRNO: CInt
+public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
     get() = SysIoErrorUnixJniBridge.stdSysIoErrorUnixGetLIBCERRNO()
     set(value) {
         SysIoErrorUnixJniBridge.stdSysIoErrorUnixSetLIBCERRNO(value)

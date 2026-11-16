@@ -2,9 +2,14 @@
 package io.github.kotlinmania.rustlang.std.num.f128
 
 import io.github.kotlinmania.rustlang.core.F128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCosf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLogf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSinf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
+import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
 import io.github.kotlinmania.rustlang.std.sys.cmath.acosf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.acoshf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.asinf128
@@ -23,9 +28,6 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.sinhf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.tanhf128
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgammaf128
-import kotlin.math.cos
-import kotlin.math.ln
-import kotlin.math.sin
 
 // Constants for the `f128` quadruple-precision floating point type.
 //
@@ -62,7 +64,7 @@ import kotlin.math.sin
  * }
  * ```
  */
-public fun F128.powf(n: F128): F128 = powf(this, n)
+public fun F128.powf(n: F128): F128 = floatBinaryWithLayout("powf", this, n, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Returns `e ^(self)`, (the exponential function).
@@ -88,7 +90,7 @@ public fun F128.powf(n: F128): F128 = powf(this, n)
  * }
  * ```
  */
-public fun F128.exp(): F128 = exp(this)
+public fun F128.exp(): F128 = floatUnaryWithLayout("exp", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Returns `2 ^(self)`.
@@ -112,7 +114,7 @@ public fun F128.exp(): F128 = exp(this)
  * }
  * ```
  */
-public fun F128.exp2(): F128 = exp2(this)
+public fun F128.exp2(): F128 = floatUnaryWithLayout("exp2", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Returns the natural logarithm of the number.
@@ -151,7 +153,7 @@ public fun F128.exp2(): F128 = exp2(this)
  * }
  * ```
  */
-public fun F128.ln(): F128 = log(this)
+public fun F128.ln(): F128 = floatUnaryWithLayout("log", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -192,7 +194,7 @@ public fun F128.ln(): F128 = log(this)
  * }
  * ```
  */
-public fun F128.log(base: F128): F128 = F128.fromDouble(ln(this.toDouble())) / F128.fromDouble(ln(base.toDouble()))
+public fun F128.log(base: F128): F128 = F128.fromDouble(kmLogf64(this.toDouble())) / F128.fromDouble(kmLogf64(base.toDouble()))
 
 /**
  * Returns the base 2 logarithm of the number.
@@ -229,7 +231,7 @@ public fun F128.log(base: F128): F128 = F128.fromDouble(ln(this.toDouble())) / F
  * }
  * ```
  */
-public fun F128.log2(): F128 = log2(this)
+public fun F128.log2(): F128 = floatUnaryWithLayout("log2", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -266,7 +268,7 @@ public fun F128.log2(): F128 = log2(this)
  * }
  * ```
  */
-public fun F128.log10(): F128 = log10(this)
+public fun F128.log10(): F128 = floatUnaryWithLayout("log10", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Returns the cube root of a number.
@@ -347,7 +349,7 @@ public fun F128.hypot(other: F128): F128 = hypotf128(this, other)
  * }
  * ```
  */
-public fun F128.sin(): F128 = sin(this)
+public fun F128.sin(): F128 = floatUnaryWithLayout("sin", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -370,7 +372,7 @@ public fun F128.sin(): F128 = sin(this)
  * }
  * ```
  */
-public fun F128.cos(): F128 = cos(this)
+public fun F128.cos(): F128 = floatUnaryWithLayout("cos", this, PrimitiveLayouts.F128_LAYOUT)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -554,7 +556,7 @@ public fun F128.atan2(other: F128): F128 = atan2f128(this, other)
  * }
  * ```
  */
-public fun F128.sinCos(): Pair<F128, F128> = Pair(F128.fromDouble(sin(this.toDouble())), F128.fromDouble(cos(this.toDouble())))
+public fun F128.sinCos(): Pair<F128, F128> = Pair(F128.fromDouble(kmSinf64(this.toDouble())), F128.fromDouble(kmCosf64(this.toDouble())))
 
 /**
  * Returns `e ^(self) - 1` in a way that is accurate even if the

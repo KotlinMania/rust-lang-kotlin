@@ -7759,7 +7759,7 @@ static Napi::Value libcUnixRealpath_napi(const Napi::CallbackInfo& km_info) {
 static Napi::Value libcUnixTimes_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* buf = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
-    typedef uint64_t (*km_fn_t)(void*);
+    typedef int64_t (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {
@@ -7779,14 +7779,14 @@ static Napi::Value libcUnixTimes_napi(const Napi::CallbackInfo& km_info) {
         km_fn_ptr = reinterpret_cast<km_fn_t>(dlsym(RTLD_DEFAULT, "times"));
     }
 #endif
-    uint64_t km_res;
+    int64_t km_res;
     if (km_fn_ptr != nullptr) {
         km_res = km_fn_ptr(buf);
     } else {
         errno = ENOSYS;
-        km_res = 0;
+        km_res = -1;
     }
-    return Napi::String::New(km_env, std::to_string(static_cast<uint64_t>(km_res)));
+    return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
 static Napi::Value libcUnixPthreadSelf_napi(const Napi::CallbackInfo& km_info) {
@@ -8189,8 +8189,8 @@ static Napi::Value libcUnixPthreadKeyCreate_napi(const Napi::CallbackInfo& km_in
 
 static Napi::Value libcUnixPthreadKeyDelete_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    int32_t key = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
-    typedef int32_t (*km_fn_t)(int32_t);
+    uint32_t key = static_cast<uint32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
+    typedef int32_t (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {
@@ -8222,8 +8222,8 @@ static Napi::Value libcUnixPthreadKeyDelete_napi(const Napi::CallbackInfo& km_in
 
 static Napi::Value libcUnixPthreadGetspecific_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    int32_t key = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
-    typedef void* (*km_fn_t)(int32_t);
+    uint32_t key = static_cast<uint32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
+    typedef void* (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {
@@ -8255,9 +8255,9 @@ static Napi::Value libcUnixPthreadGetspecific_napi(const Napi::CallbackInfo& km_
 
 static Napi::Value libcUnixPthreadSetspecific_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    int32_t key = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
+    uint32_t key = static_cast<uint32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     void* value = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 1 ? km_napi_arg_u64(km_info[1]) : 0));
-    typedef int32_t (*km_fn_t)(int32_t, void*);
+    typedef int32_t (*km_fn_t)(uint32_t, void*);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {

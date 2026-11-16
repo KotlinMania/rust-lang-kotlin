@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
-import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
@@ -17,7 +16,8 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.SliceIndex
+import io.github.kotlinmania.rustlang.core.range.Range
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 // Trait implementations for `ByteStr`.
 
@@ -155,17 +155,17 @@ public fun Range<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromByt
 
 public fun Range<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
-public fun io.github.kotlinmania.rustlang.core.range.Range<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
+public fun range.Range<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
-public fun io.github.kotlinmania.rustlang.core.range.Range<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
+public fun range.Range<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
 
-public fun io.github.kotlinmania.rustlang.core.range.Range<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
+public fun range.Range<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.Range<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
+public fun range.Range<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.Range<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
+public fun range.Range<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
 
-public fun io.github.kotlinmania.rustlang.core.range.Range<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
+public fun range.Range<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
 public fun RangeTo<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
@@ -191,17 +191,17 @@ public fun RangeFrom<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fro
 
 public fun RangeFrom<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
+public fun range.RangeFrom<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
+public fun range.RangeFrom<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
+public fun range.RangeFrom<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
+public fun range.RangeFrom<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
+public fun range.RangeFrom<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
+public fun range.RangeFrom<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
 public fun RangeInclusive<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
@@ -215,17 +215,17 @@ public fun RangeInclusive<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteSt
 
 public fun RangeInclusive<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
+public fun range.RangeInclusive<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
+public fun range.RangeInclusive<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
+public fun range.RangeInclusive<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
+public fun range.RangeInclusive<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
+public fun range.RangeInclusive<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeInclusive<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
+public fun range.RangeInclusive<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
 public fun RangeToInclusive<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
@@ -239,17 +239,17 @@ public fun RangeToInclusive<Int>.indexSliceIndex(slice: ByteStr): ByteStr = Byte
 
 public fun RangeToInclusive<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
+public fun range.RangeToInclusive<Int>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
+public fun range.RangeToInclusive<Int>.getMutSliceIndex(slice: ByteStr): ByteStr? = this.getMut(slice.asBytesMut())?.let(ByteStr::fromBytesMut)
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
+public fun range.RangeToInclusive<Int>.getUncheckedSliceIndex(slice: ConstPtr): ConstPtr = this.getUnchecked(ConstPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
+public fun range.RangeToInclusive<Int>.getUncheckedMutSliceIndex(slice: MutPtr): MutPtr = this.getUncheckedMut(MutPtr(slice.rawAddress, slice.rawMeta))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
+public fun range.RangeToInclusive<Int>.indexSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytes(this.index(slice.asBytes()))
 
-public fun io.github.kotlinmania.rustlang.core.range.RangeToInclusive<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
+public fun range.RangeToInclusive<Int>.indexMutSliceIndex(slice: ByteStr): ByteStr = ByteStr.fromBytesMut(this.indexMut(slice.asBytesMut()))
 
 public fun Pair<Bound<Int>, Bound<Int>>.getSliceIndex(slice: ByteStr): ByteStr? = this.get(slice.asBytes())?.let(ByteStr::fromBytes)
 

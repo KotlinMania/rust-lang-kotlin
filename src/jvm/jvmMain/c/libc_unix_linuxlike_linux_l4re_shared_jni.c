@@ -2008,10 +2008,10 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_U
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_UnixLinuxlikeLinuxL4reSharedJniBridge_libcUnixLinuxlikeLinuxL4reSharedPpoll(JNIEnv* km_env, jclass km_clazz, jlong fds, jint nfds, jlong timeout, jlong sigmask) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_UnixLinuxlikeLinuxL4reSharedJniBridge_libcUnixLinuxlikeLinuxL4reSharedPpoll(JNIEnv* km_env, jclass km_clazz, jlong fds, jlong nfds, jlong timeout, jlong sigmask) {
     (void)km_env;
     (void)km_clazz;
-    typedef int32_t (*km_fn_t)(void*, uint32_t, void*, void*);
+    typedef int32_t (*km_fn_t)(void*, uint64_t, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -2033,7 +2033,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_unix_linuxlike_U
 #endif
     int32_t km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((void*)(uintptr_t)fds, (uint32_t)nfds, (void*)(uintptr_t)timeout, (void*)(uintptr_t)sigmask);
+        km_res = km_fn_ptr((void*)(uintptr_t)fds, (uint64_t)nfds, (void*)(uintptr_t)timeout, (void*)(uintptr_t)sigmask);
     } else {
         errno = ENOSYS;
         km_res = -1;

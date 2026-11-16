@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
@@ -50,7 +51,7 @@ public fun interface Dtor {
 public open class LazyKey internal constructor(
     keyCtorArg: Atomic<Key>,
     public var dtor: Dtor?,
-    nextCtorArg: Atomic<MutPtr>,
+    nextCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
     onceCtorArg: UnsafeCell<c.InitOnce>,
 ) {
     /**
@@ -61,7 +62,7 @@ public open class LazyKey internal constructor(
     public var key: Atomic<Key> = keyCtorArg
         internal set
 
-    public var next: Atomic<MutPtr> = nextCtorArg
+    public var next: Atomic<MutPtr, Align8<MutPtr>> = nextCtorArg
         internal set
 
     /**
@@ -151,9 +152,9 @@ public open class LazyKey internal constructor(
             }
             run {
                 val matchVal2 = this.key.compareExchange(0, (key1 + 1u), AcqRel, Acquire)
-                when (matchVal2) { is Result.Ok<*> -> {
+                when (matchVal2) { is Result.Ok -> {
                     key1
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     val new = matchVal2.error
                     run {
                         // Some other thread completed initialization first, so destroy
@@ -172,7 +173,7 @@ public open class LazyKey internal constructor(
         public operator fun invoke(
             key: Atomic<Key>,
             dtor: Dtor?,
-            next: Atomic<MutPtr>,
+            next: Atomic<MutPtr, Align8<MutPtr>>,
             once: UnsafeCell<c.InitOnce>,
         ): LazyKey = LazyKey(
             keyCtorArg = key,
@@ -210,7 +211,7 @@ public fun set(key: Key, value: MutPtr) {
 
 public fun get(key: Key): MutPtr = MutPtr((c.TlsGetValue(key)).rawAddress)
 
-public var DTORS: Atomic<MutPtr> = AtomicPtr.new(MutPtr(0L))
+public var DTORS: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(MutPtr(0L))
 
 /**
  * Should only be called once per key, otherwise loops or breaks may occur in
@@ -225,9 +226,9 @@ public fun registerDtor(key: LazyKey) {
         key.next.store(head, Relaxed)
         run {
             val matchVal = DTORS.compareExchangeWeak(head, thisRef, Release, Acquire)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 break
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val new = matchVal.error
                 head = new
             } }

@@ -10,10 +10,11 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShl
-import io.github.kotlinmania.rustlang.core.num.rustWrappingShr
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingShl
+import io.github.kotlinmania.rustlang.core.num.wrappingShr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
 // Floating point division routines.
@@ -97,7 +98,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 //
 // [Newton-Raphson method]: https://en.wikipedia.org/wiki/Newton%27sMethod
 
-public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
+public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTypeLayout(), fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
     val one = F.Int.ONE
     val zero = F.Int.ZERO
     val oneHw = HalfRep.ONE
@@ -331,7 +332,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: 
             // +            [  xUq0Hw *  blo  ]
             // -                      [      bUq1       ]
             // = [      result       ][.... discarded ...]
-            val corrUq1: Int = rustWrappingNeg(((F.Int.from(xUq0Hw) * F.Int.from(bUq1Hw) + ((F.Int.from(xUq0Hw) * blo) shr hw.toInt())) - (one.toInt())))
+            val corrUq1: Int = ((F.Int.from(xUq0Hw) * F.Int.from(bUq1Hw) + ((F.Int.from(xUq0Hw) * blo) shr hw.toInt())) - (one.toInt())).wrappingNeg()
             // account for *possible* carry
             val loCorr: Int = corrUq1 and loMask
             val hiCorr: Int = corrUq1 shr hw.toInt()
@@ -428,8 +429,8 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: 
             if (((significandBits.toInt()) + resExponent) < 0) {
                 return fromBitsFFn(quotientSign)
             }
-            val ret1 = rustWrappingShr(quotient, UInt.castFrom(rustWrappingNeg(resExponent)) + 1u)
-            residualLo1 = (rustWrappingShl(aSignificand, significandBits.wrappingAdd(CastInto.castLossy(resExponent)).toUInt()) - (((ret1 * (bSignificand.toInt())) shl 1).toULong()))
+            val ret1 = quotient.wrappingShr(UInt.castFrom(resExponent.wrappingNeg()) + 1u)
+            residualLo1 = (aSignificand.wrappingShl(significandBits.wrappingAdd(CastInto.castLossy(resExponent)).toUInt()) - (((ret1 * (bSignificand.toInt())) shl 1).toULong()))
             ret1
         }
     residualLo1 += absResult and one
@@ -458,7 +459,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: 
  * The initial estimate should have at least 8 bits of precision. If this is not true, results
  * will be inaccurate.
  */
-public fun <F : Float> getIterations(typeLayoutF: TypeLayout<F>): Pair<Int, Int> {
+public fun <F : Float> getIterations(typeLayoutF: TypeLayout<F> = UnresolvedTypeLayout()): Pair<Int, Int> {
     // Precision doubles with each iteration. Assume we start with 8 bits of precision.
     val totalIterations = F.BITS.ilog2().toInt() - 2
     return if (2 * sizeOf<F>(typeLayoutT = typeLayoutF) <= sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))) {
@@ -496,7 +497,7 @@ public fun <F : Float> getIterations(typeLayoutF: TypeLayout<F>): Pair<Int, Int>
  *
  * Add 2 to `U_N` due to final decrement.
  */
-public fun <F : Float> reciprocalPrecision(typeLayoutF: TypeLayout<F>): UShort {
+public fun <F : Float> reciprocalPrecision(typeLayoutF: TypeLayout<F> = UnresolvedTypeLayout()): UShort {
     val (halfIterations, fullIterations) = getIterations<F>(typeLayoutF = typeLayoutF)
     if (fullIterations < 1) {
         error("Must have at least one full iteration")

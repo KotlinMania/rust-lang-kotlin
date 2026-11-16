@@ -1,7 +1,7 @@
 // port-lint: source new/linux_uapi/linux/sctp.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.sctp
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.libc.*
@@ -144,12 +144,14 @@ public val SCTP_STREAM_RESET_OUTGOING: CInt = 0x02
 
 public val MSG_NOTIFICATION: CInt = 0x8000
 
-public data class SctpInitmsg(
-    public var sinitNumOstreams: U16 = 0u,
-    public var sinitMaxInstreams: U16 = 0u,
-    public var sinitMaxAttempts: U16 = 0u,
-    public var sinitMaxInitTimeo: U16 = 0u,
+public open class SctpInitmsg(
+    public var sinitNumOstreams: U16,
+    public var sinitMaxInstreams: U16,
+    public var sinitMaxAttempts: U16,
+    public var sinitMaxInitTimeo: U16,
 ) {
+    public open fun clone(): SctpInitmsg = SctpInitmsg(sinitNumOstreams, sinitMaxInstreams, sinitMaxAttempts, sinitMaxInitTimeo)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpInitmsg> =
             object : TypeLayout<SctpInitmsg> {
@@ -185,17 +187,19 @@ public data class SctpInitmsg(
     }
 }
 
-public data class SctpSndrcvinfo(
-    public var sinfoStream: U16 = 0u,
-    public var sinfoSsn: U16 = 0u,
-    public var sinfoFlags: U16 = 0u,
-    public var sinfoPpid: U32 = 0u,
-    public var sinfoContext: U32 = 0u,
-    public var sinfoTimetolive: U32 = 0u,
-    public var sinfoTsn: U32 = 0u,
-    public var sinfoCumtsn: U32 = 0u,
-    public var sinfoAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+public open class SctpSndrcvinfo(
+    public var sinfoStream: U16,
+    public var sinfoSsn: U16,
+    public var sinfoFlags: U16,
+    public var sinfoPpid: U32,
+    public var sinfoContext: U32,
+    public var sinfoTimetolive: U32,
+    public var sinfoTsn: U32,
+    public var sinfoCumtsn: U32,
+    public var sinfoAssocId: SctpAssocT,
 ) {
+    public open fun clone(): SctpSndrcvinfo = SctpSndrcvinfo(sinfoStream, sinfoSsn, sinfoFlags, sinfoPpid, sinfoContext, sinfoTimetolive, sinfoTsn, sinfoCumtsn, sinfoAssocId)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpSndrcvinfo> =
             object : TypeLayout<SctpSndrcvinfo> {
@@ -251,13 +255,15 @@ public data class SctpSndrcvinfo(
     }
 }
 
-public data class SctpSndinfo(
-    public var sndSid: U16 = 0u,
-    public var sndFlags: U16 = 0u,
-    public var sndPpid: U32 = 0u,
-    public var sndContext: U32 = 0u,
-    public var sndAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+public open class SctpSndinfo(
+    public var sndSid: U16,
+    public var sndFlags: U16,
+    public var sndPpid: U32,
+    public var sndContext: U32,
+    public var sndAssocId: SctpAssocT,
 ) {
+    public open fun clone(): SctpSndinfo = SctpSndinfo(sndSid, sndFlags, sndPpid, sndContext, sndAssocId)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpSndinfo> =
             object : TypeLayout<SctpSndinfo> {
@@ -297,16 +303,18 @@ public data class SctpSndinfo(
     }
 }
 
-public data class SctpRcvinfo(
-    public var rcvSid: U16 = 0u,
-    public var rcvSsn: U16 = 0u,
-    public var rcvFlags: U16 = 0u,
-    public var rcvPpid: U32 = 0u,
-    public var rcvTsn: U32 = 0u,
-    public var rcvCumtsn: U32 = 0u,
-    public var rcvContext: U32 = 0u,
-    public var rcvAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+public open class SctpRcvinfo(
+    public var rcvSid: U16,
+    public var rcvSsn: U16,
+    public var rcvFlags: U16,
+    public var rcvPpid: U32,
+    public var rcvTsn: U32,
+    public var rcvCumtsn: U32,
+    public var rcvContext: U32,
+    public var rcvAssocId: SctpAssocT,
 ) {
+    public open fun clone(): SctpRcvinfo = SctpRcvinfo(rcvSid, rcvSsn, rcvFlags, rcvPpid, rcvTsn, rcvCumtsn, rcvContext, rcvAssocId)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpRcvinfo> =
             object : TypeLayout<SctpRcvinfo> {
@@ -358,13 +366,15 @@ public data class SctpRcvinfo(
     }
 }
 
-public data class SctpNxtinfo(
-    public var nxtSid: U16 = 0u,
-    public var nxtFlags: U16 = 0u,
-    public var nxtPpid: U32 = 0u,
-    public var nxtLength: U32 = 0u,
-    public var nxtAssocId: io.github.kotlinmania.rustlang.libc.SctpAssocT = 0,
+public open class SctpNxtinfo(
+    public var nxtSid: U16,
+    public var nxtFlags: U16,
+    public var nxtPpid: U32,
+    public var nxtLength: U32,
+    public var nxtAssocId: SctpAssocT,
 ) {
+    public open fun clone(): SctpNxtinfo = SctpNxtinfo(nxtSid, nxtFlags, nxtPpid, nxtLength, nxtAssocId)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpNxtinfo> =
             object : TypeLayout<SctpNxtinfo> {
@@ -404,10 +414,12 @@ public data class SctpNxtinfo(
     }
 }
 
-public data class SctpPrinfo(
-    public var prPolicy: U16 = 0u,
-    public var prValue: U32 = 0u,
+public open class SctpPrinfo(
+    public var prPolicy: U16,
+    public var prValue: U32,
 ) {
+    public open fun clone(): SctpPrinfo = SctpPrinfo(prPolicy, prValue)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpPrinfo> =
             object : TypeLayout<SctpPrinfo> {
@@ -435,9 +447,11 @@ public data class SctpPrinfo(
     }
 }
 
-public data class SctpAuthinfo(
-    public var authKeynumber: U16 = 0u,
+public open class SctpAuthinfo(
+    public var authKeynumber: U16,
 ) {
+    public open fun clone(): SctpAuthinfo = SctpAuthinfo(authKeynumber)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SctpAuthinfo> =
             object : TypeLayout<SctpAuthinfo> {

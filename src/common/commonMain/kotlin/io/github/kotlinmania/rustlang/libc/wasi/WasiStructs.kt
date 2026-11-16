@@ -2,53 +2,43 @@
 
 package io.github.kotlinmania.rustlang.libc.wasi
 
-import io.github.kotlinmania.rustlang.core.ffi.CChar
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
 
-public data class MaxAlignT(
-    public var priv: DoubleArray = DoubleArray(4),
+public open class MaxAlignT internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is MaxAlignT) return false
-        if (!this.priv.contentEquals(other.priv)) return false
-        return true
-    }
+    public var priv: DoubleArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.priv.contentHashCode()
+    internal constructor(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+
+    public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
+
+    public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<MaxAlignT> =
-            object : TypeLayout<MaxAlignT> {
-                override val alignBytes: Long = 16L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.doubleArray(4)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.doubleArray(4)).writeNative(addr, value.priv)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): MaxAlignT =
-                    MaxAlignT(
-                        (PrimitiveArrayLayouts.doubleArray(4)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: MaxAlignT) {
-                    (PrimitiveArrayLayouts.doubleArray(4)).writeBytes(buf, offset, value.priv)
-                }
-            }
+        public operator fun invoke(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(priv, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }
 
@@ -64,10 +54,12 @@ public data class MaxAlignT(
  * representation when available.
  * </div>
  */
-public data class FILE(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
-)
+public open class FILE(
+    public var data: Unit,
+    public var marker: Unit,
+) {
+    public open fun clone(): FILE = FILE(data, marker)
+}
 
 /**
  * This is an extern type ("opaque" or "incomplete" type in C).
@@ -81,10 +73,12 @@ public data class FILE(
  * representation when available.
  * </div>
  */
-public data class DIR(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
+public open class DIR(
+    public var data: Unit,
+    public var marker: Unit,
 ) {
+    public open fun clone(): DIR = DIR(data, marker)
+
     // Deprecated impls: see #5296
 }
 
@@ -100,12 +94,14 @@ public data class DIR(
  * representation when available.
  * </div>
  */
-public data class LocaleStruct(
-    public var data: Unit = Unit,
-    public var marker: Unit = Unit,
-)
+public open class LocaleStruct(
+    public var data: Unit,
+    public var marker: Unit,
+) {
+    public open fun clone(): LocaleStruct = LocaleStruct(data, marker)
+}
 
-public class ClockidT internal constructor(
+public open class ClockidT internal constructor(
     valueCtorArg: ConstPtr,
 ) {
     public var value: ConstPtr = valueCtorArg
@@ -117,24 +113,7 @@ public class ClockidT internal constructor(
             value = v
         }
 
-    public constructor() : this(
-        valueCtorArg = ConstPtr(0L),
-    )
-
-    public operator fun component1(): ConstPtr = this.value
-
-    public fun copy(value: ConstPtr = this.value): ClockidT = ClockidT(valueCtorArg = value)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ClockidT) return false
-        if (this.value != other.value) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.value.hashCode()
-
-    public fun clone(): ClockidT = ClockidT(value)
+    public open fun clone(): ClockidT = ClockidT(value)
 
     public companion object {
         public fun typeLayout(): TypeLayout<ClockidT> =
@@ -158,49 +137,35 @@ public class ClockidT internal constructor(
             }
 
         public operator fun invoke(
-            value: ConstPtr = ConstPtr(0L),
+            value: ConstPtr,
         ): ClockidT = ClockidT(
             valueCtorArg = value,
         )
     }
 }
 
-public data class FposT(
-    public var data: UByteArray = UByteArray(16),
+public open class FposT internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FposT) return false
-        if (!this.data.contentEquals(other.data)) return false
-        return true
-    }
+    public var data: UByteArray
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    override fun hashCode(): Int = this.data.contentHashCode()
+    internal constructor(data: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
+
+    public fun pointerLayout(): TypeLayout<FposT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> FposT(ptr, layout) }, { it.data })
+
+    public open fun clone(): FposT = FposT(data, fieldLayout)
 
     public companion object {
-        public fun typeLayout(): TypeLayout<FposT> =
-            object : TypeLayout<FposT> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 16L
-                override fun readNative(addr: Long): FposT =
-                    FposT(
-                        (PrimitiveArrayLayouts.uByteArray(16)).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: FposT) {
-                    (PrimitiveArrayLayouts.uByteArray(16)).writeNative(addr, value.data)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FposT =
-                    FposT(
-                        (PrimitiveArrayLayouts.uByteArray(16)).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FposT) {
-                    (PrimitiveArrayLayouts.uByteArray(16)).writeBytes(buf, offset, value.data)
-                }
-            }
+        public operator fun invoke(data: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FposT = FposT(data, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FposT = FposT(fieldStorage, fieldLayout)
     }
 }
 
-public class Tm internal constructor(
+public open class Tm internal constructor(
     public var tmSec: CInt,
     public var tmMin: CInt,
     public var tmHour: CInt,
@@ -217,82 +182,7 @@ public class Tm internal constructor(
     public var tmZone: ConstPtr = tmZoneCtorArg
         internal set
 
-    public constructor() : this(
-        tmSec = 0,
-        tmMin = 0,
-        tmHour = 0,
-        tmMday = 0,
-        tmMon = 0,
-        tmYear = 0,
-        tmWday = 0,
-        tmYday = 0,
-        tmIsdst = 0,
-        tmGmtoff = 0,
-        tmZoneCtorArg = ConstPtr(0L),
-        tmNsec = 0,
-    )
-
-    public operator fun component1(): CInt = this.tmSec
-
-    public operator fun component2(): CInt = this.tmMin
-
-    public operator fun component3(): CInt = this.tmHour
-
-    public operator fun component4(): CInt = this.tmMday
-
-    public operator fun component5(): CInt = this.tmMon
-
-    public operator fun component6(): CInt = this.tmYear
-
-    public operator fun component7(): CInt = this.tmWday
-
-    public operator fun component8(): CInt = this.tmYday
-
-    public operator fun component9(): CInt = this.tmIsdst
-
-    public operator fun component10(): CInt = this.tmGmtoff
-
-    public operator fun component11(): ConstPtr = this.tmZone
-
-    public operator fun component12(): CInt = this.tmNsec
-
-    public fun copy(tmSec: CInt = this.tmSec, tmMin: CInt = this.tmMin, tmHour: CInt = this.tmHour, tmMday: CInt = this.tmMday, tmMon: CInt = this.tmMon, tmYear: CInt = this.tmYear, tmWday: CInt = this.tmWday, tmYday: CInt = this.tmYday, tmIsdst: CInt = this.tmIsdst, tmGmtoff: CInt = this.tmGmtoff, tmZone: ConstPtr = this.tmZone, tmNsec: CInt = this.tmNsec): Tm = Tm(tmSec = tmSec, tmMin = tmMin, tmHour = tmHour, tmMday = tmMday, tmMon = tmMon, tmYear = tmYear, tmWday = tmWday, tmYday = tmYday, tmIsdst = tmIsdst, tmGmtoff = tmGmtoff, tmZoneCtorArg = tmZone, tmNsec = tmNsec)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tm) return false
-        if (this.tmSec != other.tmSec) return false
-        if (this.tmMin != other.tmMin) return false
-        if (this.tmHour != other.tmHour) return false
-        if (this.tmMday != other.tmMday) return false
-        if (this.tmMon != other.tmMon) return false
-        if (this.tmYear != other.tmYear) return false
-        if (this.tmWday != other.tmWday) return false
-        if (this.tmYday != other.tmYday) return false
-        if (this.tmIsdst != other.tmIsdst) return false
-        if (this.tmGmtoff != other.tmGmtoff) return false
-        if (this.tmZone != other.tmZone) return false
-        if (this.tmNsec != other.tmNsec) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.tmSec.hashCode()
-        result = 31 * result + this.tmMin.hashCode()
-        result = 31 * result + this.tmHour.hashCode()
-        result = 31 * result + this.tmMday.hashCode()
-        result = 31 * result + this.tmMon.hashCode()
-        result = 31 * result + this.tmYear.hashCode()
-        result = 31 * result + this.tmWday.hashCode()
-        result = 31 * result + this.tmYday.hashCode()
-        result = 31 * result + this.tmIsdst.hashCode()
-        result = 31 * result + this.tmGmtoff.hashCode()
-        result = 31 * result + this.tmZone.hashCode()
-        result = 31 * result + this.tmNsec.hashCode()
-        return result
-    }
-
-    public fun clone(): Tm = Tm(tmSec, tmMin, tmHour, tmMday, tmMon, tmYear, tmWday, tmYday, tmIsdst, tmGmtoff, tmZone, tmNsec)
+    public open fun clone(): Tm = Tm(tmSec, tmMin, tmHour, tmMday, tmMon, tmYear, tmWday, tmYday, tmIsdst, tmGmtoff, tmZone, tmNsec)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tm> =
@@ -360,18 +250,18 @@ public class Tm internal constructor(
             }
 
         public operator fun invoke(
-            tmSec: CInt = 0,
-            tmMin: CInt = 0,
-            tmHour: CInt = 0,
-            tmMday: CInt = 0,
-            tmMon: CInt = 0,
-            tmYear: CInt = 0,
-            tmWday: CInt = 0,
-            tmYday: CInt = 0,
-            tmIsdst: CInt = 0,
-            tmGmtoff: CInt = 0,
-            tmZone: ConstPtr = ConstPtr(0L),
-            tmNsec: CInt = 0,
+            tmSec: CInt,
+            tmMin: CInt,
+            tmHour: CInt,
+            tmMday: CInt,
+            tmMon: CInt,
+            tmYear: CInt,
+            tmWday: CInt,
+            tmYday: CInt,
+            tmIsdst: CInt,
+            tmGmtoff: CInt,
+            tmZone: ConstPtr,
+            tmNsec: CInt,
         ): Tm = Tm(
             tmSec = tmSec,
             tmMin = tmMin,
@@ -389,10 +279,12 @@ public class Tm internal constructor(
     }
 }
 
-public data class Timeval(
-    public var tvSec: TimeT = 0L,
-    public var tvUsec: SusecondsT = 0L,
+public open class Timeval(
+    public var tvSec: TimeT,
+    public var tvUsec: SusecondsT,
 ) {
+    public open fun clone(): Timeval = Timeval(tvSec, tvUsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timeval> =
             object : TypeLayout<Timeval> {
@@ -420,10 +312,12 @@ public data class Timeval(
     }
 }
 
-public data class Timespec(
-    public var tvSec: TimeT = 0L,
-    public var tvNsec: CLong = 0L,
+public open class Timespec(
+    public var tvSec: TimeT,
+    public var tvNsec: CLong,
 ) {
+    public open fun clone(): Timespec = Timespec(tvSec, tvNsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Timespec> =
             object : TypeLayout<Timespec> {
@@ -451,12 +345,14 @@ public data class Timespec(
     }
 }
 
-public data class Tms(
-    public var tmsUtime: ClockT = 0L,
-    public var tmsStime: ClockT = 0L,
-    public var tmsCutime: ClockT = 0L,
-    public var tmsCstime: ClockT = 0L,
+public open class Tms(
+    public var tmsUtime: ClockT,
+    public var tmsStime: ClockT,
+    public var tmsCutime: ClockT,
+    public var tmsCstime: ClockT,
 ) {
+    public open fun clone(): Tms = Tms(tmsUtime, tmsStime, tmsCutime, tmsCstime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Tms> =
             object : TypeLayout<Tms> {
@@ -492,10 +388,12 @@ public data class Tms(
     }
 }
 
-public data class Itimerspec(
-    public var itInterval: Timespec = Timespec(),
-    public var itValue: Timespec = Timespec(),
+public open class Itimerspec(
+    public var itInterval: Timespec,
+    public var itValue: Timespec,
 ) {
+    public open fun clone(): Itimerspec = Itimerspec(itInterval, itValue)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Itimerspec> =
             object : TypeLayout<Itimerspec> {
@@ -523,39 +421,14 @@ public data class Itimerspec(
     }
 }
 
-public class Iovec internal constructor(
+public open class Iovec internal constructor(
     iovBaseCtorArg: MutPtr,
     public var iovLen: SizeT,
 ) {
     public var iovBase: MutPtr = iovBaseCtorArg
         internal set
 
-    public constructor() : this(
-        iovBaseCtorArg = MutPtr(0L),
-        iovLen = 0uL,
-    )
-
-    public operator fun component1(): MutPtr = this.iovBase
-
-    public operator fun component2(): SizeT = this.iovLen
-
-    public fun copy(iovBase: MutPtr = this.iovBase, iovLen: SizeT = this.iovLen): Iovec = Iovec(iovBaseCtorArg = iovBase, iovLen = iovLen)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Iovec) return false
-        if (this.iovBase != other.iovBase) return false
-        if (this.iovLen != other.iovLen) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.iovBase.hashCode()
-        result = 31 * result + this.iovLen.hashCode()
-        return result
-    }
-
-    public fun clone(): Iovec = Iovec(iovBase, iovLen)
+    public open fun clone(): Iovec = Iovec(iovBase, iovLen)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Iovec> =
@@ -583,8 +456,8 @@ public class Iovec internal constructor(
             }
 
         public operator fun invoke(
-            iovBase: MutPtr = MutPtr(0L),
-            iovLen: SizeT = 0uL,
+            iovBase: MutPtr,
+            iovLen: SizeT,
         ): Iovec = Iovec(
             iovBaseCtorArg = iovBase,
             iovLen = iovLen,
@@ -592,7 +465,7 @@ public class Iovec internal constructor(
     }
 }
 
-public class Lconv internal constructor(
+public open class Lconv internal constructor(
     decimalPointCtorArg: MutPtr,
     thousandsSepCtorArg: MutPtr,
     groupingCtorArg: MutPtr,
@@ -648,34 +521,7 @@ public class Lconv internal constructor(
     public var negativeSign: MutPtr = negativeSignCtorArg
         internal set
 
-    public constructor() : this(
-        decimalPointCtorArg = MutPtr(0L),
-        thousandsSepCtorArg = MutPtr(0L),
-        groupingCtorArg = MutPtr(0L),
-        intCurrSymbolCtorArg = MutPtr(0L),
-        currencySymbolCtorArg = MutPtr(0L),
-        monDecimalPointCtorArg = MutPtr(0L),
-        monThousandsSepCtorArg = MutPtr(0L),
-        monGroupingCtorArg = MutPtr(0L),
-        positiveSignCtorArg = MutPtr(0L),
-        negativeSignCtorArg = MutPtr(0L),
-        intFracDigits = 0u,
-        fracDigits = 0u,
-        pCsPrecedes = 0u,
-        pSepBySpace = 0u,
-        nCsPrecedes = 0u,
-        nSepBySpace = 0u,
-        pSignPosn = 0u,
-        nSignPosn = 0u,
-        intPCsPrecedes = 0u,
-        intPSepBySpace = 0u,
-        intNCsPrecedes = 0u,
-        intNSepBySpace = 0u,
-        intPSignPosn = 0u,
-        intNSignPosn = 0u,
-    )
-
-    public fun clone(): Lconv = Lconv(decimalPoint, thousandsSep, grouping, intCurrSymbol, currencySymbol, monDecimalPoint, monThousandsSep, monGrouping, positiveSign, negativeSign, intFracDigits, fracDigits, pCsPrecedes, pSepBySpace, nCsPrecedes, nSepBySpace, pSignPosn, nSignPosn, intPCsPrecedes, intPSepBySpace, intNCsPrecedes, intNSepBySpace, intPSignPosn, intNSignPosn)
+    public open fun clone(): Lconv = Lconv(decimalPoint, thousandsSep, grouping, intCurrSymbol, currencySymbol, monDecimalPoint, monThousandsSep, monGrouping, positiveSign, negativeSign, intFracDigits, fracDigits, pCsPrecedes, pSepBySpace, nCsPrecedes, nSepBySpace, pSignPosn, nSignPosn, intPCsPrecedes, intPSepBySpace, intNCsPrecedes, intNSepBySpace, intPSignPosn, intNSignPosn)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Lconv> =
@@ -791,30 +637,30 @@ public class Lconv internal constructor(
             }
 
         public operator fun invoke(
-            decimalPoint: MutPtr = MutPtr(0L),
-            thousandsSep: MutPtr = MutPtr(0L),
-            grouping: MutPtr = MutPtr(0L),
-            intCurrSymbol: MutPtr = MutPtr(0L),
-            currencySymbol: MutPtr = MutPtr(0L),
-            monDecimalPoint: MutPtr = MutPtr(0L),
-            monThousandsSep: MutPtr = MutPtr(0L),
-            monGrouping: MutPtr = MutPtr(0L),
-            positiveSign: MutPtr = MutPtr(0L),
-            negativeSign: MutPtr = MutPtr(0L),
-            intFracDigits: CChar = 0u,
-            fracDigits: CChar = 0u,
-            pCsPrecedes: CChar = 0u,
-            pSepBySpace: CChar = 0u,
-            nCsPrecedes: CChar = 0u,
-            nSepBySpace: CChar = 0u,
-            pSignPosn: CChar = 0u,
-            nSignPosn: CChar = 0u,
-            intPCsPrecedes: CChar = 0u,
-            intPSepBySpace: CChar = 0u,
-            intNCsPrecedes: CChar = 0u,
-            intNSepBySpace: CChar = 0u,
-            intPSignPosn: CChar = 0u,
-            intNSignPosn: CChar = 0u,
+            decimalPoint: MutPtr,
+            thousandsSep: MutPtr,
+            grouping: MutPtr,
+            intCurrSymbol: MutPtr,
+            currencySymbol: MutPtr,
+            monDecimalPoint: MutPtr,
+            monThousandsSep: MutPtr,
+            monGrouping: MutPtr,
+            positiveSign: MutPtr,
+            negativeSign: MutPtr,
+            intFracDigits: CChar,
+            fracDigits: CChar,
+            pCsPrecedes: CChar,
+            pSepBySpace: CChar,
+            nCsPrecedes: CChar,
+            nSepBySpace: CChar,
+            pSignPosn: CChar,
+            nSignPosn: CChar,
+            intPCsPrecedes: CChar,
+            intPSepBySpace: CChar,
+            intNCsPrecedes: CChar,
+            intNSepBySpace: CChar,
+            intPSignPosn: CChar,
+            intNSignPosn: CChar,
         ): Lconv = Lconv(
             decimalPointCtorArg = decimalPoint,
             thousandsSepCtorArg = thousandsSep,
@@ -844,11 +690,13 @@ public class Lconv internal constructor(
     }
 }
 
-public data class Pollfd(
-    public var fd: CInt = 0,
-    public var events: CShort = 0,
-    public var revents: CShort = 0,
+public open class Pollfd(
+    public var fd: CInt,
+    public var events: CShort,
+    public var revents: CShort,
 ) {
+    public open fun clone(): Pollfd = Pollfd(fd, events, revents)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Pollfd> =
             object : TypeLayout<Pollfd> {
@@ -880,10 +728,12 @@ public data class Pollfd(
     }
 }
 
-public data class Rusage(
-    public var ruUtime: Timeval = Timeval(),
-    public var ruStime: Timeval = Timeval(),
+public open class Rusage(
+    public var ruUtime: Timeval,
+    public var ruStime: Timeval,
 ) {
+    public open fun clone(): Rusage = Rusage(ruUtime, ruStime)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Rusage> =
             object : TypeLayout<Rusage> {
@@ -911,62 +761,24 @@ public data class Rusage(
     }
 }
 
-public data class Stat(
-    public var stDev: DevT = 0uL,
-    public var stIno: InoT = 0uL,
-    public var stNlink: NlinkT = 0uL,
-    public var stMode: ModeT = 0u,
-    public var stUid: UidT = 0u,
-    public var stGid: GidT = 0u,
-    public var pad0: CUint = 0u,
-    public var stRdev: DevT = 0uL,
-    public var stSize: OffT = 0L,
-    public var stBlksize: BlksizeT = 0L,
-    public var stBlocks: BlkcntT = 0L,
-    public var stAtim: Timespec = Timespec(),
-    public var stMtim: Timespec = Timespec(),
-    public var stCtim: Timespec = Timespec(),
-    public var reserved: LongArray = LongArray(3),
+public open class Stat(
+    public var stDev: DevT,
+    public var stIno: InoT,
+    public var stNlink: NlinkT,
+    public var stMode: ModeT,
+    public var stUid: UidT,
+    public var stGid: GidT,
+    public var pad0: CUint,
+    public var stRdev: DevT,
+    public var stSize: OffT,
+    public var stBlksize: BlksizeT,
+    public var stBlocks: BlkcntT,
+    public var stAtim: Timespec,
+    public var stMtim: Timespec,
+    public var stCtim: Timespec,
+    public var reserved: LongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Stat) return false
-        if (this.stDev != other.stDev) return false
-        if (this.stIno != other.stIno) return false
-        if (this.stNlink != other.stNlink) return false
-        if (this.stMode != other.stMode) return false
-        if (this.stUid != other.stUid) return false
-        if (this.stGid != other.stGid) return false
-        if (this.pad0 != other.pad0) return false
-        if (this.stRdev != other.stRdev) return false
-        if (this.stSize != other.stSize) return false
-        if (this.stBlksize != other.stBlksize) return false
-        if (this.stBlocks != other.stBlocks) return false
-        if (this.stAtim != other.stAtim) return false
-        if (this.stMtim != other.stMtim) return false
-        if (this.stCtim != other.stCtim) return false
-        if (!this.reserved.contentEquals(other.reserved)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.stDev.hashCode()
-        result = 31 * result + this.stIno.hashCode()
-        result = 31 * result + this.stNlink.hashCode()
-        result = 31 * result + this.stMode.hashCode()
-        result = 31 * result + this.stUid.hashCode()
-        result = 31 * result + this.stGid.hashCode()
-        result = 31 * result + this.pad0.hashCode()
-        result = 31 * result + this.stRdev.hashCode()
-        result = 31 * result + this.stSize.hashCode()
-        result = 31 * result + this.stBlksize.hashCode()
-        result = 31 * result + this.stBlocks.hashCode()
-        result = 31 * result + this.stAtim.hashCode()
-        result = 31 * result + this.stMtim.hashCode()
-        result = 31 * result + this.stCtim.hashCode()
-        result = 31 * result + this.reserved.contentHashCode()
-        return result
-    }
+    public open fun clone(): Stat = Stat(stDev, stIno, stNlink, stMode, stUid, stGid, pad0, stRdev, stSize, stBlksize, stBlocks, stAtim, stMtim, stCtim, reserved)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stat> =
@@ -1047,23 +859,11 @@ public data class Stat(
     }
 }
 
-public data class FdSet(
-    public var nfds: Int = 0,
-    public var fds: IntArray = IntArray(FD_SETSIZE.toInt()),
+public open class FdSet(
+    public var nfds: Int,
+    public var fds: IntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is FdSet) return false
-        if (this.nfds != other.nfds) return false
-        if (!this.fds.contentEquals(other.fds)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.nfds.hashCode()
-        result = 31 * result + this.fds.contentHashCode()
-        return result
-    }
+    public open fun clone(): FdSet = FdSet(nfds, fds)
 
     public companion object {
         public fun typeLayout(): TypeLayout<FdSet> =
@@ -1092,17 +892,10 @@ public data class FdSet(
     }
 }
 
-public data class PthreadAttrT(
-    public var size: LongArray = LongArray(9),
+public open class PthreadAttrT(
+    public var size: LongArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadAttrT) return false
-        if (!this.size.contentEquals(other.size)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.contentHashCode()
+    public open fun clone(): PthreadAttrT = PthreadAttrT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadAttrT> =
@@ -1127,9 +920,11 @@ public data class PthreadAttrT(
     }
 }
 
-public data class PthreadMutexattrT(
-    public var attr: CUint = 0u,
+public open class PthreadMutexattrT(
+    public var attr: CUint,
 ) {
+    public open fun clone(): PthreadMutexattrT = PthreadMutexattrT(attr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadMutexattrT> =
             object : TypeLayout<PthreadMutexattrT> {
@@ -1153,9 +948,11 @@ public data class PthreadMutexattrT(
     }
 }
 
-public data class PthreadCondattrT(
-    public var attr: CUint = 0u,
+public open class PthreadCondattrT(
+    public var attr: CUint,
 ) {
+    public open fun clone(): PthreadCondattrT = PthreadCondattrT(attr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadCondattrT> =
             object : TypeLayout<PthreadCondattrT> {
@@ -1179,9 +976,11 @@ public data class PthreadCondattrT(
     }
 }
 
-public data class PthreadBarrierattrT(
-    public var attr: CUint = 0u,
+public open class PthreadBarrierattrT(
+    public var attr: CUint,
 ) {
+    public open fun clone(): PthreadBarrierattrT = PthreadBarrierattrT(attr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadBarrierattrT> =
             object : TypeLayout<PthreadBarrierattrT> {
@@ -1205,17 +1004,10 @@ public data class PthreadBarrierattrT(
     }
 }
 
-public data class PthreadRwlockattrT(
-    public var attr: UIntArray = UIntArray(2),
+public open class PthreadRwlockattrT(
+    public var attr: UIntArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadRwlockattrT) return false
-        if (!this.attr.contentEquals(other.attr)) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.attr.contentHashCode()
+    public open fun clone(): PthreadRwlockattrT = PthreadRwlockattrT(attr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadRwlockattrT> =
@@ -1240,30 +1032,13 @@ public data class PthreadRwlockattrT(
     }
 }
 
-public class PthreadCondT internal constructor(
+public open class PthreadCondT internal constructor(
     sizeCtorArg: List<MutPtr>,
 ) {
     public var size: List<MutPtr> = sizeCtorArg
         internal set
 
-    public constructor() : this(
-        sizeCtorArg = List(12) { MutPtr(0L) },
-    )
-
-    public operator fun component1(): List<MutPtr> = this.size
-
-    public fun copy(size: List<MutPtr> = this.size): PthreadCondT = PthreadCondT(sizeCtorArg = size)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadCondT) return false
-        if (this.size != other.size) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.hashCode()
-
-    public fun clone(): PthreadCondT = PthreadCondT(size)
+    public open fun clone(): PthreadCondT = PthreadCondT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadCondT> =
@@ -1287,37 +1062,20 @@ public class PthreadCondT internal constructor(
             }
 
         public operator fun invoke(
-            size: List<MutPtr> = List(12) { MutPtr(0L) },
+            size: List<MutPtr>,
         ): PthreadCondT = PthreadCondT(
             sizeCtorArg = size,
         )
     }
 }
 
-public class PthreadMutexT internal constructor(
+public open class PthreadMutexT internal constructor(
     sizeCtorArg: List<MutPtr>,
 ) {
     public var size: List<MutPtr> = sizeCtorArg
         internal set
 
-    public constructor() : this(
-        sizeCtorArg = List(6) { MutPtr(0L) },
-    )
-
-    public operator fun component1(): List<MutPtr> = this.size
-
-    public fun copy(size: List<MutPtr> = this.size): PthreadMutexT = PthreadMutexT(sizeCtorArg = size)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadMutexT) return false
-        if (this.size != other.size) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.hashCode()
-
-    public fun clone(): PthreadMutexT = PthreadMutexT(size)
+    public open fun clone(): PthreadMutexT = PthreadMutexT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadMutexT> =
@@ -1341,37 +1099,20 @@ public class PthreadMutexT internal constructor(
             }
 
         public operator fun invoke(
-            size: List<MutPtr> = List(6) { MutPtr(0L) },
+            size: List<MutPtr>,
         ): PthreadMutexT = PthreadMutexT(
             sizeCtorArg = size,
         )
     }
 }
 
-public class PthreadRwlockT internal constructor(
+public open class PthreadRwlockT internal constructor(
     sizeCtorArg: List<MutPtr>,
 ) {
     public var size: List<MutPtr> = sizeCtorArg
         internal set
 
-    public constructor() : this(
-        sizeCtorArg = List(8) { MutPtr(0L) },
-    )
-
-    public operator fun component1(): List<MutPtr> = this.size
-
-    public fun copy(size: List<MutPtr> = this.size): PthreadRwlockT = PthreadRwlockT(sizeCtorArg = size)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadRwlockT) return false
-        if (this.size != other.size) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.hashCode()
-
-    public fun clone(): PthreadRwlockT = PthreadRwlockT(size)
+    public open fun clone(): PthreadRwlockT = PthreadRwlockT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadRwlockT> =
@@ -1395,37 +1136,20 @@ public class PthreadRwlockT internal constructor(
             }
 
         public operator fun invoke(
-            size: List<MutPtr> = List(8) { MutPtr(0L) },
+            size: List<MutPtr>,
         ): PthreadRwlockT = PthreadRwlockT(
             sizeCtorArg = size,
         )
     }
 }
 
-public class PthreadBarrierT internal constructor(
+public open class PthreadBarrierT internal constructor(
     sizeCtorArg: List<MutPtr>,
 ) {
     public var size: List<MutPtr> = sizeCtorArg
         internal set
 
-    public constructor() : this(
-        sizeCtorArg = List(5) { MutPtr(0L) },
-    )
-
-    public operator fun component1(): List<MutPtr> = this.size
-
-    public fun copy(size: List<MutPtr> = this.size): PthreadBarrierT = PthreadBarrierT(sizeCtorArg = size)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PthreadBarrierT) return false
-        if (this.size != other.size) return false
-        return true
-    }
-
-    override fun hashCode(): Int = this.size.hashCode()
-
-    public fun clone(): PthreadBarrierT = PthreadBarrierT(size)
+    public open fun clone(): PthreadBarrierT = PthreadBarrierT(size)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PthreadBarrierT> =
@@ -1449,7 +1173,7 @@ public class PthreadBarrierT internal constructor(
             }
 
         public operator fun invoke(
-            size: List<MutPtr> = List(5) { MutPtr(0L) },
+            size: List<MutPtr>,
         ): PthreadBarrierT = PthreadBarrierT(
             sizeCtorArg = size,
         )
@@ -1458,32 +1182,16 @@ public class PthreadBarrierT internal constructor(
 
 // Declare dirent outside of s! so that it doesn't implement Copy, Eq, Hash,
 // etc., since it contains a flexible array member with a dynamic size.
-public data class Dirent(
-    public var dIno: InoT = 0uL,
-    public var dType: CUchar = 0u,
+public open class Dirent(
+    public var dIno: InoT,
+    public var dType: CUchar,
     /**
      * dName is declared in WASI libc as a flexible array member, which
      * can't be directly expressed in Rust. As an imperfect workaround,
      * declare it as a zero-length array instead.
      */
-    public var dName: UByteArray = UByteArray(0),
+    public var dName: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Dirent) return false
-        if (this.dIno != other.dIno) return false
-        if (this.dType != other.dType) return false
-        if (!this.dName.contentEquals(other.dName)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.dIno.hashCode()
-        result = 31 * result + this.dType.hashCode()
-        result = 31 * result + this.dName.contentHashCode()
-        return result
-    }
-
     public companion object {
         public fun typeLayout(): TypeLayout<Dirent> =
             object : TypeLayout<Dirent> {

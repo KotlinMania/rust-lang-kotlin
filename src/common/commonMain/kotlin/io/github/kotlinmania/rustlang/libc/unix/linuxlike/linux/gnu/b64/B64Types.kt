@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64
 
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.libc.*
 
 public typealias InoT = ULong

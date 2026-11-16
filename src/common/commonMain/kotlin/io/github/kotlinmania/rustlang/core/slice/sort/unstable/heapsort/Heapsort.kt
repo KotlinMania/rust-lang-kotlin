@@ -1,7 +1,7 @@
 // port-lint: source slice/sort/unstable/heapsort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable.heapsort
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -55,13 +55,13 @@ public fun <T> siftDown(v: MutableList<T>, node: Int, isLess: (T, T) -> Boolean)
                 // We need a branch to be sure not to out-of-bounds index,
                 // but it's highly predictable.  The comparison, however,
                 // is better done branchless, especially for primitives.
-                child += isLess((ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress), (ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child + 1).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress)).toInt()
+                child += isLess((UnresolvedTypeLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress), (UnresolvedTypeLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child + 1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress)).toInt()
             }
             // Stop if the invariant holds at `node`.
-            if (!isLess((ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress), (ObjectSlotLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress))) {
+            if (!isLess((UnresolvedTypeLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((node1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress), (UnresolvedTypeLayout<T>()).readNative((MutPtr((vBase).rawAddress + ((child).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress))) {
                 break
             }
-            swapNonoverlapping(MutPtr((vBase).rawAddress + ((node1).toLong() * (ObjectSlotLayout<T>()).strideBytes)), MutPtr((vBase).rawAddress + ((child).toLong() * (ObjectSlotLayout<T>()).strideBytes)), 1)
+            swapNonoverlapping(MutPtr((vBase).rawAddress + ((node1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), MutPtr((vBase).rawAddress + ((child).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), 1)
         }
         node1 = child
     }

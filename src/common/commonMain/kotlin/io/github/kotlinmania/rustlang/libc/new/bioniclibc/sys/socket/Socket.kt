@@ -1,23 +1,23 @@
 // port-lint: source new/bionic_libc/sys/socket.rs
 package io.github.kotlinmania.rustlang.libc.new.bioniclibc.sys.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 
 // Header: `sys / socket.h`
 
-public class Msghdr internal constructor(
+public open class Msghdr internal constructor(
     msgNameCtorArg: MutPtr,
     public var msgNamelen: SocklenT,
     msgIovCtorArg: MutPtr,
@@ -35,57 +35,7 @@ public class Msghdr internal constructor(
     public var msgControl: MutPtr = msgControlCtorArg
         internal set
 
-    public constructor() : this(
-        msgNameCtorArg = MutPtr(0L),
-        msgNamelen = 0u,
-        msgIovCtorArg = MutPtr(0L),
-        msgIovlen = 0uL,
-        msgControlCtorArg = MutPtr(0L),
-        msgControllen = 0uL,
-        msgFlags = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.msgName
-
-    public operator fun component2(): SocklenT = this.msgNamelen
-
-    public operator fun component3(): MutPtr = this.msgIov
-
-    public operator fun component4(): SizeT = this.msgIovlen
-
-    public operator fun component5(): MutPtr = this.msgControl
-
-    public operator fun component6(): SizeT = this.msgControllen
-
-    public operator fun component7(): CInt = this.msgFlags
-
-    public fun copy(msgName: MutPtr = this.msgName, msgNamelen: SocklenT = this.msgNamelen, msgIov: MutPtr = this.msgIov, msgIovlen: SizeT = this.msgIovlen, msgControl: MutPtr = this.msgControl, msgControllen: SizeT = this.msgControllen, msgFlags: CInt = this.msgFlags): Msghdr = Msghdr(msgNameCtorArg = msgName, msgNamelen = msgNamelen, msgIovCtorArg = msgIov, msgIovlen = msgIovlen, msgControlCtorArg = msgControl, msgControllen = msgControllen, msgFlags = msgFlags)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Msghdr) return false
-        if (this.msgName != other.msgName) return false
-        if (this.msgNamelen != other.msgNamelen) return false
-        if (this.msgIov != other.msgIov) return false
-        if (this.msgIovlen != other.msgIovlen) return false
-        if (this.msgControl != other.msgControl) return false
-        if (this.msgControllen != other.msgControllen) return false
-        if (this.msgFlags != other.msgFlags) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.msgName.hashCode()
-        result = 31 * result + this.msgNamelen.hashCode()
-        result = 31 * result + this.msgIov.hashCode()
-        result = 31 * result + this.msgIovlen.hashCode()
-        result = 31 * result + this.msgControl.hashCode()
-        result = 31 * result + this.msgControllen.hashCode()
-        result = 31 * result + this.msgFlags.hashCode()
-        return result
-    }
-
-    public fun clone(): Msghdr = Msghdr(msgName, msgNamelen, msgIov, msgIovlen, msgControl, msgControllen, msgFlags)
+    public open fun clone(): Msghdr = Msghdr(msgName, msgNamelen, msgIov, msgIovlen, msgControl, msgControllen, msgFlags)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Msghdr> =
@@ -133,13 +83,13 @@ public class Msghdr internal constructor(
             }
 
         public operator fun invoke(
-            msgName: MutPtr = MutPtr(0L),
-            msgNamelen: SocklenT = 0u,
-            msgIov: MutPtr = MutPtr(0L),
-            msgIovlen: SizeT = 0uL,
-            msgControl: MutPtr = MutPtr(0L),
-            msgControllen: SizeT = 0uL,
-            msgFlags: CInt = 0,
+            msgName: MutPtr,
+            msgNamelen: SocklenT,
+            msgIov: MutPtr,
+            msgIovlen: SizeT,
+            msgControl: MutPtr,
+            msgControllen: SizeT,
+            msgFlags: CInt,
         ): Msghdr = Msghdr(
             msgNameCtorArg = msgName,
             msgNamelen = msgNamelen,
@@ -152,11 +102,13 @@ public class Msghdr internal constructor(
     }
 }
 
-public data class Cmsghdr(
-    public var cmsgLen: SizeT = 0uL,
-    public var cmsgLevel: CInt = 0,
-    public var cmsgType: CInt = 0,
+public open class Cmsghdr(
+    public var cmsgLen: SizeT,
+    public var cmsgLevel: CInt,
+    public var cmsgType: CInt,
 ) {
+    public open fun clone(): Cmsghdr = Cmsghdr(cmsgLen, cmsgLevel, cmsgType)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Cmsghdr> =
             object : TypeLayout<Cmsghdr> {
@@ -188,11 +140,13 @@ public data class Cmsghdr(
     }
 }
 
-public data class Ucred(
-    public var pid: PidT = 0,
-    public var uid: UidT = 0,
-    public var gid: GidT = 0,
+public open class Ucred(
+    public var pid: PidT,
+    public var uid: UidT,
+    public var gid: GidT,
 ) {
+    public open fun clone(): Ucred = Ucred(pid, uid, gid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<Ucred> =
             object : TypeLayout<Ucred> {

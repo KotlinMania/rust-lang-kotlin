@@ -46,7 +46,7 @@ public fun allocZeroed(layout: Layout): MutPtr {
     } else {
         val ptr = alloc(layout)
         if (!ptr.isNull()) {
-            writeBytes(ptr, 0, layout.size())
+            ptr.writeBytes(ptr, 0, layout.size())
         }
         ptr
     }

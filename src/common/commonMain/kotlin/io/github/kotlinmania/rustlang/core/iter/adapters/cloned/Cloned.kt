@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 
@@ -25,7 +26,7 @@ public typealias Source<I> = I.Source
  */
 public open class Cloned<I>(
     public var it: I,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Cloned<I>>, SourceIter<Any?, Source>, InPlaceIterable, Iterable<T> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Cloned<I>>, SourceIter<Source>, InPlaceIterable, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Cloned.next()) {
@@ -100,9 +101,9 @@ public open class Cloned<I>(
          */
         public fun <I> default(defaultIFn: () -> I): Cloned<I> = Cloned.new(defaultIFn())
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 

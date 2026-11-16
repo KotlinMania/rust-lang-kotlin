@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.iter.traits.marker
 
 import io.github.kotlinmania.rustlang.core.iter.range.Step
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 
 /**
@@ -86,7 +87,7 @@ public interface InPlaceIterable {
      * This is an upper bound, i.e. the transformations will produce at most this many items per
      * input. It's meant for layout calculations.
      */
-    public val EXPAND_BY: NonZero<Int>?
+    public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>?
 
     /**
      * The product of many-to-one item reductions that happen throughout the iterator pipeline.
@@ -94,7 +95,7 @@ public interface InPlaceIterable {
      * This is a lower bound, i.e. the transformations will consume at least this many items per
      * output.
      */
-    public val MERGE_BY: NonZero<Int>?
+    public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>?
 }
 
 /**

@@ -4,18 +4,25 @@ package io.github.kotlinmania.rustlang.core.option
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.deref.Deref
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
@@ -27,8 +34,6 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Optional values.
 //
@@ -599,7 +604,7 @@ public typealias TryType<T> = Option<T>
 /**
  * The `Option` type. See [the module level documentation](self) for more.
  */
-public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, Any?, Any?, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
+public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
     /**
      * No value.
      */
@@ -836,7 +841,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // Here we assume that `offsetOf` always returns an offset to an
         // in-bounds and correctly aligned position for a `T` (even if in the
         // `None` case it's just padding).
-        return rawSliceList(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -887,7 +892,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         // here. As with `asSlice`, the intrinsic always returns a pointer to
         // an in-bounds and correctly aligned position for a `T` (even if in
         // the `None` case it's just padding).
-        return rawMutSliceList(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), PrimitiveLayouts.U8)
     }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1261,9 +1266,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         when (this) {
             is Some -> {
                 val (v) = this
-                Result.Ok(v)
+                Result.Ok<T, E>(v)
             }
-            null -> Result.Err(err)
+            null -> Result.Err<T, E>(err)
         }
 
     /**
@@ -1287,9 +1292,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
         when (this) {
             is Some -> {
                 val (v) = this
-                Result.Ok(v)
+                Result.Ok<T, E>(v)
             }
-            null -> Result.Err(err())
+            null -> Result.Err<T, E>(err())
         }
 
     /**
@@ -1716,7 +1721,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      */
     public open fun <R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Any?> {
         if (this == null) {
-            this = Some(when (val tryResult = f()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) })
+            this = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -2004,7 +2009,7 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
      * See [the documentation](https://doc.rust-lang.org/std/option/#comparison-operators) for details.
      * [None] always compares less than any [Some]
      */
-    public open fun partialCmp(other: Option<T>): Option<Ordering> =
+    public open fun partialCmp(other: Option<T>): Option<cmp.Ordering> =
         run {
             val matchVal = Pair(this, other)
             when {
@@ -2013,13 +2018,13 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                     val (r) = matchVal.second as Some<T>
                     l.partialCmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> Some(Ordering.Greater)
-                matchVal.first == null && matchVal.second is Some -> Some(Ordering.Less)
-                else -> Some(Ordering.Equal)
+                matchVal.first is Some && matchVal.second == null -> Some(cmp.Ordering.Greater)
+                matchVal.first == null && matchVal.second is Some -> Some(cmp.Ordering.Less)
+                else -> Some(cmp.Ordering.Equal)
             }
         }
 
-    public open fun cmp(other: Option<T>): Ordering =
+    public open fun cmp(other: Option<T>): cmp.Ordering =
         run {
             val matchVal = Pair(this, other)
             when {
@@ -2028,9 +2033,9 @@ public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, S
                     val (r) = matchVal.second as Some<T>
                     l.cmp(r)
                 }
-                matchVal.first is Some && matchVal.second == null -> Ordering.Greater
-                matchVal.first == null && matchVal.second is Some -> Ordering.Less
-                else -> Ordering.Equal
+                matchVal.first is Some && matchVal.second == null -> cmp.Ordering.Greater
+                matchVal.first == null && matchVal.second is Some -> cmp.Ordering.Less
+                else -> cmp.Ordering.Equal
             }
         }
 
@@ -2185,15 +2190,15 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
  */
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
     when {
-        this is Some && (this as Some<T>).value is Result.Ok<*> -> {
-            val x = ((this as Some<T>).value as Result.Ok<*>).value
-            Result.Ok(Some(x))
+        this is Some && (this as Some<T>).value is Result.Ok -> {
+            val x = ((this as Some<T>).value as Result.Ok).value
+            Result.Ok<Option<T>, E>(Some(x))
         }
-        this is Some && (this as Some<T>).value is Result.Err<*> -> {
-            val e = ((this as Some<T>).value as Result.Err<*>).error
-            Result.Err(e)
+        this is Some && (this as Some<T>).value is Result.Err -> {
+            val e = ((this as Some<T>).value as Result.Err).error
+            Result.Err<Option<T>, E>(e)
         }
-        else -> Result.Ok(None)
+        else -> Result.Ok<Option<T>, E>(None)
     }
 
 public fun unwrapFailed(): Nothing = panic("called `Option::unwrap()` on a `None` value")
@@ -2369,13 +2374,13 @@ public open class OptionFlatten<A>(
             null -> Pair(0, Some(0))
         }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> =
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
                 iter.advanceBy(n)
             }
-            null -> NonZero.new(n).mapOr(Result.Ok(Unit), { Result.Err(it) })
+            null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
         }
 
     public override fun nth(n: Int): Option<Item> =
@@ -2432,13 +2437,13 @@ public open class OptionFlatten<A>(
             null -> None
         }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> =
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
                 iter.advanceBackBy(n)
             }
-            null -> NonZero.new(n).mapOr(Result.Ok(Unit), { Result.Err(it) })
+            null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
         }
 
     public open fun nthBack(n: Int): Option<Item> =
@@ -2522,7 +2527,7 @@ public open class OptionFlatten<A>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
 
 /**
  * Converts from `Option<Option<T>>` to `Option<T>`.

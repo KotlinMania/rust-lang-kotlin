@@ -2,23 +2,23 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.ModeT
-import io.github.kotlinmania.rustlang.libc.NlItem
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ModeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.NlItem
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun getrlimit(resource: CInt, rlim: MutPtr): CInt =
@@ -164,7 +164,7 @@ public actual fun futimes(fd: CInt, times: ConstPtr): CInt =
 public actual fun nlLanginfo(item: NlItem): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdNlLanginfo")
 
-public actual fun bind(socket: CInt, address: ConstPtr, addressLen: io.github.kotlinmania.rustlang.libc.SocklenT): CInt =
+public actual fun bind(socket: CInt, address: ConstPtr, addressLen: SocklenT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdBind")
 
 public actual fun writev(fd: CInt, iov: ConstPtr, iovcnt: CInt): SsizeT =
@@ -215,17 +215,11 @@ public actual fun semOpen(name: ConstPtr, oflag: CInt, vararg variadicArgs: Long
 public actual fun getgrnam(name: ConstPtr): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGetgrnam")
 
-@kotlin.wasm.WasmImport("kmcore", "libcUnixBsdPthreadCancel")
-private external fun wasiLibcUnixBsdPthreadCancel(thread: Long): Int
+public actual fun pthreadCancel(thread: PthreadT): CInt =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdPthreadCancel")
 
-public actual fun pthreadCancel(thread: io.github.kotlinmania.rustlang.libc.PthreadT): CInt =
-    wasiLibcUnixBsdPthreadCancel(thread.toLong()).toInt()
-
-@kotlin.wasm.WasmImport("kmcore", "libcUnixBsdPthreadKill")
-private external fun wasiLibcUnixBsdPthreadKill(thread: Long, sig: Int): Int
-
-public actual fun pthreadKill(thread: io.github.kotlinmania.rustlang.libc.PthreadT, sig: CInt): CInt =
-    wasiLibcUnixBsdPthreadKill(thread.toLong(), sig).toInt()
+public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdPthreadKill")
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixBsdSchedGetPriorityMin")
 private external fun wasiLibcUnixBsdSchedGetPriorityMin(policy: Int): Int

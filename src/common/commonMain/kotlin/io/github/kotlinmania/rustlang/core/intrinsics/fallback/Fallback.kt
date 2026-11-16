@@ -7,9 +7,9 @@ import io.github.kotlinmania.rustlang.core.intrinsics.assume
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShl
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedShr
-import io.github.kotlinmania.rustlang.core.num.rustOverflowingAdd
-import io.github.kotlinmania.rustlang.core.num.rustWrappingAdd
-import io.github.kotlinmania.rustlang.core.num.rustWrappingMul
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingMul
 
 public interface CarryingMulAdd<T, out Unsigned> {
     public fun carryingMulAdd(multiplicand: T, addend: T, carry: T): Pair<Unsigned, T>
@@ -81,9 +81,9 @@ public fun wideMulU128(a: U128, b: U128): Pair<U128, U128> {
 
 public fun U128.carryingMulAdd(b: U128, c: U128, d: U128): Pair<U128, U128> {
     var (low, high) = wideMulU128(this, b)
-    val (low1, carry) = rustOverflowingAdd(low, c)
+    val (low1, carry) = low.overflowingAdd(c)
     high += U128.fromLong(carry.toLong())
-    val (low2, carry1) = rustOverflowingAdd(low1, d)
+    val (low2, carry1) = low1.overflowingAdd(d)
     high += U128.fromLong(carry1.toLong())
     return Pair(low2, high)
 }
@@ -91,12 +91,12 @@ public fun U128.carryingMulAdd(b: U128, c: U128, d: U128): Pair<U128, U128> {
 public fun I128.carryingMulAdd(b: I128, c: I128, d: I128): Pair<U128, I128> {
     val (low, high) = wideMulU128(this.toU128(), b.toU128())
     var high1 = I128.fromLong(high.toLong())
-    high1 = rustWrappingAdd(high1, rustWrappingMul(this shr 127, b))
-    high1 = rustWrappingAdd(high1, rustWrappingMul(this, b shr 127))
-    val (low1, carry) = rustOverflowingAdd(low, c.toU128())
-    high1 = rustWrappingAdd(high1, (I128.fromLong(carry.toLong())) + (c shr 127))
-    val (low2, carry1) = rustOverflowingAdd(low1, d.toU128())
-    high1 = rustWrappingAdd(high1, (I128.fromLong(carry1.toLong())) + (d shr 127))
+    high1 = high1.wrappingAdd((this shr 127).wrappingMul(b))
+    high1 = high1.wrappingAdd(this.wrappingMul(b shr 127))
+    val (low1, carry) = low.overflowingAdd(c.toU128())
+    high1 = high1.wrappingAdd((I128.fromLong(carry.toLong())) + (c shr 127))
+    val (low2, carry1) = low1.overflowingAdd(d.toU128())
+    high1 = high1.wrappingAdd((I128.fromLong(carry1.toLong())) + (d shr 127))
     return Pair(low2, high1)
 }
 

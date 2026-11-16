@@ -1,7 +1,7 @@
 // port-lint: source sys/sync/thread_parking/futex.rs
 package io.github.kotlinmania.rustlang.std.sys.sync.threadparking.futex
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
@@ -105,7 +105,7 @@ public open class Parker(
          * requires this to happen in-place.
          */
         public fun newInPlace(parker: MutPtr) {
-            (ObjectSlotLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = Futex.new(EMPTY)))
+            (UnresolvedTypeLayout<Parker>()).writeNative((parker).rawAddress, Parker(state = Futex.new(EMPTY)))
         }
     }
 }

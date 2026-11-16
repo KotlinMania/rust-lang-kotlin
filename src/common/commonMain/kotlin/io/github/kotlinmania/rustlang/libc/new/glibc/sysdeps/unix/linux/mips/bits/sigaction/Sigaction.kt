@@ -1,11 +1,11 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/mips/bits/sigaction.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.mips.bits.sigaction
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SighandlerT
-import io.github.kotlinmania.rustlang.libc.SigsetT
 import io.github.kotlinmania.rustlang.libc.types.u32CastInt
+import io.github.kotlinmania.rustlang.libc.unix.SighandlerT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.SigsetT
 
 // Header: `sysdeps / unix / sysv / linux / mips / bits / sigaction.h`
 
@@ -13,12 +13,14 @@ public fun interface SigactionSaRestorerCallback {
     public operator fun invoke()
 }
 
-public data class Sigaction(
-    public var saFlags: CInt = 0,
-    public var saSigaction: SighandlerT = 0uL,
-    public var saMask: SigsetT = SigsetT(),
-    public var saRestorer: SigactionSaRestorerCallback? = null,
-)
+public open class Sigaction(
+    public var saFlags: CInt,
+    public var saSigaction: SighandlerT,
+    public var saMask: SigsetT,
+    public var saRestorer: SigactionSaRestorerCallback?,
+) {
+    public open fun clone(): Sigaction = Sigaction(saFlags, saSigaction, saMask, saRestorer)
+}
 
 public val SA_NOCLDSTOP: CInt = 0x00000001
 

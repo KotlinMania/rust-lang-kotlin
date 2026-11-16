@@ -1,24 +1,27 @@
 // port-lint: source slice/iter.rs
 package io.github.kotlinmania.rustlang.core.slice.iter
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.nth
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.take
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -28,8 +31,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter.macros.len
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // Definitions of a bunch of iterators for `[T]`.
 
@@ -160,13 +161,13 @@ public open class Iter<T>(
     public override fun asRef(): List<T> = this.asSlice()
 
     public companion object {
-        public fun <T> new(slice: List<T>): Iter<T> {
+        public fun <T> new(slice: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Iter<T> {
             val len = slice.size
             val ptr: NonNull = NonNull.fromRef(slice).cast()
             // SAFETY: Similar to `IterMut.new`.
             return run {
                 val endOrLen =
-                    if (T.IS_ZST) {
+                    if (((typeLayoutT).sizeBytes == 0L)) {
                         withoutProvenance(len)
                     } else {
                         ptr.asPtr().add(len)
@@ -252,7 +253,7 @@ public open class IterMut<T>(
         // SAFETY: the iterator was created from a mutable slice with pointer
         // `self.ptr` and length `len(self)`. This guarantees that all the prerequisites
         // for `fromRawPartsMut` are fulfilled.
-        return rawMutSliceList(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -321,13 +322,13 @@ public open class IterMut<T>(
         // SAFETY: the iterator was created from a mutable slice with pointer
         // `self.ptr` and length `len(self)`. This guarantees that all the prerequisites
         // for `fromRawPartsMut` are fulfilled.
-        return rawMutSliceList(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.ptr.asPtr(), (len(this)).toInt(), PrimitiveLayouts.U8)
     }
 
     public override fun asRef(): List<T> = this.asSlice()
 
     public companion object {
-        public fun <T> new(slice: MutableList<T>): IterMut<T> {
+        public fun <T> new(slice: MutableList<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): IterMut<T> {
             val len = slice.size
             val ptr: NonNull = NonNull.fromMut(slice).cast()
             // SAFETY: There are several things here:
@@ -348,7 +349,7 @@ public open class IterMut<T>(
             // `postIncStart` method for more information.
             return run {
                 val endOrLen =
-                    if (T.IS_ZST) {
+                    if (((typeLayoutT).sizeBytes == 0L)) {
                         withoutProvenanceMut(len)
                     } else {
                         ptr.asPtr().add(len)
@@ -535,8 +536,8 @@ public open class SplitInclusive<T, P>(
         if (idx == this.v.size) {
             this.finished = true
         }
-        val ret = ((this.v).slice(0 until idx))
-        this.v = ((this.v).slice(idx until this.v.size))
+        val ret = ((this.v).subList(0, idx))
+        this.v = ((this.v).subList(idx, (this.v).size))
         return ret
     }
 
@@ -547,7 +548,7 @@ public open class SplitInclusive<T, P>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, max(1, this.v.size))
+            Pair(1, cmp.max(1, this.v.size))
         }
 
     public open fun nextBack(): List<T>? {
@@ -561,14 +562,14 @@ public open class SplitInclusive<T, P>(
             if (this.v.isEmpty()) {
                 listOf()
             } else {
-                ((this.v).slice(0 until (this.v.size - 1)))
+                ((this.v).subList(0, (this.v.size - 1)))
             }
         val idx = ((remainder.iter().indexOfLast({ x -> (this.pred)(x) }).takeIf { it >= 0 })?.let({ idx -> idx + 1 }) ?: 0)
         if (idx == 0) {
             this.finished = true
         }
-        val ret = ((this.v).slice(idx until this.v.size))
-        this.v = ((this.v).slice(0 until idx))
+        val ret = ((this.v).subList(idx, (this.v).size))
+        this.v = ((this.v).subList(0, idx))
         return ret
     }
 
@@ -734,7 +735,7 @@ public open class SplitInclusiveMut<T, P>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, max(1, this.v.size))
+            Pair(1, cmp.max(1, this.v.size))
         }
 
     public open fun nextBack(): MutableList<T>? {
@@ -750,7 +751,7 @@ public open class SplitInclusiveMut<T, P>(
                 // The last index of self.v is already checked and found to match
                 // by the last iteration, so we start searching a new match
                 // one index to the left.
-                val remainder = ((this.v).slice(0 until (this.v.size - 1)))
+                val remainder = ((this.v).subList(0, (this.v.size - 1)))
                 remainder.iter().indexOfLast({ x -> pred(x) }).takeIf { it >= 0 }
             }
         val idx = idxOpt.map({ idx -> idx + 1 }).unwrapOr(0)
@@ -1114,9 +1115,9 @@ public open class RSplitNMut<T, P> internal constructor(
  */
 public open class Windows<T> internal constructor(
     public var v: List<T>,
-    sizeCtorArg: NonZero<Int>,
+    sizeCtorArg: NonZero<Int, NonZeroUsizeInner>,
 ) : TrustedLen<Windows<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
-    public var size: NonZero<Int> = sizeCtorArg
+    public var size: NonZero<Int, NonZeroUsizeInner> = sizeCtorArg
         internal set
 
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
@@ -1135,8 +1136,8 @@ public open class Windows<T> internal constructor(
         if (this.size.get() > this.v.size) {
             null
         } else {
-            val ret = ((this.v).slice(0 until this.size.get()))
-            this.v = ((this.v).slice(1 until this.v.size))
+            val ret = ((this.v).subList(0, this.size.get()))
+            this.v = ((this.v).subList(1, (this.v).size))
             ret
         }
 
@@ -1157,7 +1158,7 @@ public open class Windows<T> internal constructor(
             nth
         } else {
             // setting length to 0 is cheaper than overwriting the pointer when assigning &[]
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1168,7 +1169,7 @@ public open class Windows<T> internal constructor(
             null
         } else {
             val start = this.v.size - this.size.get()
-            ((this.v).slice(start until this.v.size))
+            ((this.v).subList(start, (this.v).size))
         }
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
@@ -1176,18 +1177,18 @@ public open class Windows<T> internal constructor(
         // which means that `i` cannot overflow an `Long`, and the
         // slice created by `fromRawParts` is a subslice of `self.v`
         // thus is guaranteed to be valid for the scope `a` of `self.v`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.size.get().toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.size.get().toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? = this.nthBack(0)
 
     public open fun nthBack(n: Int): List<T>? =
-        if (rustCheckedSub(this.v.size, n) != null && end.checkedSub(this.size.get()) != null) {
-            val res = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(0 until end - 1))
+        if (this.v.size.checkedSub(n) != null && end.checkedSub(this.size.get()) != null) {
+            val res = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(0, end - 1))
             res
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1195,13 +1196,13 @@ public open class Windows<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             v: List<T>,
-            size: NonZero<Int>,
+            size: NonZero<Int, NonZeroUsizeInner>,
         ): Windows<T> = Windows<T>(
             v = v,
             sizeCtorArg = size,
         )
 
-        public fun <T> new(slice: List<T>, size: NonZero<Int>): Windows<T> = Windows(v = slice, size = size)
+        public fun <T> new(slice: List<T>, size: NonZero<Int, NonZeroUsizeInner>): Windows<T> = Windows(v = slice, size = size)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
     }
@@ -1267,13 +1268,13 @@ public open class Chunks<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.size) {
-            val rest = ((this.v).slice(start until this.v.size))
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.size) {
+            val rest = ((this.v).subList(start, (this.v).size))
             val (chunk, rest1) = rest.splitAt(this.chunkSize.min(rest.size))
             this.v = rest1
             chunk
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1283,7 +1284,7 @@ public open class Chunks<T>(
             null
         } else {
             val start = (this.v.size - 1) / this.chunkSize * this.chunkSize
-            ((this.v).slice(start until this.v.size))
+            ((this.v).subList(start, (this.v).size))
         }
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
@@ -1297,7 +1298,7 @@ public open class Chunks<T>(
         // for the scope `a` of `self.v`.
         return run {
             val len = minOf(this.v.size.uncheckedSub(start), this.chunkSize)
-            rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), len.toInt(), ObjectSlotLayout<T>())
+            linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), len.toInt(), UnresolvedTypeLayout<T>())
         }
     }
 
@@ -1337,11 +1338,11 @@ public open class Chunks<T>(
         return if (n < len) {
             val start = (len - 1 - n) * this.chunkSize
             val end = start + (this.v.size - start).min(this.chunkSize)
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(0 until start))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(0, start))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1421,7 +1422,7 @@ public open class ChunksMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.len()) {
             // SAFETY: `start<self.v.len()` ensures this is in bounds
             val (_, rest) = this.v.splitAtMut(start)
             // SAFETY: `.min(rest.len()` ensures this is in bounds
@@ -1453,7 +1454,7 @@ public open class ChunksMut<T> internal constructor(
         // slice to be mutable.
         return run {
             val len = minOf(this.v.len().uncheckedSub(start), this.chunkSize)
-            rawMutSliceList(this.v.asMutPtr().add(start), len.toInt(), PrimitiveLayouts.U8)
+            linearMutSliceView(this.v.asMutPtr().add(start), len.toInt(), PrimitiveLayouts.U8)
         }
     }
 
@@ -1481,7 +1482,7 @@ public open class ChunksMut<T> internal constructor(
         return if (n < len) {
             val start = (len - 1 - n) * this.chunkSize
             val end =
-                when (val matchVal = rustCheckedAdd(start, this.chunkSize)) {
+                when (val matchVal = start.checkedAdd(this.chunkSize)) {
                     null -> this.v.len()
                     else -> {
                         val res = matchVal
@@ -1594,11 +1595,11 @@ public open class ChunksExact<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.size) {
-            this.v = ((this.v).slice(start until this.v.size))
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.size) {
+            this.v = ((this.v).subList(start, (this.v).size))
             this.next()
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1608,7 +1609,7 @@ public open class ChunksExact<T>(
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
         val start = idx * this.chunkSize
         // SAFETY: mostly identical to `Chunks.__iterator_get_unchecked`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.chunkSize.toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.chunkSize.toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? =
@@ -1625,11 +1626,11 @@ public open class ChunksExact<T>(
         return if (n < len) {
             val start = (len - 1 - n) * this.chunkSize
             val end = start + this.chunkSize
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(0 until start))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(0, start))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1707,7 +1708,7 @@ public open class ChunksExactMut<T> internal constructor(
 
     public override fun next(): MutableList<T>? {
         // SAFETY: we have `self`, so are allowed to temporarily materialize a mut slice
-        return RustMutableReference(MutPtr((this.v).rawAddress), ObjectSlotLayout<List<T>>()).splitAtMutChecked(this.chunkSize).map({ (chunk, rest) ->
+        return RustMutableReference(MutPtr((this.v).rawAddress), UnresolvedTypeLayout<List<T>>()).splitAtMutChecked(this.chunkSize).map({ (chunk, rest) ->
             this.v = rest
             chunk
         })
@@ -1721,7 +1722,7 @@ public open class ChunksExactMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && start < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && start < this.v.len()) {
             // SAFETY: `start<self.v.len()`
             this.v = this.v.splitAtMut(start).second
             this.next()
@@ -1735,7 +1736,7 @@ public open class ChunksExactMut<T> internal constructor(
     public override fun iteratorGetUnchecked(idx: Int): MutableList<T> {
         val start = idx * this.chunkSize
         // SAFETY: see comments for `Chunks.__iterator_get_unchecked` and `self.v`.
-        return rawMutSliceList(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun nextBack(): MutableList<T>? =
@@ -1818,57 +1819,57 @@ public open class ArrayWindows<T>(
     public var v: List<T>,
 )
 
-public fun <T> ArrayWindows.Companion.new(slice: List<T>, n: Int): ArrayWindows<T, N> = ArrayWindows(v = slice)
+public fun <T> ArrayWindows.Companion.new(slice: List<T>, n: Int): ArrayWindows<T> = ArrayWindows(v = slice)
 
 // Note(#26925) Remove in favor of `@derive(Clone)`
-public fun <T> ArrayWindows<T, N>.clone(n: Int): ArrayWindows<T, N> = ArrayWindows(v = this.v)
+public fun <T> ArrayWindows<T>.clone(n: Int): ArrayWindows<T> = ArrayWindows(v = this.v)
 
-public fun <T> ArrayWindows<T, N>.next(n: Int): List<T>? {
+public fun <T> ArrayWindows<T>.next(n: Int): List<T>? {
     val ret = this.v.firstChunk()
     if (ret != null) {
-        this.v = ((this.v).slice(1 until this.v.size))
+        this.v = ((this.v).subList(1, (this.v).size))
     }
     return ret
 }
 
-public fun <T> ArrayWindows<T, N>.sizeHint(n: Int): Pair<Int, Int?> {
-    val size = rustSaturatingSub(this.v.size, n - 1)
+public fun <T> ArrayWindows<T>.sizeHint(n: Int): Pair<Int, Int?> {
+    val size = this.v.size.saturatingSub(n - 1)
     return Pair(size, size)
 }
 
-public fun <T> ArrayWindows<T, N>.count(n: Int): Int = this.len()
+public fun <T> ArrayWindows<T>.count(n: Int): Int = this.len()
 
-public fun <T> ArrayWindows<T, N>.nth(n: Int): List<T>? {
+public fun <T> ArrayWindows<T>.nth(n: Int): List<T>? {
     val idx = n.min(this.v.size)
-    this.v = ((this.v).slice(idx until this.v.size))
+    this.v = ((this.v).subList(idx, (this.v).size))
     return this.next()
 }
 
-public fun <T> ArrayWindows<T, N>.last(n: Int): List<T>? = this.v.lastChunk()
+public fun <T> ArrayWindows<T>.last(n: Int): List<T>? = this.v.lastChunk()
 
-public fun <T> ArrayWindows<T, N>.iteratorGetUnchecked(idx: Int, n: Int): List<T> {
+public fun <T> ArrayWindows<T>.iteratorGetUnchecked(idx: Int, n: Int): List<T> {
     // SAFETY: since the caller guarantees that `idx` is in bounds,
     // which means that `idx` cannot overflow an `Long`, and the
     // "slice" created by `castArray` is a subslice of `self.v`
     // thus is guaranteed to be valid for the scope `a` of `self.v`.
-    return ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (ObjectSlotLayout<T>()).strideBytes)).castArray()
+    return ConstPtr((this.v.asPtr()).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray()
 }
 
-public fun <T> ArrayWindows<T, N>.nextBack(n: Int): List<T>? {
+public fun <T> ArrayWindows<T>.nextBack(n: Int): List<T>? {
     val ret = this.v.lastChunk()
     if (ret != null) {
-        this.v = ((this.v).slice(0 until this.v.size - 1))
+        this.v = ((this.v).subList(0, this.v.size - 1))
     }
     return ret
 }
 
-public fun <T> ArrayWindows<T, N>.nthBack(n: Int): List<T>? {
-    val idx = rustSaturatingSub(this.v.size, n)
-    this.v = ((this.v).slice(0 until idx))
+public fun <T> ArrayWindows<T>.nthBack(n: Int): List<T>? {
+    val idx = this.v.size.saturatingSub(n)
+    this.v = ((this.v).subList(0, idx))
     return this.nextBack()
 }
 
-public fun <T> ArrayWindows<T, N>.isEmpty(n: Int): Boolean = this.v.size < n
+public fun <T> ArrayWindows<T>.isEmpty(n: Int): Boolean = this.v.size < n
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = false
 
@@ -1915,7 +1916,7 @@ public open class RChunks<T>(
         if (this.v.isEmpty()) {
             null
         } else {
-            val idx = rustSaturatingSub(this.v.size, this.chunkSize)
+            val idx = this.v.size.saturatingSub(this.chunkSize)
             // SAFETY: self.chunkSize() > 0, so 0 <= idx < self.v.len().
             // Thus `idx` is in-bounds for `self.v` and can be used as a valid argument for `splitAtMutUnchecked`.
             val (rest, chunk) = this.v.splitAtUnchecked(idx)
@@ -1934,14 +1935,14 @@ public open class RChunks<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.size) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.size) {
             val end = this.v.size - end
-            val rest = ((this.v).slice(0 until end))
-            val (rest1, chunk) = rest.splitAt(rustSaturatingSub(end, this.chunkSize))
+            val rest = ((this.v).subList(0, end))
+            val (rest1, chunk) = rest.splitAt(end.saturatingSub(this.chunkSize))
             this.v = rest1
             chunk
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -1957,14 +1958,14 @@ public open class RChunks<T>(
                 } else {
                     rem
                 }
-            ((this.v).slice(0 until end))
+            ((this.v).subList(0, end))
         }
 
     public override fun iteratorGetUnchecked(idx: Int): List<T> {
         val end = this.v.size - idx * this.chunkSize
-        val start = rustSaturatingSub(end, this.chunkSize)
+        val start = end.saturatingSub(this.chunkSize)
         // SAFETY: mostly identical to `Chunks.__iterator_get_unchecked`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), (end - start).toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), (end - start).toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? =
@@ -1989,12 +1990,12 @@ public open class RChunks<T>(
         return if (n < len) {
             val offsetFromEnd = (len - 1 - n) * this.chunkSize
             val end = this.v.size - offsetFromEnd
-            val start = rustSaturatingSub(end, this.chunkSize)
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(end until this.v.size))
+            val start = end.saturatingSub(this.chunkSize)
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(end, (this.v).size))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -2055,7 +2056,7 @@ public open class RChunksMut<T> internal constructor(
         if (this.v.isEmpty()) {
             null
         } else {
-            val idx = rustSaturatingSub(this.v.len(), this.chunkSize)
+            val idx = this.v.len().saturatingSub(this.chunkSize)
             // SAFETY: self.chunkSize() > 0, so 0 <= idx < self.v.len().
             // Thus `idx` is in-bounds for `self.v` and can be used as a valid argument for `splitAtMutUnchecked`.
             val (rest, chunk) = this.v.splitAtMutUnchecked(idx)
@@ -2075,12 +2076,12 @@ public open class RChunksMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.len()) {
             val end = this.v.len() - end
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (rest, _) = this.v.splitAtMut(end)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
-            val (rest1, chunk) = rest.splitAtMut(rustSaturatingSub(end, this.chunkSize))
+            val (rest1, chunk) = rest.splitAtMut(end.saturatingSub(this.chunkSize))
             this.v = rest1
             // SAFETY: Nothing else points to or will point to the contents of this slice.
             chunk
@@ -2106,10 +2107,10 @@ public open class RChunksMut<T> internal constructor(
 
     public override fun iteratorGetUnchecked(idx: Int): MutableList<T> {
         val end = this.v.len() - idx * this.chunkSize
-        val start = rustSaturatingSub(end, this.chunkSize)
+        val start = end.saturatingSub(this.chunkSize)
         // SAFETY: see comments for `RChunks.__iterator_get_unchecked` and
         // `ChunksMut.__iterator_get_unchecked`, `self.v`.
-        return rawMutSliceList(this.v.asMutPtr().add(start), (end - start).toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.v.asMutPtr().add(start), (end - start).toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun nextBack(): MutableList<T>? =
@@ -2136,7 +2137,7 @@ public open class RChunksMut<T> internal constructor(
             // can't underflow because `n<len`
             val offsetFromEnd = (len - 1 - n) * this.chunkSize
             val end = this.v.len() - offsetFromEnd
-            val start = rustSaturatingSub(end, this.chunkSize)
+            val start = end.saturatingSub(this.chunkSize)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (tmp, tail) = this.v.splitAtMut(end)
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
@@ -2246,11 +2247,11 @@ public open class RChunksExact<T>(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): List<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.size) {
-            this.v = ((this.v).slice(0 until this.v.size - end))
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.size) {
+            this.v = ((this.v).subList(0, this.v.size - end))
             this.next()
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -2261,7 +2262,7 @@ public open class RChunksExact<T>(
         val end = this.v.size - idx * this.chunkSize
         val start = end - this.chunkSize
         // SAFETY: mostly identical to `Chunks.__iterator_get_unchecked`.
-        return rawSliceList(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (ObjectSlotLayout<T>()).strideBytes)), this.chunkSize.toInt(), ObjectSlotLayout<T>())
+        return linearSliceView(ConstPtr((this.v.asPtr()).rawAddress + ((start).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), this.chunkSize.toInt(), UnresolvedTypeLayout<T>())
     }
 
     public open fun nextBack(): List<T>? =
@@ -2281,11 +2282,11 @@ public open class RChunksExact<T>(
             val offset = (len - n) * this.chunkSize
             val start = this.v.size - offset
             val end = start + this.chunkSize
-            val nthBack = ((this.v).slice(start until end))
-            this.v = ((this.v).slice(end until this.v.size))
+            val nthBack = ((this.v).subList(start, end))
+            this.v = ((this.v).subList(end, (this.v).size))
             nthBack
         } else {
-            this.v = ((this.v).slice(0 until 0))
+            this.v = ((this.v).subList(0, 0))
             // cheaper than &[]
             null
         }
@@ -2378,7 +2379,7 @@ public open class RChunksExactMut<T> internal constructor(
     public override fun count(): Int = this.len()
 
     public override fun nth(n: Int): MutableList<T>? =
-        if (rustCheckedMul(n, this.chunkSize) != null && end < this.v.len()) {
+        if (n.checkedMul(this.chunkSize) != null && end < this.v.len()) {
             val idx = this.v.len() - end
             // SAFETY: The self.v contract ensures that any splitAtMut is valid.
             val (fst, _) = this.v.splitAtMut(idx)
@@ -2395,7 +2396,7 @@ public open class RChunksExactMut<T> internal constructor(
         val end = this.v.len() - idx * this.chunkSize
         val start = end - this.chunkSize
         // SAFETY: see comments for `RChunksMut.__iterator_get_unchecked` and `self.v`.
-        return rawMutSliceList(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView(this.v.asMutPtr().add(start), this.chunkSize.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun nextBack(): MutableList<T>? =

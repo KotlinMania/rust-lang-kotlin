@@ -57,7 +57,7 @@ public open class BridgeConfig(
 public open class Marked<T, M>(
     public var value: T,
     public var marker: Unit,
-) : Mark<Marked<T, M>, Any?, T> {
+) : Mark<Marked<T, M>, T> {
     public open fun clone(): Marked<T, M> = Marked(value, marker)
 
     public override fun unmark(): T = this.value
@@ -77,7 +77,7 @@ public open class DelimSpan<Span>(
     public var open: Span,
     public var close: Span,
     public var entire: Span,
-) : Encode<S>, Decode<S, DelimSpan<Span>>, Mark<DelimSpan<Span>, Any?, DelimSpan<Unmarked>> {
+) : Encode<S>, Decode<S, DelimSpan<Span>>, Mark<DelimSpan<Span>, DelimSpan<Unmarked>> {
     public open fun clone(): DelimSpan<Span> = DelimSpan(open, close, entire)
 
     public override fun encode(w: Buffer, s: S) {
@@ -131,7 +131,7 @@ public open class Group<TokenStream, Span>(
     public var delimiter: Delimiter,
     public var stream: TokenStream?,
     public var span: DelimSpan<Span>,
-) : Encode<S>, Decode<S, Group<TokenStream, Span>>, Mark<Group<TokenStream, Span>, Any?, Group<Unmarked, Unmarked>> {
+) : Encode<S>, Decode<S, Group<TokenStream, Span>>, Mark<Group<TokenStream, Span>, Group<Unmarked, Unmarked>> {
     public open fun clone(): Group<TokenStream, Span> = Group(delimiter, stream, span)
 
     public override fun encode(w: Buffer, s: S) {
@@ -153,7 +153,7 @@ public open class Punct<Span>(
     public var ch: UByte,
     public var joint: Boolean,
     public var span: Span,
-) : Encode<S>, Decode<S, Punct<Span>>, Mark<Punct<Span>, Any?, Punct<Unmarked>> {
+) : Encode<S>, Decode<S, Punct<Span>>, Mark<Punct<Span>, Punct<Unmarked>> {
     public open fun clone(): Punct<Span> = Punct(ch, joint, span)
 
     public override fun encode(w: Buffer, s: S) {
@@ -204,7 +204,7 @@ public open class Ident<Span, Symbol>(
     public var sym: Symbol,
     public var kind: IdentKind,
     public var span: Span,
-) : Encode<S>, Decode<S, Ident<Span, Symbol>>, Mark<Ident<Span, Symbol>, Any?, Ident<Unmarked, Unmarked>> {
+) : Encode<S>, Decode<S, Ident<Span, Symbol>>, Mark<Ident<Span, Symbol>, Ident<Unmarked, Unmarked>> {
     public open fun clone(): Ident<Span, Symbol> = Ident(sym, kind, span)
 
     public override fun encode(w: Buffer, s: S) {
@@ -227,7 +227,7 @@ public open class Literal<Span, Symbol>(
     public var symbol: Symbol,
     public var suffix: Symbol?,
     public var span: Span,
-) : Encode<S>, Decode<S, Literal<Span, Symbol>>, Mark<Literal<Span, Symbol>, Any?, Literal<Unmarked, Unmarked>> {
+) : Encode<S>, Decode<S, Literal<Span, Symbol>>, Mark<Literal<Span, Symbol>, Literal<Unmarked, Unmarked>> {
     public open fun clone(): Literal<Span, Symbol> = Literal(kind, symbol, suffix, span)
 
     public override fun encode(w: Buffer, s: S) {
@@ -251,7 +251,7 @@ public open class Diagnostic<Span>(
     public var message: String,
     public var spans: List<Span>,
     public var children: List<Diagnostic<Span>>,
-) : Encode<S>, Decode<S, Diagnostic<Span>>, Mark<Diagnostic<Span>, Any?, Diagnostic<Unmarked>> {
+) : Encode<S>, Decode<S, Diagnostic<Span>>, Mark<Diagnostic<Span>, Diagnostic<Unmarked>> {
     public open fun clone(): Diagnostic<Span> = Diagnostic(level, message, spans, children)
 
     public override fun encode(w: Buffer, s: S) {
@@ -278,7 +278,7 @@ public open class ExpnGlobals<Span>(
     public var defSite: Span,
     public var callSite: Span,
     public var mixedSite: Span,
-) : Encode<S>, Decode<S, ExpnGlobals<Span>>, Mark<ExpnGlobals<Span>, Any?, ExpnGlobals<Unmarked>> {
+) : Encode<S>, Decode<S, ExpnGlobals<Span>>, Mark<ExpnGlobals<Span>, ExpnGlobals<Unmarked>> {
     public open fun clone(): ExpnGlobals<Span> = ExpnGlobals(defSite, callSite, mixedSite)
 
     public override fun encode(w: Buffer, s: S) {

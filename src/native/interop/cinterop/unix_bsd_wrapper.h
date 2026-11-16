@@ -62,8 +62,8 @@ int32_t libcUnixBsdGetgrnamR(const char* name, void* grp, char* buf, uint64_t bu
 int32_t libcUnixBsdPthreadSigmask(int32_t how, void* set, void* oldset);
 void* libcUnixBsdSemOpen(const char* name, int32_t oflag, int32_t km_vac, int64_t km_va0, int64_t km_va1, int64_t km_va2, int64_t km_va3);
 void* libcUnixBsdGetgrnam(const char* name);
-int32_t libcUnixBsdPthreadCancel(uint64_t thread);
-int32_t libcUnixBsdPthreadKill(uint64_t thread, int32_t sig);
+int32_t libcUnixBsdPthreadCancel(void* thread);
+int32_t libcUnixBsdPthreadKill(void* thread, int32_t sig);
 int32_t libcUnixBsdSchedGetPriorityMin(int32_t policy);
 int32_t libcUnixBsdSchedGetPriorityMax(int32_t policy);
 int32_t libcUnixBsdSemUnlink(const char* name);

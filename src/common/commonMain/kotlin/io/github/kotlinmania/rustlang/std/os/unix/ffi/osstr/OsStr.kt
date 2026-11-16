@@ -1,6 +1,7 @@
 // port-lint: source os/unix/ffi/os_str.rs
 package io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.sys.FromInner

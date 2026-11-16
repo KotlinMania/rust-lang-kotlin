@@ -73,7 +73,7 @@ public sealed class CopyState {
  * Note that platform-specific behavior may change in the future.
  */
 public fun <R, W> copy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
-    return when (val matchVal = when (val tryResult = reader.copy(writer)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+    return when (val matchVal = when (val tryResult = reader.copy(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }) {
         is CopyState.Ended -> {
             val (copied) = matchVal
             Result.Ok(copied)

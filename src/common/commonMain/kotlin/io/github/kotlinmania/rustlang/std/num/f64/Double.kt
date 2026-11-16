@@ -1,6 +1,14 @@
 // port-lint: source num/f64.rs
 package io.github.kotlinmania.rustlang.std.num.f64
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCosf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExp2f64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExpf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog10f64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog2f64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLogf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSinf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -8,9 +16,6 @@ import io.github.kotlinmania.rustlang.std.sys.cmath.expm1
 import io.github.kotlinmania.rustlang.std.sys.cmath.lgammaR
 import io.github.kotlinmania.rustlang.std.sys.cmath.log1p
 import io.github.kotlinmania.rustlang.std.sys.cmath.tgamma
-import kotlin.math.cos
-import kotlin.math.ln
-import kotlin.math.sin
 
 // Constants for the `Double` double-precision floating point type.
 //
@@ -295,7 +300,7 @@ public fun Double.powi(n: Int): Double = Double.powi(this, n)
  * check(Double.powf(0.0, 0.0) == 1.0)
  * ```
  */
-public fun Double.powf(n: Double): Double = powf(this, n)
+public fun Double.powf(n: Double): Double = kmPowf64(this, n)
 
 /**
  * Returns the square root of a number.
@@ -340,7 +345,7 @@ public fun Double.sqrt(): Double = Double.sqrt(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.exp(): Double = exp(this)
+public fun Double.exp(): Double = kmExpf64(this)
 
 /**
  * Returns `2 ^(self)`.
@@ -359,7 +364,7 @@ public fun Double.exp(): Double = exp(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.exp2(): Double = exp2(this)
+public fun Double.exp2(): Double = kmExp2f64(this)
 
 /**
  * Returns the natural logarithm of the number.
@@ -388,7 +393,7 @@ public fun Double.exp2(): Double = exp2(this)
  * check((-42.0).ln().isNan())
  * ```
  */
-public fun Double.ln(): Double = log(this)
+public fun Double.ln(): Double = kmLogf64(this)
 
 /**
  * Returns the logarithm of the number with respect to an arbitrary base.
@@ -419,7 +424,7 @@ public fun Double.ln(): Double = log(this)
  * check((-42.0).log(10.0).isNan())
  * ```
  */
-public fun Double.log(base: Double): Double = ln(this) / ln(base)
+public fun Double.log(base: Double): Double = kmLogf64(this) / kmLogf64(base)
 
 /**
  * Returns the base 2 logarithm of the number.
@@ -446,7 +451,7 @@ public fun Double.log(base: Double): Double = ln(this) / ln(base)
  * check((-42.0).log2().isNan())
  * ```
  */
-public fun Double.log2(): Double = log2(this)
+public fun Double.log2(): Double = kmLog2f64(this)
 
 /**
  * Returns the base 10 logarithm of the number.
@@ -473,7 +478,7 @@ public fun Double.log2(): Double = log2(this)
  * check((-42.0).log10().isNan())
  * ```
  */
-public fun Double.log10(): Double = log10(this)
+public fun Double.log10(): Double = kmLog10f64(this)
 
 /**
  * The positive difference of two numbers.
@@ -563,7 +568,7 @@ public fun Double.hypot(other: Double): Double = io.github.kotlinmania.rustlang.
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.sin(): Double = sin(this)
+public fun Double.sin(): Double = kmSinf64(this)
 
 /**
  * Computes the cosine of a number (in radians).
@@ -581,7 +586,7 @@ public fun Double.sin(): Double = sin(this)
  * check(absDifference < 1e-10)
  * ```
  */
-public fun Double.cos(): Double = cos(this)
+public fun Double.cos(): Double = kmCosf64(this)
 
 /**
  * Computes the tangent of a number (in radians).
@@ -729,7 +734,7 @@ public fun Double.atan2(other: Double): Double = io.github.kotlinmania.rustlang.
  * check(absDifference1 < 1e-10)
  * ```
  */
-public fun Double.sinCos(): Pair<Double, Double> = Pair(sin(this), cos(this))
+public fun Double.sinCos(): Pair<Double, Double> = Pair(kmSinf64(this), kmCosf64(this))
 
 /**
  * Returns `e ^(self) - 1` in a way that is accurate even if the

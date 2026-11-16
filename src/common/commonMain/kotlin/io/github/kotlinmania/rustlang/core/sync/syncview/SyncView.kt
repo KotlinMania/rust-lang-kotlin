@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.asyncfunction.AsyncFn
@@ -149,19 +150,19 @@ public typealias Return<G> = G.Return
  */
 public open class SyncView<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
-) : Future<Any?, Output>, AsRef<T>, AsMut<T>, TrivialClone<SyncView<T>>, StructuralPartialEq {
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+) : Future<Output>, AsRef<T>, AsMut<T>, TrivialClone<SyncView<T>>, StructuralPartialEq {
     public var inner: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(inner: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    public constructor(inner: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<SyncView<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SyncView<T>(ptr, layout) }, { it.inner })
 
     // See `SyncView`s docs for justification.
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "SyncView").finishNonExhaustive()
+    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = DebugStruct(f, "SyncView").finishNonExhaustive()
 
     /**
      * Unwrap the value contained in the `SyncView`
@@ -223,19 +224,19 @@ public open class SyncView<T>(
     public open fun cmp(other: SyncView<T>): Ordering = this.inner.cmp(other.inner)
 
     public companion object {
-        public fun <T> default(fieldLayout: TypeLayout<T>, defaultTFn: () -> T): SyncView<T> = SyncView(inner = defaultTFn(), fieldLayout = fieldLayout)
+        public fun <T> default(fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(), defaultTFn: () -> T): SyncView<T> = SyncView(inner = defaultTFn(), fieldLayout = fieldLayout)
 
         /**
          * Wrap a value in an `SyncView`
          */
-        public fun <T> new(t: T, fieldLayout: TypeLayout<T>): SyncView<T> = SyncView(inner = t, fieldLayout = fieldLayout)
+        public fun <T> new(t: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): SyncView<T> = SyncView(inner = t, fieldLayout = fieldLayout)
 
         /**
          * Build a _mutable_ reference to an `SyncView<T>` from
          * a _mutable_ reference to a `T`. This allows you to skip
          * building an `SyncView` with [SyncView.new].
          */
-        public fun <T> fromMut(r: T, typeLayoutT: TypeLayout<T>): RustMutableReference<SyncView<T>> {
+        public fun <T> fromMut(r: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RustMutableReference<SyncView<T>> {
             // SAFETY: repr is ≥ C, so refs have the same layout; and `SyncView` properties are -agnostic
             return RustMutableReference(MutPtr((((mutPtrFromRustCast(r)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), TransparentTypeLayout(typeLayoutT, { ptr, layout -> SyncView<T>(ptr, layout) }, { it.inner }))
         }
@@ -251,7 +252,7 @@ public open class SyncView<T>(
             return Pin.newUnchecked(SyncView.fromMut(r.getUncheckedMut()))
         }
 
-        public fun <T> from(t: T, fieldLayout: TypeLayout<T>): SyncView<T> = SyncView.new(t, fieldLayout = fieldLayout)
+        public fun <T> from(t: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): SyncView<T> = SyncView.new(t, fieldLayout = fieldLayout)
     }
 }
 

@@ -127,27 +127,27 @@ public interface FileExt {
             run {
                 val matchVal = this.readAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> { break }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
+                    matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
                         val tmp = buf1
                         buf1 = tmp.subList(n, tmp.size)
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*>).error
-                        return Result.Err(e1)
+                        val e1 = matchVal.error
+                        return Result.Err<Unit, Error>(e1)
                     }
                 }
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
-            Result.Ok(Unit)
+            Result.Ok<Unit, Error>(Unit)
         }
     }
 
@@ -224,24 +224,24 @@ public interface FileExt {
             run {
                 val matchVal = this.readBufAt(buf.reborrow(), offset1)
                 when {
-                    matchVal is Result.Ok<*> -> {}
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Ok -> {}
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                         continue
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*>).error
-                        return Result.Err(e1)
+                        val e1 = matchVal.error
+                        return Result.Err<Unit, Error>(e1)
                     }
                 }
             }
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -357,25 +357,25 @@ public interface FileExt {
             run {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
-                        buf1 = ((buf1).slice(n until buf1.size))
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
+                        buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*>).error
-                        return Result.Err(e1)
+                        val e1 = matchVal.error
+                        return Result.Err<Unit, Error>(e1)
                     }
                 }
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Error>(Unit)
     }
 }
 

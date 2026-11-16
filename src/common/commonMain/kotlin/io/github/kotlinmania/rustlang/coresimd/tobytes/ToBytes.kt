@@ -1,6 +1,7 @@
 // port-lint: source to_bytes.rs
 package io.github.kotlinmania.rustlang.coresimd.tobytes
 
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.coresimd.Simd
 
 /**

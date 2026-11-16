@@ -2,7 +2,10 @@
 package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.core.num.f16.nextDown
+import io.github.kotlinmania.rustlang.core.num.f16.nextUp
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public class Fmaf16InlineTests {
@@ -22,37 +25,37 @@ public class Fmaf16InlineTests {
         run {
             val l = f16FromU2143(0uL)
             val r = F16.fromFloat(0.0f)
-            check(l.biteq(r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
         run {
             val l1 = f16FromU2143(one)
             val r1 = F16.fromFloat(1.0f)
-            check(l1.biteq(r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
+            check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
         }
         run {
             val l2 = f16FromU2143(max)
             val r2 = F16.MAX
-            check(l2.biteq(r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (Hex(r2)).toString() + ")" }
+            check(biteq(l2, r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (Hex(r2)).toString() + ")" }
         }
         run {
             val l3 = f16FromU2143(inf)
             val r3 = F16.INFINITY
-            check(l3.biteq(r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (Hex(r3)).toString() + ")" }
+            check(biteq(l3, r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (Hex(r3)).toString() + ")" }
         }
         run {
             val l4 = f16FromU2143(minNorm)
             val r4 = F16.MIN_POSITIVE_NORMAL
-            check(l4.biteq(r4)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l4.toBits()).toString() + " " + (Hex(l4)).toString() + ")\nr: " + (r).toString() + " (" + (r4.toBits()).toString() + " " + (Hex(r4)).toString() + ")" }
+            check(biteq(l4, r4)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l4.toBits()).toString() + " " + (Hex(l4)).toString() + ")\nr: " + (r).toString() + " (" + (r4.toBits()).toString() + " " + (Hex(r4)).toString() + ")" }
         }
         run {
             val l5 = f16FromU2143(maxSub)
             val r5 = F16.fromBits(F16.SIG_MASK.toUShort())
-            check(l5.biteq(r5)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l5.toBits()).toString() + " " + (Hex(l5)).toString() + ")\nr: " + (r).toString() + " (" + (r5.toBits()).toString() + " " + (Hex(r5)).toString() + ")" }
+            check(biteq(l5, r5)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l5.toBits()).toString() + " " + (Hex(l5)).toString() + ")\nr: " + (r).toString() + " (" + (r5.toBits()).toString() + " " + (Hex(r5)).toString() + ")" }
         }
         run {
             val l6 = f16FromU2143(minSub)
             val r6 = F16.MIN_POSITIVE_SUBNORMAL
-            check(l6.biteq(r6)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l6.toBits()).toString() + " " + (Hex(l6)).toString() + ")\nr: " + (r).toString() + " (" + (r6.toBits()).toString() + " " + (Hex(r6)).toString() + ")" }
+            check(biteq(l6, r6)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l6.toBits()).toString() + " " + (Hex(l6)).toString() + ")\nr: " + (r).toString() + " (" + (r6.toBits()).toString() + " " + (Hex(r6)).toString() + ")" }
         }
         // Masks centered around 1 to add a rounding
         val maskR = shiftToOne(0x1) shr 1
@@ -94,7 +97,7 @@ public class Fmaf16InlineTests {
                     run {
                         val l7 = f16FromU2143(bits7)
                         val r7 = down
-                        check(l7.biteq(r7)) { ("$bits $i").toString() + "\nl: " + (l).toString() + " (" + (l7.toBits()).toString() + " " + (Hex(l7)).toString() + ")\nr: " + (r).toString() + " (" + (r7.toBits()).toString() + " " + (Hex(r7)).toString() + ")" }
+                        check(biteq(l7, r7)) { ("$bits $i").toString() + "\nl: " + (l).toString() + " (" + (l7.toBits()).toString() + " " + (Hex(l7)).toString() + ")\nr: " + (r).toString() + " (" + (r7.toBits()).toString() + " " + (Hex(r7)).toString() + ")" }
                     }
                 }
                 for ((i1, mask1) in mup.iter().mapIndexed { index, item -> Pair(index, item) }) {
@@ -102,11 +105,11 @@ public class Fmaf16InlineTests {
                     run {
                         val l8 = f16FromU2143(bits9)
                         val r8 = up
-                        check(l8.biteq(r8)) { ("$bits $i").toString() + "\nl: " + (l).toString() + " (" + (l8.toBits()).toString() + " " + (Hex(l8)).toString() + ")\nr: " + (r).toString() + " (" + (r8.toBits()).toString() + " " + (Hex(r8)).toString() + ")" }
+                        check(biteq(l8, r8)) { ("$bits $i").toString() + "\nl: " + (l).toString() + " (" + (l8.toBits()).toString() + " " + (Hex(l8)).toString() + ")\nr: " + (r).toString() + " (" + (r8.toBits()).toString() + " " + (Hex(r8)).toString() + ")" }
                     }
                 }
             }
-        checkRound(one, 0, false, 1.0, F16.fromFloat(1.0f).nextUp())
+        checkRound(one, 0, false, 1.0, (F16.fromFloat(1.0f)).nextUp())
         checkRound(max, 15, true, F16.MAX, F16.INFINITY)
         checkRound(minNorm, -14, false, F16.MIN_POSITIVE_NORMAL, F16.MIN_POSITIVE_NORMAL.nextUp())
         checkRound(maxSub, -14, true, F16.MIN_POSITIVE_NORMAL.nextDown(), F16.MIN_POSITIVE_NORMAL)

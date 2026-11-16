@@ -1,10 +1,10 @@
 // port-lint: source new/apple/xnu/sys/ioccom.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.xnu.sys.ioccom
 
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.libc.*
 
@@ -35,7 +35,7 @@ public fun ioc(inout: UInt, group: CUlong, num: CUlong, len: CUlong): CUlong {
     check(num <= 0xffuL)
     check(len <= IOCPARM_MAX)
     // Sanity check the cast
-    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CUlong>(typeLayoutT = ObjectSlotLayout<CUlong>()))
+    check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<CUlong>(typeLayoutT = UnresolvedTypeLayout<CUlong>()))
     return (inout.toULong()) or ((len and IOCPARM_MASK) shl 16) or (group shl 8) or num
 }
 
@@ -44,14 +44,14 @@ public fun io(g: CUlong, n: CUlong): CUlong = ioc(IOC_VOID, g, n, 0uL)
 /**
  * Build an ioctl number for an read-only ioctl.
  */
-public fun <T> ior(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T>): CUlong = ioc(IOC_OUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
+public fun <T> ior(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): CUlong = ioc(IOC_OUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
 
 /**
  * Build an ioctl number for an write-only ioctl.
  */
-public fun <T> iow(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T>): CUlong = ioc(IOC_IN, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
+public fun <T> iow(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): CUlong = ioc(IOC_IN, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
 
 /**
  * Build an ioctl number for a read-write ioctl.
  */
-public fun <T> iowr(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T>): CUlong = ioc(IOC_INOUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
+public fun <T> iowr(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): CUlong = ioc(IOC_INOUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())

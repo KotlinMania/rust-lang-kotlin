@@ -767,8 +767,8 @@ static Napi::Value libcNewCommonPosixPthreadPthreadCondattrGetpshared_napi(const
 static Napi::Value libcNewCommonPosixPthreadPthreadCondattrSetclock_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* attr = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
-    int32_t clockId = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
-    typedef int32_t (*km_fn_t)(void*, int32_t);
+    uint32_t clockId = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
+    typedef int32_t (*km_fn_t)(void*, uint32_t);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {

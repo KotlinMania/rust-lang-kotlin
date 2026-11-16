@@ -2,24 +2,24 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.bsd.apple
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CShort
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.BooleanT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.IntptrT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.OffT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT
 
 private object UnixBsdAppleJniBridge {
     init {
@@ -70,6 +70,12 @@ private object UnixBsdAppleJniBridge {
 
     @JvmStatic
     external fun libcUnixBsdAppleLchmod(path: Long, mode: Short): Int
+
+    @JvmStatic
+    external fun libcUnixBsdAppleClockGetres(clkId: Int, tp: Long): Int
+
+    @JvmStatic
+    external fun libcUnixBsdAppleClockGettime(clkId: Int, tp: Long): Int
 
     @JvmStatic
     external fun libcUnixBsdAppleLioListio(mode: Int, aiocbList: Long, nitems: Int, sevp: Long): Int
@@ -747,6 +753,9 @@ private object UnixBsdAppleJniBridge {
     external fun libcUnixBsdAppleQsortR(base: Long, num: Long, size: Long, arg: Long, compar: Long)
 
     @JvmStatic
+    external fun libcUnixBsdAppleClockSettime(clockId: Int, tp: Long): Int
+
+    @JvmStatic
     external fun libcUnixBsdAppleProcListpids(t: Int, typeinfo: Int, buffer: Long, buffersize: Int): Int
 
     @JvmStatic
@@ -813,7 +822,7 @@ private object UnixBsdAppleJniBridge {
     external fun libcUnixBsdAppleIconvClose(cd: Long): Int
 }
 
-public actual var MACH_TASK_SELF: io.github.kotlinmania.rustlang.libc.MachPortT
+public actual var MACH_TASK_SELF: MachPortT
     get() = UnixBsdAppleJniBridge.libcUnixBsdAppleGetMACHTASKSELF().toUInt()
     set(value) {
         UnixBsdAppleJniBridge.libcUnixBsdAppleSetMACHTASKSELF(value.toInt())
@@ -859,11 +868,11 @@ public actual fun lchflags(path: ConstPtr, flags: CUint): CInt =
 public actual fun lchmod(path: ConstPtr, mode: ModeT): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdAppleLchmod(path.rawAddress, mode.toShort())
 
-public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGetres(clkId: ClockidT, tp: MutPtr): CInt =
+    UnixBsdAppleJniBridge.libcUnixBsdAppleClockGetres(clkId.toInt(), tp.rawAddress)
 
-public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGettime(clkId: ClockidT, tp: MutPtr): CInt =
+    UnixBsdAppleJniBridge.libcUnixBsdAppleClockGettime(clkId.toInt(), tp.rawAddress)
 
 public actual fun lioListio(mode: CInt, aiocbList: ConstPtr, nitems: CInt, sevp: MutPtr): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdAppleLioListio(mode, aiocbList.rawAddress, nitems, sevp.rawAddress)
@@ -997,25 +1006,25 @@ public actual fun pthreadSetnameNp(name: ConstPtr): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdApplePthreadSetnameNp(name.rawAddress)
 
 public actual fun pthreadGetnameNp(thread: PthreadT, name: MutPtr, len: SizeT): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetnameNp(thread.rawAddress, name.rawAddress, len.toLong())
+    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetnameNp(thread.toLong(), name.rawAddress, len.toLong())
 
-public actual fun pthreadMachThreadNp(thread: PthreadT): io.github.kotlinmania.rustlang.libc.MachPortT =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadMachThreadNp(thread.rawAddress).toUInt()
+public actual fun pthreadMachThreadNp(thread: PthreadT): MachPortT =
+    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadMachThreadNp(thread.toLong()).toUInt()
 
-public actual fun pthreadFromMachThreadNp(port: io.github.kotlinmania.rustlang.libc.MachPortT): PthreadT =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdApplePthreadFromMachThreadNp(port.toInt()))
+public actual fun pthreadFromMachThreadNp(port: MachPortT): PthreadT =
+    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadFromMachThreadNp(port.toInt()).toULong()
 
 public actual fun pthreadGetStackaddrNp(thread: PthreadT): MutPtr =
-    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetStackaddrNp(thread.rawAddress))
+    MutPtr(UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetStackaddrNp(thread.toLong()))
 
 public actual fun pthreadGetStacksizeNp(thread: PthreadT): SizeT =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetStacksizeNp(thread.rawAddress).toULong()
+    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadGetStacksizeNp(thread.toLong()).toULong()
 
 public actual fun pthreadMainNp(): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdApplePthreadMainNp()
 
 public actual fun pthreadThreadidNp(thread: PthreadT, threadId: MutPtr): CInt =
-    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadThreadidNp(thread.rawAddress, threadId.rawAddress)
+    UnixBsdAppleJniBridge.libcUnixBsdApplePthreadThreadidNp(thread.toLong(), threadId.rawAddress)
 
 public actual fun pthreadJitWriteProtectNp(enabled: CInt) {
     UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteProtectNp(enabled)
@@ -1024,7 +1033,7 @@ public actual fun pthreadJitWriteProtectNp(enabled: CInt) {
 public actual fun pthreadJitWriteProtectSupportedNp(): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteProtectSupportedNp()
 
-public actual fun pthreadJitWriteWithCallbackNp(callback: io.github.kotlinmania.rustlang.libc.PthreadJitWriteCallbackT, ctx: MutPtr): CInt =
+public actual fun pthreadJitWriteWithCallbackNp(callback: PthreadJitWriteCallbackT, ctx: MutPtr): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdApplePthreadJitWriteWithCallbackNp(0L, ctx.rawAddress)
 
 public actual fun pthreadJitWriteFreezeCallbacksNp() {
@@ -1068,19 +1077,19 @@ public actual fun osUnfairLockAssertNotOwner(lock: OsUnfairLockT) {
     UnixBsdAppleJniBridge.libcUnixBsdAppleOsUnfairLockAssertNotOwner(lock.rawAddress)
 }
 
-public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): io.github.kotlinmania.rustlang.libc.OsLogT =
+public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): OsLogT =
     MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleOsLogCreate(subsystem.rawAddress, category.rawAddress))
 
-public actual fun osLogTypeEnabled(oslog: io.github.kotlinmania.rustlang.libc.OsLogT, tpe: io.github.kotlinmania.rustlang.libc.OsLogTypeT): Boolean =
+public actual fun osLogTypeEnabled(oslog: OsLogT, tpe: OsLogTypeT): Boolean =
     UnixBsdAppleJniBridge.libcUnixBsdAppleOsLogTypeEnabled(oslog.rawAddress, tpe.toByte())
 
-public actual fun osSignpostIdMakeWithPointer(log: io.github.kotlinmania.rustlang.libc.OsLogT, ptr: ConstPtr): io.github.kotlinmania.rustlang.libc.OsSignpostIdT =
+public actual fun osSignpostIdMakeWithPointer(log: OsLogT, ptr: ConstPtr): OsSignpostIdT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleOsSignpostIdMakeWithPointer(log.rawAddress, ptr.rawAddress).toULong()
 
-public actual fun osSignpostIdGenerate(log: io.github.kotlinmania.rustlang.libc.OsLogT): io.github.kotlinmania.rustlang.libc.OsSignpostIdT =
+public actual fun osSignpostIdGenerate(log: OsLogT): OsSignpostIdT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleOsSignpostIdGenerate(log.rawAddress).toULong()
 
-public actual fun osSignpostEnabled(log: io.github.kotlinmania.rustlang.libc.OsLogT): Boolean =
+public actual fun osSignpostEnabled(log: OsLogT): Boolean =
     UnixBsdAppleJniBridge.libcUnixBsdAppleOsSignpostEnabled(log.rawAddress)
 
 public actual fun threadPolicySet(thread: ThreadT, flavor: ThreadPolicyFlavorT, policyInfo: ThreadPolicyT, count: MachMsgTypeNumberT): KernReturnT =
@@ -1178,10 +1187,10 @@ public actual fun uselocale(loc: LocaleT): LocaleT =
 public actual fun querylocale(mask: CInt, loc: LocaleT): ConstPtr =
     ConstPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleQuerylocale(mask, loc.rawAddress))
 
-public actual fun getpriority(which: CInt, who: io.github.kotlinmania.rustlang.libc.IdT): CInt =
+public actual fun getpriority(which: CInt, who: IdT): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdAppleGetpriority(which, who.toInt())
 
-public actual fun setpriority(which: CInt, who: io.github.kotlinmania.rustlang.libc.IdT, prio: CInt): CInt =
+public actual fun setpriority(which: CInt, who: IdT, prio: CInt): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdAppleSetpriority(which, who.toInt(), prio)
 
 public actual fun getdomainname(name: MutPtr, len: CInt): CInt =
@@ -1379,7 +1388,7 @@ public actual fun copyfileStateGet(s: CopyfileStateT, flags: UInt, dst: MutPtr):
 public actual fun copyfileStateSet(s: CopyfileStateT, flags: UInt, src: ConstPtr): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdAppleCopyfileStateSet(s.rawAddress, flags.toInt(), src.rawAddress)
 
-public actual fun machErrorString(errorValue: io.github.kotlinmania.rustlang.libc.MachErrorT): MutPtr =
+public actual fun machErrorString(errorValue: MachErrorT): MutPtr =
     MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMachErrorString(errorValue))
 
 public actual fun memsetS(s: MutPtr, smax: SizeT, c: CInt, n: SizeT): CInt =
@@ -1479,43 +1488,43 @@ public actual fun nsgetEnviron(): MutPtr =
 public actual fun nsgetProgname(): MutPtr =
     MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleNsgetProgname())
 
-public actual fun machVmMap(targetTask: io.github.kotlinmania.rustlang.libc.VmMapT, address: MutPtr, size: io.github.kotlinmania.rustlang.libc.MachVmSizeT, mask: io.github.kotlinmania.rustlang.libc.MachVmOffsetT, flags: CInt, obj: io.github.kotlinmania.rustlang.libc.MemEntryNamePortT, offset: io.github.kotlinmania.rustlang.libc.MemoryObjectOffsetT, copy: BooleanT, curProtection: io.github.kotlinmania.rustlang.libc.VmProtT, maxProtection: io.github.kotlinmania.rustlang.libc.VmProtT, inheritance: io.github.kotlinmania.rustlang.libc.VmInheritT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun machVmMap(targetTask: VmMapT, address: MutPtr, size: MachVmSizeT, mask: MachVmOffsetT, flags: CInt, obj: MemEntryNamePortT, offset: MemoryObjectOffsetT, copy: BooleanT, curProtection: VmProtT, maxProtection: VmProtT, inheritance: VmInheritT): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleMachVmMap(targetTask.toInt(), address.rawAddress, size.toLong(), mask.toLong(), flags, obj.toInt(), offset.toLong(), copy, curProtection, maxProtection, inheritance.toInt())
 
-public actual fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun vmAllocate(targetTask: VmMapT, address: MutPtr, size: VmSizeT, flags: CInt): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleVmAllocate(targetTask.toInt(), address.rawAddress, size.toLong(), flags)
 
-public actual fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun vmDeallocate(targetTask: VmMapT, address: VmAddressT, size: VmSizeT): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleVmDeallocate(targetTask.toInt(), address.toLong(), size.toLong())
 
-public actual fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun hostStatistics64(hostPriv: HostT, flavor: HostFlavorT, hostInfo64Out: HostInfo64T, hostInfo64OutCnt: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleHostStatistics64(hostPriv.toInt(), flavor, hostInfo64Out.rawAddress, hostInfo64OutCnt.rawAddress)
 
-public actual fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun hostProcessorInfo(host: HostT, flavor: ProcessorFlavorT, outProcessorCount: MutPtr, outProcessorInfo: MutPtr, outProcessorInfoCnt: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleHostProcessorInfo(host.toInt(), flavor, outProcessorCount.rawAddress, outProcessorInfo.rawAddress, outProcessorInfoCnt.rawAddress)
 
-public actual fun taskForPid(host: io.github.kotlinmania.rustlang.libc.MachPortT, pid: PidT, task: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskForPid(host: MachPortT, pid: PidT, task: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleTaskForPid(host.toInt(), pid, task.rawAddress)
 
-public actual fun taskInfo(host: io.github.kotlinmania.rustlang.libc.MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskInfo(host: MachPortT, flavor: TaskFlavorT, taskInfoOut: TaskInfoT, taskInfoCount: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleTaskInfo(host.toInt(), flavor.toInt(), taskInfoOut.rawAddress, taskInfoCount.rawAddress)
 
-public actual fun taskCreate(targetTask: io.github.kotlinmania.rustlang.libc.TaskT, ledgers: io.github.kotlinmania.rustlang.libc.LedgerArrayT, ledgersCnt: io.github.kotlinmania.rustlang.libc.MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskCreate(targetTask: TaskT, ledgers: LedgerArrayT, ledgersCnt: MachMsgTypeNumberT, inheritMemory: BooleanT, childTask: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleTaskCreate(targetTask.toInt(), ledgers.rawAddress, ledgersCnt.toInt(), inheritMemory, childTask.rawAddress)
 
-public actual fun taskTerminate(targetTask: io.github.kotlinmania.rustlang.libc.TaskT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskTerminate(targetTask: TaskT): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleTaskTerminate(targetTask.toInt())
 
-public actual fun taskThreads(targetTask: io.github.kotlinmania.rustlang.libc.TaskInspectT, actList: MutPtr, actListCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskThreads(targetTask: TaskInspectT, actList: MutPtr, actListCnt: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleTaskThreads(targetTask.toInt(), actList.rawAddress, actListCnt.rawAddress)
 
-public actual fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun hostStatistics(hostPriv: HostT, flavor: HostFlavorT, hostInfoOut: HostInfoT, hostInfoOutCnt: MutPtr): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleHostStatistics(hostPriv.toInt(), flavor, hostInfoOut.rawAddress, hostInfoOutCnt.rawAddress)
 
-public actual fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState =
+public actual fun sysdirStartSearchPathEnumeration(dir: SysdirSearchPathDirectoryT, domainMask: SysdirSearchPathDomainMaskT): SysdirSearchPathEnumerationState =
     0u
 
-public actual fun sysdirGetNextSearchPathEnumeration(state: io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState, path: MutPtr): io.github.kotlinmania.rustlang.libc.SysdirSearchPathEnumerationState =
+public actual fun sysdirGetNextSearchPathEnumeration(state: SysdirSearchPathEnumerationState, path: MutPtr): SysdirSearchPathEnumerationState =
     UnixBsdAppleJniBridge.libcUnixBsdAppleSysdirGetNextSearchPathEnumeration(state.toInt(), path.rawAddress).toUInt()
 
 public actual fun getattrlist(path: ConstPtr, attrList: MutPtr, attrBuf: MutPtr, attrBufSize: SizeT, options: UInt): CInt =
@@ -1567,8 +1576,8 @@ public actual fun qsortR(base: MutPtr, num: SizeT, size: SizeT, arg: MutPtr, com
     UnixBsdAppleJniBridge.libcUnixBsdAppleQsortR(base.rawAddress, num.toLong(), size.toLong(), arg.rawAddress, 0L)
 }
 
-public actual fun clockSettime(clockId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: ConstPtr): CInt =
-    0
+public actual fun clockSettime(clockId: ClockidT, tp: ConstPtr): CInt =
+    UnixBsdAppleJniBridge.libcUnixBsdAppleClockSettime(clockId.toInt(), tp.rawAddress)
 
 public actual fun procListpids(t: UInt, typeinfo: UInt, buffer: MutPtr, buffersize: CInt): CInt =
     UnixBsdAppleJniBridge.libcUnixBsdAppleProcListpids(t.toInt(), typeinfo.toInt(), buffer.rawAddress, buffersize)
@@ -1624,7 +1633,7 @@ public actual fun procSetthreadCsm(flags: UInt): CInt =
 public actual fun memmem(haystack: ConstPtr, haystacklen: SizeT, needle: ConstPtr, needlelen: SizeT): MutPtr =
     MutPtr(UnixBsdAppleJniBridge.libcUnixBsdAppleMemmem(haystack.rawAddress, haystacklen.toLong(), needle.rawAddress, needlelen.toLong()))
 
-public actual fun taskSetInfo(targetTask: io.github.kotlinmania.rustlang.libc.TaskT, flavor: io.github.kotlinmania.rustlang.libc.TaskFlavorT, taskInfoIn: io.github.kotlinmania.rustlang.libc.TaskInfoT, taskInfoInCnt: io.github.kotlinmania.rustlang.libc.MachMsgTypeNumberT): io.github.kotlinmania.rustlang.libc.KernReturnT =
+public actual fun taskSetInfo(targetTask: TaskT, flavor: TaskFlavorT, taskInfoIn: TaskInfoT, taskInfoInCnt: MachMsgTypeNumberT): KernReturnT =
     UnixBsdAppleJniBridge.libcUnixBsdAppleTaskSetInfo(targetTask.toInt(), flavor.toInt(), taskInfoIn.rawAddress, taskInfoInCnt.toInt())
 
 public actual fun iconvOpen(tocode: ConstPtr, fromcode: ConstPtr): IconvT =

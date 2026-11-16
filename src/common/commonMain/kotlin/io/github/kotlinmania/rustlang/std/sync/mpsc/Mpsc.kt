@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.mpsc
 
 import io.github.kotlinmania.rustlang.core.clone.Share
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -556,9 +557,7 @@ public open class Receiver<T>(
 
     public open fun intoIterIntoIterator(): IntoIter<T> = IntoIter(rx = this)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Receiver").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Receiver").finishNonExhaustive()
 }
 
 /**
@@ -855,9 +854,7 @@ public open class Sender<T>(
      */
     public open fun clone(): Sender<T> = Sender(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Sender").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Sender").finishNonExhaustive()
 }
 
 /**
@@ -1056,9 +1053,7 @@ public open class SyncSender<T>(
 
     public open fun clone(): SyncSender<T> = SyncSender(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "SyncSender").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SyncSender").finishNonExhaustive()
 }
 
 /**
@@ -1080,13 +1075,9 @@ public open class SendError<T>(
 
     public open fun clone(): SendError<T> = SendError(value)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "SendError").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SendError").finishNonExhaustive()
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        "sending on a closed channel".fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "sending on a closed channel".fmt(f)
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<SendError<T>> =
@@ -1123,9 +1114,7 @@ public open class SendError<T>(
 public open class RecvError {
     public open fun clone(): RecvError = RecvError()
 
-    public open fun fmt(f: StringBuilder) {
-        "receiving on a closed channel".fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "receiving on a closed channel".fmt(f)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RecvError> =
@@ -1165,12 +1154,11 @@ public sealed class TryRecvError {
 
     public fun rustEquals(other: TryRecvError): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             TryRecvError.Empty -> "receiving on an empty channel".fmt(f)
             TryRecvError.Disconnected -> "receiving on a closed channel".fmt(f)
         }
-    }
 
     public companion object {
         /**
@@ -1208,12 +1196,11 @@ public sealed class RecvTimeoutError {
 
     public fun rustEquals(other: RecvTimeoutError): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             RecvTimeoutError.Timeout -> "timed out waiting on channel".fmt(f)
             RecvTimeoutError.Disconnected -> "channel is empty and sending half is closed".fmt(f)
         }
-    }
 
     public companion object {
         /**
@@ -1288,21 +1275,19 @@ public sealed class TrySendError<T> {
             }
         }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TrySendError.Full -> DebugTuple(f, "TrySendError::Full").finishNonExhaustive()
             is TrySendError.Disconnected -> {
                 DebugTuple(f, "TrySendError::Disconnected").finishNonExhaustive()
             }
         }
-    }
 
-    public open fun fmtDisplay(f: StringBuilder) {
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TrySendError.Full -> "sending on a full channel".fmt(f)
             is TrySendError.Disconnected -> "sending on a closed channel".fmt(f)
         }
-    }
 
     public companion object {
         /**

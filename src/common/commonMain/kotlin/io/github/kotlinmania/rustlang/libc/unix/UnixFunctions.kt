@@ -1,24 +1,24 @@
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.PthreadKeyT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SpeedT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ClockT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
@@ -245,7 +245,7 @@ public expect fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, n: SizeT): MutPt
 
 public expect fun getpwnam(name: ConstPtr): MutPtr
 
-public expect fun getpwuid(uid: io.github.kotlinmania.rustlang.libc.UidT): MutPtr
+public expect fun getpwuid(uid: UidT): MutPtr
 
 public expect fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt
 
@@ -319,9 +319,9 @@ public expect fun rewinddir(dirp: MutPtr)
 
 public expect fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: CInt): CInt
 
-public expect fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT): CInt
+public expect fun fchown(fd: CInt, owner: UidT, group: GidT): CInt
 
-public expect fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT, flags: CInt): CInt
+public expect fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: UidT, group: GidT, flags: CInt): CInt
 
 public expect fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt
 
@@ -439,7 +439,7 @@ public expect fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt
 
 public expect fun tcgetpgrp(fd: CInt): PidT
 
-public expect fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.libc.PidT): CInt
+public expect fun tcsetpgrp(fd: CInt, pgrp: PidT): CInt
 
 public expect fun ttyname(fd: CInt): MutPtr
 
@@ -711,7 +711,7 @@ public expect fun tcflow(fd: CInt, action: CInt): CInt
 
 public expect fun tcflush(fd: CInt, action: CInt): CInt
 
-public expect fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.libc.PidT
+public expect fun tcgetsid(fd: CInt): PidT
 
 public expect fun tcsendbreak(fd: CInt, duration: CInt): CInt
 
@@ -749,7 +749,7 @@ public expect fun adjtime(delta: ConstPtr, olddelta: MutPtr): CInt
 
 public expect fun stpncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr
 
-public expect fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.libc.Sigval): CInt
+public expect fun sigqueue(pid: PidT, sig: CInt, value: Sigval): CInt
 
 public expect fun confstr(name: CInt, buf: MutPtr, len: SizeT): SizeT
 

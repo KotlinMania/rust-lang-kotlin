@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.thread.functions
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
@@ -694,4 +695,4 @@ public fun parkTimeout(dur: Duration) {
  * }
  * ```
  */
-public fun availableParallelism(): Result<NonZero<Int>, Error> = io.github.kotlinmania.rustlang.std.sys.thread.unix.availableParallelism()
+public fun availableParallelism(): Result<NonZero<Int, NonZeroUsizeInner>, Error> = io.github.kotlinmania.rustlang.std.sys.thread.unix.availableParallelism()

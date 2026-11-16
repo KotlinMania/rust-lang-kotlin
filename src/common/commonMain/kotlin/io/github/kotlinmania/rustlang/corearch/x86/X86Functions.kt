@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.F16x16
 import io.github.kotlinmania.rustlang.corearch.simd.F16x32
 import io.github.kotlinmania.rustlang.corearch.simd.F16x8

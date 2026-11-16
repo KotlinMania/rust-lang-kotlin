@@ -1,9 +1,9 @@
 // port-lint: source slice/sort/stable/merge.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.stable.merge
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -40,8 +40,8 @@ public fun <T> merge(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, mi
         // 2. Fills the remaining gap in `v` if the longer run gets consumed first.
         val buf = scratch.asMutPtr().castInit()
         val vBase = v.asMutPtr()
-        val vMid = MutPtr((vBase).rawAddress + ((mid).toLong() * (ObjectSlotLayout<T>()).strideBytes))
-        val vEnd = MutPtr((vBase).rawAddress + ((len).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+        val vMid = MutPtr((vBase).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
+        val vEnd = MutPtr((vBase).rawAddress + ((len).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         val leftLen = mid
         val rightLen = len - mid
         val leftIsShorter = leftLen <= rightLen
@@ -57,7 +57,7 @@ public fun <T> merge(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, mi
             } else {
                 rightLen
             }
-        copyNonoverlapping(saveBase, buf, saveLen)
+        copyNonoverlapping((saveBase).asConstPtr(), buf, saveLen)
         val mergeState = MergeState(start = buf, end = buf.add(saveLen), dst = saveBase)
         if (leftIsShorter) {
             mergeState.mergeUp(vMid, vEnd, isLess)
@@ -82,7 +82,7 @@ public open class MergeState<T>(
      * length times. In addition `start -> end` and `right -> rightEnd` MUST be valid to be
      * read. This function MUST only be called once.
      */
-    public open fun mergeUp(right: ConstPtr, rightEnd: ConstPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+    public open fun mergeUp(right: ConstPtr, rightEnd: ConstPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         var right1 = right
         // SAFETY: See function safety comment.
         run {
@@ -111,7 +111,7 @@ public open class MergeState<T>(
      * length times. In addition `leftEnd< - dst` and `rightEnd< - end` MUST be valid to be
      * read. This function MUST only be called once.
      */
-    public open fun mergeDown(leftEnd: ConstPtr, rightEnd: ConstPtr, out: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+    public open fun mergeDown(leftEnd: ConstPtr, rightEnd: ConstPtr, out: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         var out1 = out
         // SAFETY: See function safety comment.
         while (true) {
@@ -125,7 +125,7 @@ public open class MergeState<T>(
                 } else {
                     right
                 }
-            copyNonoverlapping(src, out1, 1)
+            copyNonoverlapping((src).asConstPtr(), out1, 1)
             this.dst = MutPtr((left).rawAddress + (((if (!consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
             this.end = MutPtr((right).rawAddress + ((consumeLeft.toInt()).toLong() * (typeLayoutT).strideBytes))
             if ((((this.dst).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong() == (leftEnd).rawAddress.toULong()) || (((this.end).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong() == (rightEnd).rawAddress.toULong())) {
@@ -141,8 +141,8 @@ public open class MergeState<T>(
         // leave the input slice `v` with each original element and all possible
         // modifications observed.
         run {
-            val len = this.end.offsetFromUnsigned(this.start)
-            copyNonoverlapping(this.start, this.dst, len)
+            val len = this.end.offsetFromUnsigned((this.start).asConstPtr())
+            copyNonoverlapping((this.start).asConstPtr(), this.dst, len)
         }
     }
 

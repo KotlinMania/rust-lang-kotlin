@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.args.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.std.os.unix.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.OsStringExt
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
 import io.github.kotlinmania.rustlang.std.sys.args.unix.imp.argcArgv
 

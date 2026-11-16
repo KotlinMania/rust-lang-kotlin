@@ -2,12 +2,10 @@
 
 package io.github.kotlinmania.rustlang.libc.new.common.posix.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
 import io.github.kotlinmania.rustlang.libc.new.common.posix.pthread.cinterop.libcNewCommonPosixPthreadPthreadAtfork
 import io.github.kotlinmania.rustlang.libc.new.common.posix.pthread.cinterop.libcNewCommonPosixPthreadPthreadAttrGetguardsize
 import io.github.kotlinmania.rustlang.libc.new.common.posix.pthread.cinterop.libcNewCommonPosixPthreadPthreadAttrGetinheritsched
@@ -55,6 +53,8 @@ import io.github.kotlinmania.rustlang.libc.new.common.posix.pthread.cinterop.lib
 import io.github.kotlinmania.rustlang.libc.new.common.posix.pthread.cinterop.libcNewCommonPosixPthreadPthreadSpinTrylock
 import io.github.kotlinmania.rustlang.libc.new.common.posix.pthread.cinterop.libcNewCommonPosixPthreadPthreadSpinUnlock
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
@@ -114,7 +114,7 @@ public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, shared: CInt): CInt
     libcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), shared)
 
 public actual fun pthreadCancel(thread: PthreadT): CInt =
-    libcNewCommonPosixPthreadPthreadCancel(thread.rawAddress.toCPointer<ByteVar>())
+    libcNewCommonPosixPthreadPthreadCancel(thread.toLong().toCPointer<ByteVar>())
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
     libcNewCommonPosixPthreadPthreadCondattrGetclock(attr.rawAddress.toCPointer<ByteVar>(), clockId.rawAddress.toCPointer<ByteVar>())
@@ -123,7 +123,7 @@ public actual fun pthreadCondattrGetpshared(attr: ConstPtr, pshared: MutPtr): CI
     libcNewCommonPosixPthreadPthreadCondattrGetpshared(attr.rawAddress.toCPointer<ByteVar>(), pshared.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadCondattrSetclock(attr: MutPtr, clockId: ClockidT): CInt =
-    libcNewCommonPosixPthreadPthreadCondattrSetclock(attr.rawAddress.toCPointer<ByteVar>(), clockId.toInt())
+    libcNewCommonPosixPthreadPthreadCondattrSetclock(attr.rawAddress.toCPointer<ByteVar>(), clockId)
 
 public actual fun pthreadCondattrSetpshared(attr: MutPtr, pshared: CInt): CInt =
     libcNewCommonPosixPthreadPthreadCondattrSetpshared(attr.rawAddress.toCPointer<ByteVar>(), pshared)
@@ -132,13 +132,13 @@ public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreate
     libcNewCommonPosixPthreadPthreadCreate(native.rawAddress.toCPointer<ByteVar>(), attr.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadGetcpuclockid(thread: PthreadT, clkId: MutPtr): CInt =
-    libcNewCommonPosixPthreadPthreadGetcpuclockid(thread.rawAddress.toCPointer<ByteVar>(), clkId.rawAddress.toCPointer<ByteVar>())
+    libcNewCommonPosixPthreadPthreadGetcpuclockid(thread.toLong().toCPointer<ByteVar>(), clkId.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadGetschedparam(native: PthreadT, policy: MutPtr, param: MutPtr): CInt =
-    libcNewCommonPosixPthreadPthreadGetschedparam(native.rawAddress.toCPointer<ByteVar>(), policy.rawAddress.toCPointer<ByteVar>(), param.rawAddress.toCPointer<ByteVar>())
+    libcNewCommonPosixPthreadPthreadGetschedparam(native.toLong().toCPointer<ByteVar>(), policy.rawAddress.toCPointer<ByteVar>(), param.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
-    libcNewCommonPosixPthreadPthreadKill(thread.rawAddress.toCPointer<ByteVar>(), sig)
+    libcNewCommonPosixPthreadPthreadKill(thread.toLong().toCPointer<ByteVar>(), sig)
 
 public actual fun pthreadMutexConsistent(mutex: MutPtr): CInt =
     libcNewCommonPosixPthreadPthreadMutexConsistent(mutex.rawAddress.toCPointer<ByteVar>())
@@ -174,10 +174,10 @@ public actual fun pthreadOnce(control: MutPtr, routine: PthreadAtforkPrepareCall
     libcNewCommonPosixPthreadPthreadOnce(control.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
 public actual fun pthreadSetschedparam(native: PthreadT, policy: CInt, param: ConstPtr): CInt =
-    libcNewCommonPosixPthreadPthreadSetschedparam(native.rawAddress.toCPointer<ByteVar>(), policy, param.rawAddress.toCPointer<ByteVar>())
+    libcNewCommonPosixPthreadPthreadSetschedparam(native.toLong().toCPointer<ByteVar>(), policy, param.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSetschedprio(native: PthreadT, priority: CInt): CInt =
-    libcNewCommonPosixPthreadPthreadSetschedprio(native.rawAddress.toCPointer<ByteVar>(), priority)
+    libcNewCommonPosixPthreadPthreadSetschedprio(native.toLong().toCPointer<ByteVar>(), priority)
 
 public actual fun pthreadSigmask(how: CInt, set: ConstPtr, oldset: MutPtr): CInt =
     libcNewCommonPosixPthreadPthreadSigmask(how, set.rawAddress.toCPointer<ByteVar>(), oldset.rawAddress.toCPointer<ByteVar>())

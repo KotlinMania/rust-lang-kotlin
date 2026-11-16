@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -50,7 +51,7 @@ public typealias Source<I> = I.Source
 public open class Inspect<I, F>(
     public var iter: I,
     public var f: F,
-) : TrustedFused, SourceIter<Any?, Source>, InPlaceIterable, Iterable<Item> {
+) : TrustedFused, SourceIter<Source>, InPlaceIterable, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Inspect.next()) {
@@ -129,9 +130,9 @@ public open class Inspect<I, F>(
 
         public fun <I, F> new(iter: I, f: F): Inspect<I, F> = Inspect(iter = iter, f = f)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 

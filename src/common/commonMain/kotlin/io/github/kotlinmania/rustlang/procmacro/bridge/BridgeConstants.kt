@@ -1,6 +1,37 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.emitDiagnostic
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.literalFromStr
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanByteRange
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanColumn
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanDebug
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanEnd
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanFile
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanJoin
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanLine
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanLocalFile
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanParent
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanRecoverProcMacroSpan
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanResolvedAt
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanSaveSpan
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanSource
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanSourceText
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanStart
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanSubspan
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.symbolNormalizeAndValidateIdent
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.trackEnvVar
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.trackPath
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsClone
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsConcatStreams
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsConcatTrees
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsDrop
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsExpandExpr
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsFromStr
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsFromTokenTree
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsIntoTrees
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsIsEmpty
+import io.github.kotlinmania.rustlang.procmacro.bridge.server.tsToString
 
 public sealed class Tag {
     public data object TrackEnvVar : Tag()

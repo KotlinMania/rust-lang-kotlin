@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.bac
 import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.backtraceBacktraceLibunwindUnwindFindEnclosingFunction
 import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.cinterop.backtraceBacktraceLibunwindUnwindGetIp
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.helenos.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer

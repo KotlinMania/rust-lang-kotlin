@@ -1,8 +1,8 @@
 // port-lint: source str/converts.rs
 package io.github.kotlinmania.rustlang.core.str.converts
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -90,12 +90,12 @@ public fun fromUtf8(v: List<UByte>): Result<String, Utf8Error> {
     // Note(const-Note): This should use `?` again, once it's `const`
     return run {
         val matchVal = runUtf8Validation(v)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             // SAFETY: validation succeeded.
-            Result.Ok(fromUtf8Unchecked(v))
-        }; is Result.Err<*> -> {
+            Result.Ok<String, Utf8Error>(fromUtf8Unchecked(v))
+        }; is Result.Err -> {
             val err = matchVal.error
-            Result.Err(err)
+            Result.Err<String, Utf8Error>(err)
         } }
     }
 }
@@ -135,12 +135,12 @@ public fun fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> {
     // Note(const-Note): This should use `?` again, once it's `const`
     return run {
         val matchVal = runUtf8Validation(v)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             // SAFETY: validation succeeded.
-            Result.Ok(fromUtf8UncheckedMut(v))
-        }; is Result.Err<*> -> {
+            Result.Ok<String, Utf8Error>(fromUtf8UncheckedMut(v))
+        }; is Result.Err -> {
             val err = matchVal.error
-            Result.Err(err)
+            Result.Err<String, Utf8Error>(err)
         } }
     }
 }
@@ -203,7 +203,7 @@ public fun fromUtf8UncheckedMut(v: MutableList<UByte>): String {
     // are valid UTF-8, thus the cast to `* String` is safe.
     // Also, the pointer dereference is safe because that pointer
     // comes from a reference which is guaranteed to be valid for writes.
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<String>())
+    return RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<String>())
 }
 
 /**
@@ -222,7 +222,7 @@ public fun fromUtf8UncheckedMut(v: MutableList<UByte>): String {
  */
 public fun fromRawParts(ptr: ConstPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
-    return (ObjectSlotLayout<T>()).readNative((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts(ptr, len)).rawAddress)
+    return (UnresolvedTypeLayout<T>()).readNative((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts(ptr, len)).rawAddress)
 }
 
 /**
@@ -241,5 +241,5 @@ public fun fromRawParts(ptr: ConstPtr, len: Int): String {
  */
 public fun fromRawPartsMut(ptr: MutPtr, len: Int): String {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
-    return RustMutableReference(MutPtr((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut(ptr, len)).rawAddress), ObjectSlotLayout<T>())
+    return RustMutableReference(MutPtr((io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut(ptr, len)).rawAddress), UnresolvedTypeLayout<T>())
 }

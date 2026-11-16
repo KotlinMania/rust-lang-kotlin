@@ -4,10 +4,22 @@ package io.github.kotlinmania.rustlang.libm.math.support.floattraits
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFmaf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFmaf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.floatFmaWithLayout
+import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.Div
@@ -26,9 +38,8 @@ import io.github.kotlinmania.rustlang.libm.math.generic.fabs
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf128
 import io.github.kotlinmania.rustlang.libm.math.roundeven.roundevenf16
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.DisplayHex
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.DisplayHex
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
-import kotlin.math.abs
 
 // only used in c-b
 
@@ -416,32 +427,32 @@ public fun F16.isSignNegativeFloat(): Boolean = this.isSignNegative()
 public fun floatFromBitsF16(a: UShort): F16 = F16.fromBits(a)
 
 public fun F16.absFloat(): F16 {
-    F16.fromFloat(abs(this.toFloat()))
+    F16.fromFloat(kmFabsf32(this.toFloat()))
     return fabs(this)
 }
 
 public fun F16.copysignFloat(other: F16): F16 {
-    this.copysign(other)
+    F16.fromFloat(kmCopysignf32(this.toFloat(), other.toFloat()))
     return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
 }
 
 public fun F16.fma(y: F16, z: F16): F16 {
-    fma(this.toDouble(), y.toDouble(), z.toDouble())
+    floatFmaWithLayout(this, y, z, PrimitiveLayouts.F16_LAYOUT)
     return fmaf16(this, y, z)
 }
 
 public fun F16.floor(): F16 {
-    floor(this.toDouble())
+    floatUnaryWithLayout("floor", this, PrimitiveLayouts.F16_LAYOUT)
     return floorf16(this)
 }
 
 public fun F16.roundeven(): F16 {
-    roundTiesEven(this)
+    floatUnaryWithLayout("round_ties_even", this, PrimitiveLayouts.F16_LAYOUT)
     return roundevenf16(this)
 }
 
 public fun floatNormalizeF16(significand: UShort): Pair<Int, UShort> {
-    val shift = (rustLeadingZeros(significand) - (F16.EXP_BITS.toUInt()))
+    val shift = (significand.leadingZeros() - (F16.EXP_BITS.toUInt()))
     return Pair((1 - (shift.toInt())), (significand.toUInt() shl (shift.toInt())).toUShort())
 }
 
@@ -526,37 +537,37 @@ public fun kotlin.Float.isNanFloat(): Boolean = this.isNaN()
 
 public fun kotlin.Float.isInfiniteFloat(): Boolean = this.isInfinite()
 
-public fun kotlin.Float.isSignNegativeFloat(): Boolean = rustIsSignNegative(this)
+public fun kotlin.Float.isSignNegativeFloat(): Boolean = this.isSignNegative()
 
 public fun floatFromBitsFloat(a: UInt): kotlin.Float = kotlin.Float.fromBits(a)
 
 public fun kotlin.Float.absFloat(): kotlin.Float {
-    abs(this)
+    kmFabsf32(this)
     return fabs(this)
 }
 
 public fun kotlin.Float.copysignFloat(other: kotlin.Float): kotlin.Float {
-    this.copysign(other)
+    kmCopysignf32(this, other)
     return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
 }
 
 public fun kotlin.Float.fma(y: kotlin.Float, z: kotlin.Float): kotlin.Float {
-    fma(this.toDouble(), y.toDouble(), z.toDouble())
+    kmFmaf32(this, y, z)
     return fmaf(this, y, z)
 }
 
 public fun kotlin.Float.floor(): kotlin.Float {
-    floor(this.toDouble())
+    kmFloorf32(this)
     return floorf(this)
 }
 
 public fun kotlin.Float.roundeven(): kotlin.Float {
-    roundTiesEven(this)
+    kmRoundTiesEvenf32(this)
     return roundevenf(this)
 }
 
 public fun floatNormalizeFloat(significand: UInt): Pair<Int, UInt> {
-    val shift = (rustLeadingZeros(significand) - (kotlin.Float.EXP_BITS.toUInt()))
+    val shift = (significand.leadingZeros() - (kotlin.Float.EXP_BITS.toUInt()))
     return Pair((1 - (shift.toInt())), significand shl shift.toInt())
 }
 
@@ -641,37 +652,37 @@ public fun Double.isNanFloat(): Boolean = this.isNaN()
 
 public fun Double.isInfiniteFloat(): Boolean = this.isInfinite()
 
-public fun Double.isSignNegativeFloat(): Boolean = rustIsSignNegative(this)
+public fun Double.isSignNegativeFloat(): Boolean = this.isSignNegative()
 
 public fun floatFromBitsDouble(a: ULong): Double = Double.fromBits(a)
 
 public fun Double.absFloat(): Double {
-    abs(this)
+    kmFabsf64(this)
     return fabs(this)
 }
 
 public fun Double.copysignFloat(other: Double): Double {
-    this.copysign(other)
+    kmCopysignf64(this, other)
     return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
 }
 
 public fun Double.fma(y: Double, z: Double): Double {
-    fma(this, y, z)
-    return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fma(this, y, z)
+    kmFmaf64(this, y, z)
+    return fma(this, y, z)
 }
 
 public fun Double.floor(): Double {
-    floor(this)
-    return io.github.kotlinmania.rustlang.libm.math.floor.floor(this)
+    kmFloorf64(this)
+    return floor(this)
 }
 
 public fun Double.roundeven(): Double {
-    roundTiesEven(this)
-    return io.github.kotlinmania.rustlang.libm.math.roundeven.roundeven(this)
+    kmRoundTiesEvenf64(this)
+    return roundeven(this)
 }
 
 public fun floatNormalizeDouble(significand: ULong): Pair<Int, ULong> {
-    val shift = (rustLeadingZeros(significand) - (Double.EXP_BITS.toUInt()))
+    val shift = (significand.leadingZeros() - (Double.EXP_BITS.toUInt()))
     return Pair((1 - (shift.toInt())), significand shl shift.toInt())
 }
 
@@ -761,32 +772,32 @@ public fun F128.isSignNegativeFloat(): Boolean = this.isSignNegative()
 public fun floatFromBitsF128(a: U128): F128 = F128.fromBits(a)
 
 public fun F128.absFloat(): F128 {
-    F128.fromDouble(abs(this.toDouble()))
+    F128.fromDouble(kmFabsf64(this.toDouble()))
     return fabs(this)
 }
 
 public fun F128.copysignFloat(other: F128): F128 {
-    this.copysign(other)
+    F128.fromDouble(kmCopysignf64(this.toDouble(), other.toDouble()))
     return io.github.kotlinmania.rustlang.libm.math.generic.copysign(this, other)
 }
 
 public fun F128.fma(y: F128, z: F128): F128 {
-    fma(this.toDouble(), y.toDouble(), z.toDouble())
+    floatFmaWithLayout(this, y, z, PrimitiveLayouts.F128_LAYOUT)
     return fmaf128(this, y, z)
 }
 
 public fun F128.floor(): F128 {
-    floor(this.toDouble())
+    floatUnaryWithLayout("floor", this, PrimitiveLayouts.F128_LAYOUT)
     return floorf128(this)
 }
 
 public fun F128.roundeven(): F128 {
-    roundTiesEven(this)
+    floatUnaryWithLayout("round_ties_even", this, PrimitiveLayouts.F128_LAYOUT)
     return roundevenf128(this)
 }
 
 public fun floatNormalizeF128(significand: U128): Pair<Int, U128> {
-    val shift = (rustLeadingZeros(significand) - (F128.EXP_BITS.toUInt()))
+    val shift = (significand.leadingZeros() - (F128.EXP_BITS.toUInt()))
     return Pair((1 - (shift.toInt())), significand shl shift.toInt())
 }
 

@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.libc.new.glibc.io.sys.statvfs
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.new.glibc.io.sys.statvfs.cinterop.libcNewGlibcIoSysStatvfsFstatvfs

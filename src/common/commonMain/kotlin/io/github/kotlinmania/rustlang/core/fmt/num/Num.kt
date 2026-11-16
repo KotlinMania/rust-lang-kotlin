@@ -8,17 +8,17 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
-import io.github.kotlinmania.rustlang.core.num.rustCheckedPow
-import io.github.kotlinmania.rustlang.core.num.rustPow
+import io.github.kotlinmania.rustlang.core.num.checkedPow
+import io.github.kotlinmania.rustlang.core.num.pow
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
 
 // Integer and floating-point number formatting
 //
@@ -233,7 +233,7 @@ public fun sliceBufferToStr(buf: List<MaybeUninit<UByte>>, offset: Int): String 
     return String.fromUtf8Unchecked(written.assumeInitRef())
 }
 
-public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: UByte) {
+public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: UByte): Result<Unit, Error> {
     val MAX_DEC_N: Int = U128.MAX_VALUE.ilog10().toInt() + 1
     val MAX_COEF_LEN: Int = MAX_DEC_N + ".".len()
     val MAX_TEXT_LEN: Int = MAX_COEF_LEN + "e99".len()
@@ -242,7 +242,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
     }
     var exp = n.checkedIlog10().unwrapOr(0).toInt()
     if (false) {
-        check(n / rustPow((U128.fromLong(10.toLong())), exp.toUInt()) < U128(0x0uL, 0xauL))
+        check(n / (U128.fromLong(10.toLong())).pow(exp.toUInt()) < U128(0x0uL, 0xauL))
     }
     var coefPrec = exp
     var coef = n
@@ -265,7 +265,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                     val fmtPrec1 = matchVal
                     val lessPrec = coefPrec - fmtPrec1
                     check(lessPrec > 0)
-                    val scale = rustCheckedPow((U128.fromLong(10.toLong())), lessPrec.toUInt()).unwrapUnchecked()
+                    val scale = (U128.fromLong(10.toLong())).checkedPow(lessPrec.toUInt()).unwrapUnchecked()
                     val floor = coef / scale
                     val over = coef % scale
                     val half = scale / 2
@@ -281,7 +281,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                     coefPrec = fmtPrec1
                     if (roundUp != 0 && coef.checkedIlog10().unwrapOr(0).toInt() > coefPrec) {
                         if (false) {
-                            when (val matchVal1 = Pair(coef, rustPow((U128.fromLong(10.toLong())), coefPrec.toUInt() + 1u))) {
+                            when (val matchVal1 = Pair(coef, (U128.fromLong(10.toLong())).pow(coefPrec.toUInt() + 1u))) {
                                 else -> {
                                     val leftVal = matchVal1.first
                                     val rightVal = matchVal1.second
@@ -359,11 +359,11 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
             }
         }
     val text = buf[0 until textLen].assumeInitRef()
-    if (morePrec == 0) {
+    return if (morePrec == 0) {
         val asStr = String.fromUtf8Unchecked(text)
         f.padIntegral(isNonnegative, "", asStr)
     } else {
-        val parts = listOf(Part.Copy(text[0 until coefLen]), Part.Zero(morePrec), Part.Copy(text[coefLen until text.size]))
+        val parts = listOf(numfmt.Part.Copy(text[0 until coefLen]), numfmt.Part.Zero(morePrec), numfmt.Part.Copy(text[coefLen until text.size]))
         val sign =
             if (!isNonnegative) {
                 "-"
@@ -372,7 +372,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
             } else {
                 ""
             }
-        f.padFormattedParts(Formatted(sign = sign, parts = parts))
+        f.padFormattedParts(numfmt.Formatted(sign = sign, parts = parts))
     }
 }
 
@@ -569,8 +569,8 @@ public fun writeQuad(buf: MutableList<MaybeUninit<UByte>>, quad: ULong) {
     val low1 = low.toInt()
     // SAFETY: `high` and `low` are below 100 because `quad` is below 10_000.
     assertUnchecked(high1 < 100 && low1 < 100)
-    ((buf).slice(0 until 2)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(high1 * 2 until high1 * 2 + 2)))
-    ((buf).slice(2 until 4)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(low1 * 2 until low1 * 2 + 2)))
+    ((buf).subList(0, 2)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(high1 * 2 until high1 * 2 + 2)))
+    ((buf).subList(2, 4)).writeCopyOfSlice(((DECIMAL_PAIRS).sliceArray(low1 * 2 until low1 * 2 + 2)))
 }
 
 /**

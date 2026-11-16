@@ -3,8 +3,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.traits
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.rustClassifyDouble
-import io.github.kotlinmania.rustlang.core.num.rustClassifyFloat
+import io.github.kotlinmania.rustlang.core.num.f16.classify
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.Div
 import io.github.kotlinmania.rustlang.core.ops.arith.Mul
@@ -279,7 +278,7 @@ public val SMALLEST_POWER_OF_TEN1: Int = -65
 
 public fun kotlin.Float.toBitsFloat(): UInt = this.toRawBits().toUInt()
 
-public fun kotlin.Float.classifyFloat(): FpCategory = rustClassifyFloat(this)
+public fun kotlin.Float.classifyFloat(): FpCategory = this.classify()
 
 public fun floatExtFromU64BitsFloat(v: ULong): kotlin.Float = kotlin.Float.fromBits(((v and 0xFFFFFFFFuL).toUInt()).toInt())
 
@@ -307,6 +306,6 @@ public val SMALLEST_POWER_OF_TEN2: Int = -342
 
 public fun Double.toBitsFloat(): ULong = this.toRawBits().toULong()
 
-public fun Double.classifyFloat(): FpCategory = rustClassifyDouble(this)
+public fun Double.classifyFloat(): FpCategory = this.classify()
 
 public fun floatExtFromU64BitsDouble(v: ULong): Double = Double.fromBits(v.toLong())

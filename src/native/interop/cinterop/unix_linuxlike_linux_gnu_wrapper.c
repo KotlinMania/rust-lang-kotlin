@@ -1525,8 +1525,8 @@ int32_t libcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp(void* attr, int32_t 
     return ENOSYS;
 }
 
-int32_t libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(uint64_t thread, void* retval) {
-    typedef int32_t (*km_fn_t)(uint64_t, void*);
+int32_t libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(void* thread, void* retval) {
+    typedef int32_t (*km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -1553,8 +1553,8 @@ int32_t libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp(uint64_t thread, void* retval)
     return ENOSYS;
 }
 
-int32_t libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(uint64_t thread, void* retval, void* abstime) {
-    typedef int32_t (*km_fn_t)(uint64_t, void*, void*);
+int32_t libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp(void* thread, void* retval, void* abstime) {
+    typedef int32_t (*km_fn_t)(void*, void*, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {

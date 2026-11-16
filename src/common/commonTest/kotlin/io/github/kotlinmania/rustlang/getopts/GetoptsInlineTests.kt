@@ -68,7 +68,7 @@ import io.github.kotlinmania.rustlang.getopts.Optval.*
 //     opts.optopt("o", "", "set output file name", "NAME")
 //     opts.optflag("h", "help", "print this help menu")
 //     val matches = run {
-//         val matchVal = opts.parse(((args).slice(1 until args.size)))
+//         val matchVal = opts.parse(((args).subList(1, (args).size)))
 //         if (matchVal.isSuccess) {
 //             val m = matchVal.getOrThrow()
 //             m

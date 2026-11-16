@@ -1,8 +1,8 @@
 // port-lint: source new/linux_uapi/linux/can/error.rs
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.error
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 
 // Header: `linux / can / error.h`
 

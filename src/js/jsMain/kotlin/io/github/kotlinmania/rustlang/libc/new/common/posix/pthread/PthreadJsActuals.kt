@@ -2,14 +2,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.common.posix.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.PthreadT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.ClockidT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
 private val newCommonPosixPthreadNapiAddon: dynamic =
     js("(function() { if (typeof globalThis !== 'undefined' && typeof globalThis.__km_napi_kmcore !== 'undefined') return globalThis.__km_napi_kmcore; if (typeof process === 'undefined' || !process.versions || !process.versions.node) return null; var mod = process.getBuiltinModule ? process.getBuiltinModule('module') : (process.mainModule && process.mainModule.constructor); var req = (mod && mod.createRequire) ? mod.createRequire((process.cwd ? process.cwd() : '.') + '/package.json') : (process.mainModule ? process.mainModule.require : null); if (!req) return null; try { var pkg = req('@kotlinmania/kmcore-native-bindings'); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = pkg; return pkg; } catch (_) {} var fs = req('fs'); var path = req('path'); var dir = process.cwd ? process.cwd() : '.'; var rels = ['kmcore_native.node', 'build/node-ffi/kmcore_native.node', 'build/node-ffi/release/kmcore_native.node', 'build/node-ffi/debug/kmcore_native.node', 'src/js/node-kmcore/build/Release/kmcore_native.node', 'src/js/node-kmcore/build/Debug/kmcore_native.node', 'src/js/node-kmcore/dist/build/Release/kmcore_native.node', 'src/js/node-kmcore/dist/build/Debug/kmcore_native.node']; for (var d = 0; d < 8; d++) { for (var i = 0; i < rels.length; i++) { var c = path.resolve(dir, rels[i]); if (fs.existsSync(c)) { var loaded = req(c); if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = loaded; return loaded; } } var parent = path.dirname(dir); if (parent === dir) break; dir = parent; } if (typeof globalThis !== 'undefined') globalThis.__km_napi_kmcore = null; return null; })()")
@@ -69,7 +69,7 @@ public actual fun pthreadBarrierattrSetpshared(attr: MutPtr, shared: CInt): CInt
     if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadBarrierattrSetpshared(attr.rawAddress.toString(), shared) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCancel(thread: PthreadT): CInt =
-    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadCancel(thread.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadCancel(thread.toLong().toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadCondattrGetclock(attr: ConstPtr, clockId: MutPtr): CInt =
     if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadCondattrGetclock(attr.rawAddress.toString(), clockId.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -87,13 +87,13 @@ public actual fun pthreadCreate(native: MutPtr, attr: ConstPtr, f: PthreadCreate
     if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadCreate(native.rawAddress.toString(), attr.rawAddress.toString(), 0L.toString(), value.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetcpuclockid(thread: PthreadT, clkId: MutPtr): CInt =
-    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadGetcpuclockid(thread.rawAddress.toString(), clkId.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadGetcpuclockid(thread.toLong().toString(), clkId.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadGetschedparam(native: PthreadT, policy: MutPtr, param: MutPtr): CInt =
-    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadGetschedparam(native.rawAddress.toString(), policy.rawAddress.toString(), param.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadGetschedparam(native.toLong().toString(), policy.rawAddress.toString(), param.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadKill(thread: PthreadT, sig: CInt): CInt =
-    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadKill(thread.rawAddress.toString(), sig) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadKill(thread.toLong().toString(), sig) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadMutexConsistent(mutex: MutPtr): CInt =
     if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadMutexConsistent(mutex.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -129,10 +129,10 @@ public actual fun pthreadOnce(control: MutPtr, routine: PthreadAtforkPrepareCall
     if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadOnce(control.rawAddress.toString(), 0L.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetschedparam(native: PthreadT, policy: CInt, param: ConstPtr): CInt =
-    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadSetschedparam(native.rawAddress.toString(), policy, param.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadSetschedparam(native.toLong().toString(), policy, param.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSetschedprio(native: PthreadT, priority: CInt): CInt =
-    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadSetschedprio(native.rawAddress.toString(), priority) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
+    if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadSetschedprio(native.toLong().toString(), priority) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun pthreadSigmask(how: CInt, set: ConstPtr, oldset: MutPtr): CInt =
     if (newCommonPosixPthreadNapiAddon != null) (newCommonPosixPthreadNapiAddon.libcNewCommonPosixPthreadPthreadSigmask(how, set.rawAddress.toString(), oldset.rawAddress.toString()) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")

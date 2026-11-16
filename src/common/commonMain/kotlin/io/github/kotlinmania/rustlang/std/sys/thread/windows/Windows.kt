@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.thread.windows
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -69,20 +70,20 @@ public open class Thread internal constructor(
             return when (val matchVal = ret1.tryInto()) {
                 is Ok -> {
                     val handle = matchVal.value
-                    Result.Ok(Thread(handle = Handle.fromInner(handle)))
+                    Result.Ok<Thread, Error>(Thread(handle = Handle.fromInner(handle)))
                 }
                 else -> {
                     // The thread failed to start and as a result data was not consumed. Therefore, it is
                     // safe to reconstruct the box so that it gets deallocated.
                     (Box.fromRaw(data)).let { }
-                    Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+                    Result.Err<Thread, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
                 }
             }
         }
     }
 }
 
-public fun availableParallelism(): Result<NonZero<Int>, Error> {
+public fun availableParallelism(): Result<NonZero<Int, NonZeroUsizeInner>, Error> {
     val res =
         run {
             val sysinfo: c.SystemInfo  = c.SystemInfo()
@@ -90,10 +91,10 @@ public fun availableParallelism(): Result<NonZero<Int>, Error> {
             sysinfo.dwNumberOfProcessors.toInt()
         }
     return when (res) {
-        0 -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
+        0 -> Result.Err<NonZero<Int, NonZeroUsizeInner>, Error>(io.github.kotlinmania.rustlang.std.io.Error.UNKNOWN_THREAD_COUNT)
         else -> {
             val cpus = res
-            Result.Ok(NonZero.newUnchecked(cpus))
+            Result.Ok<NonZero<Int, NonZeroUsizeInner>, Error>(NonZero.newUnchecked<NonZeroUsizeInner, Int>(cpus))
         }
     }
 }
@@ -136,8 +137,8 @@ public fun setNameWide(name: List<UShort>) {
 
 public fun sleep(dur: Duration) {
     fun highPrecisionSleep(dur1: Duration): Result<Unit, Unit> {
-        val timer = when (val tryResult = WaitableTimer.highResolution()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        when (val tryResult = timer.set(dur1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val timer = when (val tryResult = WaitableTimer.highResolution()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = timer.set(dur1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
         return timer.wait()
     }
     // Directly forward to `Sleep` for its zero duration behavior when indeed

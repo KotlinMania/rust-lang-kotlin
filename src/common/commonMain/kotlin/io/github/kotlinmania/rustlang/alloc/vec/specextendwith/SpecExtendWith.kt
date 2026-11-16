@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -22,7 +22,7 @@ public fun <T, A : Allocator> List<T>.specExtendWith(n: Int, value: T, cloneTFn:
     this.reserve(n)
     // SAFETY: Since `reserve` guarantees `self.len() + n` <= `capacity`, this
     // pointer is always within bounds, and valid for writes for the next `n` items.
-    var ptr = MutPtr((this.asMutPtr()).rawAddress + ((this.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+    var ptr = MutPtr((this.asMutPtr()).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
     // Use SetLenOnDrop to work around bug where compiler
     // might not realize the store through `ptr` through self.setLen()
     // don't alias.
@@ -43,7 +43,7 @@ public fun <T, A : Allocator> List<T>.specExtendWith(n: Int, value: T, cloneTFn:
         write(ptr, cloneTFn(value))
         // SAFETY: According to the diagram above, this increment is within bounds of the
         // allocation and won't wrap around
-        ptr = MutPtr((ptr).rawAddress + ((1).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+        ptr = MutPtr((ptr).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         // Increment the length of SetLenOnDrop in every step in case clone() panics to drop the
         // already-initialized elements.
         localLen.incrementLen(1)
@@ -73,7 +73,7 @@ public fun <T : TrivialClone, A : Allocator> List<T>.specExtendWith(n: Int, valu
     this.reserve(n)
     // SAFETY: Since `reserve` guarantees `self.len() + n` <= `capacity`, this
     // pointer is always within bounds, and valid for writes for the next `n` items.
-    val ptr = MutPtr((this.asMutPtr()).rawAddress + ((this.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+    val ptr = MutPtr((this.asMutPtr()).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
     var i = 0
     // Write all the elements by copying `value`.
     // We use an incrementing index here instead of incrementing pointer because the former
@@ -85,7 +85,7 @@ public fun <T : TrivialClone, A : Allocator> List<T>.specExtendWith(n: Int, valu
         // is within bounds, won't wrap around while `i<n`, and valid for writes. The values
         // do not overlap since `value` is stored as a function argument, and the target is
         // in the Vec.
-        kmCopyNonoverlapping((value).rawAddress, (MutPtr((ptr).rawAddress + ((i).toLong() * (ObjectSlotLayout<T>()).strideBytes))).rawAddress, (1).toLong() * (ObjectSlotLayout<T>()).sizeBytes)
+        kmCopyNonoverlapping((value).rawAddress, (MutPtr((ptr).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (1).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
         // Because above is infallible, we don't need to worry about setting the len
         // in this loop, and instead we just increment the loop induction variable.
         i += 1

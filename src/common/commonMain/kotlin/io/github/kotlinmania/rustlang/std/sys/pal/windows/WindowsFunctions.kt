@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -72,7 +72,7 @@ public fun unrolledFindU16s(needle: UShort, haystack: List<UShort>): Int? {
         if (start[7] == needle) {
             return (((constPtrFromRustCast(start[7]))).rawAddress.toInt() - (ptr).rawAddress.toInt()) / 2
         }
-        start = ((start).slice(8 until start.size))
+        start = ((start).subList(8, (start).size))
     }
     for (c in start) {
         if (c == needle) {
@@ -85,7 +85,7 @@ public fun unrolledFindU16s(needle: UShort, haystack: List<UShort>): Int? {
 public fun toU16s(s: OsStr): Result<List<UShort>, Error> {
     fun inner(s1: OsStr): Result<List<UShort>, Error> {
         if (s1.asEncodedBytes().contains(0)) {
-            return Result.Err(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
+            return Result.Err<List<UShort>, Error>(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
         }
         // Most paths are ASCII, so reserve capacity for as much as there are bytes
         // in the OsStr plus one for the null-terminating character. We are not
@@ -94,7 +94,7 @@ public fun toU16s(s: OsStr): Result<List<UShort>, Error> {
         val maybeResult = ArrayList<UShort>(s1.len() + 1)
         maybeResult.extend(s1.encodeWide())
         maybeResult.add(0)
-        return Result.Ok(maybeResult)
+        return Result.Ok<List<UShort>, Error>(maybeResult)
     }
     return inner(s)
 }
@@ -161,7 +161,7 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
                     val matchVal = f1(MutPtr((buf.asMutPtr()).rawAddress), n.toUInt())
                     when {
                         matchVal == 0 && getLastError().code == 0 -> 0
-                        matchVal == 0 -> { return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError()) }
+                        matchVal == 0 -> { return Result.Err<T, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError()) }
                         else -> {
                             val n1 = matchVal
                             n1
@@ -169,7 +169,7 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
                     }
                 }).toInt()
             if (k == n && getLastError().code == ERROR_INSUFFICIENT_BUFFER) {
-                n = rustSaturatingMul(n, 2).min(UInt.MAX_VALUE.toInt())
+                n = n.saturatingMul(2).min(UInt.MAX_VALUE.toInt())
             } else if (k > n) {
                 n = k
             } else if (k == n) {
@@ -180,8 +180,8 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
                 error("unreachable")
             } else {
                 // Safety: First `k` values are initialized.
-                val slice: List<UShort> = ((buf).slice(0 until k)).assumeInitRef()
-                return Result.Ok(f2(slice))
+                val slice: List<UShort> = ((buf).subList(0, k)).assumeInitRef()
+                return Result.Ok<T, Error>(f2(slice))
             }
         }
     }
@@ -195,29 +195,29 @@ public fun truncateUtf16AtNul(v: List<UShort>): List<UShort> =
         // don't include the 0
         else -> {
             val i = matchVal
-            ((v).slice(0 until i))
+            ((v).subList(0, i))
         }
     }
 
 public fun ensureNoNuls(s: OsStr): Result<OsStr, Error> =
     if (s.asEncodedBytes().contains(0)) {
-        Result.Err(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
+        Result.Err<OsStr, Error>(constError(ErrorKind.InvalidInput, "nul byte found in provided data"))
     } else {
-        Result.Ok(s)
+        Result.Ok<OsStr, Error>(s)
     }
 
 public fun <I : IsZero> cvt(i: I): Result<I, Error> =
     if (i.isZero()) {
-        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<I, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
-        Result.Ok(i)
+        Result.Ok<I, Error>(i)
     }
 
 public fun <I : IsZero> cvtNz(i: I): Result<Unit, Error> =
     if (i.isZero()) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.core.io.error.Error.lastOsError())
     }
 
 public fun dur2timeout(dur: Duration): UInt {

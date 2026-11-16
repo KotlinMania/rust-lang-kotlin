@@ -1,9 +1,12 @@
 // port-lint: source collections/hash/map.rs
 package io.github.kotlinmania.rustlang.std.collections.hash.map
 
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind
+import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.rustcentry.RustcEntry
@@ -898,12 +901,12 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         run {
             val matchVal = this.base.rustcTryInsert(key, value)
             when {
-                matchVal is Result.Ok<*> -> {
-                    val value1 = (matchVal as Result.Ok<*>).value
-                    Result.Ok(value1)
+                matchVal is Result.Ok -> {
+                    val value1 = matchVal.value
+                    Result.Ok<V, OccupiedError<K, V, A>>(value1)
                 }
                 else -> {
-                    Result.Err(OccupiedError(entry = OccupiedEntry(base = entry), key = key, value = value))
+                    Result.Err<V, OccupiedError<K, V, A>>(OccupiedError(entry = OccupiedEntry(base = entry), key = key, value = value))
                 }
             }
         }
@@ -959,9 +962,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         return this.iter().all({ (key, value) -> other.get(key).isSomeAnd({ v -> value == v }) })
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
 
     /**
      * Returns a reference to the value corresponding to the supplied key.
@@ -1098,7 +1099,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
  * var map: MutableMap<String, Int> = mutableMapOf()
  * ```
  */
-public fun <K, V> HashMap.Companion.new(): HashMap<K, V, RandomState> = Default.default()
+public fun <K, V> HashMap.Companion.new(): HashMap<K, V, RandomState, Global> = Default.default()
 
 /**
  * Creates an empty `HashMap` with at least the specified capacity.
@@ -1113,7 +1114,7 @@ public fun <K, V> HashMap.Companion.new(): HashMap<K, V, RandomState> = Default.
  * var map: MutableMap<String, Int> = mutableMapOf()
  * ```
  */
-public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, RandomState> = HashMap.withCapacityAndHasher(capacity, Default.default())
+public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, RandomState, Global> = HashMap.withCapacityAndHasher(capacity, Default.default())
 
 /**
  * Creates an empty `HashMap` using the given allocator.
@@ -1173,7 +1174,7 @@ public fun <K, V, A : Allocator> HashMap.Companion.withCapacityIn(capacity: Int,
  * map.insert(1, 2)
  * ```
  */
-public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V, S> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withHasher(hashBuilder))
+public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V, S, Global> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withHasher(hashBuilder))
 
 /**
  * Creates an empty `HashMap` with at least the specified capacity, using
@@ -1201,12 +1202,12 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  * map.insert(1, 2)
  * ```
  */
-public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashMap<K, V, S> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withCapacityAndHasher(capacity, hasher))
+public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashMap<K, V, S, Global> = HashMap(base = io.github.kotlinmania.rustlang.hashbrown.HashMap.withCapacityAndHasher(capacity, hasher))
 
 /**
  * Creates an empty `HashMap<K, V, S>`, with the `Default` value for the hasher.
  */
-public fun <K, V, S> defaultHashMapKVS(defaultSFn: () -> S): HashMap<K, V, S> = HashMap.withHasher(defaultSFn())
+public fun <K, V, S> defaultHashMapKVS(defaultSFn: () -> S): HashMap<K, V, S, Global> = HashMap.withHasher(defaultSFn())
 
 // Note: as what is currently the most convenient built-in way to construct
 // a HashMap, a simple usage of this function must not *require* the user
@@ -1235,7 +1236,7 @@ public fun <K, V, S> defaultHashMapKVS(defaultSFn: () -> S): HashMap<K, V, S> = 
  * check(map1 == map2)
  * ```
  */
-public fun <K, V> fromHashMapKVRandomState(arr: List<Pair<K, V>>, n: Int): HashMap<K, V, RandomState> = HashMap.fromIter(arr)
+public fun <K, V> fromHashMapKVRandomState(arr: List<Pair<K, V>>, n: Int): HashMap<K, V, RandomState, Global> = HashMap.fromIter(arr)
 
 /**
  * An iterator over the entries of a `HashMap`.
@@ -1267,9 +1268,7 @@ public open class Iter<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<K, V> = Iter(base = this.base.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): Pair<K, V>? = this.base.next()
 
@@ -1328,9 +1327,7 @@ public open class IterMut<K, V>(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public fun <K, V> default(): IterMut<K, V> = IterMut(base = Default.default())
@@ -1382,9 +1379,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1395,7 +1390,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V> defaultIntoIterKV(): IntoIter<K, V> = IntoIter(base = Default.default())
+public fun <K, V> defaultIntoIterKV(): IntoIter<K, V, Global> = IntoIter(base = Default.default())
 
 /**
  * An iterator over the keys of a `HashMap`.
@@ -1427,9 +1422,7 @@ public open class Keys<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Keys<K, V> = Keys(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): K? = this.inner.next()?.let({ (k, _) -> k })
 
@@ -1476,9 +1469,7 @@ public open class Values<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Values<K, V> = Values(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): V? = this.inner.next()?.let({ (_, v) -> v })
 
@@ -1538,9 +1529,7 @@ public open class Drain<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.base.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1584,9 +1573,7 @@ public open class ExtractIf<K, V, F, A : Allocator> internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.base.sizeHint()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "ExtractIf").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ExtractIf").finishNonExhaustive()
 
     public companion object {
         public operator fun <K, V, F, A : Allocator> invoke(
@@ -1634,9 +1621,7 @@ public open class ValuesMut<K, V>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
 
     public companion object {
         public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = Default.default())
@@ -1683,9 +1668,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1696,7 +1679,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V> defaultIntoKeysKV(): IntoKeys<K, V> = IntoKeys(inner = Default.default())
+public fun <K, V> defaultIntoKeysKV(): IntoKeys<K, V, Global> = IntoKeys(inner = Default.default())
 
 /**
  * An owning iterator over the values of a `HashMap`.
@@ -1738,9 +1721,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -1751,7 +1732,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
     }
 }
 
-public fun <K, V> defaultIntoValuesKV(): IntoValues<K, V> = IntoValues(inner = Default.default())
+public fun <K, V> defaultIntoValuesKV(): IntoValues<K, V, Global> = IntoValues(inner = Default.default())
 
 /**
  * A view into a single entry in a map, which may either be vacant or occupied.
@@ -1885,11 +1866,11 @@ public sealed class Entry<K, V, A : Allocator> {
         return when (this) {
             is Occupied -> {
                 val (entry) = this
-                Result.Ok(entry.intoMut())
+                Result.Ok<V, E>(entry.intoMut())
             }
             is Vacant -> {
                 val (entry1) = this
-                Result.Ok(entry1.insert(when (val tryResult = default()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<V, E>(tryResult.error) }))
             }
         }
     }
@@ -1938,12 +1919,12 @@ public sealed class Entry<K, V, A : Allocator> {
         return when (this) {
             is Occupied -> {
                 val (entry) = this
-                Result.Ok(entry.intoMut())
+                Result.Ok<V, E>(entry.intoMut())
             }
             is Vacant -> {
                 val (entry1) = this
-                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                Result.Ok(entry1.insert(value))
+                val value = when (val tryResult = default(entry1.key())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<V, E>(tryResult.error) }
+                Result.Ok<V, E>(entry1.insert(value))
             }
         }
     }
@@ -2027,7 +2008,7 @@ public sealed class Entry<K, V, A : Allocator> {
         }
 }
 
-public fun <K, V> Entry<K, V>.fmt(f: StringBuilder) {
+public fun <K, V> Entry<K, V, Global>.fmt(f: StringBuilder): Result<Unit, Error> =
     when (this) {
         is Vacant -> {
             val (v) = this
@@ -2038,7 +2019,6 @@ public fun <K, V> Entry<K, V>.fmt(f: StringBuilder) {
             DebugTuple(f, "Entry").field(o).finish()
         }
     }
-}
 
 /**
  * A view into an occupied entry in a `HashMap`.
@@ -2050,9 +2030,7 @@ public open class OccupiedEntry<K, V, A : Allocator> internal constructor(
     public var base: RustcOccupiedEntry<K, V, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finishNonExhaustive()
 
     /**
      * Gets a reference to the key in the entry.
@@ -2233,9 +2211,7 @@ public open class VacantEntry<K, V, A : Allocator> internal constructor(
     public var base: RustcVacantEntry<K, V, A> = baseCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "VacantEntry").field(this.key()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.key()).finish()
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -2349,9 +2325,7 @@ public open class OccupiedError<K, V, A : Allocator> internal constructor(
     public var entry: OccupiedEntry<K, V, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finishNonExhaustive()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2378,7 +2352,7 @@ public open class OccupiedError<K, V, A : Allocator> internal constructor(
  * check(map["poneyland"] == null)
  * ```
  */
-public fun <K, V> Entry<K, V>.orDefault(defaultVFn: () -> V): V =
+public fun <K, V> Entry<K, V, Global>.orDefault(defaultVFn: () -> V): V =
     when (this) {
         is Occupied -> {
             val (entry) = this
@@ -2396,7 +2370,7 @@ public fun <K, V> Entry<K, V>.orDefault(defaultVFn: () -> V): V =
  * If the iterator produces any pairs with equal keys,
  * all but one of the corresponding values will be dropped.
  */
-public fun <K, V, S, I : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVS(iter: I, defaultSFn: () -> S): HashMap<K, V, S> where S : BuildHasher {
+public fun <K, V, S, I : Iterable<Pair<K, V>>> fromIteratorFromIterHashMapKVS(iter: I, defaultSFn: () -> S): HashMap<K, V, S, Global> where S : BuildHasher {
     val map = HashMap.withHasher(defaultSFn())
     map.extend(iter, defaultSFn)
     return map
@@ -2426,15 +2400,15 @@ public fun mapTryReserveError(err: TryReserveError): TryReserveError =
     }
 
 public fun assertCovariance() {
-    fun mapKey(v: HashMap<String, UByte>): HashMap<String, UByte> = v
-    fun mapVal(v: HashMap<UByte, String>): HashMap<UByte, String> = v
+    fun mapKey(v: HashMap<String, UByte, RandomState, Global>): HashMap<String, UByte, RandomState, Global> = v
+    fun mapVal(v: HashMap<UByte, String, RandomState, Global>): HashMap<UByte, String, RandomState, Global> = v
     fun iterKey(v: Iter<String, UByte>): Iter<String, UByte> = v
     fun iterVal(v: Iter<UByte, String>): Iter<UByte, String> = v
-    fun intoIterKey(v: IntoIter<String, UByte>): IntoIter<String, UByte> = v
-    fun intoIterVal(v: IntoIter<UByte, String>): IntoIter<UByte, String> = v
+    fun intoIterKey(v: IntoIter<String, UByte, Global>): IntoIter<String, UByte, Global> = v
+    fun intoIterVal(v: IntoIter<UByte, String, Global>): IntoIter<UByte, String, Global> = v
     fun keysKey(v: Keys<String, UByte>): Keys<String, UByte> = v
     fun keysVal(v: Keys<UByte, String>): Keys<UByte, String> = v
     fun valuesKey(v: Values<String, UByte>): Values<String, UByte> = v
     fun valuesVal(v: Values<UByte, String>): Values<UByte, String> = v
-    fun drain(d: Drain<String, String>): Drain<String, String> = d
+    fun drain(d: Drain<String, String, Global>): Drain<String, String, Global> = d
 }

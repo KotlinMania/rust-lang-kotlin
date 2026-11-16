@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.alloc.io.buffered.linewritershim
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memrchr
@@ -75,7 +75,7 @@ public open class LineWriterShim<W : Write> internal constructor(
         val lastNewlineBufIdx1 =
             when (lastNewlineBufIdx) {
                 null -> {
-                    when (val tryResult = this.flushIfCompletedLine()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.flushIfCompletedLine()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                     return this.buffer.writeVectored(bufs)
                 }
                 else -> {
@@ -84,7 +84,7 @@ public open class LineWriterShim<W : Write> internal constructor(
                 }
             }
         // Flush existing content to prepare for our write.
-        when (val tryResult = this.buffer.flushBuf()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.buffer.flushBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // This is what we're going to try to write directly to the inner
         // writer. The rest will be buffered, if nothing goes wrong.
         val (lines, tail) = bufs.splitAt(lastNewlineBufIdx1 + 1)
@@ -93,7 +93,7 @@ public open class LineWriterShim<W : Write> internal constructor(
         // data. Because this write doesn't touch the BufWriter state directly,
         // and the buffer is known to be empty, we don't need to worry about
         // self.panicked here.
-        val flushed = when (val tryResult = this.innerMut().writeVectored(lines)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val flushed = when (val tryResult = this.innerMut().writeVectored(lines)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // If inner returns Ok(0), propagate that to the caller without
         // doing additional buffering; otherwise we're just guaranteeing
         // an "ErrorKind.WriteZero" later.
@@ -106,7 +106,7 @@ public open class LineWriterShim<W : Write> internal constructor(
         for (buf in lines) {
             // With overlapping/duplicate slices the total length may in theory
             // exceed usize.Max
-            linesLen = rustSaturatingAdd(linesLen, buf.len())
+            linesLen = linesLen.saturatingAdd(buf.len())
             if (flushed < linesLen) {
                 return Result.Ok(flushed)
             }
@@ -141,7 +141,7 @@ public open class LineWriterShim<W : Write> internal constructor(
                 // one line), just do a regular buffered write (which may flush if
                 // we exceed the inner buffer's size)
                 null -> {
-                    when (val tryResult = this.flushIfCompletedLine()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.flushIfCompletedLine()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                     return this.buffer.write(buf)
                 }
                 // Otherwise, arrange for the lines to be written directly to the
@@ -156,16 +156,16 @@ public open class LineWriterShim<W : Write> internal constructor(
         // if we add `buf` to the buffer then try to flush it all at once,
         // we're obligated to return Ok(), which would mean suppressing any
         // errors that occur during flush.
-        when (val tryResult = this.buffer.flushBuf()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.buffer.flushBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // This is what we're going to try to write directly to the inner
         // writer. The rest will be buffered, if nothing goes wrong.
-        val lines = ((buf).slice(0 until newlineIdx1))
+        val lines = ((buf).subList(0, newlineIdx1))
         // Write `lines` directly to the inner writer. In keeping with the
         // `write` convention, make at most one attempt to add new (unbuffered)
         // data. Because this write doesn't touch the BufWriter state directly,
         // and the buffer is known to be empty, we don't need to worry about
         // self.buffer.panicked here.
-        val flushed = when (val tryResult = this.innerMut().write(lines)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val flushed = when (val tryResult = this.innerMut().write(lines)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // If buffer returns Ok(0), propagate that to the caller without
         // doing additional buffering; otherwise we're just guaranteeing
         // an "ErrorKind.WriteZero" later.
@@ -186,7 +186,7 @@ public open class LineWriterShim<W : Write> internal constructor(
         // - If not, scan for the last newline that *does* fit in the buffer
         val tail1 =
             if (flushed >= newlineIdx1) {
-                val tail = ((buf).slice(flushed until buf.size))
+                val tail = ((buf).subList(flushed, (buf).size))
                 // Avoid unnecessary short writes by not splitting the remaining
                 // bytes if they're larger than the buffer.
                 // They can be written in full by the next call to write.
@@ -195,10 +195,10 @@ public open class LineWriterShim<W : Write> internal constructor(
                 }
                 tail
             } else if (newlineIdx1 - flushed <= this.buffer.capacity()) {
-                ((buf).slice(flushed until newlineIdx1))
+                ((buf).subList(flushed, newlineIdx1))
             } else {
-                val scanArea = ((buf).slice(flushed until buf.size))
-                val scanArea1 = ((scanArea).slice(0 until this.buffer.capacity()))
+                val scanArea = ((buf).subList(flushed, (buf).size))
+                val scanArea1 = ((scanArea).subList(0, this.buffer.capacity()))
                 when (val matchVal1 = memrchr(10u, scanArea1)) {
                     null -> scanArea1
                     else -> {
@@ -275,7 +275,7 @@ public open class LineWriterShim<W : Write> internal constructor(
                 }
             }
         }
-        return this.writeVectoredScanned(((bufs).slice(0 until bufs.size.min(MAX_BUFS_TO_SCAN))))
+        return this.writeVectoredScanned(((bufs).subList(0, bufs.size.min(MAX_BUFS_TO_SCAN))))
     }
 
     public open fun isWriteVectored(): Boolean = this.inner().isWriteVectored()
@@ -297,14 +297,14 @@ public open class LineWriterShim<W : Write> internal constructor(
             // one line), just do a regular buffered write (which may flush if
             // we exceed the inner buffer's size)
             null -> {
-                when (val tryResult = this.flushIfCompletedLine()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = this.flushIfCompletedLine()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 this.buffer.writeAll(buf)
             }
             else -> {
                 val newlineIdx = matchVal
                 val (lines, tail) = buf.splitAt(newlineIdx + 1)
                 if (this.buffered().isEmpty()) {
-                    when (val tryResult = this.innerMut().writeAll(lines)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.innerMut().writeAll(lines)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 } else {
                     // If there is any buffered data, we add the incoming lines
                     // to that buffer before flushing, which saves us at least
@@ -312,8 +312,8 @@ public open class LineWriterShim<W : Write> internal constructor(
                     // since we can't do this *and* not suppress errors *and*
                     // report a consistent state to the caller in a return
                     // value, but here in writeAll it's fine.
-                    when (val tryResult = this.buffer.writeAll(lines)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                    when (val tryResult = this.buffer.flushBuf()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.buffer.writeAll(lines)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.buffer.flushBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
                 this.buffer.writeAll(tail)
             }

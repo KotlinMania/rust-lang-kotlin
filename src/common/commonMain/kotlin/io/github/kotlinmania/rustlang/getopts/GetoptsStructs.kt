@@ -216,7 +216,7 @@ public open class Options(
      * Returns `Err(Fail)` on failure: use the `Debug` implementation of `Fail`
      * to display information about it.
      */
-    public open fun <C> parse(args: C): Result {
+    public open fun <Item, IntoIter, C> parse(args: C): Result {
         val opts: List<Opt> = this.grps.map({ x -> x.longToShort() }).toMutableList()
         var vals = (0 until opts.size).map({ mutableListOf() }).toMutableList()
         var free: List<String> = mutableListOf()
@@ -224,7 +224,7 @@ public open class Options(
         val args1 =
             when (val tryResult = args.iterator().map({ i ->
                 i.asRef().toStr().okOrElse({ Fail.UnrecognizedOption("${i.asRef()}") }).map({ s -> s.toOwned() })
-            }).collect<kotlin.Result<Vec>>()) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
+            }).collect<kotlin.Result<Vec>>()) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
         val args2 = args1.intoIter().peekable()
         var argPos = 0
         while (true) {
@@ -674,7 +674,7 @@ public open class Matches(
      * check(!matches.optsPresentAny(listOf("beta")))
      * ```
      */
-    public open fun <C> optsPresentAny(names: C): Boolean = names.iterator().any({ nm -> !this.optVals(nm.asRef()).isEmpty() })
+    public open fun <Item, IntoIter, C> optsPresentAny(names: C): Boolean = names.iterator().any({ nm -> !this.optVals(nm.asRef()).isEmpty() })
 
     /**
      * Returns the string argument supplied to one of several matching options or `None`.
@@ -719,7 +719,7 @@ public open class Matches(
      * check("bar".toString() == matches.optsStrFirst(listOf("beta", "alpha")))
      * ```
      */
-    public open fun <C> optsStrFirst(names: C): String? =
+    public open fun <Item, IntoIter, C> optsStrFirst(names: C): String? =
         names.iterator().mapNotNull({ nm -> when (val matchVal = this.optVal(nm.asRef())) {
             is Val -> {
                 val (s) = matchVal as Val
@@ -815,14 +815,14 @@ public open class Matches(
      *
      * This function will panic if the option name is not defined.
      */
-    public open fun <T> optGet(name: String): Result<T?, Err> where T : FromStr {
+    public open fun <Err, T> optGet(name: String): io.github.kotlinmania.rustlang.core.result.Result<T?, Err> where T : FromStr<Any?> {
         return when (val matchVal = this.optVal(name)) {
             is Val -> {
                 val (s) = matchVal as Val
-                RustResult.Ok(when (val tryResult = s.parse()) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) })
+                RustResult.Ok<T?, Err>(when (val tryResult = s.parse()) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<T?, Err>(tryResult.error) })
             }
-            Given -> RustResult.Ok(null)
-            null -> RustResult.Ok(null)
+            Given -> RustResult.Ok<T?, Err>(null)
+            null -> RustResult.Ok<T?, Err>(null)
         }
     }
 
@@ -837,14 +837,14 @@ public open class Matches(
      *
      * This function will panic if the option name is not defined.
      */
-    public open fun <T> optGetDefault(name: String, def: T): Result<T, Err> where T : FromStr =
+    public open fun <Err, T> optGetDefault(name: String, def: T): io.github.kotlinmania.rustlang.core.result.Result<T, Err> where T : FromStr<Any?> =
         when (val matchVal = this.optVal(name)) {
             is Val -> {
                 val (s) = matchVal as Val
                 s.parse()
             }
-            Given -> RustResult.Ok(def)
-            null -> RustResult.Ok(def)
+            Given -> RustResult.Ok<T, Err>(def)
+            null -> RustResult.Ok<T, Err>(def)
         }
 
     /**

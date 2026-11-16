@@ -5,16 +5,16 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.c
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CUint
+import io.github.kotlinmania.rustlang.std.os.raw.CUlong
+import io.github.kotlinmania.rustlang.std.os.raw.CUshort
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AF_INET
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AF_INET6
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AF_UNIX
@@ -552,7 +552,7 @@ public fun ntSuccess(status: Ntstatus): Boolean = (status >= 0).toUByte()
 
 public fun Guid.Companion.fromU128(uuid: U128): Guid = Guid(data1 = (uuid shr 96).toUInt(), data2 = (uuid shr 80 and U128(0x0uL, 0xffffuL)).toUShort(), data3 = (uuid shr 64 and U128(0x0uL, 0xffffuL)).toUShort(), data4 = run { val rawBits = (uuid.toULong()); ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) })
 
-public fun ObjectAttributes.Companion.withLength(): ObjectAttributes = ObjectAttributes(length = sizeOf<ObjectAttributes>(typeLayoutT = ObjectSlotLayout<ObjectAttributes>()).toUInt(), rootDirectory = MutPtr(0L), objectName = MutPtr(0L), attributes = 0u, securityDescriptor = MutPtr(0L), securityQualityOfService = MutPtr(0L))
+public fun ObjectAttributes.Companion.withLength(): ObjectAttributes = ObjectAttributes(length = sizeOf<ObjectAttributes>(typeLayoutT = UnresolvedTypeLayout<ObjectAttributes>()).toUInt(), rootDirectory = MutPtr(0L), objectName = MutPtr(0L), attributes = 0u, securityDescriptor = MutPtr(0L), securityQualityOfService = MutPtr(0L))
 
 public val PENDING: IoStatusBlock = IoStatusBlock(anonymous = IoStatusBlock0(status = STATUS_PENDING), information = 0)
 

@@ -4,11 +4,15 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -84,11 +88,9 @@ public open class Drain<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Drain").field(this.drainLen).field(this.idx).field(this.tailLen).field(this.remaining).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Drain").field(this.drainLen).field(this.idx).field(this.tailLen).field(this.remaining).finish()
 
-    public open fun drop() {
+    public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         open class DropGuard<T, A : Allocator>(
             public var value: Drain<T, A>,
         ) {
@@ -99,7 +101,7 @@ public open class Drain<T, A : Allocator> internal constructor(
                 }
 
             // Dropping `guard` handles moving the remaining elements into place.
-            public open fun drop() {
+            public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
                 if (needsDrop<T>() && this.value.remaining != 0) {
                     // SAFETY: We just checked that `self.remaining != 0`.
                     run {
@@ -116,7 +118,7 @@ public open class Drain<T, A : Allocator> internal constructor(
                 val tailLen = this.value.tailLen
                 // #elements behind the drain
                 val newLen = headLen + tailLen
-                if (T.IS_ZST) {
+                if (((typeLayoutT).sizeBytes == 0L)) {
                     // no need to copy around any memory if T is a ZST
                     sourceDeque.len = newLen
                     return

@@ -7,26 +7,23 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.intrinsics.copysignf16
-import io.github.kotlinmania.rustlang.core.intrinsics.fabs
-import io.github.kotlinmania.rustlang.core.intrinsics.faddAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fdivAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fma
-import io.github.kotlinmania.rustlang.core.intrinsics.fmulAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fmuladd
-import io.github.kotlinmania.rustlang.core.intrinsics.fremAlgebraic
-import io.github.kotlinmania.rustlang.core.intrinsics.fsubAlgebraic
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
 import io.github.kotlinmania.rustlang.core.intrinsics.maximumNumberNszF16
 import io.github.kotlinmania.rustlang.core.intrinsics.maximumf16
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumNumberNszF16
 import io.github.kotlinmania.rustlang.core.intrinsics.minimumf16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
+import io.github.kotlinmania.rustlang.core.mem.floatFmaWithLayout
+import io.github.kotlinmania.rustlang.core.mem.floatPowiWithLayout
+import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
 import io.github.kotlinmania.rustlang.core.panic.constAssert
-import kotlin.math.abs
-import kotlin.math.truncate
 
 // Constants for the `f16` half-precision floating point type.
 //
@@ -253,7 +250,7 @@ public fun F16.isInfinite(): Boolean = (this == F16.INFINITY) or (this == F16.NE
 public fun F16.isFinite(): Boolean {
     // There's no need to handle NaN separately: if self is NaN,
     // the comparison is not true, exactly as desired.
-    return F16.fromFloat(abs(this.toFloat())) < F16.INFINITY
+    return F16.fromFloat(kmFabsf32(this.toFloat())) < F16.INFINITY
 }
 
 /**
@@ -718,8 +715,8 @@ public fun F16.minimum(other: F16): F16 = minimumf16(this, other)
 public fun F16.midpoint(other: F16): F16 {
     val HI: F16 = F16.MAX * F16.fromFloat(0.5f)
     val (a, b) = Pair(this, other)
-    val absA = F16.fromFloat(abs(a.toFloat()))
-    val absB = F16.fromFloat(abs(b.toFloat()))
+    val absA = F16.fromFloat(kmFabsf32(a.toFloat()))
+    val absB = F16.fromFloat(kmFabsf32(b.toFloat()))
     return if (absA <= HI && absB <= HI) {
         // Overflow is impossible
         (a + b) * F16.fromFloat(0.5f)
@@ -1212,7 +1209,7 @@ public fun F16.clamp(min: F16, max: F16): F16 {
  */
 public fun F16.clampMagnitude(limit: F16): F16 {
     check(limit >= F16.fromFloat(0.0f)) { "limit must be non-negative and not NaN" }
-    val limit1 = F16.fromFloat(abs(limit.toFloat()))
+    val limit1 = F16.fromFloat(kmFabsf32(limit.toFloat()))
     // Canonicalises -0.0 to 0.0
     return this.clamp(-limit1, limit1)
 }
@@ -1270,7 +1267,7 @@ public fun <R> F16.clampTo(range: R): F16 where R : ClampBounds<F16> = range.cla
  * }
  * ```
  */
-public fun F16.abs(): F16 = fabs(this)
+public fun F16.abs(): F16 = floatUnaryWithLayout("fabs", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns a number that represents the sign of `self`.
@@ -1297,7 +1294,7 @@ public fun F16.signum(): F16 =
     if (this.isNaN()) {
         F16.NAN
     } else {
-        F16.fromFloat(1.0f).copysign(this)
+        F16.fromFloat(kmCopysignf32((F16.fromFloat(1.0f)).toFloat(), this.toFloat()))
     }
 
 /**
@@ -1338,35 +1335,35 @@ public fun F16.copysign(sign: F16): F16 = copysignf16(this, sign)
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun F16.algebraicAdd(rhs: F16): F16 = faddAlgebraic(this, rhs)
+public fun F16.algebraicAdd(rhs: F16): F16 = floatBinaryWithLayout("fadd", this, rhs, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Float subtraction that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun F16.algebraicSub(rhs: F16): F16 = fsubAlgebraic(this, rhs)
+public fun F16.algebraicSub(rhs: F16): F16 = floatBinaryWithLayout("fsub", this, rhs, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Float multiplication that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun F16.algebraicMul(rhs: F16): F16 = fmulAlgebraic(this, rhs)
+public fun F16.algebraicMul(rhs: F16): F16 = floatBinaryWithLayout("fmul", this, rhs, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Float division that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun F16.algebraicDiv(rhs: F16): F16 = fdivAlgebraic(this, rhs)
+public fun F16.algebraicDiv(rhs: F16): F16 = floatBinaryWithLayout("fdiv", this, rhs, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Float remainder that allows optimizations based on algebraic rules.
  *
  * See [algebraic operators](primitive@f32#algebraic-operators) for more info.
  */
-public fun F16.algebraicRem(rhs: F16): F16 = fremAlgebraic(this, rhs)
+public fun F16.algebraicRem(rhs: F16): F16 = floatBinaryWithLayout("frem", this, rhs, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns `self` if the value is not NaN, otherwise returns `replacement`
@@ -1420,7 +1417,7 @@ public fun F16.nanTo(replacement: F16): F16 =
  * }
  * ```
  */
-public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.floor(this)
+public fun F16.floor(): F16 = floatUnaryWithLayout("floor", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the smallest integer greater than or equal to `self`.
@@ -1441,7 +1438,7 @@ public fun F16.floor(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.flo
  * }
  * ```
  */
-public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.ceil(this)
+public fun F16.ceil(): F16 = floatUnaryWithLayout("ceil", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the nearest integer to `self`. If a value is half-way between two
@@ -1469,7 +1466,7 @@ public fun F16.ceil(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.ceil
  * }
  * ```
  */
-public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.round(this)
+public fun F16.round(): F16 = floatUnaryWithLayout("round", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the nearest integer to a number. Rounds half-way cases to the number
@@ -1495,7 +1492,7 @@ public fun F16.round(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.rou
  * }
  * ```
  */
-public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.roundTiesEven(this)
+public fun F16.roundTiesEven(): F16 = floatUnaryWithLayout("round_ties_even", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the integer part of `self`.
@@ -1519,7 +1516,7 @@ public fun F16.roundTiesEven(): F16 = io.github.kotlinmania.rustlang.core.intrin
  * }
  * ```
  */
-public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.trunc(this)
+public fun F16.trunc(): F16 = floatUnaryWithLayout("trunc", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the fractional part of `self`.
@@ -1542,7 +1539,7 @@ public fun F16.trunc(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.tru
  * }
  * ```
  */
-public fun F16.fract(): F16 = this - F16.fromFloat(truncate(this.toFloat()))
+public fun F16.fract(): F16 = this - F16.fromFloat(kmTruncf32(this.toFloat()))
 
 /**
  * Fused multiply-add. Computes `(self * a) + b` with only one rounding
@@ -1581,7 +1578,7 @@ public fun F16.fract(): F16 = this - F16.fromFloat(truncate(this.toFloat()))
  * }
  * ```
  */
-public fun F16.mulAdd(a: F16, b: F16): F16 = F16.fromDouble(fma(this.toDouble(), a.toDouble(), b.toDouble()))
+public fun F16.mulAdd(a: F16, b: F16): F16 = floatFmaWithLayout(this, a, b, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Computes `(self * a) + b` with nondeterministic rounding.
@@ -1613,7 +1610,7 @@ public fun F16.mulAdd(a: F16, b: F16): F16 = F16.fromDouble(fma(this.toDouble(),
  * }
  * ```
  */
-public fun F16.mulAddRelaxed(a: F16, b: F16): F16 = fmuladd(this, a, b)
+public fun F16.mulAddRelaxed(a: F16, b: F16): F16 = floatFmaWithLayout(this, a, b, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Calculates Euclidean division, the matching method for `remEuclid`.
@@ -1649,7 +1646,7 @@ public fun F16.mulAddRelaxed(a: F16, b: F16): F16 = fmuladd(this, a, b)
  * ```
  */
 public fun F16.divEuclid(rhs: F16): F16 {
-    val q = F16.fromFloat(truncate((this / rhs).toFloat()))
+    val q = F16.fromFloat(kmTruncf32((this / rhs).toFloat()))
     if (this % rhs < F16.fromFloat(0.0f)) {
         return if (rhs > F16.fromFloat(0.0f)) {
             q - F16.fromFloat(1.0f)
@@ -1699,7 +1696,7 @@ public fun F16.divEuclid(rhs: F16): F16 {
 public fun F16.remEuclid(rhs: F16): F16 {
     val r = this % rhs
     return if (r < F16.fromFloat(0.0f)) {
-        r + F16.fromFloat(abs(rhs.toFloat()))
+        r + F16.fromFloat(kmFabsf32(rhs.toFloat()))
     } else {
         r
     }
@@ -1737,7 +1734,7 @@ public fun F16.remEuclid(rhs: F16): F16 {
  * }
  * ```
  */
-public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.intrinsics.powi(this, n)
+public fun F16.powi(n: Int): F16 = floatPowiWithLayout(this, n, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the square root of a number.
@@ -1766,7 +1763,7 @@ public fun F16.powi(n: Int): F16 = io.github.kotlinmania.rustlang.core.intrinsic
  * }
  * ```
  */
-public fun F16.sqrt(): F16 = io.github.kotlinmania.rustlang.core.intrinsics.sqrt(this)
+public fun F16.sqrt(): F16 = floatUnaryWithLayout("sqrt", this, PrimitiveLayouts.F16_LAYOUT)
 
 /**
  * Returns the cube root of a number.

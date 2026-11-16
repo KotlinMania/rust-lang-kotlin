@@ -2,11 +2,11 @@
 package io.github.kotlinmania.rustlang.alloc.boxed.convert
 
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.alloc.StaticAllocator
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -153,17 +153,17 @@ public fun <T, A : Allocator> boxedSliceAsArrayUnchecked(boxedSlice: List<T>, n:
 public fun <T, A : Allocator> tryFromBoxTArraynA(boxedSlice: List<T>, n: Int): Result<List<T>, List<T>> =
     if (boxedSlice.size == n) {
         // SAFETY: Checked length.
-        Result.Ok(boxedSliceAsArrayUnchecked(boxedSlice))
+        Result.Ok<List<T>, List<T>>(boxedSliceAsArrayUnchecked(boxedSlice))
     } else {
-        Result.Err(boxedSlice)
+        Result.Err<List<T>, List<T>>(boxedSlice)
     }
 
 public fun <T, A : Allocator, Dst> downcastAny(thisRef: T, typeIdTFn: (T) -> Any?): Result<Dst, T> =
     if (typeIdTFn(thisRef) == RustTypeId.of<Dst>()) {
         // SAFETY: The type is correct
-        Result.Ok(T.castUnchecked(thisRef))
+        Result.Ok<Dst, T>(T.castUnchecked(thisRef))
     } else {
-        Result.Err(thisRef)
+        Result.Err<Dst, T>(thisRef)
     }
 
 /**
@@ -236,7 +236,7 @@ public inline fun <A : Allocator, reified T> RustAny.downcastUnchecked(): T {
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.error.Error
  * import std.fmt
  *
@@ -248,7 +248,7 @@ public inline fun <A : Allocator, reified T> RustAny.downcastUnchecked(): T {
  * val anError = AnError()
  * check(0 == sizeOfVal(anError))
  * val aBoxedError = Holder.from(anError)
- * check(sizeOf<Any>(typeLayoutT = ObjectSlotLayout<Any>()) == sizeOfVal(aBoxedError))
+ * check(sizeOf<Any>(typeLayoutT = UnresolvedTypeLayout<Any>()) == sizeOfVal(aBoxedError))
  * ```
  */
 public fun <E> fromBoxAny(err: E): Any = err
@@ -259,12 +259,12 @@ public fun <E> fromBoxAny(err: E): Any = err
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.error.Error
  *
  * val aStringError = "a string error".toString()
  * val aBoxedError = Holder.from(aStringError)
- * check(sizeOf<Any>(typeLayoutT = ObjectSlotLayout<Any>()) == sizeOfVal(aBoxedError))
+ * check(sizeOf<Any>(typeLayoutT = UnresolvedTypeLayout<Any>()) == sizeOfVal(aBoxedError))
  * ```
  */
 public fun fromBoxAny(err: String): Any {
@@ -277,14 +277,10 @@ public fun fromBoxAny(err: String): Any {
                 value = v
             }
 
-        public open fun fmt(f: StringBuilder) {
-            f.append((this.value).toString())
-        }
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
         // Purposefully skip printing "StringError(..)"
-        public open fun fmtDebug(f: StringBuilder) {
-            f.append((this.value).toString())
-        }
+        public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this.value).toString()); Result.Ok(Unit) }
     }
     return StringError(err)
 }
@@ -292,9 +288,9 @@ public fun fromBoxAny(err: String): Any {
 public fun <T, A : Allocator, Dst> downcastError(thisRef: T): Result<Dst, T> =
     if (errorTypeId<T>(thisRef) == RustTypeId.of<Dst>()) {
         // SAFETY: The type is correct
-        Result.Ok(T.castUnchecked(thisRef))
+        Result.Ok<Dst, T>(T.castUnchecked(thisRef))
     } else {
-        Result.Err(thisRef)
+        Result.Err<Dst, T>(thisRef)
     }
 
 /**

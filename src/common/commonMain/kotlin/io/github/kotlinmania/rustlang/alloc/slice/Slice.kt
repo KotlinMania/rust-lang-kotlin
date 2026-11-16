@@ -10,11 +10,11 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -253,7 +253,7 @@ public fun <T, K> List<T>.sortByKey(f: (T) -> K) {
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K>) {
+public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K> = UnresolvedTypeLayout()) {
     // Helper macro for indexing our vector by the smallest possible type, to reduce allocation.
     val len = this.size
     if (len < 2) {
@@ -261,7 +261,7 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
     }
     // Avoids binary-size usage in cases where the alignment doesn't work out to make this
     // beneficial or on 32-bit platforms.
-    val isUsingU32AsIdxTypeHelpful = sizeOf<Pair<K, UInt>>(typeLayoutT = ObjectSlotLayout<Pair<K, UInt>>()) < sizeOf<Pair<K, Int>>(typeLayoutT = ObjectSlotLayout<Pair<K, Int>>())
+    val isUsingU32AsIdxTypeHelpful = sizeOf<Pair<K, UInt>>(typeLayoutT = UnresolvedTypeLayout<Pair<K, UInt>>()) < sizeOf<Pair<K, Int>>(typeLayoutT = UnresolvedTypeLayout<Pair<K, Int>>())
     // It's possible to instantiate this for u8 and u16 but, doing so is very wasteful in terms
     // of compile-times and binary-size, the peak saved heap memory for u16 is (u8 + u16) -> 4
     // bytes * u16.Max vs (u8 + u32) -> 8 bytes * u16.Max, the saved heap memory is at peak
@@ -305,7 +305,7 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
  * // Here, `s` and `x` can be modified independently.
  * ```
  */
-public fun <T> List<T>.toVec(): List<T> = this.toVecIn(Global)
+public fun <T> List<T>.toVec(): List<T> = this.toVecIn(Global())
 
 /**
  * Copies `self` into a new `List` with an allocator.
@@ -405,7 +405,7 @@ public fun <T, A : Allocator> List<T>.intoVec(): List<T> {
  * "0123456789abcdef".encodeToByteArray().repeat(Int.MAX_VALUE)
  * ```
  */
-public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
+public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     if (n == 0) {
         return mutableListOf()
     }
@@ -414,7 +414,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
     // `2 ^ expn` is the number represented by the leftmost '1' bit of `n`,
     // and `rem` is the remaining part of `n`.
     // Using `List` to access `setLen()`.
-    val capacity = (rustCheckedMul(this.size, n) ?: error("capacity overflow"))
+    val capacity = (this.size.checkedMul(n) ?: error("capacity overflow"))
     val buf = ArrayList<T>(capacity)
     // `2 ^ expn` repetition is done by doubling `buf` `expn`-times.
     buf.extend(this)
@@ -431,7 +431,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
             // which is tracked via `m` - when `m == 0`, we've written `mostSignificantBit(n)`
             // elements to the buffer.
             run {
-                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
+                copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), buf.size, typeLayoutT = typeLayoutT)
             }
             // `buf` has capacity of `self.len() * n`.
             val bufLen = buf.size
@@ -456,7 +456,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
         // space with copies of the previous `len` elements.
         run {
             // This is non-overlapping since `2 ^ expn> rem`.
-            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (ObjectSlotLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
+            copyNonoverlapping<T>(buf.asPtr(), MutPtr(((buf.asMutPtr())).rawAddress + ((buf.size).toLong() * (UnresolvedTypeLayout<*>()).strideBytes)), remLen, typeLayoutT = typeLayoutT)
             // `buf.len() + remLen` equals to `buf.capacity()` (`= self.len() * n`).
             buf.setLen(capacity)
         }

@@ -12,11 +12,12 @@ import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public class DebugStruct(
@@ -123,7 +124,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // SAFETY: We can assume the strings in the template are valid.
             val s2 =
                 run {
-                    val s1 = rawSliceList(template.asPtr(), n1.toInt(), PrimitiveLayouts.U8)
+                    val s1 = linearSliceView(template.asPtr(), n1.toInt(), PrimitiveLayouts.U8)
                     template = template.add(n1.toInt())
                     s1
                 }
@@ -135,7 +136,7 @@ public fun write(output: Write, fmt: Arguments): Result {
                 run {
                     val len = Int.from(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
                     template = template.add(2)
-                    val s3 = rawSliceList(template.asPtr(), len.toInt(), PrimitiveLayouts.U8)
+                    val s3 = linearSliceView(template.asPtr(), len.toInt(), PrimitiveLayouts.U8)
                     template = template.add(len)
                     s3
                 }
@@ -146,7 +147,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // Having this as a separate case improves performance for the common case.
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, FormattingOptions.new()))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             }
             argIndex += 1
         } else {
@@ -189,7 +190,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             }
             // SAFETY: We can assume the template only refers to arguments that exist.
             run {
-                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok<*> -> tryResult.value; is RustResult.Err<*> -> return RustResult.Err(tryResult.error) }
+                when (val tryResult = args.add(argIndex).asRef().fmt(Formatter.new(output, opt))) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             }
             argIndex += 1
         }
@@ -252,8 +253,8 @@ public fun String.fmt(f: Formatter): Result {
         printableRange.end += nonPrintableStart
         // SAFETY: the position was derived from an iterator, so is known to be within bounds, and at a char boundary
         rest = rest.getUnchecked(nonPrintableStart until Int.MAX_VALUE)
-        val chars = rest.rustStrChars()
-        when (val matchVal = chars.nextCodeOrNull()?.toChar()) {
+        val chars = rest.chars()
+        when (val matchVal = chars.next()) {
             null -> {}
             else -> {
                 val c = matchVal
@@ -279,7 +280,7 @@ public fun Char.fmt(f: Formatter): Result {
     return f.append('\'')
 }
 
-public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T>): Result {
+public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result {
     // Since the formatting will be identical for all pointer types, erase the pointee type and
     // metadata type to reduce the amount of codegen work needed for each distinct type.
     val ptr: ConstPtr = (typeLayoutT).readNative((this).rawAddress)
@@ -291,7 +292,7 @@ public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T>): Result {
     }
 }
 
-public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T>): Result = (constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress))).fmt(f)
+public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result = (constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress))).fmt(f)
 
 public fun <T> T.fmt(f: Formatter): Result = (constPtrFromRustCast(this)).fmt(f)
 
@@ -453,10 +454,10 @@ public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
     val d = DebugStruct(f, "RefCell")
     run {
         val matchVal = this.tryBorrow()
-        when (matchVal) { is RustResult.Ok<*> -> {
+        when (matchVal) { is RustResult.Ok -> {
             val borrow = matchVal.value
             d.field("value", borrow)
-        }; is RustResult.Err<*> -> {
+        }; is RustResult.Err -> {
             d.field("value", "<borrowed>")
         } }
     }

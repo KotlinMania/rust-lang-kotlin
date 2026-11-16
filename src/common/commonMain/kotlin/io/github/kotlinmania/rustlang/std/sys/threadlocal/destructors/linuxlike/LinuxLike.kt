@@ -1,12 +1,14 @@
 // port-lint: source sys/thread_local/destructors/linux_like.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 // Destructor registration for Linux-like systems.
 //
@@ -35,7 +37,7 @@ public fun interface FnCallback1 {
 public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
     open class CInt(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<CInt>,
+        public val fieldLayout: TypeLayout<CInt> = UnresolvedTypeLayout(),
     ) {
         public var field0: CInt
             get() = value
@@ -47,7 +49,7 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(value: CInt, fieldLayout: TypeLayout<CInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+        public constructor(value: CInt, fieldLayout: TypeLayout<CInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
         public fun pointerLayout(): TypeLayout<CInt> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CInt(ptr, layout) }, { it.value })
     }
@@ -56,7 +58,7 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
     val CXA_THREAD_ATEXIT_IMPL: FnCallback1? = null
     if (CXA_THREAD_ATEXIT_IMPL != null && DSO_HANDLE != null && !dso.isNull()) {
         run {
-            f(transmute<RegisterDtorCallback, FnCallback>(dtor), t, mutPtrFromRustCast(dso))
+            f(transmute(dtor), t, mutPtrFromRustCast(dso))
         }
     } else {
         run {

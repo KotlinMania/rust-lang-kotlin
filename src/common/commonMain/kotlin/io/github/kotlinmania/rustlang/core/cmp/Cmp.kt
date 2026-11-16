@@ -18,8 +18,10 @@ import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
 import io.github.kotlinmania.rustlang.core.marker.Tuple
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
@@ -572,7 +574,7 @@ public sealed class Ordering(
  */
 public open class Reverse<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) : PartialOrd<Reverse<T>>, Ord<Reverse<T>> {
     public var field0: T
         get() = value
@@ -584,19 +586,19 @@ public open class Reverse<T>(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Reverse<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Reverse<T>(ptr, layout) }, { it.value })
 
     public override fun partialCmp(other: Reverse<T>): Ordering? = other.value.partialCmp(this.value)
 
-    public override fun lt(other: Reverse<T>): Boolean = (compareNaturalOrder(other.value, this.value) < 0)
+    public override fun lt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) < 0)
 
-    public override fun le(other: Reverse<T>): Boolean = (compareNaturalOrder(other.value, this.value) <= 0)
+    public override fun le(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) <= 0)
 
-    public override fun gt(other: Reverse<T>): Boolean = (compareNaturalOrder(other.value, this.value) > 0)
+    public override fun gt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) > 0)
 
-    public override fun ge(other: Reverse<T>): Boolean = (compareNaturalOrder(other.value, this.value) >= 0)
+    public override fun ge(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) >= 0)
 
     public override fun cmp(other: Reverse<T>): Ordering = other.value.cmp(this.value)
 
@@ -624,13 +626,13 @@ public open class KeyAndValue<K, V>(
 
     public override fun partialCmp(other: KeyAndValue<K, V>): Ordering? = this.key.partialCmp(other.key)
 
-    public override fun lt(other: KeyAndValue<K, V>): Boolean = (compareNaturalOrder(this.key, other.key) < 0)
+    public override fun lt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) < 0)
 
-    public override fun le(other: KeyAndValue<K, V>): Boolean = (compareNaturalOrder(this.key, other.key) <= 0)
+    public override fun le(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) <= 0)
 
-    public override fun gt(other: KeyAndValue<K, V>): Boolean = (compareNaturalOrder(this.key, other.key) > 0)
+    public override fun gt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) > 0)
 
-    public override fun ge(other: KeyAndValue<K, V>): Boolean = (compareNaturalOrder(this.key, other.key) >= 0)
+    public override fun ge(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) >= 0)
 
     public override fun cmp(other: KeyAndValue<K, V>): Ordering = this.key.cmp(other.key)
 
@@ -1295,15 +1297,15 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check `==` and `<` separately to do rather than needing to calculate
      * (then optimize out) the three-way `Ordering` result.
      */
-    public fun chainingLess(other: Rhs): ControlFlow<Boolean> = defaultChainingImpl(this, other, { it.isLt() })
+    public fun chainingLess(other: Rhs): ControlFlow<Boolean, Unit> = defaultChainingImpl(this, other, { it.isLt() })
 
     /**
      * Same as `__chaining_less`, but for `>`/`>=` instead of `<`/`<=`.
      */
-    public fun chainingGreater(other: Rhs): ControlFlow<Boolean> = defaultChainingImpl(this, other, { it.isGt() })
+    public fun chainingGreater(other: Rhs): ControlFlow<Boolean, Unit> = defaultChainingImpl(this, other, { it.isGt() })
 }
 
-public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, partialCmpTFn: (T, Rhs) -> Ordering?): ControlFlow<Boolean> where T : PartialOrd<U> {
+public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, partialCmpTFn: (T, Rhs) -> Ordering?): ControlFlow<Boolean, Unit> where T : PartialOrd<U> {
     // It's important that this only call `partialCmp` once, not call `eq` then
     // one of the relational operators.  We don't want to `bcmp`-then-`memcp` a
     // `String`, for example, or similarly for other data structures (#108157).
@@ -1561,7 +1563,7 @@ public fun <T, K> maxByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
  * ```
  */
 public fun <T> minmax(v1: T, v2: T): List<T> where T : Ord<T> =
-    if ((compareNaturalOrder(v2, v1) < 0)) {
+    if ((kmCompareValues(v2, v1) < 0)) {
         listOf(v2, v1)
     } else {
         listOf(v1, v2)
@@ -1904,7 +1906,7 @@ public fun Boolean.gt(other: Boolean): Boolean = this > other
 
 public fun Boolean.ge(other: Boolean): Boolean = this >= other
 
-public fun Boolean.chainingLess(other: Boolean): ControlFlow<Boolean> {
+public fun Boolean.chainingLess(other: Boolean): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -1913,7 +1915,7 @@ public fun Boolean.chainingLess(other: Boolean): ControlFlow<Boolean> {
     }
 }
 
-public fun Boolean.chainingGreater(other: Boolean): ControlFlow<Boolean> {
+public fun Boolean.chainingGreater(other: Boolean): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -1941,7 +1943,7 @@ public fun F16.gt(other: F16): Boolean = this > other
 
 public fun F16.ge(other: F16): Boolean = this >= other
 
-public fun F16.chainingLess(other: F16): ControlFlow<Boolean> {
+public fun F16.chainingLess(other: F16): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -1950,7 +1952,7 @@ public fun F16.chainingLess(other: F16): ControlFlow<Boolean> {
     }
 }
 
-public fun F16.chainingGreater(other: F16): ControlFlow<Boolean> {
+public fun F16.chainingGreater(other: F16): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -1978,7 +1980,7 @@ public fun kotlin.Float.gt(other: kotlin.Float): Boolean = this > other
 
 public fun kotlin.Float.ge(other: kotlin.Float): Boolean = this >= other
 
-public fun kotlin.Float.chainingLess(other: kotlin.Float): ControlFlow<Boolean> {
+public fun kotlin.Float.chainingLess(other: kotlin.Float): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -1987,7 +1989,7 @@ public fun kotlin.Float.chainingLess(other: kotlin.Float): ControlFlow<Boolean> 
     }
 }
 
-public fun kotlin.Float.chainingGreater(other: kotlin.Float): ControlFlow<Boolean> {
+public fun kotlin.Float.chainingGreater(other: kotlin.Float): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2015,7 +2017,7 @@ public fun Double.gt(other: Double): Boolean = this > other
 
 public fun Double.ge(other: Double): Boolean = this >= other
 
-public fun Double.chainingLess(other: Double): ControlFlow<Boolean> {
+public fun Double.chainingLess(other: Double): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2024,7 +2026,7 @@ public fun Double.chainingLess(other: Double): ControlFlow<Boolean> {
     }
 }
 
-public fun Double.chainingGreater(other: Double): ControlFlow<Boolean> {
+public fun Double.chainingGreater(other: Double): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2052,7 +2054,7 @@ public fun F128.gt(other: F128): Boolean = this > other
 
 public fun F128.ge(other: F128): Boolean = this >= other
 
-public fun F128.chainingLess(other: F128): ControlFlow<Boolean> {
+public fun F128.chainingLess(other: F128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2061,7 +2063,7 @@ public fun F128.chainingLess(other: F128): ControlFlow<Boolean> {
     }
 }
 
-public fun F128.chainingGreater(other: F128): ControlFlow<Boolean> {
+public fun F128.chainingGreater(other: F128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2104,7 +2106,7 @@ public fun Char.gt(other: Char): Boolean = this > other
 
 public fun Char.ge(other: Char): Boolean = this >= other
 
-public fun Char.chainingLess(other: Char): ControlFlow<Boolean> {
+public fun Char.chainingLess(other: Char): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2113,7 +2115,7 @@ public fun Char.chainingLess(other: Char): ControlFlow<Boolean> {
     }
 }
 
-public fun Char.chainingGreater(other: Char): ControlFlow<Boolean> {
+public fun Char.chainingGreater(other: Char): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2145,7 +2147,7 @@ public fun Char.max(other: Char): Char {
     return Char.fromU32Unchecked(c)
 }
 
-public fun Int.partialCmp(other: Int): Ordering? = threeWayCompare(this, other)
+public fun Int.partialCmp(other: Int): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Int.lt(other: Int): Boolean = this < other
 
@@ -2155,7 +2157,7 @@ public fun Int.gt(other: Int): Boolean = this > other
 
 public fun Int.ge(other: Int): Boolean = this >= other
 
-public fun Int.chainingLess(other: Int): ControlFlow<Boolean> {
+public fun Int.chainingLess(other: Int): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2164,7 +2166,7 @@ public fun Int.chainingLess(other: Int): ControlFlow<Boolean> {
     }
 }
 
-public fun Int.chainingGreater(other: Int): ControlFlow<Boolean> {
+public fun Int.chainingGreater(other: Int): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2173,7 +2175,7 @@ public fun Int.chainingGreater(other: Int): ControlFlow<Boolean> {
     }
 }
 
-public fun Int.cmp(other: Int): Ordering = threeWayCompare(this, other)
+public fun Int.cmp(other: Int): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Int.clamp(min: Int, max: Int): Int {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2190,7 +2192,7 @@ public fun Int.min(other: Int): Int = integerMin(this, other)
 
 public fun Int.max(other: Int): Int = integerMax(this, other)
 
-public fun UByte.partialCmp(other: UByte): Ordering? = threeWayCompare(this, other)
+public fun UByte.partialCmp(other: UByte): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UByte.lt(other: UByte): Boolean = this < other
 
@@ -2200,7 +2202,7 @@ public fun UByte.gt(other: UByte): Boolean = this > other
 
 public fun UByte.ge(other: UByte): Boolean = this >= other
 
-public fun UByte.chainingLess(other: UByte): ControlFlow<Boolean> {
+public fun UByte.chainingLess(other: UByte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2209,7 +2211,7 @@ public fun UByte.chainingLess(other: UByte): ControlFlow<Boolean> {
     }
 }
 
-public fun UByte.chainingGreater(other: UByte): ControlFlow<Boolean> {
+public fun UByte.chainingGreater(other: UByte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2218,7 +2220,7 @@ public fun UByte.chainingGreater(other: UByte): ControlFlow<Boolean> {
     }
 }
 
-public fun UByte.cmp(other: UByte): Ordering = threeWayCompare(this, other)
+public fun UByte.cmp(other: UByte): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UByte.clamp(min: UByte, max: UByte): UByte {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2235,7 +2237,7 @@ public fun UByte.min(other: UByte): UByte = integerMin(this, other)
 
 public fun UByte.max(other: UByte): UByte = integerMax(this, other)
 
-public fun UShort.partialCmp(other: UShort): Ordering? = threeWayCompare(this, other)
+public fun UShort.partialCmp(other: UShort): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UShort.lt(other: UShort): Boolean = this < other
 
@@ -2245,7 +2247,7 @@ public fun UShort.gt(other: UShort): Boolean = this > other
 
 public fun UShort.ge(other: UShort): Boolean = this >= other
 
-public fun UShort.chainingLess(other: UShort): ControlFlow<Boolean> {
+public fun UShort.chainingLess(other: UShort): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2254,7 +2256,7 @@ public fun UShort.chainingLess(other: UShort): ControlFlow<Boolean> {
     }
 }
 
-public fun UShort.chainingGreater(other: UShort): ControlFlow<Boolean> {
+public fun UShort.chainingGreater(other: UShort): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2263,7 +2265,7 @@ public fun UShort.chainingGreater(other: UShort): ControlFlow<Boolean> {
     }
 }
 
-public fun UShort.cmp(other: UShort): Ordering = threeWayCompare(this, other)
+public fun UShort.cmp(other: UShort): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UShort.clamp(min: UShort, max: UShort): UShort {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2280,7 +2282,7 @@ public fun UShort.min(other: UShort): UShort = integerMin(this, other)
 
 public fun UShort.max(other: UShort): UShort = integerMax(this, other)
 
-public fun UInt.partialCmp(other: UInt): Ordering? = threeWayCompare(this, other)
+public fun UInt.partialCmp(other: UInt): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UInt.lt(other: UInt): Boolean = this < other
 
@@ -2290,7 +2292,7 @@ public fun UInt.gt(other: UInt): Boolean = this > other
 
 public fun UInt.ge(other: UInt): Boolean = this >= other
 
-public fun UInt.chainingLess(other: UInt): ControlFlow<Boolean> {
+public fun UInt.chainingLess(other: UInt): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2299,7 +2301,7 @@ public fun UInt.chainingLess(other: UInt): ControlFlow<Boolean> {
     }
 }
 
-public fun UInt.chainingGreater(other: UInt): ControlFlow<Boolean> {
+public fun UInt.chainingGreater(other: UInt): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2308,7 +2310,7 @@ public fun UInt.chainingGreater(other: UInt): ControlFlow<Boolean> {
     }
 }
 
-public fun UInt.cmp(other: UInt): Ordering = threeWayCompare(this, other)
+public fun UInt.cmp(other: UInt): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun UInt.clamp(min: UInt, max: UInt): UInt {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2325,7 +2327,7 @@ public fun UInt.min(other: UInt): UInt = integerMin(this, other)
 
 public fun UInt.max(other: UInt): UInt = integerMax(this, other)
 
-public fun ULong.partialCmp(other: ULong): Ordering? = threeWayCompare(this, other)
+public fun ULong.partialCmp(other: ULong): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun ULong.lt(other: ULong): Boolean = this < other
 
@@ -2335,7 +2337,7 @@ public fun ULong.gt(other: ULong): Boolean = this > other
 
 public fun ULong.ge(other: ULong): Boolean = this >= other
 
-public fun ULong.chainingLess(other: ULong): ControlFlow<Boolean> {
+public fun ULong.chainingLess(other: ULong): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2344,7 +2346,7 @@ public fun ULong.chainingLess(other: ULong): ControlFlow<Boolean> {
     }
 }
 
-public fun ULong.chainingGreater(other: ULong): ControlFlow<Boolean> {
+public fun ULong.chainingGreater(other: ULong): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2353,7 +2355,7 @@ public fun ULong.chainingGreater(other: ULong): ControlFlow<Boolean> {
     }
 }
 
-public fun ULong.cmp(other: ULong): Ordering = threeWayCompare(this, other)
+public fun ULong.cmp(other: ULong): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun ULong.clamp(min: ULong, max: ULong): ULong {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2370,7 +2372,7 @@ public fun ULong.min(other: ULong): ULong = integerMin(this, other)
 
 public fun ULong.max(other: ULong): ULong = integerMax(this, other)
 
-public fun U128.partialCmp(other: U128): Ordering? = threeWayCompare(this, other)
+public fun U128.partialCmp(other: U128): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun U128.lt(other: U128): Boolean = this < other
 
@@ -2380,7 +2382,7 @@ public fun U128.gt(other: U128): Boolean = this > other
 
 public fun U128.ge(other: U128): Boolean = this >= other
 
-public fun U128.chainingLess(other: U128): ControlFlow<Boolean> {
+public fun U128.chainingLess(other: U128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2389,7 +2391,7 @@ public fun U128.chainingLess(other: U128): ControlFlow<Boolean> {
     }
 }
 
-public fun U128.chainingGreater(other: U128): ControlFlow<Boolean> {
+public fun U128.chainingGreater(other: U128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2398,7 +2400,7 @@ public fun U128.chainingGreater(other: U128): ControlFlow<Boolean> {
     }
 }
 
-public fun U128.cmp(other: U128): Ordering = threeWayCompare(this, other)
+public fun U128.cmp(other: U128): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun U128.clamp(min: U128, max: U128): U128 {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2415,7 +2417,7 @@ public fun U128.min(other: U128): U128 = integerMin(this, other)
 
 public fun U128.max(other: U128): U128 = integerMax(this, other)
 
-public fun Byte.partialCmp(other: Byte): Ordering? = threeWayCompare(this, other)
+public fun Byte.partialCmp(other: Byte): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Byte.lt(other: Byte): Boolean = this < other
 
@@ -2425,7 +2427,7 @@ public fun Byte.gt(other: Byte): Boolean = this > other
 
 public fun Byte.ge(other: Byte): Boolean = this >= other
 
-public fun Byte.chainingLess(other: Byte): ControlFlow<Boolean> {
+public fun Byte.chainingLess(other: Byte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2434,7 +2436,7 @@ public fun Byte.chainingLess(other: Byte): ControlFlow<Boolean> {
     }
 }
 
-public fun Byte.chainingGreater(other: Byte): ControlFlow<Boolean> {
+public fun Byte.chainingGreater(other: Byte): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2443,7 +2445,7 @@ public fun Byte.chainingGreater(other: Byte): ControlFlow<Boolean> {
     }
 }
 
-public fun Byte.cmp(other: Byte): Ordering = threeWayCompare(this, other)
+public fun Byte.cmp(other: Byte): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Byte.clamp(min: Byte, max: Byte): Byte {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2460,7 +2462,7 @@ public fun Byte.min(other: Byte): Byte = integerMin(this, other)
 
 public fun Byte.max(other: Byte): Byte = integerMax(this, other)
 
-public fun Short.partialCmp(other: Short): Ordering? = threeWayCompare(this, other)
+public fun Short.partialCmp(other: Short): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Short.lt(other: Short): Boolean = this < other
 
@@ -2470,7 +2472,7 @@ public fun Short.gt(other: Short): Boolean = this > other
 
 public fun Short.ge(other: Short): Boolean = this >= other
 
-public fun Short.chainingLess(other: Short): ControlFlow<Boolean> {
+public fun Short.chainingLess(other: Short): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2479,7 +2481,7 @@ public fun Short.chainingLess(other: Short): ControlFlow<Boolean> {
     }
 }
 
-public fun Short.chainingGreater(other: Short): ControlFlow<Boolean> {
+public fun Short.chainingGreater(other: Short): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2488,7 +2490,7 @@ public fun Short.chainingGreater(other: Short): ControlFlow<Boolean> {
     }
 }
 
-public fun Short.cmp(other: Short): Ordering = threeWayCompare(this, other)
+public fun Short.cmp(other: Short): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Short.clamp(min: Short, max: Short): Short {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2505,7 +2507,7 @@ public fun Short.min(other: Short): Short = integerMin(this, other)
 
 public fun Short.max(other: Short): Short = integerMax(this, other)
 
-public fun Long.partialCmp(other: Long): Ordering? = threeWayCompare(this, other)
+public fun Long.partialCmp(other: Long): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Long.lt(other: Long): Boolean = this < other
 
@@ -2515,7 +2517,7 @@ public fun Long.gt(other: Long): Boolean = this > other
 
 public fun Long.ge(other: Long): Boolean = this >= other
 
-public fun Long.chainingLess(other: Long): ControlFlow<Boolean> {
+public fun Long.chainingLess(other: Long): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2524,7 +2526,7 @@ public fun Long.chainingLess(other: Long): ControlFlow<Boolean> {
     }
 }
 
-public fun Long.chainingGreater(other: Long): ControlFlow<Boolean> {
+public fun Long.chainingGreater(other: Long): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2533,7 +2535,7 @@ public fun Long.chainingGreater(other: Long): ControlFlow<Boolean> {
     }
 }
 
-public fun Long.cmp(other: Long): Ordering = threeWayCompare(this, other)
+public fun Long.cmp(other: Long): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun Long.clamp(min: Long, max: Long): Long {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)
@@ -2550,7 +2552,7 @@ public fun Long.min(other: Long): Long = integerMin(this, other)
 
 public fun Long.max(other: Long): Long = integerMax(this, other)
 
-public fun I128.partialCmp(other: I128): Ordering? = threeWayCompare(this, other)
+public fun I128.partialCmp(other: I128): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun I128.lt(other: I128): Boolean = this < other
 
@@ -2560,7 +2562,7 @@ public fun I128.gt(other: I128): Boolean = this > other
 
 public fun I128.ge(other: I128): Boolean = this >= other
 
-public fun I128.chainingLess(other: I128): ControlFlow<Boolean> {
+public fun I128.chainingLess(other: I128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2569,7 +2571,7 @@ public fun I128.chainingLess(other: I128): ControlFlow<Boolean> {
     }
 }
 
-public fun I128.chainingGreater(other: I128): ControlFlow<Boolean> {
+public fun I128.chainingGreater(other: I128): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue()
@@ -2578,7 +2580,7 @@ public fun I128.chainingGreater(other: I128): ControlFlow<Boolean> {
     }
 }
 
-public fun I128.cmp(other: I128): Ordering = threeWayCompare(this, other)
+public fun I128.cmp(other: I128): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
 
 public fun I128.clamp(min: I128, max: I128): I128 {
     constAssert(min <= max, "min > max", "min > max. min = {min:?}, max = {max:?}", min, max)

@@ -1,10 +1,12 @@
 // port-lint: source collections/vec_deque/iter.rs
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.iter
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -81,9 +83,7 @@ public open class Iter<T>(
      */
     public open fun asSlices(): Pair<List<T>, List<T>> = Pair(this.i1.toList(), this.i2.toList())
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(this.i1.toList()).field(this.i2.toList()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(this.i1.toList()).field(this.i2.toList()).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(i1 = ArrayDeque(this.i1), i2 = ArrayDeque(this.i2))
@@ -105,11 +105,11 @@ public open class Iter<T>(
             }
         }
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val remaining = this.i1.advanceBy(n)
-        return when (remaining) { is Result.Ok<*> -> {
-            Result.Ok(Unit)
-        }; is Result.Err<*> -> {
+        return when (remaining) { is Result.Ok -> {
+            Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
+        }; is Result.Err -> {
             val n1 = remaining.error
             swap(this.i1, this.i2)
             this.i1.advanceBy(n1.get())
@@ -127,7 +127,7 @@ public open class Iter<T>(
     }
 
     public open fun <B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
-        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return this.i2.tryFold(acc, f)
     }
 
@@ -163,12 +163,12 @@ public open class Iter<T>(
             }
         }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> =
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         run {
             val matchVal = this.i2.advanceBackBy(n)
-            when (matchVal) { is Result.Ok<*> -> {
-                Result.Ok(Unit)
-            }; is Result.Err<*> -> {
+            when (matchVal) { is Result.Ok -> {
+                Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
+            }; is Result.Err -> {
                 val n1 = matchVal.error
                 swap(this.i1, this.i2)
                 this.i2.advanceBackBy(n1.get())
@@ -181,7 +181,7 @@ public open class Iter<T>(
     }
 
     public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
-        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return this.i1.tryRfold(acc, f)
     }
 

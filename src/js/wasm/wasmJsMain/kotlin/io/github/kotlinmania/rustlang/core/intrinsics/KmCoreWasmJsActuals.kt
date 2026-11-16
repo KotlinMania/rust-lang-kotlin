@@ -27,6 +27,18 @@ private external fun wasmKmOut2(): Int
 @JsFun("() => globalThis.kmCoreNapiV2.kmOut3()")
 private external fun wasmKmOut3(): Int
 
+@JsFun("() => globalThis.kmCoreNapiV2.kmOut4()")
+private external fun wasmKmOut4(): Int
+
+@JsFun("() => globalThis.kmCoreNapiV2.kmOut5()")
+private external fun wasmKmOut5(): Int
+
+@JsFun("() => globalThis.kmCoreNapiV2.kmOut6()")
+private external fun wasmKmOut6(): Int
+
+@JsFun("() => globalThis.kmCoreNapiV2.kmOut7()")
+private external fun wasmKmOut7(): Int
+
 @JsFun("(lo, hi) => globalThis.kmCoreNapiV2.kmLoadU8(lo, hi)")
 private external fun wasmKmLoadU8(lo: Int, hi: Int): Int
 
@@ -253,6 +265,257 @@ private external fun wasmKmSimdFmaF32x4(dLo: Int, dHi: Int, aLo: Int, aHi: Int, 
 
 @JsFun("(aLo, aHi, bLo, bHi, lLo, lHi) => globalThis.kmCoreNapiV2.kmSimdDotF32(aLo, aHi, bLo, bHi, lLo, lHi)")
 private external fun wasmKmSimdDotF32(aLo: Int, aHi: Int, bLo: Int, bHi: Int, lLo: Int, lHi: Int): Double
+
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCtpopU8(v)")
+private external fun wasmKmCtpopU8(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCtpopU16(v)")
+private external fun wasmKmCtpopU16(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCtpopU32(v)")
+private external fun wasmKmCtpopU32(v: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmCtpopU128(lo0, hi0, lo1, hi1)")
+private external fun wasmKmCtpopU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCtlzU8(v)")
+private external fun wasmKmCtlzU8(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCtlzU16(v)")
+private external fun wasmKmCtlzU16(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCtlzU32(v)")
+private external fun wasmKmCtlzU32(v: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmCtlzU128(lo0, hi0, lo1, hi1)")
+private external fun wasmKmCtlzU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCttzU8(v)")
+private external fun wasmKmCttzU8(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCttzU16(v)")
+private external fun wasmKmCttzU16(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmCttzU32(v)")
+private external fun wasmKmCttzU32(v: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmCttzU128(lo0, hi0, lo1, hi1)")
+private external fun wasmKmCttzU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmBswapU128(lo0, hi0, lo1, hi1)")
+private external fun wasmKmBswapU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmBitreverseU8(v)")
+private external fun wasmKmBitreverseU8(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmBitreverseU16(v)")
+private external fun wasmKmBitreverseU16(v: Int): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmBitreverseU32(v)")
+private external fun wasmKmBitreverseU32(v: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmBitreverseU128(lo0, hi0, lo1, hi1)")
+private external fun wasmKmBitreverseU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
+@JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateLeftU8(v, n)")
+private external fun wasmKmRotateLeftU8(v: Int, n: Int): Int
+@JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateLeftU16(v, n)")
+private external fun wasmKmRotateLeftU16(v: Int, n: Int): Int
+@JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateLeftU32(v, n)")
+private external fun wasmKmRotateLeftU32(v: Int, n: Int): Int
+@JsFun("(lo, hi, n) => globalThis.kmCoreNapiV2.kmRotateLeftU64(lo, hi, n)")
+private external fun wasmKmRotateLeftU64(lo: Int, hi: Int, n: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1, n) => globalThis.kmCoreNapiV2.kmRotateLeftU128(lo0, hi0, lo1, hi1, n)")
+private external fun wasmKmRotateLeftU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int, n: Int): Int
+@JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateRightU8(v, n)")
+private external fun wasmKmRotateRightU8(v: Int, n: Int): Int
+@JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateRightU16(v, n)")
+private external fun wasmKmRotateRightU16(v: Int, n: Int): Int
+@JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateRightU32(v, n)")
+private external fun wasmKmRotateRightU32(v: Int, n: Int): Int
+@JsFun("(lo, hi, n) => globalThis.kmCoreNapiV2.kmRotateRightU64(lo, hi, n)")
+private external fun wasmKmRotateRightU64(lo: Int, hi: Int, n: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1, n) => globalThis.kmCoreNapiV2.kmRotateRightU128(lo0, hi0, lo1, hi1, n)")
+private external fun wasmKmRotateRightU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int, n: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowU8(a, b)")
+private external fun wasmKmAddWithOverflowU8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowU16(a, b)")
+private external fun wasmKmAddWithOverflowU16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowU32(a, b)")
+private external fun wasmKmAddWithOverflowU32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmAddWithOverflowU64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmAddWithOverflowU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmAddWithOverflowU128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmAddWithOverflowU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowI8(a, b)")
+private external fun wasmKmAddWithOverflowI8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowI16(a, b)")
+private external fun wasmKmAddWithOverflowI16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowI32(a, b)")
+private external fun wasmKmAddWithOverflowI32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmAddWithOverflowI64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmAddWithOverflowI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmAddWithOverflowI128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmAddWithOverflowI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowU8(a, b)")
+private external fun wasmKmSubWithOverflowU8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowU16(a, b)")
+private external fun wasmKmSubWithOverflowU16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowU32(a, b)")
+private external fun wasmKmSubWithOverflowU32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSubWithOverflowU64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmSubWithOverflowU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSubWithOverflowU128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmSubWithOverflowU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowI8(a, b)")
+private external fun wasmKmSubWithOverflowI8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowI16(a, b)")
+private external fun wasmKmSubWithOverflowI16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowI32(a, b)")
+private external fun wasmKmSubWithOverflowI32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSubWithOverflowI64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmSubWithOverflowI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSubWithOverflowI128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmSubWithOverflowI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowU8(a, b)")
+private external fun wasmKmMulWithOverflowU8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowU16(a, b)")
+private external fun wasmKmMulWithOverflowU16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowU32(a, b)")
+private external fun wasmKmMulWithOverflowU32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmMulWithOverflowU64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmMulWithOverflowU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmMulWithOverflowU128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmMulWithOverflowU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowI8(a, b)")
+private external fun wasmKmMulWithOverflowI8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowI16(a, b)")
+private external fun wasmKmMulWithOverflowI16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowI32(a, b)")
+private external fun wasmKmMulWithOverflowI32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmMulWithOverflowI64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmMulWithOverflowI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmMulWithOverflowI128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmMulWithOverflowI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddU8(a, b)")
+private external fun wasmKmSaturatingAddU8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddU16(a, b)")
+private external fun wasmKmSaturatingAddU16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddU32(a, b)")
+private external fun wasmKmSaturatingAddU32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingAddU64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmSaturatingAddU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingAddU128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmSaturatingAddU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddI8(a, b)")
+private external fun wasmKmSaturatingAddI8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddI16(a, b)")
+private external fun wasmKmSaturatingAddI16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddI32(a, b)")
+private external fun wasmKmSaturatingAddI32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingAddI64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmSaturatingAddI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingAddI128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmSaturatingAddI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubU8(a, b)")
+private external fun wasmKmSaturatingSubU8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubU16(a, b)")
+private external fun wasmKmSaturatingSubU16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubU32(a, b)")
+private external fun wasmKmSaturatingSubU32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingSubU64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmSaturatingSubU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingSubU128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmSaturatingSubU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubI8(a, b)")
+private external fun wasmKmSaturatingSubI8(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubI16(a, b)")
+private external fun wasmKmSaturatingSubI16(a: Int, b: Int): Int
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubI32(a, b)")
+private external fun wasmKmSaturatingSubI32(a: Int, b: Int): Int
+@JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingSubI64(aLo, aHi, bLo, bHi)")
+private external fun wasmKmSaturatingSubI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingSubI128(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmSaturatingSubI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128Add(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmU128Add(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128Sub(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmU128Sub(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128Mul(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmU128Mul(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128DivRem(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmU128DivRem(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmI128DivRem(a0, a1, a2, a3, b0, b1, b2, b3)")
+private external fun wasmKmI128DivRem(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1, s) => globalThis.kmCoreNapiV2.kmU128Shl(lo0, hi0, lo1, hi1, s)")
+private external fun wasmKmU128Shl(lo0: Int, hi0: Int, lo1: Int, hi1: Int, s: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1, s) => globalThis.kmCoreNapiV2.kmU128Shr(lo0, hi0, lo1, hi1, s)")
+private external fun wasmKmU128Shr(lo0: Int, hi0: Int, lo1: Int, hi1: Int, s: Int): Int
+@JsFun("(lo0, hi0, lo1, hi1, s) => globalThis.kmCoreNapiV2.kmI128Shr(lo0, hi0, lo1, hi1, s)")
+private external fun wasmKmI128Shr(lo0: Int, hi0: Int, lo1: Int, hi1: Int, s: Int): Int
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmSinf32(x)")
+private external fun wasmKmSinf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmSinf64(x)")
+private external fun wasmKmSinf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmCosf32(x)")
+private external fun wasmKmCosf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmCosf64(x)")
+private external fun wasmKmCosf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmExpf32(x)")
+private external fun wasmKmExpf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmExpf64(x)")
+private external fun wasmKmExpf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmExp2f32(x)")
+private external fun wasmKmExp2f32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmExp2f64(x)")
+private external fun wasmKmExp2f64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmLogf32(x)")
+private external fun wasmKmLogf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmLogf64(x)")
+private external fun wasmKmLogf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmLog2f32(x)")
+private external fun wasmKmLog2f32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmLog2f64(x)")
+private external fun wasmKmLog2f64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmLog10f32(x)")
+private external fun wasmKmLog10f32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmLog10f64(x)")
+private external fun wasmKmLog10f64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmTruncf32(x)")
+private external fun wasmKmTruncf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmTruncf64(x)")
+private external fun wasmKmTruncf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundf32(x)")
+private external fun wasmKmRoundf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundf64(x)")
+private external fun wasmKmRoundf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundTiesEvenf32(x)")
+private external fun wasmKmRoundTiesEvenf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundTiesEvenf64(x)")
+private external fun wasmKmRoundTiesEvenf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmCeilf32(x)")
+private external fun wasmKmCeilf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmCeilf64(x)")
+private external fun wasmKmCeilf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmFloorf32(x)")
+private external fun wasmKmFloorf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmFloorf64(x)")
+private external fun wasmKmFloorf64(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmFabsf32(x)")
+private external fun wasmKmFabsf32(x: Double): Double
+@JsFun("(x) => globalThis.kmCoreNapiV2.kmFabsf64(x)")
+private external fun wasmKmFabsf64(x: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmPowf32(a, b)")
+private external fun wasmKmPowf32(a: Double, b: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmPowf64(a, b)")
+private external fun wasmKmPowf64(a: Double, b: Double): Double
+@JsFun("(x, e) => globalThis.kmCoreNapiV2.kmPowif32(x, e)")
+private external fun wasmKmPowif32(x: Double, e: Int): Double
+@JsFun("(x, e) => globalThis.kmCoreNapiV2.kmPowif64(x, e)")
+private external fun wasmKmPowif64(x: Double, e: Int): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmCopysignf32(a, b)")
+private external fun wasmKmCopysignf32(a: Double, b: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmCopysignf64(a, b)")
+private external fun wasmKmCopysignf64(a: Double, b: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMinnumf32(a, b)")
+private external fun wasmKmMinnumf32(a: Double, b: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMinnumf64(a, b)")
+private external fun wasmKmMinnumf64(a: Double, b: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMaxnumf32(a, b)")
+private external fun wasmKmMaxnumf32(a: Double, b: Double): Double
+@JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMaxnumf64(a, b)")
+private external fun wasmKmMaxnumf64(a: Double, b: Double): Double
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmFloatToU64Unchecked(v)")
+private external fun wasmKmFloatToU64Unchecked(v: Double): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmDoubleToU64Unchecked(v)")
+private external fun wasmKmDoubleToU64Unchecked(v: Double): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmFloatToU128Unchecked(v)")
+private external fun wasmKmFloatToU128Unchecked(v: Double): Int
+@JsFun("(v) => globalThis.kmCoreNapiV2.kmDoubleToU128Unchecked(v)")
+private external fun wasmKmDoubleToU128Unchecked(v: Double): Int
 
 public actual fun kmLoadU8(addr: Long): UByte =
     if (kmCoreNapiAvailable) wasmKmLoadU8(lo32(addr), hi32(addr)).toUByte() else KmLinearMemoryArena.loadU8(addr)
@@ -544,3 +807,534 @@ public actual fun kmSimdFmaF32x4(dstAddr: Long, aAddr: Long, bAddr: Long, cAddr:
 }
 public actual fun kmSimdDotF32(aAddr: Long, bAddr: Long, len: Long): Float =
     if (kmCoreNapiAvailable) wasmKmSimdDotF32(lo32(aAddr), hi32(aAddr), lo32(bAddr), hi32(bAddr), lo32(len), hi32(len)).toFloat() else KmLinearMemoryArena.simdDotF32(aAddr, bAddr, len)
+
+public actual fun kmCtpopU8(value: UByte): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtpopU8(value.toInt()).toUInt() else KmLinearMemoryArena.ctpopU8(value)
+public actual fun kmCtpopU16(value: UShort): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtpopU16(value.toInt()).toUInt() else KmLinearMemoryArena.ctpopU16(value)
+public actual fun kmCtpopU32(value: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtpopU32(value.toInt()).toUInt() else KmLinearMemoryArena.ctpopU32(value)
+public actual fun kmCtpopU128(lo: ULong, hi: ULong): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtpopU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi)).toUInt() else KmLinearMemoryArena.ctpopU128(lo, hi)
+public actual fun kmCtlzU8(value: UByte): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtlzU8(value.toInt()).toUInt() else KmLinearMemoryArena.ctlzU8(value)
+public actual fun kmCtlzU16(value: UShort): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtlzU16(value.toInt()).toUInt() else KmLinearMemoryArena.ctlzU16(value)
+public actual fun kmCtlzU32(value: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtlzU32(value.toInt()).toUInt() else KmLinearMemoryArena.ctlzU32(value)
+public actual fun kmCtlzU128(lo: ULong, hi: ULong): UInt =
+    if (kmCoreNapiAvailable) wasmKmCtlzU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi)).toUInt() else KmLinearMemoryArena.ctlzU128(lo, hi)
+public actual fun kmCttzU8(value: UByte): UInt =
+    if (kmCoreNapiAvailable) wasmKmCttzU8(value.toInt()).toUInt() else KmLinearMemoryArena.cttzU8(value)
+public actual fun kmCttzU16(value: UShort): UInt =
+    if (kmCoreNapiAvailable) wasmKmCttzU16(value.toInt()).toUInt() else KmLinearMemoryArena.cttzU16(value)
+public actual fun kmCttzU32(value: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmCttzU32(value.toInt()).toUInt() else KmLinearMemoryArena.cttzU32(value)
+public actual fun kmCttzU128(lo: ULong, hi: ULong): UInt =
+    if (kmCoreNapiAvailable) wasmKmCttzU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi)).toUInt() else KmLinearMemoryArena.cttzU128(lo, hi)
+public actual fun kmBswapU128(lo: ULong, hi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmBswapU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.bswapU128(lo, hi)
+    }
+public actual fun kmBitreverseU8(value: UByte): UByte =
+    if (kmCoreNapiAvailable) wasmKmBitreverseU8(value.toInt()).toUByte() else KmLinearMemoryArena.bitreverseU8(value)
+public actual fun kmBitreverseU16(value: UShort): UShort =
+    if (kmCoreNapiAvailable) wasmKmBitreverseU16(value.toInt()).toUShort() else KmLinearMemoryArena.bitreverseU16(value)
+public actual fun kmBitreverseU32(value: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmBitreverseU32(value.toInt()).toUInt() else KmLinearMemoryArena.bitreverseU32(value)
+public actual fun kmBitreverseU128(lo: ULong, hi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmBitreverseU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.bitreverseU128(lo, hi)
+    }
+public actual fun kmRotateLeftU8(value: UByte, n: UInt): UByte =
+    if (kmCoreNapiAvailable) wasmKmRotateLeftU8(value.toInt(), n.toInt()).toUByte() else KmLinearMemoryArena.rotateLeftU8(value, n)
+public actual fun kmRotateLeftU16(value: UShort, n: UInt): UShort =
+    if (kmCoreNapiAvailable) wasmKmRotateLeftU16(value.toInt(), n.toInt()).toUShort() else KmLinearMemoryArena.rotateLeftU16(value, n)
+public actual fun kmRotateLeftU32(value: UInt, n: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmRotateLeftU32(value.toInt(), n.toInt()).toUInt() else KmLinearMemoryArena.rotateLeftU32(value, n)
+public actual fun kmRotateLeftU64(value: ULong, n: UInt): ULong =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmRotateLeftU64(uLo32(value), uHi32(value), n.toInt())
+        packU64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.rotateLeftU64(value, n)
+    }
+public actual fun kmRotateLeftU128(lo: ULong, hi: ULong, n: UInt): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmRotateLeftU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi), n.toInt())
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.rotateLeftU128(lo, hi, n)
+    }
+public actual fun kmRotateRightU8(value: UByte, n: UInt): UByte =
+    if (kmCoreNapiAvailable) wasmKmRotateRightU8(value.toInt(), n.toInt()).toUByte() else KmLinearMemoryArena.rotateRightU8(value, n)
+public actual fun kmRotateRightU16(value: UShort, n: UInt): UShort =
+    if (kmCoreNapiAvailable) wasmKmRotateRightU16(value.toInt(), n.toInt()).toUShort() else KmLinearMemoryArena.rotateRightU16(value, n)
+public actual fun kmRotateRightU32(value: UInt, n: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmRotateRightU32(value.toInt(), n.toInt()).toUInt() else KmLinearMemoryArena.rotateRightU32(value, n)
+public actual fun kmRotateRightU64(value: ULong, n: UInt): ULong =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmRotateRightU64(uLo32(value), uHi32(value), n.toInt())
+        packU64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.rotateRightU64(value, n)
+    }
+public actual fun kmRotateRightU128(lo: ULong, hi: ULong, n: UInt): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmRotateRightU128(uLo32(lo), uHi32(lo), uLo32(hi), uHi32(hi), n.toInt())
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.rotateRightU128(lo, hi, n)
+    }
+public actual fun kmAddWithOverflowU8(a: UByte, b: UByte): OverflowU8Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmAddWithOverflowU8(a.toInt(), b.toInt())
+        OverflowU8Outcome(v.toUByte(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.addWithOverflowU8(a, b)
+    }
+public actual fun kmAddWithOverflowU16(a: UShort, b: UShort): OverflowU16Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmAddWithOverflowU16(a.toInt(), b.toInt())
+        OverflowU16Outcome(v.toUShort(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.addWithOverflowU16(a, b)
+    }
+public actual fun kmAddWithOverflowU32(a: UInt, b: UInt): OverflowU32Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmAddWithOverflowU32(a.toInt(), b.toInt())
+        OverflowU32Outcome(v.toUInt(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.addWithOverflowU32(a, b)
+    }
+public actual fun kmAddWithOverflowU64(a: ULong, b: ULong): OverflowU64Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmAddWithOverflowU64(uLo32(a), uHi32(a), uLo32(b), uHi32(b)) != 0
+        OverflowU64Outcome(packU64(wasmKmOut0(), wasmKmOut1()), ovf)
+    } else {
+        KmLinearMemoryArena.addWithOverflowU64(a, b)
+    }
+public actual fun kmAddWithOverflowU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowU128Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmAddWithOverflowU128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi)) != 0
+        OverflowU128Outcome(packU64(wasmKmOut0(), wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), ovf)
+    } else {
+        KmLinearMemoryArena.addWithOverflowU128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmAddWithOverflowI8(a: Byte, b: Byte): OverflowI8Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmAddWithOverflowI8(a.toInt(), b.toInt())
+        OverflowI8Outcome(v.toByte(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.addWithOverflowI8(a, b)
+    }
+public actual fun kmAddWithOverflowI16(a: Short, b: Short): OverflowI16Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmAddWithOverflowI16(a.toInt(), b.toInt())
+        OverflowI16Outcome(v.toShort(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.addWithOverflowI16(a, b)
+    }
+public actual fun kmAddWithOverflowI32(a: Int, b: Int): OverflowI32Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmAddWithOverflowI32(a, b)
+        OverflowI32Outcome(v, wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.addWithOverflowI32(a, b)
+    }
+public actual fun kmAddWithOverflowI64(a: Long, b: Long): OverflowI64Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmAddWithOverflowI64(lo32(a), hi32(a), lo32(b), hi32(b)) != 0
+        OverflowI64Outcome(packI64(wasmKmOut0(), wasmKmOut1()), ovf)
+    } else {
+        KmLinearMemoryArena.addWithOverflowI64(a, b)
+    }
+public actual fun kmAddWithOverflowI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowI128Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmAddWithOverflowI128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi)) != 0
+        OverflowI128Outcome(packU64(wasmKmOut0(), wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), ovf)
+    } else {
+        KmLinearMemoryArena.addWithOverflowI128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmSubWithOverflowU8(a: UByte, b: UByte): OverflowU8Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmSubWithOverflowU8(a.toInt(), b.toInt())
+        OverflowU8Outcome(v.toUByte(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.subWithOverflowU8(a, b)
+    }
+public actual fun kmSubWithOverflowU16(a: UShort, b: UShort): OverflowU16Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmSubWithOverflowU16(a.toInt(), b.toInt())
+        OverflowU16Outcome(v.toUShort(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.subWithOverflowU16(a, b)
+    }
+public actual fun kmSubWithOverflowU32(a: UInt, b: UInt): OverflowU32Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmSubWithOverflowU32(a.toInt(), b.toInt())
+        OverflowU32Outcome(v.toUInt(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.subWithOverflowU32(a, b)
+    }
+public actual fun kmSubWithOverflowU64(a: ULong, b: ULong): OverflowU64Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmSubWithOverflowU64(uLo32(a), uHi32(a), uLo32(b), uHi32(b)) != 0
+        OverflowU64Outcome(packU64(wasmKmOut0(), wasmKmOut1()), ovf)
+    } else {
+        KmLinearMemoryArena.subWithOverflowU64(a, b)
+    }
+public actual fun kmSubWithOverflowU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowU128Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmSubWithOverflowU128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi)) != 0
+        OverflowU128Outcome(packU64(wasmKmOut0(), wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), ovf)
+    } else {
+        KmLinearMemoryArena.subWithOverflowU128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmSubWithOverflowI8(a: Byte, b: Byte): OverflowI8Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmSubWithOverflowI8(a.toInt(), b.toInt())
+        OverflowI8Outcome(v.toByte(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.subWithOverflowI8(a, b)
+    }
+public actual fun kmSubWithOverflowI16(a: Short, b: Short): OverflowI16Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmSubWithOverflowI16(a.toInt(), b.toInt())
+        OverflowI16Outcome(v.toShort(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.subWithOverflowI16(a, b)
+    }
+public actual fun kmSubWithOverflowI32(a: Int, b: Int): OverflowI32Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmSubWithOverflowI32(a, b)
+        OverflowI32Outcome(v, wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.subWithOverflowI32(a, b)
+    }
+public actual fun kmSubWithOverflowI64(a: Long, b: Long): OverflowI64Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmSubWithOverflowI64(lo32(a), hi32(a), lo32(b), hi32(b)) != 0
+        OverflowI64Outcome(packI64(wasmKmOut0(), wasmKmOut1()), ovf)
+    } else {
+        KmLinearMemoryArena.subWithOverflowI64(a, b)
+    }
+public actual fun kmSubWithOverflowI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowI128Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmSubWithOverflowI128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi)) != 0
+        OverflowI128Outcome(packU64(wasmKmOut0(), wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), ovf)
+    } else {
+        KmLinearMemoryArena.subWithOverflowI128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmMulWithOverflowU8(a: UByte, b: UByte): OverflowU8Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmMulWithOverflowU8(a.toInt(), b.toInt())
+        OverflowU8Outcome(v.toUByte(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowU8(a, b)
+    }
+public actual fun kmMulWithOverflowU16(a: UShort, b: UShort): OverflowU16Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmMulWithOverflowU16(a.toInt(), b.toInt())
+        OverflowU16Outcome(v.toUShort(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowU16(a, b)
+    }
+public actual fun kmMulWithOverflowU32(a: UInt, b: UInt): OverflowU32Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmMulWithOverflowU32(a.toInt(), b.toInt())
+        OverflowU32Outcome(v.toUInt(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowU32(a, b)
+    }
+public actual fun kmMulWithOverflowU64(a: ULong, b: ULong): OverflowU64Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmMulWithOverflowU64(uLo32(a), uHi32(a), uLo32(b), uHi32(b)) != 0
+        OverflowU64Outcome(packU64(wasmKmOut0(), wasmKmOut1()), ovf)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowU64(a, b)
+    }
+public actual fun kmMulWithOverflowU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowU128Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmMulWithOverflowU128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi)) != 0
+        OverflowU128Outcome(packU64(wasmKmOut0(), wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), ovf)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowU128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmMulWithOverflowI8(a: Byte, b: Byte): OverflowI8Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmMulWithOverflowI8(a.toInt(), b.toInt())
+        OverflowI8Outcome(v.toByte(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowI8(a, b)
+    }
+public actual fun kmMulWithOverflowI16(a: Short, b: Short): OverflowI16Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmMulWithOverflowI16(a.toInt(), b.toInt())
+        OverflowI16Outcome(v.toShort(), wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowI16(a, b)
+    }
+public actual fun kmMulWithOverflowI32(a: Int, b: Int): OverflowI32Outcome =
+    if (kmCoreNapiAvailable) {
+        val v = wasmKmMulWithOverflowI32(a, b)
+        OverflowI32Outcome(v, wasmKmOut1() != 0)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowI32(a, b)
+    }
+public actual fun kmMulWithOverflowI64(a: Long, b: Long): OverflowI64Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmMulWithOverflowI64(lo32(a), hi32(a), lo32(b), hi32(b)) != 0
+        OverflowI64Outcome(packI64(wasmKmOut0(), wasmKmOut1()), ovf)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowI64(a, b)
+    }
+public actual fun kmMulWithOverflowI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): OverflowI128Outcome =
+    if (kmCoreNapiAvailable) {
+        val ovf = wasmKmMulWithOverflowI128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi)) != 0
+        OverflowI128Outcome(packU64(wasmKmOut0(), wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), ovf)
+    } else {
+        KmLinearMemoryArena.mulWithOverflowI128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmSaturatingAddU8(a: UByte, b: UByte): UByte =
+    if (kmCoreNapiAvailable) wasmKmSaturatingAddU8(a.toInt(), b.toInt()).toUByte() else KmLinearMemoryArena.saturatingAddU8(a, b)
+public actual fun kmSaturatingAddU16(a: UShort, b: UShort): UShort =
+    if (kmCoreNapiAvailable) wasmKmSaturatingAddU16(a.toInt(), b.toInt()).toUShort() else KmLinearMemoryArena.saturatingAddU16(a, b)
+public actual fun kmSaturatingAddU32(a: UInt, b: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmSaturatingAddU32(a.toInt(), b.toInt()).toUInt() else KmLinearMemoryArena.saturatingAddU32(a, b)
+public actual fun kmSaturatingAddU64(a: ULong, b: ULong): ULong =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmSaturatingAddU64(uLo32(a), uHi32(a), uLo32(b), uHi32(b))
+        packU64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.saturatingAddU64(a, b)
+    }
+public actual fun kmSaturatingAddU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmSaturatingAddU128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.saturatingAddU128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmSaturatingAddI8(a: Byte, b: Byte): Byte =
+    if (kmCoreNapiAvailable) wasmKmSaturatingAddI8(a.toInt(), b.toInt()).toByte() else KmLinearMemoryArena.saturatingAddI8(a, b)
+public actual fun kmSaturatingAddI16(a: Short, b: Short): Short =
+    if (kmCoreNapiAvailable) wasmKmSaturatingAddI16(a.toInt(), b.toInt()).toShort() else KmLinearMemoryArena.saturatingAddI16(a, b)
+public actual fun kmSaturatingAddI32(a: Int, b: Int): Int =
+    if (kmCoreNapiAvailable) wasmKmSaturatingAddI32(a, b) else KmLinearMemoryArena.saturatingAddI32(a, b)
+public actual fun kmSaturatingAddI64(a: Long, b: Long): Long =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmSaturatingAddI64(lo32(a), hi32(a), lo32(b), hi32(b))
+        packI64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.saturatingAddI64(a, b)
+    }
+public actual fun kmSaturatingAddI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): I128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmSaturatingAddI128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        I128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.saturatingAddI128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmSaturatingSubU8(a: UByte, b: UByte): UByte =
+    if (kmCoreNapiAvailable) wasmKmSaturatingSubU8(a.toInt(), b.toInt()).toUByte() else KmLinearMemoryArena.saturatingSubU8(a, b)
+public actual fun kmSaturatingSubU16(a: UShort, b: UShort): UShort =
+    if (kmCoreNapiAvailable) wasmKmSaturatingSubU16(a.toInt(), b.toInt()).toUShort() else KmLinearMemoryArena.saturatingSubU16(a, b)
+public actual fun kmSaturatingSubU32(a: UInt, b: UInt): UInt =
+    if (kmCoreNapiAvailable) wasmKmSaturatingSubU32(a.toInt(), b.toInt()).toUInt() else KmLinearMemoryArena.saturatingSubU32(a, b)
+public actual fun kmSaturatingSubU64(a: ULong, b: ULong): ULong =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmSaturatingSubU64(uLo32(a), uHi32(a), uLo32(b), uHi32(b))
+        packU64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.saturatingSubU64(a, b)
+    }
+public actual fun kmSaturatingSubU128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmSaturatingSubU128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.saturatingSubU128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmSaturatingSubI8(a: Byte, b: Byte): Byte =
+    if (kmCoreNapiAvailable) wasmKmSaturatingSubI8(a.toInt(), b.toInt()).toByte() else KmLinearMemoryArena.saturatingSubI8(a, b)
+public actual fun kmSaturatingSubI16(a: Short, b: Short): Short =
+    if (kmCoreNapiAvailable) wasmKmSaturatingSubI16(a.toInt(), b.toInt()).toShort() else KmLinearMemoryArena.saturatingSubI16(a, b)
+public actual fun kmSaturatingSubI32(a: Int, b: Int): Int =
+    if (kmCoreNapiAvailable) wasmKmSaturatingSubI32(a, b) else KmLinearMemoryArena.saturatingSubI32(a, b)
+public actual fun kmSaturatingSubI64(a: Long, b: Long): Long =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmSaturatingSubI64(lo32(a), hi32(a), lo32(b), hi32(b))
+        packI64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.saturatingSubI64(a, b)
+    }
+public actual fun kmSaturatingSubI128(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): I128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmSaturatingSubI128(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        I128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.saturatingSubI128(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmU128Add(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmU128Add(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.u128Add(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmU128Sub(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmU128Sub(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.u128Sub(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmU128Mul(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmU128Mul(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.u128Mul(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmU128DivRem(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): U128DivRemOutcome =
+    if (kmCoreNapiAvailable) {
+        val qLo0 = wasmKmU128DivRem(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        U128DivRemOutcome(packU64(qLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), packU64(wasmKmOut4(), wasmKmOut5()), packU64(wasmKmOut6(), wasmKmOut7()))
+    } else {
+        KmLinearMemoryArena.u128DivRem(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmI128DivRem(aLo: ULong, aHi: ULong, bLo: ULong, bHi: ULong): I128DivRemOutcome =
+    if (kmCoreNapiAvailable) {
+        val qLo0 = wasmKmI128DivRem(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), uLo32(bLo), uHi32(bLo), uLo32(bHi), uHi32(bHi))
+        I128DivRemOutcome(packU64(qLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()), packU64(wasmKmOut4(), wasmKmOut5()), packU64(wasmKmOut6(), wasmKmOut7()))
+    } else {
+        KmLinearMemoryArena.i128DivRem(aLo, aHi, bLo, bHi)
+    }
+public actual fun kmU128Shl(aLo: ULong, aHi: ULong, shift: UInt): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmU128Shl(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), shift.toInt())
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.u128Shl(aLo, aHi, shift)
+    }
+public actual fun kmU128Shr(aLo: ULong, aHi: ULong, shift: UInt): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmU128Shr(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), shift.toInt())
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.u128Shr(aLo, aHi, shift)
+    }
+public actual fun kmI128Shr(aLo: ULong, aHi: ULong, shift: UInt): I128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmI128Shr(uLo32(aLo), uHi32(aLo), uLo32(aHi), uHi32(aHi), shift.toInt())
+        I128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.i128Shr(aLo, aHi, shift)
+    }
+public actual fun kmSinf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmSinf32(x.toDouble()).toFloat() else KmLinearMemoryArena.sinf32(x)
+public actual fun kmSinf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmSinf64(x) else KmLinearMemoryArena.sinf64(x)
+public actual fun kmCosf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmCosf32(x.toDouble()).toFloat() else KmLinearMemoryArena.cosf32(x)
+public actual fun kmCosf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmCosf64(x) else KmLinearMemoryArena.cosf64(x)
+public actual fun kmExpf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmExpf32(x.toDouble()).toFloat() else KmLinearMemoryArena.expf32(x)
+public actual fun kmExpf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmExpf64(x) else KmLinearMemoryArena.expf64(x)
+public actual fun kmExp2f32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmExp2f32(x.toDouble()).toFloat() else KmLinearMemoryArena.exp2f32(x)
+public actual fun kmExp2f64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmExp2f64(x) else KmLinearMemoryArena.exp2f64(x)
+public actual fun kmLogf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmLogf32(x.toDouble()).toFloat() else KmLinearMemoryArena.logf32(x)
+public actual fun kmLogf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmLogf64(x) else KmLinearMemoryArena.logf64(x)
+public actual fun kmLog2f32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmLog2f32(x.toDouble()).toFloat() else KmLinearMemoryArena.log2f32(x)
+public actual fun kmLog2f64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmLog2f64(x) else KmLinearMemoryArena.log2f64(x)
+public actual fun kmLog10f32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmLog10f32(x.toDouble()).toFloat() else KmLinearMemoryArena.log10f32(x)
+public actual fun kmLog10f64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmLog10f64(x) else KmLinearMemoryArena.log10f64(x)
+public actual fun kmTruncf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmTruncf32(x.toDouble()).toFloat() else KmLinearMemoryArena.truncf32(x)
+public actual fun kmTruncf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmTruncf64(x) else KmLinearMemoryArena.truncf64(x)
+public actual fun kmRoundf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmRoundf32(x.toDouble()).toFloat() else KmLinearMemoryArena.roundf32(x)
+public actual fun kmRoundf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmRoundf64(x) else KmLinearMemoryArena.roundf64(x)
+public actual fun kmRoundTiesEvenf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmRoundTiesEvenf32(x.toDouble()).toFloat() else KmLinearMemoryArena.roundTiesEvenf32(x)
+public actual fun kmRoundTiesEvenf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmRoundTiesEvenf64(x) else KmLinearMemoryArena.roundTiesEvenf64(x)
+public actual fun kmCeilf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmCeilf32(x.toDouble()).toFloat() else KmLinearMemoryArena.ceilf32(x)
+public actual fun kmCeilf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmCeilf64(x) else KmLinearMemoryArena.ceilf64(x)
+public actual fun kmFloorf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmFloorf32(x.toDouble()).toFloat() else KmLinearMemoryArena.floorf32(x)
+public actual fun kmFloorf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmFloorf64(x) else KmLinearMemoryArena.floorf64(x)
+public actual fun kmFabsf32(x: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmFabsf32(x.toDouble()).toFloat() else KmLinearMemoryArena.fabsf32(x)
+public actual fun kmFabsf64(x: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmFabsf64(x) else KmLinearMemoryArena.fabsf64(x)
+public actual fun kmPowf32(a: Float, b: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmPowf32(a.toDouble(), b.toDouble()).toFloat() else KmLinearMemoryArena.powf32(a, b)
+public actual fun kmPowf64(a: Double, b: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmPowf64(a, b) else KmLinearMemoryArena.powf64(a, b)
+public actual fun kmPowif32(x: Float, exp: Int): Float =
+    if (kmCoreNapiAvailable) wasmKmPowif32(x.toDouble(), exp).toFloat() else KmLinearMemoryArena.powif32(x, exp)
+public actual fun kmPowif64(x: Double, exp: Int): Double =
+    if (kmCoreNapiAvailable) wasmKmPowif64(x, exp) else KmLinearMemoryArena.powif64(x, exp)
+public actual fun kmCopysignf32(a: Float, b: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmCopysignf32(a.toDouble(), b.toDouble()).toFloat() else KmLinearMemoryArena.copysignf32(a, b)
+public actual fun kmCopysignf64(a: Double, b: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmCopysignf64(a, b) else KmLinearMemoryArena.copysignf64(a, b)
+public actual fun kmMinnumf32(a: Float, b: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmMinnumf32(a.toDouble(), b.toDouble()).toFloat() else KmLinearMemoryArena.minnumf32(a, b)
+public actual fun kmMinnumf64(a: Double, b: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmMinnumf64(a, b) else KmLinearMemoryArena.minnumf64(a, b)
+public actual fun kmMaxnumf32(a: Float, b: Float): Float =
+    if (kmCoreNapiAvailable) wasmKmMaxnumf32(a.toDouble(), b.toDouble()).toFloat() else KmLinearMemoryArena.maxnumf32(a, b)
+public actual fun kmMaxnumf64(a: Double, b: Double): Double =
+    if (kmCoreNapiAvailable) wasmKmMaxnumf64(a, b) else KmLinearMemoryArena.maxnumf64(a, b)
+public actual fun kmFloatToU64Unchecked(v: Float): ULong =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmFloatToU64Unchecked(v.toDouble())
+        packU64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.floatToU64Unchecked(v)
+    }
+public actual fun kmDoubleToU64Unchecked(v: Double): ULong =
+    if (kmCoreNapiAvailable) {
+        val lo = wasmKmDoubleToU64Unchecked(v)
+        packU64(lo, wasmKmOut1())
+    } else {
+        KmLinearMemoryArena.doubleToU64Unchecked(v)
+    }
+public actual fun kmFloatToU128Unchecked(v: Float): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmFloatToU128Unchecked(v.toDouble())
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.floatToU128Unchecked(v)
+    }
+public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome =
+    if (kmCoreNapiAvailable) {
+        val rLo0 = wasmKmDoubleToU128Unchecked(v)
+        U128ValueOutcome(packU64(rLo0, wasmKmOut1()), packU64(wasmKmOut2(), wasmKmOut3()))
+    } else {
+        KmLinearMemoryArena.doubleToU128Unchecked(v)
+    }

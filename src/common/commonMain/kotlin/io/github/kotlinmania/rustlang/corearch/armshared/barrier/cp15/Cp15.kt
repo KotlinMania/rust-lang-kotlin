@@ -2,13 +2,15 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier.cp15
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.corearch.armshared.Sealed
+import io.github.kotlinmania.rustlang.corearch.armshared.Dmb
+import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
+import io.github.kotlinmania.rustlang.corearch.armshared.Isb
 
 /**
  * Full system is the required shareability domain, reads and writes are the
  * required access types
  */
-public open class SY : Sealed.Dmb, Sealed.Dsb, Sealed.Isb {
+public open class SY : Dmb, Dsb, Isb {
     public override fun dmb() {}
 
     public override fun dsb() {}

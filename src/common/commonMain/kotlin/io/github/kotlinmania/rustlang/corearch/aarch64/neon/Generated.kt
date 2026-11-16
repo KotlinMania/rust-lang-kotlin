@@ -5,11 +5,12 @@ package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -7297,7 +7298,7 @@ public fun vld4qDupU64(a: ConstPtr): Uint64x2x4T = transmute(vld4qDupS64(transmu
  */
 public fun vld4qF64(a: ConstPtr): Float64x2x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
@@ -7313,7 +7314,7 @@ public fun vld4qF64(a: ConstPtr): Float64x2x4T =
  */
 public fun vld4qS64(a: ConstPtr): Int64x2x4T =
     run {
-        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = ObjectSlotLayout<W>())
+        val w: W = readUnaligned(ConstPtr(a.rawAddress, a.rawMeta), typeLayoutT = UnresolvedTypeLayout<W>())
         val v0: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 0 > Unit)
         val v1: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 1 > Unit)
         val v2: V = simdShuffle(w, w, deinterleaveMask, 2, 4, 2 > Unit)
@@ -7469,7 +7470,7 @@ public fun vldap1qLaneF64(ptr: ConstPtr, src: Float64x2T, lane: Int): Float64x2T
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmute(vldap1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmute(src), lane))
+    return transmute(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmute(src), lane))
 }
 
 /**
@@ -7482,7 +7483,7 @@ public fun vldap1LaneU64(ptr: ConstPtr, src: Uint64x1T, lane: Int): Uint64x1T {
     run {
         check(lane == 0)
     }
-    return transmute(vldap1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmute(src), lane))
+    return transmute(vldap1LaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmute(src), lane))
 }
 
 /**
@@ -7495,7 +7496,7 @@ public fun vldap1qLaneU64(ptr: ConstPtr, src: Uint64x2T, lane: Int): Uint64x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmute(vldap1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmute(src), lane))
+    return transmute(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmute(src), lane))
 }
 
 /**
@@ -7508,7 +7509,7 @@ public fun vldap1LaneP64(ptr: ConstPtr, src: Poly64x1T, lane: Int): Poly64x1T {
     run {
         check(lane == 0)
     }
-    return transmute(vldap1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmute(src), lane))
+    return transmute(vldap1LaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmute(src), lane))
 }
 
 /**
@@ -7521,7 +7522,7 @@ public fun vldap1qLaneP64(ptr: ConstPtr, src: Poly64x2T, lane: Int): Poly64x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmute(vldap1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmute(src), lane))
+    return transmute(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmute(src), lane))
 }
 
 /**
@@ -8992,7 +8993,7 @@ public fun vmulLaneF64(a: Float64x1T, b: Float64x1T, lane: Int): Float64x1T {
     run {
         check(lane == 0)
     }
-    return run { val _simdArg0 = a; val _simdArg1 = transmute<Double>(vgetLaneF64(b, lane)); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = transmute(vgetLaneF64(b, lane)); _simdArg0 }
 }
 
 /**
@@ -9025,7 +9026,7 @@ public fun vmulLaneqF64(a: Float64x1T, b: Float64x2T, lane: Int): Float64x1T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = transmute<Double>(vgetqLaneF64(b, lane)); _simdArg0 }
+    return run { val _simdArg0 = a; val _simdArg1 = transmute(vgetqLaneF64(b, lane)); _simdArg0 }
 }
 
 /**
@@ -9656,7 +9657,7 @@ public fun vnegqS64(a: Int64x2T): Int64x2T = run { val _simdArg0 = a; _simdArg0 
  * Negate
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vnegdS64)
  */
-public fun vnegdS64(a: Long): Long = rustWrappingNeg(a)
+public fun vnegdS64(a: Long): Long = a.wrappingNeg()
 
 /**
  * Negate
@@ -15519,7 +15520,7 @@ public fun vst2LaneU64(a: MutPtr, b: Uint64x1x2T, lane: Int) {
 public fun vst2qF64(a: MutPtr, b: Float64x2x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -15532,7 +15533,7 @@ public fun vst2qF64(a: MutPtr, b: Float64x2x2T) {
 public fun vst2qS64(a: MutPtr, b: Int64x2x2T) {
     run {
         val w: W = simdShuffle(b.first, b.second, interleaveMask, 2, 2, 2, 2 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -15935,7 +15936,7 @@ public fun vst4qF64(a: MutPtr, b: Float64x2x4T) {
         val v0v1: Simd<Double> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Double> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -15950,7 +15951,7 @@ public fun vst4qS64(a: MutPtr, b: Int64x2x4T) {
         val v0v1: Simd<Long> = run { val _simdArg0 = b.first; val _simdArg1 = b.second; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val v2v3: Simd<Long> = run { val _simdArg0 = b.third; val _simdArg1 = b.field3; val _simdArg2 = SimdShuffleIdx(identity(2 * 2)); _simdArg0 }
         val w: W = simdShuffle(v0v1, v2v3, interleaveMask, 2, 4, 2, 4 > Unit)
-        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = ObjectSlotLayout<W>())
+        writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
 
@@ -16158,7 +16159,7 @@ public fun vstl1LaneS64(ptr: MutPtr, value: Int64x1T, lane: Int) {
     }
     val atomicDst = MutPtr(ptr.rawAddress, ptr.rawMeta)
     val lane: Long = vgetLaneS64(value, lane)
-    (ObjectSlotLayout<AtomicI64>()).readNative((atomicDst).rawAddress).store(transmute(lane), Ordering.Release)
+    (UnresolvedTypeLayout<AtomicI64>()).readNative((atomicDst).rawAddress).store(transmute(lane), Ordering.Release)
 }
 
 /**
@@ -16173,7 +16174,7 @@ public fun vstl1qLaneS64(ptr: MutPtr, value: Int64x2T, lane: Int) {
     }
     val atomicDst = MutPtr(ptr.rawAddress, ptr.rawMeta)
     val lane: Long = vgetqLaneS64(value, lane)
-    (ObjectSlotLayout<AtomicI64>()).readNative((atomicDst).rawAddress).store(transmute(lane), Ordering.Release)
+    (UnresolvedTypeLayout<AtomicI64>()).readNative((atomicDst).rawAddress).store(transmute(lane), Ordering.Release)
 }
 
 /**

@@ -1889,9 +1889,9 @@ static Napi::Value libcUnixLinuxlikeLinuxGnuPthreadRwlockattrSetkindNp_napi(cons
 
 static Napi::Value libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    uint64_t thread = km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0;
+    void* thread = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     void* retval = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 1 ? km_napi_arg_u64(km_info[1]) : 0));
-    typedef int32_t (*km_fn_t)(uint64_t, void*);
+    typedef int32_t (*km_fn_t)(void*, void*);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {
@@ -1923,10 +1923,10 @@ static Napi::Value libcUnixLinuxlikeLinuxGnuPthreadTryjoinNp_napi(const Napi::Ca
 
 static Napi::Value libcUnixLinuxlikeLinuxGnuPthreadTimedjoinNp_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
-    uint64_t thread = km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0;
+    void* thread = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     void* retval = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 1 ? km_napi_arg_u64(km_info[1]) : 0));
     void* abstime = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 2 ? km_napi_arg_u64(km_info[2]) : 0));
-    typedef int32_t (*km_fn_t)(uint64_t, void*, void*);
+    typedef int32_t (*km_fn_t)(void*, void*, void*);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {

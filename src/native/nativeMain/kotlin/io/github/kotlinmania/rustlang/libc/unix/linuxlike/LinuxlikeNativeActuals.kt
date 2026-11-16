@@ -2,25 +2,28 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.UidT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
 import io.github.kotlinmania.rustlang.libc.unix.IntptrT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.UidT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeAcct
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeBind
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeBrk
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeClearenv
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeClockGetcpuclockid
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeClockGetres
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeClockGettime
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeClockSettime
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeCreat64
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeDirfd
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.cinterop.libcUnixLinuxlikeDuplocale
@@ -131,14 +134,14 @@ public actual fun fdatasync(fd: CInt): CInt =
 public actual fun mincore(addr: MutPtr, len: SizeT, vec: MutPtr): CInt =
     libcUnixLinuxlikeMincore(addr.rawAddress.toCPointer<ByteVar>(), len, vec.rawAddress.toCPointer<ByteVar>())
 
-public actual fun clockGetres(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGetres(clkId: ClockidT, tp: MutPtr): CInt =
+    libcUnixLinuxlikeClockGetres(clkId, tp.rawAddress.toCPointer<ByteVar>())
 
-public actual fun clockGettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: MutPtr): CInt =
-    0
+public actual fun clockGettime(clkId: ClockidT, tp: MutPtr): CInt =
+    libcUnixLinuxlikeClockGettime(clkId, tp.rawAddress.toCPointer<ByteVar>())
 
-public actual fun clockSettime(clkId: io.github.kotlinmania.rustlang.libc.ClockidT, tp: ConstPtr): CInt =
-    0
+public actual fun clockSettime(clkId: ClockidT, tp: ConstPtr): CInt =
+    libcUnixLinuxlikeClockSettime(clkId, tp.rawAddress.toCPointer<ByteVar>())
 
 public actual fun clockGetcpuclockid(pid: PidT, clkId: MutPtr): CInt =
     libcUnixLinuxlikeClockGetcpuclockid(pid, clkId.rawAddress.toCPointer<ByteVar>())

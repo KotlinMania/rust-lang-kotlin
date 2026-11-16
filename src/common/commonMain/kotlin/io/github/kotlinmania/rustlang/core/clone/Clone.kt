@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
@@ -484,8 +485,8 @@ public open class AssertParamIsCopy<T>(
  * if such a derive macro existed.)
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  * import std.clone.CloneToUninit
  * import std.mem.offsetOf
@@ -516,7 +517,7 @@ public open class AssertParamIsCopy<T>(
  *                 // Note that we only do this once all of the clone() and cloneToUninit() calls
  *                 // have completed, and therefore we know that there are no more possible panics;
  *                 // this ensures no memory leaks in case of panic.
- *                 (ObjectSlotLayout<String>()).writeNative((MutPtr((MutPtr((dest).rawAddress + ((0).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress, label)
+ *                 (UnresolvedTypeLayout<String>()).writeNative((MutPtr((MutPtr((dest).rawAddress + ((0).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)).rawAddress, label)
  *             }
  *             // All fields of the struct have been initialized; therefore, the struct is initialized,
  *             // and we have satisfied our `unchecked implementation CloneToUninit` obligations.
@@ -651,9 +652,9 @@ public fun Char.clone(): Char = this
 
 public fun Nothing.clone(): Nothing = this
 
-public fun <T> ConstPtr.clone(typeLayoutT: TypeLayout<T>): ConstPtr = (typeLayoutT).readNative((this).rawAddress)
+public fun <T> ConstPtr.clone(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr = (typeLayoutT).readNative((this).rawAddress)
 
-public fun <T> MutPtr.clone(typeLayoutT: TypeLayout<T>): MutPtr = (typeLayoutT).readNative((this).rawAddress)
+public fun <T> MutPtr.clone(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr = (typeLayoutT).readNative((this).rawAddress)
 
 /**
  * Shared references can be cloned, but mutable references *cannot*!

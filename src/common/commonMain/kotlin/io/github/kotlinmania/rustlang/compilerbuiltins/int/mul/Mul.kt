@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 
 public interface Mul<T> : DInt, Int {
     public fun mul(rhs: T): T
@@ -57,7 +57,7 @@ public fun i32OverflowingMul(lhs: Int, rhs: Int): Pair<Int, Boolean> {
     val (mul, o) = (lhs2.toUInt()).mulo(rhs2.toUInt())
     var mul1 = mul.toInt()
     if (mulNeg) {
-        mul1 = rustWrappingNeg(mul1)
+        mul1 = mul1.wrappingNeg()
     }
     return if ((mul1 < 0) != mulNeg) {
         Pair(mul1, true)
@@ -86,7 +86,7 @@ public fun i64OverflowingMul(lhs: Long, rhs: Long): Pair<Long, Boolean> {
     val (mul, o) = (lhs2.toULong()).mulo(rhs2.toULong())
     var mul1 = mul.toLong()
     if (mulNeg) {
-        mul1 = rustWrappingNeg(mul1)
+        mul1 = mul1.wrappingNeg()
     }
     return if ((mul1 < 0L) != mulNeg) {
         Pair(mul1, true)
@@ -115,7 +115,7 @@ public fun i128OverflowingMul(lhs: I128, rhs: I128): Pair<I128, Boolean> {
     val (mul, o) = (U128.fromLong(lhs2.toLong())).mulo(U128.fromLong(rhs2.toLong()))
     var mul1 = I128.fromLong(mul.toLong())
     if (mulNeg) {
-        mul1 = rustWrappingNeg(mul1)
+        mul1 = mul1.wrappingNeg()
     }
     return if ((mul1 < I128(0x0L, 0x0uL)) != mulNeg) {
         Pair(mul1, true)

@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.str.iter.EscapeUnicode
 /**
  * A nameable, cloneable fn type
  */
-public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, Any?, String> {
+public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, String> {
     public open fun clone(): LinesMap = LinesMap()
 
     public override fun call(tupleArg0: String): String {
@@ -47,7 +47,7 @@ public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, Any?, Str
     }
 }
 
-public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, EscapeDebug> {
+public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeDebug> {
     public open fun clone(): CharEscapeDebug = CharEscapeDebug()
 
     public override fun call(tupleArg0: Char): EscapeDebug = c.escapeDebugExt(EscapeDebugExtArgs.ESCAPE_ALL)
@@ -73,7 +73,7 @@ public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Es
     }
 }
 
-public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, EscapeUnicode> {
+public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeUnicode> {
     public open fun clone(): CharEscapeUnicode = CharEscapeUnicode()
 
     public override fun call(tupleArg0: Char): EscapeUnicode = c.escapeUnicode()
@@ -99,7 +99,7 @@ public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, 
     }
 }
 
-public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, EscapeDefault> {
+public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeDefault> {
     public open fun clone(): CharEscapeDefault = CharEscapeDefault()
 
     public override fun call(tupleArg0: Char): EscapeDefault = c.escapeDefault()
@@ -125,7 +125,7 @@ public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, 
     }
 }
 
-public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Boolean> {
+public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Boolean> {
     public open fun clone(): IsWhitespace = IsWhitespace()
 
     public override fun call(tupleArg0: Char): Boolean = c.isWhitespace()
@@ -151,7 +151,7 @@ public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Any?, Boole
     }
 }
 
-public open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any?, Boolean> {
+public open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Boolean> {
     public open fun clone(): IsAsciiWhitespace = IsAsciiWhitespace()
 
     public override fun call(tupleArg0: UByte): Boolean = byte.isAsciiWhitespace()
@@ -177,7 +177,7 @@ public open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Any
     }
 }
 
-public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Any?, Boolean> {
+public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Boolean> {
     public open fun clone(): IsNotEmpty = IsNotEmpty()
 
     public override fun call(tupleArg0: String): Boolean = !s.isEmpty()
@@ -203,7 +203,7 @@ public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Any?, B
     }
 }
 
-public open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Any?, Boolean> {
+public open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Boolean> {
     public open fun clone(): BytesIsNotEmpty = BytesIsNotEmpty()
 
     public override fun call(tupleArg0: List<UByte>): Boolean = !s.isEmpty()
@@ -229,7 +229,7 @@ public open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<
     }
 }
 
-public open class UnsafeBytesToStr : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Any?, String> {
+public open class UnsafeBytesToStr : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, String> {
     public open fun clone(): UnsafeBytesToStr = UnsafeBytesToStr()
 
     public override fun call(tupleArg0: List<UByte>): String = fromUtf8Unchecked(bytes)

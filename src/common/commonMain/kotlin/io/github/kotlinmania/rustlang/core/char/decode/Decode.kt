@@ -34,7 +34,7 @@ public open class DecodeUtf16<I>(
     public open fun next(): Result<Char, DecodeUtf16Error>? {
         val u =
             when (val matchVal = this.buf.also { this.buf = null }) {
-                null -> when (val tryResult = this.iter.next()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                null -> when (val tryResult = this.iter.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 else -> {
                     val buf = matchVal
                     buf

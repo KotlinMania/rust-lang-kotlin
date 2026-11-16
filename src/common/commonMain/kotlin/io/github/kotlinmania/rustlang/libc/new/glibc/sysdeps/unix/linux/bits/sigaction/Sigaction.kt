@@ -1,11 +1,11 @@
 // port-lint: source new/glibc/sysdeps/unix/linux/bits/sigaction.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.sigaction
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SighandlerT
-import io.github.kotlinmania.rustlang.libc.SigsetT
 import io.github.kotlinmania.rustlang.libc.types.u32CastInt
+import io.github.kotlinmania.rustlang.libc.unix.SighandlerT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.SigsetT
 
 // Header: `sysdeps / unix / sysv / linux / bits / sigaction.h`
 
@@ -13,14 +13,16 @@ public fun interface SigactionSaRestorerCallback {
     public operator fun invoke()
 }
 
-public data class Sigaction(
-    public var saSigaction: SighandlerT = 0uL,
-    public var saMask: SigsetT = SigsetT(),
-    public var saFlags: CInt = 0,
+public open class Sigaction(
+    public var saSigaction: SighandlerT,
+    public var saMask: SigsetT,
+    public var saFlags: CInt,
     // This function should be unchecked everywhere but is currently only done on
     // newer arches.
-    public var saRestorer: SigactionSaRestorerCallback? = null,
-)
+    public var saRestorer: SigactionSaRestorerCallback?,
+) {
+    public open fun clone(): Sigaction = Sigaction(saSigaction, saMask, saFlags, saRestorer)
+}
 
 public val SA_NOCLDSTOP: CInt = 0x00000001
 

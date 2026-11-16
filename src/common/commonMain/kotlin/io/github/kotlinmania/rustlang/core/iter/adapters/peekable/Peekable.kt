@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.peekable
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -25,7 +27,7 @@ public open class Peekable<I>(
      * Remember a peeked value, even if it was None.
      */
     public var peeked: Item?,
-) : TrustedLen<Peekable<I>>, SourceIter<Any?, Source>, Iterable<Item> {
+) : TrustedLen<Peekable<I>>, SourceIter<Source>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Peekable.next()) {
@@ -113,7 +115,7 @@ public open class Peekable<I>(
                 null -> { return init }
                 else -> {
                     val v = matchVal
-                    when (val tryResult = f(init, v)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = f(init, v)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
                 null -> init
             }
@@ -414,10 +416,10 @@ public open class Peekable<I>(
                     val item = matchVal
                     run {
                         val matchVal1 = f(item)
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val result = matchVal1.value
                             return result
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val item1 = matchVal1.error
                             item1
                         } }

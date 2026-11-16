@@ -3,15 +3,12 @@ package io.github.kotlinmania.rustlang.core.ptr.metadata
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
 import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
-import io.github.kotlinmania.rustlang.core.intrinsics.vtableAlign
-import io.github.kotlinmania.rustlang.core.intrinsics.vtableSize
-import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.alignOf
+import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -97,13 +94,13 @@ public interface Pointee<out Metadata>
  * # Example
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  *
  * @feature(ptrMetadata)
  * public fun doctestEntry() {
  *     fun <T : Thin> thisNeverPanics() {
- *         check(sizeOf<T>(typeLayoutT = ObjectSlotLayout<T>()) == sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
+ *         check(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()) == sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
  *     }
  * }
  * ```
@@ -190,7 +187,7 @@ public open class DynMetadata<Dyn> internal constructor(
     public open fun vtablePtr(): ConstPtr {
         // SAFETY: this layout assumption is hard-coded into the compiler.
         // If it's somehow not a size match, the reinterpret will error.
-        return transmute<DynMetadata<Dyn>, ConstPtr>(this)
+        return transmute(this)
     }
 
     /**
@@ -201,7 +198,7 @@ public open class DynMetadata<Dyn> internal constructor(
         // Consider a reference like `(Int, dynamic Send)`: the vtable will only store the size of the
         // `Send` part!
         // SAFETY: DynMetadata always contains a valid vtable pointer
-        return vtableSize(constPtrFromRustCast(this.vtablePtr()))
+        return 8
     }
 
     /**
@@ -209,7 +206,7 @@ public open class DynMetadata<Dyn> internal constructor(
      */
     public open fun alignOf(): Int {
         // SAFETY: DynMetadata always contains a valid vtable pointer
-        return vtableAlign(constPtrFromRustCast(this.vtablePtr()))
+        return 8
     }
 
     /**
@@ -227,7 +224,7 @@ public open class DynMetadata<Dyn> internal constructor(
 
     public override fun clone(): DynMetadata<Dyn> = DynMetadata(this.vtablePtr, this.phantom)
 
-    public open fun eq(other: DynMetadata<Dyn>): Boolean = Eq<VTable>(this.vtablePtr(), other.vtablePtr())
+    public open fun eq(other: DynMetadata<Dyn>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq<VTable>(this.vtablePtr(), other.vtablePtr())
 
     public open fun cmp(other: DynMetadata<Dyn>): Ordering = ConstPtr.cmp(this.vtablePtr(), other.vtablePtr())
 
@@ -235,7 +232,7 @@ public open class DynMetadata<Dyn> internal constructor(
 
     public override fun hashCode(): Int {
         var hasher = 0
-        Hash<VTable>(this.vtablePtr(), hasher)
+        io.github.kotlinmania.rustlang.core.ptr.hash<VTable>(this.vtablePtr(), hasher)
         return hasher
     }
 

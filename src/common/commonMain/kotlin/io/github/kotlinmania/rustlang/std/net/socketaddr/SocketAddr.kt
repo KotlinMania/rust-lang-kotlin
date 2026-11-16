@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.io.error.Error
+import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sys.net.connection.lookupHostString
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
 
@@ -131,7 +132,7 @@ public interface ToSocketAddrs<out Iter> {
     public fun toSocketAddrs(): Result<Iter, Error>
 }
 
-public fun SocketAddr.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> = Result.Ok(this.intoIter())
+public fun SocketAddr.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> = Result.Ok<ArrayDeque<SocketAddr>, Error>(this.intoIter())
 
 public fun SocketAddrV4.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> = SocketAddr.v4(this).toSocketAddrs()
 
@@ -168,7 +169,7 @@ public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeq
         is Ok -> {
             val addr = matchVal.value
             val addr1 = SocketAddr.new(addr, port)
-            return Result.Ok(mutableListOf(addr1).intoIter())
+            return Result.Ok<ArrayDeque<SocketAddr>, Error>(mutableListOf(addr1).intoIter())
         }
         else -> {}
     }
@@ -182,7 +183,7 @@ public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> {
     when (val matchVal = this.parse()) {
         is Ok -> {
             val addr = matchVal.value
-            return Result.Ok(mutableListOf(addr).intoIter())
+            return Result.Ok<ArrayDeque<SocketAddr>, Error>(mutableListOf(addr).intoIter())
         }
         else -> {}
     }
@@ -190,4 +191,4 @@ public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> {
     return lookupHostString(this).map({ addrs -> Vec.fromIter(addrs).intoIter() })
 }
 
-public fun List<SocketAddr>.toSocketAddrs(): Result<Cloned<ArrayDeque<SocketAddr>>, Error> = Result.Ok(this.iter().cloned())
+public fun List<SocketAddr>.toSocketAddrs(): Result<Cloned<ArrayDeque<SocketAddr>>, Error> = Result.Ok<Cloned<ArrayDeque<SocketAddr>>, Error>(this.iter().cloned())

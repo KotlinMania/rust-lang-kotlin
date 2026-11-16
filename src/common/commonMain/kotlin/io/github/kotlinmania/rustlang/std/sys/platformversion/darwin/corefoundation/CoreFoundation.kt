@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefounda
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -128,7 +129,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFRelease").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback>(ptr)
+        val fnptr = transmute(ptr)
         fnptr(cf)
     }
 
@@ -138,7 +139,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback1>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr(cf)
     }
 
@@ -148,7 +149,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDataCreateWithBytesNoCopy").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback2>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr(allocator, bytes, length, bytesDeallocator)
     }
 
@@ -158,7 +159,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFPropertyListCreateWithData").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback3>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr(allocator, data, options, format, error)
     }
 
@@ -168,7 +169,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback4>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr()
     }
 
@@ -178,7 +179,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringCreateWithCStringNoCopy").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback5>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr(alloc, cStr, encoding, contentsDeallocator)
     }
 
@@ -188,7 +189,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFStringGetCString").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback6>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr(theString, buffer, bufferSize, encoding)
     }
 
@@ -198,7 +199,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDictionaryGetTypeID").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback4>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr()
     }
 
@@ -208,7 +209,7 @@ public open class CFHandle internal constructor(
             val err = CStr.fromPtr(dlerror())
             error("could not find function " + ("CFDictionaryGetValue").toString() + ": " + (err).toString())
         }
-        val fnptr = transmute<MutPtr, FnCallback7>(ptr)
+        val fnptr = transmute(ptr)
         return fnptr(theDict, key)
     }
 

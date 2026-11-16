@@ -1,7 +1,7 @@
 // port-lint: source x86/kl.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
@@ -156,7 +156,7 @@ public fun mmAesenc128klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
     val tupleStructVal = aesenc128kl(input, handle)
     val status = tupleStructVal.field0
     val result = tupleStructVal.field1
-    (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
+    (UnresolvedTypeLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
 
@@ -173,7 +173,7 @@ public fun mmAesdec128klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
     val tupleStructVal = aesdec128kl(input, handle)
     val status = tupleStructVal.field0
     val result = tupleStructVal.field1
-    (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
+    (UnresolvedTypeLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
 
@@ -190,7 +190,7 @@ public fun mmAesenc256klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
     val tupleStructVal = aesenc256kl(input, handle)
     val status = tupleStructVal.field0
     val result = tupleStructVal.field1
-    (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
+    (UnresolvedTypeLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
 
@@ -207,7 +207,7 @@ public fun mmAesdec256klU8(output: MutPtr, input: M128i, handle: ConstPtr): UByt
     val tupleStructVal = aesdec256kl(input, handle)
     val status = tupleStructVal.field0
     val result = tupleStructVal.field1
-    (ObjectSlotLayout<M128i>()).writeNative((output1).rawAddress, result)
+    (UnresolvedTypeLayout<M128i>()).writeNative((output1).rawAddress, result)
     return status
 }
 

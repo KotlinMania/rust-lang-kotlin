@@ -158,7 +158,7 @@ public fun <T> pollFn(f: (Context) -> Poll<T>): PollFn<(Context) -> Poll<T>> = P
  */
 public open class PollFn<F>(
     public var f: F,
-) : Future<Any?, T> {
+) : Future<T> {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "PollFn").finish()
 
     public override fun poll(cx: Context): Poll<T> {

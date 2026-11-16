@@ -1369,8 +1369,8 @@ void* libcUnixBsdGetgrnam(const char* name) {
     return NULL;
 }
 
-int32_t libcUnixBsdPthreadCancel(uint64_t thread) {
-    typedef int32_t (*km_fn_t)(uint64_t);
+int32_t libcUnixBsdPthreadCancel(void* thread) {
+    typedef int32_t (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -1397,8 +1397,8 @@ int32_t libcUnixBsdPthreadCancel(uint64_t thread) {
     return ENOSYS;
 }
 
-int32_t libcUnixBsdPthreadKill(uint64_t thread, int32_t sig) {
-    typedef int32_t (*km_fn_t)(uint64_t, int32_t);
+int32_t libcUnixBsdPthreadKill(void* thread, int32_t sig) {
+    typedef int32_t (*km_fn_t)(void*, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {

@@ -9,8 +9,8 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.counter.new
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 public fun nullFd(): Result<OwnedFd, Error> {
-    val nullDev = when (val tryResult = new().read(true).write(true).open("/dev/null")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-    return Result.Ok(nullDev.into())
+    val nullDev = when (val tryResult = new().read(true).write(true).open("/dev/null")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedFd, Error>(tryResult.error) }
+    return Result.Ok<OwnedFd, Error>(nullDev.into())
 }
 
 /**

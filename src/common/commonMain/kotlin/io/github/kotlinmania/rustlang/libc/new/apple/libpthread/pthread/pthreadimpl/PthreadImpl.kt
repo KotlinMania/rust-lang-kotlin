@@ -1,8 +1,8 @@
 // port-lint: source new/apple/libpthread/pthread_/pthread_impl.rs
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.pthreadimpl
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.libc.*
 
 // Note(apple): these should all be `public(crate)`

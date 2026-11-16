@@ -40,7 +40,7 @@ public class DebugStruct(
  */
 public open class Pending<T>(
     public var data: Unit,
-) : Future<Any?, T> {
+) : Future<T> {
     public override fun poll(arg0: Context): Poll<T> = Poll.Pending
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Pending").finish()

@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.test.term.terminfo.searcher
 
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
+import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 
 // ncurses-compatible database discovery.
@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.std.path.PathBuf
  */
 public fun getDbpathForTerm(term: String): PathBuf? {
     val dirsToSearch = mutableListOf()
-    val firstChar = (term.rustStrChars().nextCodeOrNull()?.toChar() ?: return null)
+    val firstChar = (term.chars().next() ?: return null)
     // Find search directory
     when (val matchVal = Env.varOs("TERMINFO")) {
         null -> {}

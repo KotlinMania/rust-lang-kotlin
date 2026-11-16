@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.panicunwind.gcc
 
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -96,7 +96,7 @@ public fun panic(data: PanicPayload): UInt {
 public fun cleanup(ptr: MutPtr): RustAny =
     run {
         val exception = MutPtr(ptr.rawAddress, ptr.rawMeta)
-        if ((ObjectSlotLayout<UnwindException>()).readNative((exception).rawAddress).exceptionClass != RUST_EXCEPTION_CLASS) {
+        if ((UnresolvedTypeLayout<UnwindException>()).readNative((exception).rawAddress).exceptionClass != RUST_EXCEPTION_CLASS) {
             unwindDeleteException(exception)
             rustForeignException()
         }

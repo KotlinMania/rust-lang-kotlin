@@ -1,8 +1,9 @@
 // port-lint: source x86/avx512dq.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
@@ -18,7 +19,6 @@ import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I64x4
 import io.github.kotlinmania.rustlang.corearch.simd.I64x8
-import io.github.kotlinmania.rustlang.corearch.simd.U32x16
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
@@ -81,7 +81,7 @@ public fun mm256MaskzAndPd(k: Mmask8, a: M256d, b: M256d): M256d =
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_and_pd&igExpand=293)
  */
-public fun mm512AndPd(a: M512d, b: M512d): M512d = transmute(run { val _simdArg0 = transmute<U64x8>(a); val _simdArg1 = transmute<U64x8>(b); _simdArg0 })
+public fun mm512AndPd(a: M512d, b: M512d): M512d = transmute(run { val _simdArg0 = transmute(a); val _simdArg1 = transmute(b); _simdArg0 })
 
 /**
  * Compute the bitwise AND of packed double-precision (64-bit) floating point numbers in a and b
@@ -164,7 +164,7 @@ public fun mm256MaskzAndPs(k: Mmask8, a: M256, b: M256): M256 =
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_and_ps&igExpand=303)
  */
-public fun mm512AndPs(a: M512, b: M512): M512 = transmute(run { val _simdArg0 = transmute<U32x16>(a); val _simdArg1 = transmute<U32x16>(b); _simdArg0 })
+public fun mm512AndPs(a: M512, b: M512): M512 = transmute(run { val _simdArg0 = transmute(a); val _simdArg1 = transmute(b); _simdArg0 })
 
 /**
  * Compute the bitwise AND of packed single-precision (32-bit) floating point numbers in a and b
@@ -423,7 +423,7 @@ public fun mm256MaskzOrPd(k: Mmask8, a: M256d, b: M256d): M256d =
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_or_pd&igExpand=4829)
  */
-public fun mm512OrPd(a: M512d, b: M512d): M512d = transmute(run { val _simdArg0 = transmute<U64x8>(a); val _simdArg1 = transmute<U64x8>(b); _simdArg0 })
+public fun mm512OrPd(a: M512d, b: M512d): M512d = transmute(run { val _simdArg0 = transmute(a); val _simdArg1 = transmute(b); _simdArg0 })
 
 /**
  * Compute the bitwise OR of packed double-precision (64-bit) floating point numbers in a and b and
@@ -506,7 +506,7 @@ public fun mm256MaskzOrPs(k: Mmask8, a: M256, b: M256): M256 =
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_or_ps&igExpand=4838)
  */
-public fun mm512OrPs(a: M512, b: M512): M512 = transmute(run { val _simdArg0 = transmute<U32x16>(a); val _simdArg1 = transmute<U32x16>(b); _simdArg0 })
+public fun mm512OrPs(a: M512, b: M512): M512 = transmute(run { val _simdArg0 = transmute(a); val _simdArg1 = transmute(b); _simdArg0 })
 
 /**
  * Compute the bitwise OR of packed single-precision (32-bit) floating point numbers in a and b and
@@ -591,7 +591,7 @@ public fun mm256MaskzXorPd(k: Mmask8, a: M256d, b: M256d): M256d =
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_xor_pd&igExpand=7102)
  */
-public fun mm512XorPd(a: M512d, b: M512d): M512d = transmute(run { val _simdArg0 = transmute<U64x8>(a); val _simdArg1 = transmute<U64x8>(b); _simdArg0 })
+public fun mm512XorPd(a: M512d, b: M512d): M512d = transmute(run { val _simdArg0 = transmute(a); val _simdArg1 = transmute(b); _simdArg0 })
 
 /**
  * Compute the bitwise XOR of packed double-precision (64-bit) floating point numbers in a and b and
@@ -674,7 +674,7 @@ public fun mm256MaskzXorPs(k: Mmask8, a: M256, b: M256): M256 =
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_xor_ps&igExpand=7111)
  */
-public fun mm512XorPs(a: M512, b: M512): M512 = transmute(run { val _simdArg0 = transmute<U32x16>(a); val _simdArg1 = transmute<U32x16>(b); _simdArg0 })
+public fun mm512XorPs(a: M512, b: M512): M512 = transmute(run { val _simdArg0 = transmute(a); val _simdArg1 = transmute(b); _simdArg0 })
 
 /**
  * Compute the bitwise XOR of packed single-precision (32-bit) floating point numbers in a and b and
@@ -3716,7 +3716,7 @@ public fun ktestzMask8U8(a: Mmask8, b: Mmask8): UByte = (if (kandMask8(a, b) == 
  *
  * [Intel's Documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_load_mask8&igExpand=3999)
  */
-public fun loadMask8(memAddr: ConstPtr): Mmask8 = (ObjectSlotLayout<Mmask8>()).readNative((memAddr).rawAddress)
+public fun loadMask8(memAddr: ConstPtr): Mmask8 = (UnresolvedTypeLayout<Mmask8>()).readNative((memAddr).rawAddress)
 
 /**
  * Store 8-bit mask to memory
@@ -3725,7 +3725,7 @@ public fun loadMask8(memAddr: ConstPtr): Mmask8 = (ObjectSlotLayout<Mmask8>()).r
  */
 public fun storeMask8(memAddr: MutPtr, a: Mmask8) {
     val memAddr1 = memAddr
-    (ObjectSlotLayout<Mmask8>()).writeNative((memAddr1).rawAddress, a)
+    (UnresolvedTypeLayout<Mmask8>()).writeNative((memAddr1).rawAddress, a)
 }
 
 /**

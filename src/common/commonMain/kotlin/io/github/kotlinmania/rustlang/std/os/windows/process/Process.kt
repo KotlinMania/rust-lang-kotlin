@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.std.os.windows.process
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -21,24 +21,18 @@ import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
-import io.github.kotlinmania.rustlang.std.process.Child
-import io.github.kotlinmania.rustlang.std.process.ChildStderr
-import io.github.kotlinmania.rustlang.std.process.ChildStdin
-import io.github.kotlinmania.rustlang.std.process.ChildStdout
-import io.github.kotlinmania.rustlang.std.process.Command
-import io.github.kotlinmania.rustlang.std.process.ExitCode
-import io.github.kotlinmania.rustlang.std.process.ExitStatus
-import io.github.kotlinmania.rustlang.std.process.Stdio
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
 import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
+import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.windows.Process
 
 // Windows-specific extensions to primitives in the [std.process] module.
 
 public fun fromRawHandleStdio(handle: RawHandle): Stdio {
     val handle1 = Handle.Handle.fromRawHandle(MutPtr(handle.rawAddress, handle.rawMeta))
-    val io = io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Handle(handle1)
-    return Stdio.fromInner(io)
+    val io = Stdio.Handle(handle1)
+    return Process.Stdio.fromInner(io)
 }
 
 /**
@@ -47,8 +41,8 @@ public fun fromRawHandleStdio(handle: RawHandle): Stdio {
  */
 public fun fromStdio(handle: OwnedHandle): Stdio {
     val handle1 = Handle.Handle.fromInner(handle)
-    val io = io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Handle(handle1)
-    return Stdio.fromInner(io)
+    val io = Stdio.Handle(handle1)
+    return Process.Stdio.fromInner(io)
 }
 
 public fun Child.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
@@ -83,7 +77,7 @@ public fun ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.into
 public fun fromChildStdin(handle: OwnedHandle): ChildStdin {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return ChildStdin.fromInner(pipe)
+    return Process.ChildStdin.fromInner(pipe)
 }
 
 /**
@@ -95,7 +89,7 @@ public fun fromChildStdin(handle: OwnedHandle): ChildStdin {
 public fun fromChildStdout(handle: OwnedHandle): ChildStdout {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return ChildStdout.fromInner(pipe)
+    return Process.ChildStdout.fromInner(pipe)
 }
 
 /**
@@ -107,7 +101,7 @@ public fun fromChildStdout(handle: OwnedHandle): ChildStdout {
 public fun fromChildStderr(handle: OwnedHandle): ChildStderr {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return ChildStderr.fromInner(pipe)
+    return Process.ChildStderr.fromInner(pipe)
 }
 
 /**
@@ -125,7 +119,7 @@ public interface ExitStatusExt<T> {
     }
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: UInt): ExitStatus = ExitStatus.fromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: UInt): ExitStatus = Process.ExitStatus.fromInner(From.from(raw))
 
 /**
  * Windows-specific extensions to the [process.Command] builder.
@@ -374,7 +368,7 @@ public fun Command.asyncPipes(alwaysAsync: Boolean): Command {
     return this
 }
 
-public fun Command.spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<Child, Error> = this.asInnerMut().spawnWithAttributes(io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio.Inherit, true, attributeList).map(Child::fromInner)
+public fun Command.spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<Child, Error> = this.asInnerMut().spawnWithAttributes(Stdio.Inherit, true, attributeList).map(Process.Child::fromInner)
 
 public fun Command.startupinfoFullscreen(enabled: Boolean): Command {
     this.asInnerMut().startupinfoFullscreen(enabled)
@@ -424,7 +418,7 @@ public interface ExitCodeExt<T> {
     }
 }
 
-public fun exitCodeExtFromRawExitCode(raw: UInt): ExitCode = ExitCode.fromInner(From.from(raw))
+public fun exitCodeExtFromRawExitCode(raw: UInt): ExitCode = Process.ExitCode.fromInner(From.from(raw))
 
 /**
  * A wrapper around windows [`ProcThreadAttributeList`][1].
@@ -502,7 +496,7 @@ public open class ProcThreadAttributeListBuilder(
      *
      * [1]: <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute#parameters>
      */
-    public open fun <T> attribute(attribute: Int, value: T, typeLayoutT: TypeLayout<T>): ProcThreadAttributeListBuilder = this.rawAttribute(attribute, addrOf(value).cast(), sizeOf<T>(typeLayoutT = typeLayoutT))
+    public open fun <T> attribute(attribute: Int, value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ProcThreadAttributeListBuilder = this.rawAttribute(attribute, addrOf(value).cast(), sizeOf<T>(typeLayoutT = typeLayoutT))
 
     /**
      * Sets a raw attribute on the attribute list.
@@ -601,20 +595,20 @@ public open class ProcThreadAttributeListBuilder(
         // with a null pointer to retrieve the required size.
         val localStorageL702C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         var requiredSize by localStorageL702C8
-        val attributeCount = this.attributes.size.tryInto() ?: return Result.Err(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded"))
+        val attributeCount = when (val tryResult = this.attributes.size.tryInto()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ProcThreadAttributeList, Error>(constError(ErrorKind.InvalidInput, "maximum number of ProcThreadAttributes exceeded")) }
         C.InitializeProcThreadAttributeList(MutPtr(0L), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout))
-        var attributeList = mutableListOf(MaybeUninit.uninit(ObjectSlotLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
+        var attributeList = mutableListOf(MaybeUninit.uninit(UnresolvedTypeLayout<Result<ProcThreadAttributeList, Error>>()), requiredSize).intoBoxedSlice()
         // Once we've allocated the necessary memory, it's safe to invoke
         // `InitializeProcThreadAttributeList` to properly initialize the list.
-        when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(C.InitializeProcThreadAttributeList(attributeList.asMutPtr().cast(), attributeCount, 0, RustMutableReference(localStorageL702C8.asMutPtr(), localStorageL702C8.layout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
         // # Add our attributes to the buffer.
         // It's theoretically possible for the attribute count to exceed a u32
         // value. Therefore, we ensure that we don't add more attributes than
         // the buffer was initialized for.
         for ((attribute, value) in this.attributes.iter().take(attributeCount.toInt())) {
-            when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = cvt(C.UpdateProcThreadAttribute(attributeList.asMutPtr().cast(), 0, attribute, value.ptr, value.size, MutPtr(0L), MutPtr(0L)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ProcThreadAttributeList, Error>(tryResult.error) }
         }
-        return Result.Ok(ProcThreadAttributeList(attributeList = attributeList, lifetimeMarker = Unit))
+        return Result.Ok<ProcThreadAttributeList, Error>(ProcThreadAttributeList(attributeList = attributeList, lifetimeMarker = Unit))
     }
 
     public companion object {

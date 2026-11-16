@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.int.udiv.umodti3
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.num.rustWrappingNeg
+import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 
 // The `@armAeabiAlias= __aeabi_idiv` attribute cannot be made to work with `intrinsics` in macros
 // LLVM does not currently have a `__divmodti4` function, but GCC does
@@ -63,7 +63,7 @@ public fun divti3(a: I128, b: I128): I128 {
     }
     val t = udivti3(U128.fromLong(a2.toLong()), U128.fromLong(b2.toLong())).toI128()
     return if (aNeg != bNeg) {
-        rustWrappingNeg(t)
+        t.wrappingNeg()
     } else {
         t
     }
@@ -87,7 +87,7 @@ public fun modti3(a: I128, b: I128): I128 {
     }
     val r = umodti3(U128.fromLong(a2.toLong()), U128.fromLong(b2.toLong())).toI128()
     return if (aNeg) {
-        rustWrappingNeg(r)
+        r.wrappingNeg()
     } else {
         r
     }

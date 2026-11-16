@@ -2,16 +2,18 @@
 package io.github.kotlinmania.rustlang.rustcdemangle.v0
 
 import io.github.kotlinmania.rustlang.core.array.fromFn
+import io.github.kotlinmania.rustlang.core.char.methods.toDigit
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustCheckedSub
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.str.rustToDigit
+import io.github.kotlinmania.rustlang.core.str.chars
 
 // Mark the parser as errored (with `ParseError.Invalid`), print the
 // appropriate message (see `ParseError.message`) and return early.
@@ -36,9 +38,9 @@ public val MAX_DEPTH: UInt = 500u
 public open class Demangle(
     public var inner: String,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        val printer = Printer(parser = Result.Ok(Parser(sym = this.inner, next = 0, depth = 0u)), out = f, boundLifetimeDepth = 0u)
-        printer.printPath(true)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+        val printer = Printer(parser = Result.Ok<Parser, ParseError>(Parser(sym = this.inner, next = 0, depth = 0u)), out = f, boundLifetimeDepth = 0u)
+        return printer.printPath(true)
     }
 }
 
@@ -86,34 +88,34 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, ParseError> {
         // On OSX, symbols are prefixed with an extra _
         inner = s.substring(3)
     } else {
-        return Result.Err(ParseError.Invalid)
+        return Result.Err<Pair<Demangle, String>, ParseError>(ParseError.Invalid)
     }
     // Paths always start with uppercase characters.
     when (inner.encodeToByteArray().map { it.toUByte() }[0]) {
         in 65u..90u -> {}
-        else -> { return Result.Err(ParseError.Invalid) }
+        else -> { return Result.Err<Pair<Demangle, String>, ParseError>(ParseError.Invalid) }
     }
     // only work with ascii text
     if (inner.bytes().any({ c -> c and 0x80 != 0 })) {
-        return Result.Err(ParseError.Invalid)
+        return Result.Err<Pair<Demangle, String>, ParseError>(ParseError.Invalid)
     }
     // Verify that the symbol is indeed a valid path.
     val tryParsePath =
         { parser ->
-            var dummyPrinter = Printer(parser = Result.Ok(parser), out = null, boundLifetimeDepth = 0u)
+            var dummyPrinter = Printer(parser = Result.Ok<Parser, ParseError>(parser), out = null, boundLifetimeDepth = 0u)
             dummyPrinter.printPath(false).expect("`fmt::Error`s should be impossible without a `fmt::Formatter`")
             dummyPrinter.parser
         }
     var parser = Parser(sym = inner, next = 0, depth = 0u)
-    parser = when (val tryResult = tryParsePath(parser)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    parser = when (val tryResult = tryParsePath(parser)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Demangle, String>, ParseError>(tryResult.error) }
     // Instantiating crate (paths always start with uppercase characters).
     when (val matchVal = parser.sym.encodeToByteArray().map { it.toUByte() }.get(parser.next)) {
         is Some -> {
-            parser = when (val tryResult = tryParsePath(parser)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            parser = when (val tryResult = tryParsePath(parser)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Demangle, String>, ParseError>(tryResult.error) }
         }
         else -> {}
     }
-    return Result.Ok(Pair(Demangle(inner = inner), parser.sym.substring(parser.next)))
+    return Result.Ok<Pair<Demangle, String>, ParseError>(Pair(Demangle(inner = inner), parser.sym.substring(parser.next)))
 }
 
 public open class Ident(
@@ -137,7 +139,7 @@ public open class Ident(
         val r =
             this.punycodeDecode(closure@{ i, c ->
                 // Check there's space left for another character.
-                when (val tryResult = out.getOrNull(outLen).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure Result.Err(tryResult.error) }
+                when (val tryResult = out.getOrNull(outLen).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
                 // Move the characters after the insert position.
                 var j = outLen
                 outLen += 1
@@ -164,12 +166,12 @@ public open class Ident(
     public open fun punycodeDecode(insert: (Int, Char) -> Result<Unit, Unit>): Result<Unit, Unit> {
         val punycodeBytes = this.punycode.bytes().peekable()
         if (punycodeBytes.peek() == null) {
-            return Result.Err(Unit)
+            return Result.Err<Unit, Unit>(Unit)
         }
         var len = 0
         // Populate initial output from ASCII fragment.
-        for (c in this.ascii.rustStrChars()) {
-            when (val tryResult = insert(len, c)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        for (c in this.ascii.chars()) {
+            when (val tryResult = insert(len, c)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
             len += 1
         }
         // Punycode parameters and initial state.
@@ -188,7 +190,7 @@ public open class Ident(
             var k: Int = 0
             while (true) {
                 k += base
-                val t = minOf(max(rustSaturatingSub(k, bias.toInt()), tMin), tMax)
+                val t = minOf(max(k.saturatingSub(bias.toInt()), tMin), tMax)
                 val d2 =
                     when (val matchVal = punycodeBytes.next()) {
                         in 97u..122u -> {
@@ -199,33 +201,33 @@ public open class Ident(
                             val d1 = matchVal
                             26u + (d1 - 48u)
                         }
-                        else -> { return Result.Err(Unit) }
+                        else -> { return Result.Err<Unit, Unit>(Unit) }
                     }
                 val d3 = d2.toInt()
-                delta = when (val tryResult = rustCheckedAdd(delta, (when (val tryResult = rustCheckedMul(d3, w.toInt()).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toInt()).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                delta = when (val tryResult = delta.checkedAdd((when (val tryResult = d3.checkedMul(w.toInt()).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }).toInt()).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
                 if (d3 < t) {
                     break
                 }
-                w = when (val tryResult = w.checkedMul(base - t).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                w = when (val tryResult = w.checkedMul(base - t).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
             }
             // Compute the new insert position and character.
             len += 1
-            i = when (val tryResult = rustCheckedAdd(i, delta).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            n = when (val tryResult = rustCheckedAdd(n, i / len).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            i = when (val tryResult = i.checkedAdd(delta).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+            n = when (val tryResult = n.checkedAdd(i / len).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
             i %= len
             val nU32 = n.toUInt()
             val c1 =
                 if (nU32.toInt() == n) {
-                    when (val tryResult = Char.fromU32(nU32).okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    when (val tryResult = Char.fromU32(nU32).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
                 } else {
-                    return Result.Err(Unit)
+                    return Result.Err<Unit, Unit>(Unit)
                 }
             // Insert the new character and increment the insert position.
-            when (val tryResult = insert(i, c1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = insert(i, c1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
             i += 1
             // If there are no more deltas, decoding is complete.
             if (punycodeBytes.peek() == null) {
-                return Result.Ok(Unit)
+                return Result.Ok<Unit, Unit>(Unit)
             }
             // Perform bias adaptation.
             delta /= damp
@@ -240,10 +242,10 @@ public open class Ident(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.trySmallPunycodeDecode(closure1@{ chars ->
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+        return this.trySmallPunycodeDecode(closure1@{ chars ->
             for (c in chars) {
-                when (val tryResult = c.fmt(f)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure1 Result.Err(tryResult.error) }
+                when (val tryResult = c.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
             }
             Result.Ok(Unit)
         }).unwrapOrElse(closure2@{
@@ -308,7 +310,7 @@ public open class HexNibbles(
                 }
                 else -> error("unreachable")
             } }).map({ param0 ->
-                val half = { nibble: UByte -> (nibble.toInt().toChar()).rustToDigit(16u)!!.toUByte() }
+                val half = { nibble: UByte -> (nibble.toInt().toChar()).toDigit(16u)!!.toUByte() }
                 (half(hi) shl 4) or half(lo)
             })
         val chars =
@@ -323,22 +325,22 @@ public open class HexNibbles(
                     }
                     fun utf8LenFromFirstByte(byte: UByte): Result<Int, Utf8FirstByteError> =
                         when (byte) {
-                            in 0x00..0x7f -> { Result.Ok(1) }
-                            in 0x80..0xbf -> { Result.Err(Utf8FirstByteError.ContinuationByte) }
-                            in 0xc0..0xdf -> { Result.Ok(2) }
-                            in 0xe0..0xef -> { Result.Ok(3) }
-                            in 0xf0..0xf7 -> { Result.Ok(4) }
-                            in 0xf8..0xff -> Result.Err(Utf8FirstByteError.TooLong)
+                            in 0x00..0x7f -> { Result.Ok<Int, Utf8FirstByteError>(1) }
+                            in 0x80..0xbf -> { Result.Err<Int, Utf8FirstByteError>(Utf8FirstByteError.ContinuationByte) }
+                            in 0xc0..0xdf -> { Result.Ok<Int, Utf8FirstByteError>(2) }
+                            in 0xe0..0xef -> { Result.Ok<Int, Utf8FirstByteError>(3) }
+                            in 0xf0..0xf7 -> { Result.Ok<Int, Utf8FirstByteError>(4) }
+                            in 0xf8..0xff -> Result.Err<Int, Utf8FirstByteError>(Utf8FirstByteError.TooLong)
                         }
                     // Collect the appropriate amount of bytes (up to 4), according
                     // to the UTF-8 length implied by the first byte.
-                    val utf8Len = when (val tryResult = utf8LenFromFirstByte(firstByte).mapErr({ Unit })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
+                    val utf8Len = when (val tryResult = utf8LenFromFirstByte(firstByte).mapErr({ Unit })) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err<Char, Unit>(tryResult.error) }
                     val utf8 = listOf(firstByte, 0, 0, 0)[0 until utf8Len]
                     for (i in 1 until utf8Len) {
-                        utf8[i] = when (val tryResult = bytes.next().okOr()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
+                        utf8[i] = when (val tryResult = bytes.next().okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err<Char, Unit>(tryResult.error) }
                     }
                     // Fully validate the UTF-8 sequence.
-                    val s = when (val tryResult = String.fromUtf8(utf8).mapErr({ Unit })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure3 Result.Err(tryResult.error) }
+                    val s = when (val tryResult = String.fromUtf8(utf8).mapErr({ Unit })) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err<Char, Unit>(tryResult.error) }
                     // Since we included exactly one UTF-8 sequence, and validation
                     // succeeded, `str.chars` should return exactly one `char`.
                     var chars = s.chars()
@@ -347,7 +349,7 @@ public open class HexNibbles(
                         when {
                             matchVal.first != null && matchVal.second == null -> {
                                 val c = matchVal.first
-                                Result.Ok(c)
+                                Result.Ok<Char, Unit>(c)
                             }
                             else -> error("str::from_utf8($utf8) = $s was expected to have 1 char, but ${s.chars().count()} chars were found")
                         }
@@ -400,9 +402,9 @@ public open class Parser(
     public open fun pushDepth(): Result<Unit, ParseError> {
         this.depth += 1u
         return if (this.depth > MAX_DEPTH) {
-            Result.Err(ParseError.RecursedTooDeep)
+            Result.Err<Unit, ParseError>(ParseError.RecursedTooDeep)
         } else {
-            Result.Ok(Unit)
+            Result.Ok<Unit, ParseError>(Unit)
         }
     }
 
@@ -421,21 +423,21 @@ public open class Parser(
         }
 
     public open fun next(): Result<UByte, ParseError> {
-        val b = when (val tryResult = (this.peek()?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val b = when (val tryResult = (this.peek()?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, ParseError>(tryResult.error) }
         this.next += 1
-        return Result.Ok(b)
+        return Result.Ok<UByte, ParseError>(b)
     }
 
     public open fun hexNibbles(): Result<HexNibbles, ParseError> {
         val start = this.next
         while (true) {
-            when (when (val tryResult = this.next()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+            when (when (val tryResult = this.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HexNibbles, ParseError>(tryResult.error) }) {
                 in 48u..57u, in 97u..102u -> {}
                 95u -> { break }
-                else -> { return Result.Err(ParseError.Invalid) }
+                else -> { return Result.Err<HexNibbles, ParseError>(ParseError.Invalid) }
             }
         }
-        return Result.Ok(HexNibbles(nibbles = this.sym.substring(start until this.next - 1)))
+        return Result.Ok<HexNibbles, ParseError>(HexNibbles(nibbles = this.sym.substring(start until this.next - 1)))
     }
 
     public open fun digit10(): Result<UByte, ParseError> {
@@ -445,10 +447,10 @@ public open class Parser(
                     val d = matchVal
                     d - 48u
                 }
-                else -> { return Result.Err(ParseError.Invalid) }
+                else -> { return Result.Err<UByte, ParseError>(ParseError.Invalid) }
             }
         this.next += 1
-        return Result.Ok(d1)
+        return Result.Ok<UByte, ParseError>(d1)
     }
 
     public open fun digit62(): Result<UByte, ParseError> {
@@ -466,76 +468,76 @@ public open class Parser(
                     val d2 = matchVal
                     10u + 26u + (d2 - 65u)
                 }
-                else -> { return Result.Err(ParseError.Invalid) }
+                else -> { return Result.Err<UByte, ParseError>(ParseError.Invalid) }
             }
         this.next += 1
-        return Result.Ok(d3)
+        return Result.Ok<UByte, ParseError>(d3)
     }
 
     public open fun integer62(): Result<ULong, ParseError> {
         if (this.eat(95u)) {
-            return Result.Ok(0uL)
+            return Result.Ok<ULong, ParseError>(0uL)
         }
         var x: ULong = 0uL
         while (!this.eat(95u)) {
-            val d = (when (val tryResult = this.digit62()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toULong()
-            x = when (val tryResult = (rustCheckedMul(x, 62uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            x = when (val tryResult = (rustCheckedAdd(x, d)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val d = (when (val tryResult = this.digit62()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }).toULong()
+            x = when (val tryResult = (x.checkedMul(62uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }
+            x = when (val tryResult = (x.checkedAdd(d)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }
         }
-        return (rustCheckedAdd(x, 1uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
+        return (x.checkedAdd(1uL)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
     }
 
     public open fun optInteger62(tag: UByte): Result<ULong, ParseError> {
         if (!this.eat(tag)) {
-            return Result.Ok(0uL)
+            return Result.Ok<ULong, ParseError>(0uL)
         }
-        return ((when (val tryResult = this.integer62()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }.checkedAdd(1))?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
+        return ((when (val tryResult = this.integer62()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<ULong, ParseError>(tryResult.error) }.checkedAdd(1))?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))
     }
 
     public open fun disambiguator(): Result<ULong, ParseError> = this.optInteger62(115u)
 
     public open fun namespace(): Result<Char?, ParseError> {
-        return when (val matchVal = when (val tryResult = this.next()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }) {
+        return when (val matchVal = when (val tryResult = this.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Char?, ParseError>(tryResult.error) }) {
             // Special namespaces, like closures and shims.
             in 65u..90u -> {
                 val ns = matchVal
-                Result.Ok(ns.toInt().toChar())
+                Result.Ok<Char?, ParseError>(ns.toInt().toChar())
             }
             // Implementation-specific/unspecified namespaces.
-            in 97u..122u -> Result.Ok(null)
-            else -> Result.Err(ParseError.Invalid)
+            in 97u..122u -> Result.Ok<Char?, ParseError>(null)
+            else -> Result.Err<Char?, ParseError>(ParseError.Invalid)
         }
     }
 
     public open fun backref(): Result<Parser, ParseError> {
         val sStart = this.next - 1
-        val i = when (val tryResult = this.integer62()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val i = when (val tryResult = this.integer62()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Parser, ParseError>(tryResult.error) }
         if (i >= sStart.toULong()) {
-            return Result.Err(ParseError.Invalid)
+            return Result.Err<Parser, ParseError>(ParseError.Invalid)
         }
         val newParser = Parser(sym = this.sym, next = i.toInt(), depth = this.depth)
-        when (val tryResult = newParser.pushDepth()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        return Result.Ok(newParser)
+        when (val tryResult = newParser.pushDepth()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Parser, ParseError>(tryResult.error) }
+        return Result.Ok<Parser, ParseError>(newParser)
     }
 
     public open fun ident(): Result<Ident, ParseError> {
         val isPunycode = this.eat(117u)
-        var len = (when (val tryResult = this.digit10()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }).toInt()
+        var len = (when (val tryResult = this.digit10()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Ident, ParseError>(tryResult.error) }).toInt()
         if (len != 0) {
             while (true) {
                 val matchVal = this.digit10()
-                if (matchVal !is Result.Ok<*>) break
-                val d = (matchVal as Result.Ok<*>).value
-                len = when (val tryResult = (rustCheckedMul(len, 10)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                len = when (val tryResult = (rustCheckedAdd(len, d.toInt())?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                if (matchVal !is Result.Ok) break
+                val d = (matchVal as Result.Ok).value
+                len = when (val tryResult = (len.checkedMul(10)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Ident, ParseError>(tryResult.error) }
+                len = when (val tryResult = (len.checkedAdd(d.toInt())?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Ident, ParseError>(tryResult.error) }
             }
         }
         // Skip past the optional `_` separator.
         this.eat(95u)
         val start = this.next
-        this.next = when (val tryResult = (rustCheckedAdd(this.next, len)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        this.next = when (val tryResult = (this.next.checkedAdd(len)?.let { Result.Ok(it) } ?: Result.Err(ParseError.Invalid))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Ident, ParseError>(tryResult.error) }
         if (this.next > this.sym.length) {
-            return Result.Err(ParseError.Invalid)
+            return Result.Err<Ident, ParseError>(ParseError.Invalid)
         }
         val ident = this.sym.substring(start until this.next)
         return if (isPunycode) {
@@ -548,11 +550,11 @@ public open class Parser(
                     }
                 }
             if (ident1.punycode.isEmpty()) {
-                return Result.Err(ParseError.Invalid)
+                return Result.Err<Ident, ParseError>(ParseError.Invalid)
             }
-            Result.Ok(ident1)
+            Result.Ok<Ident, ParseError>(ident1)
         } else {
-            Result.Ok(Ident(ascii = ident, punycode = ""))
+            Result.Ok<Ident, ParseError>(Ident(ascii = ident, punycode = ""))
         }
     }
 }
@@ -592,7 +594,7 @@ public open class Printer internal constructor(
      * given closure. This should not change parsing behavior, only disable the
      * output, but there may be optimizations (such as not traversing backrefs).
      */
-    public open fun skippingPrinting(f: (Printer) -> Unit) {
+    public open fun skippingPrinting(f: (Printer) -> Result<Unit, Error>) {
         val origOut = this.out.also { this.out = null }
         f(this).expect("`fmt::Error`s should be impossible without a `fmt::Formatter`")
         this.out = origOut
@@ -603,35 +605,35 @@ public open class Printer internal constructor(
      * When printing is being skipped, the backref will only be parsed,
      * ignoring the backref's target completely.
      */
-    public open fun printBackref(f: (Printer) -> Unit) {
+    public open fun printBackref(f: (Printer) -> Result<Unit, Error>): Result<Unit, Error> {
         val backrefParser =
             run {
                 val matchVal = this.parser
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val parser = matchVal.value
                     run {
                         val matchVal1 = parser.backref()
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val x = matchVal1.value
                             x
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err = matchVal1.error
-                            this.print(err.message())
-                            this.parser = Result.Err(err)
-                            return Unit
+                            when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }
         if (this.out == null) {
-            return Unit
+            return Result.Ok<Unit, Error>(Unit)
         }
-        val origParser = replace(this.parser, Result.Ok(backrefParser))
+        val origParser = replace(this.parser, Result.Ok<Unit, Error>(backrefParser))
         val r = f(this)
         this.parser = origParser
-        r
+        return r
     }
 
     public open fun popDepth() {
@@ -648,7 +650,7 @@ public open class Printer internal constructor(
      * Output the given value to `self.out` (using `fmt.Display` formatting),
      * if printing isn't being skipped.
      */
-    public open fun print(x: Any) {
+    public open fun print(x: Any): Result<Unit, Error> {
         when (val matchVal = this.out) {
             null -> {}
             else -> {
@@ -656,6 +658,7 @@ public open class Printer internal constructor(
                 out.append((x).toString())
             }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -663,7 +666,7 @@ public open class Printer internal constructor(
      * whole sequence wrapped in quotes, for either a `char` or `String` literal,
      * if printing isn't being skipped.
      */
-    public open fun printQuotedEscapedChars(quote: Char, chars: Any) {
+    public open fun printQuotedEscapedChars(quote: Char, chars: Any): Result<Unit, Error> {
         when (val matchVal = this.out) {
             null -> {}
             else -> {
@@ -690,6 +693,7 @@ public open class Printer internal constructor(
                 out.append(quote)
             }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -697,21 +701,21 @@ public open class Printer internal constructor(
      * An index of `0` always refers to `_`, but starting with `1`,
      * indices refer to late-bound scopes introduced by a binder.
      */
-    public open fun printLifetimeFromIndex(lt: ULong) {
+    public open fun printLifetimeFromIndex(lt: ULong): Result<Unit, Error> {
         // Bound scopes aren't tracked when skipping printing.
         if (this.out == null) {
-            return Unit
+            return Result.Ok<Unit, Error>(Unit)
         }
-        this.print("'")
+        when (val tryResult = this.print("'")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         if (lt == 0uL) {
             return this.print("_")
         }
-        when (val matchVal = rustCheckedSub((this.boundLifetimeDepth.toULong()), lt)) {
+        return when (val matchVal = (this.boundLifetimeDepth.toULong()).checkedSub(lt)) {
             null -> {
                 val err = ParseError.Invalid
-                this.print(err.message())
-                this.parser = Result.Err(err)
-                return Unit
+                when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                this.parser = Result.Err<Parser, ParseError>(err)
+                return Result.Ok<Unit, Error>(Unit)
             }
             else -> {
                 val depth = matchVal
@@ -721,7 +725,7 @@ public open class Printer internal constructor(
                     this.print(c)
                 } else {
                     // Use `_123` after running out of letters.
-                    this.print("_")
+                    when (val tryResult = this.print("_")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     this.print(depth)
                 }
             }
@@ -733,25 +737,25 @@ public open class Printer internal constructor(
      * printing e.g. `for<>` before calling the closure,
      * and make those scopes visible to it (via depth level).
      */
-    public open fun inBinder(f: (Printer) -> Unit) {
+    public open fun inBinder(f: (Printer) -> Result<Unit, Error>): Result<Unit, Error> {
         val boundLifetimes =
             run {
                 val matchVal = this.parser
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val parser = matchVal.value
                     run {
                         val matchVal1 = parser.optInteger62(71u)
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val x = matchVal1.value
                             x
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err = matchVal1.error
-                            this.print(err.message())
-                            this.parser = Result.Err(err)
-                            return Unit
+                            when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }
@@ -760,20 +764,20 @@ public open class Printer internal constructor(
             return f(this)
         }
         if (boundLifetimes > 0) {
-            this.print("for<")
+            when (val tryResult = this.print("for<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             for (i in 0 until boundLifetimes) {
                 if (i > 0) {
-                    this.print(", ")
+                    when (val tryResult = this.print(", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
                 this.boundLifetimeDepth += 1u
-                this.printLifetimeFromIndex(1)
+                when (val tryResult = this.printLifetimeFromIndex(1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
-            this.print("> ")
+            when (val tryResult = this.print("> ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         val r = f(this)
         // Restore `boundLifetimeDepth` to the previous value.
         this.boundLifetimeDepth -= boundLifetimes.toUInt()
-        r
+        return r
     }
 
     /**
@@ -781,57 +785,57 @@ public open class Printer internal constructor(
      * until the end of the list ('E') is found, or the parser errors.
      * Returns the number of elements printed.
      */
-    public open fun printSepList(f: (Printer) -> Unit, sep: String): Result<Int, Unit> {
+    public open fun printSepList(f: (Printer) -> Result<Unit, Error>, sep: String): Result<Int, io.github.kotlinmania.rustlang.core.error.Error> {
         var i = 0
         while (this.parser.isOk() && !this.eat(69u)) {
             if (i > 0) {
-                this.print(sep)
+                when (val tryResult = this.print(sep)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
             }
-            when (val tryResult = f(this)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = f(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
             i += 1
         }
-        return Result.Ok(i)
+        return Result.Ok<Int, io.github.kotlinmania.rustlang.core.error.Error>(i)
     }
 
-    public open fun printPath(inValue: Boolean) {
+    public open fun printPath(inValue: Boolean): Result<Unit, Error> {
         run {
             val matchVal = this.parser
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 val parser = matchVal.value
                 run {
                     val matchVal1 = parser.pushDepth()
-                    when (matchVal1) { is Result.Ok<*> -> {
+                    when (matchVal1) { is Result.Ok -> {
                         val x = matchVal1.value
                         x
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val err = matchVal1.error
-                        this.print(err.message())
-                        this.parser = Result.Err(err)
-                        return Unit
+                        when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err)
+                        return Result.Ok<Unit, Error>(Unit)
                     } }
                 }
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 return this.print("?")
             } }
         }
         val tag =
             run {
                 val matchVal2 = this.parser
-                when (matchVal2) { is Result.Ok<*> -> {
+                when (matchVal2) { is Result.Ok -> {
                     val parser1 = matchVal2.value
                     run {
                         val matchVal3 = parser1.next()
-                        when (matchVal3) { is Result.Ok<*> -> {
+                        when (matchVal3) { is Result.Ok -> {
                             val x1 = matchVal3.value
                             x1
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err1 = matchVal3.error
-                            this.print(err1.message())
-                            this.parser = Result.Err(err1)
-                            return Unit
+                            when (val tryResult = this.print(err1.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err1)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }
@@ -840,46 +844,46 @@ public open class Printer internal constructor(
                 val dis =
                     run {
                         val matchVal4 = this.parser
-                        when (matchVal4) { is Result.Ok<*> -> {
+                        when (matchVal4) { is Result.Ok -> {
                             val parser2 = matchVal4.value
                             run {
                                 val matchVal5 = parser2.disambiguator()
-                                when (matchVal5) { is Result.Ok<*> -> {
+                                when (matchVal5) { is Result.Ok -> {
                                     val x2 = matchVal5.value
                                     x2
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err2 = matchVal5.error
-                                    this.print(err2.message())
-                                    this.parser = Result.Err(err2)
-                                    return Unit
+                                    when (val tryResult = this.print(err2.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err2)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
                 val name =
                     run {
                         val matchVal6 = this.parser
-                        when (matchVal6) { is Result.Ok<*> -> {
+                        when (matchVal6) { is Result.Ok -> {
                             val parser3 = matchVal6.value
                             run {
                                 val matchVal7 = parser3.ident()
-                                when (matchVal7) { is Result.Ok<*> -> {
+                                when (matchVal7) { is Result.Ok -> {
                                     val x3 = matchVal7.value
                                     x3
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err3 = matchVal7.error
-                                    this.print(err3.message())
-                                    this.parser = Result.Err(err3)
-                                    return Unit
+                                    when (val tryResult = this.print(err3.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err3)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
-                this.print(name)
+                when (val tryResult = this.print(name)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 when (val matchVal8 = this.out) {
                     null -> {}
                     else -> {
@@ -896,72 +900,72 @@ public open class Printer internal constructor(
                 val ns =
                     run {
                         val matchVal9 = this.parser
-                        when (matchVal9) { is Result.Ok<*> -> {
+                        when (matchVal9) { is Result.Ok -> {
                             val parser4 = matchVal9.value
                             run {
                                 val matchVal10 = parser4.namespace()
-                                when (matchVal10) { is Result.Ok<*> -> {
+                                when (matchVal10) { is Result.Ok -> {
                                     val x4 = matchVal10.value
                                     x4
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err4 = matchVal10.error
-                                    this.print(err4.message())
-                                    this.parser = Result.Err(err4)
-                                    return Unit
+                                    when (val tryResult = this.print(err4.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err4)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
-                this.printPath(inValue)
+                when (val tryResult = this.printPath(inValue)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 // Note(eddyb) if the parser is already marked as having errored,
                 // `parse` below will print a `?` without its preceding `.`
                 // (because printing the `.` is skipped in certain conditions,
                 // i.e. a lowercase namespace with an empty identifier),
                 // so in order to get `.?`, the `.` has to be printed here.
                 if (this.parser.isErr()) {
-                    this.print("::")
+                    when (val tryResult = this.print("::")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
                 val dis1 =
                     run {
                         val matchVal11 = this.parser
-                        when (matchVal11) { is Result.Ok<*> -> {
+                        when (matchVal11) { is Result.Ok -> {
                             val parser5 = matchVal11.value
                             run {
                                 val matchVal12 = parser5.disambiguator()
-                                when (matchVal12) { is Result.Ok<*> -> {
+                                when (matchVal12) { is Result.Ok -> {
                                     val x5 = matchVal12.value
                                     x5
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err5 = matchVal12.error
-                                    this.print(err5.message())
-                                    this.parser = Result.Err(err5)
-                                    return Unit
+                                    when (val tryResult = this.print(err5.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err5)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
                 val name1 =
                     run {
                         val matchVal13 = this.parser
-                        when (matchVal13) { is Result.Ok<*> -> {
+                        when (matchVal13) { is Result.Ok -> {
                             val parser6 = matchVal13.value
                             run {
                                 val matchVal14 = parser6.ident()
-                                when (matchVal14) { is Result.Ok<*> -> {
+                                when (matchVal14) { is Result.Ok -> {
                                     val x6 = matchVal14.value
                                     x6
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err6 = matchVal14.error
-                                    this.print(err6.message())
-                                    this.parser = Result.Err(err6)
-                                    return Unit
+                                    when (val tryResult = this.print(err6.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err6)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
@@ -969,26 +973,26 @@ public open class Printer internal constructor(
                     // Implementation-specific/unspecified namespaces.
                     null -> {
                         if (!name1.ascii.isEmpty() || !name1.punycode.isEmpty()) {
-                            this.print("::")
-                            this.print(name1)
+                            when (val tryResult = this.print("::")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            when (val tryResult = this.print(name1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                         }
                     }
                     // Special namespaces, like closures and shims.
                     else -> {
                         val ns1 = ns
-                        this.print("::{")
+                        when (val tryResult = this.print("::{")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                         when (ns1) {
-                            'C' -> this.print("closure")
-                            'S' -> this.print("shim")
-                            else -> this.print(ns1)
+                            'C' -> when (val tryResult = this.print("closure")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            'S' -> when (val tryResult = this.print("shim")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            else -> when (val tryResult = this.print(ns1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                         }
                         if (!name1.ascii.isEmpty() || !name1.punycode.isEmpty()) {
-                            this.print(":")
-                            this.print(name1)
+                            when (val tryResult = this.print(":")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            when (val tryResult = this.print(name1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                         }
-                        this.print("#")
-                        this.print(dis1)
-                        this.print("}")
+                        when (val tryResult = this.print("#")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.print(dis1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.print("}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
                 }
             }
@@ -996,76 +1000,77 @@ public open class Printer internal constructor(
                 if (tag != 89u) {
                     run {
                         val matchVal15 = this.parser
-                        when (matchVal15) { is Result.Ok<*> -> {
+                        when (matchVal15) { is Result.Ok -> {
                             val parser7 = matchVal15.value
                             run {
                                 val matchVal16 = parser7.disambiguator()
-                                when (matchVal16) { is Result.Ok<*> -> {
+                                when (matchVal16) { is Result.Ok -> {
                                     val x7 = matchVal16.value
                                     x7
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err7 = matchVal16.error
-                                    this.print(err7.message())
-                                    this.parser = Result.Err(err7)
-                                    return Unit
+                                    when (val tryResult = this.print(err7.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err7)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
                     this.skippingPrinting({ thisRef -> thisRef.printPath(false) })
                 }
-                this.print("<")
-                this.printType()
+                when (val tryResult = this.print("<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (tag != 77u) {
-                    this.print(" as ")
-                    this.printPath(false)
+                    when (val tryResult = this.print(" as ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.print(">")
+                when (val tryResult = this.print(">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             73u -> {
-                this.printPath(inValue)
+                when (val tryResult = this.printPath(inValue)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (inValue) {
-                    this.print("::")
+                    when (val tryResult = this.print("::")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.print("<")
-                this.printSepList({ it.printGenericArg() }, ", ")
-                this.print(">")
+                when (val tryResult = this.print("<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.printSepList({ it.printGenericArg() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.print(">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             66u -> {
-                this.printBackref({ thisRef -> thisRef.printPath(inValue) })
+                when (val tryResult = this.printBackref({ thisRef -> thisRef.printPath(inValue) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             else -> {
                 val err8 = ParseError.Invalid
-                this.print(err8.message())
-                this.parser = Result.Err(err8)
-                return Unit
+                when (val tryResult = this.print(err8.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                this.parser = Result.Err<Parser, ParseError>(err8)
+                return Result.Ok<Unit, Error>(Unit)
             }
         }
         this.popDepth()
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printGenericArg() {
-        if (this.eat(76u)) {
+    public open fun printGenericArg(): Result<Unit, Error> {
+        return if (this.eat(76u)) {
             val lt =
                 run {
                     val matchVal = this.parser
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val parser = matchVal.value
                         run {
                             val matchVal1 = parser.integer62()
-                            when (matchVal1) { is Result.Ok<*> -> {
+                            when (matchVal1) { is Result.Ok -> {
                                 val x = matchVal1.value
                                 x
-                            }; is Result.Err<*> -> {
+                            }; is Result.Err -> {
                                 val err = matchVal1.error
-                                this.print(err.message())
-                                this.parser = Result.Err(err)
-                                return Unit
+                                when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                this.parser = Result.Err<Parser, ParseError>(err)
+                                return Result.Ok<Unit, Error>(Unit)
                             } }
                         }
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         return this.print("?")
                     } }
                 }
@@ -1077,25 +1082,25 @@ public open class Printer internal constructor(
         }
     }
 
-    public open fun printType() {
+    public open fun printType(): Result<Unit, Error> {
         val tag =
             run {
                 val matchVal = this.parser
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val parser = matchVal.value
                     run {
                         val matchVal1 = parser.next()
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val x = matchVal1.value
                             x
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err = matchVal1.error
-                            this.print(err.message())
-                            this.parser = Result.Err(err)
-                            return Unit
+                            when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }
@@ -1108,86 +1113,86 @@ public open class Printer internal constructor(
         }
         run {
             val matchVal3 = this.parser
-            when (matchVal3) { is Result.Ok<*> -> {
+            when (matchVal3) { is Result.Ok -> {
                 val parser1 = matchVal3.value
                 run {
                     val matchVal4 = parser1.pushDepth()
-                    when (matchVal4) { is Result.Ok<*> -> {
+                    when (matchVal4) { is Result.Ok -> {
                         val x1 = matchVal4.value
                         x1
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val err1 = matchVal4.error
-                        this.print(err1.message())
-                        this.parser = Result.Err(err1)
-                        return Unit
+                        when (val tryResult = this.print(err1.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err1)
+                        return Result.Ok<Unit, Error>(Unit)
                     } }
                 }
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 return this.print("?")
             } }
         }
         when (tag) {
             82u, 81u -> {
-                this.print("&")
+                when (val tryResult = this.print("&")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (this.eat(76u)) {
                     val lt =
                         run {
                             val matchVal5 = this.parser
-                            when (matchVal5) { is Result.Ok<*> -> {
+                            when (matchVal5) { is Result.Ok -> {
                                 val parser2 = matchVal5.value
                                 run {
                                     val matchVal6 = parser2.integer62()
-                                    when (matchVal6) { is Result.Ok<*> -> {
+                                    when (matchVal6) { is Result.Ok -> {
                                         val x2 = matchVal6.value
                                         x2
-                                    }; is Result.Err<*> -> {
+                                    }; is Result.Err -> {
                                         val err2 = matchVal6.error
-                                        this.print(err2.message())
-                                        this.parser = Result.Err(err2)
-                                        return Unit
+                                        when (val tryResult = this.print(err2.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                        this.parser = Result.Err<Parser, ParseError>(err2)
+                                        return Result.Ok<Unit, Error>(Unit)
                                     } }
                                 }
-                            }; is Result.Err<*> -> {
+                            }; is Result.Err -> {
                                 return this.print("?")
                             } }
                         }
                     if (lt != 0) {
-                        this.printLifetimeFromIndex(lt)
-                        this.print(" ")
+                        when (val tryResult = this.printLifetimeFromIndex(lt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.print(" ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
                 }
                 if (tag != 82u) {
-                    this.print("mut ")
+                    when (val tryResult = this.print("mut ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.printType()
+                when (val tryResult = this.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             80u, 79u -> {
-                this.print("*")
+                when (val tryResult = this.print("*")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (tag != 80u) {
-                    this.print("mut ")
+                    when (val tryResult = this.print("mut ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 } else {
-                    this.print("const ")
+                    when (val tryResult = this.print("const ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.printType()
+                when (val tryResult = this.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             65u, 83u -> {
-                this.print("[")
-                this.printType()
+                when (val tryResult = this.print("[")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (tag == 65u) {
-                    this.print("; ")
-                    this.printConst(true)
+                    when (val tryResult = this.print("; ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = this.printConst(true)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.print("]")
+                when (val tryResult = this.print("]")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             84u -> {
-                this.print("(")
-                val count = this.printSepList({ it.printType() }, ", ")
+                when (val tryResult = this.print("(")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                val count = when (val tryResult = this.printSepList({ it.printType() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (count == 1) {
-                    this.print(",")
+                    when (val tryResult = this.print(",")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.print(")")
+                when (val tryResult = this.print(")")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
-            70u -> this.inBinder(closure4@{ thisRef ->
+            70u -> when (val tryResult = this.inBinder(closure4@{ thisRef ->
                 val isUnsafe = thisRef.eat(85u)
                 val abi1 =
                     if (thisRef.eat(75u)) {
@@ -1197,28 +1202,28 @@ public open class Printer internal constructor(
                             val abi =
                                 run {
                                     val matchVal7 = thisRef.parser
-                                    when (matchVal7) { is Result.Ok<*> -> {
+                                    when (matchVal7) { is Result.Ok -> {
                                         val parser3 = matchVal7.value
                                         run {
                                             val matchVal8 = parser3.ident()
-                                            when (matchVal8) { is Result.Ok<*> -> {
+                                            when (matchVal8) { is Result.Ok -> {
                                                 val x3 = matchVal8.value
                                                 x3
-                                            }; is Result.Err<*> -> {
+                                            }; is Result.Err -> {
                                                 val err3 = matchVal8.error
-                                                when (val tryResult = thisRef.print(err3.message())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                                                when (val tryResult = thisRef.print(err3.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                                                 thisRef.parser = Result.Err(err3)
                                                 return@closure4 Result.Ok(Unit)
                                             } }
                                         }
-                                    }; is Result.Err<*> -> {
+                                    }; is Result.Err -> {
                                         return@closure4 thisRef.print("?")
                                     } }
                                 }
                             if (abi.ascii.isEmpty() || !abi.punycode.isEmpty()) {
                                 run {
                                     val err4 = ParseError.Invalid
-                                    when (val tryResult = thisRef.print(err4.message())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                                    when (val tryResult = thisRef.print(err4.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                                     thisRef.parser = Result.Err(err4)
                                     return@closure4 Result.Ok(Unit)
                                 }
@@ -1229,82 +1234,83 @@ public open class Printer internal constructor(
                         null
                     }
                 if (isUnsafe) {
-                    when (val tryResult = thisRef.print("unsafe ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                    when (val tryResult = thisRef.print("unsafe ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                 }
                 if (abi1 != null) {
                     val abi2 = abi1
-                    when (val tryResult = thisRef.print("extern \"")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                    when (val tryResult = thisRef.print("extern \"")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                     // If the ABI had any `-`, they were replaced with `_`,
                     // so the parts between `_` have to be re-joined with `-`.
                     val parts = abi2.split('_')
-                    when (val tryResult = thisRef.print(parts.next()!!)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                    when (val tryResult = thisRef.print(parts.next()!!)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                     for (part in parts) {
-                        when (val tryResult = thisRef.print("-")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
-                        when (val tryResult = thisRef.print(part)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                        when (val tryResult = thisRef.print("-")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
+                        when (val tryResult = thisRef.print(part)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                     }
-                    when (val tryResult = thisRef.print("\" ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                    when (val tryResult = thisRef.print("\" ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                 }
-                when (val tryResult = thisRef.print("fn(")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
-                when (val tryResult = thisRef.printSepList({ it.printType() }, ", ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
-                when (val tryResult = thisRef.print(")")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                when (val tryResult = thisRef.print("fn(")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
+                when (val tryResult = thisRef.printSepList({ it.printType() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
+                when (val tryResult = thisRef.print(")")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                 if (thisRef.eat(117u)) {
                     // Skip printing the return type if it's 'u', i.e. `()`.
                 } else {
-                    when (val tryResult = thisRef.print(" -> ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
-                    when (val tryResult = thisRef.printType()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure4 Result.Err(tryResult.error) }
+                    when (val tryResult = thisRef.print(" -> ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
+                    when (val tryResult = thisRef.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }
                 }
                 Result.Ok(Unit)
-            })
+            })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             68u -> {
-                this.print("dyn ")
-                this.inBinder(closure5@{ thisRef ->
-                    when (val tryResult = thisRef.printSepList({ it.printDynTrait() }, " + ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure5 Result.Err(tryResult.error) }
+                when (val tryResult = this.print("dyn ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.inBinder(closure5@{ thisRef ->
+                    when (val tryResult = thisRef.printSepList({ it.printDynTrait() }, " + ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure5 Result.Err(tryResult.error) }
                     Result.Ok(Unit)
-                })
+                })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (!this.eat(76u)) {
                     run {
                         val err3 = ParseError.Invalid
-                        this.print(err3.message())
-                        this.parser = Result.Err(err3)
-                        return Unit
+                        when (val tryResult = this.print(err3.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err3)
+                        return Result.Ok<Unit, Error>(Unit)
                     }
                 }
                 val lt1 =
                     run {
                         val matchVal7 = this.parser
-                        when (matchVal7) { is Result.Ok<*> -> {
+                        when (matchVal7) { is Result.Ok -> {
                             val parser3 = matchVal7.value
                             run {
                                 val matchVal8 = parser3.integer62()
-                                when (matchVal8) { is Result.Ok<*> -> {
+                                when (matchVal8) { is Result.Ok -> {
                                     val x3 = matchVal8.value
                                     x3
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err4 = matchVal8.error
-                                    this.print(err4.message())
-                                    this.parser = Result.Err(err4)
-                                    return Unit
+                                    when (val tryResult = this.print(err4.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err4)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }
                 if (lt1 != 0) {
-                    this.print(" + ")
-                    this.printLifetimeFromIndex(lt1)
+                    when (val tryResult = this.print(" + ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = this.printLifetimeFromIndex(lt1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
             }
             66u -> {
-                this.printBackref({ it.printType() })
+                when (val tryResult = this.printBackref({ it.printType() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             else -> {
                 // Go back to the tag, so `printPath` also sees it.
                 this.parser.asMut().map({ p -> p.next -= 1 })
-                this.printPath(false)
+                when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
         }
         this.popDepth()
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -1314,105 +1320,106 @@ public open class Printer internal constructor(
      * To this end, this method will keep the `<...>` of an 'I' path
      * open, by omitting the `>`, and return `Ok(true)` in that case.
      */
-    public open fun printPathMaybeOpenGenerics(): Result<Boolean, Unit> {
+    public open fun printPathMaybeOpenGenerics(): Result<Boolean, io.github.kotlinmania.rustlang.core.error.Error> {
         return if (this.eat(66u)) {
             // NOTE(eddyb) the closure may not run if printing is being skipped,
             // but in that case the returned boolean doesn't matter.
             var open = false
             when (val tryResult = this.printBackref(closure6@{ thisRef ->
-                open = when (val tryResult = thisRef.printPathMaybeOpenGenerics()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure6 Result.Err(tryResult.error) }
+                open = when (val tryResult = thisRef.printPathMaybeOpenGenerics()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure6 Result.Err(tryResult.error) }
                 Result.Ok(Unit)
-            })) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            Result.Ok(open)
+            })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+            Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(open)
         } else if (this.eat(73u)) {
-            this.printPath(false)
-            this.print("<")
-            when (val tryResult = this.printSepList({ it.printGenericArg() }, ", ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-            Result.Ok(true)
+            when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+            when (val tryResult = this.print("<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+            when (val tryResult = this.printSepList({ it.printGenericArg() }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+            Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(true)
         } else {
-            this.printPath(false)
-            Result.Ok(false)
+            when (val tryResult = this.printPath(false)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(tryResult.error) }
+            Result.Ok<Boolean, io.github.kotlinmania.rustlang.core.error.Error>(false)
         }
     }
 
-    public open fun printDynTrait() {
-        var open = this.printPathMaybeOpenGenerics()
+    public open fun printDynTrait(): Result<Unit, Error> {
+        var open = when (val tryResult = this.printPathMaybeOpenGenerics()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         while (this.eat(112u)) {
             if (!open) {
-                this.print("<")
+                when (val tryResult = this.print("<")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 open = true
             } else {
-                this.print(", ")
+                when (val tryResult = this.print(", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             val name =
                 run {
                     val matchVal = this.parser
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val parser = matchVal.value
                         run {
                             val matchVal1 = parser.ident()
-                            when (matchVal1) { is Result.Ok<*> -> {
+                            when (matchVal1) { is Result.Ok -> {
                                 val x = matchVal1.value
                                 x
-                            }; is Result.Err<*> -> {
+                            }; is Result.Err -> {
                                 val err = matchVal1.error
-                                this.print(err.message())
-                                this.parser = Result.Err(err)
-                                return Unit
+                                when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                this.parser = Result.Err<Parser, ParseError>(err)
+                                return Result.Ok<Unit, Error>(Unit)
                             } }
                         }
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         return this.print("?")
                     } }
                 }
-            this.print(name)
-            this.print(" = ")
-            this.printType()
+            when (val tryResult = this.print(name)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.print(" = ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.printType()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         if (open) {
-            this.print(">")
+            when (val tryResult = this.print(">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printConst(inValue: Boolean) {
+    public open fun printConst(inValue: Boolean): Result<Unit, Error> {
         val tag =
             run {
                 val matchVal = this.parser
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val parser = matchVal.value
                     run {
                         val matchVal1 = parser.next()
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val x = matchVal1.value
                             x
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err = matchVal1.error
-                            this.print(err.message())
-                            this.parser = Result.Err(err)
-                            return Unit
+                            when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }
         run {
             val matchVal2 = this.parser
-            when (matchVal2) { is Result.Ok<*> -> {
+            when (matchVal2) { is Result.Ok -> {
                 val parser1 = matchVal2.value
                 run {
                     val matchVal3 = parser1.pushDepth()
-                    when (matchVal3) { is Result.Ok<*> -> {
+                    when (matchVal3) { is Result.Ok -> {
                         val x1 = matchVal3.value
                         x1
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val err1 = matchVal3.error
-                        this.print(err1.message())
-                        this.parser = Result.Err(err1)
-                        return Unit
+                        when (val tryResult = this.print(err1.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err1)
+                        return Result.Ok<Unit, Error>(Unit)
                     } }
                 }
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 return this.print("?")
             } }
         }
@@ -1433,76 +1440,76 @@ public open class Printer internal constructor(
                 thisRef.print("{")
             }
         when (tag) {
-            112u -> this.print("_")
+            112u -> when (val tryResult = this.print("_")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             // Primitive leaves with hex-encoded values (see `basicType`).
-            104u, 116u, 109u, 121u, 111u, 106u -> this.printConstUint(tag)
+            104u, 116u, 109u, 121u, 111u, 106u -> when (val tryResult = this.printConstUint(tag)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             97u, 115u, 108u, 120u, 110u, 105u -> {
                 if (this.eat(110u)) {
-                    this.print("-")
+                    when (val tryResult = this.print("-")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.printConstUint(tag)
+                when (val tryResult = this.printConstUint(tag)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             98u -> when (val matchVal6 = run {
                 val matchVal4 = this.parser
-                when (matchVal4) { is Result.Ok<*> -> {
+                when (matchVal4) { is Result.Ok -> {
                     val parser2 = matchVal4.value
                     run {
                         val matchVal5 = parser2.hexNibbles()
-                        when (matchVal5) { is Result.Ok<*> -> {
+                        when (matchVal5) { is Result.Ok -> {
                             val x2 = matchVal5.value
                             x2
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err2 = matchVal5.error
-                            this.print(err2.message())
-                            this.parser = Result.Err(err2)
-                            return Unit
+                            when (val tryResult = this.print(err2.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err2)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }.tryParseUint()) {
-                0 -> this.print("false")
-                1 -> this.print("true")
+                0 -> when (val tryResult = this.print("false")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                1 -> when (val tryResult = this.print("true")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 else -> {
                     val err3 = ParseError.Invalid
-                    this.print(err3.message())
-                    this.parser = Result.Err(err3)
-                    return Unit
+                    when (val tryResult = this.print(err3.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                    this.parser = Result.Err<Parser, ParseError>(err3)
+                    return Result.Ok<Unit, Error>(Unit)
                 }
             }
             99u -> {
                 val validChar =
                     run {
                         val matchVal7 = this.parser
-                        when (matchVal7) { is Result.Ok<*> -> {
+                        when (matchVal7) { is Result.Ok -> {
                             val parser3 = matchVal7.value
                             run {
                                 val matchVal8 = parser3.hexNibbles()
-                                when (matchVal8) { is Result.Ok<*> -> {
+                                when (matchVal8) { is Result.Ok -> {
                                     val x3 = matchVal8.value
                                     x3
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     val err4 = matchVal8.error
-                                    this.print(err4.message())
-                                    this.parser = Result.Err(err4)
-                                    return Unit
+                                    when (val tryResult = this.print(err4.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                    this.parser = Result.Err<Parser, ParseError>(err4)
+                                    return Result.Ok<Unit, Error>(Unit)
                                 } }
                             }
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             return this.print("?")
                         } }
                     }.tryParseUint().andThen({ v -> UInt.tryFrom(v).ok() }).andThen(Char::fromU32)
                 when (validChar) {
                     null -> {
                         val err5 = ParseError.Invalid
-                        this.print(err5.message())
-                        this.parser = Result.Err(err5)
-                        return Unit
+                        when (val tryResult = this.print(err5.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err5)
+                        return Result.Ok<Unit, Error>(Unit)
                     }
                     else -> {
                         val c = validChar
-                        this.printQuotedEscapedChars('\'', listOf(c))
+                        when (val tryResult = this.printQuotedEscapedChars('\'', listOf(c))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
                 }
             }
@@ -1510,173 +1517,174 @@ public open class Printer internal constructor(
                 // NOTE(eddyb) a string literal `"..."` has type `String`, so
                 // to get back the type `String`, `* "..."` syntax is needed
                 // (even if that may not be valid in Rust itself).
-                openBraceIfOutsideExpr(this)
-                this.print("*")
-                this.printConstStrLiteral()
+                when (val tryResult = openBraceIfOutsideExpr(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.print("*")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.printConstStrLiteral()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             82u, 81u -> {
                 // NOTE(eddyb) this prints `"..."` instead of `* "..."`, which
                 // is what `Re ... _` would imply (see comment for `String` above).
                 if (tag == 82u && this.eat(101u)) {
-                    this.printConstStrLiteral()
+                    when (val tryResult = this.printConstStrLiteral()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 } else {
-                    openBraceIfOutsideExpr(this)
-                    this.print("&")
+                    when (val tryResult = openBraceIfOutsideExpr(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = this.print("&")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     if (tag != 82u) {
-                        this.print("mut ")
+                        when (val tryResult = this.print("mut ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
-                    this.printConst(true)
+                    when (val tryResult = this.printConst(true)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
             }
             65u -> {
-                openBraceIfOutsideExpr(this)
-                this.print("[")
-                this.printSepList({ thisRef -> thisRef.printConst(true) }, ", ")
-                this.print("]")
+                when (val tryResult = openBraceIfOutsideExpr(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.print("[")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.printSepList({ thisRef -> thisRef.printConst(true) }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.print("]")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             84u -> {
-                openBraceIfOutsideExpr(this)
-                this.print("(")
-                val count = this.printSepList({ thisRef -> thisRef.printConst(true) }, ", ")
+                when (val tryResult = openBraceIfOutsideExpr(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.print("(")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                val count = when (val tryResult = this.printSepList({ thisRef -> thisRef.printConst(true) }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (count == 1) {
-                    this.print(",")
+                    when (val tryResult = this.print(",")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
-                this.print(")")
+                when (val tryResult = this.print(")")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             86u -> {
-                openBraceIfOutsideExpr(this)
-                this.printPath(true)
+                when (val tryResult = openBraceIfOutsideExpr(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.printPath(true)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 when (run {
                     val matchVal9 = this.parser
-                    when (matchVal9) { is Result.Ok<*> -> {
+                    when (matchVal9) { is Result.Ok -> {
                         val parser4 = matchVal9.value
                         run {
                             val matchVal10 = parser4.next()
-                            when (matchVal10) { is Result.Ok<*> -> {
+                            when (matchVal10) { is Result.Ok -> {
                                 val x4 = matchVal10.value
                                 x4
-                            }; is Result.Err<*> -> {
+                            }; is Result.Err -> {
                                 val err6 = matchVal10.error
-                                this.print(err6.message())
-                                this.parser = Result.Err(err6)
-                                return Unit
+                                when (val tryResult = this.print(err6.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                                this.parser = Result.Err<Parser, ParseError>(err6)
+                                return Result.Ok<Unit, Error>(Unit)
                             } }
                         }
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         return this.print("?")
                     } }
                 }) {
                     85u -> {}
                     84u -> {
-                        this.print("(")
-                        this.printSepList({ thisRef -> thisRef.printConst(true) }, ", ")
-                        this.print(")")
+                        when (val tryResult = this.print("(")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.printSepList({ thisRef -> thisRef.printConst(true) }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.print(")")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
                     83u -> {
-                        this.print(" { ")
-                        this.printSepList(closure8@{ thisRef ->
+                        when (val tryResult = this.print(" { ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.printSepList(closure8@{ thisRef ->
                             run {
                                 val matchVal11 = thisRef.parser
-                                when (matchVal11) { is Result.Ok<*> -> {
+                                when (matchVal11) { is Result.Ok -> {
                                     val parser5 = matchVal11.value
                                     run {
                                         val matchVal12 = parser5.disambiguator()
-                                        when (matchVal12) { is Result.Ok<*> -> {
+                                        when (matchVal12) { is Result.Ok -> {
                                             val x5 = matchVal12.value
                                             x5
-                                        }; is Result.Err<*> -> {
+                                        }; is Result.Err -> {
                                             val err7 = matchVal12.error
-                                            when (val tryResult = thisRef.print(err7.message())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
+                                            when (val tryResult = thisRef.print(err7.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
                                             thisRef.parser = Result.Err(err7)
                                             return@closure8 Result.Ok(Unit)
                                         } }
                                     }
-                                }; is Result.Err<*> -> {
+                                }; is Result.Err -> {
                                     return@closure8 thisRef.print("?")
                                 } }
                             }
                             val name =
                                 run {
                                     val matchVal13 = thisRef.parser
-                                    when (matchVal13) { is Result.Ok<*> -> {
+                                    when (matchVal13) { is Result.Ok -> {
                                         val parser6 = matchVal13.value
                                         run {
                                             val matchVal14 = parser6.ident()
-                                            when (matchVal14) { is Result.Ok<*> -> {
+                                            when (matchVal14) { is Result.Ok -> {
                                                 val x6 = matchVal14.value
                                                 x6
-                                            }; is Result.Err<*> -> {
+                                            }; is Result.Err -> {
                                                 val err8 = matchVal14.error
-                                                when (val tryResult = thisRef.print(err8.message())) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
+                                                when (val tryResult = thisRef.print(err8.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
                                                 thisRef.parser = Result.Err(err8)
                                                 return@closure8 Result.Ok(Unit)
                                             } }
                                         }
-                                    }; is Result.Err<*> -> {
+                                    }; is Result.Err -> {
                                         return@closure8 thisRef.print("?")
                                     } }
                                 }
-                            when (val tryResult = thisRef.print(name)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
-                            when (val tryResult = thisRef.print(": ")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return@closure8 Result.Err(tryResult.error) }
+                            when (val tryResult = thisRef.print(name)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+                            when (val tryResult = thisRef.print(": ")) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
                             thisRef.printConst(true)
-                        }, ", ")
-                        this.print(" }")
+                        }, ", ")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        when (val tryResult = this.print(" }")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                     }
                     else -> {
                         val err7 = ParseError.Invalid
-                        this.print(err7.message())
-                        this.parser = Result.Err(err7)
-                        return Unit
+                        when (val tryResult = this.print(err7.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err7)
+                        return Result.Ok<Unit, Error>(Unit)
                     }
                 }
             }
             66u -> {
-                this.printBackref({ thisRef -> thisRef.printConst(inValue) })
+                when (val tryResult = this.printBackref({ thisRef -> thisRef.printConst(inValue) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             else -> {
                 val err8 = ParseError.Invalid
-                this.print(err8.message())
-                this.parser = Result.Err(err8)
-                return Unit
+                when (val tryResult = this.print(err8.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                this.parser = Result.Err<Parser, ParseError>(err8)
+                return Result.Ok<Unit, Error>(Unit)
             }
         }
         if (openedBrace) {
-            this.print("}")
+            when (val tryResult = this.print("}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         this.popDepth()
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printConstUint(tyTag: UByte) {
+    public open fun printConstUint(tyTag: UByte): Result<Unit, Error> {
         val hex =
             run {
                 val matchVal = this.parser
-                when (matchVal) { is Result.Ok<*> -> {
+                when (matchVal) { is Result.Ok -> {
                     val parser = matchVal.value
                     run {
                         val matchVal1 = parser.hexNibbles()
-                        when (matchVal1) { is Result.Ok<*> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val x = matchVal1.value
                             x
-                        }; is Result.Err<*> -> {
+                        }; is Result.Err -> {
                             val err = matchVal1.error
-                            this.print(err.message())
-                            this.parser = Result.Err(err)
-                            return Unit
+                            when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                            this.parser = Result.Err<Parser, ParseError>(err)
+                            return Result.Ok<Unit, Error>(Unit)
                         } }
                     }
-                }; is Result.Err<*> -> {
+                }; is Result.Err -> {
                     return this.print("?")
                 } }
             }
         when (val matchVal2 = hex.tryParseUint()) {
             // Print anything that doesn't fit in `ULong` verbatim.
             null -> {
-                this.print("0x")
-                this.print(hex.nibbles)
+                when (val tryResult = this.print("0x")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.print(hex.nibbles)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
             else -> {
                 val v = matchVal2
-                this.print(v)
+                when (val tryResult = this.print(v)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
         }
         when (val matchVal3 = this.out) {
@@ -1685,38 +1693,39 @@ public open class Printer internal constructor(
                 val out = matchVal3
                 if (!out.alternate()) {
                     val ty = basicType(tyTag)!!
-                    this.print(ty)
+                    when (val tryResult = this.print(ty)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 }
             }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printConstStrLiteral() {
-        when (val matchVal2 = run {
+    public open fun printConstStrLiteral(): Result<Unit, Error> {
+        return when (val matchVal2 = run {
             val matchVal = this.parser
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 val parser = matchVal.value
                 run {
                     val matchVal1 = parser.hexNibbles()
-                    when (matchVal1) { is Result.Ok<*> -> {
+                    when (matchVal1) { is Result.Ok -> {
                         val x = matchVal1.value
                         x
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         val err = matchVal1.error
-                        this.print(err.message())
-                        this.parser = Result.Err(err)
-                        return Unit
+                        when (val tryResult = this.print(err.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                        this.parser = Result.Err<Parser, ParseError>(err)
+                        return Result.Ok<Unit, Error>(Unit)
                     } }
                 }
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 return this.print("?")
             } }
         }.tryParseStrChars()) {
             null -> {
                 val err1 = ParseError.Invalid
-                this.print(err1.message())
-                this.parser = Result.Err(err1)
-                return Unit
+                when (val tryResult = this.print(err1.message())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+                this.parser = Result.Err<Parser, ParseError>(err1)
+                return Result.Ok<Unit, Error>(Unit)
             }
             else -> {
                 val chars = matchVal2

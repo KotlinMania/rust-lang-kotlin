@@ -3,14 +3,14 @@
 
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SaFamilyT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.SaFamilyT
 
 // Header: `uapi / linux / can.h`
 
@@ -26,7 +26,7 @@ public val CAN_EFF_MASK: CanidT = 0x1FFFFFFFu
 
 public val CAN_ERR_MASK: CanidT = 0x1FFFFFFFu
 
-public val CANXL_PRIO_MASK: io.github.kotlinmania.rustlang.libc.CanidT = CAN_SFF_MASK
+public val CANXL_PRIO_MASK: CanidT = CAN_SFF_MASK
 
 public typealias CanidT = UInt
 
@@ -56,39 +56,17 @@ public val CANXL_MIN_DLEN: Int = 1
 
 public val CANXL_MAX_DLEN: Int = 2048
 
-public data class CanFrame(
-    public var canId: CanidT = 0u,
+public open class CanFrame(
+    public var canId: CanidT,
     // Note(1.0): this field was renamed to `len` in Linux 5.11
-    public var canDlc: UByte = 0u,
-    public var pad: UByte = 0u,
-    public var res0: UByte = 0u,
-    public var len8Dlc: UByte = 0u,
-    public var data: UByteArray = UByteArray(CAN_MAX_DLEN),
-    public var nonExhaustive: Unit = Unit,
+    public var canDlc: UByte,
+    public var pad: UByte,
+    public var res0: UByte,
+    public var len8Dlc: UByte,
+    public var data: UByteArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CanFrame) return false
-        if (this.canId != other.canId) return false
-        if (this.canDlc != other.canDlc) return false
-        if (this.pad != other.pad) return false
-        if (this.res0 != other.res0) return false
-        if (this.len8Dlc != other.len8Dlc) return false
-        if (!this.data.contentEquals(other.data)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.canId.hashCode()
-        result = 31 * result + this.canDlc.hashCode()
-        result = 31 * result + this.pad.hashCode()
-        result = 31 * result + this.res0.hashCode()
-        result = 31 * result + this.len8Dlc.hashCode()
-        result = 31 * result + this.data.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): CanFrame = CanFrame(canId, canDlc, pad, res0, len8Dlc, data, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CanFrame> =
@@ -135,6 +113,8 @@ public data class CanFrame(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + off6.toInt(), value.nonExhaustive)
                 }
             }
+
+        public fun default(): CanFrame = CanFrame(canId = Default.default(), canDlc = Default.default(), pad = Default.default(), res0 = Default.default(), len8Dlc = Default.default(), data = Default.default(), nonExhaustive = Unit)
     }
 }
 
@@ -144,38 +124,16 @@ public val CANFD_ESI: CInt = 0x02
 
 public val CANFD_FDF: CInt = 0x04
 
-public data class CanfdFrame(
-    public var canId: CanidT = 0u,
-    public var len: UByte = 0u,
-    public var flags: UByte = 0u,
-    public var res0: UByte = 0u,
-    public var res1: UByte = 0u,
-    public var data: UByteArray = UByteArray(CANFD_MAX_DLEN),
-    public var nonExhaustive: Unit = Unit,
+public open class CanfdFrame(
+    public var canId: CanidT,
+    public var len: UByte,
+    public var flags: UByte,
+    public var res0: UByte,
+    public var res1: UByte,
+    public var data: UByteArray,
+    public var nonExhaustive: Unit,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CanfdFrame) return false
-        if (this.canId != other.canId) return false
-        if (this.len != other.len) return false
-        if (this.flags != other.flags) return false
-        if (this.res0 != other.res0) return false
-        if (this.res1 != other.res1) return false
-        if (!this.data.contentEquals(other.data)) return false
-        if (this.nonExhaustive != other.nonExhaustive) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.canId.hashCode()
-        result = 31 * result + this.len.hashCode()
-        result = 31 * result + this.flags.hashCode()
-        result = 31 * result + this.res0.hashCode()
-        result = 31 * result + this.res1.hashCode()
-        result = 31 * result + this.data.contentHashCode()
-        result = 31 * result + this.nonExhaustive.hashCode()
-        return result
-    }
+    public open fun clone(): CanfdFrame = CanfdFrame(canId, len, flags, res0, res1, data, nonExhaustive)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CanfdFrame> =
@@ -222,6 +180,8 @@ public data class CanfdFrame(
                     (PrimitiveLayouts.UNIT).writeBytes(buf, offset + off6.toInt(), value.nonExhaustive)
                 }
             }
+
+        public fun default(): CanfdFrame = CanfdFrame(canId = Default.default(), len = Default.default(), flags = Default.default(), res0 = Default.default(), res1 = Default.default(), data = UByteArray(CANFD_MAX_DLEN) { 0u.toUByte() }, nonExhaustive = Unit)
     }
 }
 
@@ -229,35 +189,15 @@ public val CANXL_XLF: CInt = 0x80
 
 public val CANXL_SEC: CInt = 0x01
 
-public data class CanxlFrame(
-    public var prio: CanidT = 0u,
-    public var flags: UByte = 0u,
-    public var sdt: UByte = 0u,
-    public var len: UShort = 0u,
-    public var af: UInt = 0u,
-    public var data: UByteArray = UByteArray(CANXL_MAX_DLEN),
+public open class CanxlFrame(
+    public var prio: CanidT,
+    public var flags: UByte,
+    public var sdt: UByte,
+    public var len: UShort,
+    public var af: UInt,
+    public var data: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is CanxlFrame) return false
-        if (this.prio != other.prio) return false
-        if (this.flags != other.flags) return false
-        if (this.sdt != other.sdt) return false
-        if (this.len != other.len) return false
-        if (this.af != other.af) return false
-        if (!this.data.contentEquals(other.data)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.prio.hashCode()
-        result = 31 * result + this.flags.hashCode()
-        result = 31 * result + this.sdt.hashCode()
-        result = 31 * result + this.len.hashCode()
-        result = 31 * result + this.af.hashCode()
-        result = 31 * result + this.data.contentHashCode()
-        return result
-    }
+    public open fun clone(): CanxlFrame = CanxlFrame(prio, flags, sdt, len, af, data)
 
     public companion object {
         public fun typeLayout(): TypeLayout<CanxlFrame> =
@@ -299,6 +239,8 @@ public data class CanxlFrame(
                     (PrimitiveArrayLayouts.uByteArray((CANXL_MAX_DLEN).toInt())).writeBytes(buf, offset + 12, value.data)
                 }
             }
+
+        public fun default(): CanxlFrame = CanxlFrame(prio = Default.default(), flags = Default.default(), sdt = Default.default(), len = Default.default(), af = Default.default(), data = UByteArray(CANXL_MAX_DLEN) { 0u.toUByte() })
     }
 }
 
@@ -335,21 +277,29 @@ public val CAN_INV_FILTER: CanidT = 0x20000000u
 
 public val CAN_MTU: Int = sizeOf<CanFrame>(typeLayoutT = CanFrame.typeLayout())
 
-public data class SockaddrCan(
-    public var canFamily: SaFamilyT = 0u,
-    public var canIfindex: CInt = 0,
-    public var canAddr: CAnonymousSockaddrCanCanAddr = CAnonymousSockaddrCanCanAddr(),
-)
-
-public data class CAnonymousSockaddrCanCanAddr(
-    public var tp: CAnonymousSockaddrCanTp = CAnonymousSockaddrCanTp(),
-    public var j1939: CAnonymousSockaddrCanJ1939 = CAnonymousSockaddrCanJ1939(),
-)
-
-public data class CAnonymousSockaddrCanTp(
-    public var rxId: CanidT = 0u,
-    public var txId: CanidT = 0u,
+public open class SockaddrCan(
+    public var canFamily: SaFamilyT,
+    public var canIfindex: CInt,
+    public var canAddr: CAnonymousSockaddrCanCanAddr,
 ) {
+    public open fun clone(): SockaddrCan = SockaddrCan(canFamily, canIfindex, canAddr)
+
+    public companion object {
+        public fun default(): SockaddrCan = SockaddrCan(canFamily = Default.default(), canIfindex = Default.default(), canAddr = CAnonymousSockaddrCanCanAddr())
+    }
+}
+
+public open class CAnonymousSockaddrCanCanAddr(
+    public var tp: CAnonymousSockaddrCanTp? = null,
+    public var j1939: CAnonymousSockaddrCanJ1939? = null,
+)
+
+public open class CAnonymousSockaddrCanTp(
+    public var rxId: CanidT,
+    public var txId: CanidT,
+) {
+    public open fun clone(): CAnonymousSockaddrCanTp = CAnonymousSockaddrCanTp(rxId, txId)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousSockaddrCanTp> =
             object : TypeLayout<CAnonymousSockaddrCanTp> {
@@ -374,14 +324,18 @@ public data class CAnonymousSockaddrCanTp(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.txId)
                 }
             }
+
+        public fun default(): CAnonymousSockaddrCanTp = CAnonymousSockaddrCanTp(rxId = Default.default(), txId = Default.default())
     }
 }
 
-public data class CAnonymousSockaddrCanJ1939(
-    public var name: ULong = 0uL,
-    public var pgn: UInt = 0u,
-    public var addr: UByte = 0u,
+public open class CAnonymousSockaddrCanJ1939(
+    public var name: ULong,
+    public var pgn: UInt,
+    public var addr: UByte,
 ) {
+    public open fun clone(): CAnonymousSockaddrCanJ1939 = CAnonymousSockaddrCanJ1939(name, pgn, addr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CAnonymousSockaddrCanJ1939> =
             object : TypeLayout<CAnonymousSockaddrCanJ1939> {
@@ -410,13 +364,17 @@ public data class CAnonymousSockaddrCanJ1939(
                     (PrimitiveLayouts.U8).writeBytes(buf, offset + 12, value.addr)
                 }
             }
+
+        public fun default(): CAnonymousSockaddrCanJ1939 = CAnonymousSockaddrCanJ1939(name = Default.default(), pgn = Default.default(), addr = Default.default())
     }
 }
 
-public data class CanFilter(
-    public var canId: CanidT = 0u,
-    public var canMask: CanidT = 0u,
+public open class CanFilter(
+    public var canId: CanidT,
+    public var canMask: CanidT,
 ) {
+    public open fun clone(): CanFilter = CanFilter(canId, canMask)
+
     public companion object {
         public fun typeLayout(): TypeLayout<CanFilter> =
             object : TypeLayout<CanFilter> {
@@ -441,6 +399,8 @@ public data class CanFilter(
                     (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.canMask)
                 }
             }
+
+        public fun default(): CanFilter = CanFilter(canId = Default.default(), canMask = Default.default())
     }
 }
 

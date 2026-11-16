@@ -7,16 +7,18 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.error.Error
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.num.rustRotateRight
+import io.github.kotlinmania.rustlang.core.num.rotateRight
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -387,7 +389,7 @@ public fun hasPhysicalRoot(s: List<UByte>, prefix: Prefix?): Boolean {
     val path =
         if (prefix != null) {
             val p = prefix
-            ((s).slice(p.len() until s.size))
+            ((s).subList(p.len(), (s).size))
         } else {
             s
         }
@@ -679,7 +681,7 @@ public open class Components(
 
     public open fun clone(): Components = Components(path, prefix, hasPhysicalRoot, front, back)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         open class DebugHelper(
             public var value: Path,
         ) {
@@ -689,11 +691,9 @@ public open class Components(
                     value = v
                 }
 
-            public open fun fmt(f1: StringBuilder) {
-                object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.components()).finish()
-            }
+            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.components()).finish()
         }
-        DebugTuple(f, "Components").field(DebugHelper(this.asPath())).finish()
+        return DebugTuple(f, "Components").field(DebugHelper(this.asPath())).finish()
     }
 
     // how long is the prefix, if any?
@@ -799,7 +799,7 @@ public open class Components(
         if (this.hasRoot()) {
             return false
         }
-        val slice = ((this.path).slice(this.prefixRemaining() until this.path.size))
+        val slice = ((this.path).subList(this.prefixRemaining(), (this.path).size))
         return when {
             slice.size == 1 && slice[0] == 46u -> true
             slice.size >= 2 && slice[0] == 46u -> {
@@ -833,7 +833,7 @@ public open class Components(
                 null -> Pair(0, this.path)
                 else -> {
                     val i = matchVal
-                    Pair(1, ((this.path).slice(0 until i)))
+                    Pair(1, ((this.path).subList(0, i)))
                 }
             }
         // SAFETY: `comp` is a valid substring, since it is split on a separator.
@@ -846,11 +846,11 @@ public open class Components(
         check(this.back == State.Body)
         val start = this.lenBeforeBody()
         val (extra, comp) =
-            when (val matchVal = ((this.path).slice(start until this.path.size)).iter().indexOfLast({ b -> this.isSepByte(b) }).takeIf { it >= 0 }) {
-                null -> Pair(0, ((this.path).slice(start until this.path.size)))
+            when (val matchVal = ((this.path).subList(start, (this.path).size)).iter().indexOfLast({ b -> this.isSepByte(b) }).takeIf { it >= 0 }) {
+                null -> Pair(0, ((this.path).subList(start, (this.path).size)))
                 else -> {
                     val i = matchVal
-                    Pair(1, ((this.path).slice(start + i + 1 until this.path.size)))
+                    Pair(1, ((this.path).subList(start + i + 1, (this.path).size)))
                 }
             }
         // SAFETY: `comp` is a valid substring, since it is split on a separator.
@@ -864,7 +864,7 @@ public open class Components(
             if (comp != null) {
                 return
             } else {
-                this.path = ((this.path).slice(size until this.path.size))
+                this.path = ((this.path).subList(size, (this.path).size))
             }
         }
     }
@@ -876,7 +876,7 @@ public open class Components(
             if (comp != null) {
                 return
             } else {
-                this.path = ((this.path).slice(0 until this.path.size - size))
+                this.path = ((this.path).subList(0, this.path.size - size))
             }
         }
     }
@@ -893,7 +893,7 @@ public open class Components(
                     // most likely case first
                     matchVal == State.Body && !this.path.isEmpty() -> {
                         val (size, comp) = this.parseNextComponent()
-                        this.path = ((this.path).slice(size until this.path.size))
+                        this.path = ((this.path).subList(size, (this.path).size))
                         if (comp != null) {
                             return comp
                         }
@@ -905,7 +905,7 @@ public open class Components(
                         this.front = State.Body
                         if (this.hasPhysicalRoot) {
                             check(!this.path.isEmpty())
-                            this.path = ((this.path).slice(1 until this.path.size))
+                            this.path = ((this.path).subList(1, (this.path).size))
                             return Component.RootDir
                         } else if (HAS_PREFIXES && this.prefix != null) {
                             if (p.hasImplicitRoot() && !p.isVerbatim()) {
@@ -913,7 +913,7 @@ public open class Components(
                             }
                         } else if (this.includeCurDir()) {
                             check(!this.path.isEmpty())
-                            this.path = ((this.path).slice(1 until this.path.size))
+                            this.path = ((this.path).subList(1, (this.path).size))
                             return Component.CurDir
                         }
                     }
@@ -924,8 +924,8 @@ public open class Components(
                     matchVal == State.Prefix -> {
                         this.front = State.StartDir
                         check(this.prefixLen() <= this.path.size)
-                        val raw = ((this.path).slice(0 until this.prefixLen()))
-                        this.path = ((this.path).slice(this.prefixLen() until this.path.size))
+                        val raw = ((this.path).subList(0, this.prefixLen()))
+                        this.path = ((this.path).subList(this.prefixLen(), (this.path).size))
                         return Component.Prefix(PrefixComponent(raw = OsStr.fromEncodedBytesUnchecked(raw), parsed = this.prefix!!))
                     }
                     else -> error("unreachable")
@@ -942,7 +942,7 @@ public open class Components(
                 when {
                     matchVal == State.Body && this.path.size > this.lenBeforeBody() -> {
                         val (size, comp) = this.parseNextComponentBack()
-                        this.path = ((this.path).slice(0 until this.path.size - size))
+                        this.path = ((this.path).subList(0, this.path.size - size))
                         if (comp != null) {
                             return comp
                         }
@@ -957,14 +957,14 @@ public open class Components(
                             State.Done
                         }
                         if (this.hasPhysicalRoot) {
-                            this.path = ((this.path).slice(0 until this.path.size - 1))
+                            this.path = ((this.path).subList(0, this.path.size - 1))
                             return Component.RootDir
                         } else if (HAS_PREFIXES && this.prefix != null) {
                             if (p.hasImplicitRoot() && !p.isVerbatim()) {
                                 return Component.RootDir
                             }
                         } else if (this.includeCurDir()) {
-                            this.path = ((this.path).slice(0 until this.path.size - 1))
+                            this.path = ((this.path).subList(0, this.path.size - 1))
                             return Component.CurDir
                         }
                     }
@@ -1026,7 +1026,7 @@ public open class Iter(
 
     public open fun clone(): Iter = Iter(inner)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         open class DebugHelper(
             public var value: Path,
         ) {
@@ -1036,11 +1036,9 @@ public open class Iter(
                     value = v
                 }
 
-            public open fun fmt(f1: StringBuilder) {
-                object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish()
-            }
+            public open fun fmt(f1: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f1.append(entries.joinToString(", ", "[", "]")) } }.entries(this.value.iter()).finish()
         }
-        DebugTuple(f, "Iter").field(DebugHelper(this.asPath())).finish()
+        return DebugTuple(f, "Iter").field(DebugHelper(this.asPath())).finish()
     }
 
     /**
@@ -1092,14 +1090,14 @@ public fun compareComponents(left: Components, right: Components): Ordering {
                     }
                 }
             }
-        when (val matchVal1 = ((left.path).slice(0 until firstDifference)).iter().indexOfLast({ b -> left.isSepByte(b) }).takeIf { it >= 0 }) {
+        when (val matchVal1 = ((left.path).subList(0, firstDifference)).iter().indexOfLast({ b -> left.isSepByte(b) }).takeIf { it >= 0 }) {
             null -> {}
             else -> {
                 val previousSep = matchVal1
                 val mismatchedComponentStart = previousSep + 1
-                left.path = ((left.path).slice(mismatchedComponentStart until left.path.size))
+                left.path = ((left.path).subList(mismatchedComponentStart, (left.path).size))
                 left.front = State.Body
-                right.path = ((right.path).slice(mismatchedComponentStart until right.path.size))
+                right.path = ((right.path).subList(mismatchedComponentStart, (right.path).size))
                 right.front = State.Body
             }
         }
@@ -1203,7 +1201,7 @@ public open class Ancestors(
  */
 public open class PathBuf(
     public var inner: OsString,
-) : FromStr, Borrow<Path>, AsRef<OsStr> {
+) : FromStr<Nothing>, Borrow<Path>, AsRef<OsStr> {
     /**
      * Coerces to a [Path] slice.
      *
@@ -1709,9 +1707,7 @@ public open class PathBuf(
         this.push(p)
     }
 
-    public open fun fmt(formatter: StringBuilder) {
-        formatter.append((this).toString())
-    }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok(Unit) }
 
     public open fun deref(): Path = Path.new(this.inner)
 
@@ -1825,7 +1821,7 @@ public open class PathBuf(
          */
         public fun from(s: String): PathBuf = PathBuf.from(OsString.from(s))
 
-        public fun fromStr(s: String): Result<PathBuf, Nothing> = Result.Ok(PathBuf.from(s))
+        public fun fromStr(s: String): Result<PathBuf, Nothing> = Result.Ok<PathBuf, Nothing>(PathBuf.from(s))
 
         /**
          * Creates a new `PathBuf` from the [Path] elements of an iterator.
@@ -1966,13 +1962,13 @@ public fun String.eqPathBuf(other: PathBuf): Boolean = (this == other.asPath()).
  */
 public open class Path internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<OsStr>,
+    public val fieldLayout: TypeLayout<OsStr> = UnresolvedTypeLayout(),
 ) : ToOwned, CloneToUninit, AsRef<OsStr> {
     public var inner: OsStr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: OsStr, fieldLayout: TypeLayout<OsStr>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: OsStr, fieldLayout: TypeLayout<OsStr> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Path> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Path(ptr, layout) }, { it.inner })
 
@@ -2781,7 +2777,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun metadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
+    public open fun metadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.metadata(this)
 
     /**
      * Queries the metadata about a file without following symlinks.
@@ -2798,7 +2794,7 @@ public open class Path internal constructor(
      * println("${metadata.fileType()}")
      * ```
      */
-    public open fun symlinkMetadata(): Result<Metadata, Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
+    public open fun symlinkMetadata(): Result<Metadata, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.symlinkMetadata(this)
 
     /**
      * Returns the canonical, absolute form of the path with all intermediate
@@ -2824,7 +2820,7 @@ public open class Path internal constructor(
      * check(path.canonicalize().unwrap() == PathBuf.from("/foo/test/bar.rs"))
      * ```
      */
-    public open fun canonicalize(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
+    public open fun canonicalize(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.canonicalize(this)
 
     /**
      * Makes the path absolute without accessing the filesystem.
@@ -2852,7 +2848,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun absolute(): Result<PathBuf, Error> = absolute(this)
+    public open fun absolute(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = absolute(this)
 
     /**
      * Normalize a path, including `..` without traversing the filesystem.
@@ -2880,7 +2876,7 @@ public open class Path internal constructor(
         // `components` splits it into two: (Prefix, RootDir).
         val root =
             when (val matchVal = iter.peek()) {
-                Component.ParentDir -> { return Result.Err(NormalizeError()) }
+                Component.ParentDir -> { return Result.Err<PathBuf, NormalizeError>(NormalizeError()) }
                 Component.RootDir -> {
                     val p = matchVal
                     lexical.push(p)
@@ -2907,18 +2903,18 @@ public open class Path internal constructor(
                     }
                     lexical.asOsStr().len()
                 }
-                null -> { return Result.Ok(PathBuf.new()) }
+                null -> { return Result.Ok<PathBuf, NormalizeError>(PathBuf.new()) }
                 is Component.Normal -> 0
             }
         for (component in iter) {
             when (component) {
                 Component.RootDir -> error("unreachable")
-                is Component.Prefix -> { return Result.Err(NormalizeError()) }
+                is Component.Prefix -> { return Result.Err<PathBuf, NormalizeError>(NormalizeError()) }
                 Component.CurDir -> { continue }
                 Component.ParentDir -> {
                     // It's an error if ParentDir causes us to go above the "root".
                     if (lexical.asOsStr().len() == root) {
-                        return Result.Err(NormalizeError())
+                        return Result.Err<PathBuf, NormalizeError>(NormalizeError())
                     } else {
                         lexical.pop()
                     }
@@ -2929,7 +2925,7 @@ public open class Path internal constructor(
                 }
             }
         }
-        return Result.Ok(lexical)
+        return Result.Ok<PathBuf, NormalizeError>(lexical)
     }
 
     /**
@@ -2946,7 +2942,7 @@ public open class Path internal constructor(
      * val pathLink = path.readLink().expect("the path should be an existing symbolic link")
      * ```
      */
-    public open fun readLink(): Result<PathBuf, Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
+    public open fun readLink(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.readLink(this)
 
     /**
      * Returns an iterator over the entries within a directory.
@@ -2970,7 +2966,7 @@ public open class Path internal constructor(
      * }
      * ```
      */
-    public open fun readDir(): Result<ReadDir, Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
+    public open fun readDir(): Result<ReadDir, io.github.kotlinmania.rustlang.std.io.error.Error> = io.github.kotlinmania.rustlang.std.fs.readDir(this)
 
     /**
      * Returns `true` if the path points at an existing entity.
@@ -3032,7 +3028,7 @@ public open class Path internal constructor(
      * [TOCTOU]: fs#time-of-check-to-time-of-use-toctou
      * [exists]: Self.exists
      */
-    public open fun tryExists(): Result<Boolean, Error> = exists(this)
+    public open fun tryExists(): Result<Boolean, io.github.kotlinmania.rustlang.std.io.error.Error> = exists(this)
 
     /**
      * Returns `true` if the path exists on disk and is pointing at a regular file.
@@ -3138,9 +3134,7 @@ public open class Path internal constructor(
 
     public open fun asRef(): OsStr = this.inner
 
-    public open fun fmt(formatter: StringBuilder) {
-        formatter.append((this.inner).toString())
-    }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this.inner).toString()); Result.Ok(Unit) }
 
     public open fun eq(other: Path): Boolean = (this.components() == other.components()).toUByte()
 
@@ -3163,7 +3157,7 @@ public open class Path internal constructor(
                     Pair(prefix.len(), prefix.isVerbatim())
                 }
             }
-        val bytes1 = ((bytes).slice(prefixLen until bytes.size))
+        val bytes1 = ((bytes).subList(prefixLen, (bytes).size))
         var componentStart = 0
         // track some extra state to avoid prefix collisions.
         // ["foo", "bar"] and ["foobar"], will have the same payload bytes
@@ -3180,7 +3174,7 @@ public open class Path internal constructor(
                 if (i > componentStart) {
                     val toHash = bytes1[componentStart until i]
                     chunkBits = (chunkBits + toHash.len().toInt())
-                    chunkBits = rustRotateRight(chunkBits, 2u)
+                    chunkBits = chunkBits.rotateRight(2u)
                     h.write(toHash)
                 }
                 // skip over separator and optionally a following CurDir item
@@ -3203,7 +3197,7 @@ public open class Path internal constructor(
         if (componentStart < bytes1.len()) {
             val toHash1 = bytes1[componentStart until bytes1.size]
             chunkBits = (chunkBits + toHash1.len().toInt())
-            chunkBits = rustRotateRight(chunkBits, 2u)
+            chunkBits = chunkBits.rotateRight(2u)
             h.write(toHash1)
         }
         h.writeUsize(chunkBits)
@@ -3243,9 +3237,9 @@ public open class Path internal constructor(
     public open fun partialCmp(other: OsString): Ordering? = Path.partialCmp(this, other.asRef())
 
     public companion object {
-        public operator fun invoke(inner: OsStr, fieldLayout: TypeLayout<OsStr>): Path = Path(inner, fieldLayout)
+        public operator fun invoke(inner: OsStr, fieldLayout: TypeLayout<OsStr> = UnresolvedTypeLayout()): Path = Path(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<OsStr>): Path = Path(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<OsStr> = UnresolvedTypeLayout()): Path = Path(fieldStorage, fieldLayout)
 
         /**
          * Creates a boxed [Path] from a reference.
@@ -3314,12 +3308,12 @@ public open class Path internal constructor(
          * check(fromString == fromPath)
          * ```
          */
-        public fun new(s: OsStr): Path = (ObjectSlotLayout<Path>()).readNative((((constPtrFromRustCast(s.asRef())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        public fun new(s: OsStr): Path = (UnresolvedTypeLayout<Path>()).readNative((((constPtrFromRustCast(s.asRef())).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
         public fun fromInnerMut(inner: OsStr): RustMutableReference<Path> {
             // SAFETY: Path is just a wrapper around OsStr,
             // therefore converting OsStr to Path is safe.
-            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), ObjectSlotLayout<Path>())
+            return RustMutableReference(MutPtr((((mutPtrFromRustCast(inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<Path>())
         }
     }
 }
@@ -3343,9 +3337,7 @@ public open class StripPrefixError(
 
     public open fun clone(): StripPrefixError = StripPrefixError(value)
 
-    public open fun fmt(f: StringBuilder) {
-        "prefix not found".fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "prefix not found".fmt(f)
 
     public companion object {
         public fun typeLayout(): TypeLayout<StripPrefixError> =
@@ -3375,9 +3367,7 @@ public open class StripPrefixError(
  * would escape the path.
  */
 public open class NormalizeError {
-    public open fun fmt(f: StringBuilder) {
-        f.append("parent reference `..` points outside of base directory")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("parent reference `..` points outside of base directory"); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<NormalizeError> =
@@ -3419,13 +3409,9 @@ public open class NormalizeError {
 public open class Display(
     public var inner: Display,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append((this.inner).toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append((this.inner).toString()); Result.Ok(Unit) }
 }
 
 public fun String.eq(other: Path): Boolean = (other == this).toUByte()
@@ -3579,10 +3565,10 @@ public fun OsString.partialCmpCowPath(other: Path): Ordering? = Path.partialCmp(
  * [windows-path]: https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfullpathnamew
  * [cygwin-path]: https://cygwin.com/cygwin-api/func-cygwin-conv-path.html
  */
-public fun absolute(path: Path): Result<PathBuf, Error> {
+public fun absolute(path: Path): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> {
     val path1 = path
     return if (path1.asOsStr().isEmpty()) {
-        Result.Err(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
+        Result.Err<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error>(constError(ErrorKind.InvalidInput, "cannot make an empty path absolute"))
     } else {
         io.github.kotlinmania.rustlang.std.sys.path.unix.absolute(path1)
     }

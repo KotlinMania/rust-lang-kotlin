@@ -6,10 +6,11 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 /**
  * A hashable type.
@@ -516,9 +517,9 @@ public fun <H> UByte.hash(state: H) {
 }
 
 public fun <H> hashHashSliceUByte(data: List<UByte>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<UByte>>())
     val ptr = data.asPtr()
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> UShort.hash(state: H) {
@@ -526,9 +527,9 @@ public fun <H> UShort.hash(state: H) {
 }
 
 public fun <H> hashHashSliceUShort(data: List<UShort>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<UShort>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> UInt.hash(state: H) {
@@ -536,9 +537,9 @@ public fun <H> UInt.hash(state: H) {
 }
 
 public fun <H> hashHashSliceUInt(data: List<UInt>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<UInt>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> ULong.hash(state: H) {
@@ -546,9 +547,9 @@ public fun <H> ULong.hash(state: H) {
 }
 
 public fun <H> hashHashSliceULong(data: List<ULong>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<ULong>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> Int.hash(state: H) {
@@ -556,9 +557,9 @@ public fun <H> Int.hash(state: H) {
 }
 
 public fun <H> hashHashSliceInt(data: List<Int>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<Int>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> Byte.hash(state: H) {
@@ -566,9 +567,9 @@ public fun <H> Byte.hash(state: H) {
 }
 
 public fun <H> hashHashSliceByte(data: List<Byte>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<Byte>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> Short.hash(state: H) {
@@ -576,9 +577,9 @@ public fun <H> Short.hash(state: H) {
 }
 
 public fun <H> hashHashSliceShort(data: List<Short>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<Short>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> Long.hash(state: H) {
@@ -586,9 +587,9 @@ public fun <H> Long.hash(state: H) {
 }
 
 public fun <H> hashHashSliceLong(data: List<Long>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<Long>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> U128.hash(state: H) {
@@ -596,9 +597,9 @@ public fun <H> U128.hash(state: H) {
 }
 
 public fun <H> hashHashSliceU128(data: List<U128>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<U128>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> I128.hash(state: H) {
@@ -606,9 +607,9 @@ public fun <H> I128.hash(state: H) {
 }
 
 public fun <H> hashHashSliceI128(data: List<I128>, state: H) {
-    val newlen = sizeOfVal(data)
+    val newlen = sizeOfVal(data, typeLayoutT = UnresolvedTypeLayout<List<I128>>())
     val ptr = (data.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
-    state.write(rawSliceList(ptr, newlen.toInt(), PrimitiveLayouts.U8))
+    state.write(linearSliceView(ptr, newlen.toInt(), PrimitiveLayouts.U8))
 }
 
 public fun <H> Boolean.hash(state: H) {

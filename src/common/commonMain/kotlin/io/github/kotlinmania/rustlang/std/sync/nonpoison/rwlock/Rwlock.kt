@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.nonpoison.rwlock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -422,22 +423,22 @@ public open class RwLock<T>(
      */
     public open fun <R> withMut(f: (T) -> R): R = f(this.write())
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "RwLock")
         run {
             val matchVal = this.tryRead()
             when {
-                matchVal is Result.Ok<*> -> {
-                    val guard = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok -> {
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
                 else -> {
-                    val WouldBlock = (matchVal as Result.Err<*>).error
+                    val WouldBlock = matchVal.error
                     d.field("data", "<locked>")
                 }
             }
         }
-        d.finishNonExhaustive()
+        return d.finishNonExhaustive()
     }
 
     public companion object {
@@ -510,13 +511,9 @@ public open class RwLockReadGuard<T>(
         return this.data.asRef()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -581,12 +578,12 @@ public open class RwLockReadGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asRef())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockReadGuard<U>, RwLockReadGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
+                    Result.Ok<MappedRwLockReadGuard<U>, RwLockReadGuard<T>>(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
                 }
             }
         }
@@ -626,13 +623,9 @@ public open class RwLockWriteGuard<T>(
         return this.lock.data.get()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -762,12 +755,12 @@ public open class RwLockWriteGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.lock.data.get())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockWriteGuard<U>, RwLockWriteGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockWriteGuard(data = data1, innerLock = orig1.lock.inner, variance = Unit))
+                    Result.Ok<MappedRwLockWriteGuard<U>, RwLockWriteGuard<T>>(MappedRwLockWriteGuard(data = data1, innerLock = orig1.lock.inner, variance = Unit))
                 }
             }
         }
@@ -821,14 +814,10 @@ public open class MappedRwLockReadGuard<T>(
     }
 
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         // @unstable(feature = "nonpoisonRwlock", issue = "134645")
@@ -882,12 +871,12 @@ public open class MappedRwLockReadGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asRef())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockReadGuard<U>, MappedRwLockReadGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
+                    Result.Ok<MappedRwLockReadGuard<U>, MappedRwLockReadGuard<T>>(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
                 }
             }
         }
@@ -952,14 +941,10 @@ public open class MappedRwLockWriteGuard<T>(
     }
 
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     // @unstable(feature = "nonpoisonRwlock", issue = "134645")
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         // @unstable(feature = "nonpoisonRwlock", issue = "134645")
@@ -1013,12 +998,12 @@ public open class MappedRwLockWriteGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asMut())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockWriteGuard<U>, MappedRwLockWriteGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockWriteGuard(data = data1, innerLock = orig1.innerLock, variance = Unit))
+                    Result.Ok<MappedRwLockWriteGuard<U>, MappedRwLockWriteGuard<T>>(MappedRwLockWriteGuard(data = data1, innerLock = orig1.innerLock, variance = Unit))
                 }
             }
         }

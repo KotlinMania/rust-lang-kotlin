@@ -123,9 +123,9 @@ static Napi::Value libcWindowsGnuStrncasecmp_napi(const Napi::CallbackInfo& km_i
 static Napi::Value libcWindowsGnuWmemchr_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* cx = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
-    int32_t c = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
+    uint16_t c = static_cast<uint16_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
     uint64_t n = km_info.Length() > 2 ? km_napi_arg_u64(km_info[2]) : 0;
-    typedef void* (*km_fn_t)(void*, int32_t, uint64_t);
+    typedef void* (*km_fn_t)(void*, uint16_t, uint64_t);
     static km_fn_t km_fn_ptr = nullptr;
 #ifdef _WIN32
     if (km_fn_ptr == nullptr) {

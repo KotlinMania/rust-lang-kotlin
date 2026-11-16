@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.crc32cd
 import io.github.kotlinmania.rustlang.corearch.aarch64.neon.crc32d
@@ -547,7 +548,7 @@ public fun testVdupNF32() {
 public fun testVldrqP128() {
     val v: List<P128> = listOf(1, 2)
     val e: P128 = U128(0x0uL, 0x2uL)
-    val r: P128 = vldrqP128(((v).slice(1 until v.size)).asPtr())
+    val r: P128 = vldrqP128(((v).subList(1, (v).size)).asPtr())
     check(r == e)
 }
 

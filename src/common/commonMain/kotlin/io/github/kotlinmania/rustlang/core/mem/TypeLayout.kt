@@ -2,6 +2,19 @@ package io.github.kotlinmania.rustlang.core.mem
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.I128
+import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowU8
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAlloc
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicCxchgU128Pair
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicCxchgU16
@@ -24,21 +37,147 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicXchgU16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicXchgU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicXchgU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicXchgU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBitreverseU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmBswapU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCosf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCosf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU8
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDoubleToU128Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDoubleToU64Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExp2f32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExp2f64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExpf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmExpf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloatToU128Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloatToU64Unchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFmaf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFmaf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmI128DivRem
+import io.github.kotlinmania.rustlang.core.intrinsics.kmI128Shr
 import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadF32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadF64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadU16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog10f32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog10f64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog2f32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLog2f64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLogf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLogf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmMulWithOverflowU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowif32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmPowif64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateLeftU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRotateRightU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundTiesEvenf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingAddU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSaturatingSubU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSinf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSinf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmStoreF32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmStoreF64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmStoreU16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmStoreU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmStoreU64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmStoreU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowI8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU128
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU16
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmSubWithOverflowU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Add
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128DivRem
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Mul
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Shl
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Shr
+import io.github.kotlinmania.rustlang.core.intrinsics.kmU128Sub
 import io.github.kotlinmania.rustlang.core.intrinsics.kmVolatileLoadU16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmVolatileLoadU32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmVolatileLoadU64
@@ -130,7 +269,7 @@ public interface TypeLayout<T> {
     public val alignBytes: Long
     public val strideBytes: Long
         get() = alignUpBytes(sizeBytes, alignBytes)
-    public val isGcObjectSlot: Boolean
+    public val isSigned: Boolean
         get() = false
 
     public fun readNative(addr: Long): T
@@ -202,7 +341,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 1L
             override val alignBytes: Long = 1L
             override fun readNative(addr: Long): Boolean = kmLoadU8(addr) != 0u.toUByte()
-            override fun writeNative(addr: Long, value: Boolean): Unit = kmStoreU8(addr, if (value) 1u else 0u)
+            override fun writeNative(addr: Long, value: Boolean) {
+                kmStoreU8(addr, if (value) 1u else 0u)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Boolean = buf[offset] != 0.toByte()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Boolean) {
                 buf[offset] = if (value) 1 else 0
@@ -217,8 +358,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<Byte> {
             override val sizeBytes: Long = 1L
             override val alignBytes: Long = 1L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Byte = kmLoadU8(addr).toByte()
-            override fun writeNative(addr: Long, value: Byte): Unit = kmStoreU8(addr, value.toUByte())
+            override fun writeNative(addr: Long, value: Byte) {
+                kmStoreU8(addr, value.toUByte())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Byte = buf[offset]
             override fun writeBytes(buf: ByteArray, offset: Int, value: Byte) {
                 buf[offset] = value
@@ -234,7 +378,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 1L
             override val alignBytes: Long = 1L
             override fun readNative(addr: Long): UByte = kmLoadU8(addr)
-            override fun writeNative(addr: Long, value: UByte): Unit = kmStoreU8(addr, value)
+            override fun writeNative(addr: Long, value: UByte) {
+                kmStoreU8(addr, value)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): UByte = buf[offset].toUByte()
             override fun writeBytes(buf: ByteArray, offset: Int, value: UByte) {
                 buf[offset] = value.toByte()
@@ -249,8 +395,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<Short> {
             override val sizeBytes: Long = 2L
             override val alignBytes: Long = 2L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Short = kmLoadU16(addr).toShort()
-            override fun writeNative(addr: Long, value: Short): Unit = kmStoreU16(addr, value.toUShort())
+            override fun writeNative(addr: Long, value: Short) {
+                kmStoreU16(addr, value.toUShort())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Short = kmBytesLoadU16Le(buf, offset).toShort()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Short): Unit =
                 kmBytesStoreU16Le(buf, offset, value.toUShort())
@@ -265,7 +414,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 2L
             override val alignBytes: Long = 2L
             override fun readNative(addr: Long): UShort = kmLoadU16(addr)
-            override fun writeNative(addr: Long, value: UShort): Unit = kmStoreU16(addr, value)
+            override fun writeNative(addr: Long, value: UShort) {
+                kmStoreU16(addr, value)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): UShort = kmBytesLoadU16Le(buf, offset)
             override fun writeBytes(buf: ByteArray, offset: Int, value: UShort): Unit =
                 kmBytesStoreU16Le(buf, offset, value)
@@ -279,8 +430,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<Int> {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Int = kmLoadU32(addr).toInt()
-            override fun writeNative(addr: Long, value: Int): Unit = kmStoreU32(addr, value.toUInt())
+            override fun writeNative(addr: Long, value: Int) {
+                kmStoreU32(addr, value.toUInt())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Int = kmBytesLoadU32Le(buf, offset).toInt()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit =
                 kmBytesStoreU32Le(buf, offset, value.toUInt())
@@ -295,7 +449,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
             override fun readNative(addr: Long): UInt = kmLoadU32(addr)
-            override fun writeNative(addr: Long, value: UInt): Unit = kmStoreU32(addr, value)
+            override fun writeNative(addr: Long, value: UInt) {
+                kmStoreU32(addr, value)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): UInt = kmBytesLoadU32Le(buf, offset)
             override fun writeBytes(buf: ByteArray, offset: Int, value: UInt): Unit =
                 kmBytesStoreU32Le(buf, offset, value)
@@ -310,7 +466,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
             override fun readNative(addr: Long): Char = kmLoadU32(addr).toInt().toChar()
-            override fun writeNative(addr: Long, value: Char): Unit = kmStoreU32(addr, value.code.toUInt())
+            override fun writeNative(addr: Long, value: Char) {
+                kmStoreU32(addr, value.code.toUInt())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Char = kmBytesLoadU32Le(buf, offset).toInt().toChar()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Char): Unit =
                 kmBytesStoreU32Le(buf, offset, value.code.toUInt())
@@ -324,8 +482,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<Float> {
             override val sizeBytes: Long = 4L
             override val alignBytes: Long = 4L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Float = kmLoadF32(addr)
-            override fun writeNative(addr: Long, value: Float): Unit = kmStoreF32(addr, value)
+            override fun writeNative(addr: Long, value: Float) {
+                kmStoreF32(addr, value)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Float = Float.fromBits(kmBytesLoadU32Le(buf, offset).toInt())
             override fun writeBytes(buf: ByteArray, offset: Int, value: Float): Unit =
                 kmBytesStoreU32Le(buf, offset, value.toRawBits().toUInt())
@@ -339,8 +500,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<Long> {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Long = kmLoadU64(addr).toLong()
-            override fun writeNative(addr: Long, value: Long): Unit = kmStoreU64(addr, value.toULong())
+            override fun writeNative(addr: Long, value: Long) {
+                kmStoreU64(addr, value.toULong())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Long = kmBytesLoadU64Le(buf, offset).toLong()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Long): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toULong())
@@ -355,7 +519,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): ULong = kmLoadU64(addr)
-            override fun writeNative(addr: Long, value: ULong): Unit = kmStoreU64(addr, value)
+            override fun writeNative(addr: Long, value: ULong) {
+                kmStoreU64(addr, value)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): ULong = kmBytesLoadU64Le(buf, offset)
             override fun writeBytes(buf: ByteArray, offset: Int, value: ULong): Unit =
                 kmBytesStoreU64Le(buf, offset, value)
@@ -369,8 +535,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<Double> {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Double = kmLoadF64(addr)
-            override fun writeNative(addr: Long, value: Double): Unit = kmStoreF64(addr, value)
+            override fun writeNative(addr: Long, value: Double) {
+                kmStoreF64(addr, value)
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Double = Double.fromBits(kmBytesLoadU64Le(buf, offset).toLong())
             override fun writeBytes(buf: ByteArray, offset: Int, value: Double): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toRawBits().toULong())
@@ -384,8 +553,11 @@ public object PrimitiveLayouts {
         object : TypeLayout<F16> {
             override val sizeBytes: Long = 2L
             override val alignBytes: Long = 2L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): F16 = F16.fromBits(kmLoadU16(addr))
-            override fun writeNative(addr: Long, value: F16): Unit = kmStoreU16(addr, value.toBits())
+            override fun writeNative(addr: Long, value: F16) {
+                kmStoreU16(addr, value.toBits())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): F16 = F16.fromBits(kmBytesLoadU16Le(buf, offset))
             override fun writeBytes(buf: ByteArray, offset: Int, value: F16): Unit =
                 kmBytesStoreU16Le(buf, offset, value.toBits())
@@ -395,14 +567,17 @@ public object PrimitiveLayouts {
             override fun fromBitsU64(bits: ULong): F16 = F16.fromBits(bits.toUShort())
         }
 
-    public val F128_LAYOUT: TypeLayout<F128> = u128Layout(::F128, { it.high }, { it.low })
+    public val F128_LAYOUT: TypeLayout<F128> = u128Layout(::F128, { it.high }, { it.low }, isSigned = true)
 
     public val ISIZE64: TypeLayout<Int> =
         object : TypeLayout<Int> {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): Int = kmLoadU64(addr).toLong().toInt()
-            override fun writeNative(addr: Long, value: Int): Unit = kmStoreU64(addr, value.toLong().toULong())
+            override fun writeNative(addr: Long, value: Int) {
+                kmStoreU64(addr, value.toLong().toULong())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Int = kmBytesLoadU64Le(buf, offset).toLong().toInt()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toLong().toULong())
@@ -417,7 +592,9 @@ public object PrimitiveLayouts {
             override val sizeBytes: Long = 8L
             override val alignBytes: Long = 8L
             override fun readNative(addr: Long): Int = kmLoadU64(addr).toInt()
-            override fun writeNative(addr: Long, value: Int): Unit = kmStoreU64(addr, value.toUInt().toULong())
+            override fun writeNative(addr: Long, value: Int) {
+                kmStoreU64(addr, value.toUInt().toULong())
+            }
             override fun readBytes(buf: ByteArray, offset: Int): Int = kmBytesLoadU64Le(buf, offset).toInt()
             override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit =
                 kmBytesStoreU64Le(buf, offset, value.toUInt().toULong())
@@ -428,7 +605,20 @@ public object PrimitiveLayouts {
         }
 
     public val ISIZE32: TypeLayout<Int> = I32
-    public val USIZE32: TypeLayout<Int> = I32
+    public val USIZE32: TypeLayout<Int> =
+        object : TypeLayout<Int> {
+            override val sizeBytes: Long = 4L
+            override val alignBytes: Long = 4L
+            override val isSigned: Boolean = false
+            override fun readNative(addr: Long): Int = I32.readNative(addr)
+            override fun writeNative(addr: Long, value: Int): Unit = I32.writeNative(addr, value)
+            override fun readBytes(buf: ByteArray, offset: Int): Int = I32.readBytes(buf, offset)
+            override fun writeBytes(buf: ByteArray, offset: Int, value: Int): Unit = I32.writeBytes(buf, offset, value)
+            override fun readVolatileNative(addr: Long): Int = I32.readVolatileNative(addr)
+            override fun writeVolatileNative(addr: Long, value: Int): Unit = I32.writeVolatileNative(addr, value)
+            override fun toBitsU64(value: Int): ULong = I32.toBitsU64(value)
+            override fun fromBitsU64(bits: ULong): Int = I32.fromBitsU64(bits)
+        }
 
     public fun constPtrLayout(pointerWidthBits: Long = 64L): TypeLayout<ConstPtr> {
         val bytes = pointerWidthBits / 8L
@@ -534,10 +724,12 @@ public object PrimitiveLayouts {
         construct: (ULong, ULong) -> T,
         highOf: (T) -> ULong,
         lowOf: (T) -> ULong,
+        isSigned: Boolean = false,
     ): TypeLayout<T> =
         object : TypeLayout<T> {
             override val sizeBytes: Long = 16L
             override val alignBytes: Long = 16L
+            override val isSigned: Boolean = isSigned
             override fun readNative(addr: Long): T {
                 val lo = kmLoadU64(addr)
                 val hi = kmLoadU64(addr + 8L)
@@ -566,6 +758,7 @@ public object PrimitiveLayouts {
         object : TypeLayout<T> {
             override val sizeBytes: Long = 16L
             override val alignBytes: Long = 16L
+            override val isSigned: Boolean = true
             override fun readNative(addr: Long): T {
                 val lo = kmLoadU64(addr)
                 val hi = kmLoadU64(addr + 8L).toLong()
@@ -629,6 +822,7 @@ public class TransparentTypeLayout<T, F>
 
         override val sizeBytes: Long get() = inner.sizeBytes
         override val alignBytes: Long get() = inner.alignBytes
+        override val isSigned: Boolean get() = inner.isSigned
         override fun readNative(addr: Long): T = project(MutPtr(addr), inner)
         override fun writeNative(addr: Long, value: T): Unit = inner.writeNative(addr, unwrap(value))
         override fun readVolatileNative(addr: Long): T = project(MutPtr(addr), inner)
@@ -639,6 +833,7 @@ public class TransparentTypeLayout<T, F>
             inner.writeBytes(buf, offset, unwrap(value))
         override fun toBitsU64(value: T): ULong = inner.toBitsU64(unwrap(value))
         override fun fromBitsU64(bits: ULong): T {
+            if (gcWrap != null) return gcWrap.invoke(inner.fromBitsU64(bits))
             val cell = allocateNativeCell(inner.fromBitsU64(bits), inner)
             return project(cell, inner)
         }
@@ -649,7 +844,7 @@ public class AlignedTypeLayout<T>(
     override val alignBytes: Long,
 ) : TypeLayout<T> {
     override val sizeBytes: Long get() = alignUpBytes(inner.sizeBytes, alignBytes)
-    override val isGcObjectSlot: Boolean get() = inner.isGcObjectSlot
+    override val isSigned: Boolean get() = inner.isSigned
     override fun readNative(addr: Long): T = inner.readNative(addr)
     override fun writeNative(addr: Long, value: T): Unit = inner.writeNative(addr, value)
     override fun readVolatileNative(addr: Long): T = inner.readVolatileNative(addr)
@@ -666,7 +861,6 @@ public class FixedArrayTypeLayout<T>(
 ) : TypeLayout<List<T>> {
     override val sizeBytes: Long = length.toLong() * elementLayout.strideBytes
     override val alignBytes: Long = maxOf(1L, elementLayout.alignBytes)
-    override val isGcObjectSlot: Boolean get() = elementLayout.isGcObjectSlot
 
     override fun readNative(addr: Long): List<T> {
         val stride = elementLayout.strideBytes
@@ -704,52 +898,269 @@ public fun <T> fixedListTypeLayout(
     length: Int,
 ): TypeLayout<List<T>> = FixedArrayTypeLayout(elementLayout, length)
 
-private object ManagedSlotRegistry {
-    private var nextHandleId: Long = 1L
-    private val slotTable: MutableMap<Long, Any?> = linkedMapOf()
-    private val freeIds: MutableList<Long> = mutableListOf()
+public class UnresolvedTypeLayout<T>(
+    private val typeDescription: String = "T",
+) : TypeLayout<T> {
+    override val sizeBytes: Long
+        get() = throw UnsupportedOperationException("Unresolved TypeLayout<$typeDescription>: native size requires concrete layout")
 
-    fun store(value: Any?): Long {
-        val id = if (freeIds.isNotEmpty()) freeIds.removeAt(freeIds.size - 1) else nextHandleId++
-        slotTable[id] = value
-        return id
+    override val alignBytes: Long
+        get() = throw UnsupportedOperationException("Unresolved TypeLayout<$typeDescription>: native alignment requires concrete layout")
+
+    override fun readNative(addr: Long): T =
+        throw UnsupportedOperationException(
+            "Unresolved TypeLayout<$typeDescription>: cannot read native memory at 0x${addr.toULong().toString(16)}",
+        )
+
+    override fun writeNative(
+        addr: Long,
+        value: T,
+    ): Unit =
+        throw UnsupportedOperationException(
+            "Unresolved TypeLayout<$typeDescription>: cannot write native memory at 0x${addr.toULong().toString(16)}",
+        )
+}
+
+public class LinearSliceView<T>(
+    public val pointer: ConstPtr,
+    override val size: Int,
+    public val elementLayout: TypeLayout<T>,
+) : AbstractList<T>() {
+    override fun get(index: Int): T {
+        if (index < 0 || index >= size) {
+            throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
+        }
+        return elementLayout.readNative(pointer.rawAddress + index.toLong() * elementLayout.strideBytes)
     }
 
-    fun load(id: Long): Any? = slotTable[id]
-
-    fun release(id: Long) {
-        if (slotTable.containsKey(id)) {
-            slotTable.remove(id)
-            freeIds.add(id)
+    public fun subView(
+        fromIndex: Int,
+        toIndex: Int,
+    ): LinearSliceView<T> {
+        if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
+            throw IndexOutOfBoundsException("Slice subView($fromIndex, $toIndex) out of bounds for length $size")
         }
+        val offsetPtr = ConstPtr(pointer.rawAddress + fromIndex.toLong() * elementLayout.strideBytes, pointer.rawMeta)
+        return LinearSliceView(offsetPtr, toIndex - fromIndex, elementLayout)
+    }
+
+    override fun subList(
+        fromIndex: Int,
+        toIndex: Int,
+    ): List<T> = subView(fromIndex, toIndex)
+}
+
+public class LinearMutSliceView<T>(
+    public val pointer: MutPtr,
+    override val size: Int,
+    public val elementLayout: TypeLayout<T>,
+) : AbstractMutableList<T>() {
+    override fun get(index: Int): T {
+        if (index < 0 || index >= size) {
+            throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
+        }
+        return elementLayout.readNative(pointer.rawAddress + index.toLong() * elementLayout.strideBytes)
+    }
+
+    override fun set(
+        index: Int,
+        element: T,
+    ): T {
+        if (index < 0 || index >= size) {
+            throw IndexOutOfBoundsException("Index $index out of bounds for length $size")
+        }
+        val addr = pointer.rawAddress + index.toLong() * elementLayout.strideBytes
+        val prev = elementLayout.readNative(addr)
+        elementLayout.writeNative(addr, element)
+        return prev
+    }
+
+    override fun add(
+        index: Int,
+        element: T,
+    ): Unit = throw UnsupportedOperationException("Fixed-length Rust slice cannot grow")
+
+    override fun removeAt(index: Int): T =
+        throw UnsupportedOperationException("Fixed-length Rust slice cannot shrink")
+
+    public fun subView(
+        fromIndex: Int,
+        toIndex: Int,
+    ): LinearMutSliceView<T> {
+        if (fromIndex < 0 || toIndex > size || fromIndex > toIndex) {
+            throw IndexOutOfBoundsException("Slice subView($fromIndex, $toIndex) out of bounds for length $size")
+        }
+        val offsetPtr = MutPtr(pointer.rawAddress + fromIndex.toLong() * elementLayout.strideBytes, pointer.rawMeta)
+        return LinearMutSliceView(offsetPtr, toIndex - fromIndex, elementLayout)
+    }
+
+    override fun subList(
+        fromIndex: Int,
+        toIndex: Int,
+    ): MutableList<T> = subView(fromIndex, toIndex)
+}
+
+public fun <T> linearSliceView(
+    ptr: ConstPtr,
+    len: Int,
+    layout: TypeLayout<T>,
+): List<T> = LinearSliceView(ptr, maxOf(0, len), layout)
+
+public fun <T> linearSliceView(
+    ptr: MutPtr,
+    len: Int,
+    layout: TypeLayout<T>,
+): List<T> = LinearSliceView(ConstPtr(ptr.rawAddress, ptr.rawMeta), maxOf(0, len), layout)
+
+public fun <T> linearMutSliceView(
+    ptr: MutPtr,
+    len: Int,
+    layout: TypeLayout<T>,
+): MutableList<T> = LinearMutSliceView(ptr, maxOf(0, len), layout)
+
+public operator fun <T> List<T>.get(range: IntRange): List<T> {
+    val start = range.first
+    val endExclusive = range.last + 1
+    return when (this) {
+        is LinearSliceView<T> -> subView(start, endExclusive)
+        is LinearMutSliceView<T> -> {
+            if (start < 0 || endExclusive > size || start > endExclusive) {
+                throw IndexOutOfBoundsException("Slice range ($start, $endExclusive) out of bounds for length $size")
+            }
+            val offsetPtr = ConstPtr(pointer.rawAddress + start.toLong() * elementLayout.strideBytes, pointer.rawMeta)
+            LinearSliceView(offsetPtr, endExclusive - start, elementLayout)
+        }
+        else -> subList(start, endExclusive)
     }
 }
 
-public class ObjectSlotLayout<T> : TypeLayout<T> {
-    override val sizeBytes: Long = 8L
-    override val alignBytes: Long = 8L
-    override val isGcObjectSlot: Boolean = true
-
-    @Suppress("UNCHECKED_CAST")
-    override fun readNative(addr: Long): T {
-        val handleId = kmLoadU64(addr).toLong()
-        return ManagedSlotRegistry.load(handleId) as T
+public operator fun <T> MutableList<T>.get(range: IntRange): MutableList<T> {
+    val start = range.first
+    val endExclusive = range.last + 1
+    return when (this) {
+        is LinearMutSliceView<T> -> subView(start, endExclusive)
+        else -> subList(start, endExclusive)
     }
+}
 
-    override fun writeNative(addr: Long, value: T) {
-        val handleId = ManagedSlotRegistry.store(value)
-        kmStoreU64(addr, handleId.toULong())
-    }
+public fun BooleanArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
 
-    @Suppress("UNCHECKED_CAST")
-    override fun readBytes(buf: ByteArray, offset: Int): T {
-        val handleId = kmBytesLoadU64Le(buf, offset).toLong()
-        return ManagedSlotRegistry.load(handleId) as T
-    }
+public fun BooleanArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
 
-    override fun writeBytes(buf: ByteArray, offset: Int, value: T) {
-        val handleId = ManagedSlotRegistry.store(value)
-        kmBytesStoreU64Le(buf, offset, handleId.toULong())
+public fun ByteArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+public fun ByteArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun UByteArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun UByteArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+public fun ShortArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+public fun ShortArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun UShortArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun UShortArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+public fun IntArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+public fun IntArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun UIntArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun UIntArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+public fun LongArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+public fun LongArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun ULongArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public fun ULongArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+public fun FloatArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+public fun FloatArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+public fun DoubleArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
+
+public fun DoubleArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)
+
+public fun <T : Comparable<T>> kmCompareValues(
+    a: T?,
+    b: T?,
+): Int = compareValues(a, b)
+
+public fun kmCompareValues(
+    a: ConstPtr,
+    b: ConstPtr,
+): Int = a.rawAddress.toULong().compareTo(b.rawAddress.toULong())
+
+public fun kmCompareValues(
+    a: MutPtr,
+    b: MutPtr,
+): Int = a.rawAddress.toULong().compareTo(b.rawAddress.toULong())
+
+public fun kmCompareValues(
+    a: U128,
+    b: U128,
+): Int = a.compareTo(b)
+
+public fun kmCompareValues(
+    a: I128,
+    b: I128,
+): Int = a.compareTo(b)
+
+public fun kmCompareValues(
+    a: F16,
+    b: F16,
+): Int = a.compareTo(b)
+
+public fun kmCompareValues(
+    a: F128,
+    b: F128,
+): Int = a.compareTo(b)
+
+public fun kmCompareValues(
+    a: Any?,
+    b: Any?,
+): Int {
+    if (a == b) return 0
+    if (a == null) return -1
+    if (b == null) return 1
+    return when (a) {
+        is Byte -> a.compareTo(b as Byte)
+        is UByte -> a.compareTo(b as UByte)
+        is Short -> a.compareTo(b as Short)
+        is UShort -> a.compareTo(b as UShort)
+        is Int -> a.compareTo(b as Int)
+        is UInt -> a.compareTo(b as UInt)
+        is Long -> a.compareTo(b as Long)
+        is ULong -> a.compareTo(b as ULong)
+        is Float -> a.compareTo(b as Float)
+        is Double -> a.compareTo(b as Double)
+        is Char -> a.compareTo(b as Char)
+        is Boolean -> a.compareTo(b as Boolean)
+        is String -> a.compareTo(b as String)
+        is F16 -> a.compareTo(b as F16)
+        is F128 -> a.compareTo(b as F128)
+        is U128 -> a.compareTo(b as U128)
+        is I128 -> a.compareTo(b as I128)
+        is ConstPtr -> a.rawAddress.toULong().compareTo((b as ConstPtr).rawAddress.toULong())
+        is MutPtr -> a.rawAddress.toULong().compareTo((b as MutPtr).rawAddress.toULong())
+        else -> {
+            val leftName = a::class.simpleName ?: "Any"
+            throw UnsupportedOperationException("Unsupported natural comparison for $leftName")
+        }
     }
 }
 
@@ -1194,20 +1605,87 @@ public object PrimitiveArrayLayouts {
         }
 }
 
+private fun <T> allocNativeArrayFromList(
+    values: List<*>,
+    layout: TypeLayout<T>,
+    cast: (Any?) -> T,
+): MutPtr {
+    val count = values.size.toLong()
+    val stride = maxOf(1L, layout.strideBytes)
+    val bytes = maxOf(1L, count * stride)
+    val addr = kmAlloc(bytes, maxOf(1L, layout.alignBytes))
+    for (index in values.indices) {
+        layout.writeNative(addr + index.toLong() * stride, cast(values[index]))
+    }
+    return MutPtr(addr, count)
+}
+
+private fun nativePtrFromList(values: List<*>): MutPtr {
+    if (values.isEmpty()) return MutPtr(16L, 0L)
+    return when (values[0]) {
+        is Boolean -> allocNativeArrayFromList(values, PrimitiveLayouts.BOOL) { it as Boolean }
+        is Byte -> allocNativeArrayFromList(values, PrimitiveLayouts.I8) { it as Byte }
+        is UByte -> allocNativeArrayFromList(values, PrimitiveLayouts.U8) { it as UByte }
+        is Short -> allocNativeArrayFromList(values, PrimitiveLayouts.I16) { it as Short }
+        is UShort -> allocNativeArrayFromList(values, PrimitiveLayouts.U16) { it as UShort }
+        is Int -> allocNativeArrayFromList(values, PrimitiveLayouts.I32) { it as Int }
+        is UInt -> allocNativeArrayFromList(values, PrimitiveLayouts.U32) { it as UInt }
+        is Long -> allocNativeArrayFromList(values, PrimitiveLayouts.I64) { it as Long }
+        is ULong -> allocNativeArrayFromList(values, PrimitiveLayouts.U64) { it as ULong }
+        is Float -> allocNativeArrayFromList(values, PrimitiveLayouts.F32) { it as Float }
+        is Double -> allocNativeArrayFromList(values, PrimitiveLayouts.F64) { it as Double }
+        is Char -> allocNativeArrayFromList(values, PrimitiveLayouts.CHAR) { it as Char }
+        is F16 -> allocNativeArrayFromList(values, PrimitiveLayouts.F16_LAYOUT) { it as F16 }
+        is F128 -> allocNativeArrayFromList(values, PrimitiveLayouts.F128_LAYOUT) { it as F128 }
+        is U128 -> allocNativeArrayFromList(
+            values,
+            PrimitiveLayouts.u128Layout({ hi, lo -> U128(hi, lo) }, { it.high }, { it.low }),
+        ) { it as U128 }
+        is I128 -> allocNativeArrayFromList(
+            values,
+            PrimitiveLayouts.i128Layout({ hi, lo -> I128(hi, lo) }, { it.high }, { it.low }),
+        ) { it as I128 }
+        is ConstPtr -> allocNativeArrayFromList(values, PrimitiveLayouts.constPtrLayout()) { it as ConstPtr }
+        is MutPtr -> allocNativeArrayFromList(values, PrimitiveLayouts.mutPtrLayout()) { it as MutPtr }
+        is RustMutableReference<*> -> {
+            val layout = PrimitiveLayouts.mutPtrLayout()
+            allocNativeArrayFromList(values, layout) { (it as RustMutableReference<*>).pointer }
+        }
+        else -> {
+            val elemName = values[0]?.let { it::class.simpleName } ?: "null"
+            throw UnsupportedOperationException("Cannot convert List<$elemName> to raw native pointer")
+        }
+    }
+}
+
+@OptIn(ExperimentalUnsignedTypes::class)
 public fun mutPtrFromRustCast(value: Any?): MutPtr =
     when (value) {
         is ConstPtr -> MutPtr(value.rawAddress, value.rawMeta)
         is MutPtr -> MutPtr(value.rawAddress, value.rawMeta)
+        is LinearSliceView<*> -> MutPtr(value.pointer.rawAddress, value.size.toLong())
+        is LinearMutSliceView<*> -> MutPtr(value.pointer.rawAddress, value.size.toLong())
         is RustMutableReference<*> -> MutPtr(value.pointer.rawAddress, value.pointer.rawMeta)
         is AddressableLocal<*> -> MutPtr(value.rawAddress)
         is AddressableArrayLocal<*> -> MutPtr(value.rawAddress, value.length.toLong())
-        else -> {
-            val addr = kmAlloc(8L, 8L)
-            val handleId = ManagedSlotRegistry.store(value)
-            kmStoreU64(addr, handleId.toULong())
-            val meta = if (value is Collection<*>) value.size.toLong() else 0L
-            MutPtr(addr, meta)
+        is BooleanArray -> AddressableArrayLocal.fromBooleanArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is ByteArray -> AddressableArrayLocal.fromByteArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is UByteArray -> AddressableArrayLocal.fromUByteArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is ShortArray -> AddressableArrayLocal.fromShortArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is UShortArray -> AddressableArrayLocal.fromUShortArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is IntArray -> AddressableArrayLocal.fromIntArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is UIntArray -> AddressableArrayLocal.fromUIntArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is LongArray -> AddressableArrayLocal.fromLongArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is ULongArray -> AddressableArrayLocal.fromULongArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is FloatArray -> AddressableArrayLocal.fromFloatArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is DoubleArray -> AddressableArrayLocal.fromDoubleArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        is String -> value.encodeToByteArray().let { bytes ->
+            AddressableArrayLocal.fromByteArray(bytes).let { MutPtr(it.rawAddress, it.length.toLong()) }
         }
+        is List<*> -> nativePtrFromList(value)
+        else -> throw UnsupportedOperationException(
+            "Cannot convert ${value?.let { it::class.simpleName } ?: "null"} to raw native pointer",
+        )
     }
 
 public fun constPtrFromRustCast(value: Any?): ConstPtr {
@@ -1355,13 +1833,26 @@ public fun <Src, Dst> transmuteWithLayouts(
     return out
 }
 
+public fun <Src, Dst> transmute(
+    value: Src,
+    srcLayout: TypeLayout<Src> = UnresolvedTypeLayout(),
+    dstLayout: TypeLayout<Dst> = UnresolvedTypeLayout(),
+): Dst = transmuteWithLayouts(value, srcLayout, dstLayout)
+
+public fun <Src, Dst> transmuteUnchecked(
+    value: Src,
+    srcLayout: TypeLayout<Src> = UnresolvedTypeLayout(),
+    dstLayout: TypeLayout<Dst> = UnresolvedTypeLayout(),
+): Dst = transmuteWithLayouts(value, srcLayout, dstLayout)
+
 public fun <T> copyMemoryValues(
     src: ConstPtr,
     dst: MutPtr,
     count: Long,
     layout: TypeLayout<T>,
 ) {
-    kmCopyNonoverlapping(dst.rawAddress, src.rawAddress, count * layout.sizeBytes)
+    val bytes = count * layout.sizeBytes
+    kmCopyNonoverlapping(dst.rawAddress, src.rawAddress, bytes)
 }
 
 public fun <T> copyOverlappingMemoryValues(
@@ -1370,7 +1861,8 @@ public fun <T> copyOverlappingMemoryValues(
     count: Long,
     layout: TypeLayout<T>,
 ) {
-    kmCopy(dst.rawAddress, src.rawAddress, count * layout.sizeBytes)
+    val bytes = count * layout.sizeBytes
+    kmCopy(dst.rawAddress, src.rawAddress, bytes)
 }
 
 public fun <T> atomicLoadWithLayout(
@@ -1513,5 +2005,936 @@ public fun <T, U> atomicRmwWithLayout(
         4L -> dstLayout.fromBitsU64(kmAtomicRmwU32(addr, opBits.toUInt(), op, ord).toULong())
         8L -> dstLayout.fromBitsU64(kmAtomicRmwU64(addr, opBits, op, ord))
         else -> error("Unsupported atomic rmw width: " + dstLayout.sizeBytes)
+    }
+}
+
+private fun <T> layoutRead128Pair(
+    layout: TypeLayout<T>,
+    value: T,
+): Pair<ULong, ULong> {
+    val buf = ByteArray(16)
+    layout.writeBytes(buf, 0, value)
+    return Pair(kmBytesLoadU64Le(buf, 0), kmBytesLoadU64Le(buf, 8))
+}
+
+private fun <T> layoutFrom128Pair(
+    layout: TypeLayout<T>,
+    lo: ULong,
+    hi: ULong,
+): T {
+    val buf = ByteArray(16)
+    kmBytesStoreU64Le(buf, 0, lo)
+    kmBytesStoreU64Le(buf, 8, hi)
+    return layout.readBytes(buf, 0)
+}
+
+                public fun <T> ctpopWithLayout(
+    x: T,
+    layout: TypeLayout<T>,
+): UInt =
+    when (layout.sizeBytes) {
+        1L -> kmCtpopU8(layout.toBitsU64(x).toUByte())
+        2L -> kmCtpopU16(layout.toBitsU64(x).toUShort())
+        4L -> kmCtpopU32(layout.toBitsU64(x).toUInt())
+        8L -> kmCtpopU64(layout.toBitsU64(x))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            kmCtpopU128(lo, hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for ctpopWithLayout")
+    }
+
+                    public fun <T> ctlzWithLayout(
+    x: T,
+    layout: TypeLayout<T>,
+): UInt =
+    when (layout.sizeBytes) {
+        1L -> kmCtlzU8(layout.toBitsU64(x).toUByte())
+        2L -> kmCtlzU16(layout.toBitsU64(x).toUShort())
+        4L -> kmCtlzU32(layout.toBitsU64(x).toUInt())
+        8L -> kmCtlzU64(layout.toBitsU64(x))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            kmCtlzU128(lo, hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for ctlzWithLayout")
+    }
+
+                    public fun <T> cttzWithLayout(
+    x: T,
+    layout: TypeLayout<T>,
+): UInt =
+    when (layout.sizeBytes) {
+        1L -> kmCttzU8(layout.toBitsU64(x).toUByte())
+        2L -> kmCttzU16(layout.toBitsU64(x).toUShort())
+        4L -> kmCttzU32(layout.toBitsU64(x).toUInt())
+        8L -> kmCttzU64(layout.toBitsU64(x))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            kmCttzU128(lo, hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for cttzWithLayout")
+    }
+
+                    public fun <T> bswapWithLayout(
+    x: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> x
+        2L -> layout.fromBitsU64(kmBswapU16(layout.toBitsU64(x).toUShort()).toULong())
+        4L -> layout.fromBitsU64(kmBswapU32(layout.toBitsU64(x).toUInt()).toULong())
+        8L -> layout.fromBitsU64(kmBswapU64(layout.toBitsU64(x)))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            val out = kmBswapU128(lo, hi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for bswapWithLayout")
+    }
+
+public fun <T> bitreverseWithLayout(
+    x: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64(kmBitreverseU8(layout.toBitsU64(x).toUByte()).toULong())
+        2L -> layout.fromBitsU64(kmBitreverseU16(layout.toBitsU64(x).toUShort()).toULong())
+        4L -> layout.fromBitsU64(kmBitreverseU32(layout.toBitsU64(x).toUInt()).toULong())
+        8L -> layout.fromBitsU64(kmBitreverseU64(layout.toBitsU64(x)))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            val out = kmBitreverseU128(lo, hi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for bitreverseWithLayout")
+    }
+public fun <T> rotateLeftWithLayout(
+    x: T,
+    shift: UInt,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64(kmRotateLeftU8(layout.toBitsU64(x).toUByte(), shift).toULong())
+        2L -> layout.fromBitsU64(kmRotateLeftU16(layout.toBitsU64(x).toUShort(), shift).toULong())
+        4L -> layout.fromBitsU64(kmRotateLeftU32(layout.toBitsU64(x).toUInt(), shift).toULong())
+        8L -> layout.fromBitsU64(kmRotateLeftU64(layout.toBitsU64(x), shift))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            val out = kmRotateLeftU128(lo, hi, shift)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for rotateLeftWithLayout")
+    }
+
+                    public fun <T> rotateRightWithLayout(
+    x: T,
+    shift: UInt,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64(kmRotateRightU8(layout.toBitsU64(x).toUByte(), shift).toULong())
+        2L -> layout.fromBitsU64(kmRotateRightU16(layout.toBitsU64(x).toUShort(), shift).toULong())
+        4L -> layout.fromBitsU64(kmRotateRightU32(layout.toBitsU64(x).toUInt(), shift).toULong())
+        8L -> layout.fromBitsU64(kmRotateRightU64(layout.toBitsU64(x), shift))
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            val out = kmRotateRightU128(lo, hi, shift)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for rotateRightWithLayout")
+    }
+
+                    public fun <T> wrappingAddWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64((layout.toBitsU64(a) + layout.toBitsU64(b)) and 0xFFuL)
+        2L -> layout.fromBitsU64((layout.toBitsU64(a) + layout.toBitsU64(b)) and 0xFFFFuL)
+        4L -> layout.fromBitsU64((layout.toBitsU64(a) + layout.toBitsU64(b)) and 0xFFFFFFFFuL)
+        8L -> layout.fromBitsU64(layout.toBitsU64(a) + layout.toBitsU64(b))
+        16L -> {
+            val (aLo, aHi) = layoutRead128Pair(layout, a)
+            val (bLo, bHi) = layoutRead128Pair(layout, b)
+            val out = kmU128Add(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for wrappingAddWithLayout")
+    }
+
+                    public fun <T> wrappingSubWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64((layout.toBitsU64(a) - layout.toBitsU64(b)) and 0xFFuL)
+        2L -> layout.fromBitsU64((layout.toBitsU64(a) - layout.toBitsU64(b)) and 0xFFFFuL)
+        4L -> layout.fromBitsU64((layout.toBitsU64(a) - layout.toBitsU64(b)) and 0xFFFFFFFFuL)
+        8L -> layout.fromBitsU64(layout.toBitsU64(a) - layout.toBitsU64(b))
+        16L -> {
+            val (aLo, aHi) = layoutRead128Pair(layout, a)
+            val (bLo, bHi) = layoutRead128Pair(layout, b)
+            val out = kmU128Sub(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for wrappingSubWithLayout")
+    }
+
+                    public fun <T> wrappingMulWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64((layout.toBitsU64(a) * layout.toBitsU64(b)) and 0xFFuL)
+        2L -> layout.fromBitsU64((layout.toBitsU64(a) * layout.toBitsU64(b)) and 0xFFFFuL)
+        4L -> layout.fromBitsU64((layout.toBitsU64(a) * layout.toBitsU64(b)) and 0xFFFFFFFFuL)
+        8L -> layout.fromBitsU64(layout.toBitsU64(a) * layout.toBitsU64(b))
+        16L -> {
+            val (aLo, aHi) = layoutRead128Pair(layout, a)
+            val (bLo, bHi) = layoutRead128Pair(layout, b)
+            val out = kmU128Mul(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for wrappingMulWithLayout")
+    }
+
+                    public fun <T> saturatingAddWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        return if (layout.isSigned) {
+            val out = kmSaturatingAddI128(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        } else {
+            val out = kmSaturatingAddU128(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    val res =
+        when (layout.sizeBytes) {
+            1L -> if (layout.isSigned) kmSaturatingAddI8(aBits.toByte(), bBits.toByte()).toUByte().toULong() else kmSaturatingAddU8(aBits.toUByte(), bBits.toUByte()).toULong()
+            2L -> if (layout.isSigned) kmSaturatingAddI16(aBits.toShort(), bBits.toShort()).toUShort().toULong() else kmSaturatingAddU16(aBits.toUShort(), bBits.toUShort()).toULong()
+            4L -> if (layout.isSigned) kmSaturatingAddI32(aBits.toInt(), bBits.toInt()).toUInt().toULong() else kmSaturatingAddU32(aBits.toUInt(), bBits.toUInt()).toULong()
+            8L -> if (layout.isSigned) kmSaturatingAddI64(aBits.toLong(), bBits.toLong()).toULong() else kmSaturatingAddU64(aBits, bBits)
+            else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for saturatingAddWithLayout")
+        }
+    return layout.fromBitsU64(res)
+}
+
+                    public fun <T> saturatingSubWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        return if (layout.isSigned) {
+            val out = kmSaturatingSubI128(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        } else {
+            val out = kmSaturatingSubU128(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    val res =
+        when (layout.sizeBytes) {
+            1L -> if (layout.isSigned) kmSaturatingSubI8(aBits.toByte(), bBits.toByte()).toUByte().toULong() else kmSaturatingSubU8(aBits.toUByte(), bBits.toUByte()).toULong()
+            2L -> if (layout.isSigned) kmSaturatingSubI16(aBits.toShort(), bBits.toShort()).toUShort().toULong() else kmSaturatingSubU16(aBits.toUShort(), bBits.toUShort()).toULong()
+            4L -> if (layout.isSigned) kmSaturatingSubI32(aBits.toInt(), bBits.toInt()).toUInt().toULong() else kmSaturatingSubU32(aBits.toUInt(), bBits.toUInt()).toULong()
+            8L -> if (layout.isSigned) kmSaturatingSubI64(aBits.toLong(), bBits.toLong()).toULong() else kmSaturatingSubU64(aBits, bBits)
+            else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for saturatingSubWithLayout")
+        }
+    return layout.fromBitsU64(res)
+}
+
+                    public fun <T> addWithOverflowWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): Pair<T, Boolean> {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        return if (layout.isSigned) {
+            val out = kmAddWithOverflowI128(aLo, aHi, bLo, bHi)
+            Pair(layoutFrom128Pair(layout, out.lo, out.hi), out.overflowed)
+        } else {
+            val out = kmAddWithOverflowU128(aLo, aHi, bLo, bHi)
+            Pair(layoutFrom128Pair(layout, out.lo, out.hi), out.overflowed)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    return when (layout.sizeBytes) {
+        1L ->
+            if (layout.isSigned) {
+                val out = kmAddWithOverflowI8(aBits.toByte(), bBits.toByte())
+                Pair(layout.fromBitsU64(out.value.toUByte().toULong()), out.overflowed)
+            } else {
+                val out = kmAddWithOverflowU8(aBits.toUByte(), bBits.toUByte())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        2L ->
+            if (layout.isSigned) {
+                val out = kmAddWithOverflowI16(aBits.toShort(), bBits.toShort())
+                Pair(layout.fromBitsU64(out.value.toUShort().toULong()), out.overflowed)
+            } else {
+                val out = kmAddWithOverflowU16(aBits.toUShort(), bBits.toUShort())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        4L ->
+            if (layout.isSigned) {
+                val out = kmAddWithOverflowI32(aBits.toInt(), bBits.toInt())
+                Pair(layout.fromBitsU64(out.value.toUInt().toULong()), out.overflowed)
+            } else {
+                val out = kmAddWithOverflowU32(aBits.toUInt(), bBits.toUInt())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        8L ->
+            if (layout.isSigned) {
+                val out = kmAddWithOverflowI64(aBits.toLong(), bBits.toLong())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            } else {
+                val out = kmAddWithOverflowU64(aBits, bBits)
+                Pair(layout.fromBitsU64(out.value), out.overflowed)
+            }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for addWithOverflowWithLayout")
+    }
+}
+
+                    public fun <T> subWithOverflowWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): Pair<T, Boolean> {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        return if (layout.isSigned) {
+            val out = kmSubWithOverflowI128(aLo, aHi, bLo, bHi)
+            Pair(layoutFrom128Pair(layout, out.lo, out.hi), out.overflowed)
+        } else {
+            val out = kmSubWithOverflowU128(aLo, aHi, bLo, bHi)
+            Pair(layoutFrom128Pair(layout, out.lo, out.hi), out.overflowed)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    return when (layout.sizeBytes) {
+        1L ->
+            if (layout.isSigned) {
+                val out = kmSubWithOverflowI8(aBits.toByte(), bBits.toByte())
+                Pair(layout.fromBitsU64(out.value.toUByte().toULong()), out.overflowed)
+            } else {
+                val out = kmSubWithOverflowU8(aBits.toUByte(), bBits.toUByte())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        2L ->
+            if (layout.isSigned) {
+                val out = kmSubWithOverflowI16(aBits.toShort(), bBits.toShort())
+                Pair(layout.fromBitsU64(out.value.toUShort().toULong()), out.overflowed)
+            } else {
+                val out = kmSubWithOverflowU16(aBits.toUShort(), bBits.toUShort())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        4L ->
+            if (layout.isSigned) {
+                val out = kmSubWithOverflowI32(aBits.toInt(), bBits.toInt())
+                Pair(layout.fromBitsU64(out.value.toUInt().toULong()), out.overflowed)
+            } else {
+                val out = kmSubWithOverflowU32(aBits.toUInt(), bBits.toUInt())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        8L ->
+            if (layout.isSigned) {
+                val out = kmSubWithOverflowI64(aBits.toLong(), bBits.toLong())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            } else {
+                val out = kmSubWithOverflowU64(aBits, bBits)
+                Pair(layout.fromBitsU64(out.value), out.overflowed)
+            }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for subWithOverflowWithLayout")
+    }
+}
+
+                    public fun <T> mulWithOverflowWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): Pair<T, Boolean> {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        return if (layout.isSigned) {
+            val out = kmMulWithOverflowI128(aLo, aHi, bLo, bHi)
+            Pair(layoutFrom128Pair(layout, out.lo, out.hi), out.overflowed)
+        } else {
+            val out = kmMulWithOverflowU128(aLo, aHi, bLo, bHi)
+            Pair(layoutFrom128Pair(layout, out.lo, out.hi), out.overflowed)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    return when (layout.sizeBytes) {
+        1L ->
+            if (layout.isSigned) {
+                val out = kmMulWithOverflowI8(aBits.toByte(), bBits.toByte())
+                Pair(layout.fromBitsU64(out.value.toUByte().toULong()), out.overflowed)
+            } else {
+                val out = kmMulWithOverflowU8(aBits.toUByte(), bBits.toUByte())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        2L ->
+            if (layout.isSigned) {
+                val out = kmMulWithOverflowI16(aBits.toShort(), bBits.toShort())
+                Pair(layout.fromBitsU64(out.value.toUShort().toULong()), out.overflowed)
+            } else {
+                val out = kmMulWithOverflowU16(aBits.toUShort(), bBits.toUShort())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        4L ->
+            if (layout.isSigned) {
+                val out = kmMulWithOverflowI32(aBits.toInt(), bBits.toInt())
+                Pair(layout.fromBitsU64(out.value.toUInt().toULong()), out.overflowed)
+            } else {
+                val out = kmMulWithOverflowU32(aBits.toUInt(), bBits.toUInt())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            }
+        8L ->
+            if (layout.isSigned) {
+                val out = kmMulWithOverflowI64(aBits.toLong(), bBits.toLong())
+                Pair(layout.fromBitsU64(out.value.toULong()), out.overflowed)
+            } else {
+                val out = kmMulWithOverflowU64(aBits, bBits)
+                Pair(layout.fromBitsU64(out.value), out.overflowed)
+            }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for mulWithOverflowWithLayout")
+    }
+}
+
+                    public fun <T> uncheckedDivWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        if (bLo == 0uL && bHi == 0uL) throw ArithmeticException("/ by zero")
+        return if (layout.isSigned) {
+            val out = kmI128DivRem(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.qLo, out.qHi)
+        } else {
+            val out = kmU128DivRem(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.qLo, out.qHi)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    val res =
+        when (layout.sizeBytes) {
+            1L -> if (layout.isSigned) (aBits.toByte().toInt() / bBits.toByte().toInt()).toUByte().toULong() else (aBits.toUByte() / bBits.toUByte()).toULong()
+            2L -> if (layout.isSigned) (aBits.toShort().toInt() / bBits.toShort().toInt()).toUShort().toULong() else (aBits.toUShort() / bBits.toUShort()).toULong()
+            4L -> if (layout.isSigned) (aBits.toInt() / bBits.toInt()).toUInt().toULong() else (aBits.toUInt() / bBits.toUInt()).toULong()
+            8L -> if (layout.isSigned) (aBits.toLong() / bBits.toLong()).toULong() else aBits / bBits
+            else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for uncheckedDivWithLayout")
+        }
+    return layout.fromBitsU64(res)
+}
+
+                    public fun <T> uncheckedRemWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T {
+    if (layout.sizeBytes == 16L) {
+        val (aLo, aHi) = layoutRead128Pair(layout, a)
+        val (bLo, bHi) = layoutRead128Pair(layout, b)
+        if (bLo == 0uL && bHi == 0uL) throw ArithmeticException("/ by zero")
+        return if (layout.isSigned) {
+            val out = kmI128DivRem(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.rLo, out.rHi)
+        } else {
+            val out = kmU128DivRem(aLo, aHi, bLo, bHi)
+            layoutFrom128Pair(layout, out.rLo, out.rHi)
+        }
+    }
+    val aBits = layout.toBitsU64(a)
+    val bBits = layout.toBitsU64(b)
+    val res =
+        when (layout.sizeBytes) {
+            1L -> if (layout.isSigned) (aBits.toByte().toInt() % bBits.toByte().toInt()).toUByte().toULong() else (aBits.toUByte() % bBits.toUByte()).toULong()
+            2L -> if (layout.isSigned) (aBits.toShort().toInt() % bBits.toShort().toInt()).toUShort().toULong() else (aBits.toUShort() % bBits.toUShort()).toULong()
+            4L -> if (layout.isSigned) (aBits.toInt() % bBits.toInt()).toUInt().toULong() else (aBits.toUInt() % bBits.toUInt()).toULong()
+            8L -> if (layout.isSigned) (aBits.toLong() % bBits.toLong()).toULong() else aBits % bBits
+            else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for uncheckedRemWithLayout")
+        }
+    return layout.fromBitsU64(res)
+}
+
+                    public fun <T> exactDivWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T = uncheckedDivWithLayout(a, b, layout)
+
+                public fun <T> uncheckedShlWithLayout(
+    x: T,
+    shift: UInt,
+    layout: TypeLayout<T>,
+): T {
+    val s = shift.toInt()
+    return when (layout.sizeBytes) {
+        1L -> layout.fromBitsU64(((layout.toBitsU64(x).toUInt() shl s) and 0xFFu).toULong())
+        2L -> layout.fromBitsU64(((layout.toBitsU64(x).toUInt() shl s) and 0xFFFFu).toULong())
+        4L -> layout.fromBitsU64((layout.toBitsU64(x).toUInt() shl s).toULong())
+        8L -> layout.fromBitsU64(layout.toBitsU64(x) shl s)
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            val out = kmU128Shl(lo, hi, shift)
+            layoutFrom128Pair(layout, out.lo, out.hi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for uncheckedShlWithLayout")
+    }
+}
+
+public fun <T, U> uncheckedShlWithLayout(
+    x: T,
+    shift: U,
+    layout: TypeLayout<T>,
+    shiftLayout: TypeLayout<U>,
+): T {
+    val shiftAmt =
+        if (shiftLayout.sizeBytes == 16L) {
+            layoutRead128Pair(shiftLayout, shift).first.toUInt()
+        } else {
+            shiftLayout.toBitsU64(shift).toUInt()
+        }
+    return uncheckedShlWithLayout(x, shiftAmt, layout)
+}
+
+public fun <T> uncheckedShrWithLayout(
+    x: T,
+    shift: UInt,
+    layout: TypeLayout<T>,
+): T {
+    val s = shift.toInt()
+    return when (layout.sizeBytes) {
+        1L -> {
+            val bits = layout.toBitsU64(x)
+            val res =
+                if (layout.isSigned) {
+                    (bits.toByte().toInt() shr s).toUByte().toULong()
+                } else {
+                    ((bits.toUInt() and 0xFFu) shr s).toULong()
+                }
+            layout.fromBitsU64(res)
+        }
+        2L -> {
+            val bits = layout.toBitsU64(x)
+            val res =
+                if (layout.isSigned) {
+                    (bits.toShort().toInt() shr s).toUShort().toULong()
+                } else {
+                    ((bits.toUInt() and 0xFFFFu) shr s).toULong()
+                }
+            layout.fromBitsU64(res)
+        }
+        4L -> {
+            val bits = layout.toBitsU64(x)
+            val res =
+                if (layout.isSigned) {
+                    (bits.toInt() shr s).toUInt().toULong()
+                } else {
+                    (bits.toUInt() shr s).toULong()
+                }
+            layout.fromBitsU64(res)
+        }
+        8L -> {
+            val bits = layout.toBitsU64(x)
+            val res =
+                if (layout.isSigned) {
+                    (bits.toLong() shr s).toULong()
+                } else {
+                    bits shr s
+                }
+            layout.fromBitsU64(res)
+        }
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            if (layout.isSigned) {
+                val out = kmI128Shr(lo, hi, shift)
+                layoutFrom128Pair(layout, out.lo, out.hi)
+            } else {
+                val out = kmU128Shr(lo, hi, shift)
+                layoutFrom128Pair(layout, out.lo, out.hi)
+            }
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for uncheckedShrWithLayout")
+    }
+}
+
+public fun <T, U> uncheckedShrWithLayout(
+    x: T,
+    shift: U,
+    layout: TypeLayout<T>,
+    shiftLayout: TypeLayout<U>,
+): T {
+    val shiftAmt =
+        if (shiftLayout.sizeBytes == 16L) {
+            layoutRead128Pair(shiftLayout, shift).first.toUInt()
+        } else {
+            shiftLayout.toBitsU64(shift).toUInt()
+        }
+    return uncheckedShrWithLayout(x, shiftAmt, layout)
+}
+public fun <T> disjointBitorWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        1L, 2L, 4L, 8L -> layout.fromBitsU64(layout.toBitsU64(a) or layout.toBitsU64(b))
+        16L -> {
+            val (aLo, aHi) = layoutRead128Pair(layout, a)
+            val (bLo, bHi) = layoutRead128Pair(layout, b)
+            layoutFrom128Pair(layout, aLo or bLo, aHi or bHi)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for disjointBitorWithLayout")
+    }
+
+public fun <T> threeWayCompareWithLayout(
+    lhs: T,
+    rhs: T,
+    layout: TypeLayout<T>,
+): Ordering {
+    val cmp =
+        when (layout.sizeBytes) {
+            1L -> {
+                val lBits = layout.toBitsU64(lhs)
+                val rBits = layout.toBitsU64(rhs)
+                if (layout.isSigned) {
+                    lBits.toByte().compareTo(rBits.toByte())
+                } else {
+                    lBits.toUByte().compareTo(rBits.toUByte())
+                }
+            }
+            2L -> {
+                val lBits = layout.toBitsU64(lhs)
+                val rBits = layout.toBitsU64(rhs)
+                if (layout.isSigned) {
+                    lBits.toShort().compareTo(rBits.toShort())
+                } else {
+                    lBits.toUShort().compareTo(rBits.toUShort())
+                }
+            }
+            4L -> {
+                val lBits = layout.toBitsU64(lhs)
+                val rBits = layout.toBitsU64(rhs)
+                if (layout.isSigned) {
+                    lBits.toInt().compareTo(rBits.toInt())
+                } else {
+                    lBits.toUInt().compareTo(rBits.toUInt())
+                }
+            }
+            8L -> {
+                val lBits = layout.toBitsU64(lhs)
+                val rBits = layout.toBitsU64(rhs)
+                if (layout.isSigned) {
+                    lBits.toLong().compareTo(rBits.toLong())
+                } else {
+                    lBits.compareTo(rBits)
+                }
+            }
+            16L -> {
+                val (lhsLo, lhsHi) = layoutRead128Pair(layout, lhs)
+                val (rhsLo, rhsHi) = layoutRead128Pair(layout, rhs)
+                val hiCmp =
+                    if (layout.isSigned) {
+                        lhsHi.toLong().compareTo(rhsHi.toLong())
+                    } else {
+                        lhsHi.compareTo(rhsHi)
+                    }
+                if (hiCmp != 0) hiCmp else lhsLo.compareTo(rhsLo)
+            }
+            else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for threeWayCompareWithLayout")
+        }
+    return when {
+        cmp < 0 -> Ordering.Less
+        cmp > 0 -> Ordering.Greater
+        else -> Ordering.Equal
+    }
+}
+
+public fun <T> rawEqWithLayout(
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): Boolean {
+    val sz = layout.sizeBytes.toInt()
+    if (sz <= 0) return true
+    val bufA = ByteArray(sz)
+    val bufB = ByteArray(sz)
+    layout.writeBytes(bufA, 0, a)
+    layout.writeBytes(bufB, 0, b)
+    return bufA.contentEquals(bufB)
+}
+private fun evalFloatUnary32(
+    op: String,
+    v: Float,
+): Float =
+    when (op) {
+        "sqrt" -> kmSqrtf32(v)
+        "sin" -> kmSinf32(v)
+        "cos" -> kmCosf32(v)
+        "exp" -> kmExpf32(v)
+        "exp2" -> kmExp2f32(v)
+        "log" -> kmLogf32(v)
+        "log2" -> kmLog2f32(v)
+        "log10" -> kmLog10f32(v)
+        "trunc" -> kmTruncf32(v)
+        "round" -> kmRoundf32(v)
+        "round_ties_even" -> kmRoundTiesEvenf32(v)
+        "ceil" -> kmCeilf32(v)
+        "floor" -> kmFloorf32(v)
+        "fabs" -> kmFabsf32(v)
+        else -> error("Unsupported float unary intrinsic '$op' for f32")
+    }
+
+private fun evalFloatUnary64(
+    op: String,
+    v: Double,
+): Double =
+    when (op) {
+        "sqrt" -> kmSqrtf64(v)
+        "sin" -> kmSinf64(v)
+        "cos" -> kmCosf64(v)
+        "exp" -> kmExpf64(v)
+        "exp2" -> kmExp2f64(v)
+        "log" -> kmLogf64(v)
+        "log2" -> kmLog2f64(v)
+        "log10" -> kmLog10f64(v)
+        "trunc" -> kmTruncf64(v)
+        "round" -> kmRoundf64(v)
+        "round_ties_even" -> kmRoundTiesEvenf64(v)
+        "ceil" -> kmCeilf64(v)
+        "floor" -> kmFloorf64(v)
+        "fabs" -> kmFabsf64(v)
+        else -> error("Unsupported float unary intrinsic '$op' for f64")
+    }
+
+public fun <T> floatUnaryWithLayout(
+    op: String,
+    x: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        2L -> layout.fromBitsU64(F16.fromFloat(evalFloatUnary32(op, F16(layout.toBitsU64(x).toUShort()).toFloat())).bits.toULong())
+        4L -> layout.fromBitsU64(evalFloatUnary32(op, Float.fromBits(layout.toBitsU64(x).toUInt().toInt())).toRawBits().toUInt().toULong())
+        8L -> layout.fromBitsU64(evalFloatUnary64(op, Double.fromBits(layout.toBitsU64(x).toLong())).toRawBits().toULong())
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, x)
+            val f128 = F128.fromDouble(evalFloatUnary64(op, F128(hi, lo).toDouble()))
+            layoutFrom128Pair(layout, f128.low, f128.high)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for floatUnaryWithLayout")
+    }
+
+private fun evalFloatBinary32(
+    op: String,
+    a: Float,
+    b: Float,
+): Float =
+    when (op) {
+        "powf" -> kmPowf32(a, b)
+        "copysign" -> kmCopysignf32(a, b)
+        "minnum" -> kmMinnumf32(a, b)
+        "maxnum" -> kmMaxnumf32(a, b)
+        "minimum" ->
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0f && b == 0.0f && (a.toRawBits() < 0 || b.toRawBits() < 0)) -0.0f
+            else kmMinnumf32(a, b)
+        "maximum" ->
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0f && b == 0.0f && (a.toRawBits() >= 0 || b.toRawBits() >= 0)) +0.0f
+            else kmMaxnumf32(a, b)
+        "fadd" -> a + b
+        "fsub" -> a - b
+        "fmul" -> a * b
+        "fdiv" -> a / b
+        "frem" -> a % b
+        else -> error("Unsupported float binary intrinsic '$op' for f32")
+    }
+
+private fun evalFloatBinary64(
+    op: String,
+    a: Double,
+    b: Double,
+): Double =
+    when (op) {
+        "powf" -> kmPowf64(a, b)
+        "copysign" -> kmCopysignf64(a, b)
+        "minnum" -> kmMinnumf64(a, b)
+        "maxnum" -> kmMaxnumf64(a, b)
+        "minimum" ->
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0 && b == 0.0 && (a.toRawBits() < 0L || b.toRawBits() < 0L)) -0.0
+            else kmMinnumf64(a, b)
+        "maximum" ->
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0 && b == 0.0 && (a.toRawBits() >= 0L || b.toRawBits() >= 0L)) +0.0
+            else kmMaxnumf64(a, b)
+        "fadd" -> a + b
+        "fsub" -> a - b
+        "fmul" -> a * b
+        "fdiv" -> a / b
+        "frem" -> a % b
+        else -> error("Unsupported float binary intrinsic '$op' for f64")
+    }
+
+public fun <T> floatBinaryWithLayout(
+    op: String,
+    a: T,
+    b: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        2L -> {
+            val fa = F16(layout.toBitsU64(a).toUShort()).toFloat()
+            val fb = F16(layout.toBitsU64(b).toUShort()).toFloat()
+            layout.fromBitsU64(F16.fromFloat(evalFloatBinary32(op, fa, fb)).bits.toULong())
+        }
+        4L -> {
+            val fa = Float.fromBits(layout.toBitsU64(a).toUInt().toInt())
+            val fb = Float.fromBits(layout.toBitsU64(b).toUInt().toInt())
+            layout.fromBitsU64(evalFloatBinary32(op, fa, fb).toRawBits().toUInt().toULong())
+        }
+        8L -> {
+            val da = Double.fromBits(layout.toBitsU64(a).toLong())
+            val db = Double.fromBits(layout.toBitsU64(b).toLong())
+            layout.fromBitsU64(evalFloatBinary64(op, da, db).toRawBits().toULong())
+        }
+        16L -> {
+            val (aLo, aHi) = layoutRead128Pair(layout, a)
+            val (bLo, bHi) = layoutRead128Pair(layout, b)
+            val f128 = F128.fromDouble(evalFloatBinary64(op, F128(aHi, aLo).toDouble(), F128(bHi, bLo).toDouble()))
+            layoutFrom128Pair(layout, f128.low, f128.high)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for floatBinaryWithLayout")
+    }
+
+public fun <T> floatPowiWithLayout(
+    a: T,
+    x: Int,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        2L -> layout.fromBitsU64(F16.fromFloat(kmPowif32(F16(layout.toBitsU64(a).toUShort()).toFloat(), x)).bits.toULong())
+        4L -> layout.fromBitsU64(kmPowif32(Float.fromBits(layout.toBitsU64(a).toUInt().toInt()), x).toRawBits().toUInt().toULong())
+        8L -> layout.fromBitsU64(kmPowif64(Double.fromBits(layout.toBitsU64(a).toLong()), x).toRawBits().toULong())
+        16L -> {
+            val (lo, hi) = layoutRead128Pair(layout, a)
+            val f128 = F128.fromDouble(kmPowif64(F128(hi, lo).toDouble(), x))
+            layoutFrom128Pair(layout, f128.low, f128.high)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for floatPowiWithLayout")
+    }
+
+public fun <T> floatFmaWithLayout(
+    a: T,
+    b: T,
+    c: T,
+    layout: TypeLayout<T>,
+): T =
+    when (layout.sizeBytes) {
+        2L -> {
+            val fa = F16(layout.toBitsU64(a).toUShort()).toFloat()
+            val fb = F16(layout.toBitsU64(b).toUShort()).toFloat()
+            val fc = F16(layout.toBitsU64(c).toUShort()).toFloat()
+            layout.fromBitsU64(F16.fromFloat(kmFmaf32(fa, fb, fc)).bits.toULong())
+        }
+        4L -> {
+            val fa = Float.fromBits(layout.toBitsU64(a).toUInt().toInt())
+            val fb = Float.fromBits(layout.toBitsU64(b).toUInt().toInt())
+            val fc = Float.fromBits(layout.toBitsU64(c).toUInt().toInt())
+            layout.fromBitsU64(kmFmaf32(fa, fb, fc).toRawBits().toUInt().toULong())
+        }
+        8L -> {
+            val da = Double.fromBits(layout.toBitsU64(a).toLong())
+            val db = Double.fromBits(layout.toBitsU64(b).toLong())
+            val dc = Double.fromBits(layout.toBitsU64(c).toLong())
+            layout.fromBitsU64(kmFmaf64(da, db, dc).toRawBits().toULong())
+        }
+        16L -> {
+            val (aLo, aHi) = layoutRead128Pair(layout, a)
+            val (bLo, bHi) = layoutRead128Pair(layout, b)
+            val (cLo, cHi) = layoutRead128Pair(layout, c)
+            val f128 = F128.fromDouble(kmFmaf64(F128(aHi, aLo).toDouble(), F128(bHi, bLo).toDouble(), F128(cHi, cLo).toDouble()))
+            layoutFrom128Pair(layout, f128.low, f128.high)
+        }
+        else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for floatFmaWithLayout")
+    }
+
+public fun <F, I> floatToIntUncheckedWithLayout(
+    value: F,
+    floatLayout: TypeLayout<F>,
+    intLayout: TypeLayout<I>,
+): I {
+    val isF32 = floatLayout.sizeBytes <= 4L
+    val f32 =
+        when (floatLayout.sizeBytes) {
+            2L -> F16(floatLayout.toBitsU64(value).toUShort()).toFloat()
+            4L -> Float.fromBits(floatLayout.toBitsU64(value).toUInt().toInt())
+            else -> 0.0f
+        }
+    val f64 =
+        when (floatLayout.sizeBytes) {
+            8L -> Double.fromBits(floatLayout.toBitsU64(value).toLong())
+            16L -> {
+                val (lo, hi) = layoutRead128Pair(floatLayout, value)
+                F128(hi, lo).toDouble()
+            }
+            else -> f32.toDouble()
+        }
+    return if (intLayout.sizeBytes == 16L) {
+        val isNeg = if (isF32) f32 < 0.0f else f64 < 0.0
+        val out =
+            if (isF32) {
+                kmFloatToU128Unchecked(if (intLayout.isSigned && isNeg) -f32 else f32)
+            } else {
+                kmDoubleToU128Unchecked(if (intLayout.isSigned && isNeg) -f64 else f64)
+            }
+        if (intLayout.isSigned && isNeg) {
+            val lo = 0uL - out.lo
+            val hi = 0uL - out.hi - (if (lo != 0uL) 1uL else 0uL)
+            layoutFrom128Pair(intLayout, lo, hi)
+        } else {
+            layoutFrom128Pair(intLayout, out.lo, out.hi)
+        }
+    } else {
+        val bits =
+            if (isF32) {
+                if (intLayout.isSigned && f32 < 0.0f) 0uL - kmFloatToU64Unchecked(-f32) else kmFloatToU64Unchecked(f32)
+            } else {
+                if (intLayout.isSigned && f64 < 0.0) 0uL - kmDoubleToU64Unchecked(-f64) else kmDoubleToU64Unchecked(f64)
+            }
+        intLayout.fromBitsU64(bits)
     }
 }

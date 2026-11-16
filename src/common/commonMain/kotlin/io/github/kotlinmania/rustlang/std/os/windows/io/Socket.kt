@@ -1,9 +1,10 @@
 // port-lint: source os/windows/io/socket.rs
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -79,34 +80,32 @@ public open class BorrowedSocket internal constructor(
      * object as the existing `BorrowedSocket` instance.
      */
     public open fun tryCloneToOwned(): Result<OwnedSocket, Error> {
-        val info = MaybeUninit.zeroed(ObjectSlotLayout<Result<OwnedSocket, Error>>()).assumeInit()
+        val info = MaybeUninit.zeroed(UnresolvedTypeLayout<Result<OwnedSocket, Error>>()).assumeInit()
         val result = C.WSADuplicateSocketW(((this.asRawSocket() as Any?) as C.Socket), C.GetCurrentProcessId(), info)
-        when (val tryResult = cvt(result)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = cvt(result)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
         val socket = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED or C.WSA_FLAG_NO_HANDLE_INHERIT)
         return if (socket != C.INVALID_SOCKET) {
-            Result.Ok(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = ObjectSlotLayout<NotAllOnes<RawSocket>>()))
+            Result.Ok<OwnedSocket, Error>(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>()))
         } else {
             val error = C.WSAGetLastError()
             if (error != C.WSAEPROTOTYPE && error != C.WSAEINVAL) {
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+                return Result.Err<OwnedSocket, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
             }
             val socket1 = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED)
             if (socket1 == C.INVALID_SOCKET) {
-                return Result.Err(lastError())
+                return Result.Err<OwnedSocket, Error>(lastError())
             }
             run {
-                val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = ObjectSlotLayout<NotAllOnes<RawSocket>>())
-                when (val tryResult = socket2.setNoInherit()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-                Result.Ok(socket2)
+                val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>())
+                when (val tryResult = socket2.setNoInherit()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OwnedSocket, Error>(tryResult.error) }
+                Result.Ok<OwnedSocket, Error>(socket2)
             }
         }
     }
 
     public override fun asRawSocket(): RawSocket = this.socket.asInner()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "BorrowedSocket").field("socket", this.socket).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "BorrowedSocket").field("socket", this.socket).finish()
 
     public override fun asSocket(): BorrowedSocket = this
 
@@ -144,13 +143,13 @@ public open class BorrowedSocket internal constructor(
  */
 public open class OwnedSocket internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<ValidRawSocket>,
+    public val fieldLayout: TypeLayout<ValidRawSocket> = UnresolvedTypeLayout(),
 ) : AsRawSocket, IntoRawSocket, FromRawSocket<OwnedSocket>, AsSocket {
     public var socket: ValidRawSocket
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(socket: ValidRawSocket, fieldLayout: TypeLayout<ValidRawSocket>) : this(allocateNativeCell(socket, fieldLayout), fieldLayout)
+    internal constructor(socket: ValidRawSocket, fieldLayout: TypeLayout<ValidRawSocket> = UnresolvedTypeLayout()) : this(allocateNativeCell(socket, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<OwnedSocket> = TransparentTypeLayout(fieldLayout, { ptr, layout -> OwnedSocket(ptr, layout) }, { it.socket })
 
@@ -173,9 +172,7 @@ public open class OwnedSocket internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OwnedSocket").field("socket", this.socket).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "OwnedSocket").field("socket", this.socket).finish()
 
     public override fun asSocket(): BorrowedSocket {
         // Safety: `OwnedSocket` and `BorrowedSocket` have the same validity
@@ -185,26 +182,26 @@ public open class OwnedSocket internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(socket: ValidRawSocket, fieldLayout: TypeLayout<ValidRawSocket>): OwnedSocket = OwnedSocket(socket, fieldLayout)
+        public operator fun invoke(socket: ValidRawSocket, fieldLayout: TypeLayout<ValidRawSocket> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket(socket, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ValidRawSocket>): OwnedSocket = OwnedSocket(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ValidRawSocket> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket(fieldStorage, fieldLayout)
 
-        public fun fromRawSocket(socket: RawSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>>): OwnedSocket = OwnedSocket(socket = ValidRawSocket.new(socket).expect("socket != -1"), fieldLayout = fieldLayout)
+        public fun fromRawSocket(socket: RawSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket(socket = ValidRawSocket.new(socket).expect("socket != -1"), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`TcpStream`](net.TcpStream)'s socket.
          */
-        public fun from(tcpStream: TcpStream, fieldLayout: TypeLayout<NotAllOnes<RawSocket>>): OwnedSocket = OwnedSocket.fromRawSocket(tcpStream.intoRawSocket(), fieldLayout = fieldLayout)
+        public fun from(tcpStream: TcpStream, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.fromRawSocket(tcpStream.intoRawSocket(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`TcpListener`](net.TcpListener)'s socket.
          */
-        public fun from(tcpListener: TcpListener, fieldLayout: TypeLayout<NotAllOnes<RawSocket>>): OwnedSocket = OwnedSocket.fromRawSocket(tcpListener.intoRawSocket(), fieldLayout = fieldLayout)
+        public fun from(tcpListener: TcpListener, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.fromRawSocket(tcpListener.intoRawSocket(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`UdpSocket`](net.UdpSocket)'s underlying socket.
          */
-        public fun from(udpSocket: UdpSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>>): OwnedSocket = OwnedSocket.fromRawSocket(udpSocket.intoRawSocket(), fieldLayout = fieldLayout)
+        public fun from(udpSocket: UdpSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.fromRawSocket(udpSocket.intoRawSocket(), fieldLayout = fieldLayout)
     }
 }
 
@@ -231,9 +228,9 @@ public interface AsSocket {
  * interface MyTrait : AsSocket
  * ```
  */
-public fun <T : AsSocket> Arc<T>.asSocket(): BorrowedSocket = this.asSocket()
+public fun <T : AsSocket> Arc<T, Global>.asSocket(): BorrowedSocket = this.asSocket()
 
-public fun <T : AsSocket> Rc.Rc<T>.asSocket(): BorrowedSocket = this.asSocket()
+public fun <T : AsSocket> Rc.Rc<T, Global>.asSocket(): BorrowedSocket = this.asSocket()
 
 public fun <T : AsSocket> Rc.UniqueRc<T>.asSocket(): BorrowedSocket = this.asSocket()
 

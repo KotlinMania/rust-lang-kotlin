@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.windows.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.WcharT
 import io.github.kotlinmania.rustlang.libc.windows.SizeT
+import io.github.kotlinmania.rustlang.libc.windows.WcharT
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun strcasecmp(s1: ConstPtr, s2: ConstPtr): CInt =

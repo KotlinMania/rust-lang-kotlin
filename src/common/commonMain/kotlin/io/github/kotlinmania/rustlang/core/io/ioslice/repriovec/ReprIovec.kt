@@ -3,11 +3,11 @@ package io.github.kotlinmania.rustlang.core.io.ioslice.repriovec
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 public open class Iovec internal constructor(
     iovBaseCtorArg: MutPtr,
@@ -73,7 +73,7 @@ public open class IoSlice(
     public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
-        return rawSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
+        return linearSliceView((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {
@@ -99,19 +99,19 @@ public open class IoSliceMut(
     public open fun asSlice(): List<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
-        return rawSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
+        return linearSliceView((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun intoSlice(): MutableList<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
-        return rawMutSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public open fun asMutSlice(): MutableList<UByte> {
         // SAFETY:
         // * `iovBase` and `iovLen` come from a prior decomposition of a valid slice.
-        return rawMutSliceList((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
+        return linearMutSliceView((this.vec.iovBase).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, this.vec.iovLen.toInt(), PrimitiveLayouts.U8)
     }
 
     public companion object {

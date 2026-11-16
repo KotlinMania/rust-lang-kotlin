@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 
 // Streaming SIMD Extensions 3 (SSE3)
 
@@ -49,7 +49,7 @@ public fun testMmHsubPs() {
 }
 
 public fun testMmLddquSi128() {
-    val localStorageL243C8 = AddressableLocal(mmSetrEpi8(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), ObjectSlotLayout<M128i>())
+    val localStorageL243C8 = AddressableLocal(mmSetrEpi8(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16), UnresolvedTypeLayout<M128i>())
     val a by localStorageL243C8
     val r = mmLddquSi128(a)
     assertEqM128i(a, r)
@@ -74,7 +74,7 @@ public fun testMmMoveldupPs() {
 }
 
 public fun testMmLoaddupPd() {
-    val localStorageL277C8 = AddressableLocal(-5.0, ObjectSlotLayout<Any?>())
+    val localStorageL277C8 = AddressableLocal(-5.0, UnresolvedTypeLayout<Any?>())
     val d by localStorageL277C8
     val r = mmLoaddupPd(d)
     assertEqM128d(r, mmSetrPd(d, d))

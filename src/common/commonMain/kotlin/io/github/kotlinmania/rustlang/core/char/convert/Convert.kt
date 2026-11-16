@@ -3,14 +3,12 @@ package io.github.kotlinmania.rustlang.core.char.convert
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.TryFromCharError
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.str.rustStrChars
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
+import io.github.kotlinmania.rustlang.core.str.chars
 
 // Character conversions.
 
@@ -21,10 +19,10 @@ public fun fromU32(i: UInt): Char? {
     // Note(const-Note): once Result.ok is const fn, use it here
     return run {
         val matchVal = charTryFromU32(i)
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             val c = matchVal.value
             c
-        }; is Result.Err<*> -> {
+        }; is Result.Err -> {
             null
         } }
     }
@@ -36,7 +34,7 @@ public fun fromU32(i: UInt): Char? {
 public fun fromU32Unchecked(i: UInt): Char {
     // SAFETY: the caller must guarantee that `i` is a valid char value.
     return run {
-        assertUnsafePrecondition(checkLanguageUb, "invalid value for `char`", i, i, charTryFromU32, i, isOk)
+        Unit
         transmuteWithLayouts(i, PrimitiveLayouts.U32, PrimitiveLayouts.CHAR)
     }
 }
@@ -112,11 +110,11 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UByte.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             val b = matchVal.value
-            Result.Ok(b)
-        }; is Result.Err<*> -> {
-            Result.Err(TryFromCharError())
+            Result.Ok<UByte, TryFromCharError>(b)
+        }; is Result.Err -> {
+            Result.Err<UByte, TryFromCharError>(TryFromCharError())
         } }
     }
 }
@@ -145,11 +143,11 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UShort.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             val x = matchVal.value
-            Result.Ok(x)
-        }; is Result.Err<*> -> {
-            Result.Err(TryFromCharError())
+            Result.Ok<UShort, TryFromCharError>(x)
+        }; is Result.Err -> {
+            Result.Err<UShort, TryFromCharError>(TryFromCharError())
         } }
     }
 }
@@ -189,11 +187,11 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = Int.tryFrom(UInt.from(c))
-        when (matchVal) { is Result.Ok<*> -> {
+        when (matchVal) { is Result.Ok -> {
             val x = matchVal.value
-            Result.Ok(x)
-        }; is Result.Err<*> -> {
-            Result.Err(TryFromCharError())
+            Result.Ok<Int, TryFromCharError>(x)
+        }; is Result.Err -> {
+            Result.Err<Int, TryFromCharError>(TryFromCharError())
         } }
     }
 }
@@ -257,16 +255,16 @@ public sealed class CharErrorKind {
 }
 
 public fun fromStrChar(s: String): Result<Char, ParseCharError> {
-    val chars = s.rustStrChars()
+    val chars = s.chars()
     return run {
-        val matchVal = Pair(chars.nextCodeOrNull()?.toChar(), chars.nextCodeOrNull()?.toChar())
+        val matchVal = Pair(chars.next(), chars.next())
         when {
-            matchVal.first == null -> Result.Err(ParseCharError(kind = CharErrorKind.EmptyString))
+            matchVal.first == null -> Result.Err<Char, ParseCharError>(ParseCharError(kind = CharErrorKind.EmptyString))
             matchVal.first != null && matchVal.second == null -> {
                 val c = matchVal.first
-                Result.Ok(c)
+                Result.Ok<Char, ParseCharError>(c)
             }
-            else -> Result.Err(ParseCharError(kind = CharErrorKind.TooManyChars))
+            else -> Result.Err<Char, ParseCharError>(ParseCharError(kind = CharErrorKind.TooManyChars))
         }
     }
 }
@@ -285,10 +283,10 @@ public fun charTryFromU32(i: UInt): Result<Char, CharTryFromError> {
     // unsigned comparison against 0x110000 - 0x800 will detect both the wrapped
     // surrogate range as well as the numbers originally larger than 0x110000.
     return if (((i xor 0xD800u) - 0x800u) >= 0x110000u - 0x800u) {
-        Result.Err(CharTryFromError())
+        Result.Err<Char, CharTryFromError>(CharTryFromError())
     } else {
         // SAFETY: checked that it's a legal unicode value
-        Result.Ok(transmute(i))
+        Result.Ok<Char, CharTryFromError>(transmute(i))
     }
 }
 

@@ -7,10 +7,11 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.andThen
+import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.panic.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
@@ -19,6 +20,7 @@ import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
+import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.DEFAULT_MIN_STACK_SIZE
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
@@ -36,7 +38,7 @@ import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): Result<JoinInner<T>, Error> {
     val stackSize1 =
         (stackSize ?: closure1@{
-            var MIN: Atomic<Int> = AtomicUsize.new(0)
+            var MIN: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
             when (val matchVal = MIN.load(Ordering.Relaxed)) {
                 0 -> {}
                 else -> {
@@ -44,7 +46,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
                     return@closure1 n - 1
                 }
             }
-            val amt = (varOs("RUST_MIN_STACK")?.let({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }) ?: DEFAULT_MIN_STACK_SIZE)
+            val amt = Env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
             MIN.store(amt + 1, Ordering.Relaxed)
             amt
         }())
@@ -97,7 +99,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
             Box.fromRaw(ptr1)
         }
     val init = ThreadInit(handle = thread.clone(), rustStart = rustStart1)
-    return Result.Ok(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }, thread = thread, packet = myPacket))
+    return Result.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<JoinInner<T>, Error>(tryResult.error) }, thread = thread, packet = myPacket))
 }
 
 /**
@@ -177,7 +179,7 @@ public open class Packet<T> internal constructor(
         // the scope function will panic.
         val unhandledPanic =
             when (val matchVal = this.result.getMut()) {
-                is Result.Err<*> -> true
+                is Result.Err -> true
                 else -> false
             }
         // Drop the result without causing unwinding.

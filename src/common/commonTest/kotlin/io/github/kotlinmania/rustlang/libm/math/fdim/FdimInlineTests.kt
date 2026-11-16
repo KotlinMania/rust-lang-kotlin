@@ -4,7 +4,8 @@ package io.github.kotlinmania.rustlang.libm.math.fdim
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hexfmt.Hex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
+import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 
 public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F) -> F, cases: List<Triple<F, F, F>>) {
     for ((x, y, expRes) in cases) {
@@ -12,7 +13,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F, F) -> F, case
         run {
             val l = value
             val r = expRes
-            check(l.biteq(r)) { ("fdim($x, $y) (${Hex(x)} ${Hex(y)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
+            check(biteq(l, r)) { ("fdim($x, $y) (${Hex(x)} ${Hex(y)})").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
         }
     }
 }

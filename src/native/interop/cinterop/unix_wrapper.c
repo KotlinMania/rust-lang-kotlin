@@ -3288,8 +3288,8 @@ char* libcUnixRealpath(const char* pathname, char* resolved) {
     return NULL;
 }
 
-uint64_t libcUnixTimes(void* buf) {
-    typedef uint64_t (*km_fn_t)(void*);
+int64_t libcUnixTimes(void* buf) {
+    typedef int64_t (*km_fn_t)(void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -3313,7 +3313,7 @@ uint64_t libcUnixTimes(void* buf) {
         return km_fn_ptr(buf);
     }
     errno = ENOSYS;
-    return 0;
+    return -1;
 }
 
 void* libcUnixPthreadSelf(void) {
@@ -3652,8 +3652,8 @@ int32_t libcUnixPthreadKeyCreate(void* key, void* dtor) {
     return ENOSYS;
 }
 
-int32_t libcUnixPthreadKeyDelete(int32_t key) {
-    typedef int32_t (*km_fn_t)(int32_t);
+int32_t libcUnixPthreadKeyDelete(uint32_t key) {
+    typedef int32_t (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -3680,8 +3680,8 @@ int32_t libcUnixPthreadKeyDelete(int32_t key) {
     return ENOSYS;
 }
 
-void* libcUnixPthreadGetspecific(int32_t key) {
-    typedef void* (*km_fn_t)(int32_t);
+void* libcUnixPthreadGetspecific(uint32_t key) {
+    typedef void* (*km_fn_t)(uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -3708,8 +3708,8 @@ void* libcUnixPthreadGetspecific(int32_t key) {
     return NULL;
 }
 
-int32_t libcUnixPthreadSetspecific(int32_t key, void* value) {
-    typedef int32_t (*km_fn_t)(int32_t, void*);
+int32_t libcUnixPthreadSetspecific(uint32_t key, void* value) {
+    typedef int32_t (*km_fn_t)(uint32_t, void*);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {

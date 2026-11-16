@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.new.helenos.time.cinterop
-headers = new_helenos_time_wrapper.h
-headerFilter = new_helenos_time_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = new_helenos_time_wrapper.a

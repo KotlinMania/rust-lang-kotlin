@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list
 import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.process.abort
@@ -14,10 +15,10 @@ public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr)
 }
 
-public var DTORS: RefCell<List<Pair<MutPtr, FnCallback>>> = RefCell.new(Vec.newIn(System))
+public var DTORS: RefCell<List<Pair<MutPtr, FnCallback>>> = RefCell.new(Vec.newIn(System()))
 
 public fun register(t: MutPtr, dtor: FnCallback) {
-    var dtors = DTORS.tryBorrowMut() ?: run {
+    var dtors = when (val tryResult = DTORS.tryBorrowMut()) { is Result.Ok -> tryResult.value; is Result.Err -> run {
     when (val matchVal = panicOutput()) {
         null -> {}
         else -> {
@@ -29,7 +30,7 @@ public fun register(t: MutPtr, dtor: FnCallback) {
         "fatal runtime error: " + ("the System allocator may not use TLS with destructors").toString() + ", aborting\n"
     }
     abort()
-}
+} }
     Guard.enable()
     // Avoid calling the alloc error hook
     if (dtors.capacity() == dtors.len()) {
@@ -65,7 +66,7 @@ public fun run() {
             when (val matchVal = dtors.pop()) {
                 null -> {
                     // Free the list memory.
-                    dtors = Vec.newIn(System)
+                    dtors = Vec.newIn(System())
                     break
                 }
                 else -> {

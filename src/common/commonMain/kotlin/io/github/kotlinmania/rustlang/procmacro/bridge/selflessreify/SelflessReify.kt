@@ -1,7 +1,7 @@
 // port-lint: source bridge/selfless_reify.rs
 package io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.conjureZst
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
@@ -52,7 +52,7 @@ public fun <R> reifyToExternCFnHrtBridge(f: (BridgeConfig) -> R): (BridgeConfig)
     // Note(eddyb) describe the `F` type (e.g. via `typeName<F>`) once panic
     // formatting becomes possible in `const fun`.
     run {
-        check(sizeOf<(BridgeConfig) -> R>(typeLayoutT = ObjectSlotLayout<(BridgeConfig) -> R>()) == 0) { "selfless_reify: closure must be zero-sized" }
+        check(sizeOf<(BridgeConfig) -> R>(typeLayoutT = UnresolvedTypeLayout<(BridgeConfig) -> R>()) == 0) { "selfless_reify: closure must be zero-sized" }
     }
     return wrapper<R, (BridgeConfig) -> R>
 }

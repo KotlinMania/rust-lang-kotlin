@@ -7,11 +7,12 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.asMutPtr
+import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // Streaming SIMD Extensions (SSE)
 
@@ -992,13 +993,13 @@ public fun testMmStorerPs() {
 public fun testMmStoreuPs() {
     open class Memory8(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<FloatArray>,
+        public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
     ) {
         public var data: FloatArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+        public constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
         public fun pointerLayout(): TypeLayout<Memory8> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory8(ptr, layout) }, { it.data })
     }
@@ -1047,20 +1048,20 @@ public fun testMmTranspose4Ps() {
 
 public open class Memory internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<FloatArray>,
+    public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
 ) {
     public var data: FloatArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
 
     public companion object {
-        public operator fun invoke(data: FloatArray, fieldLayout: TypeLayout<FloatArray>): Memory = Memory(data, fieldLayout)
+        public operator fun invoke(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): Memory = Memory(data, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray>): Memory = Memory(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): Memory = Memory(fieldStorage, fieldLayout)
     }
 }
 

@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.getopts
 
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.getopts.Fail.*
 import io.github.kotlinmania.rustlang.getopts.HasArg.*

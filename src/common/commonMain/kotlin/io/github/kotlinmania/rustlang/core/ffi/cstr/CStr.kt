@@ -4,14 +4,15 @@ package io.github.kotlinmania.rustlang.core.ffi.cstr
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.ffi.primitives.cchardefinition.CChar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBitMinusOne
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -20,7 +21,6 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 
 // [CStr] and its related types.
 
@@ -59,8 +59,8 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * Inspecting a foreign C string:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun myString(): ConstPtr = ConstPtr(0L)
@@ -73,8 +73,8 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * Passing a Rust-originating C string:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun work(data: CStr) {
@@ -88,8 +88,8 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  * Converting a foreign C string into a Rust `String`:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CChar
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  *
  * fun myString(): ConstPtr = ConstPtr(0L)
@@ -106,13 +106,13 @@ import io.github.kotlinmania.rustlang.core.slice.rawSliceList
  */
 public open class CStr internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<CChar>>,
+    public val fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout(),
 ) : AsRef<CStr> {
     public var inner: List<CChar>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CStr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CStr(ptr, layout) }, { it.inner })
 
@@ -143,8 +143,8 @@ public open class CStr internal constructor(
      * behavior when `ptr` is used inside the `unchecked` block:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-     * import io.github.kotlinmania.rustlang.core.ffi.CStr
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+     * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
      *
      * // 💀 The meaning of this entire program is undefined,
      * // 💀 and nothing about its behavior is guaranteed,
@@ -170,8 +170,8 @@ public open class CStr internal constructor(
      * To fix the problem, bind the `CString` to a local variable:
      *
      * ```kotlin
-     * import io.github.kotlinmania.rustlang.alloc.ffi.CString
-     * import io.github.kotlinmania.rustlang.core.ffi.CStr
+     * import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+     * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
      *
      * val cStr = CString.new(("Hi!").uppercase()).unwrap()
      * val ptr = cStr.asPtr()
@@ -222,7 +222,7 @@ public open class CStr internal constructor(
         // SAFETY: We know there is at least one byte; for empty strings it
         // is the NUL terminator.
         // Note(const-Note): use getUnchecked
-        return (ObjectSlotLayout<CChar>()).readNative((this.inner.asPtr()).rawAddress) == 0u.toUByte()
+        return (UnresolvedTypeLayout<CChar>()).readNative((this.inner.asPtr()).rawAddress) == 0u.toUByte()
     }
 
     /**
@@ -245,7 +245,7 @@ public open class CStr internal constructor(
         val bytes = this.toBytesWithNul()
         // Note(const-Note) replace with range index
         // SAFETY: toBytesWithNul returns slice with length at least 1
-        return rawSliceList(bytes.asPtr(), (bytes.size - 1).toInt(), PrimitiveLayouts.U8)
+        return linearSliceView(bytes.asPtr(), (bytes.size - 1).toInt(), PrimitiveLayouts.U8)
     }
 
     /**
@@ -267,7 +267,7 @@ public open class CStr internal constructor(
     public open fun toBytesWithNul(): List<UByte> {
         // SAFETY: Transmuting a slice of `cChar`s to a slice of `UByte`s
         // is safe on all supported targets.
-        val bytes = (ObjectSlotLayout<List<UByte>>()).readNative(((((addrOf(this.inner))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        val bytes = (UnresolvedTypeLayout<List<UByte>>()).readNative(((((addrOf(this.inner))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         // SAFETY: A valid `CStr` always contains at least its trailing nul byte.
         assertUnchecked(!bytes.isEmpty())
         return bytes
@@ -358,20 +358,20 @@ public open class CStr internal constructor(
         // in a null.
         return if (index.start < bytes.size) {
             // SAFETY: Non-empty tail of a valid `CStr` is still a valid `CStr`.
-            CStr.fromBytesWithNulUnchecked(((bytes).slice(index.start until bytes.size)))
+            CStr.fromBytesWithNulUnchecked(((bytes).subList(index.start, (bytes).size)))
         } else {
             error("index out of bounds: the len is ${bytes.size} but the index is ${index.start}")
         }
     }
 
-    public open fun index(index: io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
+    public open fun index(index: range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
 
     public override fun asRef(): CStr = this
 
     public companion object {
-        public operator fun invoke(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>>): CStr = CStr(inner, fieldLayout)
+        public operator fun invoke(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<CChar>>): CStr = CStr(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(fieldStorage, fieldLayout)
 
         public fun default(): CStr = ""
 
@@ -415,8 +415,8 @@ public open class CStr internal constructor(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CChar
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
          * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
          *
          * fun myString(): ConstPtr {
@@ -429,8 +429,8 @@ public open class CStr internal constructor(
          * ```
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CChar
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
          * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
          *
          * val HELLO_PTR: ConstPtr = run {
@@ -451,7 +451,7 @@ public open class CStr internal constructor(
             // means the call to `fromBytesWithNulUnchecked` is correct.
             //
             // The cast from cChar to u8 is ok because a cChar is always one byte.
-            return CStr.fromBytesWithNulUnchecked(rawSliceList(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), PrimitiveLayouts.U8))
+            return CStr.fromBytesWithNulUnchecked(linearSliceView(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), PrimitiveLayouts.U8))
         }
 
         /**
@@ -472,7 +472,7 @@ public open class CStr internal constructor(
          * ```kotlin
          * @file:OptIn(ExperimentalUnsignedTypes.cls)
          *
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          * import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
          * import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
          * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -495,15 +495,15 @@ public open class CStr internal constructor(
         public fun fromBytesUntilNul(bytes: List<UByte>): Result<CStr, FromBytesUntilNulError> {
             val nulPos = memchr.memchr(0, bytes)
             return when (nulPos) {
-                null -> Result.Err(FromBytesUntilNulError())
+                null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError())
                 else -> {
                     val nulPos1 = nulPos
                     // Note(const-Note) replace with range index
                     // SAFETY: nulPos + 1 <= bytes.len()
-                    val subslice = rawSliceList(bytes.asPtr(), (nulPos1 + 1).toInt(), PrimitiveLayouts.U8)
+                    val subslice = linearSliceView(bytes.asPtr(), (nulPos1 + 1).toInt(), PrimitiveLayouts.U8)
                     // SAFETY: We know there is a nul byte at nulPos, so this slice
                     // (ending at the nul byte) is a well-formed C string.
-                    Result.Ok(CStr.fromBytesWithNulUnchecked(subslice))
+                    Result.Ok<CStr, FromBytesUntilNulError>(CStr.fromBytesWithNulUnchecked(subslice))
                 }
             }
         }
@@ -522,7 +522,7 @@ public open class CStr internal constructor(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          *
          * val cstr = CStr.fromBytesWithNul("hello\u0000".encodeToByteArray())
          * check(cstr == Result.success("hello"))
@@ -531,7 +531,7 @@ public open class CStr internal constructor(
          * Creating a `CStr` without a trailing nul terminator is an error:
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          * import std.ffi.FromBytesWithNulError
          *
          * val cstr = CStr.fromBytesWithNul("hello".encodeToByteArray())
@@ -541,7 +541,7 @@ public open class CStr internal constructor(
          * Creating a `CStr` with an interior nul byte is an error:
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          * import std.ffi.FromBytesWithNulError
          *
          * val cstr = CStr.fromBytesWithNul("he\u0000llo\u0000".encodeToByteArray())
@@ -555,13 +555,13 @@ public open class CStr internal constructor(
                     val nulPos1 = nulPos
                     // SAFETY: We know there is only one nul byte, at the end
                     // of the byte slice.
-                    Result.Ok(CStr.fromBytesWithNulUnchecked(bytes))
+                    Result.Ok<CStr, FromBytesWithNulError>(CStr.fromBytesWithNulUnchecked(bytes))
                 }
                 nulPos != null -> {
                     val position = nulPos
-                    Result.Err(FromBytesWithNulError.InteriorNul(position = position))
+                    Result.Err<CStr, FromBytesWithNulError>(FromBytesWithNulError.InteriorNul(position = position))
                 }
-                else -> Result.Err(FromBytesWithNulError.NotNulTerminated)
+                else -> Result.Err<CStr, FromBytesWithNulError>(FromBytesWithNulError.NotNulTerminated)
             }
         }
 
@@ -578,7 +578,7 @@ public open class CStr internal constructor(
          * # Examples
          *
          * ```kotlin
-         * import io.github.kotlinmania.rustlang.core.ffi.CStr
+         * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
          *
          * val bytes = "Hello world!\u0000".encodeToByteArray()
          * val cstr = CStr.fromBytesWithNulUnchecked(bytes)
@@ -588,7 +588,7 @@ public open class CStr internal constructor(
         public fun fromBytesWithNulUnchecked(bytes: List<UByte>): CStr =
             run {
                 check(!bytes.isEmpty() && bytes[bytes.size - 1] == 0u.toUByte())
-                (ObjectSlotLayout<CStr>()).readNative((((constPtrFromRustCast(bytes)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                (UnresolvedTypeLayout<CStr>()).readNative((((constPtrFromRustCast(bytes)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             }
     }
 }
@@ -605,7 +605,7 @@ public open class CStr internal constructor(
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.ffi.CStr
+ * import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
  * import std.ffi.FromBytesWithNulError
  *
  * val unused: FromBytesWithNulError = CStr.fromBytesWithNul("f\u0000oo".encodeToByteArray()).unwrapErr()
@@ -755,7 +755,7 @@ public open class Bytes internal constructor(
 
     public open fun count(): Int {
         // SAFETY: We always hold a valid pointer to a C string
-        return strlen(this.ptr.asPtr().cast()).toInt().asInner()
+        return strlen((this.ptr.asPtr().cast()).asConstPtr()).toInt().asInner()
     }
 
     public companion object {

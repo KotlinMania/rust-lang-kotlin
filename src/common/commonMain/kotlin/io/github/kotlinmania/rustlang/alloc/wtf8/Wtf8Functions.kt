@@ -2,10 +2,10 @@ package io.github.kotlinmania.rustlang.alloc.wtf8
 
 import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
-import io.github.kotlinmania.rustlang.alloc.string.String
 import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.wtf8.Wtf8
 
 /**
@@ -27,20 +27,20 @@ public fun toStringLossy(slice: Wtf8): String {
 return String.fromUtf8Unchecked(slice.asBytes())
     val wtf8Bytes = slice.asBytes()
     val utf8Bytes = ArrayList(slice.len())
-    utf8Bytes.addAll(((wtf8Bytes).slice(0 until surrogatePos)))
+    utf8Bytes.addAll(((wtf8Bytes).subList(0, surrogatePos)))
     utf8Bytes.addAll(("�").encodeToByteArray().map { it.toUByte() })
     var pos = surrogatePos + 3
     while (true) {
         when (val matchVal = slice.nextSurrogate(pos)) {
             null -> {
-                utf8Bytes.addAll(((wtf8Bytes).slice(pos until wtf8Bytes.size)))
+                utf8Bytes.addAll(((wtf8Bytes).subList(pos, (wtf8Bytes).size)))
                 // SAFETY: Every surrogate was replaced with `"\u{FFFD}"`,
                 // and the remaining bytes are valid UTF-8, so `utf8Bytes` is valid UTF-8.
                 return String.fromUtf8Unchecked(utf8Bytes)
             }
             else -> {
                 val surrogatePos1 = matchVal.first
-                utf8Bytes.addAll(((wtf8Bytes).slice(pos until surrogatePos1)))
+                utf8Bytes.addAll(((wtf8Bytes).subList(pos, surrogatePos1)))
                 utf8Bytes.addAll(("�").encodeToByteArray().map { it.toUByte() })
                 pos = surrogatePos1 + 3
             }

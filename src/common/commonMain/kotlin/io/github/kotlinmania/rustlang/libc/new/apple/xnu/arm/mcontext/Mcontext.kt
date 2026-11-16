@@ -10,10 +10,12 @@ import io.github.kotlinmania.rustlang.libc.new.apple.xnu.mach.arm.structs.Darwin
 //
 // <https://github.com/apple-oss-distributions/xnu/blob/main/bsd/arm/_mcontext.h>
 
-public data class DarwinMcontext64(
-    public var es: DarwinArmExceptionState64 = DarwinArmExceptionState64(),
-    public var ss: DarwinArmThreadState64 = DarwinArmThreadState64(),
-    public var ns: DarwinArmNeonState64 = DarwinArmNeonState64(),
-)
+public open class DarwinMcontext64(
+    public var es: DarwinArmExceptionState64,
+    public var ss: DarwinArmThreadState64,
+    public var ns: DarwinArmNeonState64,
+) {
+    public open fun clone(): DarwinMcontext64 = DarwinMcontext64(es, ss, ns)
+}
 
 public typealias McontextT = MutPtr

@@ -4,9 +4,9 @@
 package io.github.kotlinmania.rustlang.std.os.unix.fs.dirs
 
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
+import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.env.SplitPathsRef
-import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.env.joinPaths
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
@@ -366,7 +366,7 @@ public open class XdgDirs(
 
 public fun homeDirsExtXdgHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()
-    val userHome = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val userHome = when (val tryResult = userHome()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<HomeDirs, Error>(tryResult.error) }
     dirs.setCacheHome(dirOrElse({ userHome.join(".cache") }, "XDG_CACHE_HOME"))
     dirs.setConfigHome(dirOrElse({ userHome.join(".config") }, "XDG_CONFIG_HOME"))
     dirs.setDataHome(dirOrElse({ userHome.join(".local/share") }, "XDG_DATA_HOME"))
@@ -380,7 +380,7 @@ public fun homeDirsExtXdgHomeDirs(): Result<HomeDirs, Error> {
     }
     dirs.setConfigDirs(dirsOr("/etc/xdg", "XDG_CONFIG_DIRS"))
     dirs.setDataDirs(dirsOr("/usr/local/share/:/usr/share/", "XDG_DATA_DIRS"))
-    return Result.Ok(dirs)
+    return Result.Ok<HomeDirs, Error>(dirs)
 }
 
 public fun HomeDirs.runtimeHome(): Path? = this.extra.runtime
@@ -412,27 +412,27 @@ public fun HomeDirs.setDataDirs(paths: OsString): HomeDirs {
 }
 
 public fun mediaDirsExtXdgMediaDirs(): Result<MediaDirs, Error> {
-    val userHome = when (val tryResult = userHome()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+    val userHome = when (val tryResult = userHome()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MediaDirs, Error>(tryResult.error) }
     val configHome = dirOrElse({ userHome.join(".config") }, "XDG_CONFIG_HOME")
     val spec1 =
         run {
             val matchVal = read(configHome.join("user-dirs.dirs"))
             when {
-                matchVal is Result.Ok<*> -> {
-                    val spec = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok -> {
+                    val spec = matchVal.value
                     spec
                 }
-                matchVal is Result.Err<*> && (matchVal as Result.Err<*>).error.kind() == ErrorKind.NotFound -> {
-                    val e = (matchVal as Result.Err<*>).error
-                    return Result.Err(constError(ErrorKind.NotFound, "missing `\$XDG_CONFIG_HOME/user-dirs.dirs`"))
+                matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.NotFound -> {
+                    val e = matchVal.error
+                    return Result.Err<MediaDirs, Error>(constError(ErrorKind.NotFound, "missing `\$XDG_CONFIG_HOME/user-dirs.dirs`"))
                 }
                 else -> {
-                    val e1 = (matchVal as Result.Err<*>).error
-                    return Result.Err(e1)
+                    val e1 = matchVal.error
+                    return Result.Err<MediaDirs, Error>(e1)
                 }
             }
         }
-    return Result.Ok(parseUserDirs(spec1, userHome))
+    return Result.Ok<MediaDirs, Error>(parseUserDirs(spec1, userHome))
 }
 
 public fun MediaDirs.templates(): Path? = this.extra.templates
@@ -445,10 +445,10 @@ public fun MediaDirs.setTemplates(path: PathBuf): MediaDirs {
 
 public fun splitPathsRef(paths: OsStr): SplitPathsRef {
     // returns Some on cfg(unix)
-    return io.github.kotlinmania.rustlang.std.env.splitPathsRef(paths).unwrap()
+    return env.splitPathsRef(paths).unwrap()
 }
 
-public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.InvalidData, "user home directory path not absolute")))
+public fun userHome(): Result<PathBuf, Error> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "user home directory path not absolute"))
 
 public fun dir(env: String): PathBuf? = varOs(env).filter({ s -> !s.isEmpty() })?.let(PathBuf::from).filter({ path -> path.isAbsolute() })
 

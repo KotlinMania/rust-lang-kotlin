@@ -1,9 +1,11 @@
 package io.github.kotlinmania.rustlang.core.mem
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
-import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.typedSwapNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -12,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 
 /**
  * Takes ownership and "forgets" about the value **without running its destructor**.
@@ -295,7 +296,7 @@ public fun <T> forgetUnsized(t: T) {}
  * [const.T]: primitive@pointer
  * [Box.T]: ../../std/boxed/struct.Holder.html
  */
-public fun <T> sizeOf(): Int {
+public fun <T> sizeOf(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // By making this a constant, we also guarantee that the constant can be successfully evaluated
     // in any program execution that actually executes `sizeOf`. Which is relevant because the
     // constant can fail to evaluate if the type is too big. Someone might do something cursed where
@@ -303,7 +304,7 @@ public fun <T> sizeOf(): Int {
     // sizeOf on the type to ensure it exists, so if we fully DCE'd sizeOf calls that would be
     // considered unsound... but by making this a constant, it participates in the usual "required
     // consts" system, and we are safe.
-    return sizedTypePropertiesSizeT
+    return (typeLayoutT).sizeBytes.toInt()
 }
 
 /**
@@ -330,9 +331,9 @@ public fun <T> sizeOf(): Int {
  *
  * [sizeOf.T]: sizeOf
  */
-public fun <T> sizeOfVal(value: T): Int {
+public fun <T> sizeOfVal(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: `val` is a reference, so it's a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal(value)
+    return (typeLayoutT).sizeBytes.toInt()
 }
 
 // NOTE: the reason this is safe is that if an overflow were to occur already with size 0,
@@ -388,9 +389,9 @@ public fun <T> sizeOfVal(value: T): Int {
  * }
  * ```
  */
-public fun sizeOfValRaw(value: ConstPtr): Int {
+public fun <T> sizeOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: the caller must provide a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.sizeOfVal(value)
+    return (if (value.rawMeta > 0L) (value.rawMeta * (typeLayoutT).sizeBytes).toInt() else (typeLayoutT).sizeBytes.toInt())
 }
 
 /**
@@ -410,7 +411,7 @@ public fun sizeOfValRaw(value: ConstPtr): Int {
  * check(4 == mem.minAlignOf<Int>())
  * ```
  */
-public fun <T> minAlignOf(): Int = sizedTypePropertiesAlignT
+public fun <T> minAlignOf(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int = (typeLayoutT).alignBytes.toInt()
 
 /**
  * Returns the [ABI]-required minimum alignment of the type of the value that `val` points to in
@@ -428,9 +429,9 @@ public fun <T> minAlignOf(): Int = sizedTypePropertiesAlignT
  * check(4 == mem.minAlignOfVal(5))
  * ```
  */
-public fun <T> minAlignOfVal(value: T): Int {
+public fun <T> minAlignOfVal(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: val is a reference, so it's a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.alignOfVal(value)
+    return (typeLayoutT).alignBytes.toInt()
 }
 
 /**
@@ -453,7 +454,7 @@ public fun <T> minAlignOfVal(value: T): Int {
  *
  * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
  */
-public fun <T> alignOf(): Int = sizedTypePropertiesAlignT
+public fun <T> alignOf(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int = (typeLayoutT).alignBytes.toInt()
 
 /**
  * Returns the [ABI]-required minimum alignment of the type of the value that `val` points to, in
@@ -486,9 +487,9 @@ public fun <T> alignOf(): Int = sizedTypePropertiesAlignT
  *
  * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
  */
-public fun <T> alignOfVal(value: T): Int {
+public fun <T> alignOfVal(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: val is a reference, so it's a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.alignOfVal(value)
+    return (typeLayoutT).alignBytes.toInt()
 }
 
 // NOTE: the reason this is safe is that if an overflow were to occur already with size 0,
@@ -544,9 +545,9 @@ public fun <T> alignOfVal(value: T): Int {
  *
  * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
  */
-public fun alignOfValRaw(value: ConstPtr): Int {
+public fun <T> alignOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: the caller must provide a valid raw pointer
-    return io.github.kotlinmania.rustlang.core.intrinsics.alignOfVal(value)
+    return (typeLayoutT).alignBytes.toInt()
 }
 
 /**
@@ -648,7 +649,7 @@ public fun <T> needsDrop(): Boolean = true
 public inline fun <reified T> zeroed(): T {
     // SAFETY: the caller must guarantee that an all-zero value is valid for `T`.
     return run {
-        MaybeUninit.zeroed(ObjectSlotLayout<T>()).assumeInit()
+        MaybeUninit.zeroed(UnresolvedTypeLayout<T>()).assumeInit()
     }
 }
 
@@ -680,7 +681,7 @@ public inline fun <reified T> zeroed(): T {
 public inline fun <reified T> uninitialized(): T {
     // SAFETY: the caller must guarantee that an uninitialized value is valid for `T`.
     return run {
-        val value = MaybeUninit.uninit(ObjectSlotLayout<T>())
+        val value = MaybeUninit.uninit(UnresolvedTypeLayout<T>())
         // Fill memory with 0x01, as an imperfect mitigation for old code that uses this function on
         // bool, nonnull, and noundef types. But don't do this if we actively want to detect UB.
         if (!false) {
@@ -713,10 +714,10 @@ public inline fun <reified T> uninitialized(): T {
  * check(5 == y)
  * ```
  */
-public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T>) {
+public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY:  guarantees these are typed readable and writable
     // as well as non-overlapping.
-    typedSwapNonoverlapping(x, y)
+    typedSwapNonoverlapping(x, y, typeLayoutT = typeLayoutT)
 }
 
 /**
@@ -825,7 +826,7 @@ public fun <T> take(dest: T, defaultTFn: () -> T): T = replace(dest, defaultTFn(
  * check(buffer.buf[0] == 2)
  * ```
  */
-public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T>): T {
+public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // It may be tempting to use `swap` to avoid `unchecked` here. Don't!
     // The compiler optimizes the implementation below to two `memcpy`s
     // while `swap` would require at least three. See PR#83022 for details.
@@ -837,8 +838,8 @@ public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T>): T {
         // `ptr` methods introduces two unnecessary UbChecks, so until we can
         // remove those for pointers that come from references, this uses the
         // intrinsics instead so this stays very cheap in MIR (and debug).
-        val result = readViaCopy(dest)
-        writeViaMove(dest, src)
+        val result = readViaCopy(dest, typeLayoutT = typeLayoutT)
+        writeViaMove(dest, src, typeLayoutT = typeLayoutT)
         result
     }
 }
@@ -998,12 +999,12 @@ public fun <T> copy(x: T): T = x
  * }
  * ```
  */
-public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst>): Dst {
+public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout(), typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout()): Dst {
     // library UB because it's possible for the `Src` to be only a subset of the allocation
     // and thus for a failure to not be immediate language UB
-    assertUnsafePrecondition(checkLibraryUb, "cannot transmute_copy if Dst is larger than Src", srcSize, sizeOfVal, Src, src, dstSize, Dst, SIZE, srcSize, dstSize)
+    Unit
     // If Dst has a higher alignment requirement, src might not be suitably aligned.
-    return if (alignOf<Dst>() > alignOfVal<Src>(src)) {
+    return if (alignOf<Dst>(typeLayoutT = typeLayoutDst) > alignOfVal<Src>(src, typeLayoutT = typeLayoutSrc)) {
         // SAFETY: `src` is a reference which is guaranteed to be valid for reads.
         // The caller must guarantee that the actual transmutation is safe.
         readUnaligned((constPtrFromRustCast(src)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, typeLayoutT = typeLayoutDst)
@@ -1063,12 +1064,12 @@ public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst>): D
  * }
  * ```
  */
-public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src>, typeLayoutDst: TypeLayout<Dst>): Dst {
+public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout(), typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout()): Dst {
     open class Transmute<A, B>(
         public var a: A? = null,
         public var b: B? = null,
     )
-    return when (Src.SIZE.cmp(Dst.SIZE)) {
+    return when (((typeLayoutSrc).sizeBytes.toInt()).cmp((typeLayoutDst).sizeBytes.toInt())) {
         // SAFETY: When Dst is bigger, the union is the size of Dst
         Ordering.Less -> run {
             val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
@@ -1079,7 +1080,7 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src>, 
         // SAFETY: When Src is bigger, the union is the size of Src
         Ordering.Greater -> run {
             val u: Transmute<Src, Dst> = transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
-            transmuteNeo(u.b, typeLayoutSrc = ObjectSlotLayout<B>())
+            transmuteNeo(u.b, typeLayoutSrc = UnresolvedTypeLayout<B>())
         }
     }
 }
@@ -1116,11 +1117,11 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src>, 
  * unchecked { transmuteNeo::<u32, u16>(123) };
  * ```
  */
-public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src>): Dst {
-    check(Src.SIZE == Dst.SIZE)
+public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout()): Dst {
+    check((typeLayoutSrc).sizeBytes.toInt() == (UnresolvedTypeLayout<Dst>()).sizeBytes.toInt())
     // SAFETY: the const-assert just checked that they're the same size,
     // and any other safety invariants need to be upheld by the caller.
-    return transmuteWithLayouts(src, typeLayoutSrc, ObjectSlotLayout<Dst>())
+    return transmuteWithLayouts(src, typeLayoutSrc, UnresolvedTypeLayout<Dst>())
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1250,7 +1251,7 @@ public fun <T> discriminant(v: T): Discriminant<T> = Discriminant(discriminantVa
  * check(mem.variantCount<Result<Nothing>>() == 2)
  * ```
  */
-public fun <T> variantCount(): Int = io.github.kotlinmania.rustlang.core.intrinsics.variantCount<T>()
+public fun <T> variantCount(): Int = 1
 
 // typeName() called only at run time
 
@@ -1293,9 +1294,9 @@ public fun <T> variantCount(): Int = io.github.kotlinmania.rustlang.core.intrins
  * [inhabited]: https://doc.rust-lang.org/reference/glossary.html#inhabited
  */
 public inline fun <reified T> conjureZst(): T {
-    constAssert(T.IS_ZST, "mem::conjure_zst invoked on a non-zero-sized type", "mem::conjure_zst invoked on type {name}, which is not zero-sized", name, any, typeName, T)
+    constAssert(((UnresolvedTypeLayout<T>()).sizeBytes == 0L), "mem::conjure_zst invoked on a non-zero-sized type", "mem::conjure_zst invoked on type {name}, which is not zero-sized", name, any, typeName, T)
     // SAFETY: because the caller must guarantee that it's inhabited and zero-sized,
     // there's nothing in the representation that needs to be set.
     // `assumeInit` calls `assertInhabited`, so we don't need to here.
-    return MaybeUninit.uninit(ObjectSlotLayout<T>()).assumeInit()
+    return MaybeUninit.uninit(UnresolvedTypeLayout<T>()).assumeInit()
 }

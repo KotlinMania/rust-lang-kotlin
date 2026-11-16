@@ -751,7 +751,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_new_common_posix
 JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_new_common_posix_pthread_NewCommonPosixPthreadJniBridge_libcNewCommonPosixPthreadPthreadCondattrSetclock(JNIEnv* km_env, jclass km_clazz, jlong attr, jint clockId) {
     (void)km_env;
     (void)km_clazz;
-    typedef int32_t (*km_fn_t)(void*, int32_t);
+    typedef int32_t (*km_fn_t)(void*, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
     if (km_fn_ptr == NULL) {
@@ -773,7 +773,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_libc_new_common_posix
 #endif
     int32_t km_res;
     if (km_fn_ptr != NULL) {
-        km_res = km_fn_ptr((void*)(uintptr_t)attr, (int32_t)clockId);
+        km_res = km_fn_ptr((void*)(uintptr_t)attr, (uint32_t)clockId);
     } else {
         errno = ENOSYS;
         km_res = ENOSYS;

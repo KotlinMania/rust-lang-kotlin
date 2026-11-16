@@ -3,11 +3,12 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -840,7 +841,7 @@ public fun mmLoadPs1(p: ConstPtr): M128 = mmLoad1Ps(p)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_load_ps)
  */
-public fun mmLoadPs(p: ConstPtr): M128 = (ObjectSlotLayout<M128>()).readNative(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress)
+public fun mmLoadPs(p: ConstPtr): M128 = (UnresolvedTypeLayout<M128>()).readNative(((ConstPtr(p.rawAddress, p.rawMeta))).rawAddress)
 
 /**
  * Loads four `Float` values from memory into a `__m128`. There are no
@@ -857,7 +858,7 @@ public fun mmLoaduPs(p: ConstPtr): M128 {
     // Note: Using `* p` would require `Float` alignment, but `movups` has no
     // alignment restrictions.
     val dst = mmUndefinedPs()
-    copyNonoverlapping(ConstPtr(p.rawAddress, p.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(ConstPtr(p.rawAddress, p.rawMeta), mutPtrFromRustCast(addrOfMut(dst)), sizeOf<M128>(typeLayoutT = UnresolvedTypeLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
     return dst
 }
 
@@ -923,7 +924,7 @@ public fun mmStoreSs(p: MutPtr, a: M128) {
  */
 public fun mmStore1Ps(p: MutPtr, a: M128) {
     val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(0, 0, 0, 0)); M128() }
-    (ObjectSlotLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
+    (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
 }
 
 /**
@@ -949,7 +950,7 @@ public fun mmStorePs1(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_store_ps)
  */
 public fun mmStorePs(p: MutPtr, a: M128) {
-    (ObjectSlotLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, a)
+    (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, a)
 }
 
 /**
@@ -962,7 +963,7 @@ public fun mmStorePs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storeu_ps)
  */
 public fun mmStoreuPs(p: MutPtr, a: M128) {
-    copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(p.rawAddress, p.rawMeta), sizeOf<M128>(typeLayoutT = ObjectSlotLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
+    copyNonoverlapping(constPtrFromRustCast(addrOf(a)), MutPtr(p.rawAddress, p.rawMeta), sizeOf<M128>(typeLayoutT = UnresolvedTypeLayout<M128>()), typeLayoutT = PrimitiveLayouts.U8)
 }
 
 /**
@@ -985,7 +986,7 @@ public fun mmStoreuPs(p: MutPtr, a: M128) {
  */
 public fun mmStorerPs(p: MutPtr, a: M128) {
     val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(listOf(3, 2, 1, 0)); M128() }
-    (ObjectSlotLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
+    (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
 }
 
 /**

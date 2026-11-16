@@ -2,13 +2,14 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc.array
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -39,13 +40,13 @@ import io.github.kotlinmania.rustlang.std.time.Instant
  * A slot in a channel.
  */
 public open class Slot<T> internal constructor(
-    stampCtorArg: Atomic<Int>,
+    stampCtorArg: Atomic<Int, Align8<Int>>,
     msgCtorArg: UnsafeCell<MaybeUninit<T>>,
 ) {
     /**
      * The current stamp.
      */
-    public var stamp: Atomic<Int> = stampCtorArg
+    public var stamp: Atomic<Int, Align8<Int>> = stampCtorArg
         internal set
 
     /**
@@ -57,7 +58,7 @@ public open class Slot<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            stamp: Atomic<Int>,
+            stamp: Atomic<Int, Align8<Int>>,
             msg: UnsafeCell<MaybeUninit<T>>,
         ): Slot<T> = Slot<T>(
             stampCtorArg = stamp,
@@ -123,8 +124,8 @@ public open class ArrayToken internal constructor(
  * Bounded channel based on a preallocated array.
  */
 public open class Channel<T> internal constructor(
-    headCtorArg: CachePadded<Atomic<Int>>,
-    tailCtorArg: CachePadded<Atomic<Int>>,
+    headCtorArg: CachePadded<Atomic<Int, Align8<Int>>>,
+    tailCtorArg: CachePadded<Atomic<Int, Align8<Int>>>,
     /**
      * The buffer holding slots.
      */
@@ -159,7 +160,7 @@ public open class Channel<T> internal constructor(
      *
      * Messages are popped from the head of the channel.
      */
-    public var head: CachePadded<Atomic<Int>> = headCtorArg
+    public var head: CachePadded<Atomic<Int, Align8<Int>>> = headCtorArg
         internal set
 
     /**
@@ -171,7 +172,7 @@ public open class Channel<T> internal constructor(
      *
      * Messages are pushed into the tail of the channel.
      */
-    public var tail: CachePadded<Atomic<Int>> = tailCtorArg
+    public var tail: CachePadded<Atomic<Int, Align8<Int>>> = tailCtorArg
         internal set
 
     /**
@@ -209,12 +210,12 @@ public open class Channel<T> internal constructor(
                 // Try moving the tail.
                 run {
                     val matchVal = this.tail.compareExchangeWeak(tail, newTail, Ordering.SeqCst, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         // Prepare the token for the follow-up call to `write`.
                         token.array.slot = (constPtrFromRustCast(slot)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
                         token.array.stamp = tail + 1
                         return true
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         backoff.spinLight()
                         tail = this.tail.load(Ordering.Relaxed)
                     } }
@@ -240,20 +241,20 @@ public open class Channel<T> internal constructor(
     /**
      * Writes a message into the channel.
      */
-    public open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T>): Result<Unit, T> {
+    public open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, T> {
         // If there is no slot, the channel is disconnected.
         if (((token.array.slot).rawAddress == 0L)) {
-            return Result.Err(msg)
+            return Result.Err<Unit, T>(msg)
         }
         // Write the message into the slot and update the stamp.
         run {
-            val slot: Slot<T> = (ObjectSlotLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            val slot: Slot<T> = (UnresolvedTypeLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             slot.msg.get().write(MaybeUninit.new(msg, typeLayoutT))
             slot.stamp.store(token.array.stamp, Ordering.Release)
         }
         // Wake a sleeping receiver.
         this.receivers.notify()
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, T>(Unit)
     }
 
     /**
@@ -285,12 +286,12 @@ public open class Channel<T> internal constructor(
                 // Try moving the head.
                 run {
                     val matchVal = this.head.compareExchangeWeak(head, new, Ordering.SeqCst, Ordering.Relaxed)
-                    when (matchVal) { is Result.Ok<*> -> {
+                    when (matchVal) { is Result.Ok -> {
                         // Prepare the token for the follow-up call to `read`.
                         token.array.slot = (constPtrFromRustCast(slot)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
                         token.array.stamp = head.wrappingAdd(this.oneLap)
                         return true
-                    }; is Result.Err<*> -> {
+                    }; is Result.Err -> {
                         backoff.spinLight()
                         head = this.head.load(Ordering.Relaxed)
                     } }
@@ -324,22 +325,22 @@ public open class Channel<T> internal constructor(
     /**
      * Reads a message from the channel.
      */
-    public open fun read(token: Token, typeLayoutT: TypeLayout<T>): Result<T, Unit> {
+    public open fun read(token: Token, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<T, Unit> {
         if (((token.array.slot).rawAddress == 0L)) {
             // The channel is disconnected.
-            return Result.Err(Unit)
+            return Result.Err<T, Unit>(Unit)
         }
         // Read the message from the slot and update the stamp.
         val msg1 =
             run {
-                val slot: Slot<T> = (ObjectSlotLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                val slot: Slot<T> = (UnresolvedTypeLayout<Slot<T>>()).readNative((((token.array.slot).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
                 val msg = slot.msg.get().read().assumeInit()
                 slot.stamp.store(token.array.stamp, Ordering.Release)
                 msg
             }
         // Wake a sleeping sender.
         this.senders.notify()
-        return Result.Ok(msg1)
+        return Result.Ok<T, Unit>(msg1)
     }
 
     /**
@@ -350,7 +351,7 @@ public open class Channel<T> internal constructor(
         return if (this.startSend(token)) {
             this.write(token, msg).mapErr({ TrySendError.Disconnected(it) })
         } else {
-            Result.Err(TrySendError.Full(msg))
+            Result.Err<Unit, TrySendError<T>>(TrySendError.Full(msg))
         }
     }
 
@@ -368,7 +369,7 @@ public open class Channel<T> internal constructor(
             if (deadline != null) {
                 val d = deadline
                 if (Instant.now() >= d) {
-                    return Result.Err(SendTimeoutError.Timeout(msg))
+                    return Result.Err<Unit, SendTimeoutError<T>>(SendTimeoutError.Timeout(msg))
                 }
             }
             Context.with({ cx ->
@@ -401,7 +402,7 @@ public open class Channel<T> internal constructor(
         return if (this.startRecv(token)) {
             this.read(token).mapErr({ TryRecvError.Disconnected })
         } else {
-            Result.Err(TryRecvError.Empty)
+            Result.Err<T, TryRecvError>(TryRecvError.Empty)
         }
     }
 
@@ -419,7 +420,7 @@ public open class Channel<T> internal constructor(
             if (deadline != null) {
                 val d = deadline
                 if (Instant.now() >= d) {
-                    return Result.Err(RecvTimeoutError.Timeout)
+                    return Result.Err<T, RecvTimeoutError>(RecvTimeoutError.Timeout)
                 }
             }
             Context.with({ cx ->
@@ -604,8 +605,8 @@ public open class Channel<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            head: CachePadded<Atomic<Int>>,
-            tail: CachePadded<Atomic<Int>>,
+            head: CachePadded<Atomic<Int, Align8<Int>>>,
+            tail: CachePadded<Atomic<Int, Align8<Int>>>,
             buffer: List<Slot<T>>,
             cap: Int,
             oneLap: Int,

@@ -5,8 +5,10 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf32
+import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.Sign
@@ -17,8 +19,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toExactExpStr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toExactFixedStr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toShortestExpStr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.toShortestStr
-import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
-import kotlin.math.abs
+import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
 
 public interface GeneralFormat {
     /**
@@ -30,19 +31,19 @@ public interface GeneralFormat {
 
 public fun F16.alreadyRoundedValueShouldUseExponential(): Boolean {
     val maxAbs = 1e16
-    val abs = F16.fromFloat(abs(this.toFloat()))
+    val abs = F16.fromFloat(kmFabsf32(this.toFloat()))
     return (abs != F16.fromFloat(0.0f) && abs < F16.fromFloat(1e-4f)) || abs >= maxAbs
 }
 
 public fun kotlin.Float.alreadyRoundedValueShouldUseExponential(): Boolean {
     val maxAbs = 1e16
-    val abs = abs(this)
+    val abs = kmFabsf32(this)
     return (abs != 0.0f && abs < 1e-4f) || abs >= maxAbs
 }
 
 public fun Double.alreadyRoundedValueShouldUseExponential(): Boolean {
     val maxAbs = 1e16
-    val abs = abs(this)
+    val abs = kmFabsf64(this)
     return (abs != 0.0 && abs < 1e-4) || abs >= maxAbs
 }
 
@@ -51,7 +52,7 @@ public fun Double.alreadyRoundedValueShouldUseExponential(): Boolean {
 public fun <T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T> {
     val buf: List<MaybeUninit<UByte>>  = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     // enough for f32 and f64
-    val parts: List<MaybeUninit<Part>>  = List(4) { MaybeUninit.uninit(ObjectSlotLayout<Part>()) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toExactFixedStr(formatExact, num, sign, precision.into(), buf, parts)
     // SAFETY: `toExactFixedStr` and `formatExact` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)
@@ -62,7 +63,7 @@ public fun <T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, pre
 public fun <T> floatToDecimalCommonShortest(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T> {
     // enough for f32 and f64
     val buf: List<MaybeUninit<UByte>>  = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
-    val parts: List<MaybeUninit<Part>>  = List(4) { MaybeUninit.uninit(ObjectSlotLayout<Part>()) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toShortestStr(formatShortest, num, sign, precision.into(), buf, parts)
     // SAFETY: `toShortestStr` and `formatShortest` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)
@@ -92,7 +93,7 @@ public fun <T> floatToDecimalDisplay(fmt: Formatter, num: T): Result where T : D
 public fun <T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort, upper: Boolean): Result where T : DecodableFloat<T> {
     val buf: List<MaybeUninit<UByte>>  = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     // enough for f32 and f64
-    val parts: List<MaybeUninit<Part>>  = List(6) { MaybeUninit.uninit(ObjectSlotLayout<Part>()) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toExactExpStr(formatExact, num, sign, precision.into(), upper, buf, parts)
     // SAFETY: `toExactExpStr` and `formatExact` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)
@@ -103,7 +104,7 @@ public fun <T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign,
 public fun <T> floatToExponentialCommonShortest(fmt: Formatter, num: T, sign: Sign, upper: Boolean): Result where T : DecodableFloat<T> {
     // enough for f32 and f64
     val buf: List<MaybeUninit<UByte>>  = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
-    val parts: List<MaybeUninit<Part>>  = List(6) { MaybeUninit.uninit(ObjectSlotLayout<Part>()) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toShortestExpStr(formatShortest, num, sign, Pair(0, 0), upper, buf, parts)
     // SAFETY: `toShortestExpStr` and `formatShortest` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)

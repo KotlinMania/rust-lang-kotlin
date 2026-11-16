@@ -2,27 +2,24 @@
 
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockidT
-import io.github.kotlinmania.rustlang.libc.GidT
-import io.github.kotlinmania.rustlang.libc.KeyT
-import io.github.kotlinmania.rustlang.libc.LocaleT
-import io.github.kotlinmania.rustlang.libc.NfdsT
-import io.github.kotlinmania.rustlang.libc.NlItem
-import io.github.kotlinmania.rustlang.libc.Off64T
-import io.github.kotlinmania.rustlang.libc.OffT
-import io.github.kotlinmania.rustlang.libc.PidT
-import io.github.kotlinmania.rustlang.libc.SocklenT
-import io.github.kotlinmania.rustlang.libc.TimerT
+import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.LocaleT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.unix.SsizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NlItem
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 
 private object UnixLinuxlikeLinuxL4reSharedJniBridge {
     init {
@@ -258,7 +255,7 @@ private object UnixLinuxlikeLinuxL4reSharedJniBridge {
     external fun libcUnixLinuxlikeLinuxL4reSharedPrctl(option: Int, kmVac: Int, kmVa0: Long, kmVa1: Long, kmVa2: Long, kmVa3: Long): Int
 
     @JvmStatic
-    external fun libcUnixLinuxlikeLinuxL4reSharedPpoll(fds: Long, nfds: Int, timeout: Long, sigmask: Long): Int
+    external fun libcUnixLinuxlikeLinuxL4reSharedPpoll(fds: Long, nfds: Long, timeout: Long, sigmask: Long): Int
 
     @JvmStatic
     external fun libcUnixLinuxlikeLinuxL4reSharedSethostname(name: Long, len: Long): Int
@@ -581,7 +578,7 @@ public actual fun prctl(option: CInt, vararg variadicArgs: Long): CInt =
     UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedPrctl(option, variadicArgs.size.coerceAtMost(4), if (variadicArgs.size > 0) variadicArgs[0] else 0L, if (variadicArgs.size > 1) variadicArgs[1] else 0L, if (variadicArgs.size > 2) variadicArgs[2] else 0L, if (variadicArgs.size > 3) variadicArgs[3] else 0L)
 
 public actual fun ppoll(fds: MutPtr, nfds: NfdsT, timeout: ConstPtr, sigmask: ConstPtr): CInt =
-    UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedPpoll(fds.rawAddress, nfds.toInt(), timeout.rawAddress, sigmask.rawAddress)
+    UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedPpoll(fds.rawAddress, nfds.toLong(), timeout.rawAddress, sigmask.rawAddress)
 
 public actual fun sethostname(name: ConstPtr, len: SizeT): CInt =
     UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedSethostname(name.rawAddress, len.toLong())
@@ -675,7 +672,7 @@ public actual fun gettid(): PidT =
     UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedGettid()
 
 public actual fun timerCreate(clockid: ClockidT, sevp: MutPtr, timerid: MutPtr): CInt =
-    UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedTimerCreate(clockid.toInt(), sevp.rawAddress, timerid.rawAddress)
+    UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedTimerCreate(clockid, sevp.rawAddress, timerid.rawAddress)
 
 public actual fun timerDelete(timerid: TimerT): CInt =
     UnixLinuxlikeLinuxL4reSharedJniBridge.libcUnixLinuxlikeLinuxL4reSharedTimerDelete(timerid.rawAddress)

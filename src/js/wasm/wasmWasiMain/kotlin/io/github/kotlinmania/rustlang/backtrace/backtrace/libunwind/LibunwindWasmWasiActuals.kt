@@ -3,7 +3,7 @@
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.helenos.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun unwindBacktrace(trace: UnwindTraceFn, traceArgument: MutPtr): UnwindReasonCode =

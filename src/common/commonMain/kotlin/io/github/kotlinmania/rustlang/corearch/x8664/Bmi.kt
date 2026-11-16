@@ -1,7 +1,7 @@
 // port-lint: source x86_64/bmi.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
 
 // Bit Manipulation Instruction (BMI) Set 1.0.
 //
@@ -76,7 +76,7 @@ public fun blsrU64(x: ULong): ULong = x and ((x - 1uL))
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_tzcnt_u64)
  */
-public fun tzcntU64(x: ULong): ULong = rustTrailingZeros(x).toULong()
+public fun tzcntU64(x: ULong): ULong = x.trailingZeros().toULong()
 
 /**
  * Counts the number of trailing least significant zero bits.
@@ -85,6 +85,6 @@ public fun tzcntU64(x: ULong): ULong = rustTrailingZeros(x).toULong()
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_tzcnt_64)
  */
-public fun mmTzcnt64(x: ULong): Long = rustTrailingZeros(x).toLong()
+public fun mmTzcnt64(x: ULong): Long = x.trailingZeros().toLong()
 
 public expect fun x86BmiBextr64(x: ULong, y: ULong): ULong

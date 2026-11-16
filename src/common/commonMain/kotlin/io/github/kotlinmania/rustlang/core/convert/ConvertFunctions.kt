@@ -79,7 +79,7 @@ public fun <T, U> T.tryInto(tryFromUFn: (T) -> Result<U, Error>): Result<U, Erro
 
 // Infallible conversions are semantically equivalent to fallible conversions
 // with an uninhabited error type.
-public fun <T, U> tryFromT(value: U, intoUFn: (U) -> T): Result<T, kotlin.Nothing> where U : Into<T> = Result.Ok(intoUFn(value))
+public fun <T, U> tryFromT(value: U, intoUFn: (U) -> T): Result<T, kotlin.Nothing> where U : Into<T> = Result.Ok<T, kotlin.Nothing>(intoUFn(value))
 
 // ///////////////////////////////////////////////////////////////////////////
 // CONCRETE IMPLS

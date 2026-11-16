@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.procmacro.bridge
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.procmacro.buffer.Buffer
 
@@ -29,7 +30,7 @@ public fun <S> UByte.encode(w: Buffer, arg1: S) {
 public fun <S> decodeUByte(r: List<UByte>, arg1: S): UByte {
     var r1 = r
     val x = r1[0]
-    r1 = ((r1).slice(1 until r1.size))
+    r1 = ((r1).subList(1, (r1).size))
     return x
 }
 
@@ -41,8 +42,8 @@ public fun <S> decodeUInt(r: List<UByte>, arg1: S): UInt {
     var r1 = r
     val N: Int = sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)
     val bytes = MutableList((N).toInt()) { 0 }
-    bytes.copyFromSlice(((r1).slice(0 until N)))
-    r1 = ((r1).slice(N until r1.size))
+    bytes.copyFromSlice(((r1).subList(0, N)))
+    r1 = ((r1).subList(N, (r1).size))
     return UInt.fromLeBytes(bytes)
 }
 
@@ -54,8 +55,8 @@ public fun <S> decodeInt(r: List<UByte>, arg1: S): Int {
     var r1 = r
     val N: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
     val bytes = MutableList((N).toInt()) { 0 }
-    bytes.copyFromSlice(((r1).slice(0 until N)))
-    r1 = ((r1).slice(N until r1.size))
+    bytes.copyFromSlice(((r1).subList(0, N)))
+    r1 = ((r1).subList(N, (r1).size))
     return Int.fromLeBytes(bytes)
 }
 
@@ -70,11 +71,11 @@ public fun <S> decodeBoolean(r: List<UByte>, s: S): Boolean =
         else -> error("unreachable")
     }
 
-public fun <S> NonZero<UInt>.encode(w: Buffer, s: S) {
+public fun <S> NonZero<UInt, NonZeroU32Inner>.encode(w: Buffer, s: S) {
     this.get().encode(w, s)
 }
 
-public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt> = NonZero.new(UInt.Decode(r, s)).unwrap()
+public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(UInt.Decode(r, s)))!!
 
 public fun <S, A : Encode<S>, B : Encode<S>> Pair<A, B>.encode(w: Buffer, s: S) {
     this.value.encode(w, s)
@@ -92,8 +93,8 @@ public fun <S> String.encode(w: Buffer, s: S) {
 public fun <S> decodeString(r: List<UByte>, s: S): String {
     var r1 = r
     val len = Int.Decode(r1, s)
-    val xs = ((r1).slice(0 until len))
-    r1 = ((r1).slice(len until r1.size))
+    val xs = ((r1).subList(0, len))
+    r1 = ((r1).subList(len, (r1).size))
     return String.fromUtf8(xs).unwrap()
 }
 

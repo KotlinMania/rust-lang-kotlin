@@ -4,23 +4,23 @@ package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.zeroed
-import io.github.kotlinmania.rustlang.core.num.rustCheckedAdd
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CMSG_DATA
 import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
@@ -28,9 +28,9 @@ import io.github.kotlinmania.rustlang.libc.CMSG_LEN
 import io.github.kotlinmania.rustlang.libc.CMSG_NXTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_SPACE
 import io.github.kotlinmania.rustlang.libc.SCM_CREDS2
-import io.github.kotlinmania.rustlang.libc.helenos.PidT
 import io.github.kotlinmania.rustlang.libc.memcpy
 import io.github.kotlinmania.rustlang.libc.unix.GidT
+import io.github.kotlinmania.rustlang.libc.unix.PidT
 import io.github.kotlinmania.rustlang.libc.unix.UidT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
 import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
@@ -41,19 +41,19 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
 import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.net.connection.wasip1.Socket
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
 
 public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error> {
     return run {
-        val localStorageL41C8 = AddressableLocal(SockaddrUn(), ObjectSlotLayout<SockaddrUn>())
+        val localStorageL41C8 = AddressableLocal(SockaddrUn(), UnresolvedTypeLayout<SockaddrUn>())
         val msgName by localStorageL41C8
-        val localStorageL42C8 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val localStorageL42C8 = AddressableLocal(Msghdr(), UnresolvedTypeLayout<Msghdr>())
         val msg by localStorageL42C8
         msg.msgName = (localStorageL41C8.asMutPtr())
-        msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = ObjectSlotLayout<SockaddrUn>())
+        msg.msgNamelen = sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>())
         msg.msgIov = bufs.asMutPtr()
         msg.msgIovlen = ((bufs.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
         msg.msgControllen = ((ancillary.buffer.size as Any?) as Result<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>)
@@ -61,12 +61,12 @@ public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSli
         if (msg.msgControllen > 0) {
             msg.msgControl = ancillary.buffer.asMutPtr()
         }
-        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(tryResult.error) }
         ancillary.length = msg.msgControllen.toInt()
         ancillary.truncated = (msg.msgFlags and MSG_CTRUNC == MSG_CTRUNC).toUByte()
         val truncated = msg.msgFlags and MSG_TRUNC == MSG_TRUNC
         val addr = SocketAddr.fromParts(msgName, msg.msgNamelen)
-        Result.Ok(Triple(count, truncated, addr))
+        Result.Ok<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(Triple(count, truncated, addr))
     }
 }
 
@@ -75,11 +75,11 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
-                when (val tryResult = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn(path1)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
             } else {
-                Pair(MaybeUninit.zeroed(ObjectSlotLayout<Result<Int, Error>>()).assumeInit(), 0)
+                Pair(MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
-        val localStorageL76C8 = AddressableLocal(Msghdr(), ObjectSlotLayout<Msghdr>())
+        val localStorageL76C8 = AddressableLocal(Msghdr(), UnresolvedTypeLayout<Msghdr>())
         val msg by localStorageL76C8
         msg.msgName = mutPtrFromRustCast((addrOfMut(msgName)))
         msg.msgNamelen = msgNamelen
@@ -95,9 +95,9 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
     }
 }
 
-public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutableReference<Int>, source: List<T>, cmsgLevel: CInt, cmsgType: CInt, typeLayoutT: TypeLayout<T>): Boolean {
+public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutableReference<Int>, source: List<T>, cmsgLevel: CInt, cmsgType: CInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
     val length1 = length
-    val cmsgSize = rustCheckedMul(source.size, sizeOf<T>(typeLayoutT = typeLayoutT))
+    val cmsgSize = source.size.checkedMul(sizeOf<T>(typeLayoutT = typeLayoutT))
     val sourceLen2 =
         if (cmsgSize != null) {
             val sourceLen = cmsgSize
@@ -116,7 +116,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
     run {
         val additionalSpace = CMSG_SPACE(sourceLen2).toInt()
         val newLength1 =
-            when (val matchVal1 = rustCheckedAdd(additionalSpace, (length1).read())) {
+            when (val matchVal1 = additionalSpace.checkedAdd((length1).read())) {
                 null -> {
                     return false
                 }
@@ -128,7 +128,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
         if (newLength1 > buffer.size) {
             return false
         }
-        ((buffer).slice((length1).read() until newLength1)).fill(0)
+        ((buffer).subList((length1).read(), newLength1)).fill(0)
         (length1).write(newLength1)
         val msg: Msghdr  = Msghdr()
         msg.msgControl = buffer.asMutPtr()
@@ -170,11 +170,11 @@ public open class AncillaryDataIter<T>(
         }
     }
 
-    public open fun next(typeLayoutT: TypeLayout<T>): T? =
+    public open fun next(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
         if (sizeOf<T>(typeLayoutT = typeLayoutT) <= this.data.size) {
             run {
                 val unit = readUnaligned(this.data.asPtr())
-                this.data = ((this.data).slice(sizeOf<T>(typeLayoutT = typeLayoutT) until this.data.size))
+                this.data = ((this.data).subList(sizeOf<T>(typeLayoutT = typeLayoutT), (this.data).size))
                 unit
             }
         } else {
@@ -377,19 +377,19 @@ public sealed class AncillaryData {
                 val cmsgLenZero = CMSG_LEN(0).toInt()
                 val dataLen = cmsg.cmsgLen.toInt() - cmsgLenZero
                 val data = CMSG_DATA(cmsg).cast()
-                val data1 = rawSliceList(data, dataLen.toInt(), PrimitiveLayouts.U8)
+                val data1 = linearSliceView(data, dataLen.toInt(), PrimitiveLayouts.U8)
                 when (val matchVal = cmsg.cmsgLevel) {
                     SOL_SOCKET -> when (val matchVal1 = cmsg.cmsgType) {
-                        io.github.kotlinmania.rustlang.libc.ScmRights -> Result.Ok(AncillaryData.asRights(data1))
-                        io.github.kotlinmania.rustlang.libc.ScmCredentials -> Result.Ok(AncillaryData.asCredentials(data1))
+                        io.github.kotlinmania.rustlang.libc.ScmRights -> Result.Ok<AncillaryData, AncillaryError>(AncillaryData.asRights(data1))
+                        io.github.kotlinmania.rustlang.libc.ScmCredentials -> Result.Ok<AncillaryData, AncillaryError>(AncillaryData.asCredentials(data1))
                         else -> {
                             val cmsgType = matchVal1
-                            Result.Err(AncillaryError.Unknown(cmsgLevel = SOL_SOCKET, cmsgType = cmsgType))
+                            Result.Err<AncillaryData, AncillaryError>(AncillaryError.Unknown(cmsgLevel = SOL_SOCKET, cmsgType = cmsgType))
                         }
                     }
                     else -> {
                         val cmsgLevel = matchVal
-                        Result.Err(AncillaryError.Unknown(cmsgLevel = cmsgLevel, cmsgType = cmsg.cmsgType))
+                        Result.Err<AncillaryData, AncillaryError>(AncillaryError.Unknown(cmsgLevel = cmsgLevel, cmsgType = cmsg.cmsgType))
                     }
                 }
             }
@@ -427,7 +427,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.
@@ -501,7 +501,7 @@ public open class SocketAncillary(
     /**
      * Returns the iterator of the control messages.
      */
-    public open fun messages(): Messages = Messages(buffer = ((this.buffer).slice(0 until this.length)), current = null)
+    public open fun messages(): Messages = Messages(buffer = ((this.buffer).subList(0, this.length)), current = null)
 
     /**
      * Is `true` if during a recv operation the ancillary was truncated.

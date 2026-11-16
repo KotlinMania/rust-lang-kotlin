@@ -1,17 +1,18 @@
 // port-lint: source sys/env/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.env.windows
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
+import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.c
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
@@ -33,9 +34,9 @@ public open class Env internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val iter = this.iter
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter.clone()).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter.clone()).finish()
     }
 
     public open fun next(): Pair<OsString, OsString>? {
@@ -118,30 +119,30 @@ public open class EnvIterator internal constructor(
         }
         while (true) {
             run {
-                if ((ObjectSlotLayout<c.Wchar>()).readNative((cur).rawAddress) == 0u.toUShort()) {
+                if ((UnresolvedTypeLayout<c.Wchar>()).readNative((cur).rawAddress) == 0u.toUShort()) {
                     return null
                 }
-                val p = ConstPtr(((ObjectSlotLayout<c.Wchar>()).readNative((cur).rawAddress)).toLong())
+                val p = ConstPtr(((UnresolvedTypeLayout<c.Wchar>()).readNative((cur).rawAddress)).toLong())
                 var len = 0
                 while ((PrimitiveLayouts.U16).readNative((ConstPtr((p).rawAddress + ((len).toLong() * (PrimitiveLayouts.U16).strideBytes))).rawAddress) != 0u.toUShort()) {
                     len += 1
                 }
                 val s = Slice.fromRawParts(p, len)
-                (ObjectSlotLayout<c.Wchar>()).writeNative((cur).rawAddress, MutPtr((cur).rawAddress + ((len + 1).toLong() * (ObjectSlotLayout<c.Wchar>()).strideBytes)))
+                (UnresolvedTypeLayout<c.Wchar>()).writeNative((cur).rawAddress, MutPtr((cur).rawAddress + ((len + 1).toLong() * (UnresolvedTypeLayout<c.Wchar>()).strideBytes)))
                 // Windows allows environment variables to start with an equals
                 // symbol (in any other position, this is the separator between
                 // variable name and value). Since`s` has at least length 1 at
                 // this point (because the empty string terminates the array of
                 // environment variables), we can safely slice.
                 val pos =
-                    when (val matchVal = (((s).slice(1 until s.size)).indexOfFirst({ u -> u == 61u.toUShort() }).takeIf { it >= 0 })?.let({ p1 -> p1 + 1 })) {
+                    when (val matchVal = (((s).subList(1, (s).size)).indexOfFirst({ u -> u == 61u.toUShort() }).takeIf { it >= 0 })?.let({ p1 -> p1 + 1 })) {
                         null -> { continue }
                         else -> {
                             val p1 = matchVal
                             p1
                         }
                     }
-                return Pair(OsStringExt.fromWide(((s).slice(0 until pos))), OsStringExt.fromWide(((s).slice(pos + 1 until s.size))))
+                return Pair(OsStringExt.fromWide(((s).subList(0, pos))), OsStringExt.fromWide(((s).subList(pos + 1, (s).size))))
             }
         }
     }
@@ -179,7 +180,7 @@ public fun env(): Env =
     run {
         val ch = c.GetEnvironmentStringsW()
         if (ch.isNull()) {
-            error("failure getting env string from OS: ${Error.lastOsError()}")
+            error("failure getting env string from OS: ${io.github.kotlinmania.rustlang.std.io.Error.lastOsError()}")
         }
         Env(base = ch, iter = EnvIterator(ch))
     }
@@ -192,8 +193,8 @@ public fun getenv(k: OsStr): OsString? {
 public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // SAFETY: We ensure that k and v are null-terminated wide strings.
     return run {
-        val k1 = when (val tryResult = toU16s(k)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
-        val v1 = when (val tryResult = toU16s(v)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val k1 = when (val tryResult = toU16s(k)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+        val v1 = when (val tryResult = toU16s(v)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
         cvt(c.SetEnvironmentVariableW(k1.asPtr(), v1.asPtr())).map({ Unit })
     }
 }
@@ -201,7 +202,7 @@ public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustla
 public fun unsetenv(n: OsStr): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     // SAFETY: We ensure that v is a null-terminated wide strings.
     return run {
-        val v = when (val tryResult = toU16s(n)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        val v = when (val tryResult = toU16s(n)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
         cvt(c.SetEnvironmentVariableW(v.asPtr(), ConstPtr(0L))).map({ Unit })
     }
 }

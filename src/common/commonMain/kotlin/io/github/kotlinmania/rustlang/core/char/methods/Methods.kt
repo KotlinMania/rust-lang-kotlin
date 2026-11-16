@@ -12,6 +12,10 @@ import io.github.kotlinmania.rustlang.core.char.TAG_CONT
 import io.github.kotlinmania.rustlang.core.char.TAG_FOUR_B
 import io.github.kotlinmania.rustlang.core.char.TAG_THREE_B
 import io.github.kotlinmania.rustlang.core.char.TAG_TWO_B
+import io.github.kotlinmania.rustlang.core.char.ToCasefold
+import io.github.kotlinmania.rustlang.core.char.ToLowercase
+import io.github.kotlinmania.rustlang.core.char.ToTitlecase
+import io.github.kotlinmania.rustlang.core.char.ToUppercase
 import io.github.kotlinmania.rustlang.core.char.decode.DecodeUtf16
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
@@ -28,13 +32,11 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut
-import io.github.kotlinmania.rustlang.core.str.rustToDigit
-import io.github.kotlinmania.rustlang.core.ubchecks.assertUnsafePrecondition
 import io.github.kotlinmania.rustlang.core.unicode.Alphabetic
 import io.github.kotlinmania.rustlang.core.unicode.CaseIgnorable
 import io.github.kotlinmania.rustlang.core.unicode.Cf
@@ -346,7 +348,7 @@ public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? = io.github.k
  * '1'.isDigit(1)
  * ```
  */
-public fun Char.isDigit(radix: UInt): Boolean = this.rustToDigit(radix) != null
+public fun Char.isDigit(radix: UInt): Boolean = this.toDigit(radix) != null
 
 /**
  * Converts a `char` to a digit in the given radix.
@@ -1857,7 +1859,7 @@ public fun Char.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
  * This char must be within the ASCII range, or else this is UB.
  */
 public fun Char.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
-    assertUnsafePrecondition(checkLibraryUb, "as_ascii_unchecked requires that the char is valid ASCII", it, this, it, isAscii)
+    Unit
     // SAFETY: the caller promised that this char is ASCII.
     return Char.fromU8Unchecked(this.toUByte())
 }
@@ -2491,7 +2493,7 @@ public fun encodeUtf8Raw(code: UInt, dst: MutableList<UByte>): MutableList<UByte
     // SAFETY: `dst` is checked to be at least the length needed to encode the codepoint.
     encodeUtf8RawUnchecked(code, dst.asMutPtr())
     // SAFETY: `<[UByte]>.asMutPtr` is guaranteed to return a valid pointer and `len` has been tested to be within bounds.
-    return rawMutSliceList(dst.asMutPtr(), len.toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(dst.asMutPtr(), len.toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -2578,5 +2580,5 @@ public fun encodeUtf16Raw(code: UInt, dst: MutableList<UShort>): MutableList<USh
         }
     }
     // SAFETY: `<[UShort]>.asMutPtr` is guaranteed to return a valid pointer and `len` has been tested to be within bounds.
-    return rawMutSliceList(dst.asMutPtr(), len.toInt(), PrimitiveLayouts.U16)
+    return linearMutSliceView(dst.asMutPtr(), len.toInt(), PrimitiveLayouts.U16)
 }

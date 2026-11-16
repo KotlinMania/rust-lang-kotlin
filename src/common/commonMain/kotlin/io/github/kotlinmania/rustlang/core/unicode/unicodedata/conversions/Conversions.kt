@@ -7,6 +7,9 @@ import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
@@ -107,8 +110,8 @@ public fun lookup(input: Char, l1Lut: L1Lut): List<Char>? {
                 Ordering.Equal
             }
         })
-    if (idx is Result.Ok<*>) {
-        val idx1 = (idx as Result.Ok<*>).value
+    if (idx is Result.Ok) {
+        val idx1 = idx.value
         // SAFETY: binary search guarantees that the index is in bounds.
         val (range, outputDelta) = l2Lut.singles.getUnchecked(idx1)
         val mask = range.parity.toUShort()

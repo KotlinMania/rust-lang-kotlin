@@ -1,16 +1,16 @@
 // port-lint: source iter/adapters/step_by.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.stepby
 
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.num.rustCheckedMul
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingAdd
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
@@ -44,7 +44,7 @@ public open class StepBy<I>(
      */
     public var stepMinusOne: Int,
     public var firstTake: Boolean,
-) : TrustedLen<StepBy<I>>, StepByImpl<I, Any?, Item>, StepByBackImpl<I, Any?, Item>, Iterable<Item> {
+) : TrustedLen<StepBy<I>>, StepByImpl<I, Item>, StepByBackImpl<I, Item>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@StepBy.next()) {
@@ -60,10 +60,10 @@ public open class StepBy<I>(
      * The `step` that was originally passed to `Iterator.stepBy(step)`,
      * aka `self.stepMinusOne + 1`.
      */
-    public open fun originalStep(): NonZero<Int> {
+    public open fun originalStep(): NonZero<Int, NonZeroUsizeInner> {
         // SAFETY: By type invariant, `stepMinusOne` cannot be `MAX`, which
         // means the addition cannot overflow and the result cannot be zero.
-        return NonZero.newUnchecked(uncheckedAdd(this.stepMinusOne, 1))
+        return NonZero.newUnchecked<NonZeroUsizeInner, Int>(((this.stepMinusOne) + (1)))
     }
 
     public override fun next(): Item? = this.specNext()
@@ -122,13 +122,13 @@ public open class StepBy<I>(
     }
 
     public override fun specSizeHint(): Pair<Int, Int?> {
-        fun firstSize(step: NonZero<Int>): (Int) -> Int =
+        fun firstSize(step: NonZero<Int, NonZeroUsizeInner>): (Int) -> Int =
             { n -> if (n == 0) {
                 0
             } else {
                 1 + (n - 1) / step
             } }
-        fun otherSize(step: NonZero<Int>): (Int) -> Int = { n -> n / step }
+        fun otherSize(step: NonZero<Int, NonZeroUsizeInner>): (Int) -> Int = { n -> n / step }
         val (low, high) = this.iter.sizeHint()
         return if (this.firstTake) {
             val f = firstSize(this.originalStep())
@@ -161,7 +161,7 @@ public open class StepBy<I>(
         }
         // overflow handling
         while (true) {
-            val mul = rustCheckedMul(n1, step.toInt())
+            val mul = n1.checkedMul(step.toInt())
             if (mul != null) {
                 return this.iter.nth(mul!! - 1)
             }
@@ -190,7 +190,7 @@ public open class StepBy<I>(
                 null -> { return acc1 }
                 else -> {
                     val x = matchVal
-                    acc1 = when (val tryResult = f(acc1, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                    acc1 = when (val tryResult = f(acc1, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
             }
         }
@@ -220,7 +220,7 @@ public open class StepBy<I>(
         // is out of bounds because the length of `self.iter` does not exceed
         // `Int.MAX` (because `I: ExactSizeIterator`) and `nthBack` is
         // zero-indexed
-        val n1 = rustSaturatingAdd(rustSaturatingMul(n, this.originalStep().get().toInt()), this.nextBackIndex().toInt())
+        val n1 = n.saturatingMul(this.originalStep().get().toInt()).saturatingAdd(this.nextBackIndex().toInt())
         return this.iter.nthBack(n1)
     }
 
@@ -230,7 +230,7 @@ public open class StepBy<I>(
             null -> init
             else -> {
                 val x = matchVal
-                val acc = when (val tryResult = f(init, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+                val acc = when (val tryResult = f(init, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 fromFn(nthBack(this.iter, this.stepMinusOne)).tryFold(acc, f)
             }
         }
@@ -413,7 +413,7 @@ public fun <Acc, R> StepBy<Range<UByte>>.specTryFold(init: Acc, f: (Acc, Item) -
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -468,7 +468,7 @@ public fun <Acc, R> StepBy<Range<UShort>>.specTryFoldRangeUShort(init: Acc, f: (
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -523,7 +523,7 @@ public fun <Acc, R> StepBy<Range<UInt>>.specTryFoldRangeUInt(init: Acc, f: (Acc,
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -578,7 +578,7 @@ public fun <Acc, R> StepBy<Range<ULong>>.specTryFoldRangeULong(init: Acc, f: (Ac
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -633,7 +633,7 @@ public fun <Acc, R> StepBy<IntRange>.specTryFoldRangeInt(init: Acc, f: (Acc, Ite
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -688,7 +688,7 @@ public fun <Acc, R> StepBy<RangeIter<UByte>>.specTryFoldRangeIterUByte(init: Acc
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -743,7 +743,7 @@ public fun <Acc, R> StepBy<RangeIter<UShort>>.specTryFoldRangeIterUShort(init: A
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -798,7 +798,7 @@ public fun <Acc, R> StepBy<RangeIter<UInt>>.specTryFoldRangeIterUInt(init: Acc, 
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -853,7 +853,7 @@ public fun <Acc, R> StepBy<RangeIter<ULong>>.specTryFoldRangeIterULong(init: Acc
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -908,7 +908,7 @@ public fun <Acc, R> StepBy<RangeIter<Int>>.specTryFoldRangeIterInt(init: Acc, f:
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -952,7 +952,7 @@ public fun <Acc, R> StepBy<Range<UByte>>.specTryRfold(init: Acc, f: (Acc, Item) 
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -994,7 +994,7 @@ public fun <Acc, R> StepBy<Range<UShort>>.specTryRfoldRangeUShort(init: Acc, f: 
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -1036,7 +1036,7 @@ public fun <Acc, R> StepBy<Range<UInt>>.specTryRfoldRangeUInt(init: Acc, f: (Acc
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -1078,7 +1078,7 @@ public fun <Acc, R> StepBy<IntRange>.specTryRfoldRangeInt(init: Acc, f: (Acc, It
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -1120,7 +1120,7 @@ public fun <Acc, R> StepBy<RangeIter<UByte>>.specTryRfoldRangeIterUByte(init: Ac
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -1162,7 +1162,7 @@ public fun <Acc, R> StepBy<RangeIter<UShort>>.specTryRfoldRangeIterUShort(init: 
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }
@@ -1204,7 +1204,7 @@ public fun <Acc, R> StepBy<RangeIter<Int>>.specTryRfoldRangeIterInt(init: Acc, f
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }

@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.marker.ConstParamTy
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.result.and
 
 //
@@ -49,6 +50,7 @@ import io.github.kotlinmania.rustlang.core.result.and
  * import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
@@ -56,7 +58,7 @@ import io.github.kotlinmania.rustlang.core.result.and
  * public fun doctestEntry() {
  *     // size = 1
  *     @repr(C, align(2))
- *     open class Dst(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UByte>) {
+ *     open class Dst(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) {
  *         public var field0: UByte
  *             get() = value
  *             set(v) {
@@ -67,7 +69,7 @@ import io.github.kotlinmania.rustlang.core.result.and
  *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
  *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
  *
- *         public constructor(value: UByte, fieldLayout: TypeLayout<UByte>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
+ *         public constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
  *
  *         public fun pointerLayout(): TypeLayout<Dst> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Dst(ptr, layout) }, { it.value })
  *     }
@@ -300,7 +302,7 @@ public open class Assume(
      * ```
      */
     public var validity: Boolean,
-) : ConstParamTy, Add<Assume, Any?, Assume>, Sub<Assume, Any?, Assume> {
+) : ConstParamTy, Add<Assume, Assume>, Sub<Assume, Assume> {
     public open fun clone(): Assume = Assume(alignment, lifetimes, safety, validity)
 
     /**
@@ -315,6 +317,7 @@ public open class Assume(
      * import core.mem.Assume
      * import core.mem.TransmuteFrom
      * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
      * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
      *
      * @feature(adtConstParams, genericConstExprs, pointerIsAlignedTo, transmutability,)
@@ -329,7 +332,7 @@ public open class Assume(
      *      * The caller guarantees that the obligations required by `ASSUME`, except
      *      * alignment, are satisfied.
      *      * /
-     *     fun <Src, Dst> tryTransmuteRef(src: Src, assume: Assume, typeLayoutDst: TypeLayout<Dst>): Dst? {
+     *     fun <Src, Dst> tryTransmuteRef(src: Src, assume: Assume, typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout()): Dst? {
      *         return if (ConstPtr.isAlignedTo(src, alignOf<Dst>(typeLayoutT = typeLayoutDst))) {
      *             // SAFETY: By the above dynamic check, we have ensured that the address
      *             // of `src` satisfies the alignment requirements of `Dst`. By contract
@@ -353,12 +356,14 @@ public open class Assume(
      *
      * ```kotlin
      * import core.mem.Assume
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+     * import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
      *
      * @feature(transmutability)
      * public fun doctestEntry() {
-     *     val assumptions = Assume.ALIGNMENT.and(Assume.SAFETY)
+     *     val assumptions = Alignment.newUnchecked((UnresolvedTypeLayout<Assume>()).alignBytes.toInt()).and(Assume.SAFETY)
      *     val toBeRemoved = Assume.SAFETY.and(Assume.VALIDITY)
-     *     check(assumptions.butNot(toBeRemoved) == Assume.ALIGNMENT)
+     *     check(assumptions.butNot(toBeRemoved) == Alignment.newUnchecked((UnresolvedTypeLayout<Assume>()).alignBytes.toInt()))
      * }
      * ```
      */

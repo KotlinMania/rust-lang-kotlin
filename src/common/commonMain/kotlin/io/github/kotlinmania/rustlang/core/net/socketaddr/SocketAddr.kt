@@ -221,11 +221,11 @@ public sealed class SocketAddr {
         when (this) {
             is SocketAddr.V4 -> {
                 val (a) = this
-                run { a.fmt(f); Result.Ok(Unit) }
+                a.fmt(f)
             }
             is SocketAddr.V6 -> {
                 val (a1) = this
-                run { a1.fmt(f); Result.Ok(Unit) }
+                a1.fmt(f)
             }
         }
 

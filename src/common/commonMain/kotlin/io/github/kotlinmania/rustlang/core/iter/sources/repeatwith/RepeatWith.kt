@@ -124,7 +124,7 @@ public open class RepeatWith<F>(
         // is the only way to exit the loop.
         while (true) {
             val item = (this.repeater)()
-            init1 = when (val tryResult = fold(init1, item)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            init1 = when (val tryResult = fold(init1, item)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
     }
 

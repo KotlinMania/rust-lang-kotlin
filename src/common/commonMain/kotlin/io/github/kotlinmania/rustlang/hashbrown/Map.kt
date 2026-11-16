@@ -3,10 +3,13 @@
 
 package io.github.kotlinmania.rustlang.hashbrown
 
-import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawDrain
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
@@ -1222,10 +1225,10 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         val hasher = makeHasher(this.hashBuilder)
         return run {
             val matchVal = this.table.findOrFindInsertIndex(hash, equivalent, hasher)
-            when (matchVal) { is Result.Ok<*> -> {
+            when (matchVal) { is Result.Ok -> {
                 val bucket = matchVal.value
                 replace(bucket.asMut().second, v)
-            }; is Result.Err<*> -> {
+            }; is Result.Err -> {
                 val index = matchVal.error
                 run {
                     this.table.insertAtIndex(hash, index, Pair(k, v))
@@ -1335,11 +1338,11 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         when (val matchVal = this.entry(key)) {
             is Entry.Occupied -> {
                 val (entry) = matchVal
-                Result.Err(OccupiedError(entry = entry, value = value))
+                Result.Err<V, OccupiedError<K, V, S, A>>(OccupiedError(entry = entry, value = value))
             }
             is Entry.Vacant -> {
                 val (entry1) = matchVal
-                Result.Ok(entry1.insert(value))
+                Result.Ok<V, OccupiedError<K, V, S, A>>(entry1.insert(value))
             }
         }
 
@@ -1421,9 +1424,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         return this.iter().all({ (key, value) -> other.get(key).isSomeAnd({ v -> value == v }) })
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<String>(); fun entry(k: Any?, v: Any?) = apply { entries.add("$k: $v") }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
 
     /**
      * Returns a reference to the value corresponding to the supplied key.
@@ -1775,6 +1776,147 @@ public fun <Q, K> equivalent(k: Q): (K) -> Boolean where Q : Equivalent<K> = { x
 public fun <Q, S> makeHash(hashBuilder: S, value: Q): ULong where S : BuildHasher = hashBuilder.hashOne(value)
 
 /**
+ * Creates an empty `HashMap`.
+ *
+ * The hash map is initially created with a capacity of 0, so it will not allocate until it
+ * is first inserted into.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withHasher`](HashMap.withHasher) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * var map: MutableMap<String, Int> = mutableMapOf()
+ * check(map.size == 0)
+ * check(map.capacity() == 0)
+ * ```
+ */
+public fun <K, V> HashMap.Companion.new(): HashMap<K, V, DefaultHashBuilder, Global> = HashMap.default()
+
+/**
+ * Creates an empty `HashMap` with the specified capacity.
+ *
+ * The hash map will be able to hold at least `capacity` elements without
+ * reallocating. If `capacity` is 0, the hash map will not allocate.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withCapacityAndHasher`](HashMap.withCapacityAndHasher) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * var map: MutableMap<String, Int> = mutableMapOf()
+ * check(map.size == 0)
+ * check(map.capacity() >= 10)
+ * ```
+ */
+public fun <K, V> HashMap.Companion.withCapacity(capacity: Int): HashMap<K, V, DefaultHashBuilder, Global> = HashMap.withCapacityAndHasher(capacity, DefaultHashBuilder.default())
+
+/**
+ * Creates an empty `HashMap` using the given allocator.
+ *
+ * The hash map is initially created with a capacity of 0, so it will not allocate until it
+ * is first inserted into.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withHasherIn`](HashMap.withHasherIn) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import bumpalo.Bump
+ * import hashbrown.HashMap
+ *
+ * val bump = Bump.new()
+ * var map = HashMap.newIn(bump)
+ * // The created HashMap holds none elements
+ * check(map.len() == 0)
+ * // The created HashMap also doesn't allocate memory
+ * check(map.capacity() == 0)
+ * // Now we insert element inside created HashMap
+ * map.insert("One", 1)
+ * // We can see that the HashMap holds 1 element
+ * check(map.len() == 1)
+ * // And it also allocates some capacity
+ * check(map.capacity() > 1)
+ * ```
+ */
+public fun <K, V, A : Allocator> HashMap.Companion.newIn(alloc: A): HashMap<K, V, DefaultHashBuilder, A> = HashMap.withHasherIn(DefaultHashBuilder.default(), alloc)
+
+/**
+ * Creates an empty `HashMap` with the specified capacity using the given allocator.
+ *
+ * The hash map will be able to hold at least `capacity` elements without
+ * reallocating. If `capacity` is 0, the hash map will not allocate.
+ *
+ * # HashDoS resistance
+ *
+ * The `hashBuilder` normally use a fixed key by default and that does
+ * not allow the `HashMap` to be protected against attacks such as [HashDoS].
+ * Users who require HashDoS resistance should explicitly use
+ * [std.hash.RandomState]
+ * as the hasher when creating a [HashMap], for example with
+ * [`withCapacityAndHasherIn`](HashMap.withCapacityAndHasherIn) method.
+ *
+ * [HashDoS]: https://en.wikipedia.org/wiki/CollisionAttack
+ *
+ * # Examples
+ *
+ * ```kotlin
+ * import bumpalo.Bump
+ * import hashbrown.HashMap
+ *
+ * val bump = Bump.new()
+ * var map = HashMap.withCapacityIn(5, bump)
+ * // The created HashMap holds none elements
+ * check(map.len() == 0)
+ * // But it can hold at least 5 elements without reallocating
+ * val emptyMapCapacity = map.capacity()
+ * check(emptyMapCapacity >= 5)
+ * // Now we insert some 5 elements inside created HashMap
+ * map.insert("One", 1)
+ * map.insert("Two", 2)
+ * map.insert("Three", 3)
+ * map.insert("Four", 4)
+ * map.insert("Five", 5)
+ * // We can see that the HashMap holds 5 elements
+ * check(map.len() == 5)
+ * // But its capacity isn't changed
+ * check(map.capacity() == emptyMapCapacity)
+ * ```
+ */
+public fun <K, V, A : Allocator> HashMap.Companion.withCapacityIn(capacity: Int, alloc: A): HashMap<K, V, DefaultHashBuilder, A> = HashMap.withCapacityAndHasherIn(capacity, DefaultHashBuilder.default(), alloc)
+
+/**
  * Creates an empty `HashMap` which will use the given hash builder to hash
  * keys.
  *
@@ -1807,7 +1949,7 @@ public fun <Q, S> makeHash(hashBuilder: S, value: Q): ULong where S : BuildHashe
  * map.insert(1, 2)
  * ```
  */
-public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V, S> = HashMap(hashBuilder = hashBuilder, table = RawTable.new())
+public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V, S, Global> = HashMap(hashBuilder = hashBuilder, table = RawTable.new())
 
 /**
  * Creates an empty `HashMap` with the specified capacity, using `hashBuilder`
@@ -1842,7 +1984,22 @@ public fun <K, V, S> HashMap.Companion.withHasher(hashBuilder: S): HashMap<K, V,
  * map.insert(1, 2)
  * ```
  */
-public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hashBuilder: S): HashMap<K, V, S> = HashMap(hashBuilder = hashBuilder, table = RawTable.withCapacity(capacity))
+public fun <K, V, S> HashMap.Companion.withCapacityAndHasher(capacity: Int, hashBuilder: S): HashMap<K, V, S, Global> = HashMap(hashBuilder = hashBuilder, table = RawTable.withCapacity(capacity))
+
+// The default hasher is used to match the std implementation signature
+
+/**
+ * # Examples
+ *
+ * ```kotlin
+ * import hashbrown.HashMap
+ *
+ * val map1 = mutableMapOf(1 to 2, 3 to 4)
+ * val map2: HashMap = listOf(Pair(1, 2), Pair(3, 4)).into()
+ * check(map1 == map2)
+ * ```
+ */
+public fun <K, V, A> fromHashMapKVDefaultHashBuilderA(arr: List<Pair<K, V>>, n: Int): HashMap<K, V, DefaultHashBuilder, A> where A : Allocator = ArrayDeque((arr).toList()).toMap(LinkedHashMap())
 
 /**
  * An iterator over the entries of a `HashMap` in arbitrary order.
@@ -1889,9 +2046,7 @@ public open class Iter<K, V> internal constructor(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<K, V> = Iter(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): Pair<K, V>? {
         // Avoid `Option.map` because it bloats LLVM IR.
@@ -2005,9 +2160,7 @@ public open class IterMut<K, V> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <K, V> invoke(
@@ -2077,9 +2230,7 @@ public open class IntoIter<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2142,9 +2293,7 @@ public open class IntoKeys<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (k, _) -> k })).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2206,9 +2355,7 @@ public open class IntoValues<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, v) -> v })).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2262,9 +2409,7 @@ public open class Keys<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Keys<K, V> = Keys(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): K? {
         // Avoid `Option.map` because it bloats LLVM IR.
@@ -2329,9 +2474,7 @@ public open class Values<K, V>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Values<K, V> = Values(inner = this.inner.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): V? {
         // Avoid `Option.map` because it bloats LLVM IR.
@@ -2409,9 +2552,7 @@ public open class Drain<K, V, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -2535,9 +2676,7 @@ public open class ValuesMut<K, V>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.inner.iter().map({ (_, value) -> value })).finish()
 
     public companion object {
         public fun <K, V> default(): ValuesMut<K, V> = ValuesMut(inner = Default.default())
@@ -2669,7 +2808,7 @@ public sealed class Entry<K, V, S, A> {
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Entry.Vacant -> {
                 val (v) = this
@@ -2680,7 +2819,6 @@ public sealed class Entry<K, V, S, A> {
                 DebugTuple(f, "Entry").field(o).finish()
             }
         }
-    }
 
     /**
      * Sets the value of the entry, and returns an `OccupiedEntry`.
@@ -3048,9 +3186,7 @@ public open class OccupiedEntry<K, V, S, A : Allocator> internal constructor(
     public var table: HashMap<K, V, S, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
 
     /**
      * Gets a reference to the key in the entry.
@@ -3488,9 +3624,7 @@ public open class VacantEntry<K, V, S, A : Allocator> internal constructor(
     public var table: HashMap<K, V, S, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "VacantEntry").field(this.key()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.key()).finish()
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -3729,7 +3863,7 @@ public sealed class EntryRef<K, Q, V, S, A> {
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is EntryRef.Vacant -> {
                 val (v) = this
@@ -3740,7 +3874,6 @@ public sealed class EntryRef<K, Q, V, S, A> {
                 DebugTuple(f, "EntryRef").field(o).finish()
             }
         }
-    }
 
     /**
      * Sets the value of the entry, and returns an `OccupiedEntry`.
@@ -4042,9 +4175,7 @@ public open class VacantEntryRef<K, Q, V, S, A : Allocator> internal constructor
     public var table: HashMap<K, V, S, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "VacantEntryRef").field(this.key()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntryRef").field(this.key()).finish()
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -4353,13 +4484,9 @@ public open class OccupiedError<K, V, S, A : Allocator> internal constructor(
     public var entry: OccupiedEntry<K, V, S, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("old_value", this.entry.get()).field("new_value", this.value).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("old_value", this.entry.get()).field("new_value", this.value).finish()
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append("failed to insert ${this.value}, key ${this.entry.key()} already exists with value ${this.entry.get()}")
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("failed to insert ${this.value}, key ${this.entry.key()} already exists with value ${this.entry.get()}"); Result.Ok(Unit) }
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -4373,8 +4500,8 @@ public open class OccupiedError<K, V, S, A : Allocator> internal constructor(
 }
 
 public fun assertCovariance() {
-    fun mapKey(v: HashMap<String, UByte>): HashMap<String, UByte> = v
-    fun mapVal(v: HashMap<UByte, String>): HashMap<UByte, String> = v
+    fun mapKey(v: HashMap<String, UByte, DefaultHashBuilder, Global>): HashMap<String, UByte, DefaultHashBuilder, Global> = v
+    fun mapVal(v: HashMap<UByte, String, DefaultHashBuilder, Global>): HashMap<UByte, String, DefaultHashBuilder, Global> = v
     fun iterKey(v: Iter<String, UByte>): Iter<String, UByte> = v
     fun iterVal(v: Iter<UByte, String>): Iter<UByte, String> = v
     fun <A : Allocator> intoIterKey(v: IntoIter<String, UByte, A>): IntoIter<String, UByte, A> = v
@@ -4383,5 +4510,5 @@ public fun assertCovariance() {
     fun keysVal(v: Keys<UByte, String>): Keys<UByte, String> = v
     fun valuesKey(v: Values<String, UByte>): Values<String, UByte> = v
     fun valuesVal(v: Values<UByte, String>): Values<UByte, String> = v
-    fun drain(d: Drain<String, String>): Drain<String, String> = d
+    fun drain(d: Drain<String, String, Global>): Drain<String, String, Global> = d
 }

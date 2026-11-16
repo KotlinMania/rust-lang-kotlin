@@ -1,9 +1,9 @@
 // port-lint: source new/glibc/sysdeps/nptl/pthread.rs
 package io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.nptl.pthread
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PthreadMutexT
+import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.pthread.pthreadtypes.PthreadMutexT
 import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.nptl.bits.structmutex.pthreadMutexInitializer
 
 // Source header: `sysdeps / nptl / pthread.h`

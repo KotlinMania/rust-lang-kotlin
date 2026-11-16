@@ -1,7 +1,7 @@
 // port-lint: source control/group/neon.rs
 package io.github.kotlinmania.rustlang.hashbrown.control.group.neon
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZeroU64
@@ -40,7 +40,7 @@ public open class Group(
      * aligned to `mem.alignOf<Group>()`.
      */
     public open fun storeAligned(ptr: MutPtr) {
-        check(ptr.alignOffset(alignOf<Group>(typeLayoutT = ObjectSlotLayout<Group>())) == 0)
+        check(ptr.alignOffset(alignOf<Group>(typeLayoutT = UnresolvedTypeLayout<Group>())) == 0)
         run {
             neon.vst1U8(ptr, this.value)
         }
@@ -105,7 +105,7 @@ public open class Group(
         /**
          * Number of bytes in the group.
          */
-        public val WIDTH: Int = sizeOf<Group>(typeLayoutT = ObjectSlotLayout<Group>())
+        public val WIDTH: Int = sizeOf<Group>(typeLayoutT = UnresolvedTypeLayout<Group>())
 
         /**
          * Returns a full group of empty tags, suitable for use as the initial
@@ -132,7 +132,7 @@ public open class Group(
          * aligned to `mem.alignOf<Group>()`.
          */
         public fun loadAligned(ptr: ConstPtr): Group {
-            check(ptr.alignOffset(alignOf<Group>(typeLayoutT = ObjectSlotLayout<Group>())) == 0)
+            check(ptr.alignOffset(alignOf<Group>(typeLayoutT = UnresolvedTypeLayout<Group>())) == 0)
             return Group(neon.vld1U8(ptr))
         }
     }

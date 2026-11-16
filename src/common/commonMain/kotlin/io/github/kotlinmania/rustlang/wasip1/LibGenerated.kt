@@ -1,14 +1,18 @@
 // port-lint: source lib_generated.rs
 package io.github.kotlinmania.rustlang.wasip1
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.core.str.asPtr
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -41,8 +45,9 @@ public typealias Filesize = ULong
 
 public typealias Timestamp = ULong
 
-public data class Clockid(
-    public var value: UInt = 0u,
+public open class Clockid internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) {
     public var field0: UInt
         get() = value
@@ -50,9 +55,19 @@ public data class Clockid(
             value = v
         }
 
-    public fun raw(): UInt = this.value
+    public var value: UInt
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Clockid> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Clockid(ptr, layout) }, { it.value })
+
+    public open fun clone(): Clockid = Clockid(value, fieldLayout)
+
+    public open fun raw(): UInt = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "REALTIME"
             1 -> "MONOTONIC"
@@ -61,7 +76,7 @@ public data class Clockid(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> {
                 "The clock measuring real time. Time value zero corresponds with\n1970-01-01T00:00:00Z."
@@ -74,30 +89,12 @@ public data class Clockid(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Clockid").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Clockid").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Clockid> =
-            object : TypeLayout<Clockid> {
-                override val alignBytes: Long = 4L
-                override val sizeBytes: Long = 4L
-                override fun readNative(addr: Long): Clockid =
-                    Clockid(
-                        (PrimitiveLayouts.U32).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Clockid) {
-                    (PrimitiveLayouts.U32).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Clockid =
-                    Clockid(
-                        (PrimitiveLayouts.U32).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Clockid) {
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Clockid = Clockid(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Clockid = Clockid(fieldStorage, fieldLayout)
     }
 }
 
@@ -124,8 +121,9 @@ public val RIGHTS_FD_SEEK: Rights = 1uL shl 2
  */
 public val RIGHTS_FD_FDSTAT_SET_FLAGS: Rights = 1uL shl 3
 
-public data class Errno(
-    public var value: UShort = 0u,
+public open class Errno internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout(),
 ) {
     public var field0: UShort
         get() = value
@@ -133,9 +131,19 @@ public data class Errno(
             value = v
         }
 
-    public fun raw(): UShort = this.value
+    public var value: UShort
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Errno> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Errno(ptr, layout) }, { it.value })
+
+    public open fun clone(): Errno = Errno(value, fieldLayout)
+
+    public open fun raw(): UShort = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "SUCCESS"
             1 -> "2BIG"
@@ -217,7 +225,7 @@ public data class Errno(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> "No error occurred. System call completed successfully."
             1 -> "Argument list too long."
@@ -299,34 +307,14 @@ public data class Errno(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Errno").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Errno").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
-    public fun fmtDisplay(f: StringBuilder) {
-        f.append("${this.name()} (error ${this.value})")
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.name()} (error ${this.value})"); Result.Ok(Unit) }
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Errno> =
-            object : TypeLayout<Errno> {
-                override val alignBytes: Long = 2L
-                override val sizeBytes: Long = 2L
-                override fun readNative(addr: Long): Errno =
-                    Errno(
-                        (PrimitiveLayouts.U16).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Errno) {
-                    (PrimitiveLayouts.U16).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Errno =
-                    Errno(
-                        (PrimitiveLayouts.U16).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Errno) {
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): Errno = Errno(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): Errno = Errno(fieldStorage, fieldLayout)
     }
 }
 
@@ -584,7 +572,7 @@ public val SDFLAGS_WR: Sdflags = (1u.toUInt() shl 1).toUByte()
  * The clock measuring real time. Time value zero corresponds with
  * 1970-01-01T00:00:00Z.
  */
-public val CLOCKID_REALTIME: Clockid = Clockid(0)
+public val CLOCKID_REALTIME: Clockid = Clockid(0, fieldLayout = PrimitiveLayouts.U32)
 
 /**
  * The store-wide monotonic clock, which is defined as a clock measuring
@@ -592,303 +580,303 @@ public val CLOCKID_REALTIME: Clockid = Clockid(0)
  * clock jumps. The epoch of this clock is undefined. The absolute time
  * value of this clock therefore has no meaning.
  */
-public val CLOCKID_MONOTONIC: Clockid = Clockid(1)
+public val CLOCKID_MONOTONIC: Clockid = Clockid(1, fieldLayout = PrimitiveLayouts.U32)
 
 /**
  * The CPU-time clock associated with the current process.
  */
-public val CLOCKID_PROCESS_CPUTIME_ID: Clockid = Clockid(2)
+public val CLOCKID_PROCESS_CPUTIME_ID: Clockid = Clockid(2, fieldLayout = PrimitiveLayouts.U32)
 
 /**
  * The CPU-time clock associated with the current thread.
  */
-public val CLOCKID_THREAD_CPUTIME_ID: Clockid = Clockid(3)
+public val CLOCKID_THREAD_CPUTIME_ID: Clockid = Clockid(3, fieldLayout = PrimitiveLayouts.U32)
 
 /**
  * No error occurred. System call completed successfully.
  */
-public val ERRNO_SUCCESS: Errno = Errno(0)
+public val ERRNO_SUCCESS: Errno = Errno(0, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Argument list too long.
  */
-public val ERRNO_2BIG: Errno = Errno(1)
+public val ERRNO_2BIG: Errno = Errno(1, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Permission denied.
  */
-public val ERRNO_ACCES: Errno = Errno(2)
+public val ERRNO_ACCES: Errno = Errno(2, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Address in use.
  */
-public val ERRNO_ADDRINUSE: Errno = Errno(3)
+public val ERRNO_ADDRINUSE: Errno = Errno(3, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Address not available.
  */
-public val ERRNO_ADDRNOTAVAIL: Errno = Errno(4)
+public val ERRNO_ADDRNOTAVAIL: Errno = Errno(4, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Address family not supported.
  */
-public val ERRNO_AFNOSUPPORT: Errno = Errno(5)
+public val ERRNO_AFNOSUPPORT: Errno = Errno(5, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Resource unavailable, or operation would block.
  */
-public val ERRNO_AGAIN: Errno = Errno(6)
+public val ERRNO_AGAIN: Errno = Errno(6, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Connection already in progress.
  */
-public val ERRNO_ALREADY: Errno = Errno(7)
+public val ERRNO_ALREADY: Errno = Errno(7, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Bad file descriptor.
  */
-public val ERRNO_BADF: Errno = Errno(8)
+public val ERRNO_BADF: Errno = Errno(8, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Bad message.
  */
-public val ERRNO_BADMSG: Errno = Errno(9)
+public val ERRNO_BADMSG: Errno = Errno(9, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Device or resource busy.
  */
-public val ERRNO_BUSY: Errno = Errno(10)
+public val ERRNO_BUSY: Errno = Errno(10, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Operation canceled.
  */
-public val ERRNO_CANCELED: Errno = Errno(11)
+public val ERRNO_CANCELED: Errno = Errno(11, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No child processes.
  */
-public val ERRNO_CHILD: Errno = Errno(12)
+public val ERRNO_CHILD: Errno = Errno(12, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Connection aborted.
  */
-public val ERRNO_CONNABORTED: Errno = Errno(13)
+public val ERRNO_CONNABORTED: Errno = Errno(13, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Connection refused.
  */
-public val ERRNO_CONNREFUSED: Errno = Errno(14)
+public val ERRNO_CONNREFUSED: Errno = Errno(14, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Connection reset.
  */
-public val ERRNO_CONNRESET: Errno = Errno(15)
+public val ERRNO_CONNRESET: Errno = Errno(15, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Resource deadlock would occur.
  */
-public val ERRNO_DEADLK: Errno = Errno(16)
+public val ERRNO_DEADLK: Errno = Errno(16, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Destination address required.
  */
-public val ERRNO_DESTADDRREQ: Errno = Errno(17)
+public val ERRNO_DESTADDRREQ: Errno = Errno(17, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Mathematics argument out of domain of function.
  */
-public val ERRNO_DOM: Errno = Errno(18)
+public val ERRNO_DOM: Errno = Errno(18, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Reserved.
  */
-public val ERRNO_DQUOT: Errno = Errno(19)
+public val ERRNO_DQUOT: Errno = Errno(19, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * File exists.
  */
-public val ERRNO_EXIST: Errno = Errno(20)
+public val ERRNO_EXIST: Errno = Errno(20, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Bad address.
  */
-public val ERRNO_FAULT: Errno = Errno(21)
+public val ERRNO_FAULT: Errno = Errno(21, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * File too large.
  */
-public val ERRNO_FBIG: Errno = Errno(22)
+public val ERRNO_FBIG: Errno = Errno(22, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Host is unreachable.
  */
-public val ERRNO_HOSTUNREACH: Errno = Errno(23)
+public val ERRNO_HOSTUNREACH: Errno = Errno(23, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Identifier removed.
  */
-public val ERRNO_IDRM: Errno = Errno(24)
+public val ERRNO_IDRM: Errno = Errno(24, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Illegal byte sequence.
  */
-public val ERRNO_ILSEQ: Errno = Errno(25)
+public val ERRNO_ILSEQ: Errno = Errno(25, fieldLayout = PrimitiveLayouts.U16)
 
 public typealias Rights = ULong
 
 /**
  * Operation in progress.
  */
-public val ERRNO_INPROGRESS: Errno = Errno(26)
+public val ERRNO_INPROGRESS: Errno = Errno(26, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Interrupted function.
  */
-public val ERRNO_INTR: Errno = Errno(27)
+public val ERRNO_INTR: Errno = Errno(27, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Invalid argument.
  */
-public val ERRNO_INVAL: Errno = Errno(28)
+public val ERRNO_INVAL: Errno = Errno(28, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * I/O error.
  */
-public val ERRNO_IO: Errno = Errno(29)
+public val ERRNO_IO: Errno = Errno(29, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Socket is connected.
  */
-public val ERRNO_ISCONN: Errno = Errno(30)
+public val ERRNO_ISCONN: Errno = Errno(30, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Is a directory.
  */
-public val ERRNO_ISDIR: Errno = Errno(31)
+public val ERRNO_ISDIR: Errno = Errno(31, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Too many levels of symbolic links.
  */
-public val ERRNO_LOOP: Errno = Errno(32)
+public val ERRNO_LOOP: Errno = Errno(32, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * File descriptor value too large.
  */
-public val ERRNO_MFILE: Errno = Errno(33)
+public val ERRNO_MFILE: Errno = Errno(33, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Too many links.
  */
-public val ERRNO_MLINK: Errno = Errno(34)
+public val ERRNO_MLINK: Errno = Errno(34, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Message too large.
  */
-public val ERRNO_MSGSIZE: Errno = Errno(35)
+public val ERRNO_MSGSIZE: Errno = Errno(35, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Reserved.
  */
-public val ERRNO_MULTIHOP: Errno = Errno(36)
+public val ERRNO_MULTIHOP: Errno = Errno(36, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Filename too long.
  */
-public val ERRNO_NAMETOOLONG: Errno = Errno(37)
+public val ERRNO_NAMETOOLONG: Errno = Errno(37, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Network is down.
  */
-public val ERRNO_NETDOWN: Errno = Errno(38)
+public val ERRNO_NETDOWN: Errno = Errno(38, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Connection aborted by network.
  */
-public val ERRNO_NETRESET: Errno = Errno(39)
+public val ERRNO_NETRESET: Errno = Errno(39, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Network unreachable.
  */
-public val ERRNO_NETUNREACH: Errno = Errno(40)
+public val ERRNO_NETUNREACH: Errno = Errno(40, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Too many files open in system.
  */
-public val ERRNO_NFILE: Errno = Errno(41)
+public val ERRNO_NFILE: Errno = Errno(41, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No buffer space available.
  */
-public val ERRNO_NOBUFS: Errno = Errno(42)
+public val ERRNO_NOBUFS: Errno = Errno(42, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No such device.
  */
-public val ERRNO_NODEV: Errno = Errno(43)
+public val ERRNO_NODEV: Errno = Errno(43, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No such file or directory.
  */
-public val ERRNO_NOENT: Errno = Errno(44)
+public val ERRNO_NOENT: Errno = Errno(44, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Executable file format error.
  */
-public val ERRNO_NOEXEC: Errno = Errno(45)
+public val ERRNO_NOEXEC: Errno = Errno(45, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No locks available.
  */
-public val ERRNO_NOLCK: Errno = Errno(46)
+public val ERRNO_NOLCK: Errno = Errno(46, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Reserved.
  */
-public val ERRNO_NOLINK: Errno = Errno(47)
+public val ERRNO_NOLINK: Errno = Errno(47, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Not enough space.
  */
-public val ERRNO_NOMEM: Errno = Errno(48)
+public val ERRNO_NOMEM: Errno = Errno(48, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No message of the desired type.
  */
-public val ERRNO_NOMSG: Errno = Errno(49)
+public val ERRNO_NOMSG: Errno = Errno(49, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Protocol not available.
  */
-public val ERRNO_NOPROTOOPT: Errno = Errno(50)
+public val ERRNO_NOPROTOOPT: Errno = Errno(50, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No space left on device.
  */
-public val ERRNO_NOSPC: Errno = Errno(51)
+public val ERRNO_NOSPC: Errno = Errno(51, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Function not supported.
  */
-public val ERRNO_NOSYS: Errno = Errno(52)
+public val ERRNO_NOSYS: Errno = Errno(52, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * The socket is not connected.
  */
-public val ERRNO_NOTCONN: Errno = Errno(53)
+public val ERRNO_NOTCONN: Errno = Errno(53, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Not a directory or a symbolic link to a directory.
  */
-public val ERRNO_NOTDIR: Errno = Errno(54)
+public val ERRNO_NOTDIR: Errno = Errno(54, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Directory not empty.
  */
-public val ERRNO_NOTEMPTY: Errno = Errno(55)
+public val ERRNO_NOTEMPTY: Errno = Errno(55, fieldLayout = PrimitiveLayouts.U16)
 
 public typealias Fd = UInt
 
-public class Iovec internal constructor(
+public open class Iovec internal constructor(
     bufCtorArg: MutPtr,
     /**
      * The length of the buffer to be filled.
@@ -901,32 +889,7 @@ public class Iovec internal constructor(
     public var buf: MutPtr = bufCtorArg
         internal set
 
-    public constructor() : this(
-        bufCtorArg = MutPtr(0L),
-        bufLen = 0,
-    )
-
-    public operator fun component1(): MutPtr = this.buf
-
-    public operator fun component2(): Size = this.bufLen
-
-    public fun copy(buf: MutPtr = this.buf, bufLen: Size = this.bufLen): Iovec = Iovec(bufCtorArg = buf, bufLen = bufLen)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Iovec) return false
-        if (this.buf != other.buf) return false
-        if (this.bufLen != other.bufLen) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.buf.hashCode()
-        result = 31 * result + this.bufLen.hashCode()
-        return result
-    }
-
-    public fun clone(): Iovec = Iovec(buf, bufLen)
+    public open fun clone(): Iovec = Iovec(buf, bufLen)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Iovec> =
@@ -954,8 +917,8 @@ public class Iovec internal constructor(
             }
 
         public operator fun invoke(
-            buf: MutPtr = MutPtr(0L),
-            bufLen: Size = 0,
+            buf: MutPtr,
+            bufLen: Size,
         ): Iovec = Iovec(
             bufCtorArg = buf,
             bufLen = bufLen,
@@ -963,7 +926,7 @@ public class Iovec internal constructor(
     }
 }
 
-public class Ciovec internal constructor(
+public open class Ciovec internal constructor(
     bufCtorArg: ConstPtr,
     /**
      * The length of the buffer to be written.
@@ -976,32 +939,7 @@ public class Ciovec internal constructor(
     public var buf: ConstPtr = bufCtorArg
         internal set
 
-    public constructor() : this(
-        bufCtorArg = ConstPtr(0L),
-        bufLen = 0,
-    )
-
-    public operator fun component1(): ConstPtr = this.buf
-
-    public operator fun component2(): Size = this.bufLen
-
-    public fun copy(buf: ConstPtr = this.buf, bufLen: Size = this.bufLen): Ciovec = Ciovec(bufCtorArg = buf, bufLen = bufLen)
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Ciovec) return false
-        if (this.buf != other.buf) return false
-        if (this.bufLen != other.bufLen) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.buf.hashCode()
-        result = 31 * result + this.bufLen.hashCode()
-        return result
-    }
-
-    public fun clone(): Ciovec = Ciovec(buf, bufLen)
+    public open fun clone(): Ciovec = Ciovec(buf, bufLen)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Ciovec> =
@@ -1029,8 +967,8 @@ public class Ciovec internal constructor(
             }
 
         public operator fun invoke(
-            buf: ConstPtr = ConstPtr(0L),
-            bufLen: Size = 0,
+            buf: ConstPtr,
+            bufLen: Size,
         ): Ciovec = Ciovec(
             bufCtorArg = buf,
             bufLen = bufLen,
@@ -1044,8 +982,9 @@ public typealias CiovecArray = List<Ciovec>
 
 public typealias Filedelta = Long
 
-public data class Whence(
-    public var value: UByte = 0u,
+public open class Whence internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -1053,9 +992,19 @@ public data class Whence(
             value = v
         }
 
-    public fun raw(): UByte = this.value
+    public var value: UByte
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Whence> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Whence(ptr, layout) }, { it.value })
+
+    public open fun clone(): Whence = Whence(value, fieldLayout)
+
+    public open fun raw(): UByte = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "SET"
             1 -> "CUR"
@@ -1063,7 +1012,7 @@ public data class Whence(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> "Seek relative to start-of-file."
             1 -> "Seek relative to current position."
@@ -1071,47 +1020,29 @@ public data class Whence(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Whence").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Whence").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Whence> =
-            object : TypeLayout<Whence> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Whence =
-                    Whence(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Whence) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Whence =
-                    Whence(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Whence) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Whence = Whence(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Whence = Whence(fieldStorage, fieldLayout)
     }
 }
 
 /**
  * State not recoverable.
  */
-public val ERRNO_NOTRECOVERABLE: Errno = Errno(56)
+public val ERRNO_NOTRECOVERABLE: Errno = Errno(56, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Not a socket.
  */
-public val ERRNO_NOTSOCK: Errno = Errno(57)
+public val ERRNO_NOTSOCK: Errno = Errno(57, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Not supported, or operation not supported on socket.
  */
-public val ERRNO_NOTSUP: Errno = Errno(58)
+public val ERRNO_NOTSUP: Errno = Errno(58, fieldLayout = PrimitiveLayouts.U16)
 
 public typealias Dircookie = ULong
 
@@ -1119,8 +1050,9 @@ public typealias Dirnamlen = UInt
 
 public typealias Inode = ULong
 
-public data class Filetype(
-    public var value: UByte = 0u,
+public open class Filetype internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -1128,9 +1060,19 @@ public data class Filetype(
             value = v
         }
 
-    public fun raw(): UByte = this.value
+    public var value: UByte
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Filetype> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Filetype(ptr, layout) }, { it.value })
+
+    public open fun clone(): Filetype = Filetype(value, fieldLayout)
+
+    public open fun raw(): UByte = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "UNKNOWN"
             1 -> "BLOCK_DEVICE"
@@ -1143,7 +1085,7 @@ public data class Filetype(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> "The type of the file descriptor or file is unknown or is different from any of the other types specified."
             1 -> "The file descriptor or file refers to a block device inode."
@@ -1156,128 +1098,79 @@ public data class Filetype(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Filetype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Filetype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Filetype> =
-            object : TypeLayout<Filetype> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Filetype =
-                    Filetype(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Filetype) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Filetype =
-                    Filetype(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Filetype) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Filetype = Filetype(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Filetype = Filetype(fieldStorage, fieldLayout)
     }
 }
 
 /**
  * Inappropriate I/O control operation.
  */
-public val ERRNO_NOTTY: Errno = Errno(59)
+public val ERRNO_NOTTY: Errno = Errno(59, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No such device or address.
  */
-public val ERRNO_NXIO: Errno = Errno(60)
+public val ERRNO_NXIO: Errno = Errno(60, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Value too large to be stored in data type.
  */
-public val ERRNO_OVERFLOW: Errno = Errno(61)
+public val ERRNO_OVERFLOW: Errno = Errno(61, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Previous owner died.
  */
-public val ERRNO_OWNERDEAD: Errno = Errno(62)
+public val ERRNO_OWNERDEAD: Errno = Errno(62, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Operation not permitted.
  */
-public val ERRNO_PERM: Errno = Errno(63)
+public val ERRNO_PERM: Errno = Errno(63, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Broken pipe.
  */
-public val ERRNO_PIPE: Errno = Errno(64)
+public val ERRNO_PIPE: Errno = Errno(64, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Protocol error.
  */
-public val ERRNO_PROTO: Errno = Errno(65)
+public val ERRNO_PROTO: Errno = Errno(65, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Protocol not supported.
  */
-public val ERRNO_PROTONOSUPPORT: Errno = Errno(66)
+public val ERRNO_PROTONOSUPPORT: Errno = Errno(66, fieldLayout = PrimitiveLayouts.U16)
 
-public data class Dirent(
+public open class Dirent(
     /**
      * The offset of the next directory entry stored in this directory.
      */
-    public var dNext: Dircookie = 0uL,
+    public var dNext: Dircookie,
     /**
      * The serial number of the file referred to by this directory entry.
      */
-    public var dIno: Inode = 0uL,
+    public var dIno: Inode,
     /**
      * The length of the name of the directory entry.
      */
-    public var dNamlen: Dirnamlen = 0u,
+    public var dNamlen: Dirnamlen,
     /**
      * The type of the file referred to by this directory entry.
      */
-    public var dType: Filetype = Filetype(),
+    public var dType: Filetype,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Dirent> =
-            object : TypeLayout<Dirent> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 24L
-                override fun readNative(addr: Long): Dirent =
-                    Dirent(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U32).readNative(addr + 16L),
-                        (Filetype.typeLayout()).readNative(addr + 20L),
-                    )
-                override fun writeNative(addr: Long, value: Dirent) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.dNext)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.dIno)
-                    (PrimitiveLayouts.U32).writeNative(addr + 16L, value.dNamlen)
-                    (Filetype.typeLayout()).writeNative(addr + 20L, value.dType)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Dirent =
-                    Dirent(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U32).readBytes(buf, offset + 16),
-                        (Filetype.typeLayout()).readBytes(buf, offset + 20),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Dirent) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.dNext)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.dIno)
-                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.dNamlen)
-                    (Filetype.typeLayout()).writeBytes(buf, offset + 20, value.dType)
-                }
-            }
-    }
+    public open fun clone(): Dirent = Dirent(dNext, dIno, dNamlen, dType)
 }
 
-public data class Advice(
-    public var value: UByte = 0u,
+public open class Advice internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -1285,9 +1178,19 @@ public data class Advice(
             value = v
         }
 
-    public fun raw(): UByte = this.value
+    public var value: UByte
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Advice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Advice(ptr, layout) }, { it.value })
+
+    public open fun clone(): Advice = Advice(value, fieldLayout)
+
+    public open fun raw(): UByte = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "NORMAL"
             1 -> "SEQUENTIAL"
@@ -1298,7 +1201,7 @@ public data class Advice(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> "The application has no advice to give on its behavior with respect to the specified data."
             1 -> "The application expects to access the specified data sequentially from lower offsets to higher offsets."
@@ -1309,142 +1212,92 @@ public data class Advice(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Advice").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Advice").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Advice> =
-            object : TypeLayout<Advice> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Advice =
-                    Advice(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Advice) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Advice =
-                    Advice(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Advice) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Advice = Advice(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Advice = Advice(fieldStorage, fieldLayout)
     }
 }
 
 /**
  * Protocol wrong type for socket.
  */
-public val ERRNO_PROTOTYPE: Errno = Errno(67)
+public val ERRNO_PROTOTYPE: Errno = Errno(67, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Result too large.
  */
-public val ERRNO_RANGE: Errno = Errno(68)
+public val ERRNO_RANGE: Errno = Errno(68, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Read-only file system.
  */
-public val ERRNO_ROFS: Errno = Errno(69)
+public val ERRNO_ROFS: Errno = Errno(69, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Invalid seek.
  */
-public val ERRNO_SPIPE: Errno = Errno(70)
+public val ERRNO_SPIPE: Errno = Errno(70, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * No such process.
  */
-public val ERRNO_SRCH: Errno = Errno(71)
+public val ERRNO_SRCH: Errno = Errno(71, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Reserved.
  */
-public val ERRNO_STALE: Errno = Errno(72)
+public val ERRNO_STALE: Errno = Errno(72, fieldLayout = PrimitiveLayouts.U16)
 
 public typealias Fdflags = UShort
 
 /**
  * Connection timed out.
  */
-public val ERRNO_TIMEDOUT: Errno = Errno(73)
+public val ERRNO_TIMEDOUT: Errno = Errno(73, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Text file busy.
  */
-public val ERRNO_TXTBSY: Errno = Errno(74)
+public val ERRNO_TXTBSY: Errno = Errno(74, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Cross-device link.
  */
-public val ERRNO_XDEV: Errno = Errno(75)
+public val ERRNO_XDEV: Errno = Errno(75, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Extension: Capabilities insufficient.
  */
-public val ERRNO_NOTCAPABLE: Errno = Errno(76)
+public val ERRNO_NOTCAPABLE: Errno = Errno(76, fieldLayout = PrimitiveLayouts.U16)
 
 /**
  * Seek relative to start-of-file.
  */
-public val WHENCE_SET: Whence = Whence(0)
+public val WHENCE_SET: Whence = Whence(0, fieldLayout = PrimitiveLayouts.U8)
 
-public data class Fdstat(
+public open class Fdstat(
     /**
      * File type.
      */
-    public var fsFiletype: Filetype = Filetype(),
+    public var fsFiletype: Filetype,
     /**
      * File descriptor flags.
      */
-    public var fsFlags: Fdflags = 0u,
+    public var fsFlags: Fdflags,
     /**
      * Rights that apply to this file descriptor.
      */
-    public var fsRightsBase: Rights = 0uL,
+    public var fsRightsBase: Rights,
     /**
      * Maximum set of rights that may be installed on new file descriptors that
      * are created through this file descriptor, e.g., through `pathOpen`.
      */
-    public var fsRightsInheriting: Rights = 0uL,
+    public var fsRightsInheriting: Rights,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Fdstat> =
-            object : TypeLayout<Fdstat> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 24L
-                override fun readNative(addr: Long): Fdstat =
-                    Fdstat(
-                        (Filetype.typeLayout()).readNative(addr),
-                        (PrimitiveLayouts.U16).readNative(addr + 2L),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                    )
-                override fun writeNative(addr: Long, value: Fdstat) {
-                    (Filetype.typeLayout()).writeNative(addr, value.fsFiletype)
-                    (PrimitiveLayouts.U16).writeNative(addr + 2L, value.fsFlags)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.fsRightsBase)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.fsRightsInheriting)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Fdstat =
-                    Fdstat(
-                        (Filetype.typeLayout()).readBytes(buf, offset),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 2),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Fdstat) {
-                    (Filetype.typeLayout()).writeBytes(buf, offset, value.fsFiletype)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 2, value.fsFlags)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.fsRightsBase)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.fsRightsInheriting)
-                }
-            }
-    }
+    public open fun clone(): Fdstat = Fdstat(fsFiletype, fsFlags, fsRightsBase, fsRightsInheriting)
 }
 
 public typealias Device = ULong
@@ -1454,143 +1307,96 @@ public typealias Fstflags = UShort
 /**
  * Seek relative to current position.
  */
-public val WHENCE_CUR: Whence = Whence(1)
+public val WHENCE_CUR: Whence = Whence(1, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Seek relative to end-of-file.
  */
-public val WHENCE_END: Whence = Whence(2)
+public val WHENCE_END: Whence = Whence(2, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The type of the file descriptor or file is unknown or is different from any of the other types specified.
  */
-public val FILETYPE_UNKNOWN: Filetype = Filetype(0)
+public val FILETYPE_UNKNOWN: Filetype = Filetype(0, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The file descriptor or file refers to a block device inode.
  */
-public val FILETYPE_BLOCK_DEVICE: Filetype = Filetype(1)
+public val FILETYPE_BLOCK_DEVICE: Filetype = Filetype(1, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Lookupflags = UInt
 
 /**
  * The file descriptor or file refers to a character device inode.
  */
-public val FILETYPE_CHARACTER_DEVICE: Filetype = Filetype(2)
+public val FILETYPE_CHARACTER_DEVICE: Filetype = Filetype(2, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Oflags = UShort
 
 /**
  * The file descriptor or file refers to a directory inode.
  */
-public val FILETYPE_DIRECTORY: Filetype = Filetype(3)
+public val FILETYPE_DIRECTORY: Filetype = Filetype(3, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The file descriptor or file refers to a regular file inode.
  */
-public val FILETYPE_REGULAR_FILE: Filetype = Filetype(4)
+public val FILETYPE_REGULAR_FILE: Filetype = Filetype(4, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The file descriptor or file refers to a datagram socket.
  */
-public val FILETYPE_SOCKET_DGRAM: Filetype = Filetype(5)
+public val FILETYPE_SOCKET_DGRAM: Filetype = Filetype(5, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The file descriptor or file refers to a byte-stream socket.
  */
-public val FILETYPE_SOCKET_STREAM: Filetype = Filetype(6)
+public val FILETYPE_SOCKET_STREAM: Filetype = Filetype(6, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Linkcount = ULong
 
-public data class Filestat(
+public open class Filestat(
     /**
      * Device ID of device containing the file.
      */
-    public var dev: Device = 0uL,
+    public var dev: Device,
     /**
      * File serial number.
      */
-    public var ino: Inode = 0uL,
+    public var ino: Inode,
     /**
      * File type.
      */
-    public var filetype: Filetype = Filetype(),
+    public var filetype: Filetype,
     /**
      * Number of hard links to the file.
      */
-    public var nlink: Linkcount = 0uL,
+    public var nlink: Linkcount,
     /**
      * For regular files, the file size in bytes. For symbolic links, the length in bytes of the pathname contained in the symbolic link.
      */
-    public var size: Filesize = 0uL,
+    public var size: Filesize,
     /**
      * Last data access timestamp.
      */
-    public var atim: Timestamp = 0uL,
+    public var atim: Timestamp,
     /**
      * Last data modification timestamp.
      */
-    public var mtim: Timestamp = 0uL,
+    public var mtim: Timestamp,
     /**
      * Last file status change timestamp.
      */
-    public var ctim: Timestamp = 0uL,
+    public var ctim: Timestamp,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Filestat> =
-            object : TypeLayout<Filestat> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 64L
-                override fun readNative(addr: Long): Filestat =
-                    Filestat(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (Filetype.typeLayout()).readNative(addr + 16L),
-                        (PrimitiveLayouts.U64).readNative(addr + 24L),
-                        (PrimitiveLayouts.U64).readNative(addr + 32L),
-                        (PrimitiveLayouts.U64).readNative(addr + 40L),
-                        (PrimitiveLayouts.U64).readNative(addr + 48L),
-                        (PrimitiveLayouts.U64).readNative(addr + 56L),
-                    )
-                override fun writeNative(addr: Long, value: Filestat) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.dev)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.ino)
-                    (Filetype.typeLayout()).writeNative(addr + 16L, value.filetype)
-                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.nlink)
-                    (PrimitiveLayouts.U64).writeNative(addr + 32L, value.size)
-                    (PrimitiveLayouts.U64).writeNative(addr + 40L, value.atim)
-                    (PrimitiveLayouts.U64).writeNative(addr + 48L, value.mtim)
-                    (PrimitiveLayouts.U64).writeNative(addr + 56L, value.ctim)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Filestat =
-                    Filestat(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (Filetype.typeLayout()).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 32),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 48),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 56),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Filestat) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.dev)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.ino)
-                    (Filetype.typeLayout()).writeBytes(buf, offset + 16, value.filetype)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.nlink)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 32, value.size)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.atim)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 48, value.mtim)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 56, value.ctim)
-                }
-            }
-    }
+    public open fun clone(): Filestat = Filestat(dev, ino, filetype, nlink, size, atim, mtim, ctim)
 }
 
 public typealias Userdata = ULong
 
-public data class Eventtype(
-    public var value: UByte = 0u,
+public open class Eventtype internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -1598,9 +1404,19 @@ public data class Eventtype(
             value = v
         }
 
-    public fun raw(): UByte = this.value
+    public var value: UByte
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Eventtype> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Eventtype(ptr, layout) }, { it.value })
+
+    public open fun clone(): Eventtype = Eventtype(value, fieldLayout)
+
+    public open fun raw(): UByte = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "CLOCK"
             1 -> "FD_READ"
@@ -1608,7 +1424,7 @@ public data class Eventtype(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> {
                 "The time value of clock `subscription_clock::id` has\nreached timestamp `subscription_clock::timeout`."
@@ -1622,65 +1438,49 @@ public data class Eventtype(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Eventtype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Eventtype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Eventtype> =
-            object : TypeLayout<Eventtype> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Eventtype =
-                    Eventtype(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Eventtype) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Eventtype =
-                    Eventtype(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Eventtype) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Eventtype = Eventtype(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Eventtype = Eventtype(fieldStorage, fieldLayout)
     }
 }
 
 /**
  * The file refers to a symbolic link inode.
  */
-public val FILETYPE_SYMBOLIC_LINK: Filetype = Filetype(7)
+public val FILETYPE_SYMBOLIC_LINK: Filetype = Filetype(7, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The application has no advice to give on its behavior with respect to the specified data.
  */
-public val ADVICE_NORMAL: Advice = Advice(0)
+public val ADVICE_NORMAL: Advice = Advice(0, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The application expects to access the specified data sequentially from lower offsets to higher offsets.
  */
-public val ADVICE_SEQUENTIAL: Advice = Advice(1)
+public val ADVICE_SEQUENTIAL: Advice = Advice(1, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Eventrwflags = UShort
 
 /**
  * The application expects to access the specified data in a random order.
  */
-public val ADVICE_RANDOM: Advice = Advice(2)
+public val ADVICE_RANDOM: Advice = Advice(2, fieldLayout = PrimitiveLayouts.U8)
 
-public data class EventFdReadwrite(
+public open class EventFdReadwrite(
     /**
      * The number of bytes available for reading or writing.
      */
-    public var nbytes: Filesize = 0uL,
+    public var nbytes: Filesize,
     /**
      * The state of the file descriptor.
      */
-    public var flags: Eventrwflags = 0u,
+    public var flags: Eventrwflags,
 ) {
+    public open fun clone(): EventFdReadwrite = EventFdReadwrite(nbytes, flags)
+
     public companion object {
         public fun typeLayout(): TypeLayout<EventFdReadwrite> =
             object : TypeLayout<EventFdReadwrite> {
@@ -1708,58 +1508,26 @@ public data class EventFdReadwrite(
     }
 }
 
-public data class Event(
+public open class Event(
     /**
      * User-provided value that got attached to `subscription.userdata`.
      */
-    public var userdata: Userdata = 0uL,
+    public var userdata: Userdata,
     /**
      * If non-zero, an error that occurred while processing the subscription request.
      */
-    public var error: Errno = Errno(),
+    public var error: Errno,
     /**
      * The type of event that occured
      */
-    public var type: Eventtype = Eventtype(),
+    public var type: Eventtype,
     /**
      * The contents of the event, if it is an `eventtype.fdRead` or
      * `eventtype.fdWrite`. `eventtype.clock` events ignore this field.
      */
-    public var fdReadwrite: EventFdReadwrite = EventFdReadwrite(),
+    public var fdReadwrite: EventFdReadwrite,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Event> =
-            object : TypeLayout<Event> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): Event =
-                    Event(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (Errno.typeLayout()).readNative(addr + 8L),
-                        (Eventtype.typeLayout()).readNative(addr + 10L),
-                        (EventFdReadwrite.typeLayout()).readNative(addr + 16L),
-                    )
-                override fun writeNative(addr: Long, value: Event) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.userdata)
-                    (Errno.typeLayout()).writeNative(addr + 8L, value.error)
-                    (Eventtype.typeLayout()).writeNative(addr + 10L, value.type)
-                    (EventFdReadwrite.typeLayout()).writeNative(addr + 16L, value.fdReadwrite)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Event =
-                    Event(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (Errno.typeLayout()).readBytes(buf, offset + 8),
-                        (Eventtype.typeLayout()).readBytes(buf, offset + 10),
-                        (EventFdReadwrite.typeLayout()).readBytes(buf, offset + 16),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Event) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.userdata)
-                    (Errno.typeLayout()).writeBytes(buf, offset + 8, value.error)
-                    (Eventtype.typeLayout()).writeBytes(buf, offset + 10, value.type)
-                    (EventFdReadwrite.typeLayout()).writeBytes(buf, offset + 16, value.fdReadwrite)
-                }
-            }
-    }
+    public open fun clone(): Event = Event(userdata, error, type, fdReadwrite)
 }
 
 public typealias Subclockflags = UShort
@@ -1767,68 +1535,38 @@ public typealias Subclockflags = UShort
 /**
  * The application expects to access the specified data in the near future.
  */
-public val ADVICE_WILLNEED: Advice = Advice(3)
+public val ADVICE_WILLNEED: Advice = Advice(3, fieldLayout = PrimitiveLayouts.U8)
 
-public data class SubscriptionClock(
+public open class SubscriptionClock(
     /**
      * The clock against which to compare the timestamp.
      */
-    public var id: Clockid = Clockid(),
+    public var id: Clockid,
     /**
      * The absolute or relative timestamp.
      */
-    public var timeout: Timestamp = 0uL,
+    public var timeout: Timestamp,
     /**
      * The amount of time that the implementation may wait additionally
      * to coalesce with other events.
      */
-    public var precision: Timestamp = 0uL,
+    public var precision: Timestamp,
     /**
      * Flags specifying whether the timeout is absolute or relative
      */
-    public var flags: Subclockflags = 0u,
+    public var flags: Subclockflags,
 ) {
-    public companion object {
-        public fun typeLayout(): TypeLayout<SubscriptionClock> =
-            object : TypeLayout<SubscriptionClock> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): SubscriptionClock =
-                    SubscriptionClock(
-                        (Clockid.typeLayout()).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U16).readNative(addr + 24L),
-                    )
-                override fun writeNative(addr: Long, value: SubscriptionClock) {
-                    (Clockid.typeLayout()).writeNative(addr, value.id)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.timeout)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.precision)
-                    (PrimitiveLayouts.U16).writeNative(addr + 24L, value.flags)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): SubscriptionClock =
-                    SubscriptionClock(
-                        (Clockid.typeLayout()).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U16).readBytes(buf, offset + 24),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: SubscriptionClock) {
-                    (Clockid.typeLayout()).writeBytes(buf, offset, value.id)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.timeout)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.precision)
-                    (PrimitiveLayouts.U16).writeBytes(buf, offset + 24, value.flags)
-                }
-            }
-    }
+    public open fun clone(): SubscriptionClock = SubscriptionClock(id, timeout, precision, flags)
 }
 
-public data class SubscriptionFdReadwrite(
+public open class SubscriptionFdReadwrite(
     /**
      * The file descriptor on which to wait for it to become ready for reading or writing.
      */
-    public var fileDescriptor: Fd = 0u,
+    public var fileDescriptor: Fd,
 ) {
+    public open fun clone(): SubscriptionFdReadwrite = SubscriptionFdReadwrite(fileDescriptor)
+
     public companion object {
         public fun typeLayout(): TypeLayout<SubscriptionFdReadwrite> =
             object : TypeLayout<SubscriptionFdReadwrite> {
@@ -1852,33 +1590,38 @@ public data class SubscriptionFdReadwrite(
     }
 }
 
-public data class SubscriptionUU(
-    public var clock: SubscriptionClock = SubscriptionClock(),
-    public var fdRead: SubscriptionFdReadwrite = SubscriptionFdReadwrite(),
-    public var fdWrite: SubscriptionFdReadwrite = SubscriptionFdReadwrite(),
+public open class SubscriptionUU(
+    public var clock: SubscriptionClock? = null,
+    public var fdRead: SubscriptionFdReadwrite? = null,
+    public var fdWrite: SubscriptionFdReadwrite? = null,
 )
 
-public data class SubscriptionU(
-    public var tag: UByte = 0u,
-    public var u: SubscriptionUU = SubscriptionUU(),
-)
+public open class SubscriptionU(
+    public var tag: UByte,
+    public var u: SubscriptionUU,
+) {
+    public open fun clone(): SubscriptionU = SubscriptionU(tag, u)
+}
 
-public data class Subscription(
+public open class Subscription(
     /**
      * User-provided value that is attached to the subscription in the
      * implementation and returned through `event.userdata`.
      */
-    public var userdata: Userdata = 0uL,
+    public var userdata: Userdata,
     /**
      * The type of the event to which to subscribe, and its contents
      */
-    public var u: SubscriptionU = SubscriptionU(),
-)
+    public var u: SubscriptionU,
+) {
+    public open fun clone(): Subscription = Subscription(userdata, u)
+}
 
 public typealias Exitcode = UInt
 
-public data class Signal(
-    public var value: UByte = 0u,
+public open class Signal internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -1886,9 +1629,19 @@ public data class Signal(
             value = v
         }
 
-    public fun raw(): UByte = this.value
+    public var value: UByte
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Signal> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Signal(ptr, layout) }, { it.value })
+
+    public open fun clone(): Signal = Signal(value, fieldLayout)
+
+    public open fun raw(): UByte = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "NONE"
             1 -> "HUP"
@@ -1924,7 +1677,7 @@ public data class Signal(
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> {
                 "No signal. Note that POSIX has special semantics for `kill(pid, 0)`,\nso this value is reserved."
@@ -2022,216 +1775,198 @@ public data class Signal(
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Signal").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Signal").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Signal> =
-            object : TypeLayout<Signal> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Signal =
-                    Signal(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Signal) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Signal =
-                    Signal(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Signal) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Signal = Signal(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Signal = Signal(fieldStorage, fieldLayout)
     }
 }
 
 /**
  * The application expects that it will not access the specified data in the near future.
  */
-public val ADVICE_DONTNEED: Advice = Advice(4)
+public val ADVICE_DONTNEED: Advice = Advice(4, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The application expects to access the specified data once and then not reuse it thereafter.
  */
-public val ADVICE_NOREUSE: Advice = Advice(5)
+public val ADVICE_NOREUSE: Advice = Advice(5, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * The time value of clock `subscriptionClock.id` has
  * reached timestamp `subscriptionClock.timeout`.
  */
-public val EVENTTYPE_CLOCK: Eventtype = Eventtype(0)
+public val EVENTTYPE_CLOCK: Eventtype = Eventtype(0, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * File descriptor `subscriptionFdReadwrite.fileDescriptor` has data
  * available for reading. This event always triggers for regular files.
  */
-public val EVENTTYPE_FD_READ: Eventtype = Eventtype(1)
+public val EVENTTYPE_FD_READ: Eventtype = Eventtype(1, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * File descriptor `subscriptionFdReadwrite.fileDescriptor` has capacity
  * available for writing. This event always triggers for regular files.
  */
-public val EVENTTYPE_FD_WRITE: Eventtype = Eventtype(2)
+public val EVENTTYPE_FD_WRITE: Eventtype = Eventtype(2, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * No signal. Note that POSIX has special semantics for `kill(pid, 0)`,
  * so this value is reserved.
  */
-public val SIGNAL_NONE: Signal = Signal(0)
+public val SIGNAL_NONE: Signal = Signal(0, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Hangup.
  * Action: Terminates the process.
  */
-public val SIGNAL_HUP: Signal = Signal(1)
+public val SIGNAL_HUP: Signal = Signal(1, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Terminate interrupt signal.
  * Action: Terminates the process.
  */
-public val SIGNAL_INT: Signal = Signal(2)
+public val SIGNAL_INT: Signal = Signal(2, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Terminal quit signal.
  * Action: Terminates the process.
  */
-public val SIGNAL_QUIT: Signal = Signal(3)
+public val SIGNAL_QUIT: Signal = Signal(3, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Illegal instruction.
  * Action: Terminates the process.
  */
-public val SIGNAL_ILL: Signal = Signal(4)
+public val SIGNAL_ILL: Signal = Signal(4, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Trace/breakpoint trap.
  * Action: Terminates the process.
  */
-public val SIGNAL_TRAP: Signal = Signal(5)
+public val SIGNAL_TRAP: Signal = Signal(5, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Process abort signal.
  * Action: Terminates the process.
  */
-public val SIGNAL_ABRT: Signal = Signal(6)
+public val SIGNAL_ABRT: Signal = Signal(6, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Access to an undefined portion of a memory object.
  * Action: Terminates the process.
  */
-public val SIGNAL_BUS: Signal = Signal(7)
+public val SIGNAL_BUS: Signal = Signal(7, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Erroneous arithmetic operation.
  * Action: Terminates the process.
  */
-public val SIGNAL_FPE: Signal = Signal(8)
+public val SIGNAL_FPE: Signal = Signal(8, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Kill.
  * Action: Terminates the process.
  */
-public val SIGNAL_KILL: Signal = Signal(9)
+public val SIGNAL_KILL: Signal = Signal(9, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * User-defined signal 1.
  * Action: Terminates the process.
  */
-public val SIGNAL_USR1: Signal = Signal(10)
+public val SIGNAL_USR1: Signal = Signal(10, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Invalid memory reference.
  * Action: Terminates the process.
  */
-public val SIGNAL_SEGV: Signal = Signal(11)
+public val SIGNAL_SEGV: Signal = Signal(11, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * User-defined signal 2.
  * Action: Terminates the process.
  */
-public val SIGNAL_USR2: Signal = Signal(12)
+public val SIGNAL_USR2: Signal = Signal(12, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Write on a pipe with no one to read it.
  * Action: Ignored.
  */
-public val SIGNAL_PIPE: Signal = Signal(13)
+public val SIGNAL_PIPE: Signal = Signal(13, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Alarm clock.
  * Action: Terminates the process.
  */
-public val SIGNAL_ALRM: Signal = Signal(14)
+public val SIGNAL_ALRM: Signal = Signal(14, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Termination signal.
  * Action: Terminates the process.
  */
-public val SIGNAL_TERM: Signal = Signal(15)
+public val SIGNAL_TERM: Signal = Signal(15, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Child process terminated, stopped, or continued.
  * Action: Ignored.
  */
-public val SIGNAL_CHLD: Signal = Signal(16)
+public val SIGNAL_CHLD: Signal = Signal(16, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Continue executing, if stopped.
  * Action: Continues executing, if stopped.
  */
-public val SIGNAL_CONT: Signal = Signal(17)
+public val SIGNAL_CONT: Signal = Signal(17, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Stop executing.
  * Action: Stops executing.
  */
-public val SIGNAL_STOP: Signal = Signal(18)
+public val SIGNAL_STOP: Signal = Signal(18, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Terminal stop signal.
  * Action: Stops executing.
  */
-public val SIGNAL_TSTP: Signal = Signal(19)
+public val SIGNAL_TSTP: Signal = Signal(19, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Background process attempting read.
  * Action: Stops executing.
  */
-public val SIGNAL_TTIN: Signal = Signal(20)
+public val SIGNAL_TTIN: Signal = Signal(20, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Background process attempting write.
  * Action: Stops executing.
  */
-public val SIGNAL_TTOU: Signal = Signal(21)
+public val SIGNAL_TTOU: Signal = Signal(21, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * High bandwidth data is available at a socket.
  * Action: Ignored.
  */
-public val SIGNAL_URG: Signal = Signal(22)
+public val SIGNAL_URG: Signal = Signal(22, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * CPU time limit exceeded.
  * Action: Terminates the process.
  */
-public val SIGNAL_XCPU: Signal = Signal(23)
+public val SIGNAL_XCPU: Signal = Signal(23, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * File size limit exceeded.
  * Action: Terminates the process.
  */
-public val SIGNAL_XFSZ: Signal = Signal(24)
+public val SIGNAL_XFSZ: Signal = Signal(24, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Virtual timer expired.
  * Action: Terminates the process.
  */
-public val SIGNAL_VTALRM: Signal = Signal(25)
+public val SIGNAL_VTALRM: Signal = Signal(25, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Riflags = UShort
 
@@ -2239,13 +1974,13 @@ public typealias Riflags = UShort
  * Profiling timer expired.
  * Action: Terminates the process.
  */
-public val SIGNAL_PROF: Signal = Signal(26)
+public val SIGNAL_PROF: Signal = Signal(26, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Window changed.
  * Action: Ignored.
  */
-public val SIGNAL_WINCH: Signal = Signal(27)
+public val SIGNAL_WINCH: Signal = Signal(27, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Roflags = UShort
 
@@ -2253,7 +1988,7 @@ public typealias Roflags = UShort
  * I/O possible.
  * Action: Terminates the process.
  */
-public val SIGNAL_POLL: Signal = Signal(28)
+public val SIGNAL_POLL: Signal = Signal(28, fieldLayout = PrimitiveLayouts.U8)
 
 public typealias Siflags = UShort
 
@@ -2263,16 +1998,17 @@ public typealias Sdflags = UByte
  * Power failure.
  * Action: Terminates the process.
  */
-public val SIGNAL_PWR: Signal = Signal(29)
+public val SIGNAL_PWR: Signal = Signal(29, fieldLayout = PrimitiveLayouts.U8)
 
 /**
  * Bad system call.
  * Action: Terminates the process.
  */
-public val SIGNAL_SYS: Signal = Signal(30)
+public val SIGNAL_SYS: Signal = Signal(30, fieldLayout = PrimitiveLayouts.U8)
 
-public data class Preopentype(
-    public var value: UByte = 0u,
+public open class Preopentype internal constructor(
+    public val fieldStorage: MutPtr,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -2280,58 +2016,52 @@ public data class Preopentype(
             value = v
         }
 
-    public fun raw(): UByte = this.value
+    public var value: UByte
+        get() = fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public fun name(): String =
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+
+    public fun pointerLayout(): TypeLayout<Preopentype> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Preopentype(ptr, layout) }, { it.value })
+
+    public open fun clone(): Preopentype = Preopentype(value, fieldLayout)
+
+    public open fun raw(): UByte = this.value
+
+    public open fun name(): String =
         when (this.value) {
             0 -> "DIR"
             else -> unreachableUnchecked()
         }
 
-    public fun message(): String =
+    public open fun message(): String =
         when (this.value) {
             0 -> "A pre-opened directory."
             else -> unreachableUnchecked()
         }
 
-    public fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Preopentype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Preopentype").field("code", this.value).field("name", this.name()).field("message", this.message()).finish()
 
     public companion object {
-        public fun typeLayout(): TypeLayout<Preopentype> =
-            object : TypeLayout<Preopentype> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 1L
-                override fun readNative(addr: Long): Preopentype =
-                    Preopentype(
-                        (PrimitiveLayouts.U8).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: Preopentype) {
-                    (PrimitiveLayouts.U8).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Preopentype =
-                    Preopentype(
-                        (PrimitiveLayouts.U8).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Preopentype) {
-                    (PrimitiveLayouts.U8).writeBytes(buf, offset, value.value)
-                }
-            }
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Preopentype = Preopentype(value, fieldLayout)
+
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Preopentype = Preopentype(fieldStorage, fieldLayout)
     }
 }
 
 /**
  * A pre-opened directory.
  */
-public val PREOPENTYPE_DIR: Preopentype = Preopentype(0)
+public val PREOPENTYPE_DIR: Preopentype = Preopentype(0, fieldLayout = PrimitiveLayouts.U8)
 
-public data class PrestatDir(
+public open class PrestatDir(
     /**
      * The length of the directory name for use with `fdPrestatDirName`.
      */
-    public var prNameLen: Size = 0,
+    public var prNameLen: Size,
 ) {
+    public open fun clone(): PrestatDir = PrestatDir(prNameLen)
+
     public companion object {
         public fun typeLayout(): TypeLayout<PrestatDir> =
             object : TypeLayout<PrestatDir> {
@@ -2355,14 +2085,16 @@ public data class PrestatDir(
     }
 }
 
-public data class PrestatU(
-    public var dir: PrestatDir = PrestatDir(),
+public open class PrestatU(
+    public var dir: PrestatDir? = null,
 )
 
-public data class Prestat(
-    public var tag: UByte = 0u,
-    public var u: PrestatU = PrestatU(),
-)
+public open class Prestat(
+    public var tag: UByte,
+    public var u: PrestatU,
+) {
+    public open fun clone(): Prestat = Prestat(tag, u)
+}
 
 /**
  * Read command-line argument data.
@@ -2372,8 +2104,8 @@ public data class Prestat(
 public fun argsGet(argv: MutPtr, argvBuf: MutPtr): Result<Unit, Errno> {
     val ret = argsGet(argv.rawAddress.toInt(), argvBuf.rawAddress.toInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2386,12 +2118,12 @@ public fun argsGet(argv: MutPtr, argvBuf: MutPtr): Result<Unit, Errno> {
  * data, or an error.
  */
 public fun argsSizesGet(): Result<Pair<Size, Size>, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
-    val rp1 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
+    val rp1 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = argsSizesGet(rp0.asMutPtr().toInt(), rp1.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(Pair(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64), read(ConstPtr((rp1.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64)))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Pair<Size, Size>, Errno>(Pair(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64), read(ConstPtr((rp1.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64)))
+        else -> Result.Err<Pair<Size, Size>, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2403,8 +2135,8 @@ public fun argsSizesGet(): Result<Pair<Size, Size>, Errno> {
 public fun environGet(environ: MutPtr, environBuf: MutPtr): Result<Unit, Errno> {
     val ret = environGet(environ.rawAddress.toInt(), environBuf.rawAddress.toInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2417,12 +2149,12 @@ public fun environGet(environ: MutPtr, environBuf: MutPtr): Result<Unit, Errno> 
  * environment variable data.
  */
 public fun environSizesGet(): Result<Pair<Size, Size>, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
-    val rp1 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
+    val rp1 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = environSizesGet(rp0.asMutPtr().toInt(), rp1.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(Pair(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64), read(ConstPtr((rp1.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64)))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Pair<Size, Size>, Errno>(Pair(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64), read(ConstPtr((rp1.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64)))
+        else -> Result.Err<Pair<Size, Size>, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2441,11 +2173,11 @@ public fun environSizesGet(): Result<Pair<Size, Size>, Errno> {
  * The resolution of the clock, or an error if one happened.
  */
 public fun clockResGet(id: Clockid): Result<Timestamp, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Timestamp>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Timestamp>())
     val ret = clockResGet(id.value.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Timestamp, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
+        else -> Result.Err<Timestamp, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2463,11 +2195,11 @@ public fun clockResGet(id: Clockid): Result<Timestamp, Errno> {
  * The time value of the clock.
  */
 public fun clockTimeGet(id: Clockid, precision: Timestamp): Result<Timestamp, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Timestamp>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Timestamp>())
     val ret = clockTimeGet(id.value.toInt(), precision.toLong(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Timestamp, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
+        else -> Result.Err<Timestamp, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2484,8 +2216,8 @@ public fun clockTimeGet(id: Clockid, precision: Timestamp): Result<Timestamp, Er
 public fun fdAdvise(fd: Fd, offset: Filesize, len: Filesize, advice: Advice): Result<Unit, Errno> {
     val ret = fdAdvise((fd.toInt()).toUInt(), (offset.toLong()).toULong(), (len.toLong()).toULong(), advice.value.toInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2501,8 +2233,8 @@ public fun fdAdvise(fd: Fd, offset: Filesize, len: Filesize, advice: Advice): Re
 public fun fdAllocate(fd: Fd, offset: Filesize, len: Filesize): Result<Unit, Errno> {
     val ret = fdAllocate((fd.toInt()).toUInt(), (offset.toLong()).toULong(), (len.toLong()).toULong())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2513,8 +2245,8 @@ public fun fdAllocate(fd: Fd, offset: Filesize, len: Filesize): Result<Unit, Err
 public fun fdClose(fd: Fd): Result<Unit, Errno> {
     val ret = fdClose((fd.toInt()).toUInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2525,8 +2257,8 @@ public fun fdClose(fd: Fd): Result<Unit, Errno> {
 public fun fdDatasync(fd: Fd): Result<Unit, Errno> {
     val ret = fdDatasync((fd.toInt()).toUInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2539,11 +2271,11 @@ public fun fdDatasync(fd: Fd): Result<Unit, Errno> {
  * The buffer where the file descriptor's attributes are stored.
  */
 public fun fdFdstatGet(fd: Fd): Result<Fdstat, Errno> {
-    val rp0 = MaybeUninit.uninit(Fdstat.typeLayout())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Fdstat>())
     val ret = fdFdstatGet(fd.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = Fdstat.typeLayout()))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Fdstat, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = UnresolvedTypeLayout<Fdstat>()))
+        else -> Result.Err<Fdstat, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2558,8 +2290,8 @@ public fun fdFdstatGet(fd: Fd): Result<Fdstat, Errno> {
 public fun fdFdstatSetFlags(fd: Fd, flags: Fdflags): Result<Unit, Errno> {
     val ret = fdFdstatSetFlags((fd.toInt()).toUInt(), (flags.toInt()).toUShort())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2574,8 +2306,8 @@ public fun fdFdstatSetFlags(fd: Fd, flags: Fdflags): Result<Unit, Errno> {
 public fun fdFdstatSetRights(fd: Fd, fsRightsBase: Rights, fsRightsInheriting: Rights): Result<Unit, Errno> {
     val ret = fdFdstatSetRights((fd.toInt()).toUInt(), (fsRightsBase.toLong()).toULong(), (fsRightsInheriting.toLong()).toULong())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2587,11 +2319,11 @@ public fun fdFdstatSetRights(fd: Fd, fsRightsBase: Rights, fsRightsInheriting: R
  * The buffer where the file's attributes are stored.
  */
 public fun fdFilestatGet(fd: Fd): Result<Filestat, Errno> {
-    val rp0 = MaybeUninit.uninit(Filestat.typeLayout())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Filestat>())
     val ret = fdFilestatGet(fd.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = Filestat.typeLayout()))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Filestat, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = UnresolvedTypeLayout<Filestat>()))
+        else -> Result.Err<Filestat, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2606,8 +2338,8 @@ public fun fdFilestatGet(fd: Fd): Result<Filestat, Errno> {
 public fun fdFilestatSetSize(fd: Fd, size: Filesize): Result<Unit, Errno> {
     val ret = fdFilestatSetSize((fd.toInt()).toUInt(), (size.toLong()).toULong())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2624,8 +2356,8 @@ public fun fdFilestatSetSize(fd: Fd, size: Filesize): Result<Unit, Errno> {
 public fun fdFilestatSetTimes(fd: Fd, atim: Timestamp, mtim: Timestamp, fstFlags: Fstflags): Result<Unit, Errno> {
     val ret = fdFilestatSetTimes((fd.toInt()).toUInt(), (atim.toLong()).toULong(), (mtim.toLong()).toULong(), (fstFlags.toInt()).toUShort())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2643,11 +2375,11 @@ public fun fdFilestatSetTimes(fd: Fd, atim: Timestamp, mtim: Timestamp, fstFlags
  * The number of bytes read.
  */
 public fun fdPread(fd: Fd, iovs: IovecArray, offset: Filesize): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = fdPread(fd.toInt(), iovs.asPtr().rawAddress.toInt(), iovs.len(), offset.toLong(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2659,11 +2391,11 @@ public fun fdPread(fd: Fd, iovs: IovecArray, offset: Filesize): Result<Size, Err
  * The buffer where the description is stored.
  */
 public fun fdPrestatGet(fd: Fd): Result<Prestat, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Prestat>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Prestat>())
     val ret = fdPrestatGet(fd.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = ObjectSlotLayout<Prestat>()))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Prestat, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = UnresolvedTypeLayout<Prestat>()))
+        else -> Result.Err<Prestat, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2677,8 +2409,8 @@ public fun fdPrestatGet(fd: Fd): Result<Prestat, Errno> {
 public fun fdPrestatDirName(fd: Fd, path: MutPtr, pathLen: Size): Result<Unit, Errno> {
     val ret = fdPrestatDirName((fd.toInt()).toUInt(), path.rawAddress.toInt(), pathLen)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2696,11 +2428,11 @@ public fun fdPrestatDirName(fd: Fd, path: MutPtr, pathLen: Size): Result<Unit, E
  * The number of bytes written.
  */
 public fun fdPwrite(fd: Fd, iovs: CiovecArray, offset: Filesize): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = fdPwrite(fd.toInt(), iovs.asPtr().rawAddress.toInt(), iovs.len(), offset.toLong(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2717,11 +2449,11 @@ public fun fdPwrite(fd: Fd, iovs: CiovecArray, offset: Filesize): Result<Size, E
  * The number of bytes read.
  */
 public fun fdRead(fd: Fd, iovs: IovecArray): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = fdRead(fd.toInt(), iovs.asPtr().rawAddress.toInt(), iovs.len(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2746,11 +2478,11 @@ public fun fdRead(fd: Fd, iovs: IovecArray): Result<Size, Errno> {
  * The number of bytes stored in the read buffer. If less than the size of the read buffer, the end of the directory has been reached.
  */
 public fun fdReaddir(fd: Fd, buf: MutPtr, bufLen: Size, cookie: Dircookie): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = fdReaddir(fd.toInt(), buf.rawAddress.toInt(), bufLen, cookie.toLong(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2771,8 +2503,8 @@ public fun fdReaddir(fd: Fd, buf: MutPtr, bufLen: Size, cookie: Dircookie): Resu
 public fun fdRenumber(fd: Fd, to: Fd): Result<Unit, Errno> {
     val ret = fdRenumber((fd.toInt()).toUInt(), (to.toInt()).toUInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2790,11 +2522,11 @@ public fun fdRenumber(fd: Fd, to: Fd): Result<Unit, Errno> {
  * The new offset of the file descriptor, relative to the start of the file.
  */
 public fun fdSeek(fd: Fd, offset: Filedelta, whence: Whence): Result<Filesize, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Filesize>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Filesize>())
     val ret = fdSeek(fd.toInt(), offset, whence.value.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Filesize, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
+        else -> Result.Err<Filesize, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2805,8 +2537,8 @@ public fun fdSeek(fd: Fd, offset: Filedelta, whence: Whence): Result<Filesize, E
 public fun fdSync(fd: Fd): Result<Unit, Errno> {
     val ret = fdSync((fd.toInt()).toUInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2819,11 +2551,11 @@ public fun fdSync(fd: Fd): Result<Unit, Errno> {
  * The current offset of the file descriptor, relative to the start of the file.
  */
 public fun fdTell(fd: Fd): Result<Filesize, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Filesize>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Filesize>())
     val ret = fdTell(fd.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Filesize, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U64))
+        else -> Result.Err<Filesize, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2836,11 +2568,11 @@ public fun fdTell(fd: Fd): Result<Filesize, Errno> {
  * * `iovs` - List of scatter/gather vectors from which to retrieve data.
  */
 public fun fdWrite(fd: Fd, iovs: CiovecArray): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = fdWrite(fd.toInt(), iovs.asPtr().rawAddress.toInt(), iovs.len(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2855,8 +2587,8 @@ public fun fdWrite(fd: Fd, iovs: CiovecArray): Result<Size, Errno> {
 public fun pathCreateDirectory(fd: Fd, path: String): Result<Unit, Errno> {
     val ret = pathCreateDirectory(fd.toInt(), path.asPtr().toInt(), path.length)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2874,11 +2606,11 @@ public fun pathCreateDirectory(fd: Fd, path: String): Result<Unit, Errno> {
  * The buffer where the file's attributes are stored.
  */
 public fun pathFilestatGet(fd: Fd, flags: Lookupflags, path: String): Result<Filestat, Errno> {
-    val rp0 = MaybeUninit.uninit(Filestat.typeLayout())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Filestat>())
     val ret = pathFilestatGet(fd.toInt(), flags.toInt(), path.asPtr().toInt(), path.length, rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = Filestat.typeLayout()))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Filestat, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = UnresolvedTypeLayout<Filestat>()))
+        else -> Result.Err<Filestat, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2897,8 +2629,8 @@ public fun pathFilestatGet(fd: Fd, flags: Lookupflags, path: String): Result<Fil
 public fun pathFilestatSetTimes(fd: Fd, flags: Lookupflags, path: String, atim: Timestamp, mtim: Timestamp, fstFlags: Fstflags): Result<Unit, Errno> {
     val ret = pathFilestatSetTimes(fd.toInt(), flags.toInt(), path.asPtr().toInt(), path.length, atim.toLong(), mtim.toLong(), fstFlags.toInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2916,8 +2648,8 @@ public fun pathFilestatSetTimes(fd: Fd, flags: Lookupflags, path: String, atim: 
 public fun pathLink(oldFd: Fd, oldFlags: Lookupflags, oldPath: String, newFd: Fd, newPath: String): Result<Unit, Errno> {
     val ret = pathLink(oldFd.toInt(), oldFlags.toInt(), oldPath.asPtr().toInt(), oldPath.length, newFd.toInt(), newPath.asPtr().toInt(), newPath.length)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2949,11 +2681,11 @@ public fun pathLink(oldFd: Fd, oldFlags: Lookupflags, oldPath: String, newFd: Fd
  * The file descriptor of the file that has been opened.
  */
 public fun pathOpen(fd: Fd, dirflags: Lookupflags, path: String, oflags: Oflags, fsRightsBase: Rights, fsRightsInheriting: Rights, fdflags: Fdflags): Result<Fd, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Fd>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Fd>())
     val ret = pathOpen(fd.toInt(), dirflags.toInt(), path.asPtr().toInt(), path.length, oflags.toInt(), fsRightsBase.toLong(), fsRightsInheriting.toLong(), fdflags.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U32))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Fd, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U32))
+        else -> Result.Err<Fd, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2971,11 +2703,11 @@ public fun pathOpen(fd: Fd, dirflags: Lookupflags, path: String, oflags: Oflags,
  * The number of bytes placed in the buffer.
  */
 public fun pathReadlink(fd: Fd, path: String, buf: MutPtr, bufLen: Size): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = pathReadlink(fd.toInt(), path.asPtr().toInt(), path.length, buf.rawAddress.toInt(), bufLen, rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -2991,8 +2723,8 @@ public fun pathReadlink(fd: Fd, path: String, buf: MutPtr, bufLen: Size): Result
 public fun pathRemoveDirectory(fd: Fd, path: String): Result<Unit, Errno> {
     val ret = pathRemoveDirectory(fd.toInt(), path.asPtr().toInt(), path.length)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3009,8 +2741,8 @@ public fun pathRemoveDirectory(fd: Fd, path: String): Result<Unit, Errno> {
 public fun pathRename(fd: Fd, oldPath: String, newFd: Fd, newPath: String): Result<Unit, Errno> {
     val ret = pathRename(fd.toInt(), oldPath.asPtr().toInt(), oldPath.length, newFd.toInt(), newPath.asPtr().toInt(), newPath.length)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3026,8 +2758,8 @@ public fun pathRename(fd: Fd, oldPath: String, newFd: Fd, newPath: String): Resu
 public fun pathSymlink(oldPath: String, fd: Fd, newPath: String): Result<Unit, Errno> {
     val ret = pathSymlink(oldPath.asPtr().toInt(), oldPath.length, fd.toInt(), newPath.asPtr().toInt(), newPath.length)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3043,8 +2775,8 @@ public fun pathSymlink(oldPath: String, fd: Fd, newPath: String): Result<Unit, E
 public fun pathUnlinkFile(fd: Fd, path: String): Result<Unit, Errno> {
     val ret = pathUnlinkFile(fd.toInt(), path.asPtr().toInt(), path.length)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3062,11 +2794,11 @@ public fun pathUnlinkFile(fd: Fd, path: String): Result<Unit, Errno> {
  * The number of events stored.
  */
 public fun pollOneoff(input: ConstPtr, out: MutPtr, nsubscriptions: Size): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = pollOneoff(input.rawAddress.toInt(), out.rawAddress.toInt(), nsubscriptions, rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3094,8 +2826,8 @@ public fun procExit(rval: Exitcode) {
 public fun procRaise(sig: Signal): Result<Unit, Errno> {
     val ret = procRaise(sig.value.toInt())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3106,8 +2838,8 @@ public fun procRaise(sig: Signal): Result<Unit, Errno> {
 public fun schedYield(): Result<Unit, Errno> {
     val ret = schedYield()
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3126,8 +2858,8 @@ public fun schedYield(): Result<Unit, Errno> {
 public fun randomGet(buf: MutPtr, bufLen: Size): Result<Unit, Errno> {
     val ret = randomGet(buf.rawAddress.toInt(), bufLen)
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3145,11 +2877,11 @@ public fun randomGet(buf: MutPtr, bufLen: Size): Result<Unit, Errno> {
  * New socket connection
  */
 public fun sockAccept(fd: Fd, flags: Fdflags): Result<Fd, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Fd>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Fd>())
     val ret = sockAccept(fd.toInt(), flags.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U32))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Fd, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U32))
+        else -> Result.Err<Fd, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3168,12 +2900,12 @@ public fun sockAccept(fd: Fd, flags: Fdflags): Result<Fd, Errno> {
  * Number of bytes stored in riData and message flags.
  */
 public fun sockRecv(fd: Fd, riData: IovecArray, riFlags: Riflags): Result<Pair<Size, Roflags>, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
-    val rp1 = MaybeUninit.uninit(ObjectSlotLayout<Roflags>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
+    val rp1 = MaybeUninit.uninit(UnresolvedTypeLayout<Roflags>())
     val ret = sockRecv(fd.toInt(), riData.asPtr().rawAddress.toInt(), riData.len(), riFlags.toInt(), rp0.asMutPtr().toInt(), rp1.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(Pair(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64), read(ConstPtr((rp1.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U16)))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Pair<Size, Roflags>, Errno>(Pair(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64), read(ConstPtr((rp1.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.U16)))
+        else -> Result.Err<Pair<Size, Roflags>, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3192,11 +2924,11 @@ public fun sockRecv(fd: Fd, riData: IovecArray, riFlags: Riflags): Result<Pair<S
  * Number of bytes transmitted.
  */
 public fun sockSend(fd: Fd, siData: CiovecArray, siFlags: Siflags): Result<Size, Errno> {
-    val rp0 = MaybeUninit.uninit(ObjectSlotLayout<Size>())
+    val rp0 = MaybeUninit.uninit(UnresolvedTypeLayout<Size>())
     val ret = sockSend(fd.toInt(), siData.asPtr().rawAddress.toInt(), siData.len(), siFlags.toInt(), rp0.asMutPtr().toInt())
     return when (ret) {
-        0 -> Result.Ok(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Size, Errno>(read(ConstPtr((rp0.asMutPtr().toInt()).toLong()), typeLayoutT = PrimitiveLayouts.USIZE64))
+        else -> Result.Err<Size, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 
@@ -3211,8 +2943,8 @@ public fun sockSend(fd: Fd, siData: CiovecArray, siFlags: Siflags): Result<Size,
 public fun sockShutdown(fd: Fd, how: Sdflags): Result<Unit, Errno> {
     val ret = sockShutdown((fd.toInt()).toUInt(), (how.toInt()).toUByte())
     return when (ret) {
-        0 -> Result.Ok(Unit)
-        else -> Result.Err(Errno(ret.toUShort()))
+        0 -> Result.Ok<Unit, Errno>(Unit)
+        else -> Result.Err<Unit, Errno>(Errno(ret.toUShort(), fieldLayout = PrimitiveLayouts.U16))
     }
 }
 

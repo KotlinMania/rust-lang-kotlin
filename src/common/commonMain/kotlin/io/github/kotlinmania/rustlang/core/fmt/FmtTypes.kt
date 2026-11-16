@@ -75,8 +75,6 @@ public interface Write<T> {
      * # Examples
      *
      * ```kotlin
-     * import String
-     *
      * fun <W : Write> writer(f: W, s: String): Result<Unit, Error> {
      *     return run { f.append(s); Result.success(Unit) }
      * }
@@ -127,8 +125,6 @@ public interface Write<T> {
      * # Examples
      *
      * ```kotlin
-     * import String
-     *
      * fun <W : Write> writer(f: W, s: String): Result<Unit, Error> {
      *     return f.writeFmt("$s")
      * }
@@ -299,7 +295,6 @@ public interface Debug {
      * # Examples
      *
      * ```kotlin
-     * import String
      * import std.fmt
      *
      * public class DebugTuple(
@@ -667,6 +662,7 @@ public interface UpperHex {
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+ * import io.github.kotlinmania.rustlang.core.mem.get
  * import std.fmt
  *
  * open class Length(public var value: Int) : fmt.Pointer {

@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.libc.windows.gnu
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.WcharT
 import io.github.kotlinmania.rustlang.libc.windows.SizeT
+import io.github.kotlinmania.rustlang.libc.windows.WcharT
 
 private object WindowsGnuJniBridge {
     init {
@@ -21,7 +21,7 @@ private object WindowsGnuJniBridge {
     external fun libcWindowsGnuStrncasecmp(s1: Long, s2: Long, n: Long): Int
 
     @JvmStatic
-    external fun libcWindowsGnuWmemchr(cx: Long, c: Int, n: Long): Long
+    external fun libcWindowsGnuWmemchr(cx: Long, c: Short, n: Long): Long
 }
 
 public actual fun strcasecmp(s1: ConstPtr, s2: ConstPtr): CInt =
@@ -31,4 +31,4 @@ public actual fun strncasecmp(s1: ConstPtr, s2: ConstPtr, n: SizeT): CInt =
     WindowsGnuJniBridge.libcWindowsGnuStrncasecmp(s1.rawAddress, s2.rawAddress, n.toLong())
 
 public actual fun wmemchr(cx: ConstPtr, c: WcharT, n: SizeT): MutPtr =
-    MutPtr(WindowsGnuJniBridge.libcWindowsGnuWmemchr(cx.rawAddress, c, n.toLong()))
+    MutPtr(WindowsGnuJniBridge.libcWindowsGnuWmemchr(cx.rawAddress, c.toShort(), n.toLong()))

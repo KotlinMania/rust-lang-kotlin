@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -330,22 +331,22 @@ public open class Mutex<T>(
      */
     public open fun <R> withMut(f: (T) -> R): R = f(this.lock())
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "Mutex")
         run {
             val matchVal = this.tryLock()
             when {
-                matchVal is Result.Ok<*> -> {
-                    val guard = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok -> {
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
                 else -> {
-                    val WouldBlock = (matchVal as Result.Err<*>).error
+                    val WouldBlock = matchVal.error
                     d.field("data", "<locked>")
                 }
             }
         }
-        d.finishNonExhaustive()
+        return d.finishNonExhaustive()
     }
 
     public companion object {
@@ -418,13 +419,9 @@ public open class MutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         public fun <T> new(lock: Mutex<T>): MutexGuard<T> = MutexGuard(lock = lock)
@@ -470,12 +467,12 @@ public open class MutexGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the reference
             // passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.lock.data.get())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedMutexGuard<U>, MutexGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedMutexGuard(data = data1, inner = orig1.lock.inner, variance = Unit))
+                    Result.Ok<MappedMutexGuard<U>, MutexGuard<T>>(MappedMutexGuard(data = data1, inner = orig1.lock.inner, variance = Unit))
                 }
             }
         }
@@ -525,13 +522,9 @@ public open class MappedMutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         // @unstable(feature = "nonpoisonMutex", issue = "134645")
@@ -575,12 +568,12 @@ public open class MappedMutexGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the reference
             // passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asMut())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedMutexGuard<U>, MappedMutexGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedMutexGuard(data = data1, inner = orig1.inner, variance = Unit))
+                    Result.Ok<MappedMutexGuard<U>, MappedMutexGuard<T>>(MappedMutexGuard(data = data1, inner = orig1.inner, variance = Unit))
                 }
             }
         }

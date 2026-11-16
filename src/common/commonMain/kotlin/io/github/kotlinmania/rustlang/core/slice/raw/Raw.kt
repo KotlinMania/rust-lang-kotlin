@@ -1,17 +1,15 @@
 // port-lint: source slice/raw.rs
 package io.github.kotlinmania.rustlang.core.slice.raw
 
-import io.github.kotlinmania.rustlang.core.intrinsics.ubChecks
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
+import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
-import io.github.kotlinmania.rustlang.core.slice.rawMutSliceList
-import io.github.kotlinmania.rustlang.core.slice.rawSliceList
-import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 
 // Free functions to create `[T]` and `[T]`.
 
@@ -73,12 +71,12 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
  * The following `joinSlices` function is **unsound** ⚠️
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
  * import std.slice
  *
  * fun <T> joinSlices(fst: List<T>, snd: List<T>): List<T> {
- *     val fstEnd = ConstPtr((fst.asPtr()).rawAddress + ((fst.size).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+ *     val fstEnd = ConstPtr((fst.asPtr()).rawAddress + ((fst.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
  *     val sndStart = snd.asPtr()
  *     check(fstEnd == sndStart)
  *     return slice.fromRawParts(fst.asPtr(), fst.size + snd.size)
@@ -134,7 +132,7 @@ import io.github.kotlinmania.rustlang.core.ubchecks.checkLanguageUb
 public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
     return run {
-        ubChecks.assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
+        Unit
         (PrimitiveLayouts.U8).readNative((sliceFromRawParts(data, len)).rawAddress)
     }
 }
@@ -174,7 +172,7 @@ public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
 public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
     return run {
-        ubChecks.assertUnsafePrecondition(checkLanguageUb, "slice::from_raw_parts_mut requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`", data, data, size, sizeOf, T, align, alignOf, T, len, len, ubChecks, maybeIsAlignedAndNotNull, data, align, false, ubChecks, isValidAllocationSize, size, len)
+        Unit
         RustMutableReference(MutPtr((sliceFromRawPartsMut(data, len)).rawAddress), PrimitiveLayouts.U8)
     }
 }
@@ -252,7 +250,7 @@ public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.co
  */
 public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromPtrRange`.
-    return rawSliceList(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
 }
 
 /**
@@ -322,5 +320,5 @@ public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
  */
 public fun <T> fromMutPtrRange(range: Range<MutPtr>): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromMutPtrRange`.
-    return rawMutSliceList(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
 }

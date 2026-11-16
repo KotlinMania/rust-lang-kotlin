@@ -2,6 +2,11 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.mergeiter
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -39,9 +44,7 @@ public open class MergeIterInner<I> internal constructor(
 
     public open fun clone(): MergeIterInner<I> = MergeIterInner(a = this.a.clone(), b = this.b.clone(), peeked = this.peeked)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "MergeIterInner").field(this.a).field(this.b).field(this.peeked).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "MergeIterInner").field(this.a).field(this.b).field(this.peeked).finish()
 
     /**
      * Returns the next pair of items stemming from the pair of sources
@@ -107,7 +110,7 @@ public open class MergeIterInner<I> internal constructor(
         /**
          * Creates a new core for an iterator merging a pair of sources.
          */
-        public fun <I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
+        public fun <Item, I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
     }
 }
 

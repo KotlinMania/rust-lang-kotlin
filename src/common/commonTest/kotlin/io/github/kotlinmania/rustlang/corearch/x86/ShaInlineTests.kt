@@ -3,9 +3,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
-import io.github.kotlinmania.rustlang.core.num.rustRotateLeft
-import io.github.kotlinmania.rustlang.core.num.rustRotateRight
-import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.mem.asPtr
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateRight
 
 public fun testMmSha1msg1Epu32() {
     val a = mmSetEpi64x(0xe9b5dba5b5c0fbcfuL.toLong(), 0x71374491428a2f98L)
@@ -76,7 +76,7 @@ public fun testMmSha256rnds2Epu32() {
 public var DATA_64: ULongArray = ulongArrayOf(0x0011223344556677uL, 0x8899aabbccddeeffuL, 0xffeeddccbbaa9988uL, 0x7766554433221100uL, 0x0123456789abcdefuL, 0xfedcba9876543210uL, 0x02468ace13579bdfuL, 0xfdb97531eca86420uL, 0x048c159d26ae37bfuL, 0xfb73ea62d951c840uL)
 
 public fun testMm256Sha512msg1Epi64() {
-    fun s0(word: ULong): ULong = rustRotateRight(word, 1u) xor rustRotateRight(word, 8u) xor (word shr 7)
+    fun s0(word: ULong): ULong = word.rotateRight(1u) xor word.rotateRight(8u) xor (word shr 7)
     val a = ((DATA_64).sliceArray(0 until 4))
     val b = ((DATA_64).sliceArray(4 until 6))
     val a = mm256LoaduSi256(A.asPtr())
@@ -87,7 +87,7 @@ public fun testMm256Sha512msg1Epi64() {
 }
 
 public fun testMm256Sha512msg2Epi64() {
-    fun s1(word: ULong): ULong = rustRotateRight(word, 19u) xor rustRotateRight(word, 61u) xor (word shr 6)
+    fun s1(word: ULong): ULong = word.rotateRight(19u) xor word.rotateRight(61u) xor (word shr 6)
     val a = ((DATA_64).sliceArray(0 until 4))
     val b = ((DATA_64).sliceArray(4 until 8))
     val a = mm256LoaduSi256(A.asPtr())
@@ -100,8 +100,8 @@ public fun testMm256Sha512msg2Epi64() {
 }
 
 public fun testMm256Sha512rnds2Epi64() {
-    fun capSigma0(word: ULong): ULong = rustRotateRight(word, 28u) xor rustRotateRight(word, 34u) xor rustRotateRight(word, 39u)
-    fun capSigma1(word: ULong): ULong = rustRotateRight(word, 14u) xor rustRotateRight(word, 18u) xor rustRotateRight(word, 41u)
+    fun capSigma0(word: ULong): ULong = word.rotateRight(28u) xor word.rotateRight(34u) xor word.rotateRight(39u)
+    fun capSigma1(word: ULong): ULong = word.rotateRight(14u) xor word.rotateRight(18u) xor word.rotateRight(41u)
     fun maj(a: ULong, b: ULong, c: ULong): ULong = (a and b) xor (a and c) xor (b and c)
     fun ch(e: ULong, f: ULong, g: ULong): ULong = (e and f) xor (g and e.inv())
     val a = ((DATA_64).sliceArray(0 until 4))
@@ -125,7 +125,7 @@ public fun testMm256Sha512rnds2Epi64() {
 public var DATA_32: UIntArray = uintArrayOf(0x00112233u, 0x44556677u, 0x8899aabbu, 0xccddeeffu, 0xffeeddccu, 0xbbaa9988u, 0x77665544u, 0x33221100u, 0x01234567u, 0x89abcdefu, 0xfedcba98u, 0x76543210u, 0x02468aceu, 0x13579bdfu, 0xfdb97531u, 0xeca86420u)
 
 public fun testMmSm3msg1Epi32() {
-    fun p1(x: UInt): UInt = x xor rustRotateLeft(x, 15u) xor rustRotateLeft(x, 23u)
+    fun p1(x: UInt): UInt = x xor x.rotateLeft(15u) xor x.rotateLeft(23u)
     val a = ((DATA_32).sliceArray(0 until 4))
     val b = ((DATA_32).sliceArray(4 until 8))
     val c = ((DATA_32).sliceArray(8 until 12))
@@ -151,7 +151,7 @@ public fun testMmSm3msg2Epi32() {
 }
 
 public fun testMmSm3rnds2Epi32() {
-    fun p0(x: UInt): UInt = x xor rustRotateLeft(x, 9u) xor rustRotateLeft(x, 17u)
+    fun p0(x: UInt): UInt = x xor x.rotateLeft(9u) xor x.rotateLeft(17u)
     fun ff(x: UInt, y: UInt, z: UInt, round: UInt): UInt =
         if (round < 16u) {
             x xor y xor z
@@ -180,7 +180,7 @@ public fun testMmSm3rnds2Epi32() {
         }
     val array = mutableListOf(B[3], B[2], A[3].rotateLeft(9), A[2].rotateLeft(9), B[1], B[0], A[1].rotateLeft(19), A[0].rotateLeft(19))
     for (i in 0 until 2) {
-        val s1 = array[0].rotateLeft(12).wrappingAdd(array[4]).wrappingAdd(rustRotateLeft(CONST, ROUND.toUInt() + i.toUInt())).rotateLeft(7)
+        val s1 = array[0].rotateLeft(12).wrappingAdd(array[4]).wrappingAdd(CONST.rotateLeft(ROUND.toUInt() + i.toUInt())).rotateLeft(7)
         val s2 = s1 xor array[0].rotateLeft(12)
         val t1 = (((ff(array[0], array[1], array[2], ROUND) + array[3].toUInt()) + (s2.toUInt())) + ((C[i] xor C[i + 2]).toUInt()))
         val t2 = (((gg(array[4], array[5], array[6], ROUND) + array[7].toUInt()) + (s1.toUInt())) + C[i].toUInt())
@@ -203,7 +203,7 @@ public fun lowerT(x: UInt): UInt {
 }
 
 public fun testMmSm4key4Epi32() {
-    fun lKey(x: UInt): UInt = x xor rustRotateLeft(x, 13u) xor rustRotateLeft(x, 23u)
+    fun lKey(x: UInt): UInt = x xor x.rotateLeft(13u) xor x.rotateLeft(23u)
     fun fKey(x0: UInt, x1: UInt, x2: UInt, x3: UInt, rk: UInt): UInt = x0 xor lKey(lowerT(x1 xor x2 xor x3 xor rk))
     val a = ((DATA_32).sliceArray(0 until 4))
     val b = ((DATA_32).sliceArray(4 until 8))
@@ -233,7 +233,7 @@ public fun testMm256Sm4key4Epi32() {
 }
 
 public fun testMmSm4rnds4Epi32() {
-    fun lRnd(x: UInt): UInt = x xor rustRotateLeft(x, 2u) xor rustRotateLeft(x, 10u) xor rustRotateLeft(x, 18u) xor rustRotateLeft(x, 24u)
+    fun lRnd(x: UInt): UInt = x xor x.rotateLeft(2u) xor x.rotateLeft(10u) xor x.rotateLeft(18u) xor x.rotateLeft(24u)
     fun fRnd(x0: UInt, x1: UInt, x2: UInt, x3: UInt, rk: UInt): UInt = x0 xor lRnd(lowerT(x1 xor x2 xor x3 xor rk))
     val a = ((DATA_32).sliceArray(0 until 4))
     val b = ((DATA_32).sliceArray(4 until 8))

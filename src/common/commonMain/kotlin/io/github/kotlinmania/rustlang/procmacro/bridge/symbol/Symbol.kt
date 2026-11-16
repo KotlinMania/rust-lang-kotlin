@@ -2,8 +2,10 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge.symbol
 
 import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -14,8 +16,6 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.arena.Arena
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Client
 import io.github.kotlinmania.rustlang.procmacro.bridge.fxhash.FxHashMap
-import io.github.kotlinmania.rustlang.procmacro.bridge.server.HandleStore
-import io.github.kotlinmania.rustlang.procmacro.bridge.server.MarkedSymbol
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
 
 // Client-side interner used for symbols.
@@ -33,12 +33,12 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.server.Server
  * Handle for a symbol string stored within the Interner.
  */
 public open class Symbol internal constructor(
-    valueCtorArg: NonZero<UInt>,
+    valueCtorArg: NonZero<UInt, NonZeroU32Inner>,
 ) : Encode<S>, Decode<S, Symbol> {
-    public var value: NonZero<UInt> = valueCtorArg
+    public var value: NonZero<UInt, NonZeroU32Inner> = valueCtorArg
         internal set
 
-    public var field0: NonZero<UInt>
+    public var field0: NonZero<UInt, NonZeroU32Inner>
         get() = value
         set(v) {
             value = v
@@ -51,13 +51,9 @@ public open class Symbol internal constructor(
      */
     public open fun <R> with(f: (String) -> R): R = INTERNER.withBorrow({ i -> f(i.get(this)) })
 
-    public open fun fmt(f: StringBuilder) {
-        this.with({ s -> f.append((s).toString()) })
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.with({ s -> f.append((s).toString()) })
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.with({ s -> f.append((s).toString()) })
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.with({ s -> f.append((s).toString()) })
 
     public override fun encode(w: Buffer, s: S) {
         this.with({ sym -> sym.encode(w, s) })
@@ -65,7 +61,7 @@ public open class Symbol internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: NonZero<UInt>,
+            value: NonZero<UInt, NonZeroU32Inner>,
         ): Symbol = Symbol(
             valueCtorArg = value,
         )
@@ -120,7 +116,7 @@ public open class Symbol internal constructor(
                 95u, in 97u..122u, in 65u..90u -> true
                 else -> false
             } &&
-                ((bytes).slice(1 until bytes.size)).all({ b -> when (b) {
+                ((bytes).subList(1, (bytes).size)).all({ b -> when (b) {
                     95u, in 97u..122u, in 65u..90u, in 48u..57u -> true
                     else -> false
                 } })
@@ -149,7 +145,7 @@ public open class Interner internal constructor(
     public var arena: Arena,
     namesCtorArg: FxHashMap<String, Symbol>,
     public var strings: MutableList<String>,
-    symBaseCtorArg: NonZero<UInt>,
+    symBaseCtorArg: NonZero<UInt, NonZeroU32Inner>,
 ) {
     // SAFETY: These `static` scopes are actually references to data owned
     // by the Arena. This is safe, as we never return them as static references
@@ -160,7 +156,7 @@ public open class Interner internal constructor(
     // The offset to apply to symbol names stored in the interner. This is used
     // to ensure that symbol names are not re-used after the interner is
     // cleared.
-    public var symBase: NonZero<UInt> = symBaseCtorArg
+    public var symBase: NonZero<UInt, NonZeroU32Inner> = symBaseCtorArg
         internal set
 
     public open fun intern(string: String): Symbol {
@@ -175,7 +171,7 @@ public open class Interner internal constructor(
         val string1: String = this.arena.allocStr(string)
         // SAFETY: we can extend the arena allocation to `static` because we
         // only access these while the arena is still alive.
-        val string2: String = (ObjectSlotLayout<String>()).readNative(((constPtrFromRustCast(string1))).rawAddress)
+        val string2: String = (UnresolvedTypeLayout<String>()).readNative(((constPtrFromRustCast(string1))).rawAddress)
         this.strings.add(string2)
         this.names.insert(string2, name1)
         return name1
@@ -211,7 +207,7 @@ public open class Interner internal constructor(
             arena: Arena,
             names: FxHashMap<String, Symbol>,
             strings: MutableList<String>,
-            symBase: NonZero<UInt>,
+            symBase: NonZero<UInt, NonZeroU32Inner>,
         ): Interner = Interner(
             arena = arena,
             namesCtorArg = names,

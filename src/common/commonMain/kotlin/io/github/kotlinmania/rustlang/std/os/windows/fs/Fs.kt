@@ -107,23 +107,23 @@ public interface FileExt {
             run {
                 val matchVal = this.seekRead(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> { break }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
+                    matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
                         buf1 = buf1.subList(n, buf1.size)
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*>).error
-                        return Result.Err(e)
+                        val e = matchVal.error
+                        return Result.Err<Unit, Error>(e)
                     }
                 }
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
-            Result.Ok(Unit)
+            Result.Ok<Unit, Error>(Unit)
         }
     }
 
@@ -203,18 +203,18 @@ public interface FileExt {
             val prevWritten = buf.written()
             run {
                 val matchVal = this.seekReadBuf(buf.reborrow(), offset1)
-                when (matchVal) { is Result.Ok<*> -> {}; is Result.Err<*> -> {
+                when (matchVal) { is Result.Ok -> {}; is Result.Err -> {
                     val e = matchVal.error
-                    return Result.Err(e)
+                    return Result.Err<Unit, Error>(e)
                 } }
             }
             val n = buf.written() - prevWritten
             offset1 += n.toULong()
             if (n == 0) {
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+                return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -294,22 +294,22 @@ public interface FileExt {
             run {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*> && matchVal.value == 0 -> {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*> -> {
-                        val n = (matchVal as Result.Ok<*>).value
-                        buf1 = ((buf1).slice(n until buf1.size))
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
+                        buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*>).error
-                        return Result.Err(e)
+                        val e = matchVal.error
+                        return Result.Err<Unit, Error>(e)
                     }
                 }
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Error>(Unit)
     }
 }
 

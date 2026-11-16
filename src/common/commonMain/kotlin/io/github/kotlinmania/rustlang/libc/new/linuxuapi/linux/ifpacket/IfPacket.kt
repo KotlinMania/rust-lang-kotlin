@@ -3,42 +3,28 @@
 
 package io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.ifpacket
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUchar
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUshort
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.SockaddrLl
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U64
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrLl
 
 // Header: `uapi / linux / ifPacket.h`
 
-public data class SockaddrPkt(
-    public var spktFamily: CUshort = 0u,
-    public var spktDevice: UByteArray = UByteArray(14),
-    public var spktProtocol: CUshort = 0u,
+public open class SockaddrPkt(
+    public var spktFamily: CUshort,
+    public var spktDevice: UByteArray,
+    public var spktProtocol: CUshort,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is SockaddrPkt) return false
-        if (this.spktFamily != other.spktFamily) return false
-        if (!this.spktDevice.contentEquals(other.spktDevice)) return false
-        if (this.spktProtocol != other.spktProtocol) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.spktFamily.hashCode()
-        result = 31 * result + this.spktDevice.contentHashCode()
-        result = 31 * result + this.spktProtocol.hashCode()
-        return result
-    }
+    public open fun clone(): SockaddrPkt = SockaddrPkt(spktFamily, spktDevice, spktProtocol)
 
     public companion object {
         public fun typeLayout(): TypeLayout<SockaddrPkt> =
@@ -157,10 +143,12 @@ public val PACKET_FANOUT_FLAG_IGNORE_OUTGOING: CUint = 0x4000u
 
 public val PACKET_FANOUT_FLAG_DEFRAG: CUint = 0x8000u
 
-public data class TpacketStats(
-    public var tpPackets: CUint = 0u,
-    public var tpDrops: CUint = 0u,
+public open class TpacketStats(
+    public var tpPackets: CUint,
+    public var tpDrops: CUint,
 ) {
+    public open fun clone(): TpacketStats = TpacketStats(tpPackets, tpDrops)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketStats> =
             object : TypeLayout<TpacketStats> {
@@ -188,11 +176,13 @@ public data class TpacketStats(
     }
 }
 
-public data class TpacketStatsV3(
-    public var tpPackets: CUint = 0u,
-    public var tpDrops: CUint = 0u,
-    public var tpFreezeQCnt: CUint = 0u,
+public open class TpacketStatsV3(
+    public var tpPackets: CUint,
+    public var tpDrops: CUint,
+    public var tpFreezeQCnt: CUint,
 ) {
+    public open fun clone(): TpacketStatsV3 = TpacketStatsV3(tpPackets, tpDrops, tpFreezeQCnt)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketStatsV3> =
             object : TypeLayout<TpacketStatsV3> {
@@ -224,11 +214,13 @@ public data class TpacketStatsV3(
     }
 }
 
-public data class TpacketRolloverStats(
-    public var tpAll: U64 = 0uL,
-    public var tpHuge: U64 = 0uL,
-    public var tpFailed: U64 = 0uL,
+public open class TpacketRolloverStats(
+    public var tpAll: U64,
+    public var tpHuge: U64,
+    public var tpFailed: U64,
 ) {
+    public open fun clone(): TpacketRolloverStats = TpacketRolloverStats(tpAll, tpHuge, tpFailed)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketRolloverStats> =
             object : TypeLayout<TpacketRolloverStats> {
@@ -260,15 +252,17 @@ public data class TpacketRolloverStats(
     }
 }
 
-public data class TpacketAuxdata(
-    public var tpStatus: UInt = 0u,
-    public var tpLen: UInt = 0u,
-    public var tpSnaplen: UInt = 0u,
-    public var tpMac: UShort = 0u,
-    public var tpNet: UShort = 0u,
-    public var tpVlanTci: UShort = 0u,
-    public var tpVlanTpid: UShort = 0u,
+public open class TpacketAuxdata(
+    public var tpStatus: UInt,
+    public var tpLen: UInt,
+    public var tpSnaplen: UInt,
+    public var tpMac: UShort,
+    public var tpNet: UShort,
+    public var tpVlanTci: UShort,
+    public var tpVlanTpid: UShort,
 ) {
+    public open fun clone(): TpacketAuxdata = TpacketAuxdata(tpStatus, tpLen, tpSnaplen, tpMac, tpNet, tpVlanTci, tpVlanTpid)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketAuxdata> =
             object : TypeLayout<TpacketAuxdata> {
@@ -350,15 +344,17 @@ public val TP_STATUS_TS_RAW_HARDWARE: UInt = 1u shl 31
 
 public val TP_FT_REQ_FILL_RXHASH: UInt = 1u
 
-public data class TpacketHdr(
-    public var tpStatus: CUlong = 0uL,
-    public var tpLen: CUint = 0u,
-    public var tpSnaplen: CUint = 0u,
-    public var tpMac: CUshort = 0u,
-    public var tpNet: CUshort = 0u,
-    public var tpSec: CUint = 0u,
-    public var tpUsec: CUint = 0u,
+public open class TpacketHdr(
+    public var tpStatus: CUlong,
+    public var tpLen: CUint,
+    public var tpSnaplen: CUint,
+    public var tpMac: CUshort,
+    public var tpNet: CUshort,
+    public var tpSec: CUint,
+    public var tpUsec: CUint,
 ) {
+    public open fun clone(): TpacketHdr = TpacketHdr(tpStatus, tpLen, tpSnaplen, tpMac, tpNet, tpSec, tpUsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketHdr> =
             object : TypeLayout<TpacketHdr> {
@@ -412,47 +408,19 @@ public fun tpacketAlign(x: Int): Int = (x + TPACKET_ALIGNMENT - 1) and (TPACKET_
 
 public val PACKET_MR_MULTICAST: CInt = 0
 
-public data class Tpacket2Hdr(
-    public var tpStatus: UInt = 0u,
-    public var tpLen: UInt = 0u,
-    public var tpSnaplen: UInt = 0u,
-    public var tpMac: UShort = 0u,
-    public var tpNet: UShort = 0u,
-    public var tpSec: UInt = 0u,
-    public var tpNsec: UInt = 0u,
-    public var tpVlanTci: UShort = 0u,
-    public var tpVlanTpid: UShort = 0u,
-    public var tpPadding: UByteArray = UByteArray(4),
+public open class Tpacket2Hdr(
+    public var tpStatus: UInt,
+    public var tpLen: UInt,
+    public var tpSnaplen: UInt,
+    public var tpMac: UShort,
+    public var tpNet: UShort,
+    public var tpSec: UInt,
+    public var tpNsec: UInt,
+    public var tpVlanTci: UShort,
+    public var tpVlanTpid: UShort,
+    public var tpPadding: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tpacket2Hdr) return false
-        if (this.tpStatus != other.tpStatus) return false
-        if (this.tpLen != other.tpLen) return false
-        if (this.tpSnaplen != other.tpSnaplen) return false
-        if (this.tpMac != other.tpMac) return false
-        if (this.tpNet != other.tpNet) return false
-        if (this.tpSec != other.tpSec) return false
-        if (this.tpNsec != other.tpNsec) return false
-        if (this.tpVlanTci != other.tpVlanTci) return false
-        if (this.tpVlanTpid != other.tpVlanTpid) return false
-        if (!this.tpPadding.contentEquals(other.tpPadding)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.tpStatus.hashCode()
-        result = 31 * result + this.tpLen.hashCode()
-        result = 31 * result + this.tpSnaplen.hashCode()
-        result = 31 * result + this.tpMac.hashCode()
-        result = 31 * result + this.tpNet.hashCode()
-        result = 31 * result + this.tpSec.hashCode()
-        result = 31 * result + this.tpNsec.hashCode()
-        result = 31 * result + this.tpVlanTci.hashCode()
-        result = 31 * result + this.tpVlanTpid.hashCode()
-        result = 31 * result + this.tpPadding.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tpacket2Hdr = Tpacket2Hdr(tpStatus, tpLen, tpSnaplen, tpMac, tpNet, tpSec, tpNsec, tpVlanTci, tpVlanTpid, tpPadding)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tpacket2Hdr> =
@@ -513,12 +481,14 @@ public data class Tpacket2Hdr(
     }
 }
 
-public data class TpacketHdrVariant1(
-    public var tpRxhash: UInt = 0u,
-    public var tpVlanTci: UInt = 0u,
-    public var tpVlanTpid: UShort = 0u,
-    public var tpPadding: UShort = 0u,
+public open class TpacketHdrVariant1(
+    public var tpRxhash: UInt,
+    public var tpVlanTci: UInt,
+    public var tpVlanTpid: UShort,
+    public var tpPadding: UShort,
 ) {
+    public open fun clone(): TpacketHdrVariant1 = TpacketHdrVariant1(tpRxhash, tpVlanTci, tpVlanTpid, tpPadding)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketHdrVariant1> =
             object : TypeLayout<TpacketHdrVariant1> {
@@ -554,47 +524,19 @@ public data class TpacketHdrVariant1(
     }
 }
 
-public data class Tpacket3Hdr(
-    public var tpNextOffset: UInt = 0u,
-    public var tpSec: UInt = 0u,
-    public var tpNsec: UInt = 0u,
-    public var tpSnaplen: UInt = 0u,
-    public var tpLen: UInt = 0u,
-    public var tpStatus: UInt = 0u,
-    public var tpMac: UShort = 0u,
-    public var tpNet: UShort = 0u,
-    public var hv1: TpacketHdrVariant1 = TpacketHdrVariant1(),
-    public var tpPadding: UByteArray = UByteArray(8),
+public open class Tpacket3Hdr(
+    public var tpNextOffset: UInt,
+    public var tpSec: UInt,
+    public var tpNsec: UInt,
+    public var tpSnaplen: UInt,
+    public var tpLen: UInt,
+    public var tpStatus: UInt,
+    public var tpMac: UShort,
+    public var tpNet: UShort,
+    public var hv1: TpacketHdrVariant1,
+    public var tpPadding: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Tpacket3Hdr) return false
-        if (this.tpNextOffset != other.tpNextOffset) return false
-        if (this.tpSec != other.tpSec) return false
-        if (this.tpNsec != other.tpNsec) return false
-        if (this.tpSnaplen != other.tpSnaplen) return false
-        if (this.tpLen != other.tpLen) return false
-        if (this.tpStatus != other.tpStatus) return false
-        if (this.tpMac != other.tpMac) return false
-        if (this.tpNet != other.tpNet) return false
-        if (this.hv1 != other.hv1) return false
-        if (!this.tpPadding.contentEquals(other.tpPadding)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.tpNextOffset.hashCode()
-        result = 31 * result + this.tpSec.hashCode()
-        result = 31 * result + this.tpNsec.hashCode()
-        result = 31 * result + this.tpSnaplen.hashCode()
-        result = 31 * result + this.tpLen.hashCode()
-        result = 31 * result + this.tpStatus.hashCode()
-        result = 31 * result + this.tpMac.hashCode()
-        result = 31 * result + this.tpNet.hashCode()
-        result = 31 * result + this.hv1.hashCode()
-        result = 31 * result + this.tpPadding.contentHashCode()
-        return result
-    }
+    public open fun clone(): Tpacket3Hdr = Tpacket3Hdr(tpNextOffset, tpSec, tpNsec, tpSnaplen, tpLen, tpStatus, tpMac, tpNet, hv1, tpPadding)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Tpacket3Hdr> =
@@ -655,10 +597,12 @@ public data class Tpacket3Hdr(
     }
 }
 
-public data class TpacketBdTs(
-    public var tsSec: CUint = 0u,
-    public var tsUsec: CUint = 0u,
+public open class TpacketBdTs(
+    public var tsSec: CUint,
+    public var tsUsec: CUint,
 ) {
+    public open fun clone(): TpacketBdTs = TpacketBdTs(tsSec, tsUsec)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketBdTs> =
             object : TypeLayout<TpacketBdTs> {
@@ -686,15 +630,17 @@ public data class TpacketBdTs(
     }
 }
 
-public data class TpacketHdrV1(
-    public var blockStatus: UInt = 0u,
-    public var numPkts: UInt = 0u,
-    public var offsetToFirstPkt: UInt = 0u,
-    public var blkLen: UInt = 0u,
-    public var seqNum: U64 = 0uL,
-    public var tsFirstPkt: TpacketBdTs = TpacketBdTs(),
-    public var tsLastPkt: TpacketBdTs = TpacketBdTs(),
+public open class TpacketHdrV1(
+    public var blockStatus: UInt,
+    public var numPkts: UInt,
+    public var offsetToFirstPkt: UInt,
+    public var blkLen: UInt,
+    public var seqNum: U64,
+    public var tsFirstPkt: TpacketBdTs,
+    public var tsLastPkt: TpacketBdTs,
 ) {
+    public open fun clone(): TpacketHdrV1 = TpacketHdrV1(blockStatus, numPkts, offsetToFirstPkt, blkLen, seqNum, tsFirstPkt, tsLastPkt)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketHdrV1> =
             object : TypeLayout<TpacketHdrV1> {
@@ -742,34 +688,36 @@ public data class TpacketHdrV1(
     }
 }
 
-public data class TpacketBdHeaderU(
-    public var bh1: TpacketHdrV1 = TpacketHdrV1(),
+public open class TpacketBdHeaderU(
+    public var bh1: TpacketHdrV1? = null,
 )
 
-public data class TpacketBlockDesc(
-    public var version: UInt = 0u,
-    public var offsetToPriv: UInt = 0u,
-    public var hdr: TpacketBdHeaderU = TpacketBdHeaderU(),
-)
+public open class TpacketBlockDesc(
+    public var version: UInt,
+    public var offsetToPriv: UInt,
+    public var hdr: TpacketBdHeaderU,
+) {
+    public open fun clone(): TpacketBlockDesc = TpacketBlockDesc(version, offsetToPriv, hdr)
+}
 
 public val PACKET_MR_PROMISC: CInt = 1
 
 public val PACKET_MR_ALLMULTI: CInt = 2
 
-public enum class TpacketVersions(
-    public val value: UInt,
-) {
-    TPACKET_V1(0u),
-    TPACKET_V2(1u),
-    TPACKET_V3(2u),
+public sealed class TpacketVersions {
+    public data object TpacketV1 : TpacketVersions()
+    public data object TpacketV2 : TpacketVersions()
+    public data object TpacketV3 : TpacketVersions()
 }
 
-public data class TpacketReq(
-    public var tpBlockSize: CUint = 0u,
-    public var tpBlockNr: CUint = 0u,
-    public var tpFrameSize: CUint = 0u,
-    public var tpFrameNr: CUint = 0u,
+public open class TpacketReq(
+    public var tpBlockSize: CUint,
+    public var tpBlockNr: CUint,
+    public var tpFrameSize: CUint,
+    public var tpFrameNr: CUint,
 ) {
+    public open fun clone(): TpacketReq = TpacketReq(tpBlockSize, tpBlockNr, tpFrameSize, tpFrameNr)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketReq> =
             object : TypeLayout<TpacketReq> {
@@ -805,15 +753,17 @@ public data class TpacketReq(
     }
 }
 
-public data class TpacketReq3(
-    public var tpBlockSize: CUint = 0u,
-    public var tpBlockNr: CUint = 0u,
-    public var tpFrameSize: CUint = 0u,
-    public var tpFrameNr: CUint = 0u,
-    public var tpRetireBlkTov: CUint = 0u,
-    public var tpSizeofPriv: CUint = 0u,
-    public var tpFeatureReqWord: CUint = 0u,
+public open class TpacketReq3(
+    public var tpBlockSize: CUint,
+    public var tpBlockNr: CUint,
+    public var tpFrameSize: CUint,
+    public var tpFrameNr: CUint,
+    public var tpRetireBlkTov: CUint,
+    public var tpSizeofPriv: CUint,
+    public var tpFeatureReqWord: CUint,
 ) {
+    public open fun clone(): TpacketReq3 = TpacketReq3(tpBlockSize, tpBlockNr, tpFrameSize, tpFrameNr, tpRetireBlkTov, tpSizeofPriv, tpFeatureReqWord)
+
     public companion object {
         public fun typeLayout(): TypeLayout<TpacketReq3> =
             object : TypeLayout<TpacketReq3> {
@@ -861,34 +811,18 @@ public data class TpacketReq3(
     }
 }
 
-public data class TpacketReqU(
-    public var req: TpacketReq = TpacketReq(),
-    public var req3: TpacketReq3 = TpacketReq3(),
+public open class TpacketReqU(
+    public var req: TpacketReq? = null,
+    public var req3: TpacketReq3? = null,
 )
 
-public data class PacketMreq(
-    public var mrIfindex: CInt = 0,
-    public var mrType: CUshort = 0u,
-    public var mrAlen: CUshort = 0u,
-    public var mrAddress: UByteArray = UByteArray(8),
+public open class PacketMreq(
+    public var mrIfindex: CInt,
+    public var mrType: CUshort,
+    public var mrAlen: CUshort,
+    public var mrAddress: UByteArray,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is PacketMreq) return false
-        if (this.mrIfindex != other.mrIfindex) return false
-        if (this.mrType != other.mrType) return false
-        if (this.mrAlen != other.mrAlen) return false
-        if (!this.mrAddress.contentEquals(other.mrAddress)) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = this.mrIfindex.hashCode()
-        result = 31 * result + this.mrType.hashCode()
-        result = 31 * result + this.mrAlen.hashCode()
-        result = 31 * result + this.mrAddress.contentHashCode()
-        return result
-    }
+    public open fun clone(): PacketMreq = PacketMreq(mrIfindex, mrType, mrAlen, mrAddress)
 
     public companion object {
         public fun typeLayout(): TypeLayout<PacketMreq> =
@@ -925,11 +859,13 @@ public data class PacketMreq(
     }
 }
 
-public data class FanoutArgs(
-    public var id: UShort = 0u,
-    public var typeFlags: UShort = 0u,
-    public var maxNumMembers: UInt = 0u,
+public open class FanoutArgs(
+    public var id: UShort,
+    public var typeFlags: UShort,
+    public var maxNumMembers: UInt,
 ) {
+    public open fun clone(): FanoutArgs = FanoutArgs(id, typeFlags, maxNumMembers)
+
     public companion object {
         public fun typeLayout(): TypeLayout<FanoutArgs> =
             object : TypeLayout<FanoutArgs> {
@@ -961,8 +897,8 @@ public data class FanoutArgs(
     }
 }
 
-public val TPACKET_HDRLEN: Int = ((sizeOf<TpacketHdr>(typeLayoutT = TpacketHdr.typeLayout()) + TPACKET_ALIGNMENT - 1) and (TPACKET_ALIGNMENT - 1).inv()) + sizeOf<SockaddrLl>(typeLayoutT = ObjectSlotLayout<SockaddrLl>())
+public val TPACKET_HDRLEN: Int = ((sizeOf<TpacketHdr>(typeLayoutT = TpacketHdr.typeLayout()) + TPACKET_ALIGNMENT - 1) and (TPACKET_ALIGNMENT - 1).inv()) + sizeOf<SockaddrLl>(typeLayoutT = UnresolvedTypeLayout<SockaddrLl>())
 
-public val TPACKET2_HDRLEN: Int = ((sizeOf<Tpacket2Hdr>(typeLayoutT = Tpacket2Hdr.typeLayout()) + TPACKET_ALIGNMENT - 1) and (TPACKET_ALIGNMENT - 1).inv()) + sizeOf<SockaddrLl>(typeLayoutT = ObjectSlotLayout<SockaddrLl>())
+public val TPACKET2_HDRLEN: Int = ((sizeOf<Tpacket2Hdr>(typeLayoutT = Tpacket2Hdr.typeLayout()) + TPACKET_ALIGNMENT - 1) and (TPACKET_ALIGNMENT - 1).inv()) + sizeOf<SockaddrLl>(typeLayoutT = UnresolvedTypeLayout<SockaddrLl>())
 
-public val TPACKET3_HDRLEN: Int = ((sizeOf<Tpacket3Hdr>(typeLayoutT = Tpacket3Hdr.typeLayout()) + TPACKET_ALIGNMENT - 1) and (TPACKET_ALIGNMENT - 1).inv()) + sizeOf<SockaddrLl>(typeLayoutT = ObjectSlotLayout<SockaddrLl>())
+public val TPACKET3_HDRLEN: Int = ((sizeOf<Tpacket3Hdr>(typeLayoutT = Tpacket3Hdr.typeLayout()) + TPACKET_ALIGNMENT - 1) and (TPACKET_ALIGNMENT - 1).inv()) + sizeOf<SockaddrLl>(typeLayoutT = UnresolvedTypeLayout<SockaddrLl>())

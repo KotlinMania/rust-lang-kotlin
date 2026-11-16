@@ -1,8 +1,8 @@
 package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U16
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.U32
@@ -364,9 +364,9 @@ public val XDP_OPTIONS: CInt = 8
 
 public val XDP_OPTIONS_ZEROCOPY: U32 = 1u shl 0
 
-public val XDP_PGOFF_RX_RING: io.github.kotlinmania.rustlang.libc.OffT = 0L
+public val XDP_PGOFF_RX_RING: OffT = 0L
 
-public val XDP_PGOFF_TX_RING: io.github.kotlinmania.rustlang.libc.OffT = 0x80000000u.toLong()
+public val XDP_PGOFF_TX_RING: OffT = 0x80000000u.toLong()
 
 public val XDP_UMEM_PGOFF_FILL_RING: CUlonglong = 0x100000000uL
 

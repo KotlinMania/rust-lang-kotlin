@@ -2,13 +2,14 @@
 package io.github.kotlinmania.rustlang.corearch.armshared.barrier.v8
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.corearch.armshared.Sealed
+import io.github.kotlinmania.rustlang.corearch.armshared.Dmb
+import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
 
 /**
  * Full system is the required shareability domain, reads are the required
  * access type
  */
-public open class LD : Sealed.Dmb, Sealed.Dsb {
+public open class LD : Dmb, Dsb {
     public override fun dmb() {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
     }
@@ -38,7 +39,7 @@ public open class LD : Sealed.Dmb, Sealed.Dsb {
  * Inner Shareable is the required shareability domain, reads are the required
  * access type
  */
-public open class Ishld : Sealed.Dmb, Sealed.Dsb {
+public open class Ishld : Dmb, Dsb {
     public override fun dmb() {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
     }
@@ -68,7 +69,7 @@ public open class Ishld : Sealed.Dmb, Sealed.Dsb {
  * Non-shareable is the required shareability domain, reads are the required
  * access type
  */
-public open class Nshld : Sealed.Dmb, Sealed.Dsb {
+public open class Nshld : Dmb, Dsb {
     public override fun dmb() {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
     }
@@ -98,7 +99,7 @@ public open class Nshld : Sealed.Dmb, Sealed.Dsb {
  * Outer Shareable is the required shareability domain, reads are the required
  * access type
  */
-public open class Oshld : Sealed.Dmb, Sealed.Dsb {
+public open class Oshld : Dmb, Dsb {
     public override fun dmb() {
         io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
     }

@@ -3,8 +3,11 @@ package io.github.kotlinmania.rustlang.alloc.vec.iszero
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.num.wrapping.Wrapping
@@ -60,8 +63,8 @@ public fun <T> List<T>.isZeroFromTArrayn(n: Int): Boolean {
     return n == 0
 }
 
-public fun <T : IsZero> List<T>.isZeroFromTArraynFromTArrayn(n: Int): Boolean {
-    return if (T.IS_ZST) {
+public fun <T : IsZero> List<T>.isZeroFromTArrayn(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
+    return if (((typeLayoutT).sizeBytes == 0L)) {
         // If T is a ZST, then there is at most one possible value of `T`,
         // so we only need to check one element for zeroness.
         // We can't unconditionally return `true` here, since, e.g.
@@ -123,11 +126,11 @@ public fun <G : IsZero, H : IsZero> Pair<G, H>.isZero(): Boolean {
 // `SpecFromElem`.
 public fun <T> T?.isZero(): Boolean = this == null
 
-public fun NonZero<UByte>?.isZero(): Boolean = this == null
+public fun NonZero<UByte, NonZeroU8Inner>?.isZero(): Boolean = this == null
 
 public fun UByte?.isZero(): Boolean {
     run {
-        val none: UByte? = MaybeUninit.zeroed(ObjectSlotLayout<UByte?>()).assumeInit()
+        val none: UByte? = MaybeUninit.zeroed(UnresolvedTypeLayout<UByte?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -135,7 +138,7 @@ public fun UByte?.isZero(): Boolean {
 
 public fun UShort?.isZero(): Boolean {
     run {
-        val none: UShort? = MaybeUninit.zeroed(ObjectSlotLayout<UShort?>()).assumeInit()
+        val none: UShort? = MaybeUninit.zeroed(UnresolvedTypeLayout<UShort?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -143,7 +146,7 @@ public fun UShort?.isZero(): Boolean {
 
 public fun UInt?.isZero(): Boolean {
     run {
-        val none: UInt? = MaybeUninit.zeroed(ObjectSlotLayout<UInt?>()).assumeInit()
+        val none: UInt? = MaybeUninit.zeroed(UnresolvedTypeLayout<UInt?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -151,7 +154,7 @@ public fun UInt?.isZero(): Boolean {
 
 public fun ULong?.isZero(): Boolean {
     run {
-        val none: ULong? = MaybeUninit.zeroed(ObjectSlotLayout<ULong?>()).assumeInit()
+        val none: ULong? = MaybeUninit.zeroed(UnresolvedTypeLayout<ULong?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -159,7 +162,7 @@ public fun ULong?.isZero(): Boolean {
 
 public fun U128?.isZero(): Boolean {
     run {
-        val none: U128? = MaybeUninit.zeroed(ObjectSlotLayout<U128?>()).assumeInit()
+        val none: U128? = MaybeUninit.zeroed(UnresolvedTypeLayout<U128?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -167,7 +170,7 @@ public fun U128?.isZero(): Boolean {
 
 public fun Byte?.isZero(): Boolean {
     run {
-        val none: Byte? = MaybeUninit.zeroed(ObjectSlotLayout<Byte?>()).assumeInit()
+        val none: Byte? = MaybeUninit.zeroed(UnresolvedTypeLayout<Byte?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -175,7 +178,7 @@ public fun Byte?.isZero(): Boolean {
 
 public fun Short?.isZero(): Boolean {
     run {
-        val none: Short? = MaybeUninit.zeroed(ObjectSlotLayout<Short?>()).assumeInit()
+        val none: Short? = MaybeUninit.zeroed(UnresolvedTypeLayout<Short?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -183,7 +186,7 @@ public fun Short?.isZero(): Boolean {
 
 public fun Int?.isZero(): Boolean {
     run {
-        val none: Int? = MaybeUninit.zeroed(ObjectSlotLayout<Int?>()).assumeInit()
+        val none: Int? = MaybeUninit.zeroed(UnresolvedTypeLayout<Int?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -191,7 +194,7 @@ public fun Int?.isZero(): Boolean {
 
 public fun Long?.isZero(): Boolean {
     run {
-        val none: Long? = MaybeUninit.zeroed(ObjectSlotLayout<Long?>()).assumeInit()
+        val none: Long? = MaybeUninit.zeroed(UnresolvedTypeLayout<Long?>()).assumeInit()
         check(none == null)
     }
     return this == null
@@ -199,7 +202,7 @@ public fun Long?.isZero(): Boolean {
 
 public fun I128?.isZero(): Boolean {
     run {
-        val none: I128? = MaybeUninit.zeroed(ObjectSlotLayout<I128?>()).assumeInit()
+        val none: I128? = MaybeUninit.zeroed(UnresolvedTypeLayout<I128?>()).assumeInit()
         check(none == null)
     }
     return this == null

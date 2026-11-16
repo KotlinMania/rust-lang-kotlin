@@ -1,14 +1,15 @@
 // port-lint: source array/iter/iter_inner.rs
 package io.github.kotlinmania.rustlang.core.array.iter.iterinner
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 
 // Defines the `IntoIter` owned iterator for arrays.
 
@@ -112,7 +113,7 @@ public interface SpecPolymorphicIterClone<T> {
 public fun <T> specPolymorphicIterCloneSpecCloneT(thisRef: PolymorphicIter<List<MaybeUninit<T>>>, n: Int): PolymorphicIter<List<MaybeUninit<T>>> {
     fun <U> cloneIntoNew(source: PolymorphicIter<List<MaybeUninit<U>>>, target: PolymorphicIter<List<MaybeUninit<U>>>) {
         // Clone all alive elements.
-        for ((src, dst) in zip(source.asSlice(), target.data)) {
+        for ((src, dst) in Iter.zip(source.asSlice(), target.data)) {
             // Write a clone into the new array, then update its alive range.
             // If cloning panics, we'll correctly drop the previous items.
             dst.write(src.clone())
@@ -178,7 +179,7 @@ public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.sizeHint(): Pair<Int, Int?>
     return Pair(len, len)
 }
 
-public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
     // This also moves the start, which marks them as conceptually "dropped",
     // so if anything goes bad then our drop impl won't double-free them.
     val rangeToDrop = this.alive.takePrefix(n)
@@ -188,7 +189,7 @@ public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBy(n: Int): Result<U
         val slice = this.data.getUncheckedMut(rangeToDrop)
         slice.assumeInitDrop()
     }
-    return NonZero.new(remaining).mapOr(Result.Ok(Unit), { Result.Err(it) })
+    return ((NonZero.new<NonZeroUsizeInner, Int>(remaining))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
 }
 
 public fun <T, B> PolymorphicIter<List<MaybeUninit<T>>>.fold(init: B, f: (B, T) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
@@ -224,7 +225,7 @@ public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.nextBack(): T? {
     })
 }
 
-public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
     // This also moves the end, which marks them as conceptually "dropped",
     // so if anything goes bad then our drop impl won't double-free them.
     val rangeToDrop = this.alive.takeSuffix(n)
@@ -234,7 +235,7 @@ public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.advanceBackBy(n: Int): Resu
         val slice = this.data.getUncheckedMut(rangeToDrop)
         slice.assumeInitDrop()
     }
-    return NonZero.new(remaining).mapOr(Result.Ok(Unit), { Result.Err(it) })
+    return ((NonZero.new<NonZeroUsizeInner, Int>(remaining))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
 }
 
 public fun <T, B> PolymorphicIter<List<MaybeUninit<T>>>.rfold(init: B, f: (B, T) -> B): B = this.tryRfold(init, NeverShortCircuit.wrapMut2(f)).first

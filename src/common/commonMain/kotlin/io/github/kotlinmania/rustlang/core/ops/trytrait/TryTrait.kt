@@ -3,9 +3,11 @@ package io.github.kotlinmania.rustlang.core.ops.trytrait
 
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 public typealias TryType<T> = NeverShortCircuit<T>
@@ -240,8 +242,8 @@ public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> =
  */
 public open class NeverShortCircuit<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
-) : Try<NeverShortCircuit<T>, Any?, Any?, T, NeverShortCircuitResidual>, FromResidual<Residual, NeverShortCircuit<T>> {
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+) : Try<NeverShortCircuit<T>, T, NeverShortCircuitResidual>, FromResidual<Residual, NeverShortCircuit<T>> {
     public var field0: T
         get() = value
         set(v) {
@@ -252,7 +254,7 @@ public open class NeverShortCircuit<T>(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NeverShortCircuit<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NeverShortCircuit<T>(ptr, layout) }, { it.value })
 
@@ -265,17 +267,17 @@ public open class NeverShortCircuit<T>(
          * This is useful for implementing infallible functions in terms of the `try_` ones,
          * without accidentally capturing extra generic parameters in a closure.
          */
-        public fun <T, A> wrapMut1(f: (A) -> T, fieldLayout: TypeLayout<T>): (A) -> NeverShortCircuit<T> = { a -> NeverShortCircuit(f(a), fieldLayout = fieldLayout) }
+        public fun <T, A> wrapMut1(f: (A) -> T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): (A) -> NeverShortCircuit<T> = { a -> NeverShortCircuit(f(a), fieldLayout = fieldLayout) }
 
-        public fun <T, A, B> wrapMut2(f: (A, B) -> T, fieldLayout: TypeLayout<T>): (A, B) -> NeverShortCircuit<T> = { a, b -> NeverShortCircuit(f(a, b), fieldLayout = fieldLayout) }
+        public fun <T, A, B> wrapMut2(f: (A, B) -> T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): (A, B) -> NeverShortCircuit<T> = { a, b -> NeverShortCircuit(f(a, b), fieldLayout = fieldLayout) }
 
-        public fun <T> fromOutput(x: T, fieldLayout: TypeLayout<T>): NeverShortCircuit<T> = NeverShortCircuit(x, fieldLayout = fieldLayout)
+        public fun <T> fromOutput(x: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): NeverShortCircuit<T> = NeverShortCircuit(x, fieldLayout = fieldLayout)
 
         public fun <T> fromResidual(never: NeverShortCircuitResidual): NeverShortCircuit<T> = when (never) {}
     }
 }
 
-public object NeverShortCircuitResidual : Residual<T, Any?, NeverShortCircuit<T>>
+public object NeverShortCircuitResidual : Residual<T, NeverShortCircuit<T>>
 
 /**
  * Implement `FromResidual<Yeet<T>>` on your type to enable

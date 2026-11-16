@@ -2,8 +2,10 @@
 package io.github.kotlinmania.rustlang.alloc.collections.btree.mem
 
 import io.github.kotlinmania.rustlang.core.array.write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.ptr.read
 
 // keep as illustration and for future use
 
@@ -26,16 +28,16 @@ public fun <T> takeMut(v: T, change: (T) -> T) {
 public fun <T, R> replace(v: T, change: (T) -> Pair<T, R>): R {
     open class PanicGuard {
         public open fun drop() {
-            abortImmediate()
+            kmAbort()
         }
     }
     val guard = PanicGuard()
     // SAFETY: v is valid for reads and we write a new value before returning.
-    val value = ptr.read(v, typeLayoutT = ObjectSlotLayout<T>())
+    val value = read(v, typeLayoutT = UnresolvedTypeLayout<T>())
     val (newValue, ret) = change(value)
     // SAFETY: newValue is T and v is valid for writes.
     run {
-        write(v, newValue, typeLayoutT = ObjectSlotLayout<T>())
+        write(v, newValue, typeLayoutT = UnresolvedTypeLayout<T>())
     }
     forget(guard)
     return ret

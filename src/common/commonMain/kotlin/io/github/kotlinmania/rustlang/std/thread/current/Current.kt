@@ -7,17 +7,17 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.process.id
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
 import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
+import io.github.kotlinmania.rustlang.std.thread.mainthread.main
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 public val NONE: MutPtr = MutPtr(0L)
 
-public val BUSY: MutPtr = withoutProvenanceMut(1)
+public val BUSY: MutPtr = ptr.withoutProvenanceMut(1)
 
-public val DESTROYED: MutPtr = withoutProvenanceMut(2)
+public val DESTROYED: MutPtr = ptr.withoutProvenanceMut(2)
 
 public var ID: Cell<Any?> = Cell.new(null)
 
@@ -42,7 +42,7 @@ public fun getOrInit(): Any =
  */
 public fun setCurrent(thread: Thread): Result<Unit, Thread> {
     if (((CURRENT.get()).rawAddress.toULong() != (NONE).rawAddress.toULong())) {
-        return Result.Err(thread)
+        return Result.Err<Unit, Thread>(thread)
     }
     run {
         val matchVal = get()
@@ -51,14 +51,14 @@ public fun setCurrent(thread: Thread): Result<Unit, Thread> {
                 val id = matchVal
             }
             matchVal == null -> set(thread.id())
-            else -> { return Result.Err(thread) }
+            else -> { return Result.Err<Unit, Thread>(thread) }
         }
     }
     // Make sure that `rt.threadCleanup` will be run, which will
     // call `dropCurrent`.
     enable()
     CURRENT.set(MutPtr((thread.intoRaw()).rawAddress))
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Thread>(Unit)
 }
 
 /**

@@ -12,7 +12,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
-import io.github.kotlinmania.rustlang.core.num.rustSaturatingSub
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -24,35 +24,35 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeThroughParent(alloc: A): Result<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>> {
     val len = this.len()
     return if (len >= MIN_LEN) {
-        Result.Ok(null)
+        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
     } else {
         run {
             val matchVal = this.chooseParentKv()
             when {
-                matchVal is Result.Ok<*> && matchVal.value is Left -> {
+                matchVal is Result.Ok && matchVal.value is Left -> {
                     if (leftParentKv.canMerge()) {
                         val parent = leftParentKv.mergeTrackingParent(alloc)
-                        Result.Ok(parent)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent)
                     } else {
                         leftParentKv.bulkStealLeft(MIN_LEN - len)
-                        Result.Ok(null)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
-                matchVal is Result.Ok<*> && matchVal.value is Right -> {
+                matchVal is Result.Ok && matchVal.value is Right -> {
                     if (rightParentKv.canMerge()) {
                         val parent1 = rightParentKv.mergeTrackingParent(alloc)
-                        Result.Ok(parent1)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent1)
                     } else {
                         rightParentKv.bulkStealRight(MIN_LEN - len)
-                        Result.Ok(null)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
                 else -> {
-                    val root = (matchVal as Result.Err<*>).error
+                    val root = matchVal.error
                     if (len > 0) {
-                        Result.Ok(null)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     } else {
-                        Result.Err(root)
+                        Result.Err<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(root)
                     }
                 }
             }
@@ -74,9 +74,9 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
         run {
             val matchVal = this.fixNodeThroughParent(alloc.clone())
             when {
-                matchVal is Result.Ok<*> && matchVal.value != null -> this = parent.forgetType()
-                matchVal is Result.Ok<*> && matchVal.value == null -> {
-                    val None = (matchVal as Result.Ok<*>).value
+                matchVal is Result.Ok && matchVal.value != null -> this = parent.forgetType()
+                matchVal is Result.Ok && matchVal.value == null -> {
+                    val None = matchVal.value
                     return true
                 }
                 else -> { return false }
@@ -127,8 +127,8 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
     var curNode = this.borrowMut()
     while (true) {
         val matchVal = curNode.force()
-        if (matchVal !is Internal) break
-        val (internal) = matchVal as Internal
+        if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
+        val (internal) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
         // Check if rightmost child is underfull.
         val lastKv = internal.lastKv().considerForBalancing()
         check(lastKv.leftChildLen() >= MIN_LEN * 2)
@@ -145,8 +145,8 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
 public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixLeftBorderOfLeftEdge(alloc: A) {
     while (true) {
         val matchVal = this.force()
-        if (matchVal !is Internal) break
-        val (internalKv) = matchVal as Internal
+        if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
+        val (internalKv) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
         this = internalKv.fixLeftChild(alloc.clone()).firstKv()
         check(this.reborrow().intoNode().len() > MIN_LEN)
     }
@@ -155,8 +155,8 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>,
 public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixRightBorderOfRightEdge(alloc: A) {
     while (true) {
         val matchVal = this.force()
-        if (matchVal !is Internal) break
-        val (internalKv) = matchVal as Internal
+        if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
+        val (internalKv) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
         this = internalKv.fixRightChild(alloc.clone()).lastKv()
         check(this.reborrow().intoNode().len() > MIN_LEN)
     }
@@ -176,7 +176,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.f
         internalKv.mergeTrackingChild(alloc)
     } else {
         // `MIN_LEN + 1` to avoid readjust if merge happens on the next level.
-        val count = rustSaturatingSub((MIN_LEN + 1), leftLen.toInt())
+        val count = (MIN_LEN + 1).saturatingSub(leftLen.toInt())
         if (count > 0) {
             internalKv.bulkStealRight(count)
         }
@@ -198,7 +198,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.f
         internalKv.mergeTrackingChild(alloc)
     } else {
         // `MIN_LEN + 1` to avoid readjust if merge happens on the next level.
-        val count = rustSaturatingSub((MIN_LEN + 1), rightLen.toInt())
+        val count = (MIN_LEN + 1).saturatingSub(rightLen.toInt())
         if (count > 0) {
             internalKv.bulkStealLeft(count)
         }

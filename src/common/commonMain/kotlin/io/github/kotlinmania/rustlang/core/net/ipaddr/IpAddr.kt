@@ -5,9 +5,12 @@ package io.github.kotlinmania.rustlang.core.net.ipaddr
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.intrinsics.transmute
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.transmutability.transmute
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
@@ -339,11 +342,11 @@ public sealed class IpAddr {
         when (this) {
             is IpAddr.V4 -> {
                 val (ip) = this
-                run { ip.fmt(fmt); Result.Ok(Unit) }
+                ip.fmt(fmt)
             }
             is IpAddr.V6 -> {
                 val (ip1) = this
-                run { ip1.fmt(fmt); Result.Ok(Unit) }
+                ip1.fmt(fmt)
             }
         }
 
@@ -542,7 +545,7 @@ public sealed class IpAddr {
  */
 public open class Ipv4Addr(
     public var octets: UByteArray,
-) : Not<Any?, Ipv4Addr>, BitAndAssign<Ipv4Addr>, BitAnd<Ipv4Addr, Any?, Ipv4Addr>, BitOrAssign<Ipv4Addr>, BitOr<Ipv4Addr, Any?, Ipv4Addr> {
+) : Not<Ipv4Addr>, BitAndAssign<Ipv4Addr>, BitAnd<Ipv4Addr, Ipv4Addr>, BitOrAssign<Ipv4Addr>, BitOr<Ipv4Addr, Ipv4Addr> {
     public open fun clone(): Ipv4Addr = Ipv4Addr(octets)
 
     public override fun hashCode(): Int {
@@ -1311,7 +1314,7 @@ public open class Ipv4Addr(
  */
 public open class Ipv6Addr(
     public var octets: UByteArray,
-) : Not<Any?, Ipv6Addr>, BitAndAssign<Ipv6Addr>, BitAnd<Ipv6Addr, Any?, Ipv6Addr>, BitOrAssign<Ipv6Addr>, BitOr<Ipv6Addr, Any?, Ipv6Addr> {
+) : Not<Ipv6Addr>, BitAndAssign<Ipv6Addr>, BitAnd<Ipv6Addr, Ipv6Addr>, BitOrAssign<Ipv6Addr>, BitOr<Ipv6Addr, Ipv6Addr> {
     public open fun clone(): Ipv6Addr = Ipv6Addr(octets)
 
     public override fun hashCode(): Int {
@@ -1365,7 +1368,7 @@ public open class Ipv6Addr(
     public open fun segments(): UShortArray {
         // All elements in `self.octets` must be big endian.
         // SAFETY: `[UByte; 16]` is always safe to reinterpret to `[UShort; 8]`.
-        val (a, b, c, d, e, f, g, h) = transmute<UShortArray>(this.octets)
+        val (a, b, c, d, e, f, g, h) = transmute(this.octets)
         // We want native endian u16
         return listOf((((((a).toUInt() and 0xFFu) shl 8) or (((a).toUInt() shr 8) and 0xFFu)).toUShort()), (((((b).toUInt() and 0xFFu) shl 8) or (((b).toUInt() shr 8) and 0xFFu)).toUShort()), (((((c).toUInt() and 0xFFu) shl 8) or (((c).toUInt() shr 8) and 0xFFu)).toUShort()), (((((d).toUInt() and 0xFFu) shl 8) or (((d).toUInt() shr 8) and 0xFFu)).toUShort()), (((((e).toUInt() and 0xFFu) shl 8) or (((e).toUInt() shr 8) and 0xFFu)).toUShort()), (((((f).toUInt() and 0xFFu) shl 8) or (((f).toUInt() shr 8) and 0xFFu)).toUShort()), (((((g).toUInt() and 0xFFu) shl 8) or (((g).toUInt() shr 8) and 0xFFu)).toUShort()), (((((h).toUInt() and 0xFFu) shl 8) or (((h).toUInt() shr 8) and 0xFFu)).toUShort()))
     }
@@ -1957,19 +1960,20 @@ public open class Ipv6Addr(
                     /**
                      * Writes a colon-separated part of the address.
                      */
-                    fun fmtSubslice(f1: StringBuilder, chunk: List<UShort>) {
+                    fun fmtSubslice(f1: StringBuilder, chunk: List<UShort>): Result<Unit, Error> {
                         when (val matchVal = chunk.splitFirst()) {
                             null -> {}
                             else -> {
                                 val first = matchVal.first
                                 val tail = matchVal.second
-                                f1.writeFmt("$first")
+                                when (val tryResult = f1.writeFmt("$first")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                                 for (segment in tail) {
                                     f1.append(':')
-                                    f1.writeFmt("$segment")
+                                    when (val tryResult = f1.writeFmt("$segment")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                                 }
                             }
                         }
+                        return Result.Ok<Unit, Error>(Unit)
                     }
                     // Find the inner 0 span
                     val zeroes = run {
@@ -1991,11 +1995,11 @@ public open class Ipv6Addr(
                         longest
                     }
                     if (zeroes.len > 1) {
-                        fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))
+                        when (val tryResult = fmtSubslice(f, ((segments).sliceArray(0 until zeroes.start)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
                         f.append("::")
-                        run { fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size))); Result.Ok(Unit) }
+                        fmtSubslice(f, ((segments).sliceArray(zeroes.start + zeroes.len until segments.size)))
                     } else {
-                        run { fmtSubslice(f, segments); Result.Ok(Unit) }
+                        fmtSubslice(f, segments)
                     }
                 }
                 else -> {
@@ -2007,7 +2011,7 @@ public open class Ipv6Addr(
             val LONGEST_IPV6_ADDR: String = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
             val buf = DisplayBuffer.buffer(LONGEST_IPV6_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
-            buf1.writeFmt("$this").unwrap()
+            buf1.writeFmt("${this}").unwrap()
             run { f.append(buf1.asStr()); Result.Ok(Unit) }
         }
     }
@@ -2125,7 +2129,7 @@ public open class Ipv6Addr(
          */
         public fun new(a: UShort, b: UShort, c: UShort, d: UShort, e: UShort, f: UShort, g: UShort, h: UShort): Ipv6Addr {
             val addr16 = ushortArrayOf((((((a).toUInt() and 0xFFu) shl 8) or (((a).toUInt() shr 8) and 0xFFu)).toUShort()), (((((b).toUInt() and 0xFFu) shl 8) or (((b).toUInt() shr 8) and 0xFFu)).toUShort()), (((((c).toUInt() and 0xFFu) shl 8) or (((c).toUInt() shr 8) and 0xFFu)).toUShort()), (((((d).toUInt() and 0xFFu) shl 8) or (((d).toUInt() shr 8) and 0xFFu)).toUShort()), (((((e).toUInt() and 0xFFu) shl 8) or (((e).toUInt() shr 8) and 0xFFu)).toUShort()), (((((f).toUInt() and 0xFFu) shl 8) or (((f).toUInt() shr 8) and 0xFFu)).toUShort()), (((((g).toUInt() and 0xFFu) shl 8) or (((g).toUInt() shr 8) and 0xFFu)).toUShort()), (((((h).toUInt() and 0xFFu) shl 8) or (((h).toUInt() shr 8) and 0xFFu)).toUShort()))
-            return Ipv6Addr(octets = transmute<UByteArray>(addr16))
+            return Ipv6Addr(octets = transmute(addr16))
         }
 
         /**

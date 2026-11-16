@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.libm.math.fmaf16
 
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
+import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
 import io.github.kotlinmania.rustlang.libm.math.support.unboundedShrU64
 
@@ -121,7 +123,7 @@ public fun fmaf16(x: F16, y: F16, z: F16): F16 {
         } else {
             1.0
         }
-    return f16FromU2143(r64).copysign(sign)
+    return F16.fromFloat(kmCopysignf32(f16FromU2143(r64).toFloat(), (F16.fromDouble(sign.toDouble())).toFloat()))
 }
 
 /**
@@ -144,7 +146,7 @@ public fun f16FromU2143(r64: ULong): F16 {
     // don't become normalized.
     val expMaxBiasedM1 = F16.EXP_MAX.unsigned() + F16.EXP_BIAS - F16.fromFloat(1.0f)
     // 29
-    val lz = rustLeadingZeros(r641)
+    val lz = r641.leadingZeros()
     val rexp = (expMaxBiasedM1 + maxFiniteLz).saturatingSub(lz)
     val shift = expMaxBiasedM1 - rexp
     r641 = r641 shl shift.toInt()

@@ -4,16 +4,16 @@ package io.github.kotlinmania.rustlang.std.sys.time.unix
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_REALTIME
-import io.github.kotlinmania.rustlang.libc.helenos.ClockidT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CLOCK_UPTIME_RAW
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KERN_SUCCESS
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.KernReturnT
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
+import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
 import io.github.kotlinmania.rustlang.std.io.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.time.Timespec
@@ -60,9 +60,7 @@ public open class SystemTime(
         return SystemTime(t = (this.t.checkedSubDuration(other) ?: return null))
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "SystemTime").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "SystemTime").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish()
 
     public companion object {
         public val MAX: SystemTime = SystemTime(t = Timespec.MAX)
@@ -70,7 +68,7 @@ public open class SystemTime(
         public val MIN: SystemTime = SystemTime(t = Timespec.MIN)
 
         public fun new(tvSec: Long, tvNsec: Long): Result<SystemTime, Error> {
-            return Result.Ok(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }))
+            return Result.Ok<SystemTime, Error>(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<SystemTime, Error>(tryResult.error) }))
         }
 
         public fun now(): SystemTime = SystemTime(t = Timespec.now(CLOCK_REALTIME))
@@ -105,7 +103,7 @@ public open class Instant(
             public var numer: UInt,
             public var denom: UInt,
         )
-        fun machTimebaseInfo(info: MutPtr): KernReturnT = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<KernReturnT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<KernReturnT>()).alignBytes)); val res = (ObjectSlotLayout<KernReturnT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<KernReturnT>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<KernReturnT>()).alignBytes)); res }
+        fun machTimebaseInfo(info: MutPtr): KernReturnT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).alignBytes)); val res = (UnresolvedTypeLayout<KernReturnT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<KernReturnT>()).alignBytes)); res }
         val secs = (ULong.tryFrom(this.t.tvSec).ok() ?: return null)
         val timebase = MachTimebaseInfo(numer = 0u, denom = 0u)
         check(machTimebaseInfo(timebase) == KERN_SUCCESS)
@@ -120,9 +118,7 @@ public open class Instant(
 
     public override fun asInner(): Timespec = this.t
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Instant").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Instant").field("tv_sec", this.t.tvSec).field("tv_nsec", this.t.tvNsec).finish()
 
     public companion object {
         // CLOCK_UPTIME_RAW   clock that increments monotonically, in the same man-

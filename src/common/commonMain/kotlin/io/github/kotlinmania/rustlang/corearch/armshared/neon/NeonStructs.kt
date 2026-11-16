@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
@@ -20,7 +21,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
  */
 public open class Int8x8T(
     public var value: ByteArray,
-) : AsUnsigned<Any?, Uint8x8T>, AsSigned<Any?, Uint8x8T> {
+) : AsUnsigned<Uint8x8T>, AsSigned<Uint8x8T> {
     public var field0: ByteArray
         get() = value
         set(v) {
@@ -80,7 +81,7 @@ public open class Int8x8T(
  */
 public open class Uint8x8T(
     public var value: UByteArray,
-) : AsSigned<Any?, Int8x8T>, AsUnsigned<Any?, Int8x8T> {
+) : AsSigned<Int8x8T>, AsUnsigned<Int8x8T> {
     public var field0: UByteArray
         get() = value
         set(v) {
@@ -196,7 +197,7 @@ public open class Poly8x8T(
  */
 public open class Int16x4T(
     public var value: ShortArray,
-) : AsUnsigned<Any?, Uint16x4T>, AsSigned<Any?, Uint16x4T> {
+) : AsUnsigned<Uint16x4T>, AsSigned<Uint16x4T> {
     public var field0: ShortArray
         get() = value
         set(v) {
@@ -256,7 +257,7 @@ public open class Int16x4T(
  */
 public open class Uint16x4T(
     public var value: UShortArray,
-) : AsSigned<Any?, Int16x4T>, AsUnsigned<Any?, Int16x4T> {
+) : AsSigned<Int16x4T>, AsUnsigned<Int16x4T> {
     public var field0: UShortArray
         get() = value
         set(v) {
@@ -372,7 +373,7 @@ public open class Poly16x4T(
  */
 public open class Int32x2T(
     public var value: IntArray,
-) : AsUnsigned<Any?, Uint32x2T>, AsSigned<Any?, Uint32x2T> {
+) : AsUnsigned<Uint32x2T>, AsSigned<Uint32x2T> {
     public var field0: IntArray
         get() = value
         set(v) {
@@ -432,7 +433,7 @@ public open class Int32x2T(
  */
 public open class Uint32x2T(
     public var value: UIntArray,
-) : AsSigned<Any?, Int32x2T>, AsUnsigned<Any?, Int32x2T> {
+) : AsSigned<Int32x2T>, AsUnsigned<Int32x2T> {
     public var field0: UIntArray
         get() = value
         set(v) {
@@ -548,7 +549,7 @@ public open class Float32x2T(
  */
 public open class Int64x1T(
     public var value: LongArray,
-) : AsUnsigned<Any?, Uint64x1T>, AsSigned<Any?, Uint64x1T> {
+) : AsUnsigned<Uint64x1T>, AsSigned<Uint64x1T> {
     public var field0: LongArray
         get() = value
         set(v) {
@@ -608,7 +609,7 @@ public open class Int64x1T(
  */
 public open class Uint64x1T(
     public var value: ULongArray,
-) : AsSigned<Any?, Int64x1T>, AsUnsigned<Any?, Int64x1T> {
+) : AsSigned<Int64x1T>, AsUnsigned<Int64x1T> {
     public var field0: ULongArray
         get() = value
         set(v) {
@@ -724,7 +725,7 @@ public open class Poly64x1T(
  */
 public open class Int8x16T(
     public var value: ByteArray,
-) : AsUnsigned<Any?, Uint8x16T>, AsSigned<Any?, Uint8x16T> {
+) : AsUnsigned<Uint8x16T>, AsSigned<Uint8x16T> {
     public var field0: ByteArray
         get() = value
         set(v) {
@@ -784,7 +785,7 @@ public open class Int8x16T(
  */
 public open class Uint8x16T(
     public var value: UByteArray,
-) : AsSigned<Any?, Int8x16T>, AsUnsigned<Any?, Int8x16T> {
+) : AsSigned<Int8x16T>, AsUnsigned<Int8x16T> {
     public var field0: UByteArray
         get() = value
         set(v) {
@@ -900,7 +901,7 @@ public open class Poly8x16T(
  */
 public open class Int16x8T(
     public var value: ShortArray,
-) : AsUnsigned<Any?, Uint16x8T>, AsSigned<Any?, Uint16x8T> {
+) : AsUnsigned<Uint16x8T>, AsSigned<Uint16x8T> {
     public var field0: ShortArray
         get() = value
         set(v) {
@@ -960,7 +961,7 @@ public open class Int16x8T(
  */
 public open class Uint16x8T(
     public var value: UShortArray,
-) : AsSigned<Any?, Int16x8T>, AsUnsigned<Any?, Int16x8T> {
+) : AsSigned<Int16x8T>, AsUnsigned<Int16x8T> {
     public var field0: UShortArray
         get() = value
         set(v) {
@@ -1076,7 +1077,7 @@ public open class Poly16x8T(
  */
 public open class Int32x4T(
     public var value: IntArray,
-) : AsUnsigned<Any?, Uint32x4T>, AsSigned<Any?, Uint32x4T> {
+) : AsUnsigned<Uint32x4T>, AsSigned<Uint32x4T> {
     public var field0: IntArray
         get() = value
         set(v) {
@@ -1136,7 +1137,7 @@ public open class Int32x4T(
  */
 public open class Uint32x4T(
     public var value: UIntArray,
-) : AsSigned<Any?, Int32x4T>, AsUnsigned<Any?, Int32x4T> {
+) : AsSigned<Int32x4T>, AsUnsigned<Int32x4T> {
     public var field0: UIntArray
         get() = value
         set(v) {
@@ -1252,7 +1253,7 @@ public open class Float32x4T(
  */
 public open class Int64x2T(
     public var value: LongArray,
-) : AsUnsigned<Any?, Uint64x2T>, AsSigned<Any?, Uint64x2T> {
+) : AsUnsigned<Uint64x2T>, AsSigned<Uint64x2T> {
     public var field0: LongArray
         get() = value
         set(v) {
@@ -1312,7 +1313,7 @@ public open class Int64x2T(
  */
 public open class Uint64x2T(
     public var value: ULongArray,
-) : AsSigned<Any?, Int64x2T>, AsUnsigned<Any?, Int64x2T> {
+) : AsSigned<Int64x2T>, AsUnsigned<Int64x2T> {
     public var field0: ULongArray
         get() = value
         set(v) {
@@ -1541,7 +1542,7 @@ public open class Float16x8T(
 public open class Int8x8x2T(
     public var field0: Int8x8T,
     public var field1: Int8x8T,
-) : AsUnsigned<Any?, Uint8x8x2T>, AsSigned<Any?, Uint8x8x2T> {
+) : AsUnsigned<Uint8x8x2T>, AsSigned<Uint8x8x2T> {
     public open fun clone(): Int8x8x2T = Int8x8x2T(field0, field1)
 
     public override fun asUnsigned(): Uint8x8x2T = transmute(this)
@@ -1582,7 +1583,7 @@ public open class Int8x8x3T(
     public var field0: Int8x8T,
     public var field1: Int8x8T,
     public var field2: Int8x8T,
-) : AsUnsigned<Any?, Uint8x8x3T>, AsSigned<Any?, Uint8x8x3T> {
+) : AsUnsigned<Uint8x8x3T>, AsSigned<Uint8x8x3T> {
     public open fun clone(): Int8x8x3T = Int8x8x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint8x8x3T = transmute(this)
@@ -1628,7 +1629,7 @@ public open class Int8x8x4T(
     public var field1: Int8x8T,
     public var field2: Int8x8T,
     public var field3: Int8x8T,
-) : AsUnsigned<Any?, Uint8x8x4T>, AsSigned<Any?, Uint8x8x4T> {
+) : AsUnsigned<Uint8x8x4T>, AsSigned<Uint8x8x4T> {
     public open fun clone(): Int8x8x4T = Int8x8x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint8x8x4T = transmute(this)
@@ -1676,7 +1677,7 @@ public open class Int8x8x4T(
 public open class Int8x16x2T(
     public var field0: Int8x16T,
     public var field1: Int8x16T,
-) : AsUnsigned<Any?, Uint8x16x2T>, AsSigned<Any?, Uint8x16x2T> {
+) : AsUnsigned<Uint8x16x2T>, AsSigned<Uint8x16x2T> {
     public open fun clone(): Int8x16x2T = Int8x16x2T(field0, field1)
 
     public override fun asUnsigned(): Uint8x16x2T = transmute(this)
@@ -1717,7 +1718,7 @@ public open class Int8x16x3T(
     public var field0: Int8x16T,
     public var field1: Int8x16T,
     public var field2: Int8x16T,
-) : AsUnsigned<Any?, Uint8x16x3T>, AsSigned<Any?, Uint8x16x3T> {
+) : AsUnsigned<Uint8x16x3T>, AsSigned<Uint8x16x3T> {
     public open fun clone(): Int8x16x3T = Int8x16x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint8x16x3T = transmute(this)
@@ -1763,7 +1764,7 @@ public open class Int8x16x4T(
     public var field1: Int8x16T,
     public var field2: Int8x16T,
     public var field3: Int8x16T,
-) : AsUnsigned<Any?, Uint8x16x4T>, AsSigned<Any?, Uint8x16x4T> {
+) : AsUnsigned<Uint8x16x4T>, AsSigned<Uint8x16x4T> {
     public open fun clone(): Int8x16x4T = Int8x16x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint8x16x4T = transmute(this)
@@ -1811,7 +1812,7 @@ public open class Int8x16x4T(
 public open class Uint8x8x2T(
     public var field0: Uint8x8T,
     public var field1: Uint8x8T,
-) : AsSigned<Any?, Int8x8x2T>, AsUnsigned<Any?, Int8x8x2T> {
+) : AsSigned<Int8x8x2T>, AsUnsigned<Int8x8x2T> {
     public open fun clone(): Uint8x8x2T = Uint8x8x2T(field0, field1)
 
     public override fun asSigned(): Int8x8x2T = transmute(this)
@@ -1852,7 +1853,7 @@ public open class Uint8x8x3T(
     public var field0: Uint8x8T,
     public var field1: Uint8x8T,
     public var field2: Uint8x8T,
-) : AsSigned<Any?, Int8x8x3T>, AsUnsigned<Any?, Int8x8x3T> {
+) : AsSigned<Int8x8x3T>, AsUnsigned<Int8x8x3T> {
     public open fun clone(): Uint8x8x3T = Uint8x8x3T(field0, field1, field2)
 
     public override fun asSigned(): Int8x8x3T = transmute(this)
@@ -1898,7 +1899,7 @@ public open class Uint8x8x4T(
     public var field1: Uint8x8T,
     public var field2: Uint8x8T,
     public var field3: Uint8x8T,
-) : AsSigned<Any?, Int8x8x4T>, AsUnsigned<Any?, Int8x8x4T> {
+) : AsSigned<Int8x8x4T>, AsUnsigned<Int8x8x4T> {
     public open fun clone(): Uint8x8x4T = Uint8x8x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int8x8x4T = transmute(this)
@@ -1946,7 +1947,7 @@ public open class Uint8x8x4T(
 public open class Uint8x16x2T(
     public var field0: Uint8x16T,
     public var field1: Uint8x16T,
-) : AsSigned<Any?, Int8x16x2T>, AsUnsigned<Any?, Int8x16x2T> {
+) : AsSigned<Int8x16x2T>, AsUnsigned<Int8x16x2T> {
     public open fun clone(): Uint8x16x2T = Uint8x16x2T(field0, field1)
 
     public override fun asSigned(): Int8x16x2T = transmute(this)
@@ -1987,7 +1988,7 @@ public open class Uint8x16x3T(
     public var field0: Uint8x16T,
     public var field1: Uint8x16T,
     public var field2: Uint8x16T,
-) : AsSigned<Any?, Int8x16x3T>, AsUnsigned<Any?, Int8x16x3T> {
+) : AsSigned<Int8x16x3T>, AsUnsigned<Int8x16x3T> {
     public open fun clone(): Uint8x16x3T = Uint8x16x3T(field0, field1, field2)
 
     public override fun asSigned(): Int8x16x3T = transmute(this)
@@ -2033,7 +2034,7 @@ public open class Uint8x16x4T(
     public var field1: Uint8x16T,
     public var field2: Uint8x16T,
     public var field3: Uint8x16T,
-) : AsSigned<Any?, Int8x16x4T>, AsUnsigned<Any?, Int8x16x4T> {
+) : AsSigned<Int8x16x4T>, AsUnsigned<Int8x16x4T> {
     public open fun clone(): Uint8x16x4T = Uint8x16x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int8x16x4T = transmute(this)
@@ -2327,7 +2328,7 @@ public open class Poly8x16x4T(
 public open class Int16x4x2T(
     public var field0: Int16x4T,
     public var field1: Int16x4T,
-) : AsUnsigned<Any?, Uint16x4x2T>, AsSigned<Any?, Uint16x4x2T> {
+) : AsUnsigned<Uint16x4x2T>, AsSigned<Uint16x4x2T> {
     public open fun clone(): Int16x4x2T = Int16x4x2T(field0, field1)
 
     public override fun asUnsigned(): Uint16x4x2T = transmute(this)
@@ -2368,7 +2369,7 @@ public open class Int16x4x3T(
     public var field0: Int16x4T,
     public var field1: Int16x4T,
     public var field2: Int16x4T,
-) : AsUnsigned<Any?, Uint16x4x3T>, AsSigned<Any?, Uint16x4x3T> {
+) : AsUnsigned<Uint16x4x3T>, AsSigned<Uint16x4x3T> {
     public open fun clone(): Int16x4x3T = Int16x4x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint16x4x3T = transmute(this)
@@ -2414,7 +2415,7 @@ public open class Int16x4x4T(
     public var field1: Int16x4T,
     public var field2: Int16x4T,
     public var field3: Int16x4T,
-) : AsUnsigned<Any?, Uint16x4x4T>, AsSigned<Any?, Uint16x4x4T> {
+) : AsUnsigned<Uint16x4x4T>, AsSigned<Uint16x4x4T> {
     public open fun clone(): Int16x4x4T = Int16x4x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint16x4x4T = transmute(this)
@@ -2462,7 +2463,7 @@ public open class Int16x4x4T(
 public open class Int16x8x2T(
     public var field0: Int16x8T,
     public var field1: Int16x8T,
-) : AsUnsigned<Any?, Uint16x8x2T>, AsSigned<Any?, Uint16x8x2T> {
+) : AsUnsigned<Uint16x8x2T>, AsSigned<Uint16x8x2T> {
     public open fun clone(): Int16x8x2T = Int16x8x2T(field0, field1)
 
     public override fun asUnsigned(): Uint16x8x2T = transmute(this)
@@ -2503,7 +2504,7 @@ public open class Int16x8x3T(
     public var field0: Int16x8T,
     public var field1: Int16x8T,
     public var field2: Int16x8T,
-) : AsUnsigned<Any?, Uint16x8x3T>, AsSigned<Any?, Uint16x8x3T> {
+) : AsUnsigned<Uint16x8x3T>, AsSigned<Uint16x8x3T> {
     public open fun clone(): Int16x8x3T = Int16x8x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint16x8x3T = transmute(this)
@@ -2549,7 +2550,7 @@ public open class Int16x8x4T(
     public var field1: Int16x8T,
     public var field2: Int16x8T,
     public var field3: Int16x8T,
-) : AsUnsigned<Any?, Uint16x8x4T>, AsSigned<Any?, Uint16x8x4T> {
+) : AsUnsigned<Uint16x8x4T>, AsSigned<Uint16x8x4T> {
     public open fun clone(): Int16x8x4T = Int16x8x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint16x8x4T = transmute(this)
@@ -2597,7 +2598,7 @@ public open class Int16x8x4T(
 public open class Uint16x4x2T(
     public var field0: Uint16x4T,
     public var field1: Uint16x4T,
-) : AsSigned<Any?, Int16x4x2T>, AsUnsigned<Any?, Int16x4x2T> {
+) : AsSigned<Int16x4x2T>, AsUnsigned<Int16x4x2T> {
     public open fun clone(): Uint16x4x2T = Uint16x4x2T(field0, field1)
 
     public override fun asSigned(): Int16x4x2T = transmute(this)
@@ -2638,7 +2639,7 @@ public open class Uint16x4x3T(
     public var field0: Uint16x4T,
     public var field1: Uint16x4T,
     public var field2: Uint16x4T,
-) : AsSigned<Any?, Int16x4x3T>, AsUnsigned<Any?, Int16x4x3T> {
+) : AsSigned<Int16x4x3T>, AsUnsigned<Int16x4x3T> {
     public open fun clone(): Uint16x4x3T = Uint16x4x3T(field0, field1, field2)
 
     public override fun asSigned(): Int16x4x3T = transmute(this)
@@ -2684,7 +2685,7 @@ public open class Uint16x4x4T(
     public var field1: Uint16x4T,
     public var field2: Uint16x4T,
     public var field3: Uint16x4T,
-) : AsSigned<Any?, Int16x4x4T>, AsUnsigned<Any?, Int16x4x4T> {
+) : AsSigned<Int16x4x4T>, AsUnsigned<Int16x4x4T> {
     public open fun clone(): Uint16x4x4T = Uint16x4x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int16x4x4T = transmute(this)
@@ -2732,7 +2733,7 @@ public open class Uint16x4x4T(
 public open class Uint16x8x2T(
     public var field0: Uint16x8T,
     public var field1: Uint16x8T,
-) : AsSigned<Any?, Int16x8x2T>, AsUnsigned<Any?, Int16x8x2T> {
+) : AsSigned<Int16x8x2T>, AsUnsigned<Int16x8x2T> {
     public open fun clone(): Uint16x8x2T = Uint16x8x2T(field0, field1)
 
     public override fun asSigned(): Int16x8x2T = transmute(this)
@@ -2773,7 +2774,7 @@ public open class Uint16x8x3T(
     public var field0: Uint16x8T,
     public var field1: Uint16x8T,
     public var field2: Uint16x8T,
-) : AsSigned<Any?, Int16x8x3T>, AsUnsigned<Any?, Int16x8x3T> {
+) : AsSigned<Int16x8x3T>, AsUnsigned<Int16x8x3T> {
     public open fun clone(): Uint16x8x3T = Uint16x8x3T(field0, field1, field2)
 
     public override fun asSigned(): Int16x8x3T = transmute(this)
@@ -2819,7 +2820,7 @@ public open class Uint16x8x4T(
     public var field1: Uint16x8T,
     public var field2: Uint16x8T,
     public var field3: Uint16x8T,
-) : AsSigned<Any?, Int16x8x4T>, AsUnsigned<Any?, Int16x8x4T> {
+) : AsSigned<Int16x8x4T>, AsUnsigned<Int16x8x4T> {
     public open fun clone(): Uint16x8x4T = Uint16x8x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int16x8x4T = transmute(this)
@@ -3113,7 +3114,7 @@ public open class Poly16x8x4T(
 public open class Int32x2x2T(
     public var field0: Int32x2T,
     public var field1: Int32x2T,
-) : AsUnsigned<Any?, Uint32x2x2T>, AsSigned<Any?, Uint32x2x2T> {
+) : AsUnsigned<Uint32x2x2T>, AsSigned<Uint32x2x2T> {
     public open fun clone(): Int32x2x2T = Int32x2x2T(field0, field1)
 
     public override fun asUnsigned(): Uint32x2x2T = transmute(this)
@@ -3154,7 +3155,7 @@ public open class Int32x2x3T(
     public var field0: Int32x2T,
     public var field1: Int32x2T,
     public var field2: Int32x2T,
-) : AsUnsigned<Any?, Uint32x2x3T>, AsSigned<Any?, Uint32x2x3T> {
+) : AsUnsigned<Uint32x2x3T>, AsSigned<Uint32x2x3T> {
     public open fun clone(): Int32x2x3T = Int32x2x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint32x2x3T = transmute(this)
@@ -3200,7 +3201,7 @@ public open class Int32x2x4T(
     public var field1: Int32x2T,
     public var field2: Int32x2T,
     public var field3: Int32x2T,
-) : AsUnsigned<Any?, Uint32x2x4T>, AsSigned<Any?, Uint32x2x4T> {
+) : AsUnsigned<Uint32x2x4T>, AsSigned<Uint32x2x4T> {
     public open fun clone(): Int32x2x4T = Int32x2x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint32x2x4T = transmute(this)
@@ -3248,7 +3249,7 @@ public open class Int32x2x4T(
 public open class Int32x4x2T(
     public var field0: Int32x4T,
     public var field1: Int32x4T,
-) : AsUnsigned<Any?, Uint32x4x2T>, AsSigned<Any?, Uint32x4x2T> {
+) : AsUnsigned<Uint32x4x2T>, AsSigned<Uint32x4x2T> {
     public open fun clone(): Int32x4x2T = Int32x4x2T(field0, field1)
 
     public override fun asUnsigned(): Uint32x4x2T = transmute(this)
@@ -3289,7 +3290,7 @@ public open class Int32x4x3T(
     public var field0: Int32x4T,
     public var field1: Int32x4T,
     public var field2: Int32x4T,
-) : AsUnsigned<Any?, Uint32x4x3T>, AsSigned<Any?, Uint32x4x3T> {
+) : AsUnsigned<Uint32x4x3T>, AsSigned<Uint32x4x3T> {
     public open fun clone(): Int32x4x3T = Int32x4x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint32x4x3T = transmute(this)
@@ -3335,7 +3336,7 @@ public open class Int32x4x4T(
     public var field1: Int32x4T,
     public var field2: Int32x4T,
     public var field3: Int32x4T,
-) : AsUnsigned<Any?, Uint32x4x4T>, AsSigned<Any?, Uint32x4x4T> {
+) : AsUnsigned<Uint32x4x4T>, AsSigned<Uint32x4x4T> {
     public open fun clone(): Int32x4x4T = Int32x4x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint32x4x4T = transmute(this)
@@ -3383,7 +3384,7 @@ public open class Int32x4x4T(
 public open class Uint32x2x2T(
     public var field0: Uint32x2T,
     public var field1: Uint32x2T,
-) : AsSigned<Any?, Int32x2x2T>, AsUnsigned<Any?, Int32x2x2T> {
+) : AsSigned<Int32x2x2T>, AsUnsigned<Int32x2x2T> {
     public open fun clone(): Uint32x2x2T = Uint32x2x2T(field0, field1)
 
     public override fun asSigned(): Int32x2x2T = transmute(this)
@@ -3424,7 +3425,7 @@ public open class Uint32x2x3T(
     public var field0: Uint32x2T,
     public var field1: Uint32x2T,
     public var field2: Uint32x2T,
-) : AsSigned<Any?, Int32x2x3T>, AsUnsigned<Any?, Int32x2x3T> {
+) : AsSigned<Int32x2x3T>, AsUnsigned<Int32x2x3T> {
     public open fun clone(): Uint32x2x3T = Uint32x2x3T(field0, field1, field2)
 
     public override fun asSigned(): Int32x2x3T = transmute(this)
@@ -3470,7 +3471,7 @@ public open class Uint32x2x4T(
     public var field1: Uint32x2T,
     public var field2: Uint32x2T,
     public var field3: Uint32x2T,
-) : AsSigned<Any?, Int32x2x4T>, AsUnsigned<Any?, Int32x2x4T> {
+) : AsSigned<Int32x2x4T>, AsUnsigned<Int32x2x4T> {
     public open fun clone(): Uint32x2x4T = Uint32x2x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int32x2x4T = transmute(this)
@@ -3518,7 +3519,7 @@ public open class Uint32x2x4T(
 public open class Uint32x4x2T(
     public var field0: Uint32x4T,
     public var field1: Uint32x4T,
-) : AsSigned<Any?, Int32x4x2T>, AsUnsigned<Any?, Int32x4x2T> {
+) : AsSigned<Int32x4x2T>, AsUnsigned<Int32x4x2T> {
     public open fun clone(): Uint32x4x2T = Uint32x4x2T(field0, field1)
 
     public override fun asSigned(): Int32x4x2T = transmute(this)
@@ -3559,7 +3560,7 @@ public open class Uint32x4x3T(
     public var field0: Uint32x4T,
     public var field1: Uint32x4T,
     public var field2: Uint32x4T,
-) : AsSigned<Any?, Int32x4x3T>, AsUnsigned<Any?, Int32x4x3T> {
+) : AsSigned<Int32x4x3T>, AsUnsigned<Int32x4x3T> {
     public open fun clone(): Uint32x4x3T = Uint32x4x3T(field0, field1, field2)
 
     public override fun asSigned(): Int32x4x3T = transmute(this)
@@ -3605,7 +3606,7 @@ public open class Uint32x4x4T(
     public var field1: Uint32x4T,
     public var field2: Uint32x4T,
     public var field3: Uint32x4T,
-) : AsSigned<Any?, Int32x4x4T>, AsUnsigned<Any?, Int32x4x4T> {
+) : AsSigned<Int32x4x4T>, AsUnsigned<Int32x4x4T> {
     public open fun clone(): Uint32x4x4T = Uint32x4x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int32x4x4T = transmute(this)
@@ -4145,7 +4146,7 @@ public open class Float32x4x4T(
 public open class Int64x1x2T(
     public var field0: Int64x1T,
     public var field1: Int64x1T,
-) : AsUnsigned<Any?, Uint64x1x2T>, AsSigned<Any?, Uint64x1x2T> {
+) : AsUnsigned<Uint64x1x2T>, AsSigned<Uint64x1x2T> {
     public open fun clone(): Int64x1x2T = Int64x1x2T(field0, field1)
 
     public override fun asUnsigned(): Uint64x1x2T = transmute(this)
@@ -4186,7 +4187,7 @@ public open class Int64x1x3T(
     public var field0: Int64x1T,
     public var field1: Int64x1T,
     public var field2: Int64x1T,
-) : AsUnsigned<Any?, Uint64x1x3T>, AsSigned<Any?, Uint64x1x3T> {
+) : AsUnsigned<Uint64x1x3T>, AsSigned<Uint64x1x3T> {
     public open fun clone(): Int64x1x3T = Int64x1x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint64x1x3T = transmute(this)
@@ -4232,7 +4233,7 @@ public open class Int64x1x4T(
     public var field1: Int64x1T,
     public var field2: Int64x1T,
     public var field3: Int64x1T,
-) : AsUnsigned<Any?, Uint64x1x4T>, AsSigned<Any?, Uint64x1x4T> {
+) : AsUnsigned<Uint64x1x4T>, AsSigned<Uint64x1x4T> {
     public open fun clone(): Int64x1x4T = Int64x1x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint64x1x4T = transmute(this)
@@ -4280,7 +4281,7 @@ public open class Int64x1x4T(
 public open class Int64x2x2T(
     public var field0: Int64x2T,
     public var field1: Int64x2T,
-) : AsUnsigned<Any?, Uint64x2x2T>, AsSigned<Any?, Uint64x2x2T> {
+) : AsUnsigned<Uint64x2x2T>, AsSigned<Uint64x2x2T> {
     public open fun clone(): Int64x2x2T = Int64x2x2T(field0, field1)
 
     public override fun asUnsigned(): Uint64x2x2T = transmute(this)
@@ -4321,7 +4322,7 @@ public open class Int64x2x3T(
     public var field0: Int64x2T,
     public var field1: Int64x2T,
     public var field2: Int64x2T,
-) : AsUnsigned<Any?, Uint64x2x3T>, AsSigned<Any?, Uint64x2x3T> {
+) : AsUnsigned<Uint64x2x3T>, AsSigned<Uint64x2x3T> {
     public open fun clone(): Int64x2x3T = Int64x2x3T(field0, field1, field2)
 
     public override fun asUnsigned(): Uint64x2x3T = transmute(this)
@@ -4367,7 +4368,7 @@ public open class Int64x2x4T(
     public var field1: Int64x2T,
     public var field2: Int64x2T,
     public var field3: Int64x2T,
-) : AsUnsigned<Any?, Uint64x2x4T>, AsSigned<Any?, Uint64x2x4T> {
+) : AsUnsigned<Uint64x2x4T>, AsSigned<Uint64x2x4T> {
     public open fun clone(): Int64x2x4T = Int64x2x4T(field0, field1, field2, field3)
 
     public override fun asUnsigned(): Uint64x2x4T = transmute(this)
@@ -4415,7 +4416,7 @@ public open class Int64x2x4T(
 public open class Uint64x1x2T(
     public var field0: Uint64x1T,
     public var field1: Uint64x1T,
-) : AsSigned<Any?, Int64x1x2T>, AsUnsigned<Any?, Int64x1x2T> {
+) : AsSigned<Int64x1x2T>, AsUnsigned<Int64x1x2T> {
     public open fun clone(): Uint64x1x2T = Uint64x1x2T(field0, field1)
 
     public override fun asSigned(): Int64x1x2T = transmute(this)
@@ -4456,7 +4457,7 @@ public open class Uint64x1x3T(
     public var field0: Uint64x1T,
     public var field1: Uint64x1T,
     public var field2: Uint64x1T,
-) : AsSigned<Any?, Int64x1x3T>, AsUnsigned<Any?, Int64x1x3T> {
+) : AsSigned<Int64x1x3T>, AsUnsigned<Int64x1x3T> {
     public open fun clone(): Uint64x1x3T = Uint64x1x3T(field0, field1, field2)
 
     public override fun asSigned(): Int64x1x3T = transmute(this)
@@ -4502,7 +4503,7 @@ public open class Uint64x1x4T(
     public var field1: Uint64x1T,
     public var field2: Uint64x1T,
     public var field3: Uint64x1T,
-) : AsSigned<Any?, Int64x1x4T>, AsUnsigned<Any?, Int64x1x4T> {
+) : AsSigned<Int64x1x4T>, AsUnsigned<Int64x1x4T> {
     public open fun clone(): Uint64x1x4T = Uint64x1x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int64x1x4T = transmute(this)
@@ -4550,7 +4551,7 @@ public open class Uint64x1x4T(
 public open class Uint64x2x2T(
     public var field0: Uint64x2T,
     public var field1: Uint64x2T,
-) : AsSigned<Any?, Int64x2x2T>, AsUnsigned<Any?, Int64x2x2T> {
+) : AsSigned<Int64x2x2T>, AsUnsigned<Int64x2x2T> {
     public open fun clone(): Uint64x2x2T = Uint64x2x2T(field0, field1)
 
     public override fun asSigned(): Int64x2x2T = transmute(this)
@@ -4591,7 +4592,7 @@ public open class Uint64x2x3T(
     public var field0: Uint64x2T,
     public var field1: Uint64x2T,
     public var field2: Uint64x2T,
-) : AsSigned<Any?, Int64x2x3T>, AsUnsigned<Any?, Int64x2x3T> {
+) : AsSigned<Int64x2x3T>, AsUnsigned<Int64x2x3T> {
     public open fun clone(): Uint64x2x3T = Uint64x2x3T(field0, field1, field2)
 
     public override fun asSigned(): Int64x2x3T = transmute(this)
@@ -4637,7 +4638,7 @@ public open class Uint64x2x4T(
     public var field1: Uint64x2T,
     public var field2: Uint64x2T,
     public var field3: Uint64x2T,
-) : AsSigned<Any?, Int64x2x4T>, AsUnsigned<Any?, Int64x2x4T> {
+) : AsSigned<Int64x2x4T>, AsUnsigned<Int64x2x4T> {
     public open fun clone(): Uint64x2x4T = Uint64x2x4T(field0, field1, field2, field3)
 
     public override fun asSigned(): Int64x2x4T = transmute(this)

@@ -2,12 +2,11 @@
 package io.github.kotlinmania.rustlang.core.panicking
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.panic.panicinfo.PanicInfo
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -53,12 +52,12 @@ import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
  * on (e.g.) the inlining of other functions as possible), by moving
  * the actual formatting into this shared place.
  */
-public fun panicFmt(fmt: Arguments): Nothing {
+public fun panicFmt(fmt: fmt.Arguments): Nothing {
     // NOTE This function never crosses the FFI boundary; it's a Rust-to-Rust call
     // that gets resolved to the `@panicHandler` function.
-    fun panicImpl(pi: PanicInfo): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); val res = (ObjectSlotLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (ObjectSlotLayout<Nothing>()).sizeBytes), maxOf(1L, (ObjectSlotLayout<Nothing>()).alignBytes)); res }
+    fun panicImpl(pi: PanicInfo): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); val res = (UnresolvedTypeLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); res }
     if (false) {
-        abortImmediate()
+        kmAbort()
     }
     val pi = PanicInfo.new(fmt, Location.caller(), true, false)
     // SAFETY: `panicImpl` is defined in safe Rust code and thus is safe to call.
@@ -75,10 +74,10 @@ public fun panicFmt(fmt: Arguments): Nothing {
  *
  * Has to be a separate function so that it can carry the `rustcNounwind` attribute.
  */
-public fun panicNounwindFmt(fmt: Arguments, forceNoBacktrace: Boolean): Nothing =
+public fun panicNounwindFmt(fmt: fmt.Arguments, forceNoBacktrace: Boolean): Nothing =
     run {
         if (false) {
-            abortImmediate()
+            kmAbort()
         }
         val pi = PanicInfo.new(fmt, Location.caller(), false, forceNoBacktrace)
         panicImpl(pi)
@@ -106,7 +105,7 @@ public fun panic(expr: String): Nothing {
     // payload without any allocation or copying. Shorter-lived strings would become invalid as
     // stack frames get popped during unwinding, and couldn't be directly referenced from the
     // payload.
-    panicFmt(Arguments.fromStr(expr))
+    panicFmt(fmt.Arguments.fromStr(expr))
 }
 
 // Separated panic constants list for async drop feature
@@ -116,154 +115,154 @@ public fun panic(expr: String): Nothing {
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAddOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to add with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to add with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstSubOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to subtract with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to subtract with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstMulOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to multiply with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to multiply with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstDivOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to divide with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to divide with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstRemOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to calculate the remainder with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to calculate the remainder with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstNegOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to negate with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to negate with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstShrOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to shift right with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to shift right with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstShlOverflow(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to shift left with overflow"))
+    panicFmt(fmt.Arguments.fromStr("attempt to shift left with overflow"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstDivByZero(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to divide by zero"))
+    panicFmt(fmt.Arguments.fromStr("attempt to divide by zero"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstRemByZero(): Nothing {
-    panicFmt(Arguments.fromStr("attempt to calculate the remainder with a divisor of zero"))
+    panicFmt(fmt.Arguments.fromStr("attempt to calculate the remainder with a divisor of zero"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstCoroutineResumed(): Nothing {
-    panicFmt(Arguments.fromStr("coroutine resumed after completion"))
+    panicFmt(fmt.Arguments.fromStr("coroutine resumed after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncFnResumed(): Nothing {
-    panicFmt(Arguments.fromStr("`async fn` resumed after completion"))
+    panicFmt(fmt.Arguments.fromStr("`async fn` resumed after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncGenFnResumed(): Nothing {
-    panicFmt(Arguments.fromStr("`async gen fn` resumed after completion"))
+    panicFmt(fmt.Arguments.fromStr("`async gen fn` resumed after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstGenFnNone(): Nothing {
-    panicFmt(Arguments.fromStr("`gen fn` should just keep returning `None` after completion"))
+    panicFmt(fmt.Arguments.fromStr("`gen fn` should just keep returning `None` after completion"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstCoroutineResumedPanic(): Nothing {
-    panicFmt(Arguments.fromStr("coroutine resumed after panicking"))
+    panicFmt(fmt.Arguments.fromStr("coroutine resumed after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncFnResumedPanic(): Nothing {
-    panicFmt(Arguments.fromStr("`async fn` resumed after panicking"))
+    panicFmt(fmt.Arguments.fromStr("`async fn` resumed after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncGenFnResumedPanic(): Nothing {
-    panicFmt(Arguments.fromStr("`async gen fn` resumed after panicking"))
+    panicFmt(fmt.Arguments.fromStr("`async gen fn` resumed after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstGenFnNonePanic(): Nothing {
-    panicFmt(Arguments.fromStr("`gen fn` should just keep returning `None` after panicking"))
+    panicFmt(fmt.Arguments.fromStr("`gen fn` should just keep returning `None` after panicking"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstCoroutineResumedDrop(): Nothing {
-    panicFmt(Arguments.fromStr("coroutine resumed after async drop"))
+    panicFmt(fmt.Arguments.fromStr("coroutine resumed after async drop"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncFnResumedDrop(): Nothing {
-    panicFmt(Arguments.fromStr("`async fn` resumed after async drop"))
+    panicFmt(fmt.Arguments.fromStr("`async fn` resumed after async drop"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstAsyncGenFnResumedDrop(): Nothing {
-    panicFmt(Arguments.fromStr("`async gen fn` resumed after async drop"))
+    panicFmt(fmt.Arguments.fromStr("`async gen fn` resumed after async drop"))
 }
 
 /**
  * This is a panic called with a message that's a result of a MIR-produced Assert.
  */
 public fun panicConstGenFnNoneDrop(): Nothing {
-    panicFmt(Arguments.fromStr("`gen fn` resumed after async drop"))
+    panicFmt(fmt.Arguments.fromStr("`gen fn` resumed after async drop"))
 }
 
 // needed by codegen for non-unwinding panics
@@ -274,14 +273,14 @@ public fun panicConstGenFnNoneDrop(): Nothing {
  * If you want `@trackCaller` for nicer errors, call `panicNounwindFmt` directly.
  */
 public fun panicNounwind(expr: String): Nothing {
-    panicNounwindFmt(Arguments.fromStr(expr), false)
+    panicNounwindFmt(fmt.Arguments.fromStr(expr), false)
 }
 
 /**
  * Like `panicNounwind`, but also inhibits showing a backtrace.
  */
 public fun panicNounwindNobacktrace(expr: String): Nothing {
-    panicNounwindFmt(Arguments.fromStr(expr), true)
+    panicNounwindFmt(fmt.Arguments.fromStr(expr), true)
 }
 
 // needed for `non - fmt - panics` lint
@@ -309,7 +308,7 @@ public fun <T> panicDisplay(x: T): Nothing {
 // needed by codegen for panic on OOB array/slice access
 public fun panicBoundsCheck(index: Int, len: Int): Nothing {
     if (false) {
-        abortImmediate()
+        kmAbort()
     }
     error("index out of bounds: the len is $len but the index is $index")
 }
@@ -318,7 +317,7 @@ public fun panicBoundsCheck(index: Int, len: Int): Nothing {
 // `CheckAlignment` MIR pass requires this function to never unwind
 public fun panicMisalignedPointerDereference(required: Int, found: Int): Nothing {
     if (false) {
-        abortImmediate()
+        kmAbort()
     }
     return panicNounwindFmt("misaligned pointer dereference: address must be a multiple of $required but is $found", false)
 }
@@ -327,7 +326,7 @@ public fun panicMisalignedPointerDereference(required: Int, found: Int): Nothing
 // `CheckNull` MIR pass requires this function to never unwind
 public fun panicNullPointerDereference(): Nothing {
     if (false) {
-        abortImmediate()
+        kmAbort()
     }
     return panicNounwindFmt("null pointer dereference occurred", false)
 }
@@ -336,7 +335,7 @@ public fun panicNullPointerDereference(): Nothing {
 // `CheckNull` MIR pass requires this function to never unwind
 public fun panicNullReferenceConstructed(): Nothing {
     if (false) {
-        abortImmediate()
+        kmAbort()
     }
     return panicNounwindFmt("null reference produced", false)
 }
@@ -345,7 +344,7 @@ public fun panicNullReferenceConstructed(): Nothing {
 // `CheckEnums` MIR pass requires this function to never unwind
 public fun panicInvalidEnumConstruction(source: U128): Nothing {
     if (false) {
-        abortImmediate()
+        kmAbort()
     }
     return panicNounwindFmt("trying to construct an enum from an invalid value $source", false)
 }
@@ -388,7 +387,7 @@ public fun panicInCleanup(): Nothing {
 /**
  * This function is used instead of panicFmt in const eval.
  */
-public fun constPanicFmt(fmt: Arguments): Nothing =
+public fun constPanicFmt(fmt: fmt.Arguments): Nothing =
     when (val matchVal = fmt.asStr()) {
         null -> {
             // SAFETY: This is only evaluated at compile time, which reliably
@@ -412,12 +411,12 @@ public sealed class AssertKind {
 /**
  * Internal function for `assertEq` and `assertNe` macros
  */
-public fun <T, U> assertFailed(kind: AssertKind, left: T, right: U, args: Arguments?): Nothing = assertFailedInner(kind, left, right, args)
+public fun <T, U> assertFailed(kind: AssertKind, left: T, right: U, args: fmt.Arguments?): Nothing = assertFailedInner(kind, left, right, args)
 
 /**
  * Internal function for `assertMatch`
  */
-public fun <T> assertMatchesFailed(left: T, right: String, args: Arguments?): Nothing {
+public fun <T> assertMatchesFailed(left: T, right: String, args: fmt.Arguments?): Nothing {
     // The pattern is a string so it can be displayed directly.
     open class Pattern(
         public var value: String,
@@ -436,7 +435,7 @@ public fun <T> assertMatchesFailed(left: T, right: String, args: Arguments?): No
 /**
  * Non-generic version of the above functions, to avoid code bloat.
  */
-public fun assertFailedInner(kind: AssertKind, left: Any, right: Any, args: Arguments?): Nothing {
+public fun assertFailedInner(kind: AssertKind, left: Any, right: Any, args: fmt.Arguments?): Nothing {
     val op =
         when (kind) {
             AssertKind.Eq -> "=="

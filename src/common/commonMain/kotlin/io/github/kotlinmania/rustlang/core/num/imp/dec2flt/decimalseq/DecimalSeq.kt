@@ -300,7 +300,7 @@ public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
                 }
                 ((d.digits).sliceArray(d.numDigits until d.digits.size)).writeU64(v - 0x3030303030303030)
                 d.numDigits += 8
-                s1 = ((s1).slice(8 until s1.size))
+                s1 = ((s1).subList(8, (s1).size))
             }
             s1 = s1.parseDigits({ digit -> d.tryAddDigit(digit) })
             d.decimalPoint = s1.size - first.size
@@ -309,7 +309,7 @@ public fun parseDecimalSeq(s: List<UByte>): DecimalSeq {
     if (d.numDigits != 0) {
         // Ignore the trailing zeros if there are any
         var nTrailingZeros = 0
-        for (c in ((start).slice(0 until (start.size - s1.size))).iter().rev()) {
+        for (c in ((start).subList(0, (start.size - s1.size))).iter().rev()) {
             if (c == 48u) {
                 nTrailingZeros += 1
             } else if (c != 46u) {

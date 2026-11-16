@@ -4,10 +4,10 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.nothreads
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.io.write.Write
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -23,13 +23,13 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 // Required for correctness of `@rustcAlignStatic`
 public open class EagerStorage<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) {
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<EagerStorage<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> EagerStorage<T>(ptr, layout) }, { it.value })
 
@@ -77,7 +77,7 @@ public open class LazyStorage<T> internal constructor(
             this.state.set(State.Destroying)
             // Safety: we check for no initialization during drop below
             run {
-                dropInPlace(mutPtrFromRustCast(this.value.get()))
+                ptr.dropInPlace(mutPtrFromRustCast(this.value.get()))
             }
             this.state.set(State.Initial)
         }
@@ -98,7 +98,7 @@ public open class LazyStorage<T> internal constructor(
             }
         }
         run {
-            this.value.get().write(MaybeUninit.new(value, ObjectSlotLayout<Any>()))
+            this.value.get().write(MaybeUninit.new(value, UnresolvedTypeLayout<Any>()))
         }
         this.state.set(State.Alive)
         return constPtrFromRustCast(this.value.get())

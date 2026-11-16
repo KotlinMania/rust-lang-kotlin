@@ -2,8 +2,8 @@
 package io.github.kotlinmania.rustlang.std.os.unix.net.ucred.impllinux
 
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -16,19 +16,19 @@ import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
 import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred
 
 public fun peerCred(socket: UnixStream): Result<UCred, Error> {
-    val ucredSize = sizeOf<Ucred>(typeLayoutT = ObjectSlotLayout<Ucred>())
+    val ucredSize = sizeOf<Ucred>(typeLayoutT = UnresolvedTypeLayout<Ucred>())
     // Trivial sanity checks.
     check(sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64))
     check(ucredSize <= UInt.MAX_VALUE.toInt())
     val ucredSize1 = ucredSize
-    val localStorageL57C8 = AddressableLocal(Ucred(pid = 1, uid = 1, gid = 1), ObjectSlotLayout<Ucred>())
+    val localStorageL57C8 = AddressableLocal(Ucred(pid = 1, uid = 1, gid = 1), UnresolvedTypeLayout<Ucred>())
     val ucred by localStorageL57C8
     return run {
         val ret = getsockopt(socket.asRawFd(), SOL_SOCKET, SO_PEERCRED, ((localStorageL57C8.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, ucredSize1)
-        if (ret == 0 && ucredSize1 == sizeOf(ucred, typeLayoutT = ObjectSlotLayout<Ucred>())) {
-            Result.Ok(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
+        if (ret == 0 && ucredSize1 == sizeOf(ucred, typeLayoutT = UnresolvedTypeLayout<Ucred>())) {
+            Result.Ok<UCred, Error>(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
         } else {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
     }
 }

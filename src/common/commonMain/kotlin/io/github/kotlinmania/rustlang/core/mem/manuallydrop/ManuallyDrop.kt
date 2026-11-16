@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.mem.manuallydrop
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -148,13 +149,13 @@ import io.github.kotlinmania.rustlang.core.ptr.read
  */
 public open class ManuallyDrop<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) : DerefPure {
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<ManuallyDrop<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> ManuallyDrop<T>(ptr, layout) }, { it.value })
 
@@ -178,7 +179,7 @@ public open class ManuallyDrop<T>(
          * // But `Drop` will not be run here
          * ```
          */
-        public fun <T> new(value: T, fieldLayout: TypeLayout<T>): ManuallyDrop<T> = ManuallyDrop(value = value, fieldLayout = fieldLayout)
+        public fun <T> new(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): ManuallyDrop<T> = ManuallyDrop(value = value, fieldLayout = fieldLayout)
 
         /**
          * Extracts the value from the `ManuallyDrop` container.

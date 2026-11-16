@@ -2,7 +2,6 @@ package io.github.kotlinmania.rustlang.core.intrinsics
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.core.cmp.compareNaturalOrder
 import io.github.kotlinmania.rustlang.core.ffi.valist.VaList
 import io.github.kotlinmania.rustlang.core.intrinsics.bounds.FloatPrimitive
 import io.github.kotlinmania.rustlang.core.intrinsics.bounds.IntegerPrimitive
@@ -11,9 +10,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarrylessMul
 import io.github.kotlinmania.rustlang.core.intrinsics.fallback.DisjointBitOr
 import io.github.kotlinmania.rustlang.core.intrinsics.fallback.FunnelShift
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustIsSignNegative
-import io.github.kotlinmania.rustlang.core.num.rustIsSignPositive
+import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
+import io.github.kotlinmania.rustlang.core.num.f16.isSignPositive
 import io.github.kotlinmania.rustlang.core.panicking.panicNounwind
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -219,7 +220,7 @@ public fun <UInt, T : FloatPrimitive<T, Any?>> fmuladd(a: T, b: T, c: T): T = a 
  * Stabilized as [u16.min] and [i64.min] and similar.
  */
 public fun <T : IntegerPrimitive<T>> integerMin(a: T, b: T): T =
-    if ((compareNaturalOrder(a, b) < 0)) {
+    if ((kmCompareValues(a, b) < 0)) {
         a
     } else {
         b
@@ -234,7 +235,7 @@ public fun <T : IntegerPrimitive<T>> integerMin(a: T, b: T): T =
  * Stabilized as [u16.max] and [i64.max] and similar.
  */
 public fun <T : IntegerPrimitive<T>> integerMax(a: T, b: T): T =
-    if ((compareNaturalOrder(a, b) < 0)) {
+    if ((kmCompareValues(a, b) < 0)) {
         b
     } else {
         a
@@ -289,7 +290,7 @@ public fun <T : CarryingMulAdd<T, U>, U> carryingMulAdd(multiplier: T, multiplic
  * primitives via the `rotateLeft` method. For example,
  * [u32.rotateLeft]
  */
-public fun <T : FunnelShift<T>> rotateLeft(x: T, shift: UInt, typeLayoutT: TypeLayout<T>): T {
+public fun <T : FunnelShift<T>> rotateLeft(x: T, shift: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // Make sure to call the intrinsic for `funnelShl`, not the fallback impl.
     // SAFETY: we modulo `shift` so that the result is definitely less than the size of
     // `T` in bits.
@@ -308,7 +309,7 @@ public fun <T : FunnelShift<T>> rotateLeft(x: T, shift: UInt, typeLayoutT: TypeL
  * primitives via the `rotateRight` method. For example,
  * [u32.rotateRight]
  */
-public fun <T : FunnelShift<T>> rotateRight(x: T, shift: UInt, typeLayoutT: TypeLayout<T>): T {
+public fun <T : FunnelShift<T>> rotateRight(x: T, shift: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // Make sure to call the intrinsic for `funnelShr`, not the fallback impl.
     // SAFETY: we modulo `shift` so that the result is definitely less than the size of
     // `T` in bits.
@@ -752,7 +753,7 @@ public fun minimumf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     } else if (y < x) {
         y
     } else if (x == y) {
-        if (rustIsSignNegative(x) && rustIsSignPositive(y)) {
+        if (x.isSignNegative() && y.isSignPositive()) {
             x
         } else {
             y
@@ -780,7 +781,7 @@ public fun minimumf64(x: Double, y: Double): Double =
     } else if (y < x) {
         y
     } else if (x == y) {
-        if (rustIsSignNegative(x) && rustIsSignPositive(y)) {
+        if (x.isSignNegative() && y.isSignPositive()) {
             x
         } else {
             y
@@ -959,7 +960,7 @@ public fun maximumf32(x: kotlin.Float, y: kotlin.Float): kotlin.Float =
     } else if (y > x) {
         y
     } else if (x == y) {
-        if (rustIsSignPositive(x) && rustIsSignNegative(y)) {
+        if (x.isSignPositive() && y.isSignNegative()) {
             x
         } else {
             y
@@ -986,7 +987,7 @@ public fun maximumf64(x: Double, y: Double): Double =
     } else if (y > x) {
         y
     } else if (x == y) {
-        if (rustIsSignPositive(x) && rustIsSignNegative(y)) {
+        if (x.isSignPositive() && y.isSignNegative()) {
             x
         } else {
             y

@@ -3,14 +3,15 @@ package io.github.kotlinmania.rustlang.std.sys.sync.futex.unix
 
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.SysFutex
-import io.github.kotlinmania.rustlang.libc.helenos.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_PRIVATE_FLAG
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAIT_BITSET
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.FUTEX_WAKE
+import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
 import io.github.kotlinmania.rustlang.libc.wasi.EINTR
 import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
@@ -44,7 +45,7 @@ public typealias SmallPrimitive = UInt
  *
  * Returns false on timeout, and true in all other cases.
  */
-public fun futexWait(futex: Atomic<UInt>, expected: UInt, timeout: Duration?): Boolean {
+public fun futexWait(futex: Atomic<UInt, Align4<UInt>>, expected: UInt, timeout: Duration?): Boolean {
     // Calculate the timeout as an absolute timespec.
     //
     // Overflows are rounded up to an infinite timeout (None).
@@ -71,7 +72,7 @@ public fun futexWait(futex: Atomic<UInt>, expected: UInt, timeout: Duration?): B
  *
  * On some platforms, this always returns false.
  */
-public fun futexWake(futex: Atomic<UInt>): Boolean {
+public fun futexWake(futex: Atomic<UInt, Align4<UInt>>): Boolean {
     val ptr = (constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val op = FUTEX_WAKE or FUTEX_PRIVATE_FLAG
     return syscall(SysFutex, ptr.rawAddress, op.toLong(), 1L) > 0
@@ -80,7 +81,7 @@ public fun futexWake(futex: Atomic<UInt>): Boolean {
 /**
  * Wakes up all threads that are waiting on `futexWait` on this futex.
  */
-public fun futexWakeAll(futex: Atomic<UInt>) {
+public fun futexWakeAll(futex: Atomic<UInt, Align4<UInt>>) {
     val ptr = (constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val op = FUTEX_WAKE or FUTEX_PRIVATE_FLAG
     run {

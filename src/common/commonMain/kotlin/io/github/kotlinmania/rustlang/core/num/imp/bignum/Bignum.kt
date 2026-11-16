@@ -9,11 +9,11 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.num.rustTrailingZeros
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
+import io.github.kotlinmania.rustlang.core.option.Iter
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -185,9 +185,9 @@ public open class Big64x20(
      * Adds `other` to itself and returns its own mutable reference.
      */
     public open fun add(other: Big64x20): Big64x20 {
-        var sz = max(this.size, other.size)
+        var sz = cmp.max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -220,9 +220,9 @@ public open class Big64x20(
      * Subtracts `other` from itself and returns its own mutable reference.
      */
     public open fun sub(other: Big64x20): Big64x20 {
-        val sz = max(this.size, other.size)
+        val sz = cmp.max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -294,7 +294,7 @@ public open class Big64x20(
      */
     public open fun mulPow5(e: Int): Big64x20 {
         var e1 = e
-        val tableIndex = rustTrailingZeros(sizeOf<Digit64>(typeLayoutT = PrimitiveLayouts.U64)).toInt()
+        val tableIndex = sizeOf<Digit64>(typeLayoutT = PrimitiveLayouts.U64).trailingZeros().toInt()
         val (smallPower, smallE) = SMALL_POW5[tableIndex]
         val smallPower1 = smallPower.toULong()
         while (e1 >= smallE) {
@@ -386,9 +386,9 @@ public open class Big64x20(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("_$v")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }
@@ -516,9 +516,9 @@ public open class Big8x3(
      * Adds `other` to itself and returns its own mutable reference.
      */
     public open fun add(other: Big8x3): Big8x3 {
-        var sz = max(this.size, other.size)
+        var sz = cmp.max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -551,9 +551,9 @@ public open class Big8x3(
      * Subtracts `other` from itself and returns its own mutable reference.
      */
     public open fun sub(other: Big8x3): Big8x3 {
-        val sz = max(this.size, other.size)
+        val sz = cmp.max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = Iter.zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -625,7 +625,7 @@ public open class Big8x3(
      */
     public open fun mulPow5(e: Int): Big8x3 {
         var e1 = e
-        val tableIndex = rustTrailingZeros(sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()
+        val tableIndex = sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8).trailingZeros().toInt()
         val (smallPower, smallE) = SMALL_POW5[tableIndex]
         val smallPower1 = smallPower.toUByte()
         while (e1 >= smallE) {
@@ -717,9 +717,9 @@ public open class Big8x3(
             } else {
                 this.size
             }
-        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+        when (val tryResult = f.writeFmt("${this.base[sz - 1]}")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         for (v in ((this.base).sliceArray(0 until sz - 1)).iter().rev()) {
-            when (val tryResult = f.writeFmt("_$v")) { is Result.Ok<*> -> tryResult.value; is Result.Err<*> -> return Result.Err(tryResult.error) }
+            when (val tryResult = f.writeFmt("_$v")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return io.github.kotlinmania.rustlang.core.result.Result.Ok(Unit)
     }

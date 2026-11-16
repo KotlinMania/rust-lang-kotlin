@@ -1,8 +1,8 @@
 // port-lint: source x86_64/abm.rs
 package io.github.kotlinmania.rustlang.corearch.x8664
 
-import io.github.kotlinmania.rustlang.core.num.rustCountOnes
-import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
+import io.github.kotlinmania.rustlang.core.num.countOnes
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
 
 // Advanced Bit Manipulation (ABM) instructions
 //
@@ -30,11 +30,11 @@ import io.github.kotlinmania.rustlang.core.num.rustLeadingZeros
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_lzcnt_u64)
  */
-public fun lzcntU64(x: ULong): ULong = rustLeadingZeros(x).toULong()
+public fun lzcntU64(x: ULong): ULong = x.leadingZeros().toULong()
 
 /**
  * Counts the bits that are set.
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_popcnt64)
  */
-public fun popcnt64(x: Long): Int = rustCountOnes(x).toInt()
+public fun popcnt64(x: Long): Int = x.countOnes().toInt()

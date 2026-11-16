@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.transmuteUnchecked
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -21,26 +22,15 @@ public typealias InnerUnsized<T> = PolymorphicIter<List<MaybeUninit<T>>>
 /**
  * A by-value [array] iterator.
  */
-public open class IntoIter<T> internal constructor(
-    innerCtorArg: InnerSized<T, N>,
+public open class IntoIter<T>(
+    public var inner: InnerSized<T>,
 ) {
-    public var inner: InnerSized<T, N> = innerCtorArg
-        internal set
-
     public open fun clone(): IntoIter<T> = IntoIter(inner)
-
-    public companion object {
-        public operator fun <T> invoke(
-            inner: InnerSized<T, N>,
-        ): IntoIter<T> = IntoIter<T>(
-            innerCtorArg = inner,
-        )
-    }
 }
 
-public fun <T> IntoIter<T, N>.unsize(n: Int): InnerUnsized<T> = this.inner.deref()
+public fun <T> IntoIter<T>.unsize(n: Int): InnerUnsized<T> = this.inner.deref()
 
-public fun <T> IntoIter<T, N>.unsizeMut(n: Int): InnerUnsized<T> = this.inner.derefMut()
+public fun <T> IntoIter<T>.unsizeMut(n: Int): InnerUnsized<T> = this.inner.derefMut()
 
 // Note: the `@rustcSkipDuringMethodDispatch(array)` on `interface IntoIterator`
 // hides this implementation from explicit `.intoIter()` calls on editions < 2021,
@@ -82,7 +72,7 @@ public fun <T> List<T>.intoIterFromTArrayn(n: Int): IntoIter<T> {
 /**
  * Creates a new iterator over the given `array`.
  */
-public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T, N> = IntoIterator.IntoIter(array)
+public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T> = IntoIterator.IntoIter(array)
 
 /**
  * Creates an iterator over the elements in a partially-initialized buffer.
@@ -103,7 +93,7 @@ public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T, N> = 
  * # Examples
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.array.IntoIter
  * import std.mem.MaybeUninit
  *
@@ -111,7 +101,7 @@ public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T, N> = 
  * @feature(maybeUninitUninitArrayTranspose)
  * public fun doctestEntry() {
  *     fun <T> nextChunk(it: Any, n: Int): Result<List<T>> {
- *         var buffer = MutableList(n) { MaybeUninit.uninit(ObjectSlotLayout<Result<List<T>>>()) }
+ *         var buffer = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<List<T>>>()) }
  *         var i = 0
  *         while (i < n) {
  *             when (val matchVal = it.next()) {
@@ -138,7 +128,7 @@ public fun <T> IntoIter.Companion.new(array: List<T>, n: Int): IntoIter<T, N> = 
  * }
  * ```
  */
-public fun <T> IntoIter.Companion.newUnchecked(buffer: List<MaybeUninit<T>>, initialized: IntRange, n: Int): IntoIter<T, N> {
+public fun <T> IntoIter.Companion.newUnchecked(buffer: List<MaybeUninit<T>>, initialized: IntRange, n: Int): IntoIter<T> {
     // SAFETY: one of our safety conditions is that the range is canonical.
     val alive = IndexRange.newUnchecked(initialized.start, initialized.end)
     // SAFETY: one of our safety condition is that these items are initialized.
@@ -205,7 +195,7 @@ public fun <T> IntoIter.Companion.newUnchecked(buffer: List<MaybeUninit<T>>, ini
  * }
  * ```
  */
-public fun <T> IntoIter.Companion.empty(n: Int): IntoIter<T, N> {
+public fun <T> IntoIter.Companion.empty(n: Int): IntoIter<T> {
     val inner = InnerSized.empty()
     return IntoIter(inner = inner)
 }
@@ -214,30 +204,30 @@ public fun <T> IntoIter.Companion.empty(n: Int): IntoIter<T, N> {
  * Returns an immutable slice of all elements that have not been yielded
  * yet.
  */
-public fun <T> IntoIter<T, N>.asSlice(n: Int): List<T> = this.unsize().asSlice()
+public fun <T> IntoIter<T>.asSlice(n: Int): List<T> = this.unsize().asSlice()
 
 /**
  * Returns a mutable slice of all elements that have not been yielded yet.
  */
-public fun <T> IntoIter<T, N>.asMutSlice(n: Int): MutableList<T> = this.unsizeMut().asMutSlice()
+public fun <T> IntoIter<T>.asMutSlice(n: Int): MutableList<T> = this.unsizeMut().asMutSlice()
 
-public fun <T> defaultIntoIterTN(n: Int): IntoIter<T, N> = IntoIter.empty()
+public fun <T> defaultIntoIterTN(n: Int): IntoIter<T> = IntoIter.empty()
 
-public fun <T> IntoIter<T, N>.next(n: Int): T? = this.unsizeMut().next()
+public fun <T> IntoIter<T>.next(n: Int): T? = this.unsizeMut().next()
 
-public fun <T> IntoIter<T, N>.sizeHint(n: Int): Pair<Int, Int?> = this.unsize().sizeHint()
+public fun <T> IntoIter<T>.sizeHint(n: Int): Pair<Int, Int?> = this.unsize().sizeHint()
 
-public fun <T, Acc> IntoIter<T, N>.fold(init: Acc, fold: (Acc, T) -> Acc, n: Int): Acc = this.unsizeMut().fold(init, fold)
+public fun <T, Acc> IntoIter<T>.fold(init: Acc, fold: (Acc, T) -> Acc, n: Int): Acc = this.unsizeMut().fold(init, fold)
 
-public fun <T, B, R> IntoIter<T, N>.tryFold(init: B, f: (B, T) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryFold(init, f)
+public fun <T, B, R> IntoIter<T>.tryFold(init: B, f: (B, T) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryFold(init, f)
 
-public fun <T> IntoIter<T, N>.count(n: Int): Int = this.len()
+public fun <T> IntoIter<T>.count(n: Int): Int = this.len()
 
-public fun <T> IntoIter<T, N>.last(n: Int): T? = this.nextBack()
+public fun <T> IntoIter<T>.last(n: Int): T? = this.nextBack()
 
-public fun <T> IntoIter<T, N>.advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.unsizeMut().advanceBy(n)
+public fun <T> IntoIter<T>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.unsizeMut().advanceBy(n)
 
-public fun <T> IntoIter<T, N>.iteratorGetUnchecked(idx: Int, n: Int): T {
+public fun <T> IntoIter<T>.iteratorGetUnchecked(idx: Int, n: Int): T {
     // SAFETY: The caller must provide an idx that is in bound of the remainder.
     val elemRef = this.asMutSlice().getUncheckedMut(idx)
     // SAFETY: We only implement `TrustedRandomAccessNoCoerce` for types
@@ -245,13 +235,13 @@ public fun <T> IntoIter<T, N>.iteratorGetUnchecked(idx: Int, n: Int): T {
     return read(elemRef)
 }
 
-public fun <T> IntoIter<T, N>.nextBack(n: Int): Item? = this.unsizeMut().nextBack()
+public fun <T> IntoIter<T>.nextBack(n: Int): Item? = this.unsizeMut().nextBack()
 
-public fun <T, Acc> IntoIter<T, N>.rfold(init: Acc, rfold: (Acc, Item) -> Acc, n: Int): Acc = this.unsizeMut().rfold(init, rfold)
+public fun <T, Acc> IntoIter<T>.rfold(init: Acc, rfold: (Acc, Item) -> Acc, n: Int): Acc = this.unsizeMut().rfold(init, rfold)
 
-public fun <T, B, R> IntoIter<T, N>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryRfold(init, f)
+public fun <T, B, R> IntoIter<T>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryRfold(init, f)
 
-public fun <T> IntoIter<T, N>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.unsizeMut().advanceBackBy(n)
+public fun <T> IntoIter<T>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.unsizeMut().advanceBackBy(n)
 
 // Even though all the Drop logic could be completely handled by
 // PolymorphicIter, this impl still serves two purposes:
@@ -260,16 +250,16 @@ public fun <T> IntoIter<T, N>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> 
 // for !Drop types and ends up as dead code in the final binary.
 // Branching on needsDrop higher in the call-tree allows it to be
 // removed by earlier optimization passes.
-public fun <T> IntoIter<T, N>.drop(n: Int) {
+public fun <T> IntoIter<T>.drop(n: Int) {
     if (needsDrop<T>()) {
         // SAFETY: This is the only place where we drop this field.
         ManuallyDrop.drop(this.inner)
     }
 }
 
-public fun <T> IntoIter<T, N>.len(n: Int): Int = this.inner.len()
+public fun <T> IntoIter<T>.len(n: Int): Int = this.inner.len()
 
-public fun <T> IntoIter<T, N>.isEmpty(n: Int): Boolean = this.inner.len() == 0
+public fun <T> IntoIter<T>.isEmpty(n: Int): Boolean = this.inner.len() == 0
 
 // The iterator indeed reports the correct length. The number of "alive"
 // elements (that will still be yielded) is the length of the range `alive`.
@@ -283,4 +273,4 @@ public interface NonDrop
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = false
 
-public fun <T> IntoIter<T, N>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> = this.unsize().fmt(f)
+public fun <T> IntoIter<T>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> = this.unsize().fmt(f)

@@ -2,9 +2,9 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot
 
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.abortImmediate
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -25,7 +25,7 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
     // branches and function call overhead.
     val len = v.size
     if (len < 8) {
-        abortImmediate()
+        kmAbort()
     }
     // SAFETY: a, b, c point to initialized regions of lenDiv8 elements,
     // satisfying median3 and median3Rec's preconditions as vBase points
@@ -36,12 +36,12 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
             val lenDiv8 = len / 8
             val a = vBase
             // [0, floor(n/8))
-            val b = ConstPtr((vBase).rawAddress + ((lenDiv8 * 4).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            val b = ConstPtr((vBase).rawAddress + ((lenDiv8 * 4).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             // [4*floor(n/8), 5*floor(n/8))
-            val c = ConstPtr((vBase).rawAddress + ((lenDiv8 * 7).toLong() * (ObjectSlotLayout<T>()).strideBytes))
+            val c = ConstPtr((vBase).rawAddress + ((lenDiv8 * 7).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             // [7*floor(n/8), 8*floor(n/8))
             if (len < PSEUDO_MEDIAN_REC_THRESHOLD) {
-                median3((ObjectSlotLayout<T>()).readNative((a).rawAddress), (ObjectSlotLayout<T>()).readNative((b).rawAddress), (ObjectSlotLayout<T>()).readNative((c).rawAddress), isLess).offsetFromUnsigned(vBase)
+                median3((UnresolvedTypeLayout<T>()).readNative((a).rawAddress), (UnresolvedTypeLayout<T>()).readNative((b).rawAddress), (UnresolvedTypeLayout<T>()).readNative((c).rawAddress), isLess).offsetFromUnsigned(vBase)
             } else {
                 median3Rec(a, b, c, lenDiv8, isLess).offsetFromUnsigned(vBase)
             }
@@ -63,7 +63,7 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
  * SAFETY: a, b, c must point to the start of initialized regions of memory of
  * at least n elements.
  */
-public fun <T> median3Rec(a: ConstPtr, b: ConstPtr, c: ConstPtr, n: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> median3Rec(a: ConstPtr, b: ConstPtr, c: ConstPtr, n: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     var a1 = a
     var b1 = b
     var c1 = c

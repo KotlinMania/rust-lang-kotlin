@@ -3,13 +3,14 @@
 
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.api
 
-import io.github.kotlinmania.rustlang.core.mem.ObjectSlotLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.rustLeadingOnes
+import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
+import io.github.kotlinmania.rustlang.core.num.leadingOnes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -91,7 +92,7 @@ public fun utf16Len(s: String): Int {
         // the length of a UTF-8 encoded code-point is given by the number of
         // leading ones, except in the case of ASCII.
         val utf8Len =
-            when (val matchVal = rustLeadingOnes(s1[i])) {
+            when (val matchVal = s1[i].leadingOnes()) {
                 0 -> 1
                 else -> {
                     val n = matchVal
@@ -122,7 +123,7 @@ public fun toUtf16(s: String, utf16Len: Int): UShortArray {
     val s1 = s.encodeToByteArray().map { it.toUByte() }
     var i = 0
     while (i < s1.size) {
-        when (rustLeadingOnes(s1[i])) {
+        when (s1[i].leadingOnes()) {
             // Decode UTF-8 based on its length.
             // See https://en.wikipedia.org/wiki/UTF-8
             0 -> {
@@ -184,7 +185,7 @@ public fun <T> win32SizeOf(): UInt {
     interface Win32SizeOf {
         public val WIN32_SIZE_OF: UInt
             get() = run {
-            val size = sizeOf<Win32SizeOf>(typeLayoutT = ObjectSlotLayout<Win32SizeOf>())
+            val size = sizeOf<Win32SizeOf>(typeLayoutT = UnresolvedTypeLayout<Win32SizeOf>())
             check(size <= UInt.MAX_VALUE.toInt())
             size.toUInt()
         }
@@ -281,24 +282,24 @@ public fun getLastError(): WinError {
  */
 public open class WinError internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UInt>,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) {
     public var code: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(code: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(code, fieldLayout), fieldLayout)
+    internal constructor(code: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(code, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<WinError> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WinError(ptr, layout) }, { it.code })
 
     public open fun clone(): WinError = WinError(code, fieldLayout)
 
     public companion object {
-        public operator fun invoke(code: UInt, fieldLayout: TypeLayout<UInt>): WinError = WinError(code, fieldLayout)
+        public operator fun invoke(code: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): WinError = WinError(code, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt>): WinError = WinError(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): WinError = WinError(fieldStorage, fieldLayout)
 
-        public fun new(code: UInt, fieldLayout: TypeLayout<UInt>): WinError = WinError(code = code, fieldLayout = fieldLayout)
+        public fun new(code: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): WinError = WinError(code = code, fieldLayout = fieldLayout)
 
         // Error code constants.
         // The constant names should be the same as the winapi constants except for the leading `ERROR_`.
@@ -382,7 +383,7 @@ public open class UnicodeStrRef(
                     Triple(0, 2, MutPtr((EMPTY_STRING_NULL_TERMINATED.asPtr()).rawAddress))
                 } else {
                     val len = slice.size - (isNullTerminated.toInt())
-                    Triple(len * 2, sizeOfVal(slice), MutPtr((slice.asPtr()).rawAddress))
+                    Triple(len * 2, sizeOfVal(slice, typeLayoutT = UnresolvedTypeLayout<List<UShort>>()), MutPtr((slice.asPtr()).rawAddress))
                 }
             return UnicodeStrRef(s = UnicodeString(length = len1.toUShort(), maximumLength = maxLen.toUShort(), buffer = ptr), lifetime = Unit)
         }
@@ -435,7 +436,7 @@ public fun queryDosDevice(deviceName: List<UShort>, buffer: MutableList<UShort>)
         // QueryDosDeviceW returns a list of null-terminated strings where the list itself is also null-terminated
         // In the case where you pass a device name (which we always) it only returns one string.
         // Therefore to get the string we trim off both the list null termination and the string null termination.
-        ((buffer).slice(0 until result)).trimSuffix(listOf(0, 0))
+        ((buffer).subList(0, result)).trimSuffix(listOf(0, 0))
     } else {
         null
     }

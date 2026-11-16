@@ -1,6 +1,7 @@
 // port-lint: source sync/nonpoison.rs
 package io.github.kotlinmania.rustlang.std.sync.nonpoison
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
@@ -19,13 +20,9 @@ public typealias TryLockResult<Guard> = Result<Guard, WouldBlock>
  * A lock could not be acquired at this time because the operation would otherwise block.
  */
 public open class WouldBlock {
-    public open fun fmt(f: StringBuilder) {
-        "WouldBlock".fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "WouldBlock".fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        "try_lock failed because the operation would block".fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "try_lock failed because the operation would block".fmt(f)
 
     public companion object {
         public fun typeLayout(): TypeLayout<WouldBlock> =

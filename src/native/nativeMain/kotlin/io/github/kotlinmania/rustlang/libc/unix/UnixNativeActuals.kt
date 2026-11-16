@@ -2,22 +2,19 @@
 
 package io.github.kotlinmania.rustlang.libc.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.CDouble
-import io.github.kotlinmania.rustlang.core.ffi.CFloat
-import io.github.kotlinmania.rustlang.core.ffi.CInt
-import io.github.kotlinmania.rustlang.core.ffi.CLong
-import io.github.kotlinmania.rustlang.core.ffi.CLonglong
-import io.github.kotlinmania.rustlang.core.ffi.CUint
-import io.github.kotlinmania.rustlang.core.ffi.CUlong
-import io.github.kotlinmania.rustlang.core.ffi.CUlonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CDouble
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CFloat
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLonglong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.ClockT
-import io.github.kotlinmania.rustlang.libc.DevT
-import io.github.kotlinmania.rustlang.libc.PthreadKeyT
-import io.github.kotlinmania.rustlang.libc.PthreadT
-import io.github.kotlinmania.rustlang.libc.SpeedT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.DevT
+import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SpeedT
 import io.github.kotlinmania.rustlang.libc.unix.cinterop.libcUnixAbort
 import io.github.kotlinmania.rustlang.libc.unix.cinterop.libcUnixAccept
 import io.github.kotlinmania.rustlang.libc.unix.cinterop.libcUnixAccess
@@ -384,6 +381,9 @@ import io.github.kotlinmania.rustlang.libc.unix.cinterop.libcUnixWrite
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.ModeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SocklenT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.NfdsT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.PthreadKeyT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ClockT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.WcharT
@@ -699,7 +699,7 @@ public actual fun memccpy(dest: MutPtr, src: ConstPtr, c: CInt, n: SizeT): MutPt
 public actual fun getpwnam(name: ConstPtr): MutPtr =
     MutPtr(libcUnixGetpwnam(name.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun getpwuid(uid: io.github.kotlinmania.rustlang.libc.UidT): MutPtr =
+public actual fun getpwuid(uid: UidT): MutPtr =
     MutPtr(libcUnixGetpwuid(uid)?.toLong() ?: 0L)
 
 public actual fun fprintf(stream: MutPtr, format: ConstPtr, vararg variadicArgs: Long): CInt =
@@ -811,10 +811,10 @@ public actual fun rewinddir(dirp: MutPtr) {
 public actual fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: CInt): CInt =
     libcUnixFchmodat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), mode, flags)
 
-public actual fun fchown(fd: CInt, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT): CInt =
+public actual fun fchown(fd: CInt, owner: UidT, group: GidT): CInt =
     libcUnixFchown(fd, owner, group)
 
-public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: io.github.kotlinmania.rustlang.libc.UidT, group: io.github.kotlinmania.rustlang.libc.GidT, flags: CInt): CInt =
+public actual fun fchownat(dirfd: CInt, pathname: ConstPtr, owner: UidT, group: GidT, flags: CInt): CInt =
     libcUnixFchownat(dirfd, pathname.rawAddress.toCPointer<ByteVar>(), owner, group, flags)
 
 public actual fun openat(dirfd: CInt, pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =
@@ -988,7 +988,7 @@ public actual fun nanosleep(rqtp: ConstPtr, rmtp: MutPtr): CInt =
 public actual fun tcgetpgrp(fd: CInt): PidT =
     libcUnixTcgetpgrp(fd)
 
-public actual fun tcsetpgrp(fd: CInt, pgrp: io.github.kotlinmania.rustlang.libc.PidT): CInt =
+public actual fun tcsetpgrp(fd: CInt, pgrp: PidT): CInt =
     libcUnixTcsetpgrp(fd, pgrp)
 
 public actual fun ttyname(fd: CInt): MutPtr =
@@ -1085,13 +1085,13 @@ public actual fun times(buf: MutPtr): ClockT =
     libcUnixTimes(buf.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadSelf(): PthreadT =
-    MutPtr(libcUnixPthreadSelf()?.toLong() ?: 0L)
+    (libcUnixPthreadSelf()?.toLong() ?: 0L).toULong()
 
 public actual fun pthreadEqual(t1: PthreadT, t2: PthreadT): CInt =
-    libcUnixPthreadEqual(t1.rawAddress.toCPointer<ByteVar>(), t2.rawAddress.toCPointer<ByteVar>())
+    libcUnixPthreadEqual(t1.toLong().toCPointer<ByteVar>(), t2.toLong().toCPointer<ByteVar>())
 
 public actual fun pthreadJoin(native: PthreadT, value: MutPtr): CInt =
-    libcUnixPthreadJoin(native.rawAddress.toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
+    libcUnixPthreadJoin(native.toLong().toCPointer<ByteVar>(), value.rawAddress.toCPointer<ByteVar>())
 
 public actual fun pthreadExit(value: MutPtr): Nothing {
     libcUnixPthreadExit(value.rawAddress.toCPointer<ByteVar>())
@@ -1114,7 +1114,7 @@ public actual fun pthreadAttrSetdetachstate(attr: MutPtr, state: CInt): CInt =
     libcUnixPthreadAttrSetdetachstate(attr.rawAddress.toCPointer<ByteVar>(), state)
 
 public actual fun pthreadDetach(thread: PthreadT): CInt =
-    libcUnixPthreadDetach(thread.rawAddress.toCPointer<ByteVar>())
+    libcUnixPthreadDetach(thread.toLong().toCPointer<ByteVar>())
 
 public actual fun schedYield(): CInt =
     libcUnixSchedYield()
@@ -1398,7 +1398,7 @@ public actual fun tcflow(fd: CInt, action: CInt): CInt =
 public actual fun tcflush(fd: CInt, action: CInt): CInt =
     libcUnixTcflush(fd, action)
 
-public actual fun tcgetsid(fd: CInt): io.github.kotlinmania.rustlang.libc.PidT =
+public actual fun tcgetsid(fd: CInt): PidT =
     libcUnixTcgetsid(fd)
 
 public actual fun tcsendbreak(fd: CInt, duration: CInt): CInt =
@@ -1458,7 +1458,7 @@ public actual fun adjtime(delta: ConstPtr, olddelta: MutPtr): CInt =
 public actual fun stpncpy(dst: MutPtr, src: ConstPtr, n: SizeT): MutPtr =
     MutPtr(libcUnixStpncpy(dst.rawAddress.toCPointer<ByteVar>(), src.rawAddress.toCPointer<ByteVar>(), n)?.toLong() ?: 0L)
 
-public actual fun sigqueue(pid: PidT, sig: CInt, value: io.github.kotlinmania.rustlang.libc.Sigval): CInt =
+public actual fun sigqueue(pid: PidT, sig: CInt, value: Sigval): CInt =
     0
 
 public actual fun confstr(name: CInt, buf: MutPtr, len: SizeT): SizeT =

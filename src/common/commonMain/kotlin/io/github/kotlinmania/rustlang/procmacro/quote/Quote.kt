@@ -32,7 +32,7 @@ import io.github.kotlinmania.rustlang.procmacro.quote.ThereIsNoIteratorInRepetit
 // Note: supported tokens are a subset of the real `quote`, but
 // unquoting is different: instead of `$ x`, this uses `(@expr)`.
 
-public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, Any?, HasIterator> {
+public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, HasIterator> {
     public open fun bitor(rhs: ThereIsNoIteratorInRepetition): HasIterator = HasIterator()
 
     public open fun bitor(rhs: HasIterator): HasIterator = HasIterator()
@@ -55,7 +55,7 @@ public open class HasIterator : BitOr<ThereIsNoIteratorInRepetition, Any?, HasIt
 }
 
 // True
-public open class ThereIsNoIteratorInRepetition : BitOr<ThereIsNoIteratorInRepetition, Any?, ThereIsNoIteratorInRepetition> {
+public open class ThereIsNoIteratorInRepetition : BitOr<ThereIsNoIteratorInRepetition, ThereIsNoIteratorInRepetition> {
     // False
     public open fun bitor(rhs: ThereIsNoIteratorInRepetition): ThereIsNoIteratorInRepetition = ThereIsNoIteratorInRepetition()
 

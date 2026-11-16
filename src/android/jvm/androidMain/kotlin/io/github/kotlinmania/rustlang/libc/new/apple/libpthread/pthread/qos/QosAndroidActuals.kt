@@ -2,11 +2,11 @@
 
 package io.github.kotlinmania.rustlang.libc.new.apple.libpthread.pthread.qos
 
-import io.github.kotlinmania.rustlang.core.ffi.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
-import io.github.kotlinmania.rustlang.libc.PthreadT
 import io.github.kotlinmania.rustlang.libc.new.apple.libpthread.sys.qos.QosClassT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.PthreadT
 
 private object NewAppleLibpthreadPthreadQosJniBridge {
     init {
@@ -30,4 +30,4 @@ public actual fun pthreadSetQosClassSelfNp(cls: QosClassT, priority: CInt): CInt
     0
 
 public actual fun pthreadGetQosClassNp(thread: PthreadT, cls: MutPtr, priority: MutPtr): CInt =
-    NewAppleLibpthreadPthreadQosJniBridge.libcNewAppleLibpthreadPthreadQosPthreadGetQosClassNp(thread.rawAddress, cls.rawAddress, priority.rawAddress)
+    NewAppleLibpthreadPthreadQosJniBridge.libcNewAppleLibpthreadPthreadQosPthreadGetQosClassNp(thread.toLong(), cls.rawAddress, priority.rawAddress)
