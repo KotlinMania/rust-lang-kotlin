@@ -74,11 +74,7 @@ public fun rustNoAllocShimIsUnstableV2() = Unit
  *
  * [*equivalent*]: Allocator#equivalent-allocators
  */
-public open class Global :
-    AllocatorClone,
-    StaticAllocator,
-    Allocator,
-    AllocatorNightly {
+public open class Global : AllocatorClone, StaticAllocator, Allocator, AllocatorNightly {
     public open fun clone(): Global = Global()
 
     // SAFETY: Same as `Allocator.grow`
@@ -98,15 +94,11 @@ public open class Global :
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
-                        val ptr1 =
-                            when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             kmWriteBytes((MutPtr((rawPtr).rawAddress + ((oldSize).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (0).toUByte(), (newSize - oldSize).toLong() * (PrimitiveLayouts.U8).sizeBytes)
                         }
-                        Result.Ok(ptr1.castSlice(newSize))
+                        Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
                 // SAFETY: because `newLayout.size()` must be greater than or equal to `oldSize`,
@@ -117,14 +109,10 @@ public open class Global :
                 else -> {
                     val oldSize1 = matchVal
                     run {
-                        val newPtr =
-                            when (val tryResult = this.allocImpl(newLayout, zeroed)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            }
-                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
+                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldSize1)
                         this.deallocate(ptr, oldLayout)
-                        Result.Ok(newPtr)
+                        Result.Ok<NonNull, AllocError>(newPtr)
                     }
                 }
             }
@@ -139,11 +127,10 @@ public open class Global :
             val matchVal = newLayout.size()
             when {
                 // SAFETY: conditions must be upheld by the caller
-                matchVal == 0 ->
-                    run {
-                        this.deallocate(ptr, oldLayout)
-                        Result.Ok(newLayout.danglingPtr().castSlice(0))
-                    }
+                matchVal == 0 -> run {
+                    this.deallocate(ptr, oldLayout)
+                    Result.Ok<NonNull, AllocError>(newLayout.danglingPtr().castSlice(0))
+                }
                 // SAFETY: `newSize` is non-zero. Other conditions must be upheld by the caller
                 oldLayout.align() == newLayout.align() -> {
                     val newSize = matchVal
@@ -151,12 +138,8 @@ public open class Global :
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
-                        val ptr1 =
-                            when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            }
-                        Result.Ok(ptr1.castSlice(newSize))
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
                 // SAFETY: because `newSize` must be smaller than or equal to `oldLayout.size()`,
@@ -167,14 +150,10 @@ public open class Global :
                 else -> {
                     val newSize1 = matchVal
                     run {
-                        val newPtr =
-                            when (val tryResult = this.allocate(newLayout)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            }
-                        copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
+                        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1)
                         this.deallocate(ptr, oldLayout)
-                        Result.Ok(newPtr)
+                        Result.Ok<NonNull, AllocError>(newPtr)
                     }
                 }
             }
@@ -201,20 +180,16 @@ public open class Global :
 
     // even without panics, this helps for Miri backtraces
     public open fun growShrinkImplConst(ptr: NonNull, oldLayout: Layout, newLayout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
-        val newPtr =
-            when (val tryResult = this.allocImpl(newLayout, zeroed)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
         // SAFETY: both pointers are valid and this operations is in bounds.
         run {
-            copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), minOf(oldLayout.size(), newLayout.size()))
+            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), minOf(oldLayout.size(), newLayout.size()))
         }
         // SAFETY: Caller ensures the ptr & layout are correct.
         run {
             this.deallocateImpl(ptr, oldLayout)
         }
-        return Result.Ok(newPtr)
+        return Result.Ok<NonNull, AllocError>(newPtr)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -265,7 +240,7 @@ public open class Global :
         // even without panics, this helps for Miri backtraces
         public fun allocImplRuntime(layout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
             return when (val matchVal = layout.size()) {
-                0 -> Result.Ok(layout.danglingPtr().castSlice(0))
+                0 -> Result.Ok<NonNull, AllocError>(layout.danglingPtr().castSlice(0))
                 // SAFETY: `layout` is non-zero in size,
                 else -> {
                     val size = matchVal
@@ -276,12 +251,8 @@ public open class Global :
                             } else {
                                 alloc(layout)
                             }
-                        val ptr =
-                            when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            }
-                        Result.Ok(ptr.castSlice(size))
+                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                     }
                 }
             }
@@ -305,22 +276,18 @@ public open class Global :
         // even without panics, this helps for Miri backtraces
         public fun allocImplConst(layout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
             return when (val matchVal = layout.size()) {
-                0 -> Result.Ok(layout.danglingPtr().castSlice(0))
+                0 -> Result.Ok<NonNull, AllocError>(layout.danglingPtr().castSlice(0))
                 // SAFETY: `layout` is non-zero in size,
                 else -> {
                     val size = matchVal
                     run {
                         val rawPtr = constAllocate(layout.size(), layout.align())
-                        val ptr =
-                            when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            }
+                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             // SAFETY: the pointer returned by `constAllocate` is valid to write to.
                             ptr.writeBytes(0, size)
                         }
-                        Result.Ok(ptr.castSlice(size))
+                        Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                     }
                 }
             }

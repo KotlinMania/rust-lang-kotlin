@@ -15,24 +15,19 @@ import io.github.kotlinmania.rustlang.core.task.wake.Context
  * This type is public in a private module for use by the macro.
  */
 public sealed class MaybeDone<F : Future<Any?>> : Future<Unit> {
-    public data class Future<F : Future<Any?>>(
-        public var value: F,
-    ) : MaybeDone<F>()
-    public data class Done<F : Future<Any?>>(
-        public var value: Output,
-    ) : MaybeDone<F>()
-    public class Taken<F : Future<Any?>> : MaybeDone<F>()
+    public data class Future<F : Future<Any?>>(public var value: F) : MaybeDone<F>()
+    public data class Done<F : Future<Any?>>(public var value: Output) : MaybeDone<F>()
+    public class Taken<F : Future<Any?>>() : MaybeDone<F>()
 
     public open fun takeOutput(): Output? =
         when (this) {
-            is MaybeDone.Done ->
-                when (val matchVal = replace(this, MaybeDone.Taken)) {
-                    is MaybeDone.Done -> {
-                        val (value) = matchVal
-                        value
-                    }
-                    else -> error("unreachable")
+            is MaybeDone.Done -> when (val matchVal = replace(this, MaybeDone.Taken)) {
+                is MaybeDone.Done -> {
+                    val (value) = matchVal
+                    value
                 }
+                else -> error("unreachable")
+            }
             else -> null
         }
 

@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -52,18 +53,15 @@ public open class Scan<I, St, F>(
     public var iter: I,
     public var f: F,
     public var state: St,
-) : SourceIter<Source>,
-    InPlaceIterable,
-    Iterable<B> {
-    override fun iterator(): Iterator<B> =
-        object : AbstractIterator<B>() {
-            override fun computeNext() {
-                when (val v = this@Scan.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : SourceIter<Source>, InPlaceIterable, Iterable<B> {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
+        override fun computeNext() {
+            when (val v = this@Scan.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Scan<I, St, F> = Scan(iter, f, state)
 
@@ -82,15 +80,13 @@ public open class Scan<I, St, F>(
 
     public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Any?> {
         fun <T, St, B, Acc, R : Try<R, Acc, Any?>> scan(state: St, f: (St, T) -> B?, fold1: (Acc, B) -> R): (Acc, T) -> ControlFlow<R, Acc> =
-            { acc, x ->
-                when (val matchVal = f(state, x)) {
-                    null -> ControlFlow.Break(acc)
-                    else -> {
-                        val x1 = matchVal
-                        ControlFlow.fromTry(fold1(acc, x1))
-                    }
+            { acc, x -> when (val matchVal = f(state, x)) {
+                null -> ControlFlow.Break(acc)
+                else -> {
+                    val x1 = matchVal
+                    ControlFlow.fromTry(fold1(acc, x1))
                 }
-            }
+            } }
         val state = this.state
         val f = this.f
         return this.iter.tryFold(init, scan(state, f, fold)).intoTry()
@@ -136,8 +132,8 @@ public open class Scan<I, St, F>(
 
         public fun <I, St, F> new(iter: I, state: St, f: F): Scan<I, St, F> = Scan(iter = iter, state = state, f = f)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }

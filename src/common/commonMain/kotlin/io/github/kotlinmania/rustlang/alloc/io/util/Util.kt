@@ -95,11 +95,7 @@ public fun Repeat.readToString(arg0: String): Result<Int> = Result.Err(Error.fro
 public fun Repeat.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        nwritten +=
-            when (val tryResult = this.read(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        nwritten += when (val tryResult = this.read(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return Result.Ok(nwritten)
 }
@@ -109,11 +105,7 @@ public fun Repeat.isReadVectored(): Boolean = true
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.read(buf: MutableList<UByte>): Result<Int> {
     if (!this.doneFirst) {
         run {
-            val matchVal =
-                when (val tryResult = this.first.read(buf)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            val matchVal = when (val tryResult = this.first.read(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             when {
                 matchVal == 0 && !buf.isEmpty() -> this.doneFirst = true
                 else -> {
@@ -129,11 +121,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.read(buf: MutableList<UByte>):
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     if (!this.doneFirst) {
         run {
-            val matchVal =
-                when (val tryResult = this.first.readVectored(bufs)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            val matchVal = when (val tryResult = this.first.readVectored(bufs)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             when {
                 matchVal == 0 && bufs.any({ b -> !b.isEmpty() }) -> this.doneFirst = true
                 else -> {
@@ -151,18 +139,10 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.isReadVectored(): Boolean = th
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readToEnd(buf: List<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
-        read +=
-            when (val tryResult = this.first.readToEnd(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        read += when (val tryResult = this.first.readToEnd(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         this.doneFirst = true
     }
-    read +=
-        when (val tryResult = this.second.readToEnd(buf)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+    read += when (val tryResult = this.second.readToEnd(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     return Result.Ok(read)
 }
 
@@ -174,10 +154,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readBuf(buf: BorrowedCursor<UB
     }
     if (!this.doneFirst) {
         val oldLen = buf.written()
-        when (val tryResult = this.first.readBuf(buf.reborrow())) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = this.first.readBuf(buf.reborrow())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         if (buf.written() != oldLen) {
             return Result.Ok(Unit)
         } else {
@@ -190,11 +167,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readBuf(buf: BorrowedCursor<UB
 public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.fillBuf(): Result<List<UByte>> {
     if (!this.doneFirst) {
         run {
-            val matchVal =
-                when (val tryResult = this.first.fillBuf()) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            val matchVal = when (val tryResult = this.first.fillBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             when {
                 matchVal.isEmpty() -> {
                     val buf = matchVal
@@ -221,11 +194,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.consume(amt: Int) {
 public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, buf: List<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
-        val n =
-            when (val tryResult = this.first.readUntil(byte, buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val n = when (val tryResult = this.first.readUntil(byte, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         read += n
         run {
             val matchVal = buf.last()
@@ -238,11 +207,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, b
             }
         }
     }
-    read +=
-        when (val tryResult = this.second.readUntil(byte, buf)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+    read += when (val tryResult = this.second.readUntil(byte, buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     return Result.Ok(read)
 }
 
@@ -252,11 +217,7 @@ public fun <T : Read<T>> Take<T>.read(buf: MutableList<UByte>): Result<Int> {
         return Result.Ok(0)
     }
     val max = minOf(buf.size.toULong(), this.limit).toInt()
-    val n =
-        when (val tryResult = this.inner.read(buf.subList(0, max))) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+    val n = when (val tryResult = this.inner.read(buf.subList(0, max))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     check(n.toULong() <= this.limit) { "number of read bytes exceeds limit" }
     this.limit -= n.toULong()
     return Result.Ok(n)
@@ -311,11 +272,7 @@ public fun <T : BufRead<T>> Take<T>.fillBuf(): Result<List<UByte>> {
     if (this.limit == 0) {
         return Result.Ok(listOf())
     }
-    val buf =
-        when (val tryResult = this.inner.fillBuf()) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+    val buf = when (val tryResult = this.inner.fillBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     val cap = minOf(buf.len().toULong(), this.limit).toInt()
     return Result.Ok(buf[0 until cap])
 }
@@ -338,15 +295,14 @@ public fun <T : BufRead<T>> Take<T>.consume(amt: Int) {
 public open class Bytes<R>(
     public var inner: R,
 ) : Iterable<Result<UByte>> {
-    override fun iterator(): Iterator<Result<UByte>> =
-        object : AbstractIterator<Result<UByte>>() {
-            override fun computeNext() {
-                when (val v = this@Bytes.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Result<UByte>> = object : AbstractIterator<Result<UByte>>() {
+        override fun computeNext() {
+            when (val v = this@Bytes.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     // Not `@inline`. This function gets inlined even without it, but having
     // the inline annotation can result in worse code generation. See #116785.
@@ -397,14 +353,14 @@ public fun <R : Read<R>> inlinedSlowReadByte(reader: R): Result<UByte>? {
         return run {
             val matchVal = reader.read(RustMutableReference(localStorageL377C4.asMutPtr(), localStorageL377C4.layout))
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> null
-                matchVal is Result.Ok<*, *> -> Result.Ok(byte)
-                matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                    val e = (matchVal as Result.Err<*, *>).error
+                matchVal is Result.Ok && matchVal.value == 0 -> null
+                matchVal is Result.Ok -> Result.Ok(byte)
+                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    val e = matchVal.error
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as Result.Err<*, *>).error
+                    val e1 = matchVal.error
                     Result.Err(e1)
                 }
             }
@@ -431,30 +387,29 @@ public open class Split<B>(
     public var buf: B,
     public var delim: UByte,
 ) : Iterable<Result<List<UByte>>> {
-    override fun iterator(): Iterator<Result<List<UByte>>> =
-        object : AbstractIterator<Result<List<UByte>>>() {
-            override fun computeNext() {
-                when (val v = this@Split.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Result<List<UByte>>> = object : AbstractIterator<Result<List<UByte>>>() {
+        override fun computeNext() {
+            when (val v = this@Split.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): Result<List<UByte>>? {
         val buf = mutableListOf()
         return run {
             val matchVal = this.buf.readUntil(this.delim, buf)
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> null
-                matchVal is Result.Ok<*, *> -> {
+                matchVal is Result.Ok && matchVal.value == 0 -> null
+                matchVal is Result.Ok -> {
                     if (buf[buf.size - 1] == this.delim) {
                         buf.removeLastOrNull()
                     }
                     Result.Ok(buf)
                 }
                 else -> {
-                    val e = (matchVal as Result.Err<*, *>).error
+                    val e = matchVal.error
                     Result.Err(e)
                 }
             }
@@ -502,23 +457,22 @@ public fun <B> split(buf: B, delim: UByte): Split<B> = Split(buf = buf, delim = 
 public open class Lines<B>(
     public var buf: B,
 ) : Iterable<Result<String>> {
-    override fun iterator(): Iterator<Result<String>> =
-        object : AbstractIterator<Result<String>>() {
-            override fun computeNext() {
-                when (val v = this@Lines.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Result<String>> = object : AbstractIterator<Result<String>>() {
+        override fun computeNext() {
+            when (val v = this@Lines.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): Result<String>? {
         val buf = ""
         return run {
             val matchVal = this.buf.readLine(buf)
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value == 0 -> null
-                matchVal is Result.Ok<*, *> -> {
+                matchVal is Result.Ok && matchVal.value == 0 -> null
+                matchVal is Result.Ok -> {
                     if (buf.endsWith('\n')) {
                         buf.pop()
                         if (buf.endsWith('\r')) {
@@ -528,7 +482,7 @@ public open class Lines<B>(
                     Result.Ok(buf)
                 }
                 else -> {
-                    val e = (matchVal as Result.Err<*, *>).error
+                    val e = matchVal.error
                     Result.Err(e)
                 }
             }

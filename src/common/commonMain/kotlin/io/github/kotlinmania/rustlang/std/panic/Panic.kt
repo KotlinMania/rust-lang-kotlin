@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.std.panic
 
 import io.github.kotlinmania.rustlang.core.RustAny
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.panic.location.Location
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -187,9 +189,9 @@ public open class PanicHookInfo(
 
     public open fun forceNoBacktrace(): Boolean = this.forceNoBacktrace
 
-    public open fun fmt(formatter: StringBuilder) {
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Error> {
         formatter.append("panicked at ")
-        this.location.fmt(formatter)
+        when (val tryResult = this.location.fmt(formatter)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         when (val matchVal = this.payloadAsStr()) {
             null -> {}
             else -> {
@@ -198,6 +200,7 @@ public open class PanicHookInfo(
                 formatter.append(payload)
             }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public companion object {
@@ -409,7 +412,7 @@ public sealed class BacktraceStyle {
 // that backtrace.
 //
 // Internally stores equivalent of an Option<BacktraceStyle>.
-public var SHOULD_CAPTURE: Atomic<UByte> = AtomicU8.new(0)
+public var SHOULD_CAPTURE: Atomic<UByte, Align1<UByte>> = AtomicU8.new(0)
 
 /**
  * Configures whether the default panic hook will capture and display a
@@ -482,9 +485,9 @@ public fun getBacktraceStyle(): BacktraceStyle? {
         }
     return run {
         val matchVal2 = SHOULD_CAPTURE.compareExchange(0, format.asU8(), Ordering.Relaxed, Ordering.Relaxed)
-        when (matchVal2) { is Result.Ok<*, *> -> {
+        when (matchVal2) { is Result.Ok -> {
             format
-        }; is Result.Err<*, *> -> {
+        }; is Result.Err -> {
             val new = matchVal2.error
             BacktraceStyle.fromU8(new)
         } }

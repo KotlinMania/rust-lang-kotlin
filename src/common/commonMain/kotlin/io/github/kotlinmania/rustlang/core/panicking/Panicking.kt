@@ -55,13 +55,7 @@ import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 public fun panicFmt(fmt: fmt.Arguments): Nothing {
     // NOTE This function never crosses the FFI boundary; it's a Rust-to-Rust call
     // that gets resolved to the `@panicHandler` function.
-    fun panicImpl(pi: PanicInfo): Nothing =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nothing>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes))
-            res
-        }
+    fun panicImpl(pi: PanicInfo): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); val res = (UnresolvedTypeLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); res }
     if (false) {
         kmAbort()
     }
@@ -433,11 +427,7 @@ public fun <T> assertMatchesFailed(left: T, right: String, args: fmt.Arguments?)
                 value = v
             }
 
-        public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-            run {
-                f.append(this.value)
-                Result.Ok(Unit)
-            }
+        public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.value); Result.Ok(Unit) }
     }
     assertFailedInner(AssertKind.Match, left, Pattern(right), args)
 }

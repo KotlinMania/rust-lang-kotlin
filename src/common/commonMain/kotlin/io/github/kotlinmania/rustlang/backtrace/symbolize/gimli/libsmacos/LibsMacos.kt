@@ -59,9 +59,7 @@ public fun nativeLibrary(i: UInt): Library? {
                     val data1 = linearSliceView(ConstPtr((ptrFromRef(header2)).rawAddress), sizeOfVal(header2) + header2.sizeofcmds.get(endian1).toInt(), PrimitiveLayouts.U8)
                     Pair((header2.loadCommands(endian1, data1, 0).ok() ?: return null), endian1)
                 }
-                else -> {
-                    return null
-                }
+                else -> { return null }
             }
         }
     // Iterate over the segments and register known regions for segments

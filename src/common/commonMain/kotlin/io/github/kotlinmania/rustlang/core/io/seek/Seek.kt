@@ -74,10 +74,7 @@ public interface Seek {
      * ```
      */
     public fun rewind(): Result<Unit> {
-        when (val tryResult = this.seek(SeekFrom.Start(0))) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = this.seek(SeekFrom.Start(0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 
@@ -166,10 +163,7 @@ public interface Seek {
      * ```
      */
     public fun seekRelative(offset: Long): Result<Unit> {
-        when (val tryResult = this.seek(SeekFrom.Current(offset))) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = this.seek(SeekFrom.Current(offset))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return Result.Ok(Unit)
     }
 }
@@ -180,23 +174,12 @@ public interface Seek {
  * but additional work needs to be done before or after.
  */
 public fun <T : Seek> streamLenDefault(selfRef: T): Result<ULong> {
-    val oldPos =
-        when (val tryResult = selfRef.streamPosition()) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-    val len =
-        when (val tryResult = selfRef.seek(SeekFrom.End(0))) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+    val oldPos = when (val tryResult = selfRef.streamPosition()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+    val len = when (val tryResult = selfRef.seek(SeekFrom.End(0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     // Avoid seeking a third time when we were already at the end of the
     // stream. The branch is usually way cheaper than a seek operation.
     if (oldPos != len) {
-        when (val tryResult = selfRef.seek(SeekFrom.Start(oldPos))) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = selfRef.seek(SeekFrom.Start(oldPos))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return Result.Ok(len)
 }
@@ -210,10 +193,7 @@ public sealed class SeekFrom {
     /**
      * Sets the offset to the provided number of bytes.
      */
-    public data class Start(
-        public var value: ULong,
-    ) : SeekFrom()
-
+    public data class Start(public var value: ULong) : SeekFrom()
     /**
      * Sets the offset to the size of this object plus the specified number of
      * bytes.
@@ -221,10 +201,7 @@ public sealed class SeekFrom {
      * It is possible to seek beyond the end of an object, but it's an error to
      * seek before byte 0.
      */
-    public data class End(
-        public var value: Long,
-    ) : SeekFrom()
-
+    public data class End(public var value: Long) : SeekFrom()
     /**
      * Sets the offset to the current position plus the specified number of
      * bytes.
@@ -232,9 +209,7 @@ public sealed class SeekFrom {
      * It is possible to seek beyond the end of an object, but it's an error to
      * seek before byte 0.
      */
-    public data class Current(
-        public var value: Long,
-    ) : SeekFrom()
+    public data class Current(public var value: Long) : SeekFrom()
 
     public fun rustEquals(other: SeekFrom): Boolean = this == other
 }

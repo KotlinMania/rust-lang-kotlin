@@ -22,9 +22,7 @@ public fun <T, I> specFromIterNestedFromIterVecT(iterator: I): List<T> where I :
     // So we get better branch prediction.
     var vector1 =
         when (val matchVal = iterator.next()) {
-            null -> {
-                return mutableListOf()
-            }
+            null -> { return mutableListOf() }
             else -> {
                 val element = matchVal
                 val (lower, _) = iterator.sizeHint()

@@ -78,23 +78,23 @@ public open class Simd<T>(
 /**
  * A value of this type where all elements are zeroed out.
  */
-public val ZERO: Simd<T, N> = Simd.splat(T.ZERO)
+public val ZERO: Simd<T> = Simd.splat(T.ZERO)
 
-public fun <T> Simd.Companion.fromArray(elements: List<T>, n: Int): Simd<T, N> = Simd(elements)
+public fun <T> Simd.Companion.fromArray(elements: List<T>, n: Int): Simd<T> = Simd(elements)
 
-public fun <T> Simd.Companion.splat(value: T, n: Int): Simd<T, N> = run { val _simdArg0 = value; _simdArg0 }
+public fun <T> Simd.Companion.splat(value: T, n: Int): Simd<T> = run { val _simdArg0 = value; _simdArg0 }
 
 /**
  * Extract the element at position `index`. Note that `index` is not a constant so this
  * operation is not efficient on most platforms. Use for testing only.
  */
-public fun <T> Simd<T, N>.extractDyn(index: Int, n: Int): T {
+public fun <T> Simd<T>.extractDyn(index: Int, n: Int): T {
     check(index < n)
     // SAFETY: self is a vector, T its element type.
     return run { val _simdArg0 = this; val _simdArg1 = index.toUInt(); _simdArg0 }
 }
 
-public fun <T> Simd<T, N>.asArray(n: Int): List<T> {
+public fun <T> Simd<T>.asArray(n: Int): List<T> {
     val simdPtr: ConstPtr = this
     val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
     // SAFETY: We can always read the prefix of a simd type as an array.
@@ -104,19 +104,19 @@ public fun <T> Simd<T, N>.asArray(n: Int): List<T> {
 }
 
 // `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.Simd is banned by MCP#838"
-public fun <T> Simd<T, N>.clone(n: Int): Simd<T, N> = Simd(this.value)
+public fun <T> Simd<T>.clone(n: Int): Simd<T> = Simd(this.value)
 
-public fun <T> Simd<T, N>.eq(other: Simd<T, N>, n: Int): Boolean = this.asArray() == other.asArray()
+public fun <T> Simd<T>.eq(other: Simd<T>, n: Int): Boolean = this.asArray() == other.asArray()
 
-public fun <T> Simd<T, N>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray())
+public fun <T> Simd<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray())
 
-public fun Simd<F16, N>.toBits(n: Int): Simd<UShort> {
-    check(sizeOf<Simd<F16, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
+public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
+    check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(this)
 }
 
-public fun Simd.Companion.fromBits(bits: Simd<UShort>, n: Int): Simd<F16, N> {
-    check(sizeOf<Simd<F16, N>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16, N>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
+public fun Simd.Companion.fromBits(bits: Simd<UShort>, n: Int): Simd<F16> {
+    check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(bits)
 }
 
@@ -152,7 +152,7 @@ public open class SimdM<T>(
     }
 }
 
-public fun <T> SimdM.Companion.boolToInternal(x: Boolean, n: Int, typeLayoutT: TypeLayout<T>): T {
+public fun <T> SimdM.Companion.boolToInternal(x: Boolean, n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: `T` implements `SimdElement`, so all bit patterns are valid.
     val ones =
         run {
@@ -169,7 +169,7 @@ public fun <T> SimdM.Companion.boolToInternal(x: Boolean, n: Int, typeLayoutT: T
     return listOf(T.ZERO, ones)[x.toInt()]
 }
 
-public fun <T> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<T, N> {
+public fun <T> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<T> {
     val internal = MutableList(n) { T.ZERO }
     var i = 0
     while (i < n) {
@@ -179,9 +179,9 @@ public fun <T> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<
     return SimdM(internal)
 }
 
-public fun <T> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T, N> = run { val _simdArg0 = SimdM.boolToInternal(value); _simdArg0 }
+public fun <T> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T> = run { val _simdArg0 = SimdM.boolToInternal(value); _simdArg0 }
 
-public fun <T> SimdM<T, N>.asArray(n: Int): List<T> {
+public fun <T> SimdM<T>.asArray(n: Int): List<T> {
     val simdPtr: ConstPtr = this
     val arrayPtr: ConstPtr = ConstPtr((simdPtr).rawAddress)
     // SAFETY: We can always read the prefix of a simd type as an array.
@@ -191,11 +191,11 @@ public fun <T> SimdM<T, N>.asArray(n: Int): List<T> {
 }
 
 // `@derive(Clone)` causes ICE "Projecting into SIMD type coreArch.simd.SimdM is banned by MCP#838"
-public fun <T> SimdM<T, N>.clone(n: Int): SimdM<T, N> = SimdM(this.value)
+public fun <T> SimdM<T>.clone(n: Int): SimdM<T> = SimdM(this.value)
 
-public fun <T> SimdM<T, N>.eq(other: SimdM<T, N>, n: Int): Boolean = this.asArray() == other.asArray()
+public fun <T> SimdM<T>.eq(other: SimdM<T>, n: Int): Boolean = this.asArray() == other.asArray()
 
-public fun <T> SimdM<T, N>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "SimdM", this.asArray())
+public fun <T> SimdM<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "SimdM", this.asArray())
 
 // 16-bit wide types:
 public typealias U8x2 = Simd<UByte>

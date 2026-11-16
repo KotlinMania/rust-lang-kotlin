@@ -510,10 +510,11 @@ public interface Sync
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * open class ExternalResource<R>(public var resourceHandle: MutPtr, public var resourceType: Unit) {
- *     public open fun new(typeLayoutR: TypeLayout<R>): ExternalResource<R> {
+ *     public open fun new(typeLayoutR: TypeLayout<R> = UnresolvedTypeLayout()): ExternalResource<R> {
  *         val sizeOfRes = sizeOf<R>(typeLayoutT = typeLayoutR)
  *         return ExternalResource(resourceHandle = new(sizeOfRes), resourceType = Unit)
  *     }
@@ -541,13 +542,7 @@ public interface Sync
  *
  * [drop check]: Drop#drop-check
  */
-public open class PhantomData<T> :
-    Copy<PhantomData<T>>,
-    TrivialClone<PhantomData<T>>,
-    StructuralPartialEq,
-    Freeze,
-    UnsafeUnpin,
-    Move {
+public open class PhantomData<T> : Copy<PhantomData<T>>, TrivialClone<PhantomData<T>>, StructuralPartialEq, Freeze, UnsafeUnpin, Move {
     public override fun hashCode(): Int = 0
 
     public open fun eq(other: PhantomData<T>): Boolean = true

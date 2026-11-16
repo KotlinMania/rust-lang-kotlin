@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.traits.doubleended
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunkBack
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -183,21 +184,21 @@ public interface DoubleEndedIterator<T> {
      * [Ok]: Ok
      * [Err]: Err
      */
-    public fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         /**
          * Helper trait to specialize `advanceBackBy` via `tryRfold` for `Sized` iterators.
          */
         interface SpecAdvanceBackBy {
-            public fun specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int>>
+            public fun specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
         }
-        fun <I : DoubleEndedIterator<I>> I.specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int>> {
+        fun <I : DoubleEndedIterator<I>> I.specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
             for (i in 0 until n1) {
                 if (this.nextBack() == null) {
                     // SAFETY: `i` is always less than `n`.
-                    return Result.Err(NonZero.newUnchecked(n1 - i))
+                    return Result.Err<Unit, NonZero<Int, NonZeroUsizeInner>>(NonZero.newUnchecked<NonZeroUsizeInner, Int>(n1 - i))
                 }
             }
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
         }
         return this.specAdvanceBackBy(n)
     }
@@ -280,11 +281,7 @@ public interface DoubleEndedIterator<T> {
             val matchVal = this.nextBack()
             if (matchVal == null) break
             val x = matchVal
-            accum =
-                when (val tryResult = f(accum, x)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum
     }
@@ -400,7 +397,7 @@ public interface DoubleEndedIterator<T> {
      * ```
      */
     public fun rfind(predicate: (Item) -> Boolean): Item? {
-        fun <T> check(predicate1: (T) -> Boolean): (Unit, T) -> ControlFlow<T> =
+        fun <T> check(predicate1: (T) -> Boolean): (Unit, T) -> ControlFlow<T, Unit> =
             { x ->
                 if (predicate1(x)) {
                     ControlFlow.Break(x)
@@ -438,11 +435,7 @@ public fun <I : DoubleEndedIterator<I>, B, R> I.specTryRfold(init: B, f: (B, Ite
         val matchVal = this.nextBack()
         if (matchVal == null) break
         val x = matchVal
-        accum =
-            when (val tryResult = f(accum, x)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }

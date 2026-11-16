@@ -35,7 +35,7 @@ public interface Futexable
 
 public interface Waitable<out Futex>
 
-public fun <Futex, W> waitOnAddress(address: Futex, compare: W, timeout: Duration?, typeLayoutW: TypeLayout<W>): Boolean =
+public fun <Futex, W> waitOnAddress(address: Futex, compare: W, timeout: Duration?, typeLayoutW: TypeLayout<W> = UnresolvedTypeLayout()): Boolean =
     run {
         val addr = address.cast()
         val size = sizeOf<W>(typeLayoutT = typeLayoutW)

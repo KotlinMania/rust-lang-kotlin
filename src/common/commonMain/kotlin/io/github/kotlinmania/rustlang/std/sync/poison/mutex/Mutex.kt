@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.poison.mutex
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -286,11 +287,11 @@ public open class Mutex<T>(
     public open fun getCloned(): Result<T, PoisonError<Unit>> =
         run {
             val matchVal = this.lock()
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val guard = matchVal.value
-                Result.Ok(guard.clone())
-            }; is Result.Err<*, *> -> {
-                Result.Err(PoisonError.new())
+                Result.Ok<T, PoisonError<Unit>>(guard.clone())
+            }; is Result.Err -> {
+                Result.Err<T, PoisonError<Unit>>(PoisonError.new())
             } }
         }
 
@@ -324,12 +325,12 @@ public open class Mutex<T>(
         } else {
             run {
                 val matchVal = this.lock()
-                when (matchVal) { is Result.Ok<*, *> -> {
+                when (matchVal) { is Result.Ok -> {
                     val guard = matchVal.value
                     guard = value
-                    Result.Ok(Unit)
-                }; is Result.Err<*, *> -> {
-                    Result.Err(PoisonError.new(value))
+                    Result.Ok<Unit, PoisonError<T>>(Unit)
+                }; is Result.Err -> {
+                    Result.Err<Unit, PoisonError<T>>(PoisonError.new(value))
                 } }
             }
         }
@@ -358,10 +359,10 @@ public open class Mutex<T>(
     public open fun replace(value: T): LockResult<T> =
         run {
             val matchVal = this.lock()
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val guard = matchVal.value
                 Result.Ok(replace(guard, value))
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 Result.Err(PoisonError.new(value))
             } }
         }
@@ -453,7 +454,7 @@ public open class Mutex<T>(
      */
     public open fun tryLock(): TryLockResult<MutexGuard<T>> {
         return if (this.inner.tryLock()) {
-            Result.Ok(when (val tryResult = MutexGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = MutexGuard.new(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -582,16 +583,16 @@ public open class Mutex<T>(
      */
     public open fun dataPtr(): MutPtr = this.data.get()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "Mutex")
         run {
             val matchVal = this.tryLock()
             when {
-                matchVal is Result.Ok<*, *> -> {
-                    val guard = (matchVal as Result.Ok<*, *>).value
+                matchVal is Result.Ok -> {
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
+                matchVal is Result.Err && matchVal.error is TryLockError.Poisoned -> {
                     d.field("data", err.getRef())
                 }
                 else -> {
@@ -600,7 +601,7 @@ public open class Mutex<T>(
             }
         }
         d.field("poisoned", this.poison.get())
-        d.finishNonExhaustive()
+        return d.finishNonExhaustive()
     }
 
     public companion object {
@@ -672,13 +673,9 @@ public open class MutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         public fun <T> new(lock: Mutex<T>): LockResult<MutexGuard<T>> = mapResult(lock.poison.guard(), { guard -> MutexGuard(lock = lock, poison = guard) })
@@ -720,12 +717,12 @@ public open class MutexGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the reference
             // passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.lock.data.get())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedMutexGuard<U>, MutexGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedMutexGuard(data = data1, inner = orig1.lock.inner, poisonFlag = orig1.lock.poison, poison = orig1.poison.clone(), variance = Unit))
+                    Result.Ok<MappedMutexGuard<U>, MutexGuard<T>>(MappedMutexGuard(data = data1, inner = orig1.lock.inner, poisonFlag = orig1.lock.poison, poison = orig1.poison.clone(), variance = Unit))
                 }
             }
         }
@@ -773,13 +770,9 @@ public open class MappedMutexGuard<T>(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -819,12 +812,12 @@ public open class MappedMutexGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the reference
             // passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asMut())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedMutexGuard<U>, MappedMutexGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedMutexGuard(data = data1, inner = orig1.inner, poisonFlag = orig1.poisonFlag, poison = orig1.poison.clone(), variance = Unit))
+                    Result.Ok<MappedMutexGuard<U>, MappedMutexGuard<T>>(MappedMutexGuard(data = data1, inner = orig1.inner, poisonFlag = orig1.poisonFlag, poison = orig1.poison.clone(), variance = Unit))
                 }
             }
         }

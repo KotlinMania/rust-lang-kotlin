@@ -6,11 +6,13 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
@@ -1894,9 +1896,7 @@ public open class CAnonymousPtraceSyscallInfoData(
     public var exit: CAnonymousPtraceSyscallInfoExit? = null,
     public var seccomp: CAnonymousPtraceSyscallInfoSeccomp? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ptrace_syscall_info_data").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ptrace_syscall_info_data").finishNonExhaustive()
 
     public open fun eq(other: CAnonymousPtraceSyscallInfoData): Boolean = this.entry == other.entry || this.exit == other.exit || this.seccomp == other.seccomp
 

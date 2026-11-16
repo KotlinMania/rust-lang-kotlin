@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.mem.maybedangling
 
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -73,7 +74,7 @@ import io.github.kotlinmania.rustlang.core.ptr.read
  */
 public open class MaybeDangling<P>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<P>,
+    public val fieldLayout: TypeLayout<P> = UnresolvedTypeLayout(),
 ) {
     public var field0: P
         get() = value
@@ -83,11 +84,9 @@ public open class MaybeDangling<P>(
 
     public var value: P
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: P, fieldLayout: TypeLayout<P>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: P, fieldLayout: TypeLayout<P> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<MaybeDangling<P>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaybeDangling<P>(ptr, layout) }, { it.value })
 
@@ -124,6 +123,6 @@ public open class MaybeDangling<P>(
         /**
          * Wraps a value in a `MaybeDangling`, allowing it to dangle.
          */
-        public fun <P> new(x: P, fieldLayout: TypeLayout<P>): MaybeDangling<P> = MaybeDangling(x, fieldLayout = fieldLayout)
+        public fun <P> new(x: P, fieldLayout: TypeLayout<P> = UnresolvedTypeLayout()): MaybeDangling<P> = MaybeDangling(x, fieldLayout = fieldLayout)
     }
 }

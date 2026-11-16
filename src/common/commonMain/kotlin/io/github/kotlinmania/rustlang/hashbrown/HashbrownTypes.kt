@@ -1,6 +1,8 @@
 package io.github.kotlinmania.rustlang.hashbrown
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // This is only used as a fallback when building as part of `std`.
 
@@ -48,7 +50,7 @@ public sealed class TryReserveError {
     public fun rustEquals(other: TryReserveError): Boolean = this == other
 
     // matches stdalloc.collections.TryReserveError
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         f.append("memory allocation failed")
         val reason =
             when (this) {
@@ -57,6 +59,6 @@ public sealed class TryReserveError {
                 }
                 is TryReserveError.AllocError -> " because the memory allocator returned an error"
             }
-        f.append(reason)
+        return run { f.append(reason); Result.Ok(Unit) }
     }
 }

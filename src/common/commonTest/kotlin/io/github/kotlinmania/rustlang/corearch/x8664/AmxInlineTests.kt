@@ -649,16 +649,11 @@ public fun testTileCvtrowps2phh() {
         tileLoadd(localStorageL2051C12.elementConstPtr(0), 64, 0)
         for (i in 0 until 16) {
             val row = tileCvtrowps2phh(i, 0)
-            check(
-                row.asF16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            0.0
-                        } else {
-                            ((i as Any?) as Any?)
-                        }
-                    }),
-            )
+            check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                0.0
+            } else {
+                ((i as Any?) as Any?)
+            } }))
         }
     }
 }
@@ -695,16 +690,11 @@ public fun testTileCvtrowps2phhi() {
                     15 -> tileCvtrowps2phhi(0, 15)
                     else -> error("row index out of range")
                 }
-            check(
-                row.asF16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            0.0
-                        } else {
-                            ((i as Any?) as Any?)
-                        }
-                    }),
-            )
+            check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                0.0
+            } else {
+                ((i as Any?) as Any?)
+            } }))
         }
     }
 }
@@ -722,16 +712,11 @@ public fun testTileCvtrowps2phl() {
         tileLoadd(localStorageL2114C12.elementConstPtr(0), 64, 0)
         for (i in 0 until 16) {
             val row = tileCvtrowps2phl(i, 0)
-            check(
-                row.asF16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            ((i as Any?) as Any?)
-                        } else {
-                            0.0
-                        }
-                    }),
-            )
+            check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                ((i as Any?) as Any?)
+            } else {
+                0.0
+            } }))
         }
     }
 }
@@ -768,16 +753,11 @@ public fun testTileCvtrowps2phli() {
                     15 -> tileCvtrowps2phli(0, 15)
                     else -> error("row index out of range")
                 }
-            check(
-                row.asF16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            ((i as Any?) as Any?)
-                        } else {
-                            0.0
-                        }
-                    }),
-            )
+            check(row.asF16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                ((i as Any?) as Any?)
+            } else {
+                0.0
+            } }))
         }
     }
 }
@@ -795,16 +775,11 @@ public fun testTileCvtrowps2bf16h() {
         tileLoadd(localStorageL2177C12.elementConstPtr(0), 64, 0)
         for (i in 0 until 16) {
             val row = tileCvtrowps2bf16h(i, 0)
-            check(
-                row.asU16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            0
-                        } else {
-                            mmCvtnessSbh(i.toFloat()).toBits()
-                        }
-                    }),
-            )
+            check(row.asU16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                0
+            } else {
+                mmCvtnessSbh(i.toFloat()).toBits()
+            } }))
         }
     }
 }
@@ -841,16 +816,11 @@ public fun testTileCvtrowps2bf16hi() {
                     15 -> tileCvtrowps2bf16hi(0, 15)
                     else -> error("row index out of range")
                 }
-            check(
-                row.asU16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            0
-                        } else {
-                            mmCvtnessSbh(i.toFloat()).toBits()
-                        }
-                    }),
-            )
+            check(row.asU16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                0
+            } else {
+                mmCvtnessSbh(i.toFloat()).toBits()
+            } }))
         }
     }
 }
@@ -868,16 +838,11 @@ public fun testTileCvtrowps2bf16l() {
         tileLoadd(localStorageL2252C12.elementConstPtr(0), 64, 0)
         for (i in 0 until 16) {
             val row = tileCvtrowps2bf16l(i, 0)
-            check(
-                row.asU16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            mmCvtnessSbh(i.toFloat()).toBits()
-                        } else {
-                            0
-                        }
-                    }),
-            )
+            check(row.asU16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                mmCvtnessSbh(i.toFloat()).toBits()
+            } else {
+                0
+            } }))
         }
     }
 }
@@ -914,16 +879,11 @@ public fun testTileCvtrowps2bf16li() {
                     15 -> tileCvtrowps2bf16li(0, 15)
                     else -> error("row index out of range")
                 }
-            check(
-                row.asU16x32().asArray() ==
-                    fromFn({ j ->
-                        if (j and 1 == 0) {
-                            mmCvtnessSbh(i.toFloat()).toBits()
-                        } else {
-                            0
-                        }
-                    }),
-            )
+            check(row.asU16x32().asArray() == fromFn({ j -> if (j and 1 == 0) {
+                mmCvtnessSbh(i.toFloat()).toBits()
+            } else {
+                0
+            } }))
         }
     }
 }

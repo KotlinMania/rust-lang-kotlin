@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.backtrace.capture.BacktraceSymbol
 import io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -22,12 +23,15 @@ public val HEX_WIDTH: Int = 2 + 2 * sizeOf<Int>(typeLayoutT = PrimitiveLayouts.U
  * itself comes from. If you have a `Backtrace` type then its `Debug`
  * implementation already uses this printing format.
  */
-public open class BacktraceFmt(
+public open class BacktraceFmt internal constructor(
     public var fmt: StringBuilder,
     public var frameIndex: Int,
     public var format: PrintFmt,
-    public var printPath: (StringBuilder, BytesOrWideString) -> Unit,
+    printPathCtorArg: (StringBuilder, BytesOrWideString) -> Result<Unit, Error>,
 ) {
+    public var printPath: (StringBuilder, BytesOrWideString) -> Result<Unit, Error> = printPathCtorArg
+        internal set
+
     /**
      * Prints a preamble for the backtrace about to be printed.
      *
@@ -35,7 +39,7 @@ public open class BacktraceFmt(
      * symbolicated later, and otherwise this should just be the first method
      * you call after creating a `BacktraceFmt`.
      */
-    public open fun addContext() {}
+    public open fun addContext(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     /**
      * Adds a frame to the backtrace output.
@@ -52,7 +56,7 @@ public open class BacktraceFmt(
      * This is currently a no-op but is added for future compatibility with
      * backtrace formats.
      */
-    public open fun finish() {}
+    public open fun finish(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     /**
      * Inserts a message in the backtrace output.
@@ -61,9 +65,7 @@ public open class BacktraceFmt(
      * and won't increment the `frameIndex` unlike the `frame`
      * method.
      */
-    public open fun message(msg: String) {
-        this.fmt.append(msg)
-    }
+    public open fun message(msg: String): Result<Unit, Error> = run { this.fmt.append(msg); Result.Ok(Unit) }
 
     /**
      * Return the inner formatter.
@@ -74,6 +76,18 @@ public open class BacktraceFmt(
     public open fun formatter(): StringBuilder = this.fmt
 
     public companion object {
+        public operator fun invoke(
+            fmt: StringBuilder,
+            frameIndex: Int,
+            format: PrintFmt,
+            printPath: (StringBuilder, BytesOrWideString) -> Result<Unit, Error>,
+        ): BacktraceFmt = BacktraceFmt(
+            fmt = fmt,
+            frameIndex = frameIndex,
+            format = format,
+            printPathCtorArg = printPath,
+        )
+
         /**
          * Create a new `BacktraceFmt` which will write output to the provided
          * `fmt`.
@@ -83,7 +97,7 @@ public open class BacktraceFmt(
          * `BytesOrWideString` instances of filenames. This type itself doesn't do
          * any printing of filenames, but this callback is required to do so.
          */
-        public fun new(fmt: StringBuilder, format: PrintFmt, printPath: (StringBuilder, BytesOrWideString) -> Unit): BacktraceFmt = BacktraceFmt(fmt = fmt, frameIndex = 0, format = format, printPath = printPath)
+        public fun new(fmt: StringBuilder, format: PrintFmt, printPath: (StringBuilder, BytesOrWideString) -> Result<Unit, Error>): BacktraceFmt = BacktraceFmt(fmt = fmt, frameIndex = 0, format = format, printPath = printPath)
     }
 }
 
@@ -95,7 +109,6 @@ public sealed class PrintFmt {
      * Prints a terser backtrace which ideally only contains relevant information
      */
     public data object Short : PrintFmt()
-
     /**
      * Prints a backtrace that contains all possible information
      */
@@ -124,14 +137,15 @@ public open class BacktraceFrameFmt(
      * This function requires the `std` feature of the `backtrace` crate to be
      * enabled, and the `std` feature is enabled by default.
      */
-    public open fun backtraceFrame(frame: BacktraceFrame) {
+    public open fun backtraceFrame(frame: BacktraceFrame): Result<Unit, Error> {
         val symbols = frame.symbols()
         for (symbol in symbols) {
-            this.backtraceSymbol(frame, symbol)
+            when (val tryResult = this.backtraceSymbol(frame, symbol)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         if (symbols.isEmpty()) {
-            this.printRaw(frame.ip(), null, null, null)
+            when (val tryResult = this.printRaw(frame.ip(), null, null, null)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -142,33 +156,18 @@ public open class BacktraceFrameFmt(
      * This function requires the `std` feature of the `backtrace` crate to be
      * enabled, and the `std` feature is enabled by default.
      */
-    public open fun backtraceSymbol(frame: BacktraceFrame, symbol: BacktraceSymbol) {
-        this.printRawWithColumn(
-            frame.ip(),
-            symbol.name(),
-            symbol.filename().andThen(
-                closure@{ p ->
-                    BytesOrWideString.Bytes(
-                        (
-                            when (val tryResult = p.toStr()) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
-                            }
-                        ).encodeToByteArray().map { it.toUByte() },
-                    )
-                },
-            ),
-            symbol.lineno(),
-            symbol.colno(),
-        )
+    public open fun backtraceSymbol(frame: BacktraceFrame, symbol: BacktraceSymbol): Result<Unit, Error> {
+        when (val tryResult = this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filename().andThen(closure@{ p -> BytesOrWideString.Bytes((when (val tryResult = p.toStr()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }).encodeToByteArray().map { it.toUByte() }) }), symbol.lineno(), symbol.colno())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
      * Prints a raw traced `Frame` and `Symbol`, typically from within the raw
      * callbacks of this crate.
      */
-    public open fun symbol(frame: Frame, symbol: Symbol) {
-        this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filenameRaw(), symbol.lineno(), symbol.colno())
+    public open fun symbol(frame: Frame, symbol: Symbol): Result<Unit, Error> {
+        when (val tryResult = this.printRawWithColumn(frame.ip(), symbol.name(), symbol.filenameRaw(), symbol.lineno(), symbol.colno())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -178,9 +177,7 @@ public open class BacktraceFrameFmt(
      * they're being source from different locations. Note that this may be
      * called multiple times for one frame.
      */
-    public open fun printRaw(frameIp: MutPtr, symbolName: SymbolName?, filename: BytesOrWideString?, lineno: UInt?) {
-        this.printRawWithColumn(frameIp, symbolName, filename, lineno, null)
-    }
+    public open fun printRaw(frameIp: MutPtr, symbolName: SymbolName?, filename: BytesOrWideString?, lineno: UInt?): Result<Unit, Error> = this.printRawWithColumn(frameIp, symbolName, filename, lineno, null)
 
     /**
      * Adds a raw frame to the backtrace output, including column information.
@@ -189,24 +186,25 @@ public open class BacktraceFrameFmt(
      * they're being source from different locations. Note that this may be
      * called multiple times for one frame.
      */
-    public open fun printRawWithColumn(frameIp: MutPtr, symbolName: SymbolName?, filename: BytesOrWideString?, lineno: UInt?, colno: UInt?) {
+    public open fun printRawWithColumn(frameIp: MutPtr, symbolName: SymbolName?, filename: BytesOrWideString?, lineno: UInt?, colno: UInt?): Result<Unit, Error> {
         // Fuchsia is unable to symbolize within a process so it has a special
         // format which can be used to symbolize later. Print that instead of
         // printing addresses in our own format here.
         if (false) {
-            this.printRawFuchsia(frameIp)
+            when (val tryResult = this.printRawFuchsia(frameIp)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         } else {
-            this.printRawGeneric(frameIp, symbolName, filename, lineno, colno)
+            when (val tryResult = this.printRawGeneric(frameIp, symbolName, filename, lineno, colno)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         this.symbolIndex += 1
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printRawGeneric(frameIp: MutPtr, symbolName: SymbolName?, filename: BytesOrWideString?, lineno: UInt?, colno: UInt?) {
+    public open fun printRawGeneric(frameIp: MutPtr, symbolName: SymbolName?, filename: BytesOrWideString?, lineno: UInt?, colno: UInt?): Result<Unit, Error> {
         // No need to print "null" frames, it basically just means that the
         // system backtrace was a bit eager to trace back super far.
         if (this.fmt.format == PrintFmt.Short) {
             if (((frameIp).rawAddress == 0L)) {
-                return Unit
+                return Result.Ok<Unit, Error>(Unit)
             }
         }
         // Print the index of the frame as well as the optional instruction
@@ -245,11 +243,12 @@ public open class BacktraceFrameFmt(
         if (Pair(filename, lineno) != null) {
             val file = Pair(filename, lineno).first
             val line = Pair(filename, lineno).second
-            this.printFileline(file, line, colno)
+            when (val tryResult = this.printFileline(file, line, colno)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printFileline(file: BytesOrWideString, line: UInt, colno: UInt?) {
+    public open fun printFileline(file: BytesOrWideString, line: UInt, colno: UInt?): Result<Unit, Error> {
         // Filename/line are printed on lines under the symbol name, so print
         // some appropriate whitespace to sort of right-align ourselves.
         if (this.fmt.format == PrintFmt.Full) {
@@ -258,22 +257,24 @@ public open class BacktraceFrameFmt(
         this.fmt.fmt.append("             at ")
         // Delegate to our internal callback to print the filename and then
         // print out the line number.
-        (this.fmt.printPath)(this.fmt.fmt, file)
+        when (val tryResult = (this.fmt.printPath)(this.fmt.fmt, file)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         this.fmt.fmt.append(":$line")
         // Add column number, if available.
         if (colno != null) {
             this.fmt.fmt.append(":$colno")
         }
         this.fmt.fmt.appendLine()
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun printRawFuchsia(frameIp: MutPtr) {
+    public open fun printRawFuchsia(frameIp: MutPtr): Result<Unit, Error> {
         // We only care about the first symbol of a frame
         if (this.symbolIndex == 0) {
             this.fmt.fmt.append("{{{bt:")
             this.fmt.fmt.append("${this.fmt.frameIndex}:$frameIp")
             this.fmt.fmt.append("}}}\n")
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public open fun drop() {

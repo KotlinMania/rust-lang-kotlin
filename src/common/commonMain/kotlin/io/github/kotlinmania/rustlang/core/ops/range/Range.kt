@@ -46,9 +46,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * check(arr[1..3] == listOf(1, 2, 3))
  * ```
  */
-public open class RangeFull :
-    RangeBounds<T>,
-    IntoBounds<T> {
+public open class RangeFull : RangeBounds<T>, IntoBounds<T> {
     public open fun clone(): RangeFull = RangeFull()
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = fmt.writeFmt("..")
@@ -122,19 +120,10 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = fmt.writeFmt("..")) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = this.end.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        return Result.Ok(Unit)
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -251,15 +240,9 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = fmt.writeFmt("..")) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        return Result.Ok(Unit)
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -349,15 +332,9 @@ public open class RangeTo<Idx>(
     public open fun clone(): RangeTo<Idx> = RangeTo(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..")) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = this.end.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        return Result.Ok(Unit)
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -515,25 +492,13 @@ public open class RangeInclusive<Idx>(
     public open fun intoInner(): Pair<Idx, Idx> = Pair(this.start, this.end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = fmt.writeFmt("..=")) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = this.end.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
         if (this.exhausted) {
-            when (val tryResult = fmt.writeFmt(" (exhausted)")) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -715,15 +680,9 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = this.end.fmt(fmt)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        return Result.Ok(Unit)
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     /**
@@ -808,21 +767,15 @@ public sealed class Bound<T> {
     /**
      * An inclusive bound.
      */
-    public data class Included<T>(
-        public var value: T,
-    ) : Bound<T>()
-
+    public data class Included<T>(public var value: T) : Bound<T>()
     /**
      * An exclusive bound.
      */
-    public data class Excluded<T>(
-        public var value: T,
-    ) : Bound<T>()
-
+    public data class Excluded<T>(public var value: T) : Bound<T>()
     /**
      * An infinite endpoint. Indicates that there is no bound in this direction.
      */
-    public class Unbounded<T> : Bound<T>()
+    public class Unbounded<T>() : Bound<T>()
 
     public fun rustEquals(other: Bound<T>): Boolean = this == other
 
@@ -1004,32 +957,28 @@ public interface RangeBounds<T> {
      * ```
      */
     public fun <U> contains(item: U): Boolean =
-        (
-            when (val matchVal = this.startBound()) {
+        (when (val matchVal = this.startBound()) {
+            is Included -> {
+                val (start) = matchVal
+                (kmCompareValues(start, item) <= 0)
+            }
+            is Excluded -> {
+                val (start1) = matchVal
+                (kmCompareValues(start1, item) < 0)
+            }
+            Unbounded -> true
+        }) &&
+            (when (val matchVal1 = this.endBound()) {
                 is Included -> {
-                    val (start) = matchVal
-                    (kmCompareValues(start, item) <= 0)
+                    val (end) = matchVal1
+                    (kmCompareValues(item, end) <= 0)
                 }
                 is Excluded -> {
-                    val (start1) = matchVal
-                    (kmCompareValues(start1, item) < 0)
+                    val (end1) = matchVal1
+                    (kmCompareValues(item, end1) < 0)
                 }
                 Unbounded -> true
-            }
-        ) &&
-            (
-                when (val matchVal1 = this.endBound()) {
-                    is Included -> {
-                        val (end) = matchVal1
-                        (kmCompareValues(item, end) <= 0)
-                    }
-                    is Excluded -> {
-                        val (end1) = matchVal1
-                        (kmCompareValues(item, end1) < 0)
-                    }
-                    Unbounded -> true
-                }
-            )
+            })
 
     /**
      * Returns `true` if the range contains no items.
@@ -1296,8 +1245,8 @@ public fun <T> Range<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(t
 
 public fun <T> RangeInclusive<T>.startBound(): Bound<T> = Included(this.start)
 
-public fun <T> RangeInclusive<T>.endBound(): Bound<T> =
-    if (this.exhausted) {
+public fun <T> RangeInclusive<T>.endBound(): Bound<T> {
+    return if (this.exhausted) {
         // When the iterator is exhausted, it might have overflowed,
         // but we want the range to appear empty, containing nothing.
         // So in that case, we return bounds which are always empty:
@@ -1306,6 +1255,7 @@ public fun <T> RangeInclusive<T>.endBound(): Bound<T> =
     } else {
         Included(this.end)
     }
+}
 
 public fun <T> RangeInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> {
     check(!this.exhausted) { "attempted to convert from an exhausted `RangeInclusive` (unspecified behavior)" }
@@ -1424,12 +1374,10 @@ public sealed class OneSidedRangeBound {
      * The range is bounded inclusively from below and is unbounded above.
      */
     public data object StartInclusive : OneSidedRangeBound()
-
     /**
      * The range is bounded exclusively from above and is unbounded below.
      */
     public data object End : OneSidedRangeBound()
-
     /**
      * The range is bounded inclusively from above and is unbounded below.
      */

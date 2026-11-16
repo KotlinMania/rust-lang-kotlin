@@ -35,7 +35,7 @@ public fun <T> copySpecCloneOneT(src: T, dst: MutPtr, cloneTFn: (T) -> T = { it 
     }
 }
 
-public fun <T> copySpecCloneSliceT(src: List<T>, dst: MutPtr, typeLayoutT: TypeLayout<T>) {
+public fun <T> copySpecCloneSliceT(src: List<T>, dst: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     val len = src.size
     if (false) {
         when (val matchVal = Pair(len, dst.len())) {

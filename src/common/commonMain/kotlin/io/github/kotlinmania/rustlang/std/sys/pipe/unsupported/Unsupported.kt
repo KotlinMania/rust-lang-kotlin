@@ -39,12 +39,10 @@ public open class Pipe(
 
     public open fun diverge(): Nothing = this.value
 
-    public open fun fmt(arg0: StringBuilder) {
-        this.value
-    }
+    public open fun fmt(arg0: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 }
 
-public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err(io.github.kotlinmania.rustlang.std.io.Error.UNSUPPORTED_PLATFORM)
+public fun pipe(): Result<Pair<Pipe, Pipe>, Error> = Result.Err<Pair<Pipe, Pipe>, Error>(io.github.kotlinmania.rustlang.std.io.Error.UNSUPPORTED_PLATFORM)
 
 public fun Pipe.asRawFd(): RawFd = this.value
 

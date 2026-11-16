@@ -111,7 +111,7 @@ public open class Module internal constructor(
             // SAFETY: A CStr is always null terminated.
             return run {
                 val module = c.GetModuleHandleA(name.asPtr().cast())
-                NonNull.new(module).map({ Module(it) })
+                NonNull.new(module)?.let({ Module(it) })
             }
         }
 
@@ -126,7 +126,7 @@ public open class Module internal constructor(
             // SAFETY: A CStr is always null terminated.
             return run {
                 val module = c.LoadLibraryExA(name.asPtr().cast(), MutPtr(0L), c.LOAD_LIBRARY_SEARCH_SYSTEM32)
-                NonNull.new(module).map({ Module(it) })
+                NonNull.new(module)?.let({ Module(it) })
             }
         }
     }

@@ -19,7 +19,9 @@ private external fun wasiCorearchX86Sse2Pause(): Unit
 public actual fun pause(): Unit =
     wasiCorearchX86Sse2Pause()
 
-public actual fun clflush(p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Clflush")
+public actual fun clflush(p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Clflush")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "corearchX86Sse2Lfence")
 private external fun wasiCorearchX86Sse2Lfence(): Unit
@@ -78,7 +80,9 @@ public actual fun psrlq(a: I64x2, count: I64x2): I64x2 =
 public actual fun cvtps2dq(a: M128): I32x4 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Cvtps2dq")
 
-public actual fun maskmovdqu(a: I8x16, mask: I8x16, memAddr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Maskmovdqu")
+public actual fun maskmovdqu(a: I8x16, mask: I8x16, memAddr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Maskmovdqu")
+}
 
 public actual fun packsswb(a: I16x8, b: I16x8): I8x16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Sse2Packsswb")

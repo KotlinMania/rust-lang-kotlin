@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
@@ -38,22 +39,15 @@ public typealias Source<I> = I.Source
 public open class Skip<I>(
     public var iter: I,
     public var n: Int,
-) : TrustedFused,
-    SourceIter<Source>,
-    InPlaceIterable,
-    TrustedRandomAccess,
-    TrustedRandomAccessNoCoerce,
-    TrustedLen<Skip<I>>,
-    Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@Skip.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedFused, SourceIter<Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Skip<I>>, Iterable<Item> {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@Skip.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Skip<I> = Skip(iter, n)
 
@@ -143,50 +137,43 @@ public open class Skip<I>(
         return this.iter.fold(init, fold)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         var n1 = n
         if (this.n > 0 && n1 == 0) {
             // If we try to process our skips now, we might witness the end of the inner iterator,
             // but there's no valid `Err(k)` that we could return. This is especially a problem for
             // unfused iterators that might end up called again by `Chain`, for example, so it's
             // better that we do nothing at all.
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
         }
         val skipInner = this.n
         val skipAndAdvance = skipInner.saturatingAdd(n1)
         val remainder =
             run {
                 val matchVal = this.iter.advanceBy(skipAndAdvance)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        0
-                    }
-                    is Result.Err<*, *> -> {
-                        val n2 = matchVal.error
-                        n2.get()
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    0
+                }; is Result.Err -> {
+                    val n2 = matchVal.error
+                    n2.get()
+                } }
             }
         val advancedInner = skipAndAdvance - remainder
         n1 -= advancedInner.saturatingSub(skipInner)
         this.n = this.n.saturatingSub(advancedInner)
         // skipAndAdvance may have saturated
         if (unlikely(remainder == 0 && n1 > 0)) {
-            n1 =
-                run {
-                    val matchVal1 = this.iter.advanceBy(n1)
-                    when (matchVal1) {
-                        is Result.Ok<*, *> -> {
-                            0
-                        }
-                        is Result.Err<*, *> -> {
-                            val n3 = matchVal1.error
-                            n3.get()
-                        }
-                    }
-                }
+            n1 = run {
+                val matchVal1 = this.iter.advanceBy(n1)
+                when (matchVal1) { is Result.Ok -> {
+                    0
+                }; is Result.Err -> {
+                    val n3 = matchVal1.error
+                    n3.get()
+                } }
+            }
         }
-        return NonZero.new(n1).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n1))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun iteratorGetUnchecked(idx: Int): Item {
@@ -253,11 +240,11 @@ public open class Skip<I>(
 
     public open fun <Aaa> rfold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryRfold(init, NeverShortCircuit.wrapMut2(fold)).first
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val min = minOf(this.len(), n)
         val rem = this.iter.advanceBackBy(min)
         check(rem.isOk()) { "ExactSizeIterator contract violation" }
-        return NonZero.new(n - min).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - min))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun asInner(): Source {
@@ -298,9 +285,9 @@ public open class Skip<I>(
 
         public fun <I> new(iter: I, n: Int): Skip<I> = Skip(iter = iter, n = n)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
     }

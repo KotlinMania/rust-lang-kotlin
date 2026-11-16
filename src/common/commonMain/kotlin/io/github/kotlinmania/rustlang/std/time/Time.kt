@@ -1,6 +1,7 @@
 // port-lint: source time.rs
 package io.github.kotlinmania.rustlang.std.time
 
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
@@ -312,9 +313,7 @@ public open class Instant(
      */
     public open fun sub(other: Instant): Duration = this.durationSince(other)
 
-    public open fun fmt(f: StringBuilder) {
-        this.value.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)
 
     public companion object {
         /**
@@ -576,9 +575,7 @@ public open class SystemTime(
         this = this - other
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.value.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime = this.value
 
@@ -776,9 +773,7 @@ public open class SystemTimeError(
      */
     public open fun duration(): Duration = this.value
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("second time provided was later than self")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("second time provided was later than self"); Result.Ok(Unit) }
 }
 
 //

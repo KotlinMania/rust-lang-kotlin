@@ -25,12 +25,7 @@ public interface CastInto<T, SelfType> {
 /**
  * Collection of traits that allow us to be generic over integer size.
  */
-public interface Int<T> :
-    Shr<UInt, T>,
-    Shl<UInt, T>,
-    BitAnd<T, T>,
-    BitOr<T, T>,
-    CastInto<Short, T> {
+public interface Int<T> : Shr<UInt, T>, Shl<UInt, T>, BitAnd<T, T>, BitOr<T, T>, CastInto<Short, T> {
     public val ZERO: T
 
     public val ONE: T
@@ -57,11 +52,7 @@ public val ONE2: ULong = 1uL
 /**
  * A helper trait to avoid duplicating basically all the conversion code for IEEE floats.
  */
-public interface Float<T, out Int> :
-    Div<T, T>,
-    Neg<T>,
-    Mul<T, T>,
-    Add<T, T> {
+public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
     public val INFINITY: T
 
     public val NEG_INFINITY: T
@@ -154,11 +145,10 @@ public interface Float<T, out Int> :
      * pathing anything larger than `10 ^ LARGEST_POWER_OF_TEN`, which will round to infinity.
      */
     public val LARGEST_POWER_OF_TEN: Int
-        get() =
-            run {
-                val largestPow2 = T.EXP_BIAS + 1
-                pow2ToPow10(largestPow2.toLong()).toInt()
-            }
+        get() = run {
+        val largestPow2 = T.EXP_BIAS + 1
+        pow2ToPow10(largestPow2.toLong()).toInt()
+    }
 
     /**
      * Smallest decimal exponent for a non-zero value. This allows for fast pathing anything

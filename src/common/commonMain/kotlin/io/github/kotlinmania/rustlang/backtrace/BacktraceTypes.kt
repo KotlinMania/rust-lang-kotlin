@@ -34,10 +34,9 @@ public open class LockGuard internal constructor(
     public companion object {
         public operator fun invoke(
             value: MutexGuard<Unit>?,
-        ): LockGuard =
-            LockGuard(
-                valueCtorArg = value,
-            )
+        ): LockGuard = LockGuard(
+            valueCtorArg = value,
+        )
     }
 }
 

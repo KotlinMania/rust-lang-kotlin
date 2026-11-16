@@ -120,9 +120,13 @@ private external fun wasiLibcWindowsToupper(c: Int): Int
 public actual fun toupper(c: CInt): CInt =
     wasiLibcWindowsToupper(c).toInt()
 
-public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsQsort")
+public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsQsort")
+}
 
-public actual fun qsortS(base: MutPtr, num: SizeT, size: SizeT, compar: QsortSComparCallback?, arg: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsQsortS")
+public actual fun qsortS(base: MutPtr, num: SizeT, size: SizeT, compar: QsortSComparCallback?, arg: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsQsortS")
+}
 
 public actual fun fopen(filename: ConstPtr, mode: ConstPtr): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsFopen")
@@ -148,7 +152,9 @@ public actual fun tmpfile(): MutPtr =
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsSetvbuf")
 
-public actual fun setbuf(stream: MutPtr, buf: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsSetbuf")
+public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsSetbuf")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcWindowsGetchar")
 private external fun wasiLibcWindowsGetchar(): Int
@@ -192,7 +198,9 @@ public actual fun fseek(stream: MutPtr, offset: CLong, whence: CInt): CInt =
 public actual fun ftell(stream: MutPtr): CLong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsFtell")
 
-public actual fun rewind(stream: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsRewind")
+public actual fun rewind(stream: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsRewind")
+}
 
 public actual fun fgetpos(stream: MutPtr, ptr: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsFgetpos")
@@ -206,7 +214,9 @@ public actual fun feof(stream: MutPtr): CInt =
 public actual fun ferror(stream: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsFerror")
 
-public actual fun perror(s: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsPerror")
+public actual fun perror(s: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsPerror")
+}
 
 public actual fun atof(s: ConstPtr): CDouble =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsAtof")
@@ -250,7 +260,9 @@ public actual fun msize(p: MutPtr): SizeT =
 public actual fun realloc(p: MutPtr, size: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsRealloc")
 
-public actual fun free(p: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsFree")
+public actual fun free(p: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsFree")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcWindowsAbort")
 private external fun wasiLibcWindowsAbort(): Unit
@@ -604,7 +616,9 @@ public actual fun wsetlocale(category: CInt, locale: ConstPtr): MutPtr =
 public actual fun alignedMalloc(size: SizeT, alignment: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsAlignedMalloc")
 
-public actual fun alignedFree(ptr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsAlignedFree")
+public actual fun alignedFree(ptr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsAlignedFree")
+}
 
 public actual fun alignedRealloc(memblock: MutPtr, size: SizeT, alignment: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcWindowsAlignedRealloc")

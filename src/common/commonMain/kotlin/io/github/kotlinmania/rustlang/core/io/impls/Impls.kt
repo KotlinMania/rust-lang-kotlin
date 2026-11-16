@@ -40,11 +40,7 @@ public fun MutableList<UByte>.write(data: List<UByte>): Result<Int> {
 public fun MutableList<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        nwritten +=
-            when (val tryResult = this.write(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        nwritten += when (val tryResult = this.write(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         if (this.isEmpty()) {
             break
         }
@@ -55,11 +51,7 @@ public fun MutableList<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
 public fun MutableList<UByte>.isWriteVectored(): Boolean = true
 
 public fun MutableList<UByte>.writeAll(data: List<UByte>): Result<Unit> {
-    return if (when (val tryResult = this.write(data)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        } < data.size
-    ) {
+    return if (when (val tryResult = this.write(data)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) } < data.size) {
         Result.Err(WRITE_ALL_EOF)
     } else {
         Result.Ok(Unit)
@@ -68,11 +60,7 @@ public fun MutableList<UByte>.writeAll(data: List<UByte>): Result<Unit> {
 
 public fun MutableList<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
     for (buf in bufs) {
-        if (when (val tryResult = this.write(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            } < buf.len()
-        ) {
+        if (when (val tryResult = this.write(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) } < buf.len()) {
             return Result.Err(WRITE_ALL_EOF)
         }
     }
@@ -90,11 +78,7 @@ public fun BorrowedCursor<UByte>.write(buf: List<UByte>): Result<Int> {
 public fun BorrowedCursor<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        val n =
-            when (val tryResult = this.write(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val n = when (val tryResult = this.write(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         nwritten += n
         if (n < buf.len()) {
             break
@@ -106,11 +90,7 @@ public fun BorrowedCursor<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int>
 public fun BorrowedCursor<UByte>.isWriteVectored(): Boolean = true
 
 public fun BorrowedCursor<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
-    return if (when (val tryResult = this.write(buf)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        } < buf.size
-    ) {
+    return if (when (val tryResult = this.write(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) } < buf.size) {
         Result.Err(WRITE_ALL_EOF)
     } else {
         Result.Ok(Unit)
@@ -119,11 +99,7 @@ public fun BorrowedCursor<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
 
 public fun BorrowedCursor<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
     for (buf in bufs) {
-        if (when (val tryResult = this.write(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            } < buf.len()
-        ) {
+        if (when (val tryResult = this.write(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) } < buf.len()) {
             return Result.Err(WRITE_ALL_EOF)
         }
     }

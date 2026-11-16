@@ -326,7 +326,7 @@ public open class Dlmalloc<A> internal constructor(
         val ptr = this.malloc(bytes)
         if (!ptr.isNull()) {
             val oc = Chunk.size(oldp) - this.overheadFor(oldp)
-            copyNonoverlapping(oldmem, ptr, minOf(oc, bytes), typeLayoutT = PrimitiveLayouts.U8)
+            copyNonoverlapping((oldmem).asConstPtr(), ptr, minOf(oc, bytes), typeLayoutT = PrimitiveLayouts.U8)
             this.free(oldmem)
         }
         return ptr

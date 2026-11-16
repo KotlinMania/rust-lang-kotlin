@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.test.term.terminfo
 
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.test.term.terminfo.Error.*
 
 /**
@@ -29,9 +30,9 @@ public sealed class Error {
             else -> null
         }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
-            TermUnset -> Unit
+            TermUnset -> Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
             is MalformedTerminfo -> {
                 val (e) = this
                 e.fmt(f)
@@ -41,5 +42,4 @@ public sealed class Error {
                 e1.fmt(f)
             }
         }
-    }
 }

@@ -1,6 +1,8 @@
 // port-lint: source slice/sort/select.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.select
 
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.slice.sort.shared.pivot.choosePivot
@@ -18,23 +20,23 @@ import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.partiti
 /**
  * Reorders the slice such that the element at `index` is at its final sorted position.
  */
-public fun <T> partitionAtIndex(v: MutableList<T>, index: Int, isLess: (T, T) -> Boolean): Triple<MutableList<T>, T, MutableList<T>> {
+public fun <T> partitionAtIndex(v: MutableList<T>, index: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, T, MutableList<T>> {
     val len = v.size
     // Puts a lower limit of 1 on `len`.
     if (index >= len) {
         error("partition_at_index index $index greater than length of slice $len")
     }
-    if (T.IS_ZST) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         // Sorting has no meaningful behavior on zero-sized types. Do nothing.
     } else if (index == len - 1) {
         // Find max element and place it in the last position of the array. We're free to use
         // `unwrap()` here because we checked that `v` is not empty.
-        val maxIdx = maxIndex(v, isLess).unwrap()
+        val maxIdx = maxIndex(v, isLess)!!
         v.swap(maxIdx, index)
     } else if (index == 0) {
         // Find min element and place it in the first position of the array. We're free to use
         // `unwrap()` here because we checked that `v` is not empty.
-        val minIdx = minIndex(v, isLess).unwrap()
+        val minIdx = minIndex(v, isLess)!!
         v.swap(minIdx, index)
     } else {
         medianOfMedians(v, isLess, index)
@@ -119,32 +121,22 @@ public fun <T> partitionAtIndexLoop(v: MutableList<T>, index: Int, ancestorPivot
  * comparator function
  */
 public fun <T> minIndex(slice: List<T>, isLess: (T, T) -> Boolean): Int? =
-    slice
-        .mapIndexed { index, item -> Pair(index, item) }
-        .reduce({ acc, t ->
-            if (isLess(t.second, acc.second)) {
-                t
-            } else {
-                acc
-            }
-        })
-        .map({ (i, _) -> i })
+    slice.mapIndexed { index, item -> Pair(index, item) }.reduce({ acc, t -> if (isLess(t.second, acc.second)) {
+        t
+    } else {
+        acc
+    } }).map({ (i, _) -> i })
 
 /**
  * Helper function that returns the index of the maximum element in the slice using the given
  * comparator function
  */
 public fun <T> maxIndex(slice: List<T>, isLess: (T, T) -> Boolean): Int? =
-    slice
-        .mapIndexed { index, item -> Pair(index, item) }
-        .reduce({ acc, t ->
-            if (isLess(acc.second, t.second)) {
-                t
-            } else {
-                acc
-            }
-        })
-        .map({ (i, _) -> i })
+    slice.mapIndexed { index, item -> Pair(index, item) }.reduce({ acc, t -> if (isLess(acc.second, t.second)) {
+        t
+    } else {
+        acc
+    } }).map({ (i, _) -> i })
 
 /**
  * Selection algorithm to select the k-th element from the slice in guaranteed O(n) time.
@@ -157,7 +149,7 @@ public fun <T> medianOfMedians(v: MutableList<T>, isLess: (T, T) -> Boolean, k: 
         check(k1 < v1.size)
     }
     if (false) {
-        check(T.IS_ZST.inv())
+        check((((UnresolvedTypeLayout<T>()).sizeBytes == 0L)).inv())
     }
     // We now know that `k<v.len() <= Long.MAX`
     while (true) {
@@ -172,13 +164,13 @@ public fun <T> medianOfMedians(v: MutableList<T>, isLess: (T, T) -> Boolean, k: 
         if (k1 == v1.size - 1) {
             // Find max element and place it in the last position of the array. We're free to use
             // `unwrap()` here because we know v must not be empty.
-            val maxIdx = maxIndex(v1, isLess).unwrap()
+            val maxIdx = maxIndex(v1, isLess)!!
             v1.swap(maxIdx, k1)
             return
         } else if (k1 == 0) {
             // Find min element and place it in the first position of the array. We're free to use
             // `unwrap()` here because we know v must not be empty.
-            val minIdx = minIndex(v1, isLess).unwrap()
+            val minIdx = minIndex(v1, isLess)!!
             v1.swap(minIdx, k1)
             return
         }

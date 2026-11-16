@@ -5,10 +5,12 @@ package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.libc.wasi.E2BIG
 import io.github.kotlinmania.rustlang.libc.wasi.EACCES
@@ -138,7 +140,7 @@ public fun decodeErrorKind(errno: Int): ErrorKind =
 /**
  * Gets a detailed string description for the given error number.
  */
-public fun formatError(errno: Int, f: StringBuilder) {
+public fun formatError(errno: Int, f: StringBuilder): Result<Unit, Error> {
     val TMPBUF_SZ: Int =
         if (false) {
             1024
@@ -149,13 +151,13 @@ public fun formatError(errno: Int, f: StringBuilder) {
     val localStorageL218C4 = AddressableArrayLocal.fromUByteArray(UByteArray((TMPBUF_SZ).toInt()) { 0.toUByte() })
     val buf by localStorageL218C4
     val p = localStorageL218C4.elementMutPtr(0)
-    run {
+    return run {
         if (strerrorR(errno, p, buf.size) < 0) {
             error("strerror_r failure")
         }
         val p1 = ConstPtr(p.rawAddress, p.rawMeta)
         // We can't always expect a UTF-8 environment. When we don't get that luxury,
         // it's better to give a low-quality error message than none at all.
-        f.append("${CStr.fromPtr(p1).display()}")
+        run { f.append("${CStr.fromPtr(p1).display()}"); Result.Ok(Unit) }
     }
 }

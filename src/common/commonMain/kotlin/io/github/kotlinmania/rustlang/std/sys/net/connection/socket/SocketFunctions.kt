@@ -80,13 +80,13 @@ public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr, Erro
     when (((UnresolvedTypeLayout<c.SockaddrStorage>()).readNative((storage).rawAddress).ssFamily).toInt()) {
         c.afInet -> {
             check(len >= sizeOf<c.SockaddrIn>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrIn>()))
-            Result.Ok(SocketAddr.v4(socketAddrV4FromC((UnresolvedTypeLayout<c.SockaddrIn>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
+            Result.Ok<SocketAddr, Error>(SocketAddr.v4(socketAddrV4FromC((UnresolvedTypeLayout<c.SockaddrIn>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
         }
         c.afInet6 -> {
             check(len >= sizeOf<c.SockaddrIn6>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrIn6>()))
-            Result.Ok(SocketAddr.v6(socketAddrV6FromC((UnresolvedTypeLayout<c.SockaddrIn6>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
+            Result.Ok<SocketAddr, Error>(SocketAddr.v6(socketAddrV6FromC((UnresolvedTypeLayout<c.SockaddrIn6>()).readNative((((storage).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress))))
         }
-        else -> Result.Err(constError(ErrorKind.InvalidInput, "invalid argument"))
+        else -> Result.Err<SocketAddr, Error>(constError(ErrorKind.InvalidInput, "invalid argument"))
     }
 
 // ///////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ public fun socketAddrFromC(storage: ConstPtr, len: Int): Result<SocketAddr, Erro
  * # Safety
  * `T` must be the type associated with the given socket option.
  */
-public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionValue: T, typeLayoutT: TypeLayout<T>): Result<Unit, Error> {
+public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionValue: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, Error> {
     val optionLen = sizeOf<T>(typeLayoutT = typeLayoutT)
     // SAFETY:
     // * `sock` is opened for the duration of this call, as `sock` owns the socket.
@@ -107,8 +107,8 @@ public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionVal
     // bytes
     // * the value of `optionValue` has a valid type for the given socket option
     // (guaranteed by caller).
-    when (val tryResult = cvt(c.setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-    return Result.Ok(Unit)
+    when (val tryResult = cvt(c.setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    return Result.Ok<Unit, Error>(Unit)
 }
 
 /**
@@ -117,18 +117,18 @@ public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionVal
  * # Safety
  * `T` must be the type associated with the given socket option.
  */
-public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayoutT: TypeLayout<T>): Result<T, Error> {
+public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<T, Error> {
     val optionValue = MaybeUninit.zeroed(typeLayoutT)
     val optionLen = sizeOf<T>(typeLayoutT = typeLayoutT)
     // SAFETY:
     // * `sock` is opened for the duration of this call, as `sock` owns the socket.
     // * the pointer to `optionValue` is writable and the stack allocation has
     // space for `sizeOf<T>` bytes.
-    when (val tryResult = cvt(c.getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), optionLen))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(c.getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), optionLen))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<T, Error>(tryResult.error) }
     // SAFETY: the `getsockopt` call succeeded and the caller guarantees that
     // `T` is the type of this option, thus `optionValue` must have
     // been initialized by the system.
-    return Result.Ok(optionValue.assumeInit())
+    return Result.Ok<T, Error>(optionValue.assumeInit())
 }
 
 /**
@@ -143,7 +143,7 @@ public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayou
 public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
     val storage = MaybeUninit.zeroed(UnresolvedTypeLayout<c.SockaddrStorage>())
     val len = sizeOf<c.SockaddrStorage>(typeLayoutT = UnresolvedTypeLayout<c.SockaddrStorage>())
-    when (val tryResult = cvt(f(storage.asMutPtr().cast(), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    when (val tryResult = cvt(f(storage.asMutPtr().cast(), len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<SocketAddr, Error>(tryResult.error) }
     // SAFETY:
     // The caller guarantees that the storage has been successfully initialized
     // and its size written to `len` if `f` returns a success.

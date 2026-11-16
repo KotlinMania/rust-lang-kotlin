@@ -66,13 +66,7 @@ import io.github.kotlinmania.rustlang.corearch.aarch64.sve.svselU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s8])
  */
 public fun svabaS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svabaS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svabaS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svabaS8(op1, op2, op3)
 }
 
@@ -87,13 +81,7 @@ public fun svabaNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svabaS8(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s16])
  */
 public fun svabaS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svabaS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabaS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabaS16(op1, op2, op3)
 }
 
@@ -108,13 +96,7 @@ public fun svabaNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svaba
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s32])
  */
 public fun svabaS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svabaS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabaS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabaS32(op1, op2, op3)
 }
 
@@ -129,13 +111,7 @@ public fun svabaNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svabaS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_s64])
  */
 public fun svabaS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svabaS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabaS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabaS64(op1, op2, op3)
 }
 
@@ -150,13 +126,7 @@ public fun svabaNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = svabaS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u8])
  */
 public fun svabaU8(op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T {
-    fun svabaU8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svabaU8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svabaU8(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -171,13 +141,7 @@ public fun svabaNU8(op1: Svuint8T, op2: Svuint8T, op3: UByte): Svuint8T = svabaU
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u16])
  */
 public fun svabaU16(op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T {
-    fun svabaU16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabaU16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabaU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -192,13 +156,7 @@ public fun svabaNU16(op1: Svuint16T, op2: Svuint16T, op3: UShort): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u32])
  */
 public fun svabaU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
-    fun svabaU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabaU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabaU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -213,13 +171,7 @@ public fun svabaNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaba[_u64])
  */
 public fun svabaU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
-    fun svabaU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabaU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabaU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -234,13 +186,7 @@ public fun svabaNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_s16])
  */
 public fun svabalbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svabalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabalbS16(op1, op2, op3)
 }
 
@@ -255,13 +201,7 @@ public fun svabalbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svaba
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_s32])
  */
 public fun svabalbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svabalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabalbS32(op1, op2, op3)
 }
 
@@ -276,13 +216,7 @@ public fun svabalbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_s64])
  */
 public fun svabalbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svabalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabalbS64(op1, op2, op3)
 }
 
@@ -297,13 +231,7 @@ public fun svabalbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svaba
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_u16])
  */
 public fun svabalbU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
-    fun svabalbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabalbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabalbU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -318,13 +246,7 @@ public fun svabalbNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_u32])
  */
 public fun svabalbU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
-    fun svabalbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabalbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabalbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -339,13 +261,7 @@ public fun svabalbNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalb[_u64])
  */
 public fun svabalbU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
-    fun svabalbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabalbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabalbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -360,13 +276,7 @@ public fun svabalbNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_s16])
  */
 public fun svabaltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svabaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabaltS16(op1, op2, op3)
 }
 
@@ -381,13 +291,7 @@ public fun svabaltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svaba
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_s32])
  */
 public fun svabaltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svabaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabaltS32(op1, op2, op3)
 }
 
@@ -402,13 +306,7 @@ public fun svabaltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_s64])
  */
 public fun svabaltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svabaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabaltS64(op1, op2, op3)
 }
 
@@ -423,13 +321,7 @@ public fun svabaltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svaba
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_u16])
  */
 public fun svabaltU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
-    fun svabaltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabaltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabaltU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -444,13 +336,7 @@ public fun svabaltNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_u32])
  */
 public fun svabaltU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
-    fun svabaltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabaltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabaltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -465,13 +351,7 @@ public fun svabaltNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabalt[_u64])
  */
 public fun svabaltU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
-    fun svabaltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabaltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabaltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -486,13 +366,7 @@ public fun svabaltNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_s16])
  */
 public fun svabdlbS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svabdlbS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabdlbS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabdlbS16(op1, op2)
 }
 
@@ -507,13 +381,7 @@ public fun svabdlbNS16(op1: Svint8T, op2: Byte): Svint16T = svabdlbS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_s32])
  */
 public fun svabdlbS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svabdlbS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabdlbS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabdlbS32(op1, op2)
 }
 
@@ -528,13 +396,7 @@ public fun svabdlbNS32(op1: Svint16T, op2: Short): Svint32T = svabdlbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_s64])
  */
 public fun svabdlbS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svabdlbS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabdlbS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabdlbS64(op1, op2)
 }
 
@@ -549,13 +411,7 @@ public fun svabdlbNS64(op1: Svint32T, op2: Int): Svint64T = svabdlbS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_u16])
  */
 public fun svabdlbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svabdlbU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabdlbU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabdlbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -570,13 +426,7 @@ public fun svabdlbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svabdlbU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_u32])
  */
 public fun svabdlbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svabdlbU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabdlbU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabdlbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -591,13 +441,7 @@ public fun svabdlbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svabdlbU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlb[_u64])
  */
 public fun svabdlbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svabdlbU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabdlbU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabdlbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -612,13 +456,7 @@ public fun svabdlbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svabdlbU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_s16])
  */
 public fun svabdltS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svabdltS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabdltS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabdltS16(op1, op2)
 }
 
@@ -633,13 +471,7 @@ public fun svabdltNS16(op1: Svint8T, op2: Byte): Svint16T = svabdltS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_s32])
  */
 public fun svabdltS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svabdltS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabdltS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabdltS32(op1, op2)
 }
 
@@ -654,13 +486,7 @@ public fun svabdltNS32(op1: Svint16T, op2: Short): Svint32T = svabdltS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_s64])
  */
 public fun svabdltS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svabdltS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabdltS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabdltS64(op1, op2)
 }
 
@@ -675,13 +501,7 @@ public fun svabdltNS64(op1: Svint32T, op2: Int): Svint64T = svabdltS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_u16])
  */
 public fun svabdltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svabdltU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svabdltU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svabdltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -696,13 +516,7 @@ public fun svabdltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svabdltU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_u32])
  */
 public fun svabdltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svabdltU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svabdltU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svabdltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -717,13 +531,7 @@ public fun svabdltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svabdltU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabdlt[_u64])
  */
 public fun svabdltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svabdltU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svabdltU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svabdltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -738,13 +546,7 @@ public fun svabdltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svabdltU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s16]_m)
  */
 public fun svadalpS16M(pg: SvboolT, op1: Svint16T, op2: Svint8T): Svint16T {
-    fun svadalpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svadalpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svadalpS16M(pg.sveInto(), op1, op2)
 }
 
@@ -765,13 +567,7 @@ public fun svadalpS16Z(pg: SvboolT, op1: Svint16T, op2: Svint8T): Svint16T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s32]_m)
  */
 public fun svadalpS32M(pg: SvboolT, op1: Svint32T, op2: Svint16T): Svint32T {
-    fun svadalpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svadalpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svadalpS32M(pg.sveInto(), op1, op2)
 }
 
@@ -792,13 +588,7 @@ public fun svadalpS32Z(pg: SvboolT, op1: Svint32T, op2: Svint16T): Svint32T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_s64]_m)
  */
 public fun svadalpS64M(pg: SvboolT, op1: Svint64T, op2: Svint32T): Svint64T {
-    fun svadalpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svadalpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svadalpS64M(pg.sveInto(), op1, op2)
 }
 
@@ -819,13 +609,7 @@ public fun svadalpS64Z(pg: SvboolT, op1: Svint64T, op2: Svint32T): Svint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u16]_m)
  */
 public fun svadalpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint8T): Svuint16T {
-    fun svadalpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svadalpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svadalpU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -846,13 +630,7 @@ public fun svadalpU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint8T): Svuint16T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u32]_m)
  */
 public fun svadalpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint16T): Svuint32T {
-    fun svadalpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svadalpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svadalpU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -873,13 +651,7 @@ public fun svadalpU32Z(pg: SvboolT, op1: Svuint32T, op2: Svuint16T): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadalp[_u64]_m)
  */
 public fun svadalpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint32T): Svuint64T {
-    fun svadalpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svadalpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svadalpU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -900,13 +672,7 @@ public fun svadalpU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint32T): Svuint64T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclb[_u32])
  */
 public fun svadclbU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
-    fun svadclbU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svadclbU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svadclbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -921,13 +687,7 @@ public fun svadclbNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclb[_u64])
  */
 public fun svadclbU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
-    fun svadclbU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svadclbU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svadclbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -942,13 +702,7 @@ public fun svadclbNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclt[_u32])
  */
 public fun svadcltU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
-    fun svadcltU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svadcltU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svadcltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -963,13 +717,7 @@ public fun svadcltNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadclt[_u64])
  */
 public fun svadcltU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
-    fun svadcltU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svadcltU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svadcltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -984,13 +732,7 @@ public fun svadcltNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_s16])
  */
 public fun svaddhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svaddhnbS16(op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaddhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaddhnbS16(op1, op2)
 }
 
@@ -1005,13 +747,7 @@ public fun svaddhnbNS16(op1: Svint16T, op2: Short): Svint8T = svaddhnbS16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_s32])
  */
 public fun svaddhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svaddhnbS32(op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddhnbS32(op1, op2)
 }
 
@@ -1026,13 +762,7 @@ public fun svaddhnbNS32(op1: Svint32T, op2: Int): Svint16T = svaddhnbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnb[_s64])
  */
 public fun svaddhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svaddhnbS64(op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddhnbS64(op1, op2)
 }
 
@@ -1083,13 +813,7 @@ public fun svaddhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svaddhnbU64(op1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_s16])
  */
 public fun svaddhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svaddhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaddhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaddhntS16(even, op1, op2)
 }
 
@@ -1104,13 +828,7 @@ public fun svaddhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_s32])
  */
 public fun svaddhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svaddhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddhntS32(even, op1, op2)
 }
 
@@ -1125,13 +843,7 @@ public fun svaddhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddhnt[_s64])
  */
 public fun svaddhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svaddhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddhntS64(even, op1, op2)
 }
 
@@ -1182,13 +894,7 @@ public fun svaddhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_s16])
  */
 public fun svaddlbS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svaddlbS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddlbS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddlbS16(op1, op2)
 }
 
@@ -1203,13 +909,7 @@ public fun svaddlbNS16(op1: Svint8T, op2: Byte): Svint16T = svaddlbS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_s32])
  */
 public fun svaddlbS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svaddlbS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddlbS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddlbS32(op1, op2)
 }
 
@@ -1224,13 +924,7 @@ public fun svaddlbNS32(op1: Svint16T, op2: Short): Svint32T = svaddlbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_s64])
  */
 public fun svaddlbS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svaddlbS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddlbS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddlbS64(op1, op2)
 }
 
@@ -1245,13 +939,7 @@ public fun svaddlbNS64(op1: Svint32T, op2: Int): Svint64T = svaddlbS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_u16])
  */
 public fun svaddlbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svaddlbU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddlbU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddlbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1266,13 +954,7 @@ public fun svaddlbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svaddlbU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_u32])
  */
 public fun svaddlbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svaddlbU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddlbU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddlbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1287,13 +969,7 @@ public fun svaddlbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svaddlbU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlb[_u64])
  */
 public fun svaddlbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svaddlbU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddlbU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddlbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1308,13 +984,7 @@ public fun svaddlbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svaddlbU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_s16])
  */
 public fun svaddlbtS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svaddlbtS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddlbtS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddlbtS16(op1, op2)
 }
 
@@ -1329,13 +999,7 @@ public fun svaddlbtNS16(op1: Svint8T, op2: Byte): Svint16T = svaddlbtS16(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_s32])
  */
 public fun svaddlbtS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svaddlbtS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddlbtS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddlbtS32(op1, op2)
 }
 
@@ -1350,13 +1014,7 @@ public fun svaddlbtNS32(op1: Svint16T, op2: Short): Svint32T = svaddlbtS32(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlbt[_s64])
  */
 public fun svaddlbtS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svaddlbtS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddlbtS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddlbtS64(op1, op2)
 }
 
@@ -1371,13 +1029,7 @@ public fun svaddlbtNS64(op1: Svint32T, op2: Int): Svint64T = svaddlbtS64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_s16])
  */
 public fun svaddltS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svaddltS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddltS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddltS16(op1, op2)
 }
 
@@ -1392,13 +1044,7 @@ public fun svaddltNS16(op1: Svint8T, op2: Byte): Svint16T = svaddltS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_s32])
  */
 public fun svaddltS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svaddltS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddltS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddltS32(op1, op2)
 }
 
@@ -1413,13 +1059,7 @@ public fun svaddltNS32(op1: Svint16T, op2: Short): Svint32T = svaddltS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_s64])
  */
 public fun svaddltS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svaddltS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddltS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddltS64(op1, op2)
 }
 
@@ -1434,13 +1074,7 @@ public fun svaddltNS64(op1: Svint32T, op2: Int): Svint64T = svaddltS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_u16])
  */
 public fun svaddltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svaddltU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddltU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1455,13 +1089,7 @@ public fun svaddltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svaddltU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_u32])
  */
 public fun svaddltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svaddltU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddltU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1476,13 +1104,7 @@ public fun svaddltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svaddltU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddlt[_u64])
  */
 public fun svaddltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svaddltU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddltU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1497,13 +1119,7 @@ public fun svaddltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svaddltU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_f32]_m)
  */
 public fun svaddpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svaddpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svaddpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svaddpF32M(pg.sveInto(), op1, op2)
 }
 
@@ -1518,13 +1134,7 @@ public fun svaddpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_f64]_m)
  */
 public fun svaddpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svaddpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svaddpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svaddpF64M(pg.sveInto(), op1, op2)
 }
 
@@ -1539,13 +1149,7 @@ public fun svaddpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s8]_m)
  */
 public fun svaddpS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svaddpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaddpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaddpS8M(pg, op1, op2)
 }
 
@@ -1560,13 +1164,7 @@ public fun svaddpS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svaddpS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s16]_m)
  */
 public fun svaddpS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svaddpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddpS16M(pg.sveInto(), op1, op2)
 }
 
@@ -1581,13 +1179,7 @@ public fun svaddpS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s32]_m)
  */
 public fun svaddpS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svaddpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddpS32M(pg.sveInto(), op1, op2)
 }
 
@@ -1602,13 +1194,7 @@ public fun svaddpS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = sva
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddp[_s64]_m)
  */
 public fun svaddpS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svaddpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddpS64M(pg.sveInto(), op1, op2)
 }
 
@@ -1671,13 +1257,7 @@ public fun svaddpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_s16])
  */
 public fun svaddwbS16(op1: Svint16T, op2: Svint8T): Svint16T {
-    fun svaddwbS16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddwbS16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddwbS16(op1, op2)
 }
 
@@ -1692,13 +1272,7 @@ public fun svaddwbNS16(op1: Svint16T, op2: Byte): Svint16T = svaddwbS16(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_s32])
  */
 public fun svaddwbS32(op1: Svint32T, op2: Svint16T): Svint32T {
-    fun svaddwbS32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddwbS32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddwbS32(op1, op2)
 }
 
@@ -1713,13 +1287,7 @@ public fun svaddwbNS32(op1: Svint32T, op2: Short): Svint32T = svaddwbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_s64])
  */
 public fun svaddwbS64(op1: Svint64T, op2: Svint32T): Svint64T {
-    fun svaddwbS64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddwbS64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddwbS64(op1, op2)
 }
 
@@ -1734,13 +1302,7 @@ public fun svaddwbNS64(op1: Svint64T, op2: Int): Svint64T = svaddwbS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_u16])
  */
 public fun svaddwbU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
-    fun svaddwbU16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddwbU16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddwbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1755,13 +1317,7 @@ public fun svaddwbNU16(op1: Svuint16T, op2: UByte): Svuint16T = svaddwbU16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_u32])
  */
 public fun svaddwbU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
-    fun svaddwbU32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddwbU32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddwbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1776,13 +1332,7 @@ public fun svaddwbNU32(op1: Svuint32T, op2: UShort): Svuint32T = svaddwbU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwb[_u64])
  */
 public fun svaddwbU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
-    fun svaddwbU64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddwbU64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddwbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1797,13 +1347,7 @@ public fun svaddwbNU64(op1: Svuint64T, op2: UInt): Svuint64T = svaddwbU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_s16])
  */
 public fun svaddwtS16(op1: Svint16T, op2: Svint8T): Svint16T {
-    fun svaddwtS16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddwtS16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddwtS16(op1, op2)
 }
 
@@ -1818,13 +1362,7 @@ public fun svaddwtNS16(op1: Svint16T, op2: Byte): Svint16T = svaddwtS16(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_s32])
  */
 public fun svaddwtS32(op1: Svint32T, op2: Svint16T): Svint32T {
-    fun svaddwtS32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddwtS32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddwtS32(op1, op2)
 }
 
@@ -1839,13 +1377,7 @@ public fun svaddwtNS32(op1: Svint32T, op2: Short): Svint32T = svaddwtS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_s64])
  */
 public fun svaddwtS64(op1: Svint64T, op2: Svint32T): Svint64T {
-    fun svaddwtS64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddwtS64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddwtS64(op1, op2)
 }
 
@@ -1860,13 +1392,7 @@ public fun svaddwtNS64(op1: Svint64T, op2: Int): Svint64T = svaddwtS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_u16])
  */
 public fun svaddwtU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
-    fun svaddwtU16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svaddwtU16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svaddwtU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1881,13 +1407,7 @@ public fun svaddwtNU16(op1: Svuint16T, op2: UByte): Svuint16T = svaddwtU16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_u32])
  */
 public fun svaddwtU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
-    fun svaddwtU32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svaddwtU32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svaddwtU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1902,13 +1422,7 @@ public fun svaddwtNU32(op1: Svuint32T, op2: UShort): Svuint32T = svaddwtU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaddwt[_u64])
  */
 public fun svaddwtU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
-    fun svaddwtU64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svaddwtU64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svaddwtU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1923,13 +1437,7 @@ public fun svaddwtNU64(op1: Svuint64T, op2: UInt): Svuint64T = svaddwtU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaesd[_u8])
  */
 public fun svaesdU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svaesdU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaesdU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaesdU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1938,13 +1446,7 @@ public fun svaesdU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaese[_u8])
  */
 public fun svaeseU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svaeseU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaeseU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaeseU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -1953,13 +1455,7 @@ public fun svaeseU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaesimc[_u8])
  */
 public fun svaesimcU8(op: Svuint8T): Svuint8T {
-    fun svaesimcU8(op1: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaesimcU8(op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaesimcU8(op.asSigned()).asUnsigned()
 }
 
@@ -1968,13 +1464,7 @@ public fun svaesimcU8(op: Svuint8T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svaesmc[_u8])
  */
 public fun svaesmcU8(op: Svuint8T): Svuint8T {
-    fun svaesmcU8(op1: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svaesmcU8(op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svaesmcU8(op.asSigned()).asUnsigned()
 }
 
@@ -1983,13 +1473,7 @@ public fun svaesmcU8(op: Svuint8T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s8])
  */
 public fun svbcaxS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svbcaxS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbcaxS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbcaxS8(op1, op2, op3)
 }
 
@@ -2004,13 +1488,7 @@ public fun svbcaxNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbcaxS8(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s16])
  */
 public fun svbcaxS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svbcaxS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbcaxS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbcaxS16(op1, op2, op3)
 }
 
@@ -2025,13 +1503,7 @@ public fun svbcaxNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svbc
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s32])
  */
 public fun svbcaxS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svbcaxS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbcaxS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbcaxS32(op1, op2, op3)
 }
 
@@ -2046,13 +1518,7 @@ public fun svbcaxNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbcax
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbcax[_s64])
  */
 public fun svbcaxS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svbcaxS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbcaxS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbcaxS64(op1, op2, op3)
 }
 
@@ -2115,13 +1581,7 @@ public fun svbcaxNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u8])
  */
 public fun svbdepU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svbdepU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbdepU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbdepU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2136,13 +1596,7 @@ public fun svbdepNU8(op1: Svuint8T, op2: UByte): Svuint8T = svbdepU8(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u16])
  */
 public fun svbdepU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svbdepU16(op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbdepU16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbdepU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2157,13 +1611,7 @@ public fun svbdepNU16(op1: Svuint16T, op2: UShort): Svuint16T = svbdepU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u32])
  */
 public fun svbdepU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svbdepU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbdepU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbdepU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2178,13 +1626,7 @@ public fun svbdepNU32(op1: Svuint32T, op2: UInt): Svuint32T = svbdepU32(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbdep[_u64])
  */
 public fun svbdepU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svbdepU64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbdepU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbdepU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2199,13 +1641,7 @@ public fun svbdepNU64(op1: Svuint64T, op2: ULong): Svuint64T = svbdepU64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u8])
  */
 public fun svbextU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svbextU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbextU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbextU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2220,13 +1656,7 @@ public fun svbextNU8(op1: Svuint8T, op2: UByte): Svuint8T = svbextU8(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u16])
  */
 public fun svbextU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svbextU16(op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbextU16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbextU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2241,13 +1671,7 @@ public fun svbextNU16(op1: Svuint16T, op2: UShort): Svuint16T = svbextU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u32])
  */
 public fun svbextU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svbextU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbextU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbextU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2262,13 +1686,7 @@ public fun svbextNU32(op1: Svuint32T, op2: UInt): Svuint32T = svbextU32(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbext[_u64])
  */
 public fun svbextU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svbextU64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbextU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbextU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2283,13 +1701,7 @@ public fun svbextNU64(op1: Svuint64T, op2: ULong): Svuint64T = svbextU64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u8])
  */
 public fun svbgrpU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svbgrpU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbgrpU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbgrpU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2304,13 +1716,7 @@ public fun svbgrpNU8(op1: Svuint8T, op2: UByte): Svuint8T = svbgrpU8(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u16])
  */
 public fun svbgrpU16(op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svbgrpU16(op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbgrpU16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbgrpU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2325,13 +1731,7 @@ public fun svbgrpNU16(op1: Svuint16T, op2: UShort): Svuint16T = svbgrpU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u32])
  */
 public fun svbgrpU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svbgrpU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbgrpU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbgrpU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2346,13 +1746,7 @@ public fun svbgrpNU32(op1: Svuint32T, op2: UInt): Svuint32T = svbgrpU32(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbgrp[_u64])
  */
 public fun svbgrpU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svbgrpU64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbgrpU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbgrpU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -2367,13 +1761,7 @@ public fun svbgrpNU64(op1: Svuint64T, op2: ULong): Svuint64T = svbgrpU64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s8])
  */
 public fun svbsl1nS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svbsl1nS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbsl1nS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbsl1nS8(op1, op2, op3)
 }
 
@@ -2388,13 +1776,7 @@ public fun svbsl1nNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbsl1nS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s16])
  */
 public fun svbsl1nS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svbsl1nS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbsl1nS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbsl1nS16(op1, op2, op3)
 }
 
@@ -2409,13 +1791,7 @@ public fun svbsl1nNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svb
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s32])
  */
 public fun svbsl1nS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svbsl1nS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbsl1nS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbsl1nS32(op1, op2, op3)
 }
 
@@ -2430,13 +1806,7 @@ public fun svbsl1nNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbsl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl1n[_s64])
  */
 public fun svbsl1nS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svbsl1nS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbsl1nS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbsl1nS64(op1, op2, op3)
 }
 
@@ -2499,13 +1869,7 @@ public fun svbsl1nNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s8])
  */
 public fun svbsl2nS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svbsl2nS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbsl2nS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbsl2nS8(op1, op2, op3)
 }
 
@@ -2520,13 +1884,7 @@ public fun svbsl2nNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbsl2nS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s16])
  */
 public fun svbsl2nS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svbsl2nS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbsl2nS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbsl2nS16(op1, op2, op3)
 }
 
@@ -2541,13 +1899,7 @@ public fun svbsl2nNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svb
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s32])
  */
 public fun svbsl2nS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svbsl2nS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbsl2nS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbsl2nS32(op1, op2, op3)
 }
 
@@ -2562,13 +1914,7 @@ public fun svbsl2nNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbsl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl2n[_s64])
  */
 public fun svbsl2nS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svbsl2nS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbsl2nS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbsl2nS64(op1, op2, op3)
 }
 
@@ -2631,13 +1977,7 @@ public fun svbsl2nNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s8])
  */
 public fun svbslS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svbslS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svbslS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svbslS8(op1, op2, op3)
 }
 
@@ -2652,13 +1992,7 @@ public fun svbslNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svbslS8(op
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s16])
  */
 public fun svbslS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svbslS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svbslS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svbslS16(op1, op2, op3)
 }
 
@@ -2673,13 +2007,7 @@ public fun svbslNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svbsl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s32])
  */
 public fun svbslS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svbslS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svbslS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svbslS32(op1, op2, op3)
 }
 
@@ -2694,13 +2022,7 @@ public fun svbslNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svbslS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbsl[_s64])
  */
 public fun svbslS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svbslS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svbslS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svbslS64(op1, op2, op3)
 }
 
@@ -2763,13 +2085,7 @@ public fun svbslNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s8])
  */
 public fun svcaddS8(op1: Svint8T, op2: Svint8T, immRotation: Int): Svint8T {
-    fun svcaddS8(op11: Svint8T, op21: Svint8T, immRotation: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svcaddS8(op11: Svint8T, op21: Svint8T, immRotation: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -2781,13 +2097,7 @@ public fun svcaddS8(op1: Svint8T, op2: Svint8T, immRotation: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s16])
  */
 public fun svcaddS16(op1: Svint16T, op2: Svint16T, immRotation: Int): Svint16T {
-    fun svcaddS16(op11: Svint16T, op21: Svint16T, immRotation: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svcaddS16(op11: Svint16T, op21: Svint16T, immRotation: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -2799,13 +2109,7 @@ public fun svcaddS16(op1: Svint16T, op2: Svint16T, immRotation: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s32])
  */
 public fun svcaddS32(op1: Svint32T, op2: Svint32T, immRotation: Int): Svint32T {
-    fun svcaddS32(op11: Svint32T, op21: Svint32T, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svcaddS32(op11: Svint32T, op21: Svint32T, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -2817,13 +2121,7 @@ public fun svcaddS32(op1: Svint32T, op2: Svint32T, immRotation: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcadd[_s64])
  */
 public fun svcaddS64(op1: Svint64T, op2: Svint64T, immRotation: Int): Svint64T {
-    fun svcaddS64(op11: Svint64T, op21: Svint64T, immRotation: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svcaddS64(op11: Svint64T, op21: Svint64T, immRotation: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -2879,13 +2177,7 @@ public fun svcaddU64(op1: Svuint64T, op2: Svuint64T, immRotation: Int): Svuint64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdotLane[_s32])
  */
 public fun svcdotLaneS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immIndex: Int, immRotation: Int): Svint32T {
-    fun svcdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svcdotLaneS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immIndex: Int, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -2900,13 +2192,7 @@ public fun svcdotLaneS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immIndex: In
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdotLane[_s64])
  */
 public fun svcdotLaneS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immIndex: Int, immRotation: Int): Svint64T {
-    fun svcdotLaneS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svcdotLaneS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -2921,13 +2207,7 @@ public fun svcdotLaneS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immIndex: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdot[_s32])
  */
 public fun svcdotS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immRotation: Int): Svint32T {
-    fun svcdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svcdotS32(op11: Svint32T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -2939,13 +2219,7 @@ public fun svcdotS32(op1: Svint32T, op2: Svint8T, op3: Svint8T, immRotation: Int
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcdot[_s64])
  */
 public fun svcdotS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immRotation: Int): Svint64T {
-    fun svcdotS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svcdotS64(op11: Svint64T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -2957,13 +2231,7 @@ public fun svcdotS64(op1: Svint64T, op2: Svint16T, op3: Svint16T, immRotation: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_s16])
  */
 public fun svcmlaLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int, immRotation: Int): Svint16T {
-    fun svcmlaLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svcmlaLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -2978,13 +2246,7 @@ public fun svcmlaLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmlaLane[_s32])
  */
 public fun svcmlaLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int, immRotation: Int): Svint32T {
-    fun svcmlaLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex: Int, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svcmlaLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex: Int, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -3027,13 +2289,7 @@ public fun svcmlaLaneU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s8])
  */
 public fun svcmlaS8(op1: Svint8T, op2: Svint8T, op3: Svint8T, immRotation: Int): Svint8T {
-    fun svcmlaS8(op11: Svint8T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svcmlaS8(op11: Svint8T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -3045,13 +2301,7 @@ public fun svcmlaS8(op1: Svint8T, op2: Svint8T, op3: Svint8T, immRotation: Int):
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s16])
  */
 public fun svcmlaS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immRotation: Int): Svint16T {
-    fun svcmlaS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svcmlaS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -3063,13 +2313,7 @@ public fun svcmlaS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immRotation: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s32])
  */
 public fun svcmlaS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immRotation: Int): Svint32T {
-    fun svcmlaS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svcmlaS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -3081,13 +2325,7 @@ public fun svcmlaS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immRotation: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcmla[_s64])
  */
 public fun svcmlaS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immRotation: Int): Svint64T {
-    fun svcmlaS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immRotation: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svcmlaS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immRotation: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -3143,13 +2381,7 @@ public fun svcmlaU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T, immRotation
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtltF64[_f32]_m)
  */
 public fun svcvtltF64F32M(inactive: Svfloat64T, pg: SvboolT, op: Svfloat32T): Svfloat64T {
-    fun svcvtltF64F32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat32T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svcvtltF64F32M(inactive1: Svfloat64T, pg1: Svbool2T, op1: Svfloat32T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svcvtltF64F32M(inactive, pg.sveInto(), op)
 }
 
@@ -3164,13 +2396,7 @@ public fun svcvtltF64F32X(pg: SvboolT, op: Svfloat32T): Svfloat64T = svcvtltF64F
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtntF32[_f64]_m)
  */
 public fun svcvtntF32F64M(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
-    fun svcvtntF32F64M(even1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svcvtntF32F64M(even1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtntF32F64M(even, pg.sveInto(), op)
 }
 
@@ -3185,13 +2411,7 @@ public fun svcvtntF32F64X(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxF32[_f64]_m)
  */
 public fun svcvtxF32F64M(inactive: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
-    fun svcvtxF32F64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svcvtxF32F64M(inactive1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtxF32F64M(inactive, pg.sveInto(), op)
 }
 
@@ -3212,13 +2432,7 @@ public fun svcvtxF32F64Z(pg: SvboolT, op: Svfloat64T): Svfloat32T = svcvtxF32F64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcvtxntF32[_f64]_m)
  */
 public fun svcvtxntF32F64M(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svfloat32T {
-    fun svcvtxntF32F64M(even1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svcvtxntF32F64M(even1: Svfloat32T, pg1: Svbool2T, op1: Svfloat64T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svcvtxntF32F64M(even, pg.sveInto(), op)
 }
 
@@ -3233,13 +2447,7 @@ public fun svcvtxntF32F64X(even: Svfloat32T, pg: SvboolT, op: Svfloat64T): Svflo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s8])
  */
 public fun sveor3S8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun sveor3S8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun sveor3S8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return sveor3S8(op1, op2, op3)
 }
 
@@ -3254,13 +2462,7 @@ public fun sveor3NS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = sveor3S8(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s16])
  */
 public fun sveor3S16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun sveor3S16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun sveor3S16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return sveor3S16(op1, op2, op3)
 }
 
@@ -3275,13 +2477,7 @@ public fun sveor3NS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = sveo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s32])
  */
 public fun sveor3S32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun sveor3S32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun sveor3S32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return sveor3S32(op1, op2, op3)
 }
 
@@ -3296,13 +2492,7 @@ public fun sveor3NS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = sveor3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor3[_s64])
  */
 public fun sveor3S64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun sveor3S64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun sveor3S64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return sveor3S64(op1, op2, op3)
 }
 
@@ -3365,13 +2555,7 @@ public fun sveor3NU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s8])
  */
 public fun sveorbtS8(odd: Svint8T, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun sveorbtS8(odd1: Svint8T, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun sveorbtS8(odd1: Svint8T, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return sveorbtS8(odd, op1, op2)
 }
 
@@ -3386,13 +2570,7 @@ public fun sveorbtNS8(odd: Svint8T, op1: Svint8T, op2: Byte): Svint8T = sveorbtS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s16])
  */
 public fun sveorbtS16(odd: Svint16T, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun sveorbtS16(odd1: Svint16T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun sveorbtS16(odd1: Svint16T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return sveorbtS16(odd, op1, op2)
 }
 
@@ -3407,13 +2585,7 @@ public fun sveorbtNS16(odd: Svint16T, op1: Svint16T, op2: Short): Svint16T = sve
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s32])
  */
 public fun sveorbtS32(odd: Svint32T, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun sveorbtS32(odd1: Svint32T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun sveorbtS32(odd1: Svint32T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return sveorbtS32(odd, op1, op2)
 }
 
@@ -3428,13 +2600,7 @@ public fun sveorbtNS32(odd: Svint32T, op1: Svint32T, op2: Int): Svint32T = sveor
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveorbt[_s64])
  */
 public fun sveorbtS64(odd: Svint64T, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun sveorbtS64(odd1: Svint64T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun sveorbtS64(odd1: Svint64T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return sveorbtS64(odd, op1, op2)
 }
 
@@ -3497,13 +2663,7 @@ public fun sveorbtNU64(odd: Svuint64T, op1: Svuint64T, op2: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s8])
  */
 public fun sveortbS8(even: Svint8T, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun sveortbS8(even1: Svint8T, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun sveortbS8(even1: Svint8T, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return sveortbS8(even, op1, op2)
 }
 
@@ -3518,13 +2678,7 @@ public fun sveortbNS8(even: Svint8T, op1: Svint8T, op2: Byte): Svint8T = sveortb
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s16])
  */
 public fun sveortbS16(even: Svint16T, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun sveortbS16(even1: Svint16T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun sveortbS16(even1: Svint16T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return sveortbS16(even, op1, op2)
 }
 
@@ -3539,13 +2693,7 @@ public fun sveortbNS16(even: Svint16T, op1: Svint16T, op2: Short): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s32])
  */
 public fun sveortbS32(even: Svint32T, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun sveortbS32(even1: Svint32T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun sveortbS32(even1: Svint32T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return sveortbS32(even, op1, op2)
 }
 
@@ -3560,13 +2708,7 @@ public fun sveortbNS32(even: Svint32T, op1: Svint32T, op2: Int): Svint32T = sveo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveortb[_s64])
  */
 public fun sveortbS64(even: Svint64T, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun sveortbS64(even1: Svint64T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun sveortbS64(even1: Svint64T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return sveortbS64(even, op1, op2)
 }
 
@@ -3629,13 +2771,7 @@ public fun sveortbNU64(even: Svuint64T, op1: Svuint64T, op2: ULong): Svuint64T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s8]_m)
  */
 public fun svhaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svhaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhaddS8M(pg, op1, op2)
 }
 
@@ -3674,13 +2810,7 @@ public fun svhaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhaddS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s16]_m)
  */
 public fun svhaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svhaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svhaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svhaddS16M(pg.sveInto(), op1, op2)
 }
 
@@ -3719,13 +2849,7 @@ public fun svhaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhad
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s32]_m)
  */
 public fun svhaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svhaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhaddS32M(pg.sveInto(), op1, op2)
 }
 
@@ -3764,13 +2888,7 @@ public fun svhaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhaddS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_s64]_m)
  */
 public fun svhaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svhaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhaddS64M(pg.sveInto(), op1, op2)
 }
 
@@ -3809,13 +2927,7 @@ public fun svhaddNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhadd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u8]_m)
  */
 public fun svhaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svhaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhaddU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -3854,13 +2966,7 @@ public fun svhaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhadd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u16]_m)
  */
 public fun svhaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svhaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svhaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svhaddU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -3899,13 +3005,7 @@ public fun svhaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u32]_m)
  */
 public fun svhaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svhaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhaddU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -3944,13 +3044,7 @@ public fun svhaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svha
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhadd[_u64]_m)
  */
 public fun svhaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svhaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhaddU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -3989,13 +3083,7 @@ public fun svhaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistcnt[_s32]_z)
  */
 public fun svhistcntS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svuint32T {
-    fun svhistcntS32Z(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhistcntS32Z(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhistcntS32Z(pg.sveInto(), op1, op2).asUnsigned()
 }
 
@@ -4004,13 +3092,7 @@ public fun svhistcntS32Z(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistcnt[_s64]_z)
  */
 public fun svhistcntS64Z(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svuint64T {
-    fun svhistcntS64Z(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhistcntS64Z(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhistcntS64Z(pg.sveInto(), op1, op2).asUnsigned()
 }
 
@@ -4031,13 +3113,7 @@ public fun svhistcntU64Z(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhistseg[_s8])
  */
 public fun svhistsegS8(op1: Svint8T, op2: Svint8T): Svuint8T {
-    fun svhistsegS8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhistsegS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhistsegS8(op1, op2).asUnsigned()
 }
 
@@ -4052,13 +3128,7 @@ public fun svhistsegU8(op1: Svuint8T, op2: Svuint8T): Svuint8T = svhistsegS8(op1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s8]_m)
  */
 public fun svhsubS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svhsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhsubS8M(pg, op1, op2)
 }
 
@@ -4097,13 +3167,7 @@ public fun svhsubNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s16]_m)
  */
 public fun svhsubS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svhsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svhsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svhsubS16M(pg.sveInto(), op1, op2)
 }
 
@@ -4142,13 +3206,7 @@ public fun svhsubNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s32]_m)
  */
 public fun svhsubS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svhsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhsubS32M(pg.sveInto(), op1, op2)
 }
 
@@ -4187,13 +3245,7 @@ public fun svhsubNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsubS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_s64]_m)
  */
 public fun svhsubS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svhsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhsubS64M(pg.sveInto(), op1, op2)
 }
 
@@ -4232,13 +3284,7 @@ public fun svhsubNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u8]_m)
  */
 public fun svhsubU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svhsubU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhsubU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhsubU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4277,13 +3323,7 @@ public fun svhsubNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u16]_m)
  */
 public fun svhsubU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svhsubU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svhsubU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svhsubU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4322,13 +3362,7 @@ public fun svhsubNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u32]_m)
  */
 public fun svhsubU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svhsubU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhsubU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhsubU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4367,13 +3401,7 @@ public fun svhsubNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svhs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsub[_u64]_m)
  */
 public fun svhsubU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svhsubU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhsubU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhsubU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4412,13 +3440,7 @@ public fun svhsubNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s8]_m)
  */
 public fun svhsubrS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svhsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhsubrS8M(pg, op1, op2)
 }
 
@@ -4457,13 +3479,7 @@ public fun svhsubrNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svhsubrS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s16]_m)
  */
 public fun svhsubrS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svhsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svhsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svhsubrS16M(pg.sveInto(), op1, op2)
 }
 
@@ -4502,13 +3518,7 @@ public fun svhsubrNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svhs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s32]_m)
  */
 public fun svhsubrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svhsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhsubrS32M(pg.sveInto(), op1, op2)
 }
 
@@ -4547,13 +3557,7 @@ public fun svhsubrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svhsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_s64]_m)
  */
 public fun svhsubrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svhsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhsubrS64M(pg.sveInto(), op1, op2)
 }
 
@@ -4592,13 +3596,7 @@ public fun svhsubrNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svhsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u8]_m)
  */
 public fun svhsubrU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svhsubrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svhsubrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svhsubrU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4637,13 +3635,7 @@ public fun svhsubrNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svhsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u16]_m)
  */
 public fun svhsubrU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svhsubrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svhsubrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svhsubrU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4682,13 +3674,7 @@ public fun svhsubrNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u32]_m)
  */
 public fun svhsubrU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svhsubrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svhsubrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svhsubrU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4727,13 +3713,7 @@ public fun svhsubrNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svhsubr[_u64]_m)
  */
 public fun svhsubrU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svhsubrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svhsubrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svhsubrU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -4776,13 +3756,7 @@ public fun svhsubrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = sv
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svfloat64T {
-    fun svldnt1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherS64indexF64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svldnt1GatherS64indexF64(pg.sveInto(), base, indices)
 }
 
@@ -4795,13 +3769,7 @@ public fun svldnt1GatherS64indexF64(pg: SvboolT, base: ConstPtr, indices: Svint6
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svldnt1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svldnt1GatherS64indexS64(pg.sveInto(), base, indices)
 }
 
@@ -4854,13 +3822,7 @@ public fun svldnt1GatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svfloat64T {
-    fun svldnt1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherS64offsetF64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svldnt1GatherS64offsetF64(pg.sveInto(), base, offsets)
 }
 
@@ -4873,13 +3835,7 @@ public fun svldnt1GatherS64offsetF64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldnt1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svldnt1GatherS64offsetS64(pg.sveInto(), base, offsets)
 }
 
@@ -4902,13 +3858,7 @@ public fun svldnt1GatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svfloat32T {
-    fun svldnt1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherU32offsetF32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svldnt1GatherU32offsetF32(pg.sveInto(), base, offsets.asSigned())
 }
 
@@ -4921,13 +3871,7 @@ public fun svldnt1GatherU32offsetF32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svldnt1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svldnt1GatherU32offsetS32(pg.sveInto(), base, offsets.asSigned())
 }
 
@@ -5113,13 +4057,7 @@ public fun svldnt1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: Long): Svfloat32T {
-    fun svldnt1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherU32baseOffsetF32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svldnt1GatherU32baseOffsetF32(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -5133,13 +4071,7 @@ public fun svldnt1GatherU32baseOffsetF32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svldnt1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svldnt1GatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -5164,13 +4096,7 @@ public fun svldnt1GatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: Long): Svfloat64T {
-    fun svldnt1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherU64baseOffsetF64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svldnt1GatherU64baseOffsetF64(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -5184,13 +4110,7 @@ public fun svldnt1GatherU64baseOffsetF64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1GatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldnt1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svldnt1GatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svldnt1GatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
 }
 
@@ -5214,17 +4134,8 @@ public fun svldnt1GatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldnt1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1sbGatherS64offsetS64(pg.sveInto(), base, offsets)
-        _simdArg0
-    }
+    fun svldnt1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1sbGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -5236,17 +4147,8 @@ public fun svldnt1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldnt1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1shGatherS64offsetS64(pg.sveInto(), base, offsets)
-        _simdArg0
-    }
+    fun svldnt1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1shGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -5258,17 +4160,8 @@ public fun svldnt1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1swGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
-    fun svldnt1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1swGatherS64offsetS64(pg.sveInto(), base, offsets)
-        _simdArg0
-    }
+    fun svldnt1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1swGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
 }
 
 /**
@@ -5310,17 +4203,8 @@ public fun svldnt1swGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svldnt1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned())
-        _simdArg0
-    }
+    fun svldnt1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
 }
 
 /**
@@ -5332,17 +4216,8 @@ public fun svldnt1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1shGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
-    fun svldnt1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned())
-        _simdArg0
-    }
+    fun svldnt1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
 }
 
 /**
@@ -5435,17 +4310,8 @@ public fun svldnt1swGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svldnt1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset)
-        _simdArg0
-    }
+    fun svldnt1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -5458,17 +4324,8 @@ public fun svldnt1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1shGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
-    fun svldnt1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset)
-        _simdArg0
-    }
+    fun svldnt1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -5503,17 +4360,8 @@ public fun svldnt1shGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldnt1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
-        _simdArg0
-    }
+    fun svldnt1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -5526,17 +4374,8 @@ public fun svldnt1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldnt1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
-        _simdArg0
-    }
+    fun svldnt1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -5549,17 +4388,8 @@ public fun svldnt1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1swGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
-    fun svldnt1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset)
-        _simdArg0
-    }
+    fun svldnt1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
 }
 
 /**
@@ -5714,17 +4544,8 @@ public fun svldnt1swGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T =
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svldnt1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1shGatherS64indexS64(pg.sveInto(), base, indices)
-        _simdArg0
-    }
+    fun svldnt1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1shGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -5736,17 +4557,8 @@ public fun svldnt1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1swGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
-    fun svldnt1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1swGatherS64indexS64(pg.sveInto(), base, indices)
-        _simdArg0
-    }
+    fun svldnt1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1swGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
 }
 
 /**
@@ -5914,17 +4726,8 @@ public fun svldnt1uwGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svldnt1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -5936,17 +4739,8 @@ public fun svldnt1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svldnt1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -5958,17 +4752,8 @@ public fun svldnt1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uwGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
-    fun svldnt1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6000,17 +4785,8 @@ public fun svldnt1uhGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
-    fun svldnt1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6022,17 +4798,8 @@ public fun svldnt1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svu
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uhGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
-    fun svldnt1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6127,17 +4894,8 @@ public fun svldnt1uhGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
-    fun svldnt1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6150,17 +4908,8 @@ public fun svldnt1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uhGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
-    fun svldnt1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6206,17 +4955,8 @@ public fun svldnt1uwGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svldnt1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6229,17 +4969,8 @@ public fun svldnt1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svldnt1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6252,17 +4983,8 @@ public fun svldnt1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uwGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
-    fun svldnt1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6404,17 +5126,8 @@ public fun svldnt1uwGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
-    fun svldnt1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6426,17 +5139,8 @@ public fun svldnt1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svin
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svldnt1uwGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
-    fun svldnt1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes))
-            res
-        }
-    return run {
-        val _simdArg0 = svldnt1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned()
-        _simdArg0
-    }
+    fun svldnt1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
+    return run { val _simdArg0 = svldnt1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
 }
 
 /**
@@ -6550,13 +5254,7 @@ public fun svldnt1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f32]_m)
  */
 public fun svlogbF32M(inactive: Svint32T, pg: SvboolT, op: Svfloat32T): Svint32T {
-    fun svlogbF32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svlogbF32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svfloat32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svlogbF32M(inactive, pg.sveInto(), op)
 }
 
@@ -6577,13 +5275,7 @@ public fun svlogbF32Z(pg: SvboolT, op: Svfloat32T): Svint32T = svlogbF32M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlogb[_f64]_m)
  */
 public fun svlogbF64M(inactive: Svint64T, pg: SvboolT, op: Svfloat64T): Svint64T {
-    fun svlogbF64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svlogbF64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svfloat64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svlogbF64M(inactive, pg.sveInto(), op)
 }
 
@@ -6604,13 +5296,7 @@ public fun svlogbF64Z(pg: SvboolT, op: Svfloat64T): Svint64T = svlogbF64M(svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmatch[_s8])
  */
 public fun svmatchS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
-    fun svmatchS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svmatchS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svmatchS8(pg, op1, op2)
 }
 
@@ -6619,13 +5305,7 @@ public fun svmatchS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmatch[_s16])
  */
 public fun svmatchS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
-    fun svmatchS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svmatchS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svmatchS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -6646,13 +5326,7 @@ public fun svmatchU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): SvboolT = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnmp[_f32]_m)
  */
 public fun svmaxnmpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svmaxnmpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svmaxnmpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svmaxnmpF32M(pg.sveInto(), op1, op2)
 }
 
@@ -6667,13 +5341,7 @@ public fun svmaxnmpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxnmp[_f64]_m)
  */
 public fun svmaxnmpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svmaxnmpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svmaxnmpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svmaxnmpF64M(pg.sveInto(), op1, op2)
 }
 
@@ -6688,13 +5356,7 @@ public fun svmaxnmpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_f32]_m)
  */
 public fun svmaxpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svmaxpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svmaxpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svmaxpF32M(pg.sveInto(), op1, op2)
 }
 
@@ -6709,13 +5371,7 @@ public fun svmaxpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_f64]_m)
  */
 public fun svmaxpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svmaxpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svmaxpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svmaxpF64M(pg.sveInto(), op1, op2)
 }
 
@@ -6730,13 +5386,7 @@ public fun svmaxpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s8]_m)
  */
 public fun svmaxpS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svmaxpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svmaxpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svmaxpS8M(pg, op1, op2)
 }
 
@@ -6751,13 +5401,7 @@ public fun svmaxpS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svmaxpS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s16]_m)
  */
 public fun svmaxpS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svmaxpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmaxpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmaxpS16M(pg.sveInto(), op1, op2)
 }
 
@@ -6772,13 +5416,7 @@ public fun svmaxpS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s32]_m)
  */
 public fun svmaxpS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svmaxpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmaxpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmaxpS32M(pg.sveInto(), op1, op2)
 }
 
@@ -6793,13 +5431,7 @@ public fun svmaxpS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_s64]_m)
  */
 public fun svmaxpS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svmaxpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmaxpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmaxpS64M(pg.sveInto(), op1, op2)
 }
 
@@ -6814,13 +5446,7 @@ public fun svmaxpS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u8]_m)
  */
 public fun svmaxpU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svmaxpU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svmaxpU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svmaxpU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -6835,13 +5461,7 @@ public fun svmaxpU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svma
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u16]_m)
  */
 public fun svmaxpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svmaxpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmaxpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmaxpU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -6856,13 +5476,7 @@ public fun svmaxpU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u32]_m)
  */
 public fun svmaxpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svmaxpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmaxpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmaxpU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -6877,13 +5491,7 @@ public fun svmaxpU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmaxp[_u64]_m)
  */
 public fun svmaxpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svmaxpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmaxpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmaxpU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -6898,13 +5506,7 @@ public fun svmaxpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnmp[_f32]_m)
  */
 public fun svminnmpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svminnmpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svminnmpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svminnmpF32M(pg.sveInto(), op1, op2)
 }
 
@@ -6919,13 +5521,7 @@ public fun svminnmpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminnmp[_f64]_m)
  */
 public fun svminnmpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svminnmpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svminnmpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svminnmpF64M(pg.sveInto(), op1, op2)
 }
 
@@ -6940,13 +5536,7 @@ public fun svminnmpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_f32]_m)
  */
 public fun svminpF32M(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T {
-    fun svminpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svminpF32M(pg1: Svbool4T, op11: Svfloat32T, op21: Svfloat32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svminpF32M(pg.sveInto(), op1, op2)
 }
 
@@ -6961,13 +5551,7 @@ public fun svminpF32X(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_f64]_m)
  */
 public fun svminpF64M(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T {
-    fun svminpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svminpF64M(pg1: Svbool2T, op11: Svfloat64T, op21: Svfloat64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svminpF64M(pg.sveInto(), op1, op2)
 }
 
@@ -6982,13 +5566,7 @@ public fun svminpF64X(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s8]_m)
  */
 public fun svminpS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svminpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svminpS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svminpS8M(pg, op1, op2)
 }
 
@@ -7003,13 +5581,7 @@ public fun svminpS8X(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = svminpS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s16]_m)
  */
 public fun svminpS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svminpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svminpS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svminpS16M(pg.sveInto(), op1, op2)
 }
 
@@ -7024,13 +5596,7 @@ public fun svminpS16X(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s32]_m)
  */
 public fun svminpS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svminpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svminpS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svminpS32M(pg.sveInto(), op1, op2)
 }
 
@@ -7045,13 +5611,7 @@ public fun svminpS32X(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_s64]_m)
  */
 public fun svminpS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svminpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svminpS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svminpS64M(pg.sveInto(), op1, op2)
 }
 
@@ -7066,13 +5626,7 @@ public fun svminpS64X(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u8]_m)
  */
 public fun svminpU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svminpU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svminpU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svminpU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -7087,13 +5641,7 @@ public fun svminpU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u16]_m)
  */
 public fun svminpU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svminpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svminpU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svminpU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -7108,13 +5656,7 @@ public fun svminpU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u32]_m)
  */
 public fun svminpU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svminpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svminpU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svminpU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -7129,13 +5671,7 @@ public fun svminpU32X(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svminp[_u64]_m)
  */
 public fun svminpU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svminpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svminpU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svminpU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -7150,13 +5686,7 @@ public fun svminpU64X(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_s16])
  */
 public fun svmlaLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
-    fun svmlaLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlaLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7168,13 +5698,7 @@ public fun svmlaLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_s32])
  */
 public fun svmlaLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
-    fun svmlaLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlaLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7186,13 +5710,7 @@ public fun svmlaLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaLane[_s64])
  */
 public fun svmlaLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
-    fun svmlaLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlaLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -7237,13 +5755,7 @@ public fun svmlaLaneU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T, immIndex
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_s32])
  */
 public fun svmlalbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svmlalbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlalbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7255,13 +5767,7 @@ public fun svmlalbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_s64])
  */
 public fun svmlalbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svmlalbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlalbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7273,13 +5779,7 @@ public fun svmlalbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_u32])
  */
 public fun svmlalbLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
-    fun svmlalbLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlalbLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7291,13 +5791,7 @@ public fun svmlalbLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalbLane[_u64])
  */
 public fun svmlalbLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
-    fun svmlalbLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlalbLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7309,13 +5803,7 @@ public fun svmlalbLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_s16])
  */
 public fun svmlalbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svmlalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlalbS16(op1, op2, op3)
 }
 
@@ -7330,13 +5818,7 @@ public fun svmlalbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmla
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_s32])
  */
 public fun svmlalbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svmlalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlalbS32(op1, op2, op3)
 }
 
@@ -7351,13 +5833,7 @@ public fun svmlalbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_s64])
  */
 public fun svmlalbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svmlalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlalbS64(op1, op2, op3)
 }
 
@@ -7372,13 +5848,7 @@ public fun svmlalbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmla
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_u16])
  */
 public fun svmlalbU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
-    fun svmlalbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlalbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlalbU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7393,13 +5863,7 @@ public fun svmlalbNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_u32])
  */
 public fun svmlalbU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
-    fun svmlalbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlalbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlalbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7414,13 +5878,7 @@ public fun svmlalbNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalb[_u64])
  */
 public fun svmlalbU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
-    fun svmlalbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlalbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlalbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7435,13 +5893,7 @@ public fun svmlalbNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_s32])
  */
 public fun svmlaltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svmlaltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlaltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7453,13 +5905,7 @@ public fun svmlaltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_s64])
  */
 public fun svmlaltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svmlaltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlaltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7471,13 +5917,7 @@ public fun svmlaltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_u32])
  */
 public fun svmlaltLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
-    fun svmlaltLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlaltLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7489,13 +5929,7 @@ public fun svmlaltLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlaltLane[_u64])
  */
 public fun svmlaltLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
-    fun svmlaltLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlaltLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7507,13 +5941,7 @@ public fun svmlaltLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_s16])
  */
 public fun svmlaltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svmlaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlaltS16(op1, op2, op3)
 }
 
@@ -7528,13 +5956,7 @@ public fun svmlaltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmla
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_s32])
  */
 public fun svmlaltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svmlaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlaltS32(op1, op2, op3)
 }
 
@@ -7549,13 +5971,7 @@ public fun svmlaltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_s64])
  */
 public fun svmlaltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svmlaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlaltS64(op1, op2, op3)
 }
 
@@ -7570,13 +5986,7 @@ public fun svmlaltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmla
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_u16])
  */
 public fun svmlaltU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
-    fun svmlaltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlaltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlaltU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7591,13 +6001,7 @@ public fun svmlaltNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_u32])
  */
 public fun svmlaltU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
-    fun svmlaltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlaltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlaltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7612,13 +6016,7 @@ public fun svmlaltNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlalt[_u64])
  */
 public fun svmlaltU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
-    fun svmlaltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlaltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlaltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7633,13 +6031,7 @@ public fun svmlaltNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_s16])
  */
 public fun svmlsLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
-    fun svmlsLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlsLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7651,13 +6043,7 @@ public fun svmlsLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_s32])
  */
 public fun svmlsLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
-    fun svmlsLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlsLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7669,13 +6055,7 @@ public fun svmlsLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsLane[_s64])
  */
 public fun svmlsLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
-    fun svmlsLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlsLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -7720,13 +6100,7 @@ public fun svmlsLaneU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T, immIndex
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_s32])
  */
 public fun svmlslbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svmlslbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlslbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7738,13 +6112,7 @@ public fun svmlslbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_s64])
  */
 public fun svmlslbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svmlslbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlslbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7756,13 +6124,7 @@ public fun svmlslbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_u32])
  */
 public fun svmlslbLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
-    fun svmlslbLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlslbLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7774,13 +6136,7 @@ public fun svmlslbLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslbLane[_u64])
  */
 public fun svmlslbLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
-    fun svmlslbLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlslbLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7792,13 +6148,7 @@ public fun svmlslbLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_s16])
  */
 public fun svmlslbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svmlslbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlslbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlslbS16(op1, op2, op3)
 }
 
@@ -7813,13 +6163,7 @@ public fun svmlslbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmls
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_s32])
  */
 public fun svmlslbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svmlslbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlslbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlslbS32(op1, op2, op3)
 }
 
@@ -7834,13 +6178,7 @@ public fun svmlslbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_s64])
  */
 public fun svmlslbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svmlslbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlslbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlslbS64(op1, op2, op3)
 }
 
@@ -7855,13 +6193,7 @@ public fun svmlslbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmls
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_u16])
  */
 public fun svmlslbU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
-    fun svmlslbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlslbU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlslbU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7876,13 +6208,7 @@ public fun svmlslbNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_u32])
  */
 public fun svmlslbU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
-    fun svmlslbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlslbU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlslbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7897,13 +6223,7 @@ public fun svmlslbNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslb[_u64])
  */
 public fun svmlslbU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
-    fun svmlslbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlslbU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlslbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -7918,13 +6238,7 @@ public fun svmlslbNU64(op1: Svuint64T, op2: Svuint32T, op3: UInt): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_s32])
  */
 public fun svmlsltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svmlsltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlsltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7936,13 +6250,7 @@ public fun svmlsltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_s64])
  */
 public fun svmlsltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svmlsltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlsltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7954,13 +6262,7 @@ public fun svmlsltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex:
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_u32])
  */
 public fun svmlsltLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immIndex: Int): Svuint32T {
-    fun svmlsltLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlsltLaneU32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -7972,13 +6274,7 @@ public fun svmlsltLaneU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlsltLane[_u64])
  */
 public fun svmlsltLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immIndex: Int): Svuint64T {
-    fun svmlsltLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlsltLaneU64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -7990,13 +6286,7 @@ public fun svmlsltLaneU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_s16])
  */
 public fun svmlsltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svmlsltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlsltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlsltS16(op1, op2, op3)
 }
 
@@ -8011,13 +6301,7 @@ public fun svmlsltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svmls
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_s32])
  */
 public fun svmlsltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svmlsltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlsltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlsltS32(op1, op2, op3)
 }
 
@@ -8032,13 +6316,7 @@ public fun svmlsltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = svm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_s64])
  */
 public fun svmlsltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svmlsltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlsltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlsltS64(op1, op2, op3)
 }
 
@@ -8053,13 +6331,7 @@ public fun svmlsltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svmls
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_u16])
  */
 public fun svmlsltU16(op1: Svuint16T, op2: Svuint8T, op3: Svuint8T): Svuint16T {
-    fun svmlsltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmlsltU16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmlsltU16(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -8074,13 +6346,7 @@ public fun svmlsltNU16(op1: Svuint16T, op2: Svuint8T, op3: UByte): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_u32])
  */
 public fun svmlsltU32(op1: Svuint32T, op2: Svuint16T, op3: Svuint16T): Svuint32T {
-    fun svmlsltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmlsltU32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmlsltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -8095,13 +6361,7 @@ public fun svmlsltNU32(op1: Svuint32T, op2: Svuint16T, op3: UShort): Svuint32T =
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmlslt[_u64])
  */
 public fun svmlsltU64(op1: Svuint64T, op2: Svuint32T, op3: Svuint32T): Svuint64T {
-    fun svmlsltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmlsltU64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmlsltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -8188,13 +6448,7 @@ public fun svmovltU64(op: Svuint32T): Svuint64T = svshlltNU64(op, 0)
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_f32])
  */
 public fun svmulLaneF32(op1: Svfloat32T, op2: Svfloat32T, immIndex: Int): Svfloat32T {
-    fun svmulLaneF32(op11: Svfloat32T, op21: Svfloat32T, immIndex: Int): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svmulLaneF32(op11: Svfloat32T, op21: Svfloat32T, immIndex: Int): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -8206,13 +6460,7 @@ public fun svmulLaneF32(op1: Svfloat32T, op2: Svfloat32T, immIndex: Int): Svfloa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_f64])
  */
 public fun svmulLaneF64(op1: Svfloat64T, op2: Svfloat64T, immIndex: Int): Svfloat64T {
-    fun svmulLaneF64(op11: Svfloat64T, op21: Svfloat64T, immIndex: Int): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svmulLaneF64(op11: Svfloat64T, op21: Svfloat64T, immIndex: Int): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -8224,13 +6472,7 @@ public fun svmulLaneF64(op1: Svfloat64T, op2: Svfloat64T, immIndex: Int): Svfloa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_s16])
  */
 public fun svmulLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
-    fun svmulLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmulLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -8242,13 +6484,7 @@ public fun svmulLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_s32])
  */
 public fun svmulLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
-    fun svmulLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmulLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -8260,13 +6496,7 @@ public fun svmulLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulLane[_s64])
  */
 public fun svmulLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64T {
-    fun svmulLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmulLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -8311,13 +6541,7 @@ public fun svmulLaneU64(op1: Svuint64T, op2: Svuint64T, immIndex: Int): Svuint64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_s32])
  */
 public fun svmullbLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
-    fun svmullbLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmullbLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -8329,13 +6553,7 @@ public fun svmullbLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_s64])
  */
 public fun svmullbLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
-    fun svmullbLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmullbLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -8347,13 +6565,7 @@ public fun svmullbLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_u32])
  */
 public fun svmullbLaneU32(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint32T {
-    fun svmullbLaneU32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmullbLaneU32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -8365,13 +6577,7 @@ public fun svmullbLaneU32(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullbLane[_u64])
  */
 public fun svmullbLaneU64(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint64T {
-    fun svmullbLaneU64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmullbLaneU64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -8383,13 +6589,7 @@ public fun svmullbLaneU64(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_s16])
  */
 public fun svmullbS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svmullbS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmullbS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmullbS16(op1, op2)
 }
 
@@ -8404,13 +6604,7 @@ public fun svmullbNS16(op1: Svint8T, op2: Byte): Svint16T = svmullbS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_s32])
  */
 public fun svmullbS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svmullbS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmullbS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmullbS32(op1, op2)
 }
 
@@ -8425,13 +6619,7 @@ public fun svmullbNS32(op1: Svint16T, op2: Short): Svint32T = svmullbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_s64])
  */
 public fun svmullbS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svmullbS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmullbS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmullbS64(op1, op2)
 }
 
@@ -8446,13 +6634,7 @@ public fun svmullbNS64(op1: Svint32T, op2: Int): Svint64T = svmullbS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_u16])
  */
 public fun svmullbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svmullbU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmullbU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmullbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8467,13 +6649,7 @@ public fun svmullbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svmullbU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_u32])
  */
 public fun svmullbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svmullbU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmullbU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmullbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8488,13 +6664,7 @@ public fun svmullbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svmullbU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullb[_u64])
  */
 public fun svmullbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svmullbU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmullbU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmullbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8509,13 +6679,7 @@ public fun svmullbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svmullbU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_s32])
  */
 public fun svmulltLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
-    fun svmulltLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmulltLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -8527,13 +6691,7 @@ public fun svmulltLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_s64])
  */
 public fun svmulltLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
-    fun svmulltLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmulltLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -8545,13 +6703,7 @@ public fun svmulltLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_u32])
  */
 public fun svmulltLaneU32(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint32T {
-    fun svmulltLaneU32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmulltLaneU32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -8563,13 +6715,7 @@ public fun svmulltLaneU32(op1: Svuint16T, op2: Svuint16T, immIndex: Int): Svuint
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulltLane[_u64])
  */
 public fun svmulltLaneU64(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint64T {
-    fun svmulltLaneU64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmulltLaneU64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -8581,13 +6727,7 @@ public fun svmulltLaneU64(op1: Svuint32T, op2: Svuint32T, immIndex: Int): Svuint
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_s16])
  */
 public fun svmulltS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svmulltS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmulltS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmulltS16(op1, op2)
 }
 
@@ -8602,13 +6742,7 @@ public fun svmulltNS16(op1: Svint8T, op2: Byte): Svint16T = svmulltS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_s32])
  */
 public fun svmulltS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svmulltS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmulltS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmulltS32(op1, op2)
 }
 
@@ -8623,13 +6757,7 @@ public fun svmulltNS32(op1: Svint16T, op2: Short): Svint32T = svmulltS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_s64])
  */
 public fun svmulltS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svmulltS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmulltS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmulltS64(op1, op2)
 }
 
@@ -8644,13 +6772,7 @@ public fun svmulltNS64(op1: Svint32T, op2: Int): Svint64T = svmulltS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_u16])
  */
 public fun svmulltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svmulltU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svmulltU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svmulltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8665,13 +6787,7 @@ public fun svmulltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svmulltU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_u32])
  */
 public fun svmulltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svmulltU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svmulltU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svmulltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8686,13 +6802,7 @@ public fun svmulltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svmulltU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmullt[_u64])
  */
 public fun svmulltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svmulltU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svmulltU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svmulltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8707,13 +6817,7 @@ public fun svmulltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svmulltU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s8])
  */
 public fun svnbslS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svnbslS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svnbslS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svnbslS8(op1, op2, op3)
 }
 
@@ -8728,13 +6832,7 @@ public fun svnbslNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svnbslS8(
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s16])
  */
 public fun svnbslS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svnbslS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svnbslS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svnbslS16(op1, op2, op3)
 }
 
@@ -8749,13 +6847,7 @@ public fun svnbslNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = svnb
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s32])
  */
 public fun svnbslS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svnbslS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svnbslS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svnbslS32(op1, op2, op3)
 }
 
@@ -8770,13 +6862,7 @@ public fun svnbslNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svnbsl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnbsl[_s64])
  */
 public fun svnbslS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svnbslS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svnbslS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svnbslS64(op1, op2, op3)
 }
 
@@ -8839,13 +6925,7 @@ public fun svnbslNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmatch[_s8])
  */
 public fun svnmatchS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
-    fun svnmatchS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svnmatchS8(pg1: SvboolT, op11: Svint8T, op21: Svint8T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svnmatchS8(pg, op1, op2)
 }
 
@@ -8854,13 +6934,7 @@ public fun svnmatchS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnmatch[_s16])
  */
 public fun svnmatchS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): SvboolT {
-    fun svnmatchS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svnmatchS16(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svnmatchS16(pg.sveInto(), op1, op2).sveInto()
 }
 
@@ -8881,13 +6955,7 @@ public fun svnmatchU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): SvboolT = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmul[_u8])
  */
 public fun svpmulU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svpmulU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svpmulU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svpmulU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8902,13 +6970,7 @@ public fun svpmulNU8(op1: Svuint8T, op2: UByte): Svuint8T = svpmulU8(op1, svdupN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_u8])
  */
 public fun svpmullbPairU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svpmullbPairU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svpmullbPairU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svpmullbPairU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8923,13 +6985,7 @@ public fun svpmullbPairNU8(op1: Svuint8T, op2: UByte): Svuint8T = svpmullbPairU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_u32])
  */
 public fun svpmullbPairU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svpmullbPairU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svpmullbPairU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svpmullbPairU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8944,13 +7000,7 @@ public fun svpmullbPairNU32(op1: Svuint32T, op2: UInt): Svuint32T = svpmullbPair
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmullbPair[_u64])
  */
 public fun svpmullbPairU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svpmullbPairU64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svpmullbPairU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svpmullbPairU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -8989,13 +7039,7 @@ public fun svpmullbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svpmullbU64(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_u8])
  */
 public fun svpmulltPairU8(op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svpmulltPairU8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svpmulltPairU8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svpmulltPairU8(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9010,13 +7054,7 @@ public fun svpmulltPairNU8(op1: Svuint8T, op2: UByte): Svuint8T = svpmulltPairU8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_u32])
  */
 public fun svpmulltPairU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svpmulltPairU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svpmulltPairU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svpmulltPairU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9031,13 +7069,7 @@ public fun svpmulltPairNU32(op1: Svuint32T, op2: UInt): Svuint32T = svpmulltPair
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svpmulltPair[_u64])
  */
 public fun svpmulltPairU64(op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svpmulltPairU64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svpmulltPairU64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svpmulltPairU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9076,13 +7108,7 @@ public fun svpmulltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svpmulltU64(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s8]_m)
  */
 public fun svqabsS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svqabsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqabsS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqabsS8M(inactive, pg, op)
 }
 
@@ -9103,13 +7129,7 @@ public fun svqabsS8Z(pg: SvboolT, op: Svint8T): Svint8T = svqabsS8M(svdupNS8(0),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s16]_m)
  */
 public fun svqabsS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svqabsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqabsS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqabsS16M(inactive, pg.sveInto(), op)
 }
 
@@ -9130,13 +7150,7 @@ public fun svqabsS16Z(pg: SvboolT, op: Svint16T): Svint16T = svqabsS16M(svdupNS1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s32]_m)
  */
 public fun svqabsS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svqabsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqabsS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqabsS32M(inactive, pg.sveInto(), op)
 }
 
@@ -9157,13 +7171,7 @@ public fun svqabsS32Z(pg: SvboolT, op: Svint32T): Svint32T = svqabsS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqabs[_s64]_m)
  */
 public fun svqabsS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svqabsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqabsS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqabsS64M(inactive, pg.sveInto(), op)
 }
 
@@ -9184,13 +7192,7 @@ public fun svqabsS64Z(pg: SvboolT, op: Svint64T): Svint64T = svqabsS64M(svdupNS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s8]_m)
  */
 public fun svqaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqaddS8M(pg, op1, op2)
 }
 
@@ -9229,13 +7231,7 @@ public fun svqaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqaddS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s16]_m)
  */
 public fun svqaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqaddS16M(pg.sveInto(), op1, op2)
 }
 
@@ -9274,13 +7270,7 @@ public fun svqaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqad
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s32]_m)
  */
 public fun svqaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqaddS32M(pg.sveInto(), op1, op2)
 }
 
@@ -9319,13 +7309,7 @@ public fun svqaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqaddS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_s64]_m)
  */
 public fun svqaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqaddS64M(pg.sveInto(), op1, op2)
 }
 
@@ -9364,13 +7348,7 @@ public fun svqaddNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqadd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u8]_m)
  */
 public fun svqaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svqaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqaddU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9409,13 +7387,7 @@ public fun svqaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqadd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u16]_m)
  */
 public fun svqaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svqaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqaddU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9454,13 +7426,7 @@ public fun svqaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u32]_m)
  */
 public fun svqaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svqaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqaddU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9499,13 +7465,7 @@ public fun svqaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqadd[_u64]_m)
  */
 public fun svqaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svqaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqaddU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -9544,13 +7504,7 @@ public fun svqaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s8])
  */
 public fun svqcaddS8(op1: Svint8T, op2: Svint8T, immRotation: Int): Svint8T {
-    fun svqcaddS8(op11: Svint8T, op21: Svint8T, immRotation: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqcaddS8(op11: Svint8T, op21: Svint8T, immRotation: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -9562,13 +7516,7 @@ public fun svqcaddS8(op1: Svint8T, op2: Svint8T, immRotation: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s16])
  */
 public fun svqcaddS16(op1: Svint16T, op2: Svint16T, immRotation: Int): Svint16T {
-    fun svqcaddS16(op11: Svint16T, op21: Svint16T, immRotation: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqcaddS16(op11: Svint16T, op21: Svint16T, immRotation: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -9580,13 +7528,7 @@ public fun svqcaddS16(op1: Svint16T, op2: Svint16T, immRotation: Int): Svint16T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s32])
  */
 public fun svqcaddS32(op1: Svint32T, op2: Svint32T, immRotation: Int): Svint32T {
-    fun svqcaddS32(op11: Svint32T, op21: Svint32T, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqcaddS32(op11: Svint32T, op21: Svint32T, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -9598,13 +7540,7 @@ public fun svqcaddS32(op1: Svint32T, op2: Svint32T, immRotation: Int): Svint32T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqcadd[_s64])
  */
 public fun svqcaddS64(op1: Svint64T, op2: Svint64T, immRotation: Int): Svint64T {
-    fun svqcaddS64(op11: Svint64T, op21: Svint64T, immRotation: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqcaddS64(op11: Svint64T, op21: Svint64T, immRotation: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(immRotation == 90 || immRotation == 270)
     }
@@ -9616,13 +7552,7 @@ public fun svqcaddS64(op1: Svint64T, op2: Svint64T, immRotation: Int): Svint64T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbLane[_s32])
  */
 public fun svqdmlalbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svqdmlalbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -9634,13 +7564,7 @@ public fun svqdmlalbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbLane[_s64])
  */
 public fun svqdmlalbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svqdmlalbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -9652,13 +7576,7 @@ public fun svqdmlalbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_s16])
  */
 public fun svqdmlalbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svqdmlalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmlalbS16(op1, op2, op3)
 }
 
@@ -9673,13 +7591,7 @@ public fun svqdmlalbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_s32])
  */
 public fun svqdmlalbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svqdmlalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmlalbS32(op1, op2, op3)
 }
 
@@ -9694,13 +7606,7 @@ public fun svqdmlalbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalb[_s64])
  */
 public fun svqdmlalbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svqdmlalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmlalbS64(op1, op2, op3)
 }
 
@@ -9715,13 +7621,7 @@ public fun svqdmlalbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_s16])
  */
 public fun svqdmlalbtS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svqdmlalbtS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbtS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmlalbtS16(op1, op2, op3)
 }
 
@@ -9736,13 +7636,7 @@ public fun svqdmlalbtNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_s32])
  */
 public fun svqdmlalbtS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svqdmlalbtS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbtS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmlalbtS32(op1, op2, op3)
 }
 
@@ -9757,13 +7651,7 @@ public fun svqdmlalbtNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalbt[_s64])
  */
 public fun svqdmlalbtS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svqdmlalbtS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlalbtS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmlalbtS64(op1, op2, op3)
 }
 
@@ -9778,13 +7666,7 @@ public fun svqdmlalbtNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlaltLane[_s32])
  */
 public fun svqdmlaltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svqdmlaltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlaltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -9796,13 +7678,7 @@ public fun svqdmlaltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlaltLane[_s64])
  */
 public fun svqdmlaltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svqdmlaltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlaltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -9814,13 +7690,7 @@ public fun svqdmlaltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_s16])
  */
 public fun svqdmlaltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svqdmlaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmlaltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmlaltS16(op1, op2, op3)
 }
 
@@ -9835,13 +7705,7 @@ public fun svqdmlaltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_s32])
  */
 public fun svqdmlaltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svqdmlaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlaltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmlaltS32(op1, op2, op3)
 }
 
@@ -9856,13 +7720,7 @@ public fun svqdmlaltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlalt[_s64])
  */
 public fun svqdmlaltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svqdmlaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlaltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmlaltS64(op1, op2, op3)
 }
 
@@ -9877,13 +7735,7 @@ public fun svqdmlaltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbLane[_s32])
  */
 public fun svqdmlslbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svqdmlslbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -9895,13 +7747,7 @@ public fun svqdmlslbLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbLane[_s64])
  */
 public fun svqdmlslbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svqdmlslbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -9913,13 +7759,7 @@ public fun svqdmlslbLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_s16])
  */
 public fun svqdmlslbS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svqdmlslbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmlslbS16(op1, op2, op3)
 }
 
@@ -9934,13 +7774,7 @@ public fun svqdmlslbNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_s32])
  */
 public fun svqdmlslbS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svqdmlslbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmlslbS32(op1, op2, op3)
 }
 
@@ -9955,13 +7789,7 @@ public fun svqdmlslbNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslb[_s64])
  */
 public fun svqdmlslbS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svqdmlslbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmlslbS64(op1, op2, op3)
 }
 
@@ -9976,13 +7804,7 @@ public fun svqdmlslbNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_s16])
  */
 public fun svqdmlslbtS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svqdmlslbtS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbtS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmlslbtS16(op1, op2, op3)
 }
 
@@ -9997,13 +7819,7 @@ public fun svqdmlslbtNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_s32])
  */
 public fun svqdmlslbtS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svqdmlslbtS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbtS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmlslbtS32(op1, op2, op3)
 }
 
@@ -10018,13 +7834,7 @@ public fun svqdmlslbtNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslbt[_s64])
  */
 public fun svqdmlslbtS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svqdmlslbtS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlslbtS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmlslbtS64(op1, op2, op3)
 }
 
@@ -10039,13 +7849,7 @@ public fun svqdmlslbtNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlsltLane[_s32])
  */
 public fun svqdmlsltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint32T {
-    fun svqdmlsltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlsltLaneS32(op11: Svint32T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10057,13 +7861,7 @@ public fun svqdmlsltLaneS32(op1: Svint32T, op2: Svint16T, op3: Svint16T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlsltLane[_s64])
  */
 public fun svqdmlsltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint64T {
-    fun svqdmlsltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlsltLaneS64(op11: Svint64T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10075,13 +7873,7 @@ public fun svqdmlsltLaneS64(op1: Svint64T, op2: Svint32T, op3: Svint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_s16])
  */
 public fun svqdmlsltS16(op1: Svint16T, op2: Svint8T, op3: Svint8T): Svint16T {
-    fun svqdmlsltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmlsltS16(op11: Svint16T, op21: Svint8T, op31: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmlsltS16(op1, op2, op3)
 }
 
@@ -10096,13 +7888,7 @@ public fun svqdmlsltNS16(op1: Svint16T, op2: Svint8T, op3: Byte): Svint16T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_s32])
  */
 public fun svqdmlsltS32(op1: Svint32T, op2: Svint16T, op3: Svint16T): Svint32T {
-    fun svqdmlsltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmlsltS32(op11: Svint32T, op21: Svint16T, op31: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmlsltS32(op1, op2, op3)
 }
 
@@ -10117,13 +7903,7 @@ public fun svqdmlsltNS32(op1: Svint32T, op2: Svint16T, op3: Short): Svint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmlslt[_s64])
  */
 public fun svqdmlsltS64(op1: Svint64T, op2: Svint32T, op3: Svint32T): Svint64T {
-    fun svqdmlsltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmlsltS64(op11: Svint64T, op21: Svint32T, op31: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmlsltS64(op1, op2, op3)
 }
 
@@ -10138,13 +7918,7 @@ public fun svqdmlsltNS64(op1: Svint64T, op2: Svint32T, op3: Int): Svint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulhLane[_s16])
  */
 public fun svqdmulhLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
-    fun svqdmulhLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmulhLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10156,13 +7930,7 @@ public fun svqdmulhLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulhLane[_s32])
  */
 public fun svqdmulhLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
-    fun svqdmulhLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmulhLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10174,13 +7942,7 @@ public fun svqdmulhLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulhLane[_s64])
  */
 public fun svqdmulhLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64T {
-    fun svqdmulhLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmulhLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -10192,13 +7954,7 @@ public fun svqdmulhLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s8])
  */
 public fun svqdmulhS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqdmulhS8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqdmulhS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqdmulhS8(op1, op2)
 }
 
@@ -10213,13 +7969,7 @@ public fun svqdmulhNS8(op1: Svint8T, op2: Byte): Svint8T = svqdmulhS8(op1, svdup
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s16])
  */
 public fun svqdmulhS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqdmulhS16(op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmulhS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmulhS16(op1, op2)
 }
 
@@ -10234,13 +7984,7 @@ public fun svqdmulhNS16(op1: Svint16T, op2: Short): Svint16T = svqdmulhS16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s32])
  */
 public fun svqdmulhS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqdmulhS32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmulhS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmulhS32(op1, op2)
 }
 
@@ -10255,13 +7999,7 @@ public fun svqdmulhNS32(op1: Svint32T, op2: Int): Svint32T = svqdmulhS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulh[_s64])
  */
 public fun svqdmulhS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqdmulhS64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmulhS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmulhS64(op1, op2)
 }
 
@@ -10276,13 +8014,7 @@ public fun svqdmulhNS64(op1: Svint64T, op2: Long): Svint64T = svqdmulhS64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullbLane[_s32])
  */
 public fun svqdmullbLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
-    fun svqdmullbLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmullbLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10294,13 +8026,7 @@ public fun svqdmullbLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullbLane[_s64])
  */
 public fun svqdmullbLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
-    fun svqdmullbLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmullbLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10312,13 +8038,7 @@ public fun svqdmullbLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_s16])
  */
 public fun svqdmullbS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svqdmullbS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmullbS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmullbS16(op1, op2)
 }
 
@@ -10333,13 +8053,7 @@ public fun svqdmullbNS16(op1: Svint8T, op2: Byte): Svint16T = svqdmullbS16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_s32])
  */
 public fun svqdmullbS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svqdmullbS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmullbS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmullbS32(op1, op2)
 }
 
@@ -10354,13 +8068,7 @@ public fun svqdmullbNS32(op1: Svint16T, op2: Short): Svint32T = svqdmullbS32(op1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullb[_s64])
  */
 public fun svqdmullbS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svqdmullbS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmullbS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmullbS64(op1, op2)
 }
 
@@ -10375,13 +8083,7 @@ public fun svqdmullbNS64(op1: Svint32T, op2: Int): Svint64T = svqdmullbS64(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulltLane[_s32])
  */
 public fun svqdmulltLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint32T {
-    fun svqdmulltLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmulltLaneS32(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10393,13 +8095,7 @@ public fun svqdmulltLaneS32(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmulltLane[_s64])
  */
 public fun svqdmulltLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint64T {
-    fun svqdmulltLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmulltLaneS64(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10411,13 +8107,7 @@ public fun svqdmulltLaneS64(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_s16])
  */
 public fun svqdmulltS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svqdmulltS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqdmulltS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqdmulltS16(op1, op2)
 }
 
@@ -10432,13 +8122,7 @@ public fun svqdmulltNS16(op1: Svint8T, op2: Byte): Svint16T = svqdmulltS16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_s32])
  */
 public fun svqdmulltS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svqdmulltS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqdmulltS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqdmulltS32(op1, op2)
 }
 
@@ -10453,13 +8137,7 @@ public fun svqdmulltNS32(op1: Svint16T, op2: Short): Svint32T = svqdmulltS32(op1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqdmullt[_s64])
  */
 public fun svqdmulltS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svqdmulltS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqdmulltS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqdmulltS64(op1, op2)
 }
 
@@ -10474,13 +8152,7 @@ public fun svqdmulltNS64(op1: Svint32T, op2: Int): Svint64T = svqdmulltS64(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s8]_m)
  */
 public fun svqnegS8M(inactive: Svint8T, pg: SvboolT, op: Svint8T): Svint8T {
-    fun svqnegS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqnegS8M(inactive1: Svint8T, pg1: SvboolT, op1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqnegS8M(inactive, pg, op)
 }
 
@@ -10501,13 +8173,7 @@ public fun svqnegS8Z(pg: SvboolT, op: Svint8T): Svint8T = svqnegS8M(svdupNS8(0),
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s16]_m)
  */
 public fun svqnegS16M(inactive: Svint16T, pg: SvboolT, op: Svint16T): Svint16T {
-    fun svqnegS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqnegS16M(inactive1: Svint16T, pg1: Svbool8T, op1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqnegS16M(inactive, pg.sveInto(), op)
 }
 
@@ -10528,13 +8194,7 @@ public fun svqnegS16Z(pg: SvboolT, op: Svint16T): Svint16T = svqnegS16M(svdupNS1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s32]_m)
  */
 public fun svqnegS32M(inactive: Svint32T, pg: SvboolT, op: Svint32T): Svint32T {
-    fun svqnegS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqnegS32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqnegS32M(inactive, pg.sveInto(), op)
 }
 
@@ -10555,13 +8215,7 @@ public fun svqnegS32Z(pg: SvboolT, op: Svint32T): Svint32T = svqnegS32M(svdupNS3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqneg[_s64]_m)
  */
 public fun svqnegS64M(inactive: Svint64T, pg: SvboolT, op: Svint64T): Svint64T {
-    fun svqnegS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqnegS64M(inactive1: Svint64T, pg1: Svbool2T, op1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqnegS64M(inactive, pg.sveInto(), op)
 }
 
@@ -10582,13 +8236,7 @@ public fun svqnegS64Z(pg: SvboolT, op: Svint64T): Svint64T = svqnegS64M(svdupNS6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlahLane[_s16])
  */
 public fun svqrdcmlahLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int, immRotation: Int): Svint16T {
-    fun svqrdcmlahLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdcmlahLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex: Int, immRotation: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10603,13 +8251,7 @@ public fun svqrdcmlahLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlahLane[_s32])
  */
 public fun svqrdcmlahLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int, immRotation: Int): Svint32T {
-    fun svqrdcmlahLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex: Int, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdcmlahLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex: Int, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -10624,13 +8266,7 @@ public fun svqrdcmlahLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immInd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s8])
  */
 public fun svqrdcmlahS8(op1: Svint8T, op2: Svint8T, op3: Svint8T, immRotation: Int): Svint8T {
-    fun svqrdcmlahS8(op11: Svint8T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrdcmlahS8(op11: Svint8T, op21: Svint8T, op31: Svint8T, immRotation: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -10642,13 +8278,7 @@ public fun svqrdcmlahS8(op1: Svint8T, op2: Svint8T, op3: Svint8T, immRotation: I
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s16])
  */
 public fun svqrdcmlahS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immRotation: Int): Svint16T {
-    fun svqrdcmlahS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdcmlahS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immRotation: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -10660,13 +8290,7 @@ public fun svqrdcmlahS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immRotatio
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s32])
  */
 public fun svqrdcmlahS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immRotation: Int): Svint32T {
-    fun svqrdcmlahS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immRotation: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdcmlahS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immRotation: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -10678,13 +8302,7 @@ public fun svqrdcmlahS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immRotatio
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdcmlah[_s64])
  */
 public fun svqrdcmlahS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immRotation: Int): Svint64T {
-    fun svqrdcmlahS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immRotation: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdcmlahS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immRotation: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(immRotation == 0 || immRotation == 90 || immRotation == 180 || immRotation == 270)
     }
@@ -10696,13 +8314,7 @@ public fun svqrdcmlahS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immRotatio
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlahLane[_s16])
  */
 public fun svqrdmlahLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
-    fun svqrdmlahLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10714,13 +8326,7 @@ public fun svqrdmlahLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlahLane[_s32])
  */
 public fun svqrdmlahLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
-    fun svqrdmlahLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10732,13 +8338,7 @@ public fun svqrdmlahLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlahLane[_s64])
  */
 public fun svqrdmlahLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
-    fun svqrdmlahLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -10750,13 +8350,7 @@ public fun svqrdmlahLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s8])
  */
 public fun svqrdmlahS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svqrdmlahS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqrdmlahS8(op1, op2, op3)
 }
 
@@ -10771,13 +8365,7 @@ public fun svqrdmlahNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svqrdm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s16])
  */
 public fun svqrdmlahS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svqrdmlahS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqrdmlahS16(op1, op2, op3)
 }
 
@@ -10792,13 +8380,7 @@ public fun svqrdmlahNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s32])
  */
 public fun svqrdmlahS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svqrdmlahS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqrdmlahS32(op1, op2, op3)
 }
 
@@ -10813,13 +8395,7 @@ public fun svqrdmlahNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlah[_s64])
  */
 public fun svqrdmlahS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svqrdmlahS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdmlahS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqrdmlahS64(op1, op2, op3)
 }
 
@@ -10834,13 +8410,7 @@ public fun svqrdmlahNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlshLane[_s16])
  */
 public fun svqrdmlshLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immIndex: Int): Svint16T {
-    fun svqrdmlshLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshLaneS16(op11: Svint16T, op21: Svint16T, op31: Svint16T, immIndex1: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10852,13 +8422,7 @@ public fun svqrdmlshLaneS16(op1: Svint16T, op2: Svint16T, op3: Svint16T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlshLane[_s32])
  */
 public fun svqrdmlshLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immIndex: Int): Svint32T {
-    fun svqrdmlshLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshLaneS32(op11: Svint32T, op21: Svint32T, op31: Svint32T, immIndex1: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -10870,13 +8434,7 @@ public fun svqrdmlshLaneS32(op1: Svint32T, op2: Svint32T, op3: Svint32T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlshLane[_s64])
  */
 public fun svqrdmlshLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immIndex: Int): Svint64T {
-    fun svqrdmlshLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshLaneS64(op11: Svint64T, op21: Svint64T, op31: Svint64T, immIndex1: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -10888,13 +8446,7 @@ public fun svqrdmlshLaneS64(op1: Svint64T, op2: Svint64T, op3: Svint64T, immInde
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s8])
  */
 public fun svqrdmlshS8(op1: Svint8T, op2: Svint8T, op3: Svint8T): Svint8T {
-    fun svqrdmlshS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshS8(op11: Svint8T, op21: Svint8T, op31: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqrdmlshS8(op1, op2, op3)
 }
 
@@ -10909,13 +8461,7 @@ public fun svqrdmlshNS8(op1: Svint8T, op2: Svint8T, op3: Byte): Svint8T = svqrdm
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s16])
  */
 public fun svqrdmlshS16(op1: Svint16T, op2: Svint16T, op3: Svint16T): Svint16T {
-    fun svqrdmlshS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshS16(op11: Svint16T, op21: Svint16T, op31: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqrdmlshS16(op1, op2, op3)
 }
 
@@ -10930,13 +8476,7 @@ public fun svqrdmlshNS16(op1: Svint16T, op2: Svint16T, op3: Short): Svint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s32])
  */
 public fun svqrdmlshS32(op1: Svint32T, op2: Svint32T, op3: Svint32T): Svint32T {
-    fun svqrdmlshS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshS32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqrdmlshS32(op1, op2, op3)
 }
 
@@ -10951,13 +8491,7 @@ public fun svqrdmlshNS32(op1: Svint32T, op2: Svint32T, op3: Int): Svint32T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmlsh[_s64])
  */
 public fun svqrdmlshS64(op1: Svint64T, op2: Svint64T, op3: Svint64T): Svint64T {
-    fun svqrdmlshS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdmlshS64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqrdmlshS64(op1, op2, op3)
 }
 
@@ -10972,13 +8506,7 @@ public fun svqrdmlshNS64(op1: Svint64T, op2: Svint64T, op3: Long): Svint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulhLane[_s16])
  */
 public fun svqrdmulhLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint16T {
-    fun svqrdmulhLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhLaneS16(op11: Svint16T, op21: Svint16T, immIndex: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 7) { "IMM_INDEX is not in range 0-7" }
     }
@@ -10990,13 +8518,7 @@ public fun svqrdmulhLaneS16(op1: Svint16T, op2: Svint16T, immIndex: Int): Svint1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulhLane[_s32])
  */
 public fun svqrdmulhLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint32T {
-    fun svqrdmulhLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhLaneS32(op11: Svint32T, op21: Svint32T, immIndex: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
@@ -11008,13 +8530,7 @@ public fun svqrdmulhLaneS32(op1: Svint32T, op2: Svint32T, immIndex: Int): Svint3
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulhLane[_s64])
  */
 public fun svqrdmulhLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint64T {
-    fun svqrdmulhLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhLaneS64(op11: Svint64T, op21: Svint64T, immIndex: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
@@ -11026,13 +8542,7 @@ public fun svqrdmulhLaneS64(op1: Svint64T, op2: Svint64T, immIndex: Int): Svint6
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s8])
  */
 public fun svqrdmulhS8(op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqrdmulhS8(op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhS8(op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqrdmulhS8(op1, op2)
 }
 
@@ -11047,13 +8557,7 @@ public fun svqrdmulhNS8(op1: Svint8T, op2: Byte): Svint8T = svqrdmulhS8(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s16])
  */
 public fun svqrdmulhS16(op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqrdmulhS16(op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhS16(op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqrdmulhS16(op1, op2)
 }
 
@@ -11068,13 +8572,7 @@ public fun svqrdmulhNS16(op1: Svint16T, op2: Short): Svint16T = svqrdmulhS16(op1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s32])
  */
 public fun svqrdmulhS32(op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqrdmulhS32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhS32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqrdmulhS32(op1, op2)
 }
 
@@ -11089,13 +8587,7 @@ public fun svqrdmulhNS32(op1: Svint32T, op2: Int): Svint32T = svqrdmulhS32(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrdmulh[_s64])
  */
 public fun svqrdmulhS64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqrdmulhS64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrdmulhS64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqrdmulhS64(op1, op2)
 }
 
@@ -11110,13 +8602,7 @@ public fun svqrdmulhNS64(op1: Svint64T, op2: Long): Svint64T = svqrdmulhS64(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s8]_m)
  */
 public fun svqrshlS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqrshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqrshlS8M(pg, op1, op2)
 }
 
@@ -11155,13 +8641,7 @@ public fun svqrshlNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqrshlS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s16]_m)
  */
 public fun svqrshlS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqrshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqrshlS16M(pg.sveInto(), op1, op2)
 }
 
@@ -11200,13 +8680,7 @@ public fun svqrshlNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s32]_m)
  */
 public fun svqrshlS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqrshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqrshlS32M(pg.sveInto(), op1, op2)
 }
 
@@ -11245,13 +8719,7 @@ public fun svqrshlNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqrsh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_s64]_m)
  */
 public fun svqrshlS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqrshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqrshlS64M(pg.sveInto(), op1, op2)
 }
 
@@ -11290,13 +8758,7 @@ public fun svqrshlNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqrs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u8]_m)
  */
 public fun svqrshlU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
-    fun svqrshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqrshlU8M(pg, op1.asSigned(), op2).asUnsigned()
 }
 
@@ -11335,13 +8797,7 @@ public fun svqrshlNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqrsh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u16]_m)
  */
 public fun svqrshlU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
-    fun svqrshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqrshlU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -11380,13 +8836,7 @@ public fun svqrshlNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u32]_m)
  */
 public fun svqrshlU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
-    fun svqrshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqrshlU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -11425,13 +8875,7 @@ public fun svqrshlNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshl[_u64]_m)
  */
 public fun svqrshlU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
-    fun svqrshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqrshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqrshlU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -11470,13 +8914,7 @@ public fun svqrshlNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_s16])
  */
 public fun svqrshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
-    fun svqrshrnbNS16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -11488,13 +8926,7 @@ public fun svqrshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_s32])
  */
 public fun svqrshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
-    fun svqrshrnbNS32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -11506,13 +8938,7 @@ public fun svqrshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_s64])
  */
 public fun svqrshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
-    fun svqrshrnbNS64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -11524,13 +8950,7 @@ public fun svqrshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_u16])
  */
 public fun svqrshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
-    fun svqrshrnbNU16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshrnbNU16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -11542,13 +8962,7 @@ public fun svqrshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_u32])
  */
 public fun svqrshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
-    fun svqrshrnbNU32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshrnbNU32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -11560,13 +8974,7 @@ public fun svqrshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnb[_n_u64])
  */
 public fun svqrshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
-    fun svqrshrnbNU64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshrnbNU64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -11578,13 +8986,7 @@ public fun svqrshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_s16])
  */
 public fun svqrshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
-    fun svqrshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -11596,13 +8998,7 @@ public fun svqrshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_s32])
  */
 public fun svqrshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
-    fun svqrshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -11614,13 +9010,7 @@ public fun svqrshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_s64])
  */
 public fun svqrshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
-    fun svqrshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -11632,13 +9022,7 @@ public fun svqrshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_u16])
  */
 public fun svqrshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
-    fun svqrshrntNU16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshrntNU16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -11650,13 +9034,7 @@ public fun svqrshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_u32])
  */
 public fun svqrshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
-    fun svqrshrntNU32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshrntNU32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -11668,13 +9046,7 @@ public fun svqrshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrnt[_n_u64])
  */
 public fun svqrshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
-    fun svqrshrntNU64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshrntNU64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -11686,13 +9058,7 @@ public fun svqrshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunb[_n_s16])
  */
 public fun svqrshrunbNS16(op1: Svint16T, imm2: Int): Svuint8T {
-    fun svqrshrunbNS16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshrunbNS16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -11704,13 +9070,7 @@ public fun svqrshrunbNS16(op1: Svint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunb[_n_s32])
  */
 public fun svqrshrunbNS32(op1: Svint32T, imm2: Int): Svuint16T {
-    fun svqrshrunbNS32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshrunbNS32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -11722,13 +9082,7 @@ public fun svqrshrunbNS32(op1: Svint32T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunb[_n_s64])
  */
 public fun svqrshrunbNS64(op1: Svint64T, imm2: Int): Svuint32T {
-    fun svqrshrunbNS64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshrunbNS64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -11740,13 +9094,7 @@ public fun svqrshrunbNS64(op1: Svint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunt[_n_s16])
  */
 public fun svqrshruntNS16(even: Svuint8T, op1: Svint16T, imm2: Int): Svuint8T {
-    fun svqrshruntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqrshruntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -11758,13 +9106,7 @@ public fun svqrshruntNS16(even: Svuint8T, op1: Svint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunt[_n_s32])
  */
 public fun svqrshruntNS32(even: Svuint16T, op1: Svint32T, imm2: Int): Svuint16T {
-    fun svqrshruntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqrshruntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -11776,13 +9118,7 @@ public fun svqrshruntNS32(even: Svuint16T, op1: Svint32T, imm2: Int): Svuint16T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqrshrunt[_n_s64])
  */
 public fun svqrshruntNS64(even: Svuint32T, op1: Svint64T, imm2: Int): Svuint32T {
-    fun svqrshruntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqrshruntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -11794,13 +9130,7 @@ public fun svqrshruntNS64(even: Svuint32T, op1: Svint64T, imm2: Int): Svuint32T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s8]_m)
  */
 public fun svqshlS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqshlS8M(pg, op1, op2)
 }
 
@@ -11839,13 +9169,7 @@ public fun svqshlNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqshlS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s16]_m)
  */
 public fun svqshlS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqshlS16M(pg.sveInto(), op1, op2)
 }
 
@@ -11884,13 +9208,7 @@ public fun svqshlNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s32]_m)
  */
 public fun svqshlS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqshlS32M(pg.sveInto(), op1, op2)
 }
 
@@ -11929,13 +9247,7 @@ public fun svqshlNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqshlS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_s64]_m)
  */
 public fun svqshlS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqshlS64M(pg.sveInto(), op1, op2)
 }
 
@@ -11974,13 +9286,7 @@ public fun svqshlNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqshl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u8]_m)
  */
 public fun svqshlU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
-    fun svqshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqshlU8M(pg, op1.asSigned(), op2).asUnsigned()
 }
 
@@ -12019,13 +9325,7 @@ public fun svqshlNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svqshlU
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u16]_m)
  */
 public fun svqshlU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
-    fun svqshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqshlU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -12064,13 +9364,7 @@ public fun svqshlNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u32]_m)
  */
 public fun svqshlU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
-    fun svqshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqshlU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -12109,13 +9403,7 @@ public fun svqshlNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svqsh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshl[_u64]_m)
  */
 public fun svqshlU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
-    fun svqshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqshlU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -12154,13 +9442,7 @@ public fun svqshlNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svqs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s8]_m)
  */
 public fun svqshluNS8M(pg: SvboolT, op1: Svint8T, imm2: Int): Svuint8T {
-    fun svqshluNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshluNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
     }
@@ -12184,13 +9466,7 @@ public fun svqshluNS8Z(pg: SvboolT, op1: Svint8T, imm2: Int): Svuint8T = svqshlu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s16]_m)
  */
 public fun svqshluNS16M(pg: SvboolT, op1: Svint16T, imm2: Int): Svuint16T {
-    fun svqshluNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshluNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
     }
@@ -12214,13 +9490,7 @@ public fun svqshluNS16Z(pg: SvboolT, op1: Svint16T, imm2: Int): Svuint16T = svqs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s32]_m)
  */
 public fun svqshluNS32M(pg: SvboolT, op1: Svint32T, imm2: Int): Svuint32T {
-    fun svqshluNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshluNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
     }
@@ -12244,13 +9514,7 @@ public fun svqshluNS32Z(pg: SvboolT, op1: Svint32T, imm2: Int): Svuint32T = svqs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshlu[_n_s64]_m)
  */
 public fun svqshluNS64M(pg: SvboolT, op1: Svint64T, imm2: Int): Svuint64T {
-    fun svqshluNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqshluNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 63) { "IMM2 is not in range 0-63" }
     }
@@ -12274,13 +9538,7 @@ public fun svqshluNS64Z(pg: SvboolT, op1: Svint64T, imm2: Int): Svuint64T = svqs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_s16])
  */
 public fun svqshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
-    fun svqshrnbNS16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -12292,13 +9550,7 @@ public fun svqshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_s32])
  */
 public fun svqshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
-    fun svqshrnbNS32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -12310,13 +9562,7 @@ public fun svqshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_s64])
  */
 public fun svqshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
-    fun svqshrnbNS64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -12328,13 +9574,7 @@ public fun svqshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_u16])
  */
 public fun svqshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
-    fun svqshrnbNU16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshrnbNU16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -12346,13 +9586,7 @@ public fun svqshrnbNU16(op1: Svuint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_u32])
  */
 public fun svqshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
-    fun svqshrnbNU32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshrnbNU32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -12364,13 +9598,7 @@ public fun svqshrnbNU32(op1: Svuint32T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnb[_n_u64])
  */
 public fun svqshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
-    fun svqshrnbNU64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshrnbNU64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -12382,13 +9610,7 @@ public fun svqshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_s16])
  */
 public fun svqshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
-    fun svqshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -12400,13 +9622,7 @@ public fun svqshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_s32])
  */
 public fun svqshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
-    fun svqshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -12418,13 +9634,7 @@ public fun svqshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_s64])
  */
 public fun svqshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
-    fun svqshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -12436,13 +9646,7 @@ public fun svqshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_u16])
  */
 public fun svqshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
-    fun svqshrntNU16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshrntNU16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -12454,13 +9658,7 @@ public fun svqshrntNU16(even: Svuint8T, op1: Svuint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_u32])
  */
 public fun svqshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
-    fun svqshrntNU32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshrntNU32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -12472,13 +9670,7 @@ public fun svqshrntNU32(even: Svuint16T, op1: Svuint32T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrnt[_n_u64])
  */
 public fun svqshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
-    fun svqshrntNU64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshrntNU64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -12490,13 +9682,7 @@ public fun svqshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunb[_n_s16])
  */
 public fun svqshrunbNS16(op1: Svint16T, imm2: Int): Svuint8T {
-    fun svqshrunbNS16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshrunbNS16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -12508,13 +9694,7 @@ public fun svqshrunbNS16(op1: Svint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunb[_n_s32])
  */
 public fun svqshrunbNS32(op1: Svint32T, imm2: Int): Svuint16T {
-    fun svqshrunbNS32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshrunbNS32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -12526,13 +9706,7 @@ public fun svqshrunbNS32(op1: Svint32T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunb[_n_s64])
  */
 public fun svqshrunbNS64(op1: Svint64T, imm2: Int): Svuint32T {
-    fun svqshrunbNS64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshrunbNS64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -12544,13 +9718,7 @@ public fun svqshrunbNS64(op1: Svint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunt[_n_s16])
  */
 public fun svqshruntNS16(even: Svuint8T, op1: Svint16T, imm2: Int): Svuint8T {
-    fun svqshruntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqshruntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -12562,13 +9730,7 @@ public fun svqshruntNS16(even: Svuint8T, op1: Svint16T, imm2: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunt[_n_s32])
  */
 public fun svqshruntNS32(even: Svuint16T, op1: Svint32T, imm2: Int): Svuint16T {
-    fun svqshruntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqshruntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -12580,13 +9742,7 @@ public fun svqshruntNS32(even: Svuint16T, op1: Svint32T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqshrunt[_n_s64])
  */
 public fun svqshruntNS64(even: Svuint32T, op1: Svint64T, imm2: Int): Svuint32T {
-    fun svqshruntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqshruntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -12598,13 +9754,7 @@ public fun svqshruntNS64(even: Svuint32T, op1: Svint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s8]_m)
  */
 public fun svqsubS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqsubS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqsubS8M(pg, op1, op2)
 }
 
@@ -12643,13 +9793,7 @@ public fun svqsubNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s16]_m)
  */
 public fun svqsubS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqsubS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqsubS16M(pg.sveInto(), op1, op2)
 }
 
@@ -12688,13 +9832,7 @@ public fun svqsubNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s32]_m)
  */
 public fun svqsubS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqsubS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqsubS32M(pg.sveInto(), op1, op2)
 }
 
@@ -12733,13 +9871,7 @@ public fun svqsubNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsubS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_s64]_m)
  */
 public fun svqsubS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqsubS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqsubS64M(pg.sveInto(), op1, op2)
 }
 
@@ -12778,13 +9910,7 @@ public fun svqsubNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u8]_m)
  */
 public fun svqsubU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svqsubU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqsubU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqsubU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -12823,13 +9949,7 @@ public fun svqsubNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u16]_m)
  */
 public fun svqsubU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svqsubU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqsubU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqsubU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -12868,13 +9988,7 @@ public fun svqsubNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u32]_m)
  */
 public fun svqsubU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svqsubU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqsubU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqsubU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -12913,13 +10027,7 @@ public fun svqsubNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svqs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsub[_u64]_m)
  */
 public fun svqsubU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svqsubU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqsubU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqsubU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -12958,13 +10066,7 @@ public fun svqsubNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s8]_m)
  */
 public fun svqsubrS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svqsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqsubrS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqsubrS8M(pg, op1, op2)
 }
 
@@ -13003,13 +10105,7 @@ public fun svqsubrNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svqsubrS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s16]_m)
  */
 public fun svqsubrS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svqsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqsubrS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqsubrS16M(pg.sveInto(), op1, op2)
 }
 
@@ -13048,13 +10144,7 @@ public fun svqsubrNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svqs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s32]_m)
  */
 public fun svqsubrS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svqsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqsubrS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqsubrS32M(pg.sveInto(), op1, op2)
 }
 
@@ -13093,13 +10183,7 @@ public fun svqsubrNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svqsub
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_s64]_m)
  */
 public fun svqsubrS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svqsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqsubrS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqsubrS64M(pg.sveInto(), op1, op2)
 }
 
@@ -13138,13 +10222,7 @@ public fun svqsubrNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svqsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u8]_m)
  */
 public fun svqsubrU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svqsubrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqsubrU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqsubrU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -13183,13 +10261,7 @@ public fun svqsubrNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svqsu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u16]_m)
  */
 public fun svqsubrU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svqsubrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqsubrU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqsubrU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -13228,13 +10300,7 @@ public fun svqsubrNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u32]_m)
  */
 public fun svqsubrU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svqsubrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqsubrU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqsubrU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -13273,13 +10339,7 @@ public fun svqsubrNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqsubr[_u64]_m)
  */
 public fun svqsubrU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svqsubrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svqsubrU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svqsubrU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -13318,13 +10378,7 @@ public fun svqsubrNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_s16])
  */
 public fun svqxtnbS16(op: Svint16T): Svint8T {
-    fun svqxtnbS16(op1: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqxtnbS16(op1: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqxtnbS16(op)
 }
 
@@ -13333,13 +10387,7 @@ public fun svqxtnbS16(op: Svint16T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_s32])
  */
 public fun svqxtnbS32(op: Svint32T): Svint16T {
-    fun svqxtnbS32(op1: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqxtnbS32(op1: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqxtnbS32(op)
 }
 
@@ -13348,13 +10396,7 @@ public fun svqxtnbS32(op: Svint32T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_s64])
  */
 public fun svqxtnbS64(op: Svint64T): Svint32T {
-    fun svqxtnbS64(op1: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqxtnbS64(op1: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqxtnbS64(op)
 }
 
@@ -13363,13 +10405,7 @@ public fun svqxtnbS64(op: Svint64T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_u16])
  */
 public fun svqxtnbU16(op: Svuint16T): Svuint8T {
-    fun svqxtnbU16(op1: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqxtnbU16(op1: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqxtnbU16(op.asSigned()).asUnsigned()
 }
 
@@ -13378,13 +10414,7 @@ public fun svqxtnbU16(op: Svuint16T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_u32])
  */
 public fun svqxtnbU32(op: Svuint32T): Svuint16T {
-    fun svqxtnbU32(op1: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqxtnbU32(op1: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqxtnbU32(op.asSigned()).asUnsigned()
 }
 
@@ -13393,13 +10423,7 @@ public fun svqxtnbU32(op: Svuint32T): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnb[_u64])
  */
 public fun svqxtnbU64(op: Svuint64T): Svuint32T {
-    fun svqxtnbU64(op1: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqxtnbU64(op1: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqxtnbU64(op.asSigned()).asUnsigned()
 }
 
@@ -13408,13 +10432,7 @@ public fun svqxtnbU64(op: Svuint64T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_s16])
  */
 public fun svqxtntS16(even: Svint8T, op: Svint16T): Svint8T {
-    fun svqxtntS16(even1: Svint8T, op1: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqxtntS16(even1: Svint8T, op1: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqxtntS16(even, op)
 }
 
@@ -13423,13 +10441,7 @@ public fun svqxtntS16(even: Svint8T, op: Svint16T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_s32])
  */
 public fun svqxtntS32(even: Svint16T, op: Svint32T): Svint16T {
-    fun svqxtntS32(even1: Svint16T, op1: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqxtntS32(even1: Svint16T, op1: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqxtntS32(even, op)
 }
 
@@ -13438,13 +10450,7 @@ public fun svqxtntS32(even: Svint16T, op: Svint32T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_s64])
  */
 public fun svqxtntS64(even: Svint32T, op: Svint64T): Svint32T {
-    fun svqxtntS64(even1: Svint32T, op1: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqxtntS64(even1: Svint32T, op1: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqxtntS64(even, op)
 }
 
@@ -13453,13 +10459,7 @@ public fun svqxtntS64(even: Svint32T, op: Svint64T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_u16])
  */
 public fun svqxtntU16(even: Svuint8T, op: Svuint16T): Svuint8T {
-    fun svqxtntU16(even1: Svint8T, op1: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqxtntU16(even1: Svint8T, op1: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqxtntU16(even.asSigned(), op.asSigned()).asUnsigned()
 }
 
@@ -13468,13 +10468,7 @@ public fun svqxtntU16(even: Svuint8T, op: Svuint16T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_u32])
  */
 public fun svqxtntU32(even: Svuint16T, op: Svuint32T): Svuint16T {
-    fun svqxtntU32(even1: Svint16T, op1: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqxtntU32(even1: Svint16T, op1: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqxtntU32(even.asSigned(), op.asSigned()).asUnsigned()
 }
 
@@ -13483,13 +10477,7 @@ public fun svqxtntU32(even: Svuint16T, op: Svuint32T): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtnt[_u64])
  */
 public fun svqxtntU64(even: Svuint32T, op: Svuint64T): Svuint32T {
-    fun svqxtntU64(even1: Svint32T, op1: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqxtntU64(even1: Svint32T, op1: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqxtntU64(even.asSigned(), op.asSigned()).asUnsigned()
 }
 
@@ -13498,13 +10486,7 @@ public fun svqxtntU64(even: Svuint32T, op: Svuint64T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunb[_s16])
  */
 public fun svqxtunbS16(op: Svint16T): Svuint8T {
-    fun svqxtunbS16(op1: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqxtunbS16(op1: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqxtunbS16(op).asUnsigned()
 }
 
@@ -13513,13 +10495,7 @@ public fun svqxtunbS16(op: Svint16T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunb[_s32])
  */
 public fun svqxtunbS32(op: Svint32T): Svuint16T {
-    fun svqxtunbS32(op1: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqxtunbS32(op1: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqxtunbS32(op).asUnsigned()
 }
 
@@ -13528,13 +10504,7 @@ public fun svqxtunbS32(op: Svint32T): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunb[_s64])
  */
 public fun svqxtunbS64(op: Svint64T): Svuint32T {
-    fun svqxtunbS64(op1: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqxtunbS64(op1: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqxtunbS64(op).asUnsigned()
 }
 
@@ -13543,13 +10513,7 @@ public fun svqxtunbS64(op: Svint64T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunt[_s16])
  */
 public fun svqxtuntS16(even: Svuint8T, op: Svint16T): Svuint8T {
-    fun svqxtuntS16(even1: Svint8T, op1: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svqxtuntS16(even1: Svint8T, op1: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svqxtuntS16(even.asSigned(), op).asUnsigned()
 }
 
@@ -13558,13 +10522,7 @@ public fun svqxtuntS16(even: Svuint8T, op: Svint16T): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunt[_s32])
  */
 public fun svqxtuntS32(even: Svuint16T, op: Svint32T): Svuint16T {
-    fun svqxtuntS32(even1: Svint16T, op1: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svqxtuntS32(even1: Svint16T, op1: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svqxtuntS32(even.asSigned(), op).asUnsigned()
 }
 
@@ -13573,13 +10531,7 @@ public fun svqxtuntS32(even: Svuint16T, op: Svint32T): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svqxtunt[_s64])
  */
 public fun svqxtuntS64(even: Svuint32T, op: Svint64T): Svuint32T {
-    fun svqxtuntS64(even1: Svint32T, op1: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svqxtuntS64(even1: Svint32T, op1: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svqxtuntS64(even.asSigned(), op).asUnsigned()
 }
 
@@ -13588,13 +10540,7 @@ public fun svqxtuntS64(even: Svuint32T, op: Svint64T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_s16])
  */
 public fun svraddhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svraddhnbS16(op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svraddhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svraddhnbS16(op1, op2)
 }
 
@@ -13609,13 +10555,7 @@ public fun svraddhnbNS16(op1: Svint16T, op2: Short): Svint8T = svraddhnbS16(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_s32])
  */
 public fun svraddhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svraddhnbS32(op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svraddhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svraddhnbS32(op1, op2)
 }
 
@@ -13630,13 +10570,7 @@ public fun svraddhnbNS32(op1: Svint32T, op2: Int): Svint16T = svraddhnbS32(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnb[_s64])
  */
 public fun svraddhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svraddhnbS64(op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svraddhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svraddhnbS64(op1, op2)
 }
 
@@ -13687,13 +10621,7 @@ public fun svraddhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svraddhnbU64(o
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_s16])
  */
 public fun svraddhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svraddhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svraddhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svraddhntS16(even, op1, op2)
 }
 
@@ -13708,13 +10636,7 @@ public fun svraddhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_s32])
  */
 public fun svraddhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svraddhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svraddhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svraddhntS32(even, op1, op2)
 }
 
@@ -13729,13 +10651,7 @@ public fun svraddhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svraddhnt[_s64])
  */
 public fun svraddhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svraddhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svraddhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svraddhntS64(even, op1, op2)
 }
 
@@ -13786,13 +10702,7 @@ public fun svraddhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrax1[_s64])
  */
 public fun svrax1S64(op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svrax1S64(op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrax1S64(op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svrax1S64(op1, op2)
 }
 
@@ -13807,13 +10717,7 @@ public fun svrax1U64(op1: Svuint64T, op2: Svuint64T): Svuint64T = svrax1S64(op1.
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrecpe[_u32]_m)
  */
 public fun svrecpeU32M(inactive: Svuint32T, pg: SvboolT, op: Svuint32T): Svuint32T {
-    fun svrecpeU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrecpeU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrecpeU32M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -13834,13 +10738,7 @@ public fun svrecpeU32Z(pg: SvboolT, op: Svuint32T): Svuint32T = svrecpeU32M(svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s8]_m)
  */
 public fun svrhaddS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svrhaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrhaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svrhaddS8M(pg, op1, op2)
 }
 
@@ -13879,13 +10777,7 @@ public fun svrhaddNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrhaddS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s16]_m)
  */
 public fun svrhaddS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svrhaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrhaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svrhaddS16M(pg.sveInto(), op1, op2)
 }
 
@@ -13924,13 +10816,7 @@ public fun svrhaddNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s32]_m)
  */
 public fun svrhaddS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svrhaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrhaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrhaddS32M(pg.sveInto(), op1, op2)
 }
 
@@ -13969,13 +10855,7 @@ public fun svrhaddNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrhad
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_s64]_m)
  */
 public fun svrhaddS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svrhaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrhaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svrhaddS64M(pg.sveInto(), op1, op2)
 }
 
@@ -14014,13 +10894,7 @@ public fun svrhaddNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrha
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u8]_m)
  */
 public fun svrhaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T {
-    fun svrhaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrhaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svrhaddU8M(pg, op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -14059,13 +10933,7 @@ public fun svrhaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svrha
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u16]_m)
  */
 public fun svrhaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T {
-    fun svrhaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrhaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svrhaddU16M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -14104,13 +10972,7 @@ public fun svrhaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u32]_m)
  */
 public fun svrhaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svrhaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrhaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrhaddU32M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -14149,13 +11011,7 @@ public fun svrhaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: UInt): Svuint32T = svr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrhadd[_u64]_m)
  */
 public fun svrhaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T {
-    fun svrhaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrhaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svrhaddU64M(pg.sveInto(), op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -14194,13 +11050,7 @@ public fun svrhaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: ULong): Svuint64T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s8]_m)
  */
 public fun svrshlS8M(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T {
-    fun svrshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrshlS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svrshlS8M(pg, op1, op2)
 }
 
@@ -14239,13 +11089,7 @@ public fun svrshlNS8Z(pg: SvboolT, op1: Svint8T, op2: Byte): Svint8T = svrshlS8Z
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s16]_m)
  */
 public fun svrshlS16M(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T {
-    fun svrshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrshlS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svrshlS16M(pg.sveInto(), op1, op2)
 }
 
@@ -14284,13 +11128,7 @@ public fun svrshlNS16Z(pg: SvboolT, op1: Svint16T, op2: Short): Svint16T = svrsh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s32]_m)
  */
 public fun svrshlS32M(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T {
-    fun svrshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrshlS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrshlS32M(pg.sveInto(), op1, op2)
 }
 
@@ -14329,13 +11167,7 @@ public fun svrshlNS32Z(pg: SvboolT, op1: Svint32T, op2: Int): Svint32T = svrshlS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_s64]_m)
  */
 public fun svrshlS64M(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T {
-    fun svrshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrshlS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svrshlS64M(pg.sveInto(), op1, op2)
 }
 
@@ -14374,13 +11206,7 @@ public fun svrshlNS64Z(pg: SvboolT, op1: Svint64T, op2: Long): Svint64T = svrshl
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u8]_m)
  */
 public fun svrshlU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
-    fun svrshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrshlU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svrshlU8M(pg, op1.asSigned(), op2).asUnsigned()
 }
 
@@ -14419,13 +11245,7 @@ public fun svrshlNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svrshlU
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u16]_m)
  */
 public fun svrshlU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
-    fun svrshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrshlU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svrshlU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -14464,13 +11284,7 @@ public fun svrshlNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = svr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u32]_m)
  */
 public fun svrshlU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
-    fun svrshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrshlU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrshlU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -14509,13 +11323,7 @@ public fun svrshlNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svrsh
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshl[_u64]_m)
  */
 public fun svrshlU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
-    fun svrshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrshlU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svrshlU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -14554,13 +11362,7 @@ public fun svrshlNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svrs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s8]_m)
  */
 public fun svrshrNS8M(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T {
-    fun svrshrNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrshrNS8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -14584,13 +11386,7 @@ public fun svrshrNS8Z(pg: SvboolT, op1: Svint8T, imm2: Int): Svint8T = svrshrNS8
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s16]_m)
  */
 public fun svrshrNS16M(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T {
-    fun svrshrNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrshrNS16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -14614,13 +11410,7 @@ public fun svrshrNS16Z(pg: SvboolT, op1: Svint16T, imm2: Int): Svint16T = svrshr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s32]_m)
  */
 public fun svrshrNS32M(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T {
-    fun svrshrNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrshrNS32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -14644,13 +11434,7 @@ public fun svrshrNS32Z(pg: SvboolT, op1: Svint32T, imm2: Int): Svint32T = svrshr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_s64]_m)
  */
 public fun svrshrNS64M(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T {
-    fun svrshrNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrshrNS64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 64) { "IMM2 is not in range 1-64" }
     }
@@ -14674,13 +11458,7 @@ public fun svrshrNS64Z(pg: SvboolT, op1: Svint64T, imm2: Int): Svint64T = svrshr
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u8]_m)
  */
 public fun svrshrNU8M(pg: SvboolT, op1: Svuint8T, imm2: Int): Svuint8T {
-    fun svrshrNU8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrshrNU8M(pg1: SvboolT, op11: Svint8T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -14704,13 +11482,7 @@ public fun svrshrNU8Z(pg: SvboolT, op1: Svuint8T, imm2: Int): Svuint8T = svrshrN
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u16]_m)
  */
 public fun svrshrNU16M(pg: SvboolT, op1: Svuint16T, imm2: Int): Svuint16T {
-    fun svrshrNU16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrshrNU16M(pg1: Svbool8T, op11: Svint16T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -14734,13 +11506,7 @@ public fun svrshrNU16Z(pg: SvboolT, op1: Svuint16T, imm2: Int): Svuint16T = svrs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u32]_m)
  */
 public fun svrshrNU32M(pg: SvboolT, op1: Svuint32T, imm2: Int): Svuint32T {
-    fun svrshrNU32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrshrNU32M(pg1: Svbool4T, op11: Svint32T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -14764,13 +11530,7 @@ public fun svrshrNU32Z(pg: SvboolT, op1: Svuint32T, imm2: Int): Svuint32T = svrs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshr[_n_u64]_m)
  */
 public fun svrshrNU64M(pg: SvboolT, op1: Svuint64T, imm2: Int): Svuint64T {
-    fun svrshrNU64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrshrNU64M(pg1: Svbool2T, op11: Svint64T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 64) { "IMM2 is not in range 1-64" }
     }
@@ -14794,13 +11554,7 @@ public fun svrshrNU64Z(pg: SvboolT, op1: Svuint64T, imm2: Int): Svuint64T = svrs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_s16])
  */
 public fun svrshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
-    fun svrshrnbNS16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -14812,13 +11566,7 @@ public fun svrshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_s32])
  */
 public fun svrshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
-    fun svrshrnbNS32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -14830,13 +11578,7 @@ public fun svrshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnb[_n_s64])
  */
 public fun svrshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
-    fun svrshrnbNS64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -14881,13 +11623,7 @@ public fun svrshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_s16])
  */
 public fun svrshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
-    fun svrshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -14899,13 +11635,7 @@ public fun svrshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_s32])
  */
 public fun svrshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
-    fun svrshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -14917,13 +11647,7 @@ public fun svrshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrshrnt[_n_s64])
  */
 public fun svrshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
-    fun svrshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -14968,13 +11692,7 @@ public fun svrshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsqrte[_u32]_m)
  */
 public fun svrsqrteU32M(inactive: Svuint32T, pg: SvboolT, op: Svuint32T): Svuint32T {
-    fun svrsqrteU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrsqrteU32M(inactive1: Svint32T, pg1: Svbool4T, op1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrsqrteU32M(inactive.asSigned(), pg.sveInto(), op.asSigned()).asUnsigned()
 }
 
@@ -14995,13 +11713,7 @@ public fun svrsqrteU32Z(pg: SvboolT, op: Svuint32T): Svuint32T = svrsqrteU32M(sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s8])
  */
 public fun svrsraNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
-    fun svrsraNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrsraNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
     }
@@ -15013,13 +11725,7 @@ public fun svrsraNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s16])
  */
 public fun svrsraNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
-    fun svrsraNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrsraNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
     }
@@ -15031,13 +11737,7 @@ public fun svrsraNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s32])
  */
 public fun svrsraNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
-    fun svrsraNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrsraNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
     }
@@ -15049,13 +11749,7 @@ public fun svrsraNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_s64])
  */
 public fun svrsraNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
-    fun svrsraNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrsraNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
     }
@@ -15067,13 +11761,7 @@ public fun svrsraNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u8])
  */
 public fun svrsraNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
-    fun svrsraNU8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrsraNU8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
     }
@@ -15085,13 +11773,7 @@ public fun svrsraNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u16])
  */
 public fun svrsraNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
-    fun svrsraNU16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrsraNU16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
     }
@@ -15103,13 +11785,7 @@ public fun svrsraNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u32])
  */
 public fun svrsraNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
-    fun svrsraNU32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrsraNU32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
     }
@@ -15121,13 +11797,7 @@ public fun svrsraNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsra[_n_u64])
  */
 public fun svrsraNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
-    fun svrsraNU64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svrsraNU64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
     }
@@ -15139,13 +11809,7 @@ public fun svrsraNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_s16])
  */
 public fun svrsubhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svrsubhnbS16(op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrsubhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svrsubhnbS16(op1, op2)
 }
 
@@ -15160,13 +11824,7 @@ public fun svrsubhnbNS16(op1: Svint16T, op2: Short): Svint8T = svrsubhnbS16(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_s32])
  */
 public fun svrsubhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svrsubhnbS32(op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrsubhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svrsubhnbS32(op1, op2)
 }
 
@@ -15181,13 +11839,7 @@ public fun svrsubhnbNS32(op1: Svint32T, op2: Int): Svint16T = svrsubhnbS32(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnb[_s64])
  */
 public fun svrsubhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svrsubhnbS64(op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrsubhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrsubhnbS64(op1, op2)
 }
 
@@ -15238,13 +11890,7 @@ public fun svrsubhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svrsubhnbU64(o
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_s16])
  */
 public fun svrsubhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svrsubhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svrsubhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svrsubhntS16(even, op1, op2)
 }
 
@@ -15259,13 +11905,7 @@ public fun svrsubhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_s32])
  */
 public fun svrsubhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svrsubhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svrsubhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svrsubhntS32(even, op1, op2)
 }
 
@@ -15280,13 +11920,7 @@ public fun svrsubhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrsubhnt[_s64])
  */
 public fun svrsubhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svrsubhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svrsubhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svrsubhntS64(even, op1, op2)
 }
 
@@ -15337,13 +11971,7 @@ public fun svrsubhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclb[_u32])
  */
 public fun svsbclbU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
-    fun svsbclbU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsbclbU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsbclbU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -15358,13 +11986,7 @@ public fun svsbclbNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclb[_u64])
  */
 public fun svsbclbU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
-    fun svsbclbU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsbclbU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsbclbU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -15379,13 +12001,7 @@ public fun svsbclbNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclt[_u32])
  */
 public fun svsbcltU32(op1: Svuint32T, op2: Svuint32T, op3: Svuint32T): Svuint32T {
-    fun svsbcltU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsbcltU32(op11: Svint32T, op21: Svint32T, op31: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsbcltU32(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -15400,13 +12016,7 @@ public fun svsbcltNU32(op1: Svuint32T, op2: Svuint32T, op3: UInt): Svuint32T = s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsbclt[_u64])
  */
 public fun svsbcltU64(op1: Svuint64T, op2: Svuint64T, op3: Svuint64T): Svuint64T {
-    fun svsbcltU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsbcltU64(op11: Svint64T, op21: Svint64T, op31: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsbcltU64(op1.asSigned(), op2.asSigned(), op3.asSigned()).asUnsigned()
 }
 
@@ -15421,13 +12031,7 @@ public fun svsbcltNU64(op1: Svuint64T, op2: Svuint64T, op3: ULong): Svuint64T = 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_s16])
  */
 public fun svshllbNS16(op1: Svint8T, imm2: Int): Svint16T {
-    fun svshllbNS16(op11: Svint8T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svshllbNS16(op11: Svint8T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
     }
@@ -15439,13 +12043,7 @@ public fun svshllbNS16(op1: Svint8T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_s32])
  */
 public fun svshllbNS32(op1: Svint16T, imm2: Int): Svint32T {
-    fun svshllbNS32(op11: Svint16T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svshllbNS32(op11: Svint16T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
     }
@@ -15457,13 +12055,7 @@ public fun svshllbNS32(op1: Svint16T, imm2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_s64])
  */
 public fun svshllbNS64(op1: Svint32T, imm2: Int): Svint64T {
-    fun svshllbNS64(op11: Svint32T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svshllbNS64(op11: Svint32T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
     }
@@ -15475,13 +12067,7 @@ public fun svshllbNS64(op1: Svint32T, imm2: Int): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_u16])
  */
 public fun svshllbNU16(op1: Svuint8T, imm2: Int): Svuint16T {
-    fun svshllbNU16(op11: Svint8T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svshllbNU16(op11: Svint8T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
     }
@@ -15493,13 +12079,7 @@ public fun svshllbNU16(op1: Svuint8T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_u32])
  */
 public fun svshllbNU32(op1: Svuint16T, imm2: Int): Svuint32T {
-    fun svshllbNU32(op11: Svint16T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svshllbNU32(op11: Svint16T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
     }
@@ -15511,13 +12091,7 @@ public fun svshllbNU32(op1: Svuint16T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllb[_n_u64])
  */
 public fun svshllbNU64(op1: Svuint32T, imm2: Int): Svuint64T {
-    fun svshllbNU64(op11: Svint32T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svshllbNU64(op11: Svint32T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
     }
@@ -15529,13 +12103,7 @@ public fun svshllbNU64(op1: Svuint32T, imm2: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_s16])
  */
 public fun svshlltNS16(op1: Svint8T, imm2: Int): Svint16T {
-    fun svshlltNS16(op11: Svint8T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svshlltNS16(op11: Svint8T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
     }
@@ -15547,13 +12115,7 @@ public fun svshlltNS16(op1: Svint8T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_s32])
  */
 public fun svshlltNS32(op1: Svint16T, imm2: Int): Svint32T {
-    fun svshlltNS32(op11: Svint16T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svshlltNS32(op11: Svint16T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
     }
@@ -15565,13 +12127,7 @@ public fun svshlltNS32(op1: Svint16T, imm2: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_s64])
  */
 public fun svshlltNS64(op1: Svint32T, imm2: Int): Svint64T {
-    fun svshlltNS64(op11: Svint32T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svshlltNS64(op11: Svint32T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
     }
@@ -15583,13 +12139,7 @@ public fun svshlltNS64(op1: Svint32T, imm2: Int): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_u16])
  */
 public fun svshlltNU16(op1: Svuint8T, imm2: Int): Svuint16T {
-    fun svshlltNU16(op11: Svint8T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svshlltNU16(op11: Svint8T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 7) { "IMM2 is not in range 0-7" }
     }
@@ -15601,13 +12151,7 @@ public fun svshlltNU16(op1: Svuint8T, imm2: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_u32])
  */
 public fun svshlltNU32(op1: Svuint16T, imm2: Int): Svuint32T {
-    fun svshlltNU32(op11: Svint16T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svshlltNU32(op11: Svint16T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 15) { "IMM2 is not in range 0-15" }
     }
@@ -15619,13 +12163,7 @@ public fun svshlltNU32(op1: Svuint16T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshllt[_n_u64])
  */
 public fun svshlltNU64(op1: Svuint32T, imm2: Int): Svuint64T {
-    fun svshlltNU64(op11: Svint32T, imm2: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svshlltNU64(op11: Svint32T, imm2: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm2 && imm2 <= 31) { "IMM2 is not in range 0-31" }
     }
@@ -15637,13 +12175,7 @@ public fun svshlltNU64(op1: Svuint32T, imm2: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_s16])
  */
 public fun svshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
-    fun svshrnbNS16(op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svshrnbNS16(op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -15655,13 +12187,7 @@ public fun svshrnbNS16(op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_s32])
  */
 public fun svshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
-    fun svshrnbNS32(op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svshrnbNS32(op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -15673,13 +12199,7 @@ public fun svshrnbNS32(op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnb[_n_s64])
  */
 public fun svshrnbNS64(op1: Svint64T, imm2: Int): Svint32T {
-    fun svshrnbNS64(op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svshrnbNS64(op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -15724,13 +12244,7 @@ public fun svshrnbNU64(op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_s16])
  */
 public fun svshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
-    fun svshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svshrntNS16(even1: Svint8T, op11: Svint16T, imm2: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 8) { "IMM2 is not in range 1-8" }
     }
@@ -15742,13 +12256,7 @@ public fun svshrntNS16(even: Svint8T, op1: Svint16T, imm2: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_s32])
  */
 public fun svshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
-    fun svshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svshrntNS32(even1: Svint16T, op11: Svint32T, imm2: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 16) { "IMM2 is not in range 1-16" }
     }
@@ -15760,13 +12268,7 @@ public fun svshrntNS32(even: Svint16T, op1: Svint32T, imm2: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svshrnt[_n_s64])
  */
 public fun svshrntNS64(even: Svint32T, op1: Svint64T, imm2: Int): Svint32T {
-    fun svshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svshrntNS64(even1: Svint32T, op11: Svint64T, imm2: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm2 && imm2 <= 32) { "IMM2 is not in range 1-32" }
     }
@@ -15811,13 +12313,7 @@ public fun svshrntNU64(even: Svuint32T, op1: Svuint64T, imm2: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s8])
  */
 public fun svsliNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
-    fun svsliNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsliNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 7) { "IMM3 is not in range 0-7" }
     }
@@ -15829,13 +12325,7 @@ public fun svsliNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s16])
  */
 public fun svsliNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
-    fun svsliNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsliNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 15) { "IMM3 is not in range 0-15" }
     }
@@ -15847,13 +12337,7 @@ public fun svsliNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s32])
  */
 public fun svsliNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
-    fun svsliNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsliNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 31) { "IMM3 is not in range 0-31" }
     }
@@ -15865,13 +12349,7 @@ public fun svsliNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsli[_n_s64])
  */
 public fun svsliNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
-    fun svsliNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsliNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(0 <= imm3 && imm3 <= 63) { "IMM3 is not in range 0-63" }
     }
@@ -15927,13 +12405,7 @@ public fun svsliNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsm4e[_u32])
  */
 public fun svsm4eU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svsm4eU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsm4eU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsm4eU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15942,13 +12414,7 @@ public fun svsm4eU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsm4ekey[_u32])
  */
 public fun svsm4ekeyU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
-    fun svsm4ekeyU32(op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsm4ekeyU32(op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsm4ekeyU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -15957,13 +12423,7 @@ public fun svsm4ekeyU32(op1: Svuint32T, op2: Svuint32T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u8]_m)
  */
 public fun svsqaddU8M(pg: SvboolT, op1: Svuint8T, op2: Svint8T): Svuint8T {
-    fun svsqaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsqaddU8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svsqaddU8M(pg, op1.asSigned(), op2).asUnsigned()
 }
 
@@ -16002,13 +12462,7 @@ public fun svsqaddNU8Z(pg: SvboolT, op1: Svuint8T, op2: Byte): Svuint8T = svsqad
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u16]_m)
  */
 public fun svsqaddU16M(pg: SvboolT, op1: Svuint16T, op2: Svint16T): Svuint16T {
-    fun svsqaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsqaddU16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsqaddU16M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -16047,13 +12501,7 @@ public fun svsqaddNU16Z(pg: SvboolT, op1: Svuint16T, op2: Short): Svuint16T = sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u32]_m)
  */
 public fun svsqaddU32M(pg: SvboolT, op1: Svuint32T, op2: Svint32T): Svuint32T {
-    fun svsqaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsqaddU32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsqaddU32M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -16092,13 +12540,7 @@ public fun svsqaddNU32Z(pg: SvboolT, op1: Svuint32T, op2: Int): Svuint32T = svsq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsqadd[_u64]_m)
  */
 public fun svsqaddU64M(pg: SvboolT, op1: Svuint64T, op2: Svint64T): Svuint64T {
-    fun svsqaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsqaddU64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsqaddU64M(pg.sveInto(), op1.asSigned(), op2).asUnsigned()
 }
 
@@ -16137,13 +12579,7 @@ public fun svsqaddNU64Z(pg: SvboolT, op1: Svuint64T, op2: Long): Svuint64T = svs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s8])
  */
 public fun svsraNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
-    fun svsraNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsraNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
     }
@@ -16155,13 +12591,7 @@ public fun svsraNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s16])
  */
 public fun svsraNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
-    fun svsraNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsraNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
     }
@@ -16173,13 +12603,7 @@ public fun svsraNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s32])
  */
 public fun svsraNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
-    fun svsraNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsraNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
     }
@@ -16191,13 +12615,7 @@ public fun svsraNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_s64])
  */
 public fun svsraNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
-    fun svsraNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsraNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
     }
@@ -16209,13 +12627,7 @@ public fun svsraNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u8])
  */
 public fun svsraNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
-    fun svsraNU8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsraNU8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
     }
@@ -16227,13 +12639,7 @@ public fun svsraNU8(op1: Svuint8T, op2: Svuint8T, imm3: Int): Svuint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u16])
  */
 public fun svsraNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
-    fun svsraNU16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsraNU16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
     }
@@ -16245,13 +12651,7 @@ public fun svsraNU16(op1: Svuint16T, op2: Svuint16T, imm3: Int): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u32])
  */
 public fun svsraNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
-    fun svsraNU32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsraNU32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
     }
@@ -16263,13 +12663,7 @@ public fun svsraNU32(op1: Svuint32T, op2: Svuint32T, imm3: Int): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsra[_n_u64])
  */
 public fun svsraNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
-    fun svsraNU64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsraNU64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
     }
@@ -16281,13 +12675,7 @@ public fun svsraNU64(op1: Svuint64T, op2: Svuint64T, imm3: Int): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s8])
  */
 public fun svsriNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
-    fun svsriNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsriNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
     }
@@ -16299,13 +12687,7 @@ public fun svsriNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s16])
  */
 public fun svsriNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
-    fun svsriNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsriNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
     }
@@ -16317,13 +12699,7 @@ public fun svsriNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s32])
  */
 public fun svsriNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
-    fun svsriNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsriNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
     }
@@ -16335,13 +12711,7 @@ public fun svsriNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsri[_n_s64])
  */
 public fun svsriNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
-    fun svsriNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsriNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
     }
@@ -16826,15 +13196,7 @@ public fun svstnt1ScatterU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset:
  */
 public fun svstnt1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svstnt1bScatterS64offsetS64(data1: Nxv2i8, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svstnt1bScatterS64offsetS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        offsets,
-    )
+    svstnt1bScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -16847,15 +13209,7 @@ public fun svstnt1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint
  */
 public fun svstnt1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svstnt1hScatterS64offsetS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svstnt1hScatterS64offsetS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        offsets,
-    )
+    svstnt1hScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -16868,15 +13222,7 @@ public fun svstnt1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint
  */
 public fun svstnt1wScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svstnt1wScatterS64offsetS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svstnt1wScatterS64offsetS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        offsets,
-    )
+    svstnt1wScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -16925,15 +13271,7 @@ public fun svstnt1wScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint
  */
 public fun svstnt1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
     fun svstnt1bScatterU32offsetS32(data1: Nxv4i8, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svstnt1bScatterU32offsetS32(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        offsets.asSigned(),
-    )
+    svstnt1bScatterU32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets.asSigned())
 }
 
 /**
@@ -16946,15 +13284,7 @@ public fun svstnt1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuin
  */
 public fun svstnt1hScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
     fun svstnt1hScatterU32offsetS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svstnt1hScatterU32offsetS32(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        offsets.asSigned(),
-    )
+    svstnt1hScatterU32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets.asSigned())
 }
 
 /**
@@ -17064,15 +13394,7 @@ public fun svstnt1wScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuin
  */
 public fun svstnt1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
     fun svstnt1bScatterU32baseOffsetS32(data1: Nxv4i8, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
-    svstnt1bScatterU32baseOffsetS32(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        bases.asSigned(),
-        offset,
-    )
+    svstnt1bScatterU32baseOffsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -17086,15 +13408,7 @@ public fun svstnt1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  */
 public fun svstnt1hScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
     fun svstnt1hScatterU32baseOffsetS32(data1: Nxv4i16, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
-    svstnt1hScatterU32baseOffsetS32(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        bases.asSigned(),
-        offset,
-    )
+    svstnt1hScatterU32baseOffsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -17134,15 +13448,7 @@ public fun svstnt1hScatterU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  */
 public fun svstnt1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svstnt1bScatterU64baseOffsetS64(data1: Nxv2i8, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svstnt1bScatterU64baseOffsetS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        bases.asSigned(),
-        offset,
-    )
+    svstnt1bScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -17156,15 +13462,7 @@ public fun svstnt1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svstnt1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svstnt1hScatterU64baseOffsetS64(data1: Nxv2i16, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svstnt1hScatterU64baseOffsetS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        bases.asSigned(),
-        offset,
-    )
+    svstnt1hScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -17178,15 +13476,7 @@ public fun svstnt1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svstnt1wScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svstnt1wScatterU64baseOffsetS64(data1: Nxv2i32, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svstnt1wScatterU64baseOffsetS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        bases.asSigned(),
-        offset,
-    )
+    svstnt1wScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -17368,15 +13658,7 @@ public fun svstnt1wScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint
  */
 public fun svstnt1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
     fun svstnt1hScatterS64indexS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
-    svstnt1hScatterS64indexS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        indices,
-    )
+    svstnt1hScatterS64indexS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -17389,15 +13671,7 @@ public fun svstnt1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint6
  */
 public fun svstnt1wScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
     fun svstnt1wScatterS64indexS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
-    svstnt1wScatterS64indexS64(
-        run {
-            val _simdArg0 = data
-            _simdArg0
-        },
-        pg.sveInto(),
-        base,
-        indices,
-    )
+    svstnt1wScatterS64indexS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -17555,13 +13829,7 @@ public fun svstnt1wScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_s16])
  */
 public fun svsubhnbS16(op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svsubhnbS16(op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsubhnbS16(op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svsubhnbS16(op1, op2)
 }
 
@@ -17576,13 +13844,7 @@ public fun svsubhnbNS16(op1: Svint16T, op2: Short): Svint8T = svsubhnbS16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_s32])
  */
 public fun svsubhnbS32(op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svsubhnbS32(op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubhnbS32(op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubhnbS32(op1, op2)
 }
 
@@ -17597,13 +13859,7 @@ public fun svsubhnbNS32(op1: Svint32T, op2: Int): Svint16T = svsubhnbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnb[_s64])
  */
 public fun svsubhnbS64(op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svsubhnbS64(op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubhnbS64(op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubhnbS64(op1, op2)
 }
 
@@ -17654,13 +13910,7 @@ public fun svsubhnbNU64(op1: Svuint64T, op2: ULong): Svuint32T = svsubhnbU64(op1
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_s16])
  */
 public fun svsubhntS16(even: Svint8T, op1: Svint16T, op2: Svint16T): Svint8T {
-    fun svsubhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svsubhntS16(even1: Svint8T, op11: Svint16T, op21: Svint16T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svsubhntS16(even, op1, op2)
 }
 
@@ -17675,13 +13925,7 @@ public fun svsubhntNS16(even: Svint8T, op1: Svint16T, op2: Short): Svint8T = svs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_s32])
  */
 public fun svsubhntS32(even: Svint16T, op1: Svint32T, op2: Svint32T): Svint16T {
-    fun svsubhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubhntS32(even1: Svint16T, op11: Svint32T, op21: Svint32T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubhntS32(even, op1, op2)
 }
 
@@ -17696,13 +13940,7 @@ public fun svsubhntNS32(even: Svint16T, op1: Svint32T, op2: Int): Svint16T = svs
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubhnt[_s64])
  */
 public fun svsubhntS64(even: Svint32T, op1: Svint64T, op2: Svint64T): Svint32T {
-    fun svsubhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubhntS64(even1: Svint32T, op11: Svint64T, op21: Svint64T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubhntS64(even, op1, op2)
 }
 
@@ -17753,13 +13991,7 @@ public fun svsubhntNU64(even: Svuint32T, op1: Svuint64T, op2: ULong): Svuint32T 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_s16])
  */
 public fun svsublbS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svsublbS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsublbS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsublbS16(op1, op2)
 }
 
@@ -17774,13 +14006,7 @@ public fun svsublbNS16(op1: Svint8T, op2: Byte): Svint16T = svsublbS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_s32])
  */
 public fun svsublbS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svsublbS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsublbS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsublbS32(op1, op2)
 }
 
@@ -17795,13 +14021,7 @@ public fun svsublbNS32(op1: Svint16T, op2: Short): Svint32T = svsublbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_s64])
  */
 public fun svsublbS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svsublbS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsublbS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsublbS64(op1, op2)
 }
 
@@ -17816,13 +14036,7 @@ public fun svsublbNS64(op1: Svint32T, op2: Int): Svint64T = svsublbS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_u16])
  */
 public fun svsublbU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svsublbU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsublbU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsublbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -17837,13 +14051,7 @@ public fun svsublbNU16(op1: Svuint8T, op2: UByte): Svuint16T = svsublbU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_u32])
  */
 public fun svsublbU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svsublbU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsublbU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsublbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -17858,13 +14066,7 @@ public fun svsublbNU32(op1: Svuint16T, op2: UShort): Svuint32T = svsublbU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublb[_u64])
  */
 public fun svsublbU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svsublbU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsublbU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsublbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -17879,13 +14081,7 @@ public fun svsublbNU64(op1: Svuint32T, op2: UInt): Svuint64T = svsublbU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_s16])
  */
 public fun svsublbtS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svsublbtS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsublbtS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsublbtS16(op1, op2)
 }
 
@@ -17900,13 +14096,7 @@ public fun svsublbtNS16(op1: Svint8T, op2: Byte): Svint16T = svsublbtS16(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_s32])
  */
 public fun svsublbtS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svsublbtS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsublbtS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsublbtS32(op1, op2)
 }
 
@@ -17921,13 +14111,7 @@ public fun svsublbtNS32(op1: Svint16T, op2: Short): Svint32T = svsublbtS32(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublbt[_s64])
  */
 public fun svsublbtS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svsublbtS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsublbtS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsublbtS64(op1, op2)
 }
 
@@ -17942,13 +14126,7 @@ public fun svsublbtNS64(op1: Svint32T, op2: Int): Svint64T = svsublbtS64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_s16])
  */
 public fun svsubltS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svsubltS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubltS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubltS16(op1, op2)
 }
 
@@ -17963,13 +14141,7 @@ public fun svsubltNS16(op1: Svint8T, op2: Byte): Svint16T = svsubltS16(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_s32])
  */
 public fun svsubltS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svsubltS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubltS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubltS32(op1, op2)
 }
 
@@ -17984,13 +14156,7 @@ public fun svsubltNS32(op1: Svint16T, op2: Short): Svint32T = svsubltS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_s64])
  */
 public fun svsubltS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svsubltS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubltS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubltS64(op1, op2)
 }
 
@@ -18005,13 +14171,7 @@ public fun svsubltNS64(op1: Svint32T, op2: Int): Svint64T = svsubltS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_u16])
  */
 public fun svsubltU16(op1: Svuint8T, op2: Svuint8T): Svuint16T {
-    fun svsubltU16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubltU16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubltU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18026,13 +14186,7 @@ public fun svsubltNU16(op1: Svuint8T, op2: UByte): Svuint16T = svsubltU16(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_u32])
  */
 public fun svsubltU32(op1: Svuint16T, op2: Svuint16T): Svuint32T {
-    fun svsubltU32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubltU32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubltU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18047,13 +14201,7 @@ public fun svsubltNU32(op1: Svuint16T, op2: UShort): Svuint32T = svsubltU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsublt[_u64])
  */
 public fun svsubltU64(op1: Svuint32T, op2: Svuint32T): Svuint64T {
-    fun svsubltU64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubltU64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubltU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18068,13 +14216,7 @@ public fun svsubltNU64(op1: Svuint32T, op2: UInt): Svuint64T = svsubltU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_s16])
  */
 public fun svsubltbS16(op1: Svint8T, op2: Svint8T): Svint16T {
-    fun svsubltbS16(op11: Svint8T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubltbS16(op11: Svint8T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubltbS16(op1, op2)
 }
 
@@ -18089,13 +14231,7 @@ public fun svsubltbNS16(op1: Svint8T, op2: Byte): Svint16T = svsubltbS16(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_s32])
  */
 public fun svsubltbS32(op1: Svint16T, op2: Svint16T): Svint32T {
-    fun svsubltbS32(op11: Svint16T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubltbS32(op11: Svint16T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubltbS32(op1, op2)
 }
 
@@ -18110,13 +14246,7 @@ public fun svsubltbNS32(op1: Svint16T, op2: Short): Svint32T = svsubltbS32(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubltb[_s64])
  */
 public fun svsubltbS64(op1: Svint32T, op2: Svint32T): Svint64T {
-    fun svsubltbS64(op11: Svint32T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubltbS64(op11: Svint32T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubltbS64(op1, op2)
 }
 
@@ -18131,13 +14261,7 @@ public fun svsubltbNS64(op1: Svint32T, op2: Int): Svint64T = svsubltbS64(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_s16])
  */
 public fun svsubwbS16(op1: Svint16T, op2: Svint8T): Svint16T {
-    fun svsubwbS16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubwbS16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubwbS16(op1, op2)
 }
 
@@ -18152,13 +14276,7 @@ public fun svsubwbNS16(op1: Svint16T, op2: Byte): Svint16T = svsubwbS16(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_s32])
  */
 public fun svsubwbS32(op1: Svint32T, op2: Svint16T): Svint32T {
-    fun svsubwbS32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubwbS32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubwbS32(op1, op2)
 }
 
@@ -18173,13 +14291,7 @@ public fun svsubwbNS32(op1: Svint32T, op2: Short): Svint32T = svsubwbS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_s64])
  */
 public fun svsubwbS64(op1: Svint64T, op2: Svint32T): Svint64T {
-    fun svsubwbS64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubwbS64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubwbS64(op1, op2)
 }
 
@@ -18194,13 +14306,7 @@ public fun svsubwbNS64(op1: Svint64T, op2: Int): Svint64T = svsubwbS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_u16])
  */
 public fun svsubwbU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
-    fun svsubwbU16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubwbU16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubwbU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18215,13 +14321,7 @@ public fun svsubwbNU16(op1: Svuint16T, op2: UByte): Svuint16T = svsubwbU16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_u32])
  */
 public fun svsubwbU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
-    fun svsubwbU32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubwbU32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubwbU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18236,13 +14336,7 @@ public fun svsubwbNU32(op1: Svuint32T, op2: UShort): Svuint32T = svsubwbU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwb[_u64])
  */
 public fun svsubwbU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
-    fun svsubwbU64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubwbU64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubwbU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18257,13 +14351,7 @@ public fun svsubwbNU64(op1: Svuint64T, op2: UInt): Svuint64T = svsubwbU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_s16])
  */
 public fun svsubwtS16(op1: Svint16T, op2: Svint8T): Svint16T {
-    fun svsubwtS16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubwtS16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubwtS16(op1, op2)
 }
 
@@ -18278,13 +14366,7 @@ public fun svsubwtNS16(op1: Svint16T, op2: Byte): Svint16T = svsubwtS16(op1, svd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_s32])
  */
 public fun svsubwtS32(op1: Svint32T, op2: Svint16T): Svint32T {
-    fun svsubwtS32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubwtS32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubwtS32(op1, op2)
 }
 
@@ -18299,13 +14381,7 @@ public fun svsubwtNS32(op1: Svint32T, op2: Short): Svint32T = svsubwtS32(op1, sv
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_s64])
  */
 public fun svsubwtS64(op1: Svint64T, op2: Svint32T): Svint64T {
-    fun svsubwtS64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubwtS64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubwtS64(op1, op2)
 }
 
@@ -18320,13 +14396,7 @@ public fun svsubwtNS64(op1: Svint64T, op2: Int): Svint64T = svsubwtS64(op1, svdu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_u16])
  */
 public fun svsubwtU16(op1: Svuint16T, op2: Svuint8T): Svuint16T {
-    fun svsubwtU16(op11: Svint16T, op21: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svsubwtU16(op11: Svint16T, op21: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svsubwtU16(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18341,13 +14411,7 @@ public fun svsubwtNU16(op1: Svuint16T, op2: UByte): Svuint16T = svsubwtU16(op1, 
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_u32])
  */
 public fun svsubwtU32(op1: Svuint32T, op2: Svuint16T): Svuint32T {
-    fun svsubwtU32(op11: Svint32T, op21: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svsubwtU32(op11: Svint32T, op21: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svsubwtU32(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18362,13 +14426,7 @@ public fun svsubwtNU32(op1: Svuint32T, op2: UShort): Svuint32T = svsubwtU32(op1,
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubwt[_u64])
  */
 public fun svsubwtU64(op1: Svuint64T, op2: Svuint32T): Svuint64T {
-    fun svsubwtU64(op11: Svint64T, op21: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svsubwtU64(op11: Svint64T, op21: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svsubwtU64(op1.asSigned(), op2.asSigned()).asUnsigned()
 }
 
@@ -18383,13 +14441,7 @@ public fun svsubwtNU64(op1: Svuint64T, op2: UInt): Svuint64T = svsubwtU64(op1, s
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_f32])
  */
 public fun svtbl2F32(data: Svfloat32x2T, indices: Svuint32T): Svfloat32T {
-    fun svtbl2F32(data0: Svfloat32T, data1: Svfloat32T, indices1: Svint32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svtbl2F32(data0: Svfloat32T, data1: Svfloat32T, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svtbl2F32(svget2F32(data, 0), svget2F32(data, 1), indices.asSigned())
 }
 
@@ -18398,13 +14450,7 @@ public fun svtbl2F32(data: Svfloat32x2T, indices: Svuint32T): Svfloat32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_f64])
  */
 public fun svtbl2F64(data: Svfloat64x2T, indices: Svuint64T): Svfloat64T {
-    fun svtbl2F64(data0: Svfloat64T, data1: Svfloat64T, indices1: Svint64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svtbl2F64(data0: Svfloat64T, data1: Svfloat64T, indices1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svtbl2F64(svget2F64(data, 0), svget2F64(data, 1), indices.asSigned())
 }
 
@@ -18413,13 +14459,7 @@ public fun svtbl2F64(data: Svfloat64x2T, indices: Svuint64T): Svfloat64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s8])
  */
 public fun svtbl2S8(data: Svint8x2T, indices: Svuint8T): Svint8T {
-    fun svtbl2S8(data0: Svint8T, data1: Svint8T, indices1: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svtbl2S8(data0: Svint8T, data1: Svint8T, indices1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svtbl2S8(svget2S8(data, 0), svget2S8(data, 1), indices.asSigned())
 }
 
@@ -18428,13 +14468,7 @@ public fun svtbl2S8(data: Svint8x2T, indices: Svuint8T): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s16])
  */
 public fun svtbl2S16(data: Svint16x2T, indices: Svuint16T): Svint16T {
-    fun svtbl2S16(data0: Svint16T, data1: Svint16T, indices1: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svtbl2S16(data0: Svint16T, data1: Svint16T, indices1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svtbl2S16(svget2S16(data, 0), svget2S16(data, 1), indices.asSigned())
 }
 
@@ -18443,13 +14477,7 @@ public fun svtbl2S16(data: Svint16x2T, indices: Svuint16T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s32])
  */
 public fun svtbl2S32(data: Svint32x2T, indices: Svuint32T): Svint32T {
-    fun svtbl2S32(data0: Svint32T, data1: Svint32T, indices1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svtbl2S32(data0: Svint32T, data1: Svint32T, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svtbl2S32(svget2S32(data, 0), svget2S32(data, 1), indices.asSigned())
 }
 
@@ -18458,13 +14486,7 @@ public fun svtbl2S32(data: Svint32x2T, indices: Svuint32T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbl2[_s64])
  */
 public fun svtbl2S64(data: Svint64x2T, indices: Svuint64T): Svint64T {
-    fun svtbl2S64(data0: Svint64T, data1: Svint64T, indices1: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svtbl2S64(data0: Svint64T, data1: Svint64T, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svtbl2S64(svget2S64(data, 0), svget2S64(data, 1), indices.asSigned())
 }
 
@@ -18497,13 +14519,7 @@ public fun svtbl2U64(data: Svuint64x2T, indices: Svuint64T): Svuint64T = svtbl2S
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_f32])
  */
 public fun svtbxF32(fallback: Svfloat32T, data: Svfloat32T, indices: Svuint32T): Svfloat32T {
-    fun svtbxF32(fallback1: Svfloat32T, data1: Svfloat32T, indices1: Svint32T): Svfloat32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes))
-            res
-        }
+    fun svtbxF32(fallback1: Svfloat32T, data1: Svfloat32T, indices1: Svint32T): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return svtbxF32(fallback, data, indices.asSigned())
 }
 
@@ -18512,13 +14528,7 @@ public fun svtbxF32(fallback: Svfloat32T, data: Svfloat32T, indices: Svuint32T):
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_f64])
  */
 public fun svtbxF64(fallback: Svfloat64T, data: Svfloat64T, indices: Svuint64T): Svfloat64T {
-    fun svtbxF64(fallback1: Svfloat64T, data1: Svfloat64T, indices1: Svint64T): Svfloat64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes))
-            res
-        }
+    fun svtbxF64(fallback1: Svfloat64T, data1: Svfloat64T, indices1: Svint64T): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return svtbxF64(fallback, data, indices.asSigned())
 }
 
@@ -18527,13 +14537,7 @@ public fun svtbxF64(fallback: Svfloat64T, data: Svfloat64T, indices: Svuint64T):
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s8])
  */
 public fun svtbxS8(fallback: Svint8T, data: Svint8T, indices: Svuint8T): Svint8T {
-    fun svtbxS8(fallback1: Svint8T, data1: Svint8T, indices1: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svtbxS8(fallback1: Svint8T, data1: Svint8T, indices1: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svtbxS8(fallback, data, indices.asSigned())
 }
 
@@ -18542,13 +14546,7 @@ public fun svtbxS8(fallback: Svint8T, data: Svint8T, indices: Svuint8T): Svint8T
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s16])
  */
 public fun svtbxS16(fallback: Svint16T, data: Svint16T, indices: Svuint16T): Svint16T {
-    fun svtbxS16(fallback1: Svint16T, data1: Svint16T, indices1: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svtbxS16(fallback1: Svint16T, data1: Svint16T, indices1: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svtbxS16(fallback, data, indices.asSigned())
 }
 
@@ -18557,13 +14555,7 @@ public fun svtbxS16(fallback: Svint16T, data: Svint16T, indices: Svuint16T): Svi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s32])
  */
 public fun svtbxS32(fallback: Svint32T, data: Svint32T, indices: Svuint32T): Svint32T {
-    fun svtbxS32(fallback1: Svint32T, data1: Svint32T, indices1: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svtbxS32(fallback1: Svint32T, data1: Svint32T, indices1: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svtbxS32(fallback, data, indices.asSigned())
 }
 
@@ -18572,13 +14564,7 @@ public fun svtbxS32(fallback: Svint32T, data: Svint32T, indices: Svuint32T): Svi
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svtbx[_s64])
  */
 public fun svtbxS64(fallback: Svint64T, data: Svint64T, indices: Svuint64T): Svint64T {
-    fun svtbxS64(fallback1: Svint64T, data1: Svint64T, indices1: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svtbxS64(fallback1: Svint64T, data1: Svint64T, indices1: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svtbxS64(fallback, data, indices.asSigned())
 }
 
@@ -18611,13 +14597,7 @@ public fun svtbxU64(fallback: Svuint64T, data: Svuint64T, indices: Svuint64T): S
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_b])
  */
 public fun svunpkhiB(op: SvboolT): SvboolT {
-    fun svunpkhiB(op1: SvboolT): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svunpkhiB(op1: SvboolT): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svunpkhiB(op).sveInto()
 }
 
@@ -18626,13 +14606,7 @@ public fun svunpkhiB(op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_s16])
  */
 public fun svunpkhiS16(op: Svint8T): Svint16T {
-    fun svunpkhiS16(op1: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svunpkhiS16(op1: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svunpkhiS16(op)
 }
 
@@ -18641,13 +14615,7 @@ public fun svunpkhiS16(op: Svint8T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_s32])
  */
 public fun svunpkhiS32(op: Svint16T): Svint32T {
-    fun svunpkhiS32(op1: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svunpkhiS32(op1: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svunpkhiS32(op)
 }
 
@@ -18656,13 +14624,7 @@ public fun svunpkhiS32(op: Svint16T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_s64])
  */
 public fun svunpkhiS64(op: Svint32T): Svint64T {
-    fun svunpkhiS64(op1: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svunpkhiS64(op1: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svunpkhiS64(op)
 }
 
@@ -18671,13 +14633,7 @@ public fun svunpkhiS64(op: Svint32T): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_u16])
  */
 public fun svunpkhiU16(op: Svuint8T): Svuint16T {
-    fun svunpkhiU16(op1: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svunpkhiU16(op1: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svunpkhiU16(op.asSigned()).asUnsigned()
 }
 
@@ -18686,13 +14642,7 @@ public fun svunpkhiU16(op: Svuint8T): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_u32])
  */
 public fun svunpkhiU32(op: Svuint16T): Svuint32T {
-    fun svunpkhiU32(op1: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svunpkhiU32(op1: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svunpkhiU32(op.asSigned()).asUnsigned()
 }
 
@@ -18701,13 +14651,7 @@ public fun svunpkhiU32(op: Svuint16T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpkhi[_u64])
  */
 public fun svunpkhiU64(op: Svuint32T): Svuint64T {
-    fun svunpkhiU64(op1: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svunpkhiU64(op1: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svunpkhiU64(op.asSigned()).asUnsigned()
 }
 
@@ -18716,13 +14660,7 @@ public fun svunpkhiU64(op: Svuint32T): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_b])
  */
 public fun svunpkloB(op: SvboolT): SvboolT {
-    fun svunpkloB(op1: SvboolT): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svunpkloB(op1: SvboolT): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svunpkloB(op).sveInto()
 }
 
@@ -18731,13 +14669,7 @@ public fun svunpkloB(op: SvboolT): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_s16])
  */
 public fun svunpkloS16(op: Svint8T): Svint16T {
-    fun svunpkloS16(op1: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svunpkloS16(op1: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svunpkloS16(op)
 }
 
@@ -18746,13 +14678,7 @@ public fun svunpkloS16(op: Svint8T): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_s32])
  */
 public fun svunpkloS32(op: Svint16T): Svint32T {
-    fun svunpkloS32(op1: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svunpkloS32(op1: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svunpkloS32(op)
 }
 
@@ -18761,13 +14687,7 @@ public fun svunpkloS32(op: Svint16T): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_s64])
  */
 public fun svunpkloS64(op: Svint32T): Svint64T {
-    fun svunpkloS64(op1: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svunpkloS64(op1: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svunpkloS64(op)
 }
 
@@ -18776,13 +14696,7 @@ public fun svunpkloS64(op: Svint32T): Svint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_u16])
  */
 public fun svunpkloU16(op: Svuint8T): Svuint16T {
-    fun svunpkloU16(op1: Svint8T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svunpkloU16(op1: Svint8T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svunpkloU16(op.asSigned()).asUnsigned()
 }
 
@@ -18791,13 +14705,7 @@ public fun svunpkloU16(op: Svuint8T): Svuint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_u32])
  */
 public fun svunpkloU32(op: Svuint16T): Svuint32T {
-    fun svunpkloU32(op1: Svint16T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svunpkloU32(op1: Svint16T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svunpkloU32(op.asSigned()).asUnsigned()
 }
 
@@ -18806,13 +14714,7 @@ public fun svunpkloU32(op: Svuint16T): Svuint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svunpklo[_u64])
  */
 public fun svunpkloU64(op: Svuint32T): Svuint64T {
-    fun svunpkloU64(op1: Svint32T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svunpkloU64(op1: Svint32T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svunpkloU64(op.asSigned()).asUnsigned()
 }
 
@@ -18821,13 +14723,7 @@ public fun svunpkloU64(op: Svuint32T): Svuint64T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s8]_m)
  */
 public fun svuqaddS8M(pg: SvboolT, op1: Svint8T, op2: Svuint8T): Svint8T {
-    fun svuqaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svuqaddS8M(pg1: SvboolT, op11: Svint8T, op21: Svint8T): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return svuqaddS8M(pg, op1, op2.asSigned())
 }
 
@@ -18866,13 +14762,7 @@ public fun svuqaddNS8Z(pg: SvboolT, op1: Svint8T, op2: UByte): Svint8T = svuqadd
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s16]_m)
  */
 public fun svuqaddS16M(pg: SvboolT, op1: Svint16T, op2: Svuint16T): Svint16T {
-    fun svuqaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svuqaddS16M(pg1: Svbool8T, op11: Svint16T, op21: Svint16T): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return svuqaddS16M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -18911,13 +14801,7 @@ public fun svuqaddNS16Z(pg: SvboolT, op1: Svint16T, op2: UShort): Svint16T = svu
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s32]_m)
  */
 public fun svuqaddS32M(pg: SvboolT, op1: Svint32T, op2: Svuint32T): Svint32T {
-    fun svuqaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svuqaddS32M(pg1: Svbool4T, op11: Svint32T, op21: Svint32T): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return svuqaddS32M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -18956,13 +14840,7 @@ public fun svuqaddNS32Z(pg: SvboolT, op1: Svint32T, op2: UInt): Svint32T = svuqa
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svuqadd[_s64]_m)
  */
 public fun svuqaddS64M(pg: SvboolT, op1: Svint64T, op2: Svuint64T): Svint64T {
-    fun svuqaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svuqaddS64M(pg1: Svbool2T, op11: Svint64T, op21: Svint64T): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return svuqaddS64M(pg.sveInto(), op1, op2.asSigned())
 }
 
@@ -19001,13 +14879,7 @@ public fun svuqaddNS64Z(pg: SvboolT, op1: Svint64T, op2: ULong): Svint64T = svuq
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_s32])
  */
 public fun svwhilegeB8S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegeB8S32(op11: Int, op21: Int): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegeB8S32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegeB8S32(op1, op2)
 }
 
@@ -19016,13 +14888,7 @@ public fun svwhilegeB8S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_s32])
  */
 public fun svwhilegeB16S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegeB16S32(op11: Int, op21: Int): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB16S32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegeB16S32(op1, op2).sveInto()
 }
 
@@ -19031,13 +14897,7 @@ public fun svwhilegeB16S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_s32])
  */
 public fun svwhilegeB32S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegeB32S32(op11: Int, op21: Int): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB32S32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegeB32S32(op1, op2).sveInto()
 }
 
@@ -19046,13 +14906,7 @@ public fun svwhilegeB32S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_s32])
  */
 public fun svwhilegeB64S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegeB64S32(op11: Int, op21: Int): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB64S32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegeB64S32(op1, op2).sveInto()
 }
 
@@ -19061,13 +14915,7 @@ public fun svwhilegeB64S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_s64])
  */
 public fun svwhilegeB8S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegeB8S64(op11: Long, op21: Long): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegeB8S64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegeB8S64(op1, op2)
 }
 
@@ -19076,13 +14924,7 @@ public fun svwhilegeB8S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_s64])
  */
 public fun svwhilegeB16S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegeB16S64(op11: Long, op21: Long): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB16S64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegeB16S64(op1, op2).sveInto()
 }
 
@@ -19091,13 +14933,7 @@ public fun svwhilegeB16S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_s64])
  */
 public fun svwhilegeB32S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegeB32S64(op11: Long, op21: Long): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB32S64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegeB32S64(op1, op2).sveInto()
 }
 
@@ -19106,13 +14942,7 @@ public fun svwhilegeB32S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_s64])
  */
 public fun svwhilegeB64S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegeB64S64(op11: Long, op21: Long): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB64S64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegeB64S64(op1, op2).sveInto()
 }
 
@@ -19121,13 +14951,7 @@ public fun svwhilegeB64S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_u32])
  */
 public fun svwhilegeB8U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegeB8U32(op11: Int, op21: Int): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegeB8U32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegeB8U32(op1.asSigned(), op2.asSigned())
 }
 
@@ -19136,13 +14960,7 @@ public fun svwhilegeB8U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_u32])
  */
 public fun svwhilegeB16U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegeB16U32(op11: Int, op21: Int): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB16U32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegeB16U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19151,13 +14969,7 @@ public fun svwhilegeB16U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_u32])
  */
 public fun svwhilegeB32U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegeB32U32(op11: Int, op21: Int): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB32U32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegeB32U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19166,13 +14978,7 @@ public fun svwhilegeB32U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_u32])
  */
 public fun svwhilegeB64U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegeB64U32(op11: Int, op21: Int): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB64U32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegeB64U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19181,13 +14987,7 @@ public fun svwhilegeB64U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB8[_u64])
  */
 public fun svwhilegeB8U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegeB8U64(op11: Long, op21: Long): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegeB8U64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegeB8U64(op1.asSigned(), op2.asSigned())
 }
 
@@ -19196,13 +14996,7 @@ public fun svwhilegeB8U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB16[_u64])
  */
 public fun svwhilegeB16U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegeB16U64(op11: Long, op21: Long): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB16U64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegeB16U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19211,13 +15005,7 @@ public fun svwhilegeB16U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB32[_u64])
  */
 public fun svwhilegeB32U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegeB32U64(op11: Long, op21: Long): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB32U64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegeB32U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19226,13 +15014,7 @@ public fun svwhilegeB32U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegeB64[_u64])
  */
 public fun svwhilegeB64U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegeB64U64(op11: Long, op21: Long): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegeB64U64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegeB64U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19241,13 +15023,7 @@ public fun svwhilegeB64U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_s32])
  */
 public fun svwhilegtB8S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegtB8S32(op11: Int, op21: Int): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegtB8S32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegtB8S32(op1, op2)
 }
 
@@ -19256,13 +15032,7 @@ public fun svwhilegtB8S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_s32])
  */
 public fun svwhilegtB16S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegtB16S32(op11: Int, op21: Int): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB16S32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegtB16S32(op1, op2).sveInto()
 }
 
@@ -19271,13 +15041,7 @@ public fun svwhilegtB16S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_s32])
  */
 public fun svwhilegtB32S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegtB32S32(op11: Int, op21: Int): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB32S32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegtB32S32(op1, op2).sveInto()
 }
 
@@ -19286,13 +15050,7 @@ public fun svwhilegtB32S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_s32])
  */
 public fun svwhilegtB64S32(op1: Int, op2: Int): SvboolT {
-    fun svwhilegtB64S32(op11: Int, op21: Int): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB64S32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegtB64S32(op1, op2).sveInto()
 }
 
@@ -19301,13 +15059,7 @@ public fun svwhilegtB64S32(op1: Int, op2: Int): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_s64])
  */
 public fun svwhilegtB8S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegtB8S64(op11: Long, op21: Long): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegtB8S64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegtB8S64(op1, op2)
 }
 
@@ -19316,13 +15068,7 @@ public fun svwhilegtB8S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_s64])
  */
 public fun svwhilegtB16S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegtB16S64(op11: Long, op21: Long): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB16S64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegtB16S64(op1, op2).sveInto()
 }
 
@@ -19331,13 +15077,7 @@ public fun svwhilegtB16S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_s64])
  */
 public fun svwhilegtB32S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegtB32S64(op11: Long, op21: Long): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB32S64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegtB32S64(op1, op2).sveInto()
 }
 
@@ -19346,13 +15086,7 @@ public fun svwhilegtB32S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_s64])
  */
 public fun svwhilegtB64S64(op1: Long, op2: Long): SvboolT {
-    fun svwhilegtB64S64(op11: Long, op21: Long): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB64S64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegtB64S64(op1, op2).sveInto()
 }
 
@@ -19361,13 +15095,7 @@ public fun svwhilegtB64S64(op1: Long, op2: Long): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_u32])
  */
 public fun svwhilegtB8U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegtB8U32(op11: Int, op21: Int): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegtB8U32(op11: Int, op21: Int): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegtB8U32(op1.asSigned(), op2.asSigned())
 }
 
@@ -19376,13 +15104,7 @@ public fun svwhilegtB8U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_u32])
  */
 public fun svwhilegtB16U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegtB16U32(op11: Int, op21: Int): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB16U32(op11: Int, op21: Int): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegtB16U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19391,13 +15113,7 @@ public fun svwhilegtB16U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_u32])
  */
 public fun svwhilegtB32U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegtB32U32(op11: Int, op21: Int): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB32U32(op11: Int, op21: Int): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegtB32U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19406,13 +15122,7 @@ public fun svwhilegtB32U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_u32])
  */
 public fun svwhilegtB64U32(op1: UInt, op2: UInt): SvboolT {
-    fun svwhilegtB64U32(op11: Int, op21: Int): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB64U32(op11: Int, op21: Int): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegtB64U32(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19421,13 +15131,7 @@ public fun svwhilegtB64U32(op1: UInt, op2: UInt): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB8[_u64])
  */
 public fun svwhilegtB8U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegtB8U64(op11: Long, op21: Long): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilegtB8U64(op11: Long, op21: Long): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     return svwhilegtB8U64(op1.asSigned(), op2.asSigned())
 }
 
@@ -19436,13 +15140,7 @@ public fun svwhilegtB8U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB16[_u64])
  */
 public fun svwhilegtB16U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegtB16U64(op11: Long, op21: Long): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB16U64(op11: Long, op21: Long): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     return svwhilegtB16U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19451,13 +15149,7 @@ public fun svwhilegtB16U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB32[_u64])
  */
 public fun svwhilegtB32U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegtB32U64(op11: Long, op21: Long): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB32U64(op11: Long, op21: Long): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     return svwhilegtB32U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
@@ -19466,63 +15158,33 @@ public fun svwhilegtB32U64(op1: ULong, op2: ULong): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svwhilegtB64[_u64])
  */
 public fun svwhilegtB64U64(op1: ULong, op2: ULong): SvboolT {
-    fun svwhilegtB64U64(op11: Long, op21: Long): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilegtB64U64(op11: Long, op21: Long): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     return svwhilegtB64U64(op1.asSigned(), op2.asSigned()).sveInto()
 }
 
 public fun svwhilerw8ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilerw8ptr(op11: ConstPtr, op21: ConstPtr): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilerw8ptr(op11: ConstPtr, op21: ConstPtr): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilerw8ptr(op11, op21)
 }
 
 public fun svwhilerw16ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilerw16ptr(op11: ConstPtr, op21: ConstPtr): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilerw16ptr(op11: ConstPtr, op21: ConstPtr): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilerw16ptr(op11, op21).sveInto()
 }
 
 public fun svwhilerw32ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilerw32ptr(op11: ConstPtr, op21: ConstPtr): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilerw32ptr(op11: ConstPtr, op21: ConstPtr): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilerw32ptr(op11, op21).sveInto()
 }
 
 public fun svwhilerw64ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilerw64ptr(op11: ConstPtr, op21: ConstPtr): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilerw64ptr(op11: ConstPtr, op21: ConstPtr): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilerw64ptr(op11, op21).sveInto()
@@ -19609,52 +15271,28 @@ public fun svwhilerwU32(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw32ptr<
 public fun svwhilerwU64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilerw64ptr<ULong>(op1, op2)
 
 public fun svwhilewr8ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilewr8ptr(op11: ConstPtr, op21: ConstPtr): SvboolT =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes))
-            res
-        }
+    fun svwhilewr8ptr(op11: ConstPtr, op21: ConstPtr): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); val res = (UnresolvedTypeLayout<SvboolT>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SvboolT>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilewr8ptr(op11, op21)
 }
 
 public fun svwhilewr16ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilewr16ptr(op11: ConstPtr, op21: ConstPtr): Svbool8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes))
-            res
-        }
+    fun svwhilewr16ptr(op11: ConstPtr, op21: ConstPtr): Svbool8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool8T>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilewr16ptr(op11, op21).sveInto()
 }
 
 public fun svwhilewr32ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilewr32ptr(op11: ConstPtr, op21: ConstPtr): Svbool4T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes))
-            res
-        }
+    fun svwhilewr32ptr(op11: ConstPtr, op21: ConstPtr): Svbool4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool4T>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilewr32ptr(op11, op21).sveInto()
 }
 
 public fun svwhilewr64ptr(op1: ConstPtr, op2: ConstPtr): SvboolT {
-    fun svwhilewr64ptr(op11: ConstPtr, op21: ConstPtr): Svbool2T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes))
-            res
-        }
+    fun svwhilewr64ptr(op11: ConstPtr, op21: ConstPtr): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svbool2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svbool2T>()).alignBytes)); res }
     val op11 = ConstPtr(op1.rawAddress, op1.rawMeta)
     val op21 = ConstPtr(op2.rawAddress, op2.rawMeta)
     return svwhilewr64ptr(op11, op21).sveInto()
@@ -19745,13 +15383,7 @@ public fun svwhilewrU64(op1: ConstPtr, op2: ConstPtr): SvboolT = svwhilewr64ptr<
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s8])
  */
 public fun svxarNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
-    fun svxarNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes))
-            res
-        }
+    fun svxarNS8(op11: Svint8T, op21: Svint8T, imm3: Int): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 8) { "IMM3 is not in range 1-8" }
     }
@@ -19763,13 +15395,7 @@ public fun svxarNS8(op1: Svint8T, op2: Svint8T, imm3: Int): Svint8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s16])
  */
 public fun svxarNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
-    fun svxarNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes))
-            res
-        }
+    fun svxarNS16(op11: Svint16T, op21: Svint16T, imm3: Int): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 16) { "IMM3 is not in range 1-16" }
     }
@@ -19781,13 +15407,7 @@ public fun svxarNS16(op1: Svint16T, op2: Svint16T, imm3: Int): Svint16T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s32])
  */
 public fun svxarNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
-    fun svxarNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes))
-            res
-        }
+    fun svxarNS32(op11: Svint32T, op21: Svint32T, imm3: Int): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 32) { "IMM3 is not in range 1-32" }
     }
@@ -19799,13 +15419,7 @@ public fun svxarNS32(op1: Svint32T, op2: Svint32T, imm3: Int): Svint32T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svxar[_n_s64])
  */
 public fun svxarNS64(op1: Svint64T, op2: Svint64T, imm3: Int): Svint64T {
-    fun svxarNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T =
-        run {
-            val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr)
-            kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes))
-            res
-        }
+    fun svxarNS64(op11: Svint64T, op21: Svint64T, imm3: Int): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     run {
         check(1 <= imm3 && imm3 <= 64) { "IMM3 is not in range 1-64" }
     }

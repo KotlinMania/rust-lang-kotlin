@@ -12,23 +12,17 @@ import io.github.kotlinmania.rustlang.corearch.armshared.Isb
  * Full system is the required shareability domain, reads and writes are the
  * required access types
  */
-public open class SY :
-    Dmb,
-    Dsb,
-    Isb {
+public open class SY : Dmb, Dsb, Isb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.SY)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.SY)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.SY)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.SY)
     }
 
     public override fun isb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .isb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.SY)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.isb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.SY)
     }
 
     public companion object {

@@ -46,17 +46,17 @@ public fun demangle(s: String): Demangle {
     var style =
         run {
             val matchVal1 = io.github.kotlinmania.rustlang.rustcdemangle.legacy.demangle(s1)
-            when (matchVal1) { is Result.Ok<*, *> -> {
+            when (matchVal1) { is Result.Ok -> {
                 val okVal = matchVal1.value
                 val d = okVal.first
                 val s2 = okVal.second
                 suffix = s2
                 DemangleStyle.Legacy(d)
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 run {
                     val matchVal2 = io.github.kotlinmania.rustlang.rustcdemangle.v0.demangle(s1)
                     when {
-                        matchVal2 is Result.Ok<*, *> -> {
+                        matchVal2 is Result.Ok -> {
                             suffix = s1
                             DemangleStyle.v0(d)
                         }
@@ -65,7 +65,7 @@ public fun demangle(s: String): Demangle {
                         // v0-mangled, and have the error show up in the demangling?
                         // (that error already gets past this initial check, and therefore
                         // will show up in the demangling, if hidden behind a backref)
-                        matchVal2 is Result.Err<*, *> && matchVal2.error == ParseError.Invalid -> null
+                        matchVal2 is Result.Err && matchVal2.error == ParseError.Invalid -> null
                         else -> null
                     }
                 }
@@ -112,7 +112,7 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
                     }
                 }
             }
-        when (val tryResult = output.writeAll(line.substring(head until nextHead).encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = output.writeAll(line.substring(head until nextHead).encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         head = nextHead
         // Find the non-matching character.
         //
@@ -131,11 +131,11 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
                 }
             }
             else -> {
-                when (val tryResult = output.writeAll(mangled.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (val tryResult = output.writeAll(mangled.encodeToByteArray().map { it.toUByte() })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
             }
         }
     }
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Error>(Unit)
 }
 
 /**
@@ -153,11 +153,11 @@ public fun <R : BufRead, W : Write> demangleStream(input: R, output: W, includeH
     // demangleLine is also more efficient with relatively small buffers as it will copy around
     // trailing data during demangling. In the future we might directly stream to the output but at
     // least right now that seems to be less efficient.
-    while (when (val tryResult = input.readLine(buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) } > 0) {
-        when (val tryResult = demangleLine(buf, output, includeHash)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    while (when (val tryResult = input.readLine(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) } > 0) {
+        when (val tryResult = demangleLine(buf, output, includeHash)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         buf = ""
     }
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Error>(Unit)
 }
 
 /**
@@ -175,9 +175,9 @@ public fun <R : BufRead, W : Write> demangleStream(input: R, output: W, includeH
 public fun tryDemangle(s: String): Result<Demangle, TryDemangleError> {
     val sym = demangle(s)
     return if (sym.style != null) {
-        Result.Ok(sym)
+        Result.Ok<Demangle, TryDemangleError>(sym)
     } else {
-        Result.Err(TryDemangleError(priv = Unit))
+        Result.Err<Demangle, TryDemangleError>(TryDemangleError(priv = Unit))
     }
 }
 

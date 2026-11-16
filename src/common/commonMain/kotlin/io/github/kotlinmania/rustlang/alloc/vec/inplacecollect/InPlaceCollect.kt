@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -177,10 +178,10 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 public typealias Src = Item
 
-public fun <Dest, Src> inPlaceCollectible(stepMerge: NonZero<Int>?, stepExpand: NonZero<Int>?, typeLayoutSrc: TypeLayout<Src>, typeLayoutDest: TypeLayout<Dest>): Boolean {
+public fun <Dest, Src> inPlaceCollectible(stepMerge: NonZero<Int, NonZeroUsizeInner>?, stepExpand: NonZero<Int, NonZeroUsizeInner>?, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout(), typeLayoutDest: TypeLayout<Dest> = UnresolvedTypeLayout()): Boolean {
     // Require matching alignments because an alignment-changing realloc is inefficient on many
     // system allocators and better implementations would require the unstable Allocator trait.
-    if (Src.IS_ZST || Dest.IS_ZST || alignOf<Src>(typeLayoutT = typeLayoutSrc) != alignOf<Dest>(typeLayoutT = typeLayoutDest)) {
+    if (((typeLayoutSrc).sizeBytes == 0L) || ((typeLayoutDest).sizeBytes == 0L) || alignOf<Src>(typeLayoutT = typeLayoutSrc) != alignOf<Dest>(typeLayoutT = typeLayoutDest)) {
         return false
     }
     return run {
@@ -202,7 +203,7 @@ public fun <Dest, Src> inPlaceCollectible(stepMerge: NonZero<Int>?, stepExpand: 
     }
 }
 
-public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: TypeLayout<Src>, typeLayoutDest: TypeLayout<Dest>): Boolean {
+public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout(), typeLayoutDest: TypeLayout<Dest> = UnresolvedTypeLayout()): Boolean {
     if (alignOf<Src>(typeLayoutT = typeLayoutSrc) != alignOf<Dest>(typeLayoutT = typeLayoutDest)) {
         // Note(const-Note): use unreachable once that works in const
         error("in_place_collectible() prevents this")
@@ -211,11 +212,10 @@ public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: Typ
     // the caller will have calculated a `dstCap` that is an integer multiple of
     // `srcCap` without remainder.
     if (run {
-            val srcSz = sizeOf<Src>(typeLayoutT = typeLayoutSrc)
-            val destSz = sizeOf<Dest>(typeLayoutT = typeLayoutDest)
-            destSz != 0 && srcSz % destSz == 0
-        }
-    ) {
+        val srcSz = sizeOf<Src>(typeLayoutT = typeLayoutSrc)
+        val destSz = sizeOf<Dest>(typeLayoutT = typeLayoutDest)
+        destSz != 0 && srcSz % destSz == 0
+    }) {
         return false
     }
     // type layouts don't guarantee a fit, so do a runtime check to see if
@@ -226,11 +226,9 @@ public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: Typ
 /**
  * This provides a shorthand for the source type since local type aliases aren't a thing.
  */
-public interface InPlaceCollect<out Src> :
-    SourceIter,
-    InPlaceIterable
+public interface InPlaceCollect<out Src> : SourceIter, InPlaceIterable
 
-public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: TypeLayout<T>): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
+public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
     // Select the implementation in const eval to avoid codegen of the dead branch to improve compile times.
     val fn: (I) -> List<T> =
         if (inPlaceCollectible<T, Src>(I.MERGE_BY, I.EXPAND_BY, typeLayoutSrc = UnresolvedTypeLayout<Src>(), typeLayoutDest = typeLayoutT)) {
@@ -242,7 +240,7 @@ public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: 
     return fn(iterator)
 }
 
-public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayout<T>): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
+public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
     // ignore-tidy-undocumented-unchecked
     var (srcBuf, srcPtr, srcCap, dstBuf, dstEnd, dstCap) =
         run {
@@ -280,7 +278,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
     // Since the discrepancy should generally be small this should only result in some
     // bookkeeping updates and no memmove.
     if (needsRealloc<Src, T>(srcCap, dstCap, typeLayoutSrc = UnresolvedTypeLayout<Src>(), typeLayoutDest = typeLayoutT)) {
-        val alloc = Global
+        val alloc = Global()
         check(srcCap != 0)
         check(dstCap != 0)
         // ignore-tidy-undocumented-unchecked
@@ -295,7 +293,7 @@ public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayou
             val dstSize = sizeOf<T>(typeLayoutT = typeLayoutT).uncheckedMul(dstCap)
             val newLayout = Layout.fromSizeAlignUnchecked(dstSize, dstAlign)
             val result = alloc.shrink(dstBuf.cast(), oldLayout, newLayout)
-            val reallocated = result ?: handleAllocError(newLayout)
+            val reallocated = when (val tryResult = result) { is Result.Ok -> tryResult.value; is Result.Err -> handleAllocError(newLayout) }
             dstBuf = reallocated.cast()
         }
     } else {
@@ -352,7 +350,7 @@ public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr): Int where I :
     return sink1.dst.offsetFromUnsigned(dstBuf)
 }
 
-public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr, typeLayoutT: TypeLayout<T>): Int where I : Iterator<T>, I : TrustedRandomAccessNoCoerce {
+public fun <T, I> I.collectInPlace(dstBuf: MutPtr, end: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int where I : Iterator<T>, I : TrustedRandomAccessNoCoerce {
     val len = this.size()
     val dropGuard = InPlaceDrop(inner = dstBuf, dst = dstBuf)
     for (i in 0 until len) {

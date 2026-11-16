@@ -81,7 +81,7 @@ public open class Dlmalloc<A>(
             val res = this.malloc(newSize, oldAlign)
             if (!res.isNull()) {
                 val size = minOf(oldSize, newSize)
-                copyNonoverlapping(ptr, res, size, typeLayoutT = PrimitiveLayouts.U8)
+                copyNonoverlapping((ptr).asConstPtr(), res, size, typeLayoutT = PrimitiveLayouts.U8)
                 this.free(ptr, oldSize, oldAlign)
             }
             res

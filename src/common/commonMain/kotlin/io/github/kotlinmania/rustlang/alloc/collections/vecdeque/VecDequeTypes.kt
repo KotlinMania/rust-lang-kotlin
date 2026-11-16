@@ -1,12 +1,15 @@
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.Add
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Output = Int
 
@@ -44,7 +47,7 @@ public fun wrapIndex(logicalIndex: Int, capacity: Int): WrappedIndex {
  */
 public open class WrappedIndex internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : Add<Int, Int> {
     public var field0: Int
         get() = value
@@ -54,11 +57,9 @@ public open class WrappedIndex internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<WrappedIndex> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WrappedIndex(ptr, layout) }, { it.value })
 
@@ -85,25 +86,23 @@ public open class WrappedIndex internal constructor(
 
     public open fun addInt(rhs: Int): Int = this.value + rhs
 
-    public open fun fmt(f: StringBuilder) {
-        this.value.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.value.fmt(f)
 
     public open fun eq(other: Int): Boolean = this.value.eq(other)
 
     public open fun partialCmp(other: Int): Ordering? = this.value.partialCmp(other)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): WrappedIndex = WrappedIndex(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): WrappedIndex = WrappedIndex(fieldStorage, fieldLayout)
 
         /**
          * The newly constructed index has to be in-bounds for the VecDeque
          * that uses the index.
          */
-        public fun fromArbitraryNumber(index: Int, fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(index, fieldLayout = fieldLayout)
+        public fun fromArbitraryNumber(index: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): WrappedIndex = WrappedIndex(index, fieldLayout = fieldLayout)
 
-        public fun zero(fieldLayout: TypeLayout<Int>): WrappedIndex = WrappedIndex(0, fieldLayout = fieldLayout)
+        public fun zero(fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): WrappedIndex = WrappedIndex(0, fieldLayout = fieldLayout)
     }
 }

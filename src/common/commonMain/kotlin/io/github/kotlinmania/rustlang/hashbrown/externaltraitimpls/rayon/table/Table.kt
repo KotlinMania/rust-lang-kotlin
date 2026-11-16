@@ -1,6 +1,8 @@
 // port-lint: source external_trait_impls/rayon/table.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.table
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.HashTable
 import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawIntoParIter
@@ -29,9 +31,9 @@ public open class ParIter<T>(
 
     public open fun clone(): ParIter<T> = ParIter(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val iter = this.inner.iter().map({ x -> x.asRef() })
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
     }
 }
 
@@ -51,9 +53,7 @@ public open class ParIterMut<T>(
 ) : ParallelIterator {
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.inner.map({ x -> x.asMut() }).driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParIter(inner = this.inner.clone(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.clone(), marker = Unit).fmt(f)
 }
 
 /**
@@ -74,9 +74,7 @@ public open class IntoParIter<T, A : Allocator> internal constructor(
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.inner.driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
@@ -103,9 +101,7 @@ public open class ParDrain<T, A : Allocator> internal constructor(
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<T> = this.inner.driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(

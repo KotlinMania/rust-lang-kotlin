@@ -224,7 +224,7 @@ public open class Options(
         val args1 =
             when (val tryResult = args.iterator().map({ i ->
                 i.asRef().toStr().okOrElse({ Fail.UnrecognizedOption("${i.asRef()}") }).map({ s -> s.toOwned() })
-            }).collect<kotlin.Result<Vec>>()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            }).collect<kotlin.Result<Vec>>()) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
         val args2 = args1.intoIter().peekable()
         var argPos = 0
         while (true) {
@@ -815,14 +815,14 @@ public open class Matches(
      *
      * This function will panic if the option name is not defined.
      */
-    public open fun <Err, T> optGet(name: String): Result<T?, Err> where T : FromStr<Any?> {
+    public open fun <Err, T> optGet(name: String): io.github.kotlinmania.rustlang.core.result.Result<T?, Err> where T : FromStr<Any?> {
         return when (val matchVal = this.optVal(name)) {
             is Val -> {
                 val (s) = matchVal as Val
-                RustResult.Ok(when (val tryResult = s.parse()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) })
+                RustResult.Ok<T?, Err>(when (val tryResult = s.parse()) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err<T?, Err>(tryResult.error) })
             }
-            Given -> RustResult.Ok(null)
-            null -> RustResult.Ok(null)
+            Given -> RustResult.Ok<T?, Err>(null)
+            null -> RustResult.Ok<T?, Err>(null)
         }
     }
 
@@ -837,14 +837,14 @@ public open class Matches(
      *
      * This function will panic if the option name is not defined.
      */
-    public open fun <Err, T> optGetDefault(name: String, def: T): Result<T, Err> where T : FromStr<Any?> =
+    public open fun <Err, T> optGetDefault(name: String, def: T): io.github.kotlinmania.rustlang.core.result.Result<T, Err> where T : FromStr<Any?> =
         when (val matchVal = this.optVal(name)) {
             is Val -> {
                 val (s) = matchVal as Val
                 s.parse()
             }
-            Given -> RustResult.Ok(def)
-            null -> RustResult.Ok(def)
+            Given -> RustResult.Ok<T, Err>(def)
+            null -> RustResult.Ok<T, Err>(def)
         }
 
     /**

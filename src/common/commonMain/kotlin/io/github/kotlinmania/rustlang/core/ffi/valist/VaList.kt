@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.marker.variance.PhantomCovariantLifet
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -142,14 +143,13 @@ public open class VaListInner internal constructor(
             vrTop: ConstPtr,
             grOffs: Int,
             vrOffs: Int,
-        ): VaListInner =
-            VaListInner(
-                stackCtorArg = stack,
-                grTopCtorArg = grTop,
-                vrTopCtorArg = vrTop,
-                grOffs = grOffs,
-                vrOffs = vrOffs,
-            )
+        ): VaListInner = VaListInner(
+            stackCtorArg = stack,
+            grTopCtorArg = grTop,
+            vrTopCtorArg = vrTop,
+            grOffs = grOffs,
+            vrOffs = vrOffs,
+        )
     }
 }
 
@@ -315,7 +315,7 @@ public interface VaArgSafe
 // on a private type so that the feature is defined on all targets.
 public open class S internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) {
     public var field0: Int
         get() = value
@@ -325,20 +325,18 @@ public open class S internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<S> = TransparentTypeLayout(fieldLayout, { ptr, layout -> S(ptr, layout) }, { it.value })
 
     public open fun clone(): S = S(value, fieldLayout)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): S = S(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): S = S(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): S = S(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): S = S(fieldStorage, fieldLayout)
     }
 }
 

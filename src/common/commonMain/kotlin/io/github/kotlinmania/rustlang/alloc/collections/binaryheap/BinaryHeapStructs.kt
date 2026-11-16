@@ -1,8 +1,10 @@
 package io.github.kotlinmania.rustlang.alloc.collections.binaryheap
 
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
@@ -10,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -155,22 +158,10 @@ public open class BinaryHeap<T, A : Allocator>(
      * See [Vec.cloneFrom] for more details.
      */
     public open fun cloneFrom(source: BinaryHeap<T, A>) {
-        run {
-            this.data.clear()
-            this.data.addAll(source.data)
-        }
+        run { this.data.clear(); this.data.addAll(source.data) }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object {
-            val entries = mutableListOf<Any?>()
-            fun entry(v: Any?) = apply { entries.add(v) }
-            fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
-            fun finish() {
-                f.append(entries.joinToString(", ", "[", "]"))
-            }
-        }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     /**
      * Returns a mutable reference to the greatest item in the binary heap, or
@@ -819,7 +810,9 @@ public open class BinaryHeap<T, A : Allocator>(
      * Basic usage:
      *
      * ```kotlin
-     * var heap: BinaryHeap<Int> = BinaryHeap.withCapacity(100)
+     * import alloc.Global
+     *
+     * var heap: BinaryHeap<Int, Global> = BinaryHeap.withCapacity(100)
      * check(heap.capacity() >= 100)
      * heap.shrinkToFit()
      * check(heap.capacity() == 0)
@@ -840,7 +833,9 @@ public open class BinaryHeap<T, A : Allocator>(
      * # Examples
      *
      * ```kotlin
-     * var heap: BinaryHeap<Int> = BinaryHeap.withCapacity(100)
+     * import alloc.Global
+     *
+     * var heap: BinaryHeap<Int, Global> = BinaryHeap.withCapacity(100)
      * check(heap.capacity() >= 100)
      * heap.shrinkTo(10)
      * check(heap.capacity() >= 10)
@@ -1122,7 +1117,7 @@ public open class BinaryHeap<T, A : Allocator>(
 /**
  * Creates an empty `BinaryHeap<T>`.
  */
-public fun <T> defaultBinaryHeapT(): BinaryHeap<T> = BinaryHeap.new()
+public fun <T> defaultBinaryHeapT(): BinaryHeap<T, Global> = BinaryHeap.new()
 
 /**
  * Creates an empty `BinaryHeap` as a max-heap.
@@ -1136,7 +1131,7 @@ public fun <T> defaultBinaryHeapT(): BinaryHeap<T> = BinaryHeap.new()
  * heap.push(4)
  * ```
  */
-public fun <T> BinaryHeap.Companion.new(): BinaryHeap<T> = BinaryHeap(data = mutableListOf())
+public fun <T> BinaryHeap.Companion.new(): BinaryHeap<T, Global> = BinaryHeap(data = mutableListOf())
 
 /**
  * Creates an empty `BinaryHeap` with at least the specified capacity.
@@ -1154,7 +1149,7 @@ public fun <T> BinaryHeap.Companion.new(): BinaryHeap<T> = BinaryHeap(data = mut
  * heap.push(4)
  * ```
  */
-public fun <T> BinaryHeap.Companion.withCapacity(capacity: Int): BinaryHeap<T> = BinaryHeap(data = ArrayList(capacity))
+public fun <T> BinaryHeap.Companion.withCapacity(capacity: Int): BinaryHeap<T, Global> = BinaryHeap(data = ArrayList(capacity))
 
 /**
  * ```kotlin
@@ -1169,9 +1164,9 @@ public fun <T> BinaryHeap.Companion.withCapacity(capacity: Int): BinaryHeap<T> =
  * }
  * ```
  */
-public fun <T> fromBinaryHeapT(arr: List<T>, n: Int): BinaryHeap<T> = BinaryHeap.fromIter(arr)
+public fun <T> fromBinaryHeapT(arr: List<T>, n: Int): BinaryHeap<T, Global> = BinaryHeap.fromIter(arr)
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterBinaryHeapT(iter: I): BinaryHeap<T> = BinaryHeap.from(iter.iterator().collect<Vec>())
+public fun <T, I : Iterable<T>> fromIteratorFromIterBinaryHeapT(iter: I): BinaryHeap<T, Global> = BinaryHeap.from(iter.iterator().collect<Vec>())
 
 /**
  * Structure wrapping a mutable reference to the greatest item on a
@@ -1184,19 +1179,17 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterBinaryHeapT(iter: I): Binary
  */
 public open class PeekMut<T, A : Allocator> internal constructor(
     heapCtorArg: BinaryHeap<T, A>,
-    originalLenCtorArg: NonZero<Int>?,
+    originalLenCtorArg: NonZero<Int, NonZeroUsizeInner>?,
 ) {
     public var heap: BinaryHeap<T, A> = heapCtorArg
         internal set
 
     // If a setLen + siftDown are required, this is Some. If a T has not
     // yet been exposed to peekMut()'s caller, it's None.
-    public var originalLen: NonZero<Int>? = originalLenCtorArg
+    public var originalLen: NonZero<Int, NonZeroUsizeInner>? = originalLenCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "PeekMut").field(this.heap.data[0]).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "PeekMut").field(this.heap.data[0]).finish()
 
     public open fun drop() {
         when (val matchVal = this.originalLen) {
@@ -1234,7 +1227,7 @@ public open class PeekMut<T, A : Allocator> internal constructor(
             // This is technique is described throughout several other places in
             // the standard library as "leak amplification".
             // SAFETY: len > 1 so len != 0.
-            this.originalLen = NonZero.newUnchecked(len)
+            this.originalLen = NonZero.newUnchecked<NonZeroUsizeInner, Int>(len)
             // SAFETY: len > 1 so all this does for now is leak elements,
             // which is safe.
             this.heap.data.setLen(1)
@@ -1255,9 +1248,11 @@ public open class PeekMut<T, A : Allocator> internal constructor(
      * element list and requires no additional allocation.
      *
      * ```kotlin
+     * import alloc.Global
+     *
      * @feature(binaryHeapPeekMutRefresh)
      * public fun doctestEntry() {
-     *     var heap: BinaryHeap<UInt> = (0 until 128).collect()
+     *     var heap: BinaryHeap<UInt, Global> = (0 until 128).collect()
      *     var peek = heap.peekMut().unwrap()
      *     while (true) {
      *         peek = 99
@@ -1273,9 +1268,11 @@ public open class PeekMut<T, A : Allocator> internal constructor(
      * When the element remains the maximum after modification, the peek remains unchanged:
      *
      * ```kotlin
+     * import alloc.Global
+     *
      * @feature(binaryHeapPeekMutRefresh)
      * public fun doctestEntry() {
-     *     var heap: BinaryHeap<UInt> = listOf(1, 2, 3).into()
+     *     var heap: BinaryHeap<UInt, Global> = listOf(1, 2, 3).into()
      *     var peek = heap.peekMut().unwrap()
      *     check(peek == 3)
      *     peek = 42
@@ -1311,12 +1308,11 @@ public open class PeekMut<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             heap: BinaryHeap<T, A>,
-            originalLen: NonZero<Int>?,
-        ): PeekMut<T, A> =
-            PeekMut<T, A>(
-                heapCtorArg = heap,
-                originalLenCtorArg = originalLen,
-            )
+            originalLen: NonZero<Int, NonZeroUsizeInner>?,
+        ): PeekMut<T, A> = PeekMut<T, A>(
+            heapCtorArg = heap,
+            originalLenCtorArg = originalLen,
+        )
 
         /**
          * Removes the peeked value from the heap and returns it.
@@ -1356,11 +1352,10 @@ public open class RebuildOnDrop<T, A : Allocator> internal constructor(
         public operator fun <T, A : Allocator> invoke(
             heap: BinaryHeap<T, A>,
             rebuildFrom: Int,
-        ): RebuildOnDrop<T, A> =
-            RebuildOnDrop<T, A>(
-                heapCtorArg = heap,
-                rebuildFrom = rebuildFrom,
-            )
+        ): RebuildOnDrop<T, A> = RebuildOnDrop<T, A>(
+            heapCtorArg = heap,
+            rebuildFrom = rebuildFrom,
+        )
     }
 }
 
@@ -1453,30 +1448,23 @@ public open class Hole<T>(
 public open class Iter<T>(
     public var iter: ArrayDeque<T>,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Iter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Iter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(this.iter.toList()).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(this.iter.toList()).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(iter = ArrayDeque(this.iter))
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 
-    public open fun sizeHint(): Pair<Int, Int?> =
-        run {
-            val n = this.iter.size
-            Pair(n, n)
-        }
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun last(): T? = this.iter.last()
 
@@ -1507,18 +1495,15 @@ public open class Iter<T>(
  */
 public open class IntoIter<T, A : Allocator>(
     public var iter: ArrayDeque<T>,
-) : TrustedFused,
-    SourceIter,
-    Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IntoIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedFused, SourceIter, Iterable<T> {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IntoIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IntoIter<T, A> = IntoIter(iter)
 
@@ -1527,17 +1512,11 @@ public open class IntoIter<T, A : Allocator>(
      */
     public open fun allocator(): A = this.iter.allocator()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IntoIter").field(this.iter.toList()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.iter.toList()).finish()
 
     public open fun next(): T? = this.iter.removeFirstOrNull()
 
-    public open fun sizeHint(): Pair<Int, Int?> =
-        run {
-            val n = this.iter.size
-            Pair(n, n)
-        }
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun nextBack(): T? = this.iter.removeLastOrNull()
 
@@ -1556,30 +1535,28 @@ public open class IntoIter<T, A : Allocator>(
  * check(iter.len() == 0)
  * ```
  */
-public fun <T> defaultIntoIterT(): IntoIter<T> = IntoIter(iter = Default.default())
+public fun <T> defaultIntoIterT(): IntoIter<T, Global> = IntoIter(iter = Default.default())
 
-public val EXPAND_BY: NonZero<Int>? = NonZero.new(1)
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = NonZero.new(1)
 
-public val MERGE_BY: NonZero<Int>? = NonZero.new(1)
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = NonZero.new(1)
 
-public fun <I> IntoIter<I>.asIntoIter(): ArrayDeque<I> = this.iter
+public fun <I> IntoIter<I, Global>.asIntoIter(): ArrayDeque<I> = this.iter
 
 public open class IntoIterSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IntoIterSorted.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IntoIterSorted.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IntoIterSorted<T, A> = IntoIterSorted(inner)
 
@@ -1598,10 +1575,9 @@ public open class IntoIterSorted<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             inner: BinaryHeap<T, A>,
-        ): IntoIterSorted<T, A> =
-            IntoIterSorted<T, A>(
-                innerCtorArg = inner,
-            )
+        ): IntoIterSorted<T, A> = IntoIterSorted<T, A>(
+            innerCtorArg = inner,
+        )
     }
 }
 
@@ -1619,15 +1595,14 @@ public open class Drain<T, A : Allocator> internal constructor(
     public var iter: vec.Drain<T, A> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Drain.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Drain.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -1645,10 +1620,9 @@ public open class Drain<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             iter: vec.Drain<T, A>,
-        ): Drain<T, A> =
-            Drain<T, A>(
-                iterCtorArg = iter,
-            )
+        ): Drain<T, A> = Drain<T, A>(
+            iterCtorArg = iter,
+        )
     }
 }
 
@@ -1662,20 +1636,18 @@ public open class Drain<T, A : Allocator> internal constructor(
  */
 public open class DrainSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@DrainSorted.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@DrainSorted.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     /**
      * Returns a reference to the underlying allocator.
@@ -1719,9 +1691,8 @@ public open class DrainSorted<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             inner: BinaryHeap<T, A>,
-        ): DrainSorted<T, A> =
-            DrainSorted<T, A>(
-                innerCtorArg = inner,
-            )
+        ): DrainSorted<T, A> = DrainSorted<T, A>(
+            innerCtorArg = inner,
+        )
     }
 }

@@ -29,9 +29,8 @@ public open class ResumeTy internal constructor(
     public companion object {
         public operator fun invoke(
             value: NonNull,
-        ): ResumeTy =
-            ResumeTy(
-                valueCtorArg = value,
-            )
+        ): ResumeTy = ResumeTy(
+            valueCtorArg = value,
+        )
     }
 }

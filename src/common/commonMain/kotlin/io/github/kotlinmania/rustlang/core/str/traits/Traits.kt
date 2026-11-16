@@ -169,8 +169,8 @@ public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.index(slice:
 
 public fun io.github.kotlinmania.rustlang.core.ops.range.Range<Int>.indexMut(slice: String): String = range.Range.from(this).indexMut(slice)
 
-public fun range.Range<Int>.get(slice: String): String? =
-    if (checkRange(slice, this)) {
+public fun range.Range<Int>.get(slice: String): String? {
+    return if (checkRange(slice, this)) {
         // SAFETY: just checked that `self` is in bounds,
         // and we are passing in a safe reference, so the return value will also be one.
         // We also checked char boundaries, so this is valid UTF-8.
@@ -178,6 +178,7 @@ public fun range.Range<Int>.get(slice: String): String? =
     } else {
         null
     }
+}
 
 public fun range.Range<Int>.getMut(slice: String): String? =
     if (checkRange(slice, this)) {
@@ -287,23 +288,25 @@ public fun Pair<Bound<Int>, Bound<Int>>.indexMut(slice: String): String = intoSl
  * Panics if `end` does not point to the starting byte offset of a
  * character (as defined by `isCharBoundary`), or if `end> len`.
  */
-public fun RangeTo<Int>.get(slice: String): String? =
-    if (slice.isCharBoundary(this.end)) {
+public fun RangeTo<Int>.get(slice: String): String? {
+    return if (slice.isCharBoundary(this.end)) {
         // SAFETY: just checked that `end` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         (UnresolvedTypeLayout<String>()).readNative((this.getUnchecked(slice)).rawAddress)
     } else {
         null
     }
+}
 
-public fun RangeTo<Int>.getMut(slice: String): String? =
-    if (slice.isCharBoundary(this.end)) {
+public fun RangeTo<Int>.getMut(slice: String): String? {
+    return if (slice.isCharBoundary(this.end)) {
         // SAFETY: just checked that `end` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         RustMutableReference(MutPtr((this.getUncheckedMut(slice)).rawAddress), UnresolvedTypeLayout<String>())
     } else {
         null
     }
+}
 
 public fun RangeTo<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
@@ -326,14 +329,15 @@ public fun RangeTo<Int>.index(slice: String): String {
     }
 }
 
-public fun RangeTo<Int>.indexMut(slice: String): String =
-    if (slice.isCharBoundary(this.end)) {
+public fun RangeTo<Int>.indexMut(slice: String): String {
+    return if (slice.isCharBoundary(this.end)) {
         // SAFETY: just checked that `end` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         RustMutableReference(MutPtr((this.getUncheckedMut(slice)).rawAddress), UnresolvedTypeLayout<String>())
     } else {
         sliceErrorFail(slice, 0, this.end)
     }
+}
 
 /**
  * Implements substring slicing with syntax `self[begin ..]` or `&mut
@@ -352,23 +356,25 @@ public fun RangeTo<Int>.indexMut(slice: String): String =
  * Panics if `begin` does not point to the starting byte offset of
  * a character (as defined by `isCharBoundary`), or if `begin> len`.
  */
-public fun RangeFrom<Int>.get(slice: String): String? =
-    if (slice.isCharBoundary(this.start)) {
+public fun RangeFrom<Int>.get(slice: String): String? {
+    return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         (UnresolvedTypeLayout<String>()).readNative((this.getUnchecked(slice)).rawAddress)
     } else {
         null
     }
+}
 
-public fun RangeFrom<Int>.getMut(slice: String): String? =
-    if (slice.isCharBoundary(this.start)) {
+public fun RangeFrom<Int>.getMut(slice: String): String? {
+    return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         RustMutableReference(MutPtr((this.getUncheckedMut(slice)).rawAddress), UnresolvedTypeLayout<String>())
     } else {
         null
     }
+}
 
 public fun RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     val len = (ConstPtr(slice.rawAddress, slice.rawMeta)).len()
@@ -393,32 +399,35 @@ public fun RangeFrom<Int>.index(slice: String): String {
     }
 }
 
-public fun RangeFrom<Int>.indexMut(slice: String): String =
-    if (slice.isCharBoundary(this.start)) {
+public fun RangeFrom<Int>.indexMut(slice: String): String {
+    return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         RustMutableReference(MutPtr((this.getUncheckedMut(slice)).rawAddress), UnresolvedTypeLayout<String>())
     } else {
         sliceErrorFail(slice, this.start, slice.length)
     }
+}
 
-public fun range.RangeFrom<Int>.get(slice: String): String? =
-    if (slice.isCharBoundary(this.start)) {
+public fun range.RangeFrom<Int>.get(slice: String): String? {
+    return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         (UnresolvedTypeLayout<String>()).readNative((this.getUnchecked(slice)).rawAddress)
     } else {
         null
     }
+}
 
-public fun range.RangeFrom<Int>.getMut(slice: String): String? =
-    if (slice.isCharBoundary(this.start)) {
+public fun range.RangeFrom<Int>.getMut(slice: String): String? {
+    return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         RustMutableReference(MutPtr((this.getUncheckedMut(slice)).rawAddress), UnresolvedTypeLayout<String>())
     } else {
         null
     }
+}
 
 public fun range.RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     val len = (ConstPtr(slice.rawAddress, slice.rawMeta)).len()
@@ -443,14 +452,15 @@ public fun range.RangeFrom<Int>.index(slice: String): String {
     }
 }
 
-public fun range.RangeFrom<Int>.indexMut(slice: String): String =
-    if (slice.isCharBoundary(this.start)) {
+public fun range.RangeFrom<Int>.indexMut(slice: String): String {
+    return if (slice.isCharBoundary(this.start)) {
         // SAFETY: just checked that `start` is on a char boundary,
         // and we are passing in a safe reference, so the return value will also be one.
         RustMutableReference(MutPtr((this.getUncheckedMut(slice)).rawAddress), UnresolvedTypeLayout<String>())
     } else {
         sliceErrorFail(slice, this.start, slice.length)
     }
+}
 
 /**
  * Implements substring slicing with syntax `self[begin ..= end]` or `&mut
@@ -501,12 +511,11 @@ public fun RangeInclusive<Int>.index(slice: String): String {
     val len = slice.length
     if (end < len) {
         end = end + 1
-        start =
-            if (exhausted) {
-                end
-            } else {
-                start
-            }
+        start = if (exhausted) {
+            end
+        } else {
+            start
+        }
         if (start <= end && slice.isCharBoundary(start) && slice.isCharBoundary(end)) {
             // SAFETY: just checked that `start` and `end` are on a char boundary,
             // and we are passing in a safe reference, so the return value will also be one.
@@ -524,12 +533,11 @@ public fun RangeInclusive<Int>.indexMut(slice: String): String {
     val len = slice.length
     if (end < len) {
         end = end + 1
-        start =
-            if (exhausted) {
-                end
-            } else {
-                start
-            }
+        start = if (exhausted) {
+            end
+        } else {
+            start
+        }
         if (start <= end && slice.isCharBoundary(start) && slice.isCharBoundary(end)) {
             // SAFETY: just checked that `start` and `end` are on a char boundary,
             // and we are passing in a safe reference, so the return value will also be one.
@@ -729,7 +737,7 @@ public interface FromStr<T, out Err> {
  */
 public fun fromStrBoolean(s: String): Result<Boolean, ParseBoolError> =
     when (s) {
-        "true" -> Result.Ok(true)
-        "false" -> Result.Ok(false)
-        else -> Result.Err(ParseBoolError)
+        "true" -> Result.Ok<Boolean, ParseBoolError>(true)
+        "false" -> Result.Ok<Boolean, ParseBoolError>(false)
+        else -> Result.Err<Boolean, ParseBoolError>(ParseBoolError())
     }

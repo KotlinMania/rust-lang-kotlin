@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -58,23 +59,20 @@ public open class Filter<I, P>(
     // Used for `SplitWhitespace` and `SplitAsciiWhitespace` `asStr` methods
     public var iter: I,
     public var predicate: P,
-) : SourceIter<Source>,
-    InPlaceIterable,
-    Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@Filter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : SourceIter<Source>, InPlaceIterable, Iterable<Item> {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@Filter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Filter<I, P> = Filter(iter, predicate)
 
     public open fun nextChunkDropless(n: Int): Result<List<Item>, IntoIter<Item>> {
-        val array: List<MaybeUninit<Item>> = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Item>()) }
+        val array: List<MaybeUninit<Item>>  = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Item>()) }
         var initialized = 0
         val result =
             this.iter.tryForEach({ element ->
@@ -93,11 +91,11 @@ public open class Filter<I, P>(
         return when (result) {
             is ControlFlow.Break -> {
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok(MaybeUninit.arrayAssumeInit(array))
+                Result.Ok<List<Item>, IntoIter<Item>>(MaybeUninit.arrayAssumeInit(array))
             }
             is ControlFlow.Continue -> {
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
+                Result.Err<List<Item>, IntoIter<Item>>(IntoIter.newUnchecked(array, 0 until initialized))
             }
         }
     }
@@ -136,11 +134,7 @@ public open class Filter<I, P>(
     // leaving more budget for LLVM optimizations.
     public open fun count(assumeCountLeUpperBoundIFn: (Any?, Any?) -> Unit): Int {
         fun <T> toUsize(predicate: (T) -> Boolean): (T) -> Int = { x -> predicate(x).toInt() }
-        val before =
-            this.iter
-                .sizeHint()
-                .second
-                .unwrapOr(Int.MAX_VALUE)
+        val before = this.iter.sizeHint().second.unwrapOr(Int.MAX_VALUE)
         val total = this.iter.map(toUsize(this.predicate)).sum()
         // SAFETY: `total` and `before` came from the same iterator of type `I`
         run {
@@ -192,29 +186,25 @@ public open class Filter<I, P>(
 
         public fun <I, P> new(iter: I, predicate: P): Filter<I, P> = Filter(iter = iter, predicate = predicate)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
 public fun <T, Acc> filterFold(predicate: (T) -> Boolean, fold: (Acc, T) -> Acc): (Acc, T) -> Acc =
-    { acc, item ->
-        if (predicate(item)) {
-            fold(acc, item)
-        } else {
-            acc
-        }
-    }
+    { acc, item -> if (predicate(item)) {
+        fold(acc, item)
+    } else {
+        acc
+    } }
 
 public fun <T, Acc, R : Try<R, Acc, Any?>> filterTryFold(predicate: (T) -> Boolean, fold: (Acc, T) -> R): (Acc, T) -> R =
-    { acc, item ->
-        if (predicate(item)) {
-            fold(acc, item)
-        } else {
-            acc
-        }
-    }
+    { acc, item -> if (predicate(item)) {
+        fold(acc, item)
+    } else {
+        acc
+    } }
 
 public interface SpecAssumeCount {
     /**

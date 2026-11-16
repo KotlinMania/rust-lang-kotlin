@@ -2,7 +2,10 @@
 package io.github.kotlinmania.rustlang.std.sync.reentrantlock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
@@ -242,7 +245,7 @@ public open class ReentrantLock<T> internal constructor(
         return Unit
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "ReentrantLock")
         when (val matchVal = this.tryLock()) {
             null -> d.field("data", "<locked>")
@@ -251,7 +254,7 @@ public open class ReentrantLock<T> internal constructor(
                 d.field("data", v)
             }
         }
-        d.finishNonExhaustive()
+        return d.finishNonExhaustive()
     }
 
     public companion object {
@@ -290,12 +293,12 @@ public open class ReentrantLock<T> internal constructor(
 }
 
 public open class Tid internal constructor(
-    valueCtorArg: Atomic<ULong>,
+    valueCtorArg: Atomic<ULong, Align8<ULong>>,
 ) {
-    public var value: Atomic<ULong> = valueCtorArg
+    public var value: Atomic<ULong, Align8<ULong>> = valueCtorArg
         internal set
 
-    public var field0: Atomic<ULong>
+    public var field0: Atomic<ULong, Align8<ULong>>
         get() = value
         set(v) {
             value = v
@@ -311,7 +314,7 @@ public open class Tid internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: Atomic<ULong>,
+            value: Atomic<ULong, Align8<ULong>>,
         ): Tid = Tid(
             valueCtorArg = value,
         )
@@ -343,13 +346,9 @@ public open class ReentrantLockGuard<T>(
 ) {
     public open fun deref(): T = this.lock.data
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public open fun drop() {
         // Safety: We own the lock.

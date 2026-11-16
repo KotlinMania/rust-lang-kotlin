@@ -102,7 +102,9 @@ public actual fun module32NextW(hsnapshot: Handle, lpme: MutPtr): Bool =
 public actual fun releaseMutex(hmutex: Handle): Bool =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysReleaseMutex")
 
-public actual fun rtlCaptureContext(contextrecord: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysRtlCaptureContext")
+public actual fun rtlCaptureContext(contextrecord: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysRtlCaptureContext")
+}
 
 public actual fun rtlLookupFunctionEntry(controlpc: ULong, imagebase: MutPtr, historytable: MutPtr): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for backtraceWindowsSysRtlLookupFunctionEntry")

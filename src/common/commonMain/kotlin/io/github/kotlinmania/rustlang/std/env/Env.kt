@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.env
 
 import io.github.kotlinmania.rustlang.core.error.Error
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -133,9 +134,9 @@ public open class Vars(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner.inner
-        DebugStruct(f, "Vars").field("inner", inner).finish()
+        return DebugStruct(f, "Vars").field("inner", inner).finish()
     }
 }
 
@@ -162,9 +163,9 @@ public open class VarsOs(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner
-        DebugStruct(f, "VarsOs").field("inner", inner).finish()
+        return DebugStruct(f, "VarsOs").field("inner", inner).finish()
     }
 }
 
@@ -253,7 +254,7 @@ public fun varsOs(): VarsOs = VarsOs(inner = envimp.env())
  */
 public fun variable(key: OsStr): Result<String, VarError> {
     fun inner(key1: OsStr): Result<String, VarError> {
-        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
+        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, VarError>(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
     }
     return inner(key)
 }
@@ -310,15 +311,14 @@ public sealed class VarError {
 
     public fun rustEquals(other: VarError): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
-            VarError.NotPresent -> f.append("environment variable not found")
+            VarError.NotPresent -> run { f.append("environment variable not found"); Result.Ok(Unit) }
             is VarError.NotUnicode -> {
                 val (s) = this
-                f.append("environment variable was not valid unicode: $s")
+                run { f.append("environment variable was not valid unicode: $s"); Result.Ok(Unit) }
             }
         }
-    }
 }
 
 /**
@@ -469,9 +469,7 @@ public open class SplitPaths(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "SplitPaths").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "SplitPaths").finishNonExhaustive()
 }
 
 /**
@@ -537,9 +535,7 @@ public open class SplitPathsRef(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "SplitPathsRef").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "SplitPathsRef").finishNonExhaustive()
 }
 
 /**
@@ -570,9 +566,7 @@ public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? {
 public open class JoinPathsError(
     public var inner: io.github.kotlinmania.rustlang.std.sys.paths.unix.JoinPathsError,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        this.inner.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.inner.fmt(f)
 
     public open fun description(): String = this.inner.description()
 }
@@ -844,9 +838,9 @@ public open class Args(
 
     public open fun nextBack(): String? = this.inner.nextBack()?.let({ s -> s.intoString().unwrap() })
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner.inner
-        DebugStruct(f, "Args").field("inner", inner).finish()
+        return DebugStruct(f, "Args").field("inner", inner).finish()
     }
 }
 
@@ -885,7 +879,7 @@ public open class ArgsOs(
 
     public open fun last(): OsString? = this.inner.last()
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.inner.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
 
     public open fun <B, R> tryFold(init: B, f: (B, OsString) -> R): R where R : Try<B> = this.inner.tryFold(init, f)
 
@@ -897,11 +891,11 @@ public open class ArgsOs(
 
     public open fun nextBack(): OsString? = this.inner.nextBack()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.inner.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val inner = this.inner
-        DebugStruct(f, "ArgsOs").field("inner", inner).finish()
+        return DebugStruct(f, "ArgsOs").field("inner", inner).finish()
     }
 }
 

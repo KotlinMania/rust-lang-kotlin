@@ -1,6 +1,7 @@
 // port-lint: source control/tag.rs
 package io.github.kotlinmania.rustlang.hashbrown.control.tag
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -10,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 public class DebugTuple(
@@ -39,7 +41,7 @@ public class DebugTuple(
  */
 public open class Tag internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByte>,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) {
     public var field0: UByte
         get() = value
@@ -51,7 +53,7 @@ public open class Tag internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Tag> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Tag(ptr, layout) }, { it.value })
 
@@ -75,22 +77,21 @@ public open class Tag internal constructor(
         return this.value and 0x01u.toUByte() != 0u.toUByte()
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         if (this.isSpecial()) {
             if (this.specialIsEmpty()) {
-                f.append("EMPTY")
+                run { f.append("EMPTY"); Result.Ok(Unit) }
             } else {
-                f.append("DELETED")
+                run { f.append("DELETED"); Result.Ok(Unit) }
             }
         } else {
             DebugTuple(f, "full").field((this.value and 0x7Fu.toUByte())).finish()
         }
-    }
 
     public companion object {
-        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte>): Tag = Tag(value, fieldLayout)
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Tag = Tag(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte>): Tag = Tag(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Tag = Tag(fieldStorage, fieldLayout)
 
         /**
          * Control tag value for an empty bucket.
@@ -105,7 +106,7 @@ public open class Tag internal constructor(
         /**
          * Creates a control tag representing a full bucket with the given hash.
          */
-        public fun full(hash: ULong, fieldLayout: TypeLayout<UByte>): Tag {
+        public fun full(hash: ULong, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): Tag {
             // Constant for function that grabs the top 7 bits of the hash.
             val MIN_HASH_LEN: Int =
                 if (sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64) < sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64)) {

@@ -343,7 +343,7 @@ public interface GlobalAlloc {
             // SAFETY: the previously allocated block cannot overlap the newly allocated block.
             // The safety contract for `dealloc` must be upheld by the caller.
             run {
-                copyNonoverlapping(ptr, newPtr, minOf(layout.size(), newSize), typeLayoutT = PrimitiveLayouts.U8)
+                copyNonoverlapping((ptr).asConstPtr(), newPtr, minOf(layout.size(), newSize), typeLayoutT = PrimitiveLayouts.U8)
                 this.dealloc(ptr, layout)
             }
         }
@@ -362,12 +362,12 @@ public fun <A> A.alloc(layout: Layout): MutPtr where A : GlobalAllocator {
     return run {
         val matchVal = this.allocate(layout)
         when {
-            matchVal is Result.Ok<*, *> -> {
-                val ptr = (matchVal as Result.Ok<*, *>).value
+            matchVal is Result.Ok -> {
+                val ptr = matchVal.value
                 ptr.cast().asPtr()
             }
             else -> {
-                val AllocError = (matchVal as Result.Err<*, *>).error
+                val AllocError = matchVal.error
                 MutPtr(0L)
             }
         }
@@ -389,12 +389,12 @@ public fun <A> A.allocZeroed(layout: Layout): MutPtr where A : GlobalAllocator {
     return run {
         val matchVal = this.allocateZeroed(layout)
         when {
-            matchVal is Result.Ok<*, *> -> {
-                val ptr = (matchVal as Result.Ok<*, *>).value
+            matchVal is Result.Ok -> {
+                val ptr = matchVal.value
                 ptr.cast().asPtr()
             }
             else -> {
-                val AllocError = (matchVal as Result.Err<*, *>).error
+                val AllocError = matchVal.error
                 MutPtr(0L)
             }
         }
@@ -425,12 +425,12 @@ public fun <A> A.realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr wher
             this.shrink(ptr1, layout, newLayout)
         }
     return when {
-        ptr2 is Result.Ok<*, *> -> {
-            val ptr3 = (ptr2 as Result.Ok<*, *>).value
+        ptr2 is Result.Ok -> {
+            val ptr3 = ptr2.value
             ptr3.cast().asPtr()
         }
         else -> {
-            val AllocError = (ptr2 as Result.Err<*, *>).error
+            val AllocError = ptr2.error
             MutPtr(0L)
         }
     }

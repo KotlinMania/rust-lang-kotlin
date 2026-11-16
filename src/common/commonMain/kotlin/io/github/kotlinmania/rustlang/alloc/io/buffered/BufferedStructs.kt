@@ -1,6 +1,7 @@
 package io.github.kotlinmania.rustlang.alloc.io.buffered
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
  * An error returned by [BufWriter.intoInner] which combines an error that
@@ -164,9 +165,7 @@ public open class IntoInnerError<W>(
      */
     public open fun intoParts(): Pair<Error, W> = Pair(this.field1, this.field0)
 
-    public open fun fmt(f: StringBuilder) {
-        this.error().fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.error().fmt(f)
 
     public companion object {
         /**

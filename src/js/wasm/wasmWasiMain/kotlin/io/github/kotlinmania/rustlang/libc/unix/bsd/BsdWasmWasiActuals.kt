@@ -57,7 +57,9 @@ public actual fun srand(seed: CUint): Unit =
 public actual fun getifaddrs(ifap: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGetifaddrs")
 
-public actual fun freeifaddrs(ifa: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdFreeifaddrs")
+public actual fun freeifaddrs(ifa: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdFreeifaddrs")
+}
 
 public actual fun setgroups(ngroups: CInt, ptr: ConstPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdSetgroups")
@@ -104,7 +106,9 @@ public actual fun getgrent(): MutPtr =
 public actual fun getprogname(): ConstPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGetprogname")
 
-public actual fun setprogname(name: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdSetprogname")
+public actual fun setprogname(name: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdSetprogname")
+}
 
 public actual fun getloadavg(loadavg: MutPtr, nelem: CInt): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGetloadavg")
@@ -112,7 +116,9 @@ public actual fun getloadavg(loadavg: MutPtr, nelem: CInt): CInt =
 public actual fun ifNameindex(): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdIfNameindex")
 
-public actual fun ifFreenameindex(ptr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdIfFreenameindex")
+public actual fun ifFreenameindex(ptr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdIfFreenameindex")
+}
 
 public actual fun getpeereid(socket: CInt, euid: MutPtr, egid: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGetpeereid")
@@ -120,7 +126,9 @@ public actual fun getpeereid(socket: CInt, euid: MutPtr, egid: MutPtr): CInt =
 public actual fun glob(pattern: ConstPtr, flags: CInt, errfunc: GlobErrfuncCallback?, pglob: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGlob")
 
-public actual fun globfree(pglob: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGlobfree")
+public actual fun globfree(pglob: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGlobfree")
+}
 
 public actual fun posixMadvise(addr: MutPtr, len: SizeT, advice: CInt): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdPosixMadvise")
@@ -128,7 +136,9 @@ public actual fun posixMadvise(addr: MutPtr, len: SizeT, advice: CInt): CInt =
 public actual fun shmUnlink(name: ConstPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdShmUnlink")
 
-public actual fun seekdir(dirp: MutPtr, loc: CLong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdSeekdir")
+public actual fun seekdir(dirp: MutPtr, loc: CLong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdSeekdir")
+}
 
 public actual fun telldir(dirp: MutPtr): CLong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdTelldir")
@@ -271,7 +281,9 @@ public actual fun regexec(preg: ConstPtr, input: ConstPtr, nmatch: SizeT, pmatch
 public actual fun regerror(errcode: CInt, preg: ConstPtr, errbuf: MutPtr, errbufSize: SizeT): SizeT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdRegerror")
 
-public actual fun regfree(preg: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdRegfree")
+public actual fun regfree(preg: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdRegfree")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixBsdArc4random")
 private external fun wasiLibcUnixBsdArc4random(): Int
@@ -279,7 +291,9 @@ private external fun wasiLibcUnixBsdArc4random(): Int
 public actual fun arc4random(): UInt =
     wasiLibcUnixBsdArc4random().toUInt()
 
-public actual fun arc4randomBuf(buf: MutPtr, size: SizeT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdArc4randomBuf")
+public actual fun arc4randomBuf(buf: MutPtr, size: SizeT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdArc4randomBuf")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixBsdArc4randomUniform")
 private external fun wasiLibcUnixBsdArc4randomUniform(l: Int): Int
@@ -323,7 +337,9 @@ public actual fun srand48(seed: CLong): Unit =
 public actual fun seed48(xseed: MutPtr): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdSeed48")
 
-public actual fun lcong48(p: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdLcong48")
+public actual fun lcong48(p: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdLcong48")
+}
 
 public actual fun getoptLong(argc: CInt, argv: ConstPtr, optstring: ConstPtr, longopts: ConstPtr, longindex: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdGetoptLong")

@@ -15,11 +15,7 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 public open class LaunchError(
     public var message: String,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append(this.message)
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append(this.message); Result.Ok(Unit) }
 
     public companion object {
         /**

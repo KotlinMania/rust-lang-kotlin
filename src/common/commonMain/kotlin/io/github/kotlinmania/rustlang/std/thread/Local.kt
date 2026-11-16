@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.thread
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cell.RefCell
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -153,9 +154,7 @@ public open class LocalKey<T>(
     // guaranteed not to panic.
     public var inner: (T?) -> ConstPtr,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "LocalKey").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "LocalKey").finishNonExhaustive()
 
     /**
      * Acquires a reference to the value in this TLS key.
@@ -179,10 +178,10 @@ public open class LocalKey<T>(
     public open fun <R> with(f: (T) -> R): R =
         run {
             val matchVal = this.tryWith(f)
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val r = matchVal.value
                 r
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 val err = matchVal.error
                 panicAccessError(err)
             } }
@@ -208,8 +207,8 @@ public open class LocalKey<T>(
      * ```
      */
     public open fun <R> tryWith(f: (T) -> R): Result<R, AccessError> {
-        val threadLocal = when (val tryResult = (this.inner)(null).asRef().okOr(AccessError())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(f(threadLocal))
+        val threadLocal = when (val tryResult = (this.inner)(null).asRef().okOr(AccessError())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<R, AccessError>(tryResult.error) }
+        return Result.Ok<R, AccessError>(f(threadLocal))
     }
 
     /**
@@ -250,13 +249,9 @@ public open class LocalKey<T>(
 public open class AccessError {
     public open fun clone(): AccessError = AccessError()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "AccessError").finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "AccessError").finish()
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        f.append(("already destroyed").toString())
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append(("already destroyed").toString()); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<AccessError> =

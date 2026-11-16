@@ -40,7 +40,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
                 PathBuf.new()
             }
         } else {
-            when (val tryResult = Env.currentDir()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = Env.currentDir()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PathBuf, Error>(tryResult.error) }
         }
     normalized.extend(components)
     // "Interfaces using pathname resolution may specify additional constraints
@@ -52,7 +52,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
     if (pathOs.endsWith("/".encodeToByteArray())) {
         normalized.push("")
     }
-    return Result.Ok(normalized)
+    return Result.Ok<PathBuf, Error>(normalized)
 }
 
 public fun isAbsolute(path: Path): Boolean =

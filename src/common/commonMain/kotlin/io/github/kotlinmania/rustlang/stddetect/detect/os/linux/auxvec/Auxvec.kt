@@ -116,7 +116,7 @@ public fun auxv(): Result<AuxVec, Unit> {
             val hwcap = matchVal.value
             // Targets with only AT_HWCAP:
             if (hwcap != 0) {
-                return Result.Ok(AuxVec(hwcap = hwcap))
+                return Result.Ok<AuxVec, Unit>(AuxVec(hwcap = hwcap))
             }
             // Targets with AT_HWCAP and AT_HWCAP2:
             when (val matchVal1 = getauxval(AT_HWCAP2)) {
@@ -127,7 +127,7 @@ public fun auxv(): Result<AuxVec, Unit> {
                     // since it contains the most recent feature flags. Use the fallback only if no
                     // features were detected at all.
                     if (hwcap != 0 || hwcap2 != 0) {
-                        return Result.Ok(AuxVec(hwcap = hwcap, hwcap2 = hwcap2))
+                        return Result.Ok<AuxVec, Unit>(AuxVec(hwcap = hwcap, hwcap2 = hwcap2))
                     }
                 }
                 else -> {}
@@ -147,7 +147,7 @@ public fun auxv(): Result<AuxVec, Unit> {
  */
 public fun getauxval(key: Int): Result<Int, Unit> {
     val ffiGetauxval: F = io.github.kotlinmania.rustlang.libc.getauxval
-    return Result.Ok(ffiGetauxval(key.toULong()).toInt())
+    return Result.Ok<Int, Unit>(ffiGetauxval(key.toULong()).toInt())
 }
 
 /**
@@ -155,7 +155,7 @@ public fun getauxval(key: Int): Result<Int, Unit> {
  * function returns `Err`.
  */
 public fun auxvFromFile(file: CStr): Result<AuxVec, String> {
-    val file1 = when (val tryResult = readFile(file)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val file1 = when (val tryResult = readFile(file)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<AuxVec, String>(tryResult.error) }
     return auxvFromFileBytes(file1)
 }
 
@@ -184,7 +184,7 @@ public fun auxvFromBuf(buf: List<Int>): Result<AuxVec, String> {
     for (el in buf.chunks(2)) {
         when (el[0]) {
             AT_NULL -> { break }
-            AT_HWCAP -> { return Result.Ok(AuxVec(hwcap = el[1])) }
+            AT_HWCAP -> { return Result.Ok<AuxVec, String>(AuxVec(hwcap = el[1])) }
             else -> Unit
         }
     }
@@ -203,9 +203,9 @@ public fun auxvFromBuf(buf: List<Int>): Result<AuxVec, String> {
         }
         if (hwcap != null) {
             val hwcap1 = hwcap
-            return Result.Ok(AuxVec(hwcap = hwcap1, hwcap2 = hwcap2))
+            return Result.Ok<AuxVec, String>(AuxVec(hwcap = hwcap1, hwcap2 = hwcap2))
         }
     }
     // Suppress unused variable
-    return Result.Err("hwcap not found")
+    return Result.Err<AuxVec, String>("hwcap not found")
 }

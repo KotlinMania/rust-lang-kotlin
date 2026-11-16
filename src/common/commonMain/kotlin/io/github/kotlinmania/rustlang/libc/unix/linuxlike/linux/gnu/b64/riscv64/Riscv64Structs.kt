@@ -9,13 +9,16 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.GidT
 import io.github.kotlinmania.rustlang.libc.unix.PidT
@@ -962,9 +965,7 @@ public open class RiscvMcFpState(
     public var d: RiscvMcDExtState? = null,
     public var q: RiscvMcQExtState? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive()
 }
 
 public open class RiscvMcFExtState(
@@ -1073,21 +1074,21 @@ public open class RiscvMcQExtState(
 
 public open class MaxAlignT internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<FloatArray>,
+    public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
 ) {
     public var priv: FloatArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(priv: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(priv: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
 
     public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public operator fun invoke(priv: FloatArray, fieldLayout: TypeLayout<FloatArray>): MaxAlignT = MaxAlignT(priv, fieldLayout)
+        public operator fun invoke(priv: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray>): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }

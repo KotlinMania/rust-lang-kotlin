@@ -235,64 +235,64 @@ public interface SimdInt<SelfType, out Mask, out Scalar, out Unsigned, out Cast>
     public fun trailingOnes(): Unsigned
 }
 
-public fun <T : SimdCast> Simd<Byte, N>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <T : SimdCast> Simd<Byte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.saturatingAdd(second: Simd<Byte, N>, n: Int): Simd<Byte, N> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
+public fun Simd<Byte>.saturatingAdd(second: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
 
-public fun Simd<Byte, N>.saturatingSub(second: Simd<Byte, N>, n: Int): Simd<Byte, N> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
+public fun Simd<Byte>.saturatingSub(second: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
 
-public fun Simd<Byte, N>.abs(n: Int): Simd<Byte, N> {
+public fun Simd<Byte>.abs(n: Int): Simd<Byte> {
     val SHR: Byte = (8u.toByte() - 1).toByte()
     val m = this shr Simd.splat(SHR).toInt()
     return (this xor m) - m
 }
 
-public fun Simd<Byte, N>.absDiff(second: Simd<Byte, N>, n: Int): Simd<UByte> {
+public fun Simd<Byte>.absDiff(second: Simd<Byte>, n: Int): Simd<UByte> {
     val max = this.simdMax(second)
     val min = this.simdMin(second)
     return (max - min).cast()
 }
 
-public fun Simd<Byte, N>.saturatingAbs(n: Int): Simd<Byte, N> {
+public fun Simd<Byte>.saturatingAbs(n: Int): Simd<Byte> {
     val SHR: Byte = (8u.toByte() - 1).toByte()
     val m = this shr Simd.splat(SHR).toInt()
     return (this xor m).saturatingSub(m)
 }
 
-public fun Simd<Byte, N>.saturatingNeg(n: Int): Simd<Byte, N> = Simd.splat(0).saturatingSub(this)
+public fun Simd<Byte>.saturatingNeg(n: Int): Simd<Byte> = Simd.splat(0).saturatingSub(this)
 
-public fun Simd<Byte, N>.isPositive(n: Int): Mask<Mask> = this.simdGt(Simd.splat(0))
+public fun Simd<Byte>.isPositive(n: Int): Mask<Mask> = this.simdGt(Simd.splat(0))
 
-public fun Simd<Byte, N>.isNegative(n: Int): Mask<Mask> = this.simdLt(Simd.splat(0))
+public fun Simd<Byte>.isNegative(n: Int): Mask<Mask> = this.simdLt(Simd.splat(0))
 
-public fun Simd<Byte, N>.signum(n: Int): Simd<Byte, N> = this.isPositive().select(Simd.splat(1), this.isNegative().select(Simd.splat(-1), Simd.splat(0)))
+public fun Simd<Byte>.signum(n: Int): Simd<Byte> = this.isPositive().select(Simd.splat(1), this.isNegative().select(Simd.splat(-1), Simd.splat(0)))
 
-public fun Simd<Byte, N>.reduceSum(n: Int): Byte = run { val _simdArg0 = this; val _simdArg1 = 0; _simdArg1 }
+public fun Simd<Byte>.reduceSum(n: Int): Byte = run { val _simdArg0 = this; val _simdArg1 = 0; _simdArg1 }
 
-public fun Simd<Byte, N>.reduceProduct(n: Int): Byte = run { val _simdArg0 = this; val _simdArg1 = 1; _simdArg1 }
+public fun Simd<Byte>.reduceProduct(n: Int): Byte = run { val _simdArg0 = this; val _simdArg1 = 1; _simdArg1 }
 
-public fun Simd<Byte, N>.reduceMax(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.reduceMax(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.reduceMin(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.reduceMin(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.reduceAnd(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.reduceAnd(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.reduceOr(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.reduceOr(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.reduceXor(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.reduceXor(n: Int): Byte = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.swapBytes(n: Int): Simd<Byte, N> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.swapBytes(n: Int): Simd<Byte> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.reverseBits(n: Int): Simd<Byte, N> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<Byte>.reverseBits(n: Int): Simd<Byte> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<Byte, N>.countOnes(n: Int): Simd<UByte> = this.cast().countOnes()
+public fun Simd<Byte>.countOnes(n: Int): Simd<UByte> = this.cast().countOnes()
 
-public fun Simd<Byte, N>.countZeros(n: Int): Simd<UByte> = this.cast().countZeros()
+public fun Simd<Byte>.countZeros(n: Int): Simd<UByte> = this.cast().countZeros()
 
-public fun Simd<Byte, N>.leadingZeros(n: Int): Simd<UByte> = this.cast().leadingZeros()
+public fun Simd<Byte>.leadingZeros(n: Int): Simd<UByte> = this.cast().leadingZeros()
 
-public fun Simd<Byte, N>.trailingZeros(n: Int): Simd<UByte> = this.cast().trailingZeros()
+public fun Simd<Byte>.trailingZeros(n: Int): Simd<UByte> = this.cast().trailingZeros()
 
-public fun Simd<Byte, N>.leadingOnes(n: Int): Simd<UByte> = this.cast().leadingOnes()
+public fun Simd<Byte>.leadingOnes(n: Int): Simd<UByte> = this.cast().leadingOnes()
 
-public fun Simd<Byte, N>.trailingOnes(n: Int): Simd<UByte> = this.cast().trailingOnes()
+public fun Simd<Byte>.trailingOnes(n: Int): Simd<UByte> = this.cast().trailingOnes()

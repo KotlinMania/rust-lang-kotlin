@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -51,18 +52,15 @@ public typealias Source<I> = I.Source
 public open class MapWhile<I, P>(
     public var iter: I,
     public var predicate: P,
-) : SourceIter<Source>,
-    InPlaceIterable,
-    Iterable<B> {
-    override fun iterator(): Iterator<B> =
-        object : AbstractIterator<B>() {
-            override fun computeNext() {
-                when (val v = this@MapWhile.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : SourceIter<Source>, InPlaceIterable, Iterable<B> {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
+        override fun computeNext() {
+            when (val v = this@MapWhile.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): MapWhile<I, P> = MapWhile(iter, predicate)
 
@@ -82,17 +80,13 @@ public open class MapWhile<I, P>(
     public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Any?> {
         val iter = this.iter
         val predicate = this.predicate
-        return iter
-            .tryFold(init, { acc, x ->
-                when (val matchVal = predicate(x)) {
-                    null -> ControlFlow.Break(acc)
-                    else -> {
-                        val item = matchVal
-                        ControlFlow.fromTry(fold(acc, item))
-                    }
-                }
-            })
-            .intoTry()
+        return iter.tryFold(init, { acc, x -> when (val matchVal = predicate(x)) {
+            null -> ControlFlow.Break(acc)
+            else -> {
+                val item = matchVal
+                ControlFlow.fromTry(fold(acc, item))
+            }
+        } }).intoTry()
     }
 
     public open fun <Aaa> fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
@@ -130,8 +124,8 @@ public open class MapWhile<I, P>(
 
         public fun <I, P> new(iter: I, predicate: P): MapWhile<I, P> = MapWhile(iter = iter, predicate = predicate)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }

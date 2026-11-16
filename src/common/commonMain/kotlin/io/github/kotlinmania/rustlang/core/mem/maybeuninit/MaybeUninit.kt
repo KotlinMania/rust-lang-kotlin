@@ -8,13 +8,13 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
-import io.github.kotlinmania.rustlang.core.marker.Forget
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -447,10 +447,7 @@ public open class MaybeUninit<T>(
         // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<{..}>").
         val fullName = "MaybeUninit"
         val prefixLen = (fullName.indexOf("MaybeUninit").takeIf { it >= 0 })!!
-        return run {
-            f.append(fullName.substring(prefixLen))
-            Result.Ok(Unit)
-        }
+        return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }
     }
 
     /**
@@ -1234,11 +1231,7 @@ public open class MaybeUninit<T>(
 public fun <T> List<MaybeUninit<T>>.writeCopyOfSlice(src: List<T>): MutableList<T> {
     // SAFETY: &[T] and &[MaybeUninit<T>] have the same layout
     val uninitSrc: List<MaybeUninit<T>> = transmute(src)
-    run {
-        val dstTmp0 = this
-        val srcTmp0 = uninitSrc
-        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
-    }
+    run { val dstTmp0 = this; val srcTmp0 = uninitSrc; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
     // SAFETY: Valid elements have just been copied into `self` so it is initialized
     return this.assumeInitMut()
 }
@@ -1306,7 +1299,7 @@ public fun <T> List<MaybeUninit<T>>.writeCloneOfSlice(src: List<T>): MutableList
         guard.slice[i].write(src1[i].clone())
         guard.initialized += 1
     }
-    Forget(guard)
+    forget(guard)
     // SAFETY: Valid elements have just been written into `self` so it is initialized
     return this.assumeInitMut()
 }
@@ -1379,7 +1372,7 @@ public fun <T> List<MaybeUninit<T>>.writeWith(f: (Int) -> T): MutableList<T> {
         element.write(f(idx))
         guard.initialized += 1
     }
-    Forget(guard)
+    forget(guard)
     // SAFETY: Valid elements have just been written into `this` so it is initialized
     return this.assumeInitMut()
 }
@@ -1569,7 +1562,7 @@ public fun <T, I> List<MaybeUninit<T>>.writeIter(it: I): Pair<MutableList<T>, Mu
         guard.initialized += 1
     }
     val initializedLen = guard.initialized
-    Forget(guard)
+    forget(guard)
     // SAFETY: guard.initialized <= self.len()
     val (initted, remainder) = this.splitAtMutUnchecked(initializedLen)
     // SAFETY: Valid elements have just been written into `init`, so that portion
@@ -1680,7 +1673,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitDrop() {
  * behavior: it is up to the caller to guarantee that every `MaybeUninit<T>` in
  * the slice really is in an initialized state.
  */
-public fun <T> List<MaybeUninit<T>>.assumeInitRef(typeLayoutT: TypeLayout<T>): List<T> {
+public fun <T> List<MaybeUninit<T>>.assumeInitRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     // SAFETY: casting `slice` to a `* const[T]` is safe since the caller guarantees that
     // `slice` is initialized, and `MaybeUninit` is guaranteed to have the same layout as `T`.
     // The pointer obtained is valid since it refers to memory owned by `slice` which is a
@@ -1698,7 +1691,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitRef(typeLayoutT: TypeLayout<T>): L
  * slice really is in an initialized state. For instance, `.assumeInitMut()` cannot
  * be used to initialize a `MaybeUninit` slice.
  */
-public fun <T> List<MaybeUninit<T>>.assumeInitMut(typeLayoutT: TypeLayout<T>): MutableList<T> {
+public fun <T> List<MaybeUninit<T>>.assumeInitMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
     // SAFETY: similar to safety notes for `sliceGetRef`, but we have a
     // mutable reference which is also guaranteed to be valid for writes.
     return RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<T>>())
@@ -1719,7 +1712,7 @@ public fun <T> List<MaybeUninit<T>>.assumeInitMut(typeLayoutT: TypeLayout<T>): M
  * }
  * ```
  */
-public fun <T> MaybeUninit<List<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T>): List<MaybeUninit<T>> {
+public fun <T> MaybeUninit<List<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return transmuteUnchecked(this)
 }
@@ -1760,7 +1753,7 @@ public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<M
  * }
  * ```
  */
-public fun <T> List<MaybeUninit<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T>): MaybeUninit<List<T>> {
+public fun <T> List<MaybeUninit<T>>.transpose(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<List<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return transmuteUnchecked(this)
 }
@@ -1796,7 +1789,7 @@ public fun <T> List<MaybeUninit<T>>.specFill(value: T, cloneTFn: (T) -> T = { it
             last.write(value)
         }
     }
-    Forget(guard)
+    forget(guard)
 }
 
 public fun <T : TrivialClone<T>> List<MaybeUninit<T>>.specFill(value: T) {

@@ -253,7 +253,7 @@ public fun <T, K> List<T>.sortByKey(f: (T) -> K) {
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K>) {
+public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K> = UnresolvedTypeLayout()) {
     // Helper macro for indexing our vector by the smallest possible type, to reduce allocation.
     val len = this.size
     if (len < 2) {
@@ -268,12 +268,7 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
     // ~262KB.
     if (isUsingU32AsIdxTypeHelpful && len <= (UInt.MAX_VALUE.toInt())) {
         return run {
-            val indices: Vec =
-                this
-                    .map(f)
-                    .mapIndexed { index, item -> Pair(index, item) }
-                    .map({ (i, k) -> Pair(k, i.toUInt()) })
-                    .collect()
+            val indices: Vec  = this.map(f).mapIndexed { index, item -> Pair(index, item) }.map({ (i, k) -> Pair(k, i.toUInt()) }).collect()
             indices.sortUnstable()
             for (i in 0 until this.size) {
                 var index = indices[i].second
@@ -286,12 +281,7 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
         }
     }
     run {
-        val indices1: Vec =
-            this
-                .map(f)
-                .mapIndexed { index, item -> Pair(index, item) }
-                .map({ (i1, k) -> Pair(k, i1.toInt()) })
-                .collect()
+        val indices1: Vec  = this.map(f).mapIndexed { index, item -> Pair(index, item) }.map({ (i1, k) -> Pair(k, i1.toInt()) }).collect()
         indices1.sortUnstable()
         for (i1 in 0 until this.size) {
             var index1 = indices1[i1].second
@@ -315,7 +305,7 @@ public fun <T, K> List<T>.sortByCachedKey(f: (T) -> K, typeLayoutK: TypeLayout<K
  * // Here, `s` and `x` can be modified independently.
  * ```
  */
-public fun <T> List<T>.toVec(): List<T> = this.toVecIn(Global)
+public fun <T> List<T>.toVec(): List<T> = this.toVecIn(Global())
 
 /**
  * Copies `self` into a new `List` with an allocator.
@@ -415,7 +405,7 @@ public fun <T, A : Allocator> List<T>.intoVec(): List<T> {
  * "0123456789abcdef".encodeToByteArray().repeat(Int.MAX_VALUE)
  * ```
  */
-public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T>): List<T> {
+public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     if (n == 0) {
         return mutableListOf()
     }
@@ -603,9 +593,7 @@ public fun <T, V : Borrow<List<T>>> joinVSlice(slice: List<V>, sep: T, cloneTFn:
     val iter = slice.iter()
     val first1 =
         when (val matchVal = iter.next()) {
-            null -> {
-                return mutableListOf()
-            }
+            null -> { return mutableListOf() }
             else -> {
                 val first = matchVal
                 first
@@ -625,9 +613,7 @@ public fun <T, V : Borrow<List<T>>> joinVSlice(slice: List<V>, sep: List<T>): Li
     val iter = slice.iter()
     val first1 =
         when (val matchVal = iter.next()) {
-            null -> {
-                return mutableListOf()
-            }
+            null -> { return mutableListOf() }
             else -> {
                 val first = matchVal
                 first

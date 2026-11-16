@@ -9,5 +9,7 @@ public class MutPtr(
 
     override fun hashCode(): Int = 31 * rawAddress.hashCode() + rawMeta.hashCode()
 
+    public fun asConstPtr(): ConstPtr = ConstPtr(rawAddress, rawMeta)
+
     override fun toString(): String = "0x" + rawAddress.toULong().toString(16)
 }

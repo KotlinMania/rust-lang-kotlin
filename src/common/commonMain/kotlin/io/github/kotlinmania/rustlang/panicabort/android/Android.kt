@@ -10,9 +10,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.CChar
-import io.github.kotlinmania.rustlang.libc.RTLD_DEFAULT
 import io.github.kotlinmania.rustlang.libc.dlsym
 import io.github.kotlinmania.rustlang.libc.malloc
+import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_DEFAULT
 
 public val ANDROID_SET_ABORT_MESSAGE: List<UByte> = "android_set_abort_message\u0000".encodeToByteArray().map { it.toUByte() }
 

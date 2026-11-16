@@ -43,16 +43,16 @@ public open class TermInfo(
             val term =
                 run {
                     val matchVal = Env.variable("TERM")
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val name = matchVal.value
                         TermInfo.fromName(name)
-                    }; is Result.Err<*, *> -> {
-                        return Result.Err(Error.TermUnset)
+                    }; is Result.Err -> {
+                        return Result.Err<TermInfo, Error>(Error.TermUnset)
                     } }
                 }
             return if (term.isErr() && Env.variable("MSYSCON").isOkAnd({ s -> "mintty.exe" == s })) {
                 // msys terminal
-                Result.Ok(msysTerminfo())
+                Result.Ok<TermInfo, Error>(msysTerminfo())
             } else {
                 term
             }
@@ -65,11 +65,9 @@ public open class TermInfo(
             if (false) {
                 // Avoid all the work of parsing the terminfo (it's pretty slow under Miri), and just
                 // assume that the standard color codes work (like e.g. the 'colored' crate).
-                return Result.Ok(TermInfo(names = Default.default(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
+                return Result.Ok<TermInfo, Error>(TermInfo(names = Default.default(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
             }
-            return getDbpathForTerm(name).okOrElse({
-                Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found"))
-            }).andThen({ p -> TermInfo.fromPath(p) })
+            return (getDbpathForTerm(name)?.let { Result.Ok(it) } ?: Result.Err(Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found")))).andThen({ p -> TermInfo.fromPath(p) })
         }
 
         /**
@@ -115,10 +113,10 @@ public open class TerminfoTerminal<T>(
                     val op = matchVal
                     run {
                         val matchVal1 = expand(op, listOf(), Variables.new())
-                        when (matchVal1) { is Result.Ok<*, *> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val cmd = matchVal1.value
                             cmd
-                        }; is Result.Err<*, *> -> {
+                        }; is Result.Err -> {
                             val e = matchVal1.error
                             return Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                         } }
@@ -142,10 +140,10 @@ public open class TerminfoTerminal<T>(
                 val cmd1 = matchVal
                 run {
                     val matchVal1 = expand(cmd1, params, Variables.new())
-                    when (matchVal1) { is Result.Ok<*, *> -> {
+                    when (matchVal1) { is Result.Ok -> {
                         val s = matchVal1.value
                         this.out.writeAll(s).and(Result.Ok(true))
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val e = matchVal1.error
                         Result.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }

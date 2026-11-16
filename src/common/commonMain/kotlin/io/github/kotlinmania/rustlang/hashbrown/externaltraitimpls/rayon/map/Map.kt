@@ -1,7 +1,9 @@
 // port-lint: source external_trait_impls/rayon/map.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.map
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
 import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers.collect
@@ -39,13 +41,13 @@ public open class ParIter<K, V> internal constructor(
 
     public open fun clone(): ParIter<K, V> = ParIter(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val iter =
             this.inner.iter().map({ x -> run {
                 val r = x.asRef()
                 Pair(r.first, r.second)
             } })
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
     }
 
     public companion object {
@@ -78,9 +80,9 @@ public open class ParKeys<K, V> internal constructor(
 
     public open fun clone(): ParKeys<K, V> = ParKeys(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val iter = this.inner.iter().map({ x -> x.asRef().first })
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
     }
 
     public companion object {
@@ -113,9 +115,9 @@ public open class ParValues<K, V> internal constructor(
 
     public open fun clone(): ParValues<K, V> = ParValues(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val iter = this.inner.iter().map({ x -> x.asRef().second })
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(iter).finish()
     }
 
     public companion object {
@@ -152,9 +154,7 @@ public open class ParIterMut<K, V> internal constructor(
             Pair(r.first, r.second)
         } }).driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParIter(inner = this.inner.clone(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.clone(), marker = Unit).fmt(f)
 
     public companion object {
         public operator fun <K, V> invoke(
@@ -184,9 +184,7 @@ public open class ParValuesMut<K, V> internal constructor(
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<V> = this.inner.map({ x -> x.asMut().second }).driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParValues(inner = this.inner.clone(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParValues(inner = this.inner.clone(), marker = Unit).fmt(f)
 
     public companion object {
         public operator fun <K, V> invoke(
@@ -216,9 +214,7 @@ public open class IntoParIter<K, V, A : Allocator> internal constructor(
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<Pair<K, V>> = this.inner.driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(
@@ -245,9 +241,7 @@ public open class ParDrain<K, V, A : Allocator> internal constructor(
 
     public open fun <C> driveUnindexed(consumer: C): Result where C : UnindexedConsumer<Pair<K, V>> = this.inner.driveUnindexed(consumer)
 
-    public open fun fmt(f: StringBuilder) {
-        ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = ParIter(inner = this.inner.parIter(), marker = Unit).fmt(f)
 
     public companion object {
         public operator fun <K, V, A : Allocator> invoke(

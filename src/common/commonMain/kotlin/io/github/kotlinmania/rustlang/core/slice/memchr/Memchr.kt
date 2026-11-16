@@ -127,15 +127,14 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
     // - the first remaining bytes, < 2 word size.
     val len = text.size
     val ptr = text.asPtr()
-    val (minAlignedOffset, maxAlignedOffset) =
-        run {
-            // We call this just to obtain the length of the prefix and suffix.
-            // In the middle we always process two chunks at once.
-            // SAFETY: transmuting `[UByte]` to `[Int]` is safe except for size differences
-            // which are handled by `alignTo`.
-            val (prefix, _, suffix) = text.alignTo<Pair<Chunk, Chunk>>()
-            Pair(prefix.len(), len - suffix.len())
-        }
+    val (minAlignedOffset, maxAlignedOffset) = run {
+        // We call this just to obtain the length of the prefix and suffix.
+        // In the middle we always process two chunks at once.
+        // SAFETY: transmuting `[UByte]` to `[Int]` is safe except for size differences
+        // which are handled by `alignTo`.
+        val (prefix, _, suffix) = text.alignTo<Pair<Chunk, Chunk>>()
+        Pair(prefix.len(), len - suffix.len())
+    }
     var offset = maxAlignedOffset
     when (val matchVal = ((text).subList(offset, (text).size)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }) {
         null -> {}

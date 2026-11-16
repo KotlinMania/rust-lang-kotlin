@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // not exposed outside of this crate
 public interface Allocator {
@@ -21,11 +20,11 @@ public open class Global : Allocator {
 
     public override fun allocate(layout: Layout): Result<NonNull, Unit> =
         when (val matchVal = NonNull.new(alloc(layout))) {
-            null -> Result.Err(Unit)
+            null -> Result.Err<NonNull, Unit>(Unit)
             else -> {
                 val data = matchVal
                 // SAFETY: this is NonNull.sliceFromRawParts.
-                Result.Ok(NonNull.newUnchecked(sliceFromRawPartsMut(data.asPtr(), layout.size())))
+                Result.Ok<NonNull, Unit>(NonNull.newUnchecked(sliceFromRawPartsMut(data.asPtr(), layout.size())))
             }
         }
 

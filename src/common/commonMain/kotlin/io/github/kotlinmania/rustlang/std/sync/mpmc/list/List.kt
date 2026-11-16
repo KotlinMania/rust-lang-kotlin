@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
@@ -59,7 +60,7 @@ public val MARK_BIT: Int = 1
  */
 public open class Slot<T> internal constructor(
     msgCtorArg: UnsafeCell<MaybeUninit<T>>,
-    stateCtorArg: Atomic<Int>,
+    stateCtorArg: Atomic<Int, Align8<Int>>,
 ) {
     /**
      * The message.
@@ -70,7 +71,7 @@ public open class Slot<T> internal constructor(
     /**
      * The state of the slot.
      */
-    public var state: Atomic<Int> = stateCtorArg
+    public var state: Atomic<Int, Align8<Int>> = stateCtorArg
         internal set
 
     /**
@@ -86,7 +87,7 @@ public open class Slot<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             msg: UnsafeCell<MaybeUninit<T>>,
-            state: Atomic<Int>,
+            state: Atomic<Int, Align8<Int>>,
         ): Slot<T> = Slot<T>(
             msgCtorArg = msg,
             stateCtorArg = state,
@@ -100,7 +101,7 @@ public open class Slot<T> internal constructor(
  * Each block in the list can hold up to `BLOCK_CAP` messages.
  */
 public open class Block<T> internal constructor(
-    nextCtorArg: Atomic<MutPtr>,
+    nextCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
     /**
      * Slots for messages.
      */
@@ -109,7 +110,7 @@ public open class Block<T> internal constructor(
     /**
      * The next block in the linked list.
      */
-    public var next: Atomic<MutPtr> = nextCtorArg
+    public var next: Atomic<MutPtr, Align8<MutPtr>> = nextCtorArg
         internal set
 
     /**
@@ -128,7 +129,7 @@ public open class Block<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            next: Atomic<MutPtr>,
+            next: Atomic<MutPtr, Align8<MutPtr>>,
             slots: List<Slot<T>>,
         ): Block<T> = Block<T>(
             nextCtorArg = next,
@@ -151,7 +152,7 @@ public open class Block<T> internal constructor(
         /**
          * Sets the `DESTROY` bit in slots starting from `start` and destroys the block.
          */
-        public fun <T> destroy(thisRef: MutPtr, start: Int, typeLayoutT: TypeLayout<T>) {
+        public fun <T> destroy(thisRef: MutPtr, start: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
             // It is not necessary to set the `DESTROY` bit in the last slot because that slot has
             // begun destruction of the block.
             for (i in start until BLOCK_CAP - 1) {
@@ -172,25 +173,25 @@ public open class Block<T> internal constructor(
  * A position in a channel.
  */
 public open class Position<T> internal constructor(
-    indexCtorArg: Atomic<Int>,
-    blockCtorArg: Atomic<MutPtr>,
+    indexCtorArg: Atomic<Int, Align8<Int>>,
+    blockCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
 ) {
     /**
      * The index in the channel.
      */
-    public var index: Atomic<Int> = indexCtorArg
+    public var index: Atomic<Int, Align8<Int>> = indexCtorArg
         internal set
 
     /**
      * The block in the linked list.
      */
-    public var block: Atomic<MutPtr> = blockCtorArg
+    public var block: Atomic<MutPtr, Align8<MutPtr>> = blockCtorArg
         internal set
 
     public companion object {
         public operator fun <T> invoke(
-            index: Atomic<Int>,
-            block: Atomic<MutPtr>,
+            index: Atomic<Int, Align8<Int>>,
+            block: Atomic<MutPtr, Align8<MutPtr>>,
         ): Position<T> = Position<T>(
             indexCtorArg = index,
             blockCtorArg = block,
@@ -330,7 +331,7 @@ public open class Channel<T> internal constructor(
             // Try advancing the tail forward.
             run {
                 val matchVal = this.tail.index.compareExchangeWeak(tail, newTail, Ordering.SeqCst, Ordering.Acquire)
-                when (matchVal) { is Result.Ok<*, *> -> {
+                when (matchVal) { is Result.Ok -> {
                     run {
                         // If we've reached the end of the block, install the next one.
                         if (offset + 1 == BLOCK_CAP) {
@@ -343,7 +344,7 @@ public open class Channel<T> internal constructor(
                         token.list.offset = offset
                         return true
                     }
-                }; is Result.Err<*, *> -> {
+                }; is Result.Err -> {
                     backoff.spinLight()
                     tail = this.tail.index.load(Ordering.Acquire)
                     block = this.tail.block.load(Ordering.Acquire)
@@ -358,7 +359,7 @@ public open class Channel<T> internal constructor(
     public open fun write(token: Token, msg: T): Result<Unit, T> {
         // If there is no slot, the channel is disconnected.
         if (((token.list.block).rawAddress == 0L)) {
-            return Result.Err(msg)
+            return Result.Err<Unit, T>(msg)
         }
         // Write the message into the slot.
         val block = (token.list.block).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
@@ -370,7 +371,7 @@ public open class Channel<T> internal constructor(
         }
         // Wake a sleeping receiver.
         this.receivers.notify()
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, T>(Unit)
     }
 
     /**
@@ -422,7 +423,7 @@ public open class Channel<T> internal constructor(
             // Try moving the head index forward.
             run {
                 val matchVal = this.head.index.compareExchangeWeak(head, newHead, Ordering.SeqCst, Ordering.Acquire)
-                when (matchVal) { is Result.Ok<*, *> -> {
+                when (matchVal) { is Result.Ok -> {
                     run {
                         // If we've reached the end of the block, move to the next one.
                         if (offset + 1 == BLOCK_CAP) {
@@ -438,7 +439,7 @@ public open class Channel<T> internal constructor(
                         token.list.offset = offset
                         return true
                     }
-                }; is Result.Err<*, *> -> {
+                }; is Result.Err -> {
                     backoff.spinLight()
                     head = this.head.index.load(Ordering.Acquire)
                     block = this.head.block.load(Ordering.Acquire)
@@ -453,7 +454,7 @@ public open class Channel<T> internal constructor(
     public open fun read(token: Token): Result<T, Unit> {
         if (((token.list.block).rawAddress == 0L)) {
             // The channel is disconnected.
-            return Result.Err(Unit)
+            return Result.Err<T, Unit>(Unit)
         }
         // Read the message.
         val block = (token.list.block).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
@@ -469,7 +470,7 @@ public open class Channel<T> internal constructor(
             } else if (slot.state.fetchOr(READ, Ordering.AcqRel) and DESTROY != 0) {
                 Block.destroy(block, offset + 1)
             }
-            Result.Ok(msg)
+            Result.Ok<T, Unit>(msg)
         }
     }
 
@@ -502,7 +503,7 @@ public open class Channel<T> internal constructor(
         return if (this.startRecv(token)) {
             this.read(token).mapErr({ TryRecvError.Disconnected })
         } else {
-            Result.Err(TryRecvError.Empty)
+            Result.Err<T, TryRecvError>(TryRecvError.Empty)
         }
     }
 
@@ -520,7 +521,7 @@ public open class Channel<T> internal constructor(
             if (deadline != null) {
                 val d = deadline
                 if (Instant.now() >= d) {
-                    return Result.Err(RecvTimeoutError.Timeout)
+                    return Result.Err<T, RecvTimeoutError>(RecvTimeoutError.Timeout)
                 }
             }
             // Prepare for blocking until a sender wakes us up.

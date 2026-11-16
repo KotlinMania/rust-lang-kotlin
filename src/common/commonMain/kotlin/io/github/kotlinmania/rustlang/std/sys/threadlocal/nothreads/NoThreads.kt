@@ -23,13 +23,13 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 // Required for correctness of `@rustcAlignStatic`
 public open class EagerStorage<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) {
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<EagerStorage<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> EagerStorage<T>(ptr, layout) }, { it.value })
 

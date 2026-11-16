@@ -46,11 +46,10 @@ public open class Iovec internal constructor(
         public operator fun invoke(
             iovBase: MutPtr,
             iovLen: Int,
-        ): Iovec =
-            Iovec(
-                iovBaseCtorArg = iovBase,
-                iovLen = iovLen,
-            )
+        ): Iovec = Iovec(
+            iovBaseCtorArg = iovBase,
+            iovLen = iovLen,
+        )
     }
 }
 

@@ -3,10 +3,12 @@ package io.github.kotlinmania.rustlang.std.thread.thread
 
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.alloc.System
@@ -371,9 +373,7 @@ public open class Thread internal constructor(
             }
         }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Thread").field("id", this.id()).field("name", this.name()).finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Thread").field("id", this.id()).field("name", this.name()).finishNonExhaustive()
 
     public companion object {
         public operator fun invoke(
@@ -391,7 +391,7 @@ public open class Thread internal constructor(
             // changes.
             val inner =
                 run {
-                    val arc = Arc.newUninitIn(System)
+                    val arc = Arc.newUninitIn(System())
                     val ptr = Arc.getMutUnchecked(arc).asMutPtr()
                     (addrOfMut(ptr.name)).write(name1)
                     (addrOfMut(ptr.id)).write(id)
@@ -436,7 +436,7 @@ public open class Thread internal constructor(
          */
         public fun fromRaw(ptr: ConstPtr): Thread {
             // Safety: Upheld by caller.
-            return Thread(inner = Pin.newUnchecked(Arc.fromRawIn(ConstPtr(ptr.rawAddress, ptr.rawMeta), System)))
+            return Thread(inner = Pin.newUnchecked(Arc.fromRawIn(ConstPtr(ptr.rawAddress, ptr.rawMeta), System())))
         }
     }
 }

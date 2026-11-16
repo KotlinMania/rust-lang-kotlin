@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -31,7 +31,7 @@ public fun interface F {
  * If it succeeds, `PTR` is set to the address of that symbol.
  * If it fails, then `PTR` is set to `fallback`.
  */
-public var PTR: Atomic<MutPtr> = AtomicPtr.new(mutPtrFromRustCast(((::load as Any?) as F)))
+public var PTR: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(mutPtrFromRustCast(((::load as Any?) as F)))
 
 public fun load(hthread: Handle, lpthreaddescription: MutPtr): Hresult =
     run {

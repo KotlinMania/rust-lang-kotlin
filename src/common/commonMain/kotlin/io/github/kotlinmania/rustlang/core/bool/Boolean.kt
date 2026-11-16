@@ -104,9 +104,9 @@ public fun <T> Boolean.then(f: () -> T): T? =
  */
 public fun <E> Boolean.okOr(err: E): Result<Unit, E> =
     if (this) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, E>(Unit)
     } else {
-        Result.Err(err)
+        Result.Err<Unit, E>(err)
     }
 
 /**
@@ -135,9 +135,9 @@ public fun <E> Boolean.okOr(err: E): Result<Unit, E> =
  */
 public fun <E> Boolean.okOrElse(f: () -> E): Result<Unit, E> =
     if (this) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, E>(Unit)
     } else {
-        Result.Err(f())
+        Result.Err<Unit, E>(f())
     }
 
 /**

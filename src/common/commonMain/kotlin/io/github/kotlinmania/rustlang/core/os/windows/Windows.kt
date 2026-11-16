@@ -32,6 +32,5 @@ import io.github.kotlinmania.rustlang.core.intrinsics.CodeViewAnnotationArgs
  * ```kotlin
  */
 public fun <T : CodeViewAnnotationArgs> codeviewAnnotation() {
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .codeviewAnnotation<T>()
+    io.github.kotlinmania.rustlang.core.intrinsics.codeviewAnnotation<T>()
 }

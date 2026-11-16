@@ -924,11 +924,7 @@ public fun F16.Companion.fromBits(v: UShort): F16 {
  * }
  * ```
  */
-public fun F16.toBeBytes(): UByteArray =
-    run {
-        val rawBits = this.toBits().toUInt()
-        ubyteArrayOf((rawBits shr 8).toUByte(), rawBits.toUByte())
-    }
+public fun F16.toBeBytes(): UByteArray = run { val rawBits = this.toBits().toUInt(); ubyteArrayOf((rawBits shr 8).toUByte(), rawBits.toUByte()) }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -951,11 +947,7 @@ public fun F16.toBeBytes(): UByteArray =
  * }
  * ```
  */
-public fun F16.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toBits().toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-    }
+public fun F16.toLeBytes(): UByteArray = run { val rawBits = this.toBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -986,11 +978,7 @@ public fun F16.toLeBytes(): UByteArray =
  * }
  * ```
  */
-public fun F16.toNeBytes(): UByteArray =
-    run {
-        val rawBits = this.toBits().toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-    }
+public fun F16.toNeBytes(): UByteArray = run { val rawBits = this.toBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
 
 /**
  * Creates a floating point value from its representation as a byte array in big endian.
@@ -1012,13 +1000,7 @@ public fun F16.toNeBytes(): UByteArray =
  * }
  * ```
  */
-public fun F16.Companion.fromBeBytes(bytes: UByteArray): F16 =
-    F16.fromBits(
-        run {
-            val bytesTmp0 = bytes
-            ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort()
-        },
-    )
+public fun F16.Companion.fromBeBytes(bytes: UByteArray): F16 = F16.fromBits(run { val bytesTmp0 = bytes; ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort() })
 
 /**
  * Creates a floating point value from its representation as a byte array in little endian.
@@ -1040,13 +1022,7 @@ public fun F16.Companion.fromBeBytes(bytes: UByteArray): F16 =
  * }
  * ```
  */
-public fun F16.Companion.fromLeBytes(bytes: UByteArray): F16 =
-    F16.fromBits(
-        run {
-            val bytesTmp1 = bytes
-            ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort()
-        },
-    )
+public fun F16.Companion.fromLeBytes(bytes: UByteArray): F16 = F16.fromBits(run { val bytesTmp1 = bytes; ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
 
 /**
  * Creates a floating point value from its representation as a byte array in native endian.
@@ -1079,13 +1055,7 @@ public fun F16.Companion.fromLeBytes(bytes: UByteArray): F16 =
  * }
  * ```
  */
-public fun F16.Companion.fromNeBytes(bytes: UByteArray): F16 =
-    F16.fromBits(
-        run {
-            val bytesTmp2 = bytes
-            ((bytesTmp2[1].toInt() shl 8) or bytesTmp2[0].toInt()).toUShort()
-        },
-    )
+public fun F16.Companion.fromNeBytes(bytes: UByteArray): F16 = F16.fromBits(run { val bytesTmp2 = bytes; ((bytesTmp2[1].toInt() shl 8) or bytesTmp2[0].toInt()).toUShort() })
 
 /**
  * Returns the ordering between `self` and `other`.

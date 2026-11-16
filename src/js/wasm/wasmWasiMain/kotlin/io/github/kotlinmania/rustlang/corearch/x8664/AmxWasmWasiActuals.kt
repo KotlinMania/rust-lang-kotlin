@@ -10,16 +10,24 @@ import io.github.kotlinmania.rustlang.corearch.simd.I32x16
 import io.github.kotlinmania.rustlang.corearch.simd.U16x32
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-public actual fun ldtilecfg(memAddr: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxLdtilecfg")
+public actual fun ldtilecfg(memAddr: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxLdtilecfg")
+}
 
-public actual fun sttilecfg(memAddr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxSttilecfg")
+public actual fun sttilecfg(memAddr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxSttilecfg")
+}
 
-public actual fun tileloadd64(dst: Byte, base: ConstPtr, stride: ULong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloadd64")
+public actual fun tileloadd64(dst: Byte, base: ConstPtr, stride: ULong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloadd64")
+}
 
 public actual fun tileloadd64Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloadd64Internal")
 
-public actual fun tileloaddt164(dst: Byte, base: ConstPtr, stride: ULong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddt164")
+public actual fun tileloaddt164(dst: Byte, base: ConstPtr, stride: ULong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddt164")
+}
 
 public actual fun tileloaddt164Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddt164Internal")
@@ -30,9 +38,13 @@ private external fun wasiCorearchX8664AmxTilerelease(): Unit
 public actual fun tilerelease(): Unit =
     wasiCorearchX8664AmxTilerelease()
 
-public actual fun tilestored64(dst: Byte, base: MutPtr, stride: ULong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTilestored64")
+public actual fun tilestored64(dst: Byte, base: MutPtr, stride: ULong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTilestored64")
+}
 
-public actual fun tilestored64Internal(rows: UShort, colsb: UShort, base: MutPtr, stride: ULong, src: Tile): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTilestored64Internal")
+public actual fun tilestored64Internal(rows: UShort, colsb: UShort, base: MutPtr, stride: ULong, src: Tile) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTilestored64Internal")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "corearchX8664AmxTilezero")
 private external fun wasiCorearchX8664AmxTilezero(dst: Int): Unit
@@ -151,12 +163,16 @@ public actual fun tdphf8ps(dst: Byte, a: Byte, b: Byte): Unit =
 public actual fun tdphf8psInternal(m: UShort, n: UShort, k: UShort, dst: Tile, a: Tile, b: Tile): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTdphf8psInternal")
 
-public actual fun tileloaddrs64(dst: Byte, base: ConstPtr, stride: ULong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddrs64")
+public actual fun tileloaddrs64(dst: Byte, base: ConstPtr, stride: ULong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddrs64")
+}
 
 public actual fun tileloaddrs64Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddrs64Internal")
 
-public actual fun tileloaddrst164(dst: Byte, base: ConstPtr, stride: ULong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddrst164")
+public actual fun tileloaddrst164(dst: Byte, base: ConstPtr, stride: ULong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddrst164")
+}
 
 public actual fun tileloaddrst164Internal(rows: UShort, colsb: UShort, base: ConstPtr, stride: ULong): Tile =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX8664AmxTileloaddrst164Internal")

@@ -37,9 +37,9 @@ public open class Mutex(
         if (state == UNLOCKED) {
             run {
                 val matchVal = this.futex.compareExchange(UNLOCKED, LOCKED, Acquire, Relaxed)
-                when (matchVal) { is Result.Ok<*, *> -> {
+                when (matchVal) { is Result.Ok -> {
                     return
-                }; is Result.Err<*, *> -> {
+                }; is Result.Err -> {
                     val s = matchVal.error
                     state = s
                 } }

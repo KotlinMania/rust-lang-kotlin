@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
@@ -33,21 +34,15 @@ public typealias Source<I> = I.Source
 public open class Take<I>(
     public var iter: I,
     public var n: Int,
-) : SourceIter<Source>,
-    InPlaceIterable,
-    TrustedFused,
-    TrustedLen<Take<I>>,
-    SpecTake<Take<I>>,
-    Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@Take.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : SourceIter<Source>, InPlaceIterable, TrustedFused, TrustedLen<Take<I>>, SpecTake<Take<I>>, Iterable<Item> {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@Take.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Take<I> = Take(iter, n)
 
@@ -79,15 +74,12 @@ public open class Take<I>(
         // while benefiting from the inner iterator's `advanceBy` fast path.
         return run {
             val matchVal = this.iter.advanceBy(this.n)
-            when (matchVal) {
-                is Result.Ok<*, *> -> {
-                    this.n
-                }
-                is Result.Err<*, *> -> {
-                    val remaining = matchVal.error
-                    this.n - remaining.get()
-                }
-            }
+            when (matchVal) { is Result.Ok -> {
+                this.n
+            }; is Result.Err -> {
+                val remaining = matchVal.error
+                this.n - remaining.get()
+            } }
         }
     }
 
@@ -112,11 +104,7 @@ public open class Take<I>(
         fun <T, Acc, R : Try<R, Acc, Any?>> check(n: RustMutableReference<Int>, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
             val n1 = n
             return { acc, x ->
-                (n1).let { targetPlace ->
-                    var currentValue = targetPlace.read()
-                    currentValue -= (1)
-                    targetPlace.write(currentValue)
-                }
+                (n1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue -= (1); targetPlace.write(currentValue) }
                 val r = fold1(acc, x)
                 if ((n1).read() == 0) {
                     ControlFlow.Break(r)
@@ -139,24 +127,21 @@ public open class Take<I>(
         Take.specForEach(this, f)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val min = this.n.min(n)
         val rem1 =
             run {
                 val matchVal = this.iter.advanceBy(min)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        0
-                    }
-                    is Result.Err<*, *> -> {
-                        val rem = matchVal.error
-                        rem.get()
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    0
+                }; is Result.Err -> {
+                    val rem = matchVal.error
+                    rem.get()
+                } }
             }
         val advanced = min - rem1
         this.n -= advanced
-        return NonZero.new(n - advanced).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - advanced))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun asInner(): Source {
@@ -211,7 +196,7 @@ public open class Take<I>(
             }
         }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         // The amount by which the inner iterator needs to be shortened for it to be
         // at most as long as the take() amount.
         val trimInner = this.iter.len().saturatingSub(this.n)
@@ -222,20 +207,17 @@ public open class Take<I>(
         val remainder =
             run {
                 val matchVal = this.iter.advanceBackBy(advanceBy)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        0
-                    }
-                    is Result.Err<*, *> -> {
-                        val rem = matchVal.error
-                        rem.get()
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    0
+                }; is Result.Err -> {
+                    val rem = matchVal.error
+                    rem.get()
+                } }
             }
         val advancedByInner = advanceBy - remainder
         val advancedBy = advancedByInner - trimInner
         this.n -= advancedBy
-        return NonZero.new(n - advancedBy).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - advancedBy))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun <B> specFold(init: B, f: (B, Item) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
@@ -303,9 +285,9 @@ public open class Take<I>(
 
         public fun <I> new(iter: I, n: Int): Take<I> = Take(iter = iter, n = n)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
@@ -323,7 +305,7 @@ public fun <T, Acc, R> Take<Repeat<T>>.tryRfold(init: Acc, fold: (Acc, Item) -> 
 
 public fun <T, Acc> Take<Repeat<T>>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.fold(init, fold)
 
-public fun <T> Take<Repeat<T>>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.advanceBy(n)
+public fun <T> Take<Repeat<T>>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.advanceBy(n)
 
 // Note: It may be tempting to impl DoubleEndedIterator for Take<RepeatWith>.
 // One must fight that temptation since such implementation wouldn’t be correct

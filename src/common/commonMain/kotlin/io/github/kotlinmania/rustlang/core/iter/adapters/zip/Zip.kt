@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/zip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.zip
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
@@ -8,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -50,25 +52,15 @@ public open class Zip<A, B>(
     // index, len and aLen are only used by the specialized version of zip
     public var index: Int,
     public var len: Int,
-) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>,
-    TrustedRandomAccess,
-    TrustedRandomAccessNoCoerce,
-    TrustedFused,
-    TrustedLen<Zip<A, B>>,
-    SourceIter<Source>,
-    InPlaceIterable,
-    ZipFmt<A, B>,
-    SpecFold<Zip<A, B>>,
-    Iterable<Pair<Item, Item>> {
-    override fun iterator(): Iterator<Pair<Item, Item>> =
-        object : AbstractIterator<Pair<Item, Item>>() {
-            override fun computeNext() {
-                when (val v = this@Zip.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Zip<A, B>>, SourceIter<Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold<Zip<A, B>>, Iterable<Pair<Item, Item>> {
+    override fun iterator(): Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
+        override fun computeNext() {
+            when (val v = this@Zip.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Zip<A, B> = Zip(a, b, index, len)
 
@@ -241,20 +233,14 @@ public open class Zip<A, B>(
         return this.a.asInner()
     }
 
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            this.fmt(f)
-            Result.Ok(Unit)
-        }
+    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
 
-    public open fun fmtAB(f: StringBuilder) {
-        DebugStruct(f, "Zip").field("a", this.a).field("b", this.b).finish()
-    }
+    public open fun fmtAB(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Zip").field("a", this.a).field("b", this.b).finish()
 
-    public open fun fmtABAB(f: StringBuilder) {
+    public open fun fmtABAB(f: StringBuilder): Result<Unit, Error> {
         // It's *not safe* to call fmt on the contained iterators, since once
         // we start iterating they're in strange, potentially unchecked, states.
-        DebugStruct(f, "Zip").finish()
+        return DebugStruct(f, "Zip").finish()
     }
 
     // Adapted from default impl from the Iterator trait
@@ -314,9 +300,9 @@ public open class Zip<A, B>(
         public val MAY_HAVE_SIDE_EFFECT: Boolean = A.MAY_HAVE_SIDE_EFFECT || B.MAY_HAVE_SIDE_EFFECT
 
         // Since SourceIter forwards the left hand side we do the same here
-        public val EXPAND_BY: NonZero<Int>? = A.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = A.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = A.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = A.MERGE_BY
     }
 }
 
@@ -366,7 +352,7 @@ public interface ZipImpl<A, B, T, Item> {
 }
 
 public interface ZipFmt<A, B> {
-    public fun fmt(f: StringBuilder)
+    public fun fmt(f: StringBuilder): Result<Unit, Error>
 }
 
 //

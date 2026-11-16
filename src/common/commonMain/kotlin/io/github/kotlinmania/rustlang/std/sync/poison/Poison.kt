@@ -1,9 +1,11 @@
 // port-lint: source sync/poison.rs
 package io.github.kotlinmania.rustlang.std.sync.poison
 
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -90,9 +92,9 @@ public class DebugStruct(
 }
 
 public open class Flag internal constructor(
-    failedCtorArg: Atomic<Boolean>,
+    failedCtorArg: Atomic<Boolean, Align1<UByte>>,
 ) {
-    public var failed: Atomic<Boolean> = failedCtorArg
+    public var failed: Atomic<Boolean, Align1<UByte>> = failedCtorArg
         internal set
 
     // Note that the Ordering uses to access the `failed` field of `Flag` below is
@@ -142,7 +144,7 @@ public open class Flag internal constructor(
 
     public companion object {
         public operator fun invoke(
-            failed: Atomic<Boolean>,
+            failed: Atomic<Boolean, Align1<UByte>>,
         ): Flag = Flag(
             failedCtorArg = failed,
         )
@@ -217,13 +219,9 @@ public open class PoisonError<T>(
     public var data: T,
     public var never: Nothing,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "PoisonError").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "PoisonError").finishNonExhaustive()
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        "poisoned lock: another task failed inside".fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "poisoned lock: another task failed inside".fmt(f)
 
     /**
      * Consumes this error indicating that a lock is poisoned, returning the
@@ -294,19 +292,17 @@ public sealed class TryLockError<T> {
      */
     public class WouldBlock<T>() : TryLockError<T>()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TryLockError.Poisoned -> "Poisoned(..)".fmt(f)
             TryLockError.WouldBlock -> "WouldBlock".fmt(f)
         }
-    }
 
-    public open fun fmtDisplay(f: StringBuilder) {
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TryLockError.Poisoned -> "poisoned lock: another task failed inside"
             TryLockError.WouldBlock -> "try_lock failed because the operation would block"
         }.fmt(f)
-    }
 
     public open fun cause(): Any? =
         when (this) {
@@ -347,8 +343,8 @@ public typealias TryLockResult<Guard> = Result<Guard, TryLockError<Guard>>
 
 public fun <T, U> mapResult(result: LockResult<T>, f: (T) -> U): LockResult<U> =
     when {
-        result is Result.Ok<*, *> -> {
-            val t = (result as Result.Ok<*, *>).value
+        result is Result.Ok -> {
+            val t = result.value
             Result.Ok(f(t))
         }
         else -> Result.Err(PoisonError.new(f(data)))

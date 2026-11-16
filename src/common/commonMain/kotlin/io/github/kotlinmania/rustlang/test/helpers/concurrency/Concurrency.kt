@@ -1,6 +1,7 @@
 // port-lint: source helpers/concurrency.rs
 package io.github.kotlinmania.rustlang.test.helpers.concurrency
 
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
@@ -14,7 +15,7 @@ public fun getConcurrency(): Int =
         is Ok -> {
             val value = matchVal.value
             run {
-                val matchVal1 = value.parse<NonZero<Int>>().ok()
+                val matchVal1 = value.parse<NonZero<Int, NonZeroUsizeInner>>().ok()
                 when {
                     matchVal1 != null -> {
                         val n = matchVal1

@@ -7,6 +7,4 @@ import io.github.kotlinmania.rustlang.core.I128
 // Conversions from signed integers to floats.
 // Conversions from floats to unsigned integers.
 // Conversions from floats to signed integers.
-public fun fixsfti(f: Float): I128 =
-    io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
-        .fixsfti(f)
+public fun fixsfti(f: Float): I128 = io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.fixsfti(f)

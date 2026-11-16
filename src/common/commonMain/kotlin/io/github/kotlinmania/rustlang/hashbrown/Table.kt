@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.hashbrown
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -210,10 +211,10 @@ public open class HashTable<T, A> internal constructor(
      */
     public open fun findEntry(hash: ULong, eq: (T) -> Boolean): Result<OccupiedEntry<T, A>, AbsentEntry<T, A>> =
         when (val matchVal = this.raw.find(hash, eq)) {
-            null -> Result.Err(AbsentEntry(table = this))
+            null -> Result.Err<OccupiedEntry<T, A>, AbsentEntry<T, A>>(AbsentEntry(table = this))
             else -> {
                 val bucket = matchVal
-                Result.Ok(OccupiedEntry(bucket = bucket, table = this))
+                Result.Ok<OccupiedEntry<T, A>, AbsentEntry<T, A>>(OccupiedEntry(bucket = bucket, table = this))
             }
         }
 
@@ -310,10 +311,10 @@ public open class HashTable<T, A> internal constructor(
     public open fun entry(hash: ULong, eq: (T) -> Boolean, hasher: (T) -> ULong): Entry<T, A> =
         run {
             val matchVal = this.raw.findOrFindInsertIndex(hash, eq, hasher)
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val bucket = matchVal.value
                 Entry.Occupied(OccupiedEntry(bucket = bucket, table = this))
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 val insertIndex = matchVal.error
                 Entry.Vacant(VacantEntry(tag = Tag.full(hash), index = insertIndex, table = this))
             } }
@@ -346,10 +347,10 @@ public open class HashTable<T, A> internal constructor(
      */
     public open fun getBucketEntry(index: Int): Result<OccupiedEntry<T, A>, AbsentEntry<T, A>> =
         when (val matchVal = this.raw.checkedBucket(index)) {
-            null -> Result.Err(AbsentEntry(table = this))
+            null -> Result.Err<OccupiedEntry<T, A>, AbsentEntry<T, A>>(AbsentEntry(table = this))
             else -> {
                 val bucket = matchVal
-                Result.Ok(OccupiedEntry(bucket = bucket, table = this))
+                Result.Ok<OccupiedEntry<T, A>, AbsentEntry<T, A>>(OccupiedEntry(bucket = bucket, table = this))
             }
         }
 
@@ -1180,9 +1181,7 @@ public open class HashTable<T, A> internal constructor(
         this.raw = source.raw
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <T, A> invoke(
@@ -1438,7 +1437,7 @@ public sealed class Entry<T, A> {
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Entry.Vacant -> {
                 val (v) = this
@@ -1449,7 +1448,6 @@ public sealed class Entry<T, A> {
                 DebugTuple(f, "Entry").field(o).finish()
             }
         }
-    }
 
     /**
      * Sets the value of the entry, replacing any existing value if there is
@@ -1648,9 +1646,7 @@ public open class OccupiedEntry<T, A> internal constructor(
     public var table: HashTable<T, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
 
     /**
      * Takes the value out of the entry, and returns it along with a
@@ -1943,9 +1939,7 @@ public open class VacantEntry<T, A> internal constructor(
     public var table: HashTable<T, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("VacantEntry")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("VacantEntry"); Result.Ok(Unit) }
 
     /**
      * Inserts a new element into the table with the hash that was used to
@@ -2040,9 +2034,7 @@ public open class AbsentEntry<T, A> internal constructor(
     public var table: HashTable<T, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("AbsentEntry")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("AbsentEntry"); Result.Ok(Unit) }
 
     /**
      * Converts the `AbsentEntry` into a mutable reference to the underlying
@@ -2101,9 +2093,7 @@ public open class Iter<T>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public fun <T> default(): Iter<T> = Iter(inner = Default.default(), marker = Unit)
@@ -2154,9 +2144,7 @@ public open class IterMut<T>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public fun <T> default(): IterMut<T> = IterMut(inner = Default.default(), marker = Unit)
@@ -2254,9 +2242,7 @@ public open class UnsafeIter<T>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public fun <T> default(): UnsafeIter<T> = UnsafeIter(inner = Default.default(), marker = Unit)
@@ -2294,9 +2280,7 @@ public open class IterBuckets<T>(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public fun <T> default(): IterBuckets<T> = IterBuckets(inner = Default.default(), marker = Unit)
@@ -2341,9 +2325,7 @@ public open class IterHash<T>(
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): IterHash<T> = IterHash(inner = this.inner.clone(), marker = Unit)
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public fun <T> default(): IterHash<T> = IterHash(inner = Default.default(), marker = Unit)
@@ -2385,9 +2367,7 @@ public open class IterHashMut<T>(
 
     public open fun <B> fold(init: B, f: (B, T) -> B): B = this.inner.fold(init, { acc, bucket -> f(acc, bucket.asMut()) })
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(IterHash(inner = this.inner.clone(), marker = Unit)).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(IterHash(inner = this.inner.clone(), marker = Unit)).finish()
 
     public companion object {
         public fun <T> default(): IterHashMut<T> = IterHashMut(inner = Default.default(), marker = Unit)
@@ -2417,9 +2397,7 @@ public open class IterHashBuckets<T>(
 
     public open fun next(): Int? = this.inner.next()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public fun <T> default(): IterHashBuckets<T> = IterHashBuckets(inner = Default.default(), marker = Unit)
@@ -2464,9 +2442,7 @@ public open class IntoIter<T, A> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <T, A> invoke(
@@ -2515,9 +2491,7 @@ public open class Drain<T, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.inner.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(

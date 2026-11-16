@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.io.ioslice
 
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.take
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class IoSliceMut internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<IoSliceMut>,
+    public val fieldLayout: TypeLayout<IoSliceMut> = UnresolvedTypeLayout(),
 ) {
     public var field0: IoSliceMut
         get() = value
@@ -29,19 +30,13 @@ public open class IoSliceMut internal constructor(
 
     public var value: IoSliceMut
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: IoSliceMut, fieldLayout: TypeLayout<IoSliceMut>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: IoSliceMut, fieldLayout: TypeLayout<IoSliceMut> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<IoSliceMut> = TransparentTypeLayout(fieldLayout, { ptr, layout -> IoSliceMut(ptr, layout) }, { it.value })
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> =
-        run {
-            fmt.append((this.value.asSlice()).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok(Unit) }
 
     /**
      * Advance the internal cursor of the slice.
@@ -93,9 +88,9 @@ public open class IoSliceMut internal constructor(
     public open fun derefMut(): MutableList<UByte> = this.value.asMutSlice()
 
     public companion object {
-        public operator fun invoke(value: IoSliceMut, fieldLayout: TypeLayout<IoSliceMut>): IoSliceMut = IoSliceMut(value, fieldLayout)
+        public operator fun invoke(value: IoSliceMut, fieldLayout: TypeLayout<IoSliceMut> = UnresolvedTypeLayout()): IoSliceMut = IoSliceMut(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<IoSliceMut>): IoSliceMut = IoSliceMut(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<IoSliceMut> = UnresolvedTypeLayout()): IoSliceMut = IoSliceMut(fieldStorage, fieldLayout)
 
         /**
          * Creates a new `IoSliceMut` wrapping a byte slice.
@@ -104,7 +99,7 @@ public open class IoSliceMut internal constructor(
          *
          * Panics on Windows if the slice is larger than 4GB.
          */
-        public fun new(buf: MutableList<UByte>, fieldLayout: TypeLayout<IoSliceMut>): IoSliceMut = IoSliceMut(IoSliceMut.new(buf, fieldLayout = fieldLayout), fieldLayout = fieldLayout)
+        public fun new(buf: MutableList<UByte>, fieldLayout: TypeLayout<IoSliceMut> = UnresolvedTypeLayout()): IoSliceMut = IoSliceMut(IoSliceMut.new(buf, fieldLayout = fieldLayout), fieldLayout = fieldLayout)
 
         /**
          * Advance a slice of slices.
@@ -172,7 +167,7 @@ public open class IoSliceMut internal constructor(
  */
 public open class IoSlice internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<IoSlice>,
+    public val fieldLayout: TypeLayout<IoSlice> = UnresolvedTypeLayout(),
 ) {
     public var field0: IoSlice
         get() = value
@@ -182,21 +177,15 @@ public open class IoSlice internal constructor(
 
     public var value: IoSlice
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: IoSlice, fieldLayout: TypeLayout<IoSlice>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: IoSlice, fieldLayout: TypeLayout<IoSlice> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<IoSlice> = TransparentTypeLayout(fieldLayout, { ptr, layout -> IoSlice(ptr, layout) }, { it.value })
 
     public open fun clone(): IoSlice = IoSlice(value, fieldLayout)
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> =
-        run {
-            fmt.append((this.value.asSlice()).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append((this.value.asSlice()).toString()); Result.Ok(Unit) }
 
     /**
      * Advance the internal cursor of the slice.
@@ -251,9 +240,9 @@ public open class IoSlice internal constructor(
     public open fun deref(): List<UByte> = this.value.asSlice()
 
     public companion object {
-        public operator fun invoke(value: IoSlice, fieldLayout: TypeLayout<IoSlice>): IoSlice = IoSlice(value, fieldLayout)
+        public operator fun invoke(value: IoSlice, fieldLayout: TypeLayout<IoSlice> = UnresolvedTypeLayout()): IoSlice = IoSlice(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<IoSlice>): IoSlice = IoSlice(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<IoSlice> = UnresolvedTypeLayout()): IoSlice = IoSlice(fieldStorage, fieldLayout)
 
         /**
          * Creates a new `IoSlice` wrapping a byte slice.
@@ -262,7 +251,7 @@ public open class IoSlice internal constructor(
          *
          * Panics on Windows if the slice is larger than 4GB.
          */
-        public fun new(buf: List<UByte>, fieldLayout: TypeLayout<IoSlice>): IoSlice = IoSlice(IoSlice.new(buf, fieldLayout = fieldLayout), fieldLayout = fieldLayout)
+        public fun new(buf: List<UByte>, fieldLayout: TypeLayout<IoSlice> = UnresolvedTypeLayout()): IoSlice = IoSlice(IoSlice.new(buf, fieldLayout = fieldLayout), fieldLayout = fieldLayout)
 
         /**
          * Advance a slice of slices.

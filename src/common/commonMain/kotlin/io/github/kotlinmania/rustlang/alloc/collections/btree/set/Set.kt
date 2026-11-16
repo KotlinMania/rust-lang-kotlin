@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.setval.SetValZST
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.peekable.Peekable
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
@@ -120,11 +121,7 @@ public class DebugTuple(
  */
 public open class BTreeSet<T, A : AllocatorClone>(
     public var map: MutableMap<T, SetValZST>,
-) : Sub<BTreeSet<T, A>, BTreeSet<T, A>>,
-    BitXor<BTreeSet<T, A>, BTreeSet<T, A>>,
-    BitAnd<BTreeSet<T, A>, BTreeSet<T, A>>,
-    BitOr<BTreeSet<T, A>, BTreeSet<T, A>>,
-    Iterable<T> {
+) : Sub<BTreeSet<T, A>, BTreeSet<T, A>>, BitXor<BTreeSet<T, A>, BTreeSet<T, A>>, BitAnd<BTreeSet<T, A>, BTreeSet<T, A>>, BitOr<BTreeSet<T, A>, BTreeSet<T, A>>, Iterable<T> {
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
 
     public override fun hashCode(): Int {
@@ -200,30 +197,27 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun difference(other: BTreeSet<T, A>): Difference<T, A> =
         if (this.first() != null && this.last() != null && other.first() != null && other.last() != null) {
-            Difference(
-                inner =
-                    run {
-                        val matchVal = Pair(selfMin.cmp(otherMax), selfMax.cmp(otherMin))
-                        when {
-                            matchVal.first == Greater -> DifferenceInner.Iterate(this.iter())
-                            matchVal.second == Less -> DifferenceInner.Iterate(this.iter())
-                            matchVal.first == Equal -> {
-                                val selfIter = this.iter()
-                                selfIter.next()
-                                DifferenceInner.Iterate(selfIter)
-                            }
-                            matchVal.second == Equal -> {
-                                val selfIter1 = this.iter()
-                                selfIter1.nextBack()
-                                DifferenceInner.Iterate(selfIter1)
-                            }
-                            this.len() <= other.len() / ITER_PERFORMANCE_TIPPING_SIZE_DIFF -> {
-                                DifferenceInner.Search(selfIter = this.iter(), otherSet = other)
-                            }
-                            else -> DifferenceInner.Stitch(selfIter = this.iter(), otherIter = other.iter().peekable())
-                        }
-                    },
-            )
+            Difference(inner = run {
+                val matchVal = Pair(selfMin.cmp(otherMax), selfMax.cmp(otherMin))
+                when {
+                    matchVal.first == Greater -> DifferenceInner.Iterate(this.iter())
+                    matchVal.second == Less -> DifferenceInner.Iterate(this.iter())
+                    matchVal.first == Equal -> {
+                        val selfIter = this.iter()
+                        selfIter.next()
+                        DifferenceInner.Iterate(selfIter)
+                    }
+                    matchVal.second == Equal -> {
+                        val selfIter1 = this.iter()
+                        selfIter1.nextBack()
+                        DifferenceInner.Iterate(selfIter1)
+                    }
+                    this.len() <= other.len() / ITER_PERFORMANCE_TIPPING_SIZE_DIFF -> {
+                        DifferenceInner.Search(selfIter = this.iter(), otherSet = other)
+                    }
+                    else -> DifferenceInner.Stitch(selfIter = this.iter(), otherIter = other.iter().peekable())
+                }
+            })
         } else {
             Difference(inner = DifferenceInner.Iterate(this.iter()))
         }
@@ -268,25 +262,22 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun intersection(other: BTreeSet<T, A>): Intersection<T, A> =
         if (this.first() != null && this.last() != null && other.first() != null && other.last() != null) {
-            Intersection(
-                inner =
-                    run {
-                        val matchVal = Pair(selfMin.cmp(otherMax), selfMax.cmp(otherMin))
-                        when {
-                            matchVal.first == Greater -> IntersectionInner.Answer(null)
-                            matchVal.second == Less -> IntersectionInner.Answer(null)
-                            matchVal.first == Equal -> IntersectionInner.Answer(selfMin)
-                            matchVal.second == Equal -> IntersectionInner.Answer(selfMax)
-                            this.len() <= other.len() / ITER_PERFORMANCE_TIPPING_SIZE_DIFF -> {
-                                IntersectionInner.Search(smallIter = this.iter(), largeSet = other)
-                            }
-                            other.len() <= this.len() / ITER_PERFORMANCE_TIPPING_SIZE_DIFF -> {
-                                IntersectionInner.Search(smallIter = other.iter(), largeSet = this)
-                            }
-                            else -> IntersectionInner.Stitch(a = this.iter(), b = other.iter())
-                        }
-                    },
-            )
+            Intersection(inner = run {
+                val matchVal = Pair(selfMin.cmp(otherMax), selfMax.cmp(otherMin))
+                when {
+                    matchVal.first == Greater -> IntersectionInner.Answer(null)
+                    matchVal.second == Less -> IntersectionInner.Answer(null)
+                    matchVal.first == Equal -> IntersectionInner.Answer(selfMin)
+                    matchVal.second == Equal -> IntersectionInner.Answer(selfMax)
+                    this.len() <= other.len() / ITER_PERFORMANCE_TIPPING_SIZE_DIFF -> {
+                        IntersectionInner.Search(smallIter = this.iter(), largeSet = other)
+                    }
+                    other.len() <= this.len() / ITER_PERFORMANCE_TIPPING_SIZE_DIFF -> {
+                        IntersectionInner.Search(smallIter = other.iter(), largeSet = this)
+                    }
+                    else -> IntersectionInner.Stitch(a = this.iter(), b = other.iter())
+                }
+            })
         } else {
             Intersection(inner = IntersectionInner.Answer(null))
         }
@@ -405,9 +396,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
         val (otherMin, otherMax) = Pair(other.first(), other.last()) ?: return false
         val selfIter = this.iter()
         when (selfMin.cmp(otherMin)) {
-            Less -> {
-                return false
-            }
+            Less -> { return false }
             // other does not contain selfMin
             Equal -> {
                 selfIter.next()
@@ -417,9 +406,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
             Greater -> {}
         }
         when (selfMax.cmp(otherMax)) {
-            Greater -> {
-                return false
-            }
+            Greater -> { return false }
             // other does not contain selfMax
             Equal -> {
                 selfIter.nextBack()
@@ -438,32 +425,24 @@ public open class BTreeSet<T, A : AllocatorClone>(
                 otherIter.nextBack()
             }
             // custom `selfIter.all(| e | other.contains(e))`
-            selfIter.all(
-                closure@{ self1 ->
-                    while (true) {
-                        val matchVal = otherIter.next()
-                        if (matchVal == null) break
-                        val other1 = matchVal
-                        when (other1.cmp(self1)) {
-                            // happens up to `ITER_PERFORMANCE_TIPPING_SIZE_DIFF * self.len() - 1` times
-                            Less -> {
-                                continue
-                            }
-                            // skip over elements that are smaller
-                            // happens `self.len()` times
-                            Equal -> {
-                                return@closure true
-                            }
-                            // self1 is in other
-                            // happens only once
-                            Greater -> {
-                                return@closure false
-                            }
-                        }
+            selfIter.all(closure@{ self1 ->
+                while (true) {
+                    val matchVal = otherIter.next()
+                    if (matchVal == null) break
+                    val other1 = matchVal
+                    when (other1.cmp(self1)) {
+                        // happens up to `ITER_PERFORMANCE_TIPPING_SIZE_DIFF * self.len() - 1` times
+                        Less -> { continue }
+                        // skip over elements that are smaller
+                        // happens `self.len()` times
+                        Equal -> { return@closure true }
+                        // self1 is in other
+                        // happens only once
+                        Greater -> { return@closure false }
                     }
-                    false
-                },
-            )
+                }
+                false
+            })
         }
     }
 
@@ -623,11 +602,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      * }
      * ```
      */
-    public open fun getOrInsert(value: T): T =
-        this.map
-            .entry(value)
-            .insertEntry(SetValZST)
-            .intoKey()
+    public open fun getOrInsert(value: T): T = this.map.entry(value).insertEntry(SetValZST).intoKey()
 
     /**
      * Inserts a value computed from `f` into the set if the given `value` is
@@ -1123,16 +1098,7 @@ public open class BTreeSet<T, A : AllocatorClone>(
      */
     public open fun bitor(rhs: BTreeSet<T, A>): BTreeSet<T, A> = BTreeSet.fromSortedIter(this.union(rhs).cloned(), ManuallyDrop.intoInner(this.map.alloc.clone()))
 
-    public open fun fmt(f: StringBuilder) {
-        object {
-            val entries = mutableListOf<Any?>()
-            fun entry(v: Any?) = apply { entries.add(v) }
-            fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
-            fun finish() {
-                f.append(entries.joinToString(", ", "{", "}"))
-            }
-        }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
 
     public companion object {
         /**
@@ -1166,24 +1132,20 @@ public open class BTreeSet<T, A : AllocatorClone>(
  */
 public open class Iter<T> internal constructor(
     iterCtorArg: Keys<T, SetValZST>,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var iter: Keys<T, SetValZST> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Iter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Iter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(this.iter).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(this.iter).finish()
 
     public open fun clone(): Iter<T> = Iter(iter = this.iter.clone())
 
@@ -1204,10 +1166,9 @@ public open class Iter<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             iter: Keys<T, SetValZST>,
-        ): Iter<T> =
-            Iter<T>(
-                iterCtorArg = iter,
-            )
+        ): Iter<T> = Iter<T>(
+            iterCtorArg = iter,
+        )
 
         /**
          * Creates an empty `btreeSet.Iter`.
@@ -1233,20 +1194,18 @@ public open class Iter<T> internal constructor(
  */
 public open class IntoIter<T, A : AllocatorClone> internal constructor(
     iterCtorArg: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A>,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IntoIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IntoIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): T? = this.iter.next()?.let({ (k, _) -> k })
 
@@ -1259,10 +1218,9 @@ public open class IntoIter<T, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
             iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.IntoIter<T, SetValZST, A>,
-        ): IntoIter<T, A> =
-            IntoIter<T, A>(
-                iterCtorArg = iter,
-            )
+        ): IntoIter<T, A> = IntoIter<T, A>(
+            iterCtorArg = iter,
+        )
 
         /**
          * Creates an empty `btreeSet.IntoIter`.
@@ -1292,15 +1250,14 @@ public open class Range<T> internal constructor(
     public var iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range<T, SetValZST> = iterCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Range.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Range.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Range<T> = Range(iter = this.iter.clone())
 
@@ -1317,10 +1274,9 @@ public open class Range<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             iter: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Range<T, SetValZST>,
-        ): Range<T> =
-            Range<T>(
-                iterCtorArg = iter,
-            )
+        ): Range<T> = Range<T>(
+            iterCtorArg = iter,
+        )
 
         /**
          * Creates an empty `btreeSet.Range`.
@@ -1350,40 +1306,34 @@ public open class Difference<T, A : AllocatorClone> internal constructor(
     public var inner: DifferenceInner<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Difference.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Difference.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Difference").field(this.inner).finish()
     }
 
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Difference").field(this.inner).finish()
+
     public open fun clone(): Difference<T, A> =
-        Difference(
-            inner =
-                when (val matchVal = this.inner) {
-                    is DifferenceInner.Stitch -> {
-                        val selfIter = matchVal.selfIter
-                        val otherIter = matchVal.otherIter
-                        DifferenceInner.Stitch(selfIter = selfIter.clone(), otherIter = otherIter.clone())
-                    }
-                    is DifferenceInner.Search -> {
-                        val selfIter1 = matchVal.selfIter
-                        val otherSet = matchVal.otherSet
-                        DifferenceInner.Search(selfIter = selfIter1.clone(), otherSet = otherSet)
-                    }
-                    is DifferenceInner.Iterate -> {
-                        val (iter) = matchVal
-                        DifferenceInner.Iterate(iter.clone())
-                    }
-                },
-        )
+        Difference(inner = when (val matchVal = this.inner) {
+            is DifferenceInner.Stitch -> {
+                val selfIter = matchVal.selfIter
+                val otherIter = matchVal.otherIter
+                DifferenceInner.Stitch(selfIter = selfIter.clone(), otherIter = otherIter.clone())
+            }
+            is DifferenceInner.Search -> {
+                val selfIter1 = matchVal.selfIter
+                val otherSet = matchVal.otherSet
+                DifferenceInner.Search(selfIter = selfIter1.clone(), otherSet = otherSet)
+            }
+            is DifferenceInner.Iterate -> {
+                val (iter) = matchVal
+                DifferenceInner.Iterate(iter.clone())
+            }
+        })
 
     public open fun next(): T? {
         return when (val matchVal = this.inner) {
@@ -1393,9 +1343,7 @@ public open class Difference<T, A : AllocatorClone> internal constructor(
                 var selfNext = (selfIter.next() ?: return null)
                 while (true) {
                     when (otherIter.peek().mapOr(Less, { otherNext -> selfNext.cmp(otherNext) })) {
-                        Less -> {
-                            return selfNext
-                        }
+                        Less -> { return selfNext }
                         Equal -> {
                             selfNext = (selfIter.next() ?: return null)
                             otherIter.next()
@@ -1449,18 +1397,14 @@ public open class Difference<T, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
             inner: DifferenceInner<T, A>,
-        ): Difference<T, A> =
-            Difference<T, A>(
-                innerCtorArg = inner,
-            )
+        ): Difference<T, A> = Difference<T, A>(
+            innerCtorArg = inner,
+        )
     }
 }
 
 public sealed class DifferenceInner<T, A : AllocatorClone> {
-    public class Stitch<T, A : AllocatorClone> internal constructor(
-        public var selfIter: Iter<T>,
-        otherIterCtorArg: Peekable<Iter<T>>,
-    ) : DifferenceInner<T, A>() {
+    public class Stitch<T, A : AllocatorClone> internal constructor(public var selfIter: Iter<T>, otherIterCtorArg: Peekable<Iter<T>>) : DifferenceInner<T, A>() {
         public var otherIter: Peekable<Iter<T>> = otherIterCtorArg
             internal set
 
@@ -1488,17 +1432,13 @@ public sealed class DifferenceInner<T, A : AllocatorClone> {
             public operator fun <T, A : AllocatorClone> invoke(
                 selfIter: Iter<T>,
                 otherIter: Peekable<Iter<T>>,
-            ): Stitch<T, A> =
-                Stitch<T, A>(
-                    selfIter = selfIter,
-                    otherIterCtorArg = otherIter,
-                )
+            ): Stitch<T, A> = Stitch<T, A>(
+                selfIter = selfIter,
+                otherIterCtorArg = otherIter,
+            )
         }
     }
-    public class Search<T, A : AllocatorClone> internal constructor(
-        public var selfIter: Iter<T>,
-        otherSetCtorArg: BTreeSet<T, A>,
-    ) : DifferenceInner<T, A>() {
+    public class Search<T, A : AllocatorClone> internal constructor(public var selfIter: Iter<T>, otherSetCtorArg: BTreeSet<T, A>) : DifferenceInner<T, A>() {
         public var otherSet: BTreeSet<T, A> = otherSetCtorArg
             internal set
 
@@ -1526,19 +1466,16 @@ public sealed class DifferenceInner<T, A : AllocatorClone> {
             public operator fun <T, A : AllocatorClone> invoke(
                 selfIter: Iter<T>,
                 otherSet: BTreeSet<T, A>,
-            ): Search<T, A> =
-                Search<T, A>(
-                    selfIter = selfIter,
-                    otherSetCtorArg = otherSet,
-                )
+            ): Search<T, A> = Search<T, A>(
+                selfIter = selfIter,
+                otherSetCtorArg = otherSet,
+            )
         }
     }
-    public data class Iterate<T, A : AllocatorClone>(
-        public var value: Iter<T>,
-    ) : DifferenceInner<T, A>()
+    public data class Iterate<T, A : AllocatorClone>(public var value: Iter<T>) : DifferenceInner<T, A>()
 
     // Explicit Debug impl necessary because of issue #26925
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is DifferenceInner.Stitch -> {
                 val selfIter = this.selfIter
@@ -1555,7 +1492,6 @@ public sealed class DifferenceInner<T, A : AllocatorClone> {
                 DebugTuple(f, "Iterate").field(x).finish()
             }
         }
-    }
 }
 
 /**
@@ -1578,19 +1514,16 @@ public open class SymmetricDifference<T> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@SymmetricDifference.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@SymmetricDifference.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "SymmetricDifference").field(this.value).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "SymmetricDifference").field(this.value).finish()
 
     public open fun clone(): SymmetricDifference<T> = SymmetricDifference(this.value.clone())
 
@@ -1616,10 +1549,9 @@ public open class SymmetricDifference<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             value: MergeIterInner<Iter<T>>,
-        ): SymmetricDifference<T> =
-            SymmetricDifference<T>(
-                valueCtorArg = value,
-            )
+        ): SymmetricDifference<T> = SymmetricDifference<T>(
+            valueCtorArg = value,
+        )
     }
 }
 
@@ -1637,40 +1569,34 @@ public open class Intersection<T, A : AllocatorClone> internal constructor(
     public var inner: IntersectionInner<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Intersection.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Intersection.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Intersection").field(this.inner).finish()
     }
 
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Intersection").field(this.inner).finish()
+
     public open fun clone(): Intersection<T, A> =
-        Intersection(
-            inner =
-                when (val matchVal = this.inner) {
-                    is IntersectionInner.Stitch -> {
-                        val a = matchVal.a
-                        val b = matchVal.b
-                        IntersectionInner.Stitch(a = a.clone(), b = b.clone())
-                    }
-                    is IntersectionInner.Search -> {
-                        val smallIter = matchVal.smallIter
-                        val largeSet = matchVal.largeSet
-                        IntersectionInner.Search(smallIter = smallIter.clone(), largeSet = largeSet)
-                    }
-                    is IntersectionInner.Answer -> {
-                        val (answer) = matchVal
-                        IntersectionInner.Answer(answer!!)
-                    }
-                },
-        )
+        Intersection(inner = when (val matchVal = this.inner) {
+            is IntersectionInner.Stitch -> {
+                val a = matchVal.a
+                val b = matchVal.b
+                IntersectionInner.Stitch(a = a.clone(), b = b.clone())
+            }
+            is IntersectionInner.Search -> {
+                val smallIter = matchVal.smallIter
+                val largeSet = matchVal.largeSet
+                IntersectionInner.Search(smallIter = smallIter.clone(), largeSet = largeSet)
+            }
+            is IntersectionInner.Answer -> {
+                val (answer) = matchVal
+                IntersectionInner.Answer(answer!!)
+            }
+        })
 
     public open fun next(): T? {
         return when (val matchVal = this.inner) {
@@ -1683,9 +1609,7 @@ public open class Intersection<T, A : AllocatorClone> internal constructor(
                     when (aNext.cmp(bNext)) {
                         Less -> aNext = (a.next() ?: return null)
                         Greater -> bNext = (b.next() ?: return null)
-                        Equal -> {
-                            return aNext
-                        }
+                        Equal -> { return aNext }
                     }
                 }
             }
@@ -1732,22 +1656,15 @@ public open class Intersection<T, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <T, A : AllocatorClone> invoke(
             inner: IntersectionInner<T, A>,
-        ): Intersection<T, A> =
-            Intersection<T, A>(
-                innerCtorArg = inner,
-            )
+        ): Intersection<T, A> = Intersection<T, A>(
+            innerCtorArg = inner,
+        )
     }
 }
 
 public sealed class IntersectionInner<T, A : AllocatorClone> {
-    public data class Stitch<T, A : AllocatorClone>(
-        public var a: Iter<T>,
-        public var b: Iter<T>,
-    ) : IntersectionInner<T, A>()
-    public class Search<T, A : AllocatorClone> internal constructor(
-        public var smallIter: Iter<T>,
-        largeSetCtorArg: BTreeSet<T, A>,
-    ) : IntersectionInner<T, A>() {
+    public data class Stitch<T, A : AllocatorClone>(public var a: Iter<T>, public var b: Iter<T>) : IntersectionInner<T, A>()
+    public class Search<T, A : AllocatorClone> internal constructor(public var smallIter: Iter<T>, largeSetCtorArg: BTreeSet<T, A>) : IntersectionInner<T, A>() {
         public var largeSet: BTreeSet<T, A> = largeSetCtorArg
             internal set
 
@@ -1775,19 +1692,16 @@ public sealed class IntersectionInner<T, A : AllocatorClone> {
             public operator fun <T, A : AllocatorClone> invoke(
                 smallIter: Iter<T>,
                 largeSet: BTreeSet<T, A>,
-            ): Search<T, A> =
-                Search<T, A>(
-                    smallIter = smallIter,
-                    largeSetCtorArg = largeSet,
-                )
+            ): Search<T, A> = Search<T, A>(
+                smallIter = smallIter,
+                largeSetCtorArg = largeSet,
+            )
         }
     }
-    public data class Answer<T, A : AllocatorClone>(
-        public var value: T?,
-    ) : IntersectionInner<T, A>()
+    public data class Answer<T, A : AllocatorClone>(public var value: T?) : IntersectionInner<T, A>()
 
     // Explicit Debug impl necessary because of issue #26925
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is IntersectionInner.Stitch -> {
                 val a = this.a
@@ -1804,7 +1718,6 @@ public sealed class IntersectionInner<T, A : AllocatorClone> {
                 DebugTuple(f, "Answer").field(x).finish()
             }
         }
-    }
 }
 
 /**
@@ -1827,19 +1740,16 @@ public open class Union<T> internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Union.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Union.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Union").field(this.value).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Union").field(this.value).finish()
 
     public open fun clone(): Union<T> = Union(this.value.clone())
 
@@ -1859,10 +1769,9 @@ public open class Union<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             value: MergeIterInner<Iter<T>>,
-        ): Union<T> =
-            Union<T>(
-                valueCtorArg = value,
-            )
+        ): Union<T> = Union<T>(
+            valueCtorArg = value,
+        )
     }
 }
 
@@ -1885,16 +1794,16 @@ public val ITER_PERFORMANCE_TIPPING_SIZE_DIFF: Int = 16
  * var set: MutableSet<Int> = mutableSetOf()
  * ```
  */
-public fun <T> BTreeSet.Companion.new(): BTreeSet<T> = BTreeSet(map = mutableMapOf())
+public fun <T> BTreeSet.Companion.new(): BTreeSet<T, Global> = BTreeSet(map = mutableMapOf())
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet<T> {
-    val inputs: Vec = iter.iterator().collect()
+public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet<T, Global> {
+    val inputs: Vec  = iter.iterator().collect()
     if (inputs.isEmpty()) {
         return BTreeSet.new()
     }
     // use stable sort to preserve the insertion order.
     inputs.sort()
-    return BTreeSet.fromSortedIter(inputs.intoIter(), Global)
+    return BTreeSet.fromSortedIter(inputs.intoIter(), Global())
 }
 
 /**
@@ -1911,13 +1820,13 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterBTreeSetT(iter: I): BTreeSet
  * check(set1 == set2)
  * ```
  */
-public fun <T> fromBTreeSetT(arr: List<T>, n: Int): BTreeSet<T> {
+public fun <T> fromBTreeSetT(arr: List<T>, n: Int): BTreeSet<T, Global> {
     if (n == 0) {
         return BTreeSet.new()
     }
     // use stable sort to preserve the insertion order.
     arr.sort()
-    return BTreeSet.fromSortedIter(IntoIterator.IntoIter(arr), Global)
+    return BTreeSet.fromSortedIter(IntoIterator.IntoIter(arr), Global())
 }
 
 /**
@@ -1936,19 +1845,16 @@ public open class ExtractIf<T, R, F, A : AllocatorClone> internal constructor(
     public var inner: ExtractIfInner<T, SetValZST, R> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@ExtractIf.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@ExtractIf.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "ExtractIf").field("peek", this.inner.peek().map({ (k, _) -> k })).finishNonExhaustive()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "ExtractIf").field("peek", this.inner.peek().map({ (k, _) -> k })).finishNonExhaustive()
 
     public open fun next(): T? {
         val pred = this.pred
@@ -1963,19 +1869,18 @@ public open class ExtractIf<T, R, F, A : AllocatorClone> internal constructor(
             pred: F,
             inner: ExtractIfInner<T, SetValZST, R>,
             alloc: A,
-        ): ExtractIf<T, R, F, A> =
-            ExtractIf<T, R, F, A>(
-                pred = pred,
-                innerCtorArg = inner,
-                alloc = alloc,
-            )
+        ): ExtractIf<T, R, F, A> = ExtractIf<T, R, F, A>(
+            pred = pred,
+            innerCtorArg = inner,
+            alloc = alloc,
+        )
     }
 }
 
 /**
  * Creates an empty `BTreeSet`.
  */
-public fun <T> defaultBTreeSetT(): BTreeSet<T> = BTreeSet.new()
+public fun <T> defaultBTreeSetT(): BTreeSet<T, Global> = BTreeSet.new()
 
 /**
  * A cursor over a `BTreeSet`.
@@ -1995,9 +1900,7 @@ public open class Cursor<K> internal constructor(
 
     public open fun clone(): Cursor<K> = Cursor(inner)
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("Cursor")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("Cursor"); Result.Ok(Unit) }
 
     /**
      * Advances the cursor to the next gap, returning the element that it
@@ -2034,10 +1937,9 @@ public open class Cursor<K> internal constructor(
     public companion object {
         public operator fun <K> invoke(
             inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.Cursor<K, SetValZST>,
-        ): Cursor<K> =
-            Cursor<K>(
-                innerCtorArg = inner,
-            )
+        ): Cursor<K> = Cursor<K>(
+            innerCtorArg = inner,
+        )
     }
 }
 
@@ -2061,17 +1963,14 @@ public open class CursorMut<K, A> internal constructor(
     public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMut<K, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("CursorMut")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("CursorMut"); Result.Ok(Unit) }
 
     public companion object {
         public operator fun <K, A> invoke(
             inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMut<K, SetValZST, A>,
-        ): CursorMut<K, A> =
-            CursorMut<K, A>(
-                innerCtorArg = inner,
-            )
+        ): CursorMut<K, A> = CursorMut<K, A>(
+            innerCtorArg = inner,
+        )
     }
 }
 
@@ -2104,17 +2003,14 @@ public open class CursorMutKey<K, A> internal constructor(
     public var inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMutKey<K, SetValZST, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("CursorMutKey")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("CursorMutKey"); Result.Ok(Unit) }
 
     public companion object {
         public operator fun <K, A> invoke(
             inner: io.github.kotlinmania.rustlang.alloc.collections.btree.map.CursorMutKey<K, SetValZST, A>,
-        ): CursorMutKey<K, A> =
-            CursorMutKey<K, A>(
-                innerCtorArg = inner,
-            )
+        ): CursorMutKey<K, A> = CursorMutKey<K, A>(
+            innerCtorArg = inner,
+        )
     }
 }
 

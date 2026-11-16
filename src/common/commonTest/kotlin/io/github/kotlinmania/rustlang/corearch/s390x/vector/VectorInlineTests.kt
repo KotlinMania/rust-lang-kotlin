@@ -29,7 +29,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // [Reference Summary]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf
 // [IBM docs]: https://www.ibm.com/docs/en/zos/2.4.0?topic=support-vector-built-in-functions
 
-public fun ShuffleMask<N>.asArray(n: Int): UIntArray = transmute(this)
+public fun ShuffleMask.asArray(n: Int): UIntArray = transmute(this)
 
 public fun vecAddI32x4I32x4() {
     val x = VectorSignedInt.from(i32x4.new(1, 2, 3, 4))
@@ -791,7 +791,7 @@ public fun testVectorStore() {
 public fun testVectorLcbb() {
     open class Align64<T>(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<T>,
+        public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
     ) {
         public var field0: T
             get() = value
@@ -801,15 +801,13 @@ public fun testVectorLcbb() {
 
         public var value: T
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) {
-                fieldLayout.writeNative(fieldStorage.rawAddress, value)
-            }
+            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align64<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align64<T>(ptr, layout) }, { it.value })
     }
-    val ARRAY: Align64<UByteArray> = Align64(List(128) { 0 }, fieldLayout = UnresolvedTypeLayout<T>())
+    val ARRAY: Align64<UByteArray>  = Align64(List(128) { 0 }, fieldLayout = UnresolvedTypeLayout<T>())
     check(lcbb(ARRAY.first[64 until ARRAY.first.size].asPtr(), 64) == 16u)
     check(lcbb(ARRAY.first[63 until ARRAY.first.size].asPtr(), 64) == 1u)
     check(lcbb(ARRAY.first[56 until ARRAY.first.size].asPtr(), 64) == 8u)
@@ -1025,12 +1023,7 @@ public fun testVecSel() {
     val b = VectorSignedInt(listOf(5, 6, 7, 8))
     val e = VectorUnsignedInt(listOf(9, 10, 11, 12))
     val f = VectorUnsignedInt(listOf(9, 9, 11, 11))
-    val c: VectorBoolInt =
-        run {
-            val _simdArg0 = e
-            val _simdArg1 = f
-            VectorBoolInt()
-        }
+    val c: VectorBoolInt = run { val _simdArg0 = e; val _simdArg1 = f; VectorBoolInt() }
     check(c.asArray() == listOf(0.inv(), 0, 0.inv(), 0))
     val d: VectorSignedInt = vecSel(a, b, c)
     check((d.asArray()).contentEquals(listOf(5, 2, 7, 4)))
@@ -1567,19 +1560,7 @@ public class VectorInlineTests {
         check(genmasks(8u, (3u + 8u).toUByte(), (7u + 8u).toUByte()) == 31uL)
         // If a is greater than b, the operation is perform as if b equals 7.
         check(genmasks(8u, 5u, 4u) == genmasks(8u, 5u, 7u))
-        check(
-            genmasks(16u, 4u, 12u).toUShort() ==
-                run {
-                    val bytesTmp0 = ubyteArrayOf(15u, (-8).toUByte())
-                    ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort()
-                },
-        )
-        check(
-            genmasks(32u, 4u, 29u).toUInt() ==
-                run {
-                    val bytesTmp1 = ubyteArrayOf(15u, 0xFFu, 0xFFu, (-4).toUByte())
-                    ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt())
-                },
-        )
+        check(genmasks(16u, 4u, 12u).toUShort() == run { val bytesTmp0 = ubyteArrayOf(15u, (-8).toUByte()); ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort() })
+        check(genmasks(32u, 4u, 29u).toUInt() == run { val bytesTmp1 = ubyteArrayOf(15u, 0xFFu, 0xFFu, (-4).toUByte()); ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt()) })
     }
 }

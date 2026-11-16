@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.rustcdemangle.legacy
 
 import io.github.kotlinmania.rustlang.core.char.methods.toDigit
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.fromStrRadix
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -17,7 +18,7 @@ public open class Demangle(
      */
     public var elements: Int,
 ) {
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // Alright, let's do this.
         var inner = this.inner
         for (element in 0 until this.elements) {
@@ -86,7 +87,7 @@ public open class Demangle(
                                         val c1 = Pair(allLowerHex, c).second
                                         // Note(eddyb) do we need to filter out control codepoints?
                                         if (!c1.isControl()) {
-                                            c1.fmt(f)
+                                            when (val tryResult = c1.fmt(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                                             rest = afterEscape
                                             continue
                                         }
@@ -110,6 +111,7 @@ public open class Demangle(
             }
             f.append(rest)
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 }
 
@@ -168,36 +170,36 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, Unit> {
             // On OSX, symbols are prefixed with an extra _
             s.substring(4)
         } else {
-            return Result.Err(Unit)
+            return Result.Err<Pair<Demangle, String>, Unit>(Unit)
         }
     // only work with ascii text
     if (inner.bytes().any({ c -> c and 0x80 != 0 })) {
-        return Result.Err(Unit)
+        return Result.Err<Pair<Demangle, String>, Unit>(Unit)
     }
     var elements = 0
     val chars = inner.chars()
-    var c = when (val tryResult = chars.next().okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    var c = when (val tryResult = chars.next().okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
     while (c != 'E') {
         // Decode an identifier element's length.
         if (!c.isDigit(10)) {
-            return Result.Err(Unit)
+            return Result.Err<Pair<Demangle, String>, Unit>(Unit)
         }
         var len = 0
         while (true) {
             val matchVal = c.toDigit(10u)
             if (matchVal == null) break
             val d = matchVal
-            len = when (val tryResult = len.checkedMul(10)?.let({ len1 -> len1.checkedAdd(d.toInt()) }).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            c = when (val tryResult = chars.next().okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            len = when (val tryResult = len.checkedMul(10)?.let({ len1 -> len1.checkedAdd(d.toInt()) }).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
+            c = when (val tryResult = chars.next().okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
         }
         // `c` already contains the first character of this identifier, skip it and
         // all the other characters of this identifier, to reach the next element.
         for (unused in 0 until len) {
-            c = when (val tryResult = chars.next().okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            c = when (val tryResult = chars.next().okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Demangle, String>, Unit>(tryResult.error) }
         }
         elements += 1
     }
-    return Result.Ok(Pair(Demangle(inner = inner, elements = elements), chars.asStr()))
+    return Result.Ok<Pair<Demangle, String>, Unit>(Pair(Demangle(inner = inner, elements = elements), chars.asStr()))
 }
 
 // Rust hashes are hex digits with an `h` prepended.

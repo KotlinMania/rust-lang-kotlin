@@ -46,7 +46,7 @@ public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
     }
     // `confstr` returns 0 in the case of an error.
     if (bytesNeededIncludingNul == 0) {
-        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
     // Safety: `confstr(..., buf.asMutPtr(), buf.capacity())` returned a
     // non-zero value, meaning `bytesNeededIncludingNul` bytes were
@@ -58,7 +58,7 @@ public fun confstr(key: CInt, sizeHint: Int?): Result<OsString, Error> {
         // ... and smoke-check that it *was* a NUL-terminator.
         check(lastByte == 0)
     }
-    return Result.Ok(OsString.fromVec(buf))
+    return Result.Ok<OsString, Error>(OsString.fromVec(buf))
 }
 
 public fun glibcVersion(): Pair<Int, Int>? {
@@ -84,9 +84,9 @@ public fun parseGlibcVersion(version: String): Pair<Int, Int>? {
     return run {
         val matchVal = Pair(parsedInts.next(), parsedInts.next())
         when {
-            matchVal.first != null && matchVal.first is Result.Ok<*, *> && matchVal.second != null && matchVal.second is Result.Ok<*, *> -> {
-                val major = (matchVal.first as Result.Ok<*, *>).value
-                val minor = (matchVal.second as Result.Ok<*, *>).value
+            matchVal.first != null && matchVal.first is Result.Ok && matchVal.second != null && matchVal.second is Result.Ok -> {
+                val major = (matchVal.first as Result.Ok).value
+                val minor = (matchVal.second as Result.Ok).value
                 Pair(major, minor)
             }
             else -> null

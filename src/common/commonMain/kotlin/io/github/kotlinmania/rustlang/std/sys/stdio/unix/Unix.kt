@@ -51,7 +51,7 @@ public open class Stdout : Write {
 
     public open fun isWriteVectored(): Boolean = true
 
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stdout> =
@@ -79,7 +79,7 @@ public open class Stderr : Write {
 
     public open fun isWriteVectored(): Boolean = true
 
-    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Stderr> =

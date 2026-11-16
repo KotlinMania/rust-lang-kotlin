@@ -79,19 +79,15 @@ public fun <F, U> floatToUnsignedInt(f: F): U where F : Float, U : Int<U> = floa
  * Generic float to signed int conversions.
  */
 public fun <F, I> floatToSignedInt(f: F): I where F : Float, I : Int, I : Neg<I> =
-    floatToIntInner<F, I>(f.toBits() and F.SIGN_MASK.inv(), { i: I ->
-        if (f.isSignNegative()) {
-            -i
-        } else {
-            i
-        }
-    }, {
-        if (f.isSignNegative()) {
-            I.MIN
-        } else {
-            I.MAX
-        }
-    })
+    floatToIntInner<F, I>(f.toBits() and F.SIGN_MASK.inv(), { i: I -> if (f.isSignNegative()) {
+        -i
+    } else {
+        i
+    } }, { if (f.isSignNegative()) {
+        I.MIN
+    } else {
+        I.MAX
+    } })
 
 /**
  * Float to int conversions, generic for both signed and unsigned.

@@ -59,9 +59,9 @@ public fun Long.isMinusOne(): Boolean = (this == -1L).toUByte()
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.std.io.error.Error> =
     if (t.isMinusOne()) {
-        Result.Err(lastError())
+        Result.Err<T, io.github.kotlinmania.rustlang.std.io.error.Error>(lastError())
     } else {
-        Result.Ok(t)
+        Result.Ok<T, io.github.kotlinmania.rustlang.std.io.error.Error>(t)
     }
 
 /**
@@ -69,9 +69,9 @@ public fun <T : IsMinusOne> cvt(t: T): Result<T, io.github.kotlinmania.rustlang.
  */
 public fun cvtGai(err: CInt): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> =
     if (err == 0) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
     } else {
-        Result.Err(lastError())
+        Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(lastError())
     }
 
 /**

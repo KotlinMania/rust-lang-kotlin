@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
@@ -22,22 +23,22 @@ import io.github.kotlinmania.rustlang.libc.*
 
 public open class MaxAlignT internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<DoubleArray>,
+    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
 ) {
     public var priv: DoubleArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(priv, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<MaxAlignT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MaxAlignT(ptr, layout) }, { it.priv })
 
     public open fun clone(): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
     public companion object {
-        public operator fun invoke(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray>): MaxAlignT = MaxAlignT(priv, fieldLayout)
+        public operator fun invoke(priv: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(priv, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray>): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MaxAlignT = MaxAlignT(fieldStorage, fieldLayout)
     }
 }
 
@@ -145,22 +146,22 @@ public open class ClockidT internal constructor(
 
 public open class FposT internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByteArray>,
+    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
 ) {
     public var data: UByteArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(data: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
+    internal constructor(data: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
 
     public fun pointerLayout(): TypeLayout<FposT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> FposT(ptr, layout) }, { it.data })
 
     public open fun clone(): FposT = FposT(data, fieldLayout)
 
     public companion object {
-        public operator fun invoke(data: UByteArray, fieldLayout: TypeLayout<UByteArray>): FposT = FposT(data, fieldLayout)
+        public operator fun invoke(data: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FposT = FposT(data, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray>): FposT = FposT(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): FposT = FposT(fieldStorage, fieldLayout)
     }
 }
 

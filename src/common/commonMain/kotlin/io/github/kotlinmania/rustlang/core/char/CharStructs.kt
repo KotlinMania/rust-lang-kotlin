@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.iteratorGetUnchecked as underlyingIteratorGetUnchecked
@@ -33,15 +34,14 @@ public open class EscapeUnicode internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@EscapeUnicode.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@EscapeUnicode.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): EscapeUnicode = EscapeUnicode(value)
 
@@ -56,23 +56,18 @@ public open class EscapeUnicode internal constructor(
 
     public open fun last(): Char? = this.value.nextBack()?.let(Char::from)
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public operator fun invoke(
             value: EscapeIterInner<AlwaysEscaped>,
-        ): EscapeUnicode =
-            EscapeUnicode(
-                valueCtorArg = value,
-            )
+        ): EscapeUnicode = EscapeUnicode(
+            valueCtorArg = value,
+        )
 
         public fun new(c: Char): EscapeUnicode = EscapeUnicode(EscapeIterInner.unicode(c))
     }
@@ -98,15 +93,14 @@ public open class EscapeDefault internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@EscapeDefault.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@EscapeDefault.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): EscapeDefault = EscapeDefault(value)
 
@@ -121,23 +115,18 @@ public open class EscapeDefault internal constructor(
 
     public open fun last(): Char? = this.value.nextBack()?.let(Char::from)
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public operator fun invoke(
             value: EscapeIterInner<AlwaysEscaped>,
-        ): EscapeDefault =
-            EscapeDefault(
-                valueCtorArg = value,
-            )
+        ): EscapeDefault = EscapeDefault(
+            valueCtorArg = value,
+        )
 
         public fun printable(c: io.github.kotlinmania.rustlang.core.ascii.Char): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c.toU8()))
 
@@ -167,15 +156,14 @@ public open class EscapeDebug internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@EscapeDebug.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@EscapeDebug.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): EscapeDebug = EscapeDebug(value)
 
@@ -190,19 +178,14 @@ public open class EscapeDebug internal constructor(
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public operator fun invoke(
             value: EscapeIterInner<MaybeEscaped>,
-        ): EscapeDebug =
-            EscapeDebug(
-                valueCtorArg = value,
-            )
+        ): EscapeDebug = EscapeDebug(
+            valueCtorArg = value,
+        )
 
         public fun printable(chr: Char): EscapeDebug = EscapeDebug(EscapeIterInner.printable(chr))
 
@@ -222,25 +205,21 @@ public open class EscapeDebug internal constructor(
  */
 public open class ToUppercase(
     public var value: CaseMappingIter,
-) : TrustedLen<ToUppercase>,
-    TrustedRandomAccessNoCoerce,
-    TrustedRandomAccess,
-    Iterable<Char> {
+) : TrustedLen<ToUppercase>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@ToUppercase.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@ToUppercase.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): ToUppercase = ToUppercase(value)
 
@@ -254,7 +233,7 @@ public open class ToUppercase(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -262,17 +241,13 @@ public open class ToUppercase(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -289,25 +264,21 @@ public open class ToUppercase(
  */
 public open class ToTitlecase(
     public var value: CaseMappingIter,
-) : TrustedLen<ToTitlecase>,
-    TrustedRandomAccessNoCoerce,
-    TrustedRandomAccess,
-    Iterable<Char> {
+) : TrustedLen<ToTitlecase>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@ToTitlecase.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@ToTitlecase.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): ToTitlecase = ToTitlecase(value)
 
@@ -321,7 +292,7 @@ public open class ToTitlecase(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -329,17 +300,13 @@ public open class ToTitlecase(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -356,25 +323,21 @@ public open class ToTitlecase(
  */
 public open class ToLowercase(
     public var value: CaseMappingIter,
-) : TrustedLen<ToLowercase>,
-    TrustedRandomAccessNoCoerce,
-    TrustedRandomAccess,
-    Iterable<Char> {
+) : TrustedLen<ToLowercase>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@ToLowercase.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@ToLowercase.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): ToLowercase = ToLowercase(value)
 
@@ -388,7 +351,7 @@ public open class ToLowercase(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -396,17 +359,13 @@ public open class ToLowercase(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -423,25 +382,21 @@ public open class ToLowercase(
  */
 public open class ToCasefold(
     public var value: CaseMappingIter,
-) : TrustedLen<ToCasefold>,
-    TrustedRandomAccessNoCoerce,
-    TrustedRandomAccess,
-    Iterable<Char> {
+) : TrustedLen<ToCasefold>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var field0: CaseMappingIter
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@ToCasefold.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@ToCasefold.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): ToCasefold = ToCasefold(value)
 
@@ -455,7 +410,7 @@ public open class ToCasefold(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char = this.value.underlyingIteratorGetUnchecked(idx)
 
@@ -463,17 +418,13 @@ public open class ToCasefold(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
     public open fun isEmpty(): Boolean = this.value.isEmpty()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public companion object {
         public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -482,10 +433,7 @@ public open class ToCasefold(
 
 public open class CaseMappingIter internal constructor(
     valueCtorArg: IntoIter<Char>,
-) : TrustedLen<CaseMappingIter>,
-    TrustedRandomAccessNoCoerce,
-    TrustedRandomAccess,
-    Iterable<Char> {
+) : TrustedLen<CaseMappingIter>, TrustedRandomAccessNoCoerce, TrustedRandomAccess, Iterable<Char> {
     public var value: IntoIter<Char> = valueCtorArg
         internal set
 
@@ -495,15 +443,14 @@ public open class CaseMappingIter internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@CaseMappingIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@CaseMappingIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): CaseMappingIter = CaseMappingIter(value)
 
@@ -517,7 +464,7 @@ public open class CaseMappingIter internal constructor(
 
     public override fun last(): Char? = this.value.last()
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): Char {
         // SAFETY: just forwarding requirements to caller
@@ -528,7 +475,7 @@ public open class CaseMappingIter internal constructor(
 
     public open fun <Acc> rfold(init: Acc, rfold: (Acc, Char) -> Acc): Acc = this.value.rfold(init, rfold)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
@@ -542,16 +489,15 @@ public open class CaseMappingIter internal constructor(
         for (c in this.value.clone()) {
             f.append(c)
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     public companion object {
         public operator fun invoke(
             value: IntoIter<Char>,
-        ): CaseMappingIter =
-            CaseMappingIter(
-                valueCtorArg = value,
-            )
+        ): CaseMappingIter = CaseMappingIter(
+            valueCtorArg = value,
+        )
 
         public fun new(chars: List<Char>): CaseMappingIter {
             val iter = ArrayDeque((chars).toList())

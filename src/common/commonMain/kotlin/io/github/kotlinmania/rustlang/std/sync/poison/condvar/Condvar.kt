@@ -1,6 +1,7 @@
 // port-lint: source sync/poison/condvar.rs
 package io.github.kotlinmania.rustlang.std.sync.poison.condvar
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
@@ -195,7 +196,7 @@ public open class Condvar(
     public open fun <T> waitWhile(guard: MutexGuard<T>, condition: (T) -> Boolean): LockResult<MutexGuard<T>> {
         var guard1 = guard
         while (condition(guard1)) {
-            guard1 = when (val tryResult = this.wait(guard1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            guard1 = when (val tryResult = this.wait(guard1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return Result.Ok(guard1)
     }
@@ -398,7 +399,7 @@ public open class Condvar(
                         timeout
                     }
                 }
-            guard1 = when (val tryResult = this.waitTimeout(guard1, timeout1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.first
+            guard1 = when (val tryResult = this.waitTimeout(guard1, timeout1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }.first
         }
     }
 
@@ -484,9 +485,7 @@ public open class Condvar(
         this.inner.notifyAll()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Condvar").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Condvar").finishNonExhaustive()
 
     public companion object {
         /**

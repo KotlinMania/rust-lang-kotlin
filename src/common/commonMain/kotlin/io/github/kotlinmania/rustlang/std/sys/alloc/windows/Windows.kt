@@ -217,7 +217,7 @@ public fun dealloc(ptr: MutPtr, layout: Layout) {
         // The location of the start of the block is stored in the padding before `ptr`.
         // SAFETY: Because of the contract of `System`, `ptr` is guaranteed to be non-null
         // and have a header readable directly before it.
-        ptr.read(MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes)), typeLayoutT = Header.typeLayout()).first
+        ptr.read((MutPtr(((MutPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress - ((1).toLong() * (Header.typeLayout()).strideBytes))).asConstPtr(), typeLayoutT = Header.typeLayout()).first
     }
     // because `ptr` has been successfully allocated with this allocator,
     // there must be a valid process heap.

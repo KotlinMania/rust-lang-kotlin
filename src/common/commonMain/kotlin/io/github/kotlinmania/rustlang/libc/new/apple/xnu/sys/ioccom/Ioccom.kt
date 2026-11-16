@@ -44,14 +44,14 @@ public fun io(g: CUlong, n: CUlong): CUlong = ioc(IOC_VOID, g, n, 0uL)
 /**
  * Build an ioctl number for an read-only ioctl.
  */
-public fun <T> ior(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T>): CUlong = ioc(IOC_OUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
+public fun <T> ior(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): CUlong = ioc(IOC_OUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
 
 /**
  * Build an ioctl number for an write-only ioctl.
  */
-public fun <T> iow(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T>): CUlong = ioc(IOC_IN, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
+public fun <T> iow(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): CUlong = ioc(IOC_IN, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
 
 /**
  * Build an ioctl number for a read-write ioctl.
  */
-public fun <T> iowr(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T>): CUlong = ioc(IOC_INOUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())
+public fun <T> iowr(g: CUlong, n: CUlong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): CUlong = ioc(IOC_INOUT, g, n, sizeOf<T>(typeLayoutT = typeLayoutT).toULong())

@@ -19,15 +19,25 @@ public actual fun lvewx(p: ConstPtr): VectorSignedInt =
 public actual fun lvxl(p: ConstPtr): VectorUnsignedInt =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun stvx(a: VectorSignedInt, p: ConstPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun stvx(a: VectorSignedInt, p: ConstPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun stvebx(a: VectorSignedChar, p: ConstPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun stvebx(a: VectorSignedChar, p: ConstPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun stvehx(a: VectorSignedShort, p: ConstPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun stvehx(a: VectorSignedShort, p: ConstPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun stvewx(a: VectorSignedInt, p: ConstPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun stvewx(a: VectorSignedInt, p: ConstPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun stvxl(a: VectorSignedInt, p: ConstPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun stvxl(a: VectorSignedInt, p: ConstPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun vperm(a: VectorSignedInt, b: VectorSignedInt, c: VectorUnsignedChar): VectorSignedInt =
     throw UnsupportedOperationException("Native FFI addon is not available")

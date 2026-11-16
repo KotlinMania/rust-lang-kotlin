@@ -180,16 +180,12 @@ public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromRef(s: T): List<T> =
-    io.github.kotlinmania.rustlang.core.array
-        .fromRef(s)
+public fun <T> fromRef(s: T): List<T> = io.github.kotlinmania.rustlang.core.array.fromRef(s)
 
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromMut(s: T): MutableList<T> =
-    io.github.kotlinmania.rustlang.core.array
-        .fromMut(s)
+public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.core.array.fromMut(s)
 
 /**
  * Forms a slice from a pointer range.

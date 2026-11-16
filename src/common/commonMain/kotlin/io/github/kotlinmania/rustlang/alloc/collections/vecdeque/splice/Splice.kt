@@ -25,15 +25,14 @@ public open class Splice<I, A : Allocator> internal constructor(
     public var drain: Drain<Item, A> = drainCtorArg
         internal set
 
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@Splice.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@Splice.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): Item? = this.drain.next()
 
@@ -53,9 +52,7 @@ public open class Splice<I, A : Allocator> internal constructor(
         // ignore-tidy-undocumented-unchecked
         run {
             if (tailLen == 0) {
-                this.drain.deque
-                    .asMut()
-                    .extend(this.replaceWith.byRef())
+                this.drain.deque.asMut().extend(this.replaceWith.byRef())
                 return
             }
             // First fill the range left by drain().
@@ -73,11 +70,7 @@ public open class Splice<I, A : Allocator> internal constructor(
             }
             // Collect any remaining elements.
             // This is a zero-length vector which does not allocate if `lowerBound` was exact.
-            val collected =
-                this.replaceWith
-                    .byRef()
-                    .toMutableList()
-                    .intoIter()
+            val collected = this.replaceWith.byRef().toMutableList().intoIter()
             // Now we have an exact count.
             if (collected.len() > 0) {
                 this.drain.moveTail(collected.len())
@@ -93,18 +86,16 @@ public open class Splice<I, A : Allocator> internal constructor(
         public operator fun <I, A : Allocator> invoke(
             drain: Drain<Item, A>,
             replaceWith: I,
-        ): Splice<I, A> =
-            Splice<I, A>(
-                drainCtorArg = drain,
-                replaceWith = replaceWith,
-            )
+        ): Splice<I, A> = Splice<I, A>(
+            drainCtorArg = drain,
+            replaceWith = replaceWith,
+        )
     }
 }
 
 /**
  * Private helper methods for `Splice.drop`
  */
-
 /**
  * The range from `self.deque.len` to `self.deque.len + self.drainLen` contains elements that
  * have been moved out.

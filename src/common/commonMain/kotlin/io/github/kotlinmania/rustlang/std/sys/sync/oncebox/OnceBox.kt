@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
@@ -17,9 +18,9 @@ import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
 // like the pthread versions.
 
 public open class OnceBox<T> internal constructor(
-    ptrCtorArg: Atomic<MutPtr>,
+    ptrCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
 ) {
-    public var ptr: Atomic<MutPtr> = ptrCtorArg
+    public var ptr: Atomic<MutPtr, Align8<MutPtr>> = ptrCtorArg
         internal set
 
     /**
@@ -67,9 +68,9 @@ public open class OnceBox<T> internal constructor(
         val newPtr = Box.intoRaw(Pin.intoInnerUnchecked(f()))
         return run {
             val matchVal = this.ptr.compareExchange(MutPtr(0L), newPtr, Release, Acquire)
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 Pin.newUnchecked(newPtr)
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 val ptr = matchVal.error
                 // Lost the race to another thread.
                 // Drop the value we created, and use the one from the other thread instead.
@@ -85,7 +86,7 @@ public open class OnceBox<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            ptr: Atomic<MutPtr>,
+            ptr: Atomic<MutPtr, Align8<MutPtr>>,
         ): OnceBox<T> = OnceBox<T>(
             ptrCtorArg = ptr,
         )

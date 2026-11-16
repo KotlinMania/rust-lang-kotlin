@@ -100,12 +100,9 @@ public open class Parser(
      */
     public open fun readGivenChar(target: Char): Unit? =
         this.readAtomically({ p ->
-            p.readChar().andThen({ c ->
-                if (c == target) {
-                } else {
-                    null
-                }
-            })
+            p.readChar().andThen({ c -> if (c == target) {} else {
+                null
+            } })
         })
 
     /**
@@ -115,17 +112,12 @@ public open class Parser(
      * readIpv4Addr for an example)
      */
     public open fun <T> readSeparator(sep: Char, index: Int, inner: (Parser) -> T?): T? {
-        return this.readAtomically(
-            closure@{ p ->
-                if (index > 0) {
-                    when (val tryResult = p.readGivenChar(sep)) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
-                    }
-                }
-                inner(p)
-            },
-        )
+        return this.readAtomically(closure@{ p ->
+            if (index > 0) {
+                when (val tryResult = p.readGivenChar(sep)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+            }
+            inner(p)
+        })
     }
 
     /**
@@ -144,47 +136,27 @@ public open class Parser(
             check(maxDigits <= 6u)
         }
         // Works for any radix in u32
-        return this.readAtomically(
-            closure1@{ p ->
-                val first =
-                    when (
-                        val tryResult =
-                            when (val tryResult = p.readChar()) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
-                            }.toDigit(radix)
-                    ) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error)
-                    }
-                var result = first
-                var digitCount = 1
-                while (true) {
-                    val matchVal =
-                        p.readAtomically(
-                            closure2@{ p1 ->
-                                when (val tryResult = p1.readChar()) {
-                                    is Result.Ok<*, *> -> tryResult.value
-                                    is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error)
-                                }.toDigit(radix)
-                            },
-                        )
-                    if (matchVal == null) break
-                    val digit = matchVal
-                    if (digitCount >= maxDigits) {
-                        return@closure1 null
-                    }
-                    result *= radix
-                    result += digit
-                    digitCount += 1
+        return this.readAtomically(closure1@{ p ->
+            val first = when (val tryResult = when (val tryResult = p.readChar()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }.toDigit(radix)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
+            var result = first
+            var digitCount = 1
+            while (true) {
+                val matchVal = p.readAtomically(closure2@{ p1 -> when (val tryResult = p1.readChar()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure2 Result.Err(tryResult.error) }.toDigit(radix) })
+                if (matchVal == null) break
+                val digit = matchVal
+                if (digitCount >= maxDigits) {
+                    return@closure1 null
                 }
-                if (!allowZeroPrefix && first == 0 && digitCount > 1) {
-                    null
-                } else {
-                    result.tryInto().ok()
-                }
-            },
-        )
+                result *= radix
+                result += digit
+                digitCount += 1
+            }
+            if (!allowZeroPrefix && first == 0 && digitCount > 1) {
+                null
+            } else {
+                result.tryInto().ok()
+            }
+        })
     }
 
     /**
@@ -193,76 +165,35 @@ public open class Parser(
      * amount of leading zeros.
      */
     public open fun <T : ReadNumberHelper<T>> readDecimal(): T? {
-        return this.readAtomically(
-            closure3@{ p ->
-                val first =
-                    when (
-                        val tryResult =
-                            when (val tryResult = p.readChar()) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
-                            }.toDigit(10u)
-                    ) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
-                    }
-                var result =
-                    when (val tryResult = T.ZERO.checkedAdd(first)) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
-                    }
-                while (true) {
-                    val matchVal =
-                        p.readAtomically(
-                            closure4@{ p1 ->
-                                when (val tryResult = p1.readChar()) {
-                                    is Result.Ok<*, *> -> tryResult.value
-                                    is Result.Err<*, *> -> return@closure4 Result.Err(tryResult.error)
-                                }.toDigit(10u)
-                            },
-                        )
-                    if (matchVal == null) break
-                    val digit = matchVal
-                    result =
-                        when (val tryResult = result.checkedMul(10)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
-                        }
-                    result =
-                        when (val tryResult = result.checkedAdd(digit)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error)
-                        }
-                }
-                result
-            },
-        )
+        return this.readAtomically(closure3@{ p ->
+            val first = when (val tryResult = when (val tryResult = p.readChar()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }.toDigit(10u)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+            var result = when (val tryResult = T.ZERO.checkedAdd(first)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+            while (true) {
+                val matchVal = p.readAtomically(closure4@{ p1 -> when (val tryResult = p1.readChar()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure4 Result.Err(tryResult.error) }.toDigit(10u) })
+                if (matchVal == null) break
+                val digit = matchVal
+                result = when (val tryResult = result.checkedMul(10)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+                result = when (val tryResult = result.checkedAdd(digit)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }
+            }
+            result
+        })
     }
 
     /**
      * Reads an IPv4 address.
      */
     public open fun readIpv4Addr(): Ipv4Addr? {
-        return this.readAtomically(
-            closure5@{ p ->
-                var groups = MutableList(4) { 0 }
-                for ((i, slot) in ArrayDeque(groups).mapIndexed { index, item -> Pair(index, item) }) {
-                    slot =
-                        when (
-                            val tryResult =
-                                p.readSeparator('.', i, { p1 ->
-                                    // Disallow octal number in IP string.
-                                    // https://tools.ietf.org/html/rfc6943#section-3.1.1
-                                    p1.readRadixMaxDigits(10, 3, false)
-                                })
-                        ) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error)
-                        }
-                }
-                groups.into()
-            },
-        )
+        return this.readAtomically(closure5@{ p ->
+            var groups = MutableList(4) { 0 }
+            for ((i, slot) in ArrayDeque(groups).mapIndexed { index, item -> Pair(index, item) }) {
+                slot = when (val tryResult = p.readSeparator('.', i, { p1 ->
+                    // Disallow octal number in IP string.
+                    // https://tools.ietf.org/html/rfc6943#section-3.1.1
+                    p1.readRadixMaxDigits(10, 3, false)
+                })) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure5 Result.Err(tryResult.error) }
+            }
+            groups.into()
+        })
     }
 
     /**
@@ -286,24 +217,14 @@ public open class Parser(
                     if (ipv4 != null) {
                         val v4Addr = ipv4
                         val (one, two, three, four) = v4Addr.octets()
-                        groups[i + 0] =
-                            run {
-                                val bytesTmp6 = ubyteArrayOf(one, two)
-                                ((bytesTmp6[0].toInt() shl 8) or bytesTmp6[1].toInt()).toUShort()
-                            }
-                        groups[i + 1] =
-                            run {
-                                val bytesTmp7 = ubyteArrayOf(three, four)
-                                ((bytesTmp7[0].toInt() shl 8) or bytesTmp7[1].toInt()).toUShort()
-                            }
+                        groups[i + 0] = run { val bytesTmp6 = ubyteArrayOf(one, two); ((bytesTmp6[0].toInt() shl 8) or bytesTmp6[1].toInt()).toUShort() }
+                        groups[i + 1] = run { val bytesTmp7 = ubyteArrayOf(three, four); ((bytesTmp7[0].toInt() shl 8) or bytesTmp7[1].toInt()).toUShort() }
                         return Pair(i + 2, true)
                     }
                 }
                 val group = p.readSeparator(':', i, { p1 -> p1.readRadixMaxDigits(16, 4, true) })
                 when (group) {
-                    null -> {
-                        return Pair(i, false)
-                    }
+                    null -> { return Pair(i, false) }
                     else -> {
                         val g = group
                         slot = g
@@ -312,43 +233,31 @@ public open class Parser(
             }
             return Pair(groups.size, false)
         }
-        return this.readAtomically(
-            closure8@{ p ->
-                // Read the front part of the address; either the whole thing, or up
-                // to the first ::
-                var head = MutableList(8) { 0 }
-                val (headSize, headIpv4) = readGroups(p, head)
-                if (headSize == 8) {
-                    return@closure8 head.into()
-                }
-                // IPv4 part is not allowed before `.`
-                if (headIpv4) {
-                    return@closure8 null
-                }
-                // Read `.` if previous code parsed less than 8 groups.
-                // `.` indicates one or more groups of 16 bits of zeros.
-                when (val tryResult = p.readGivenChar(':')) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error)
-                }
-                when (val tryResult = p.readGivenChar(':')) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error)
-                }
-                // Read the back part of the address. The :: must contain at least one
-                // set of zeroes, so our max length is 7.
-                var tail = MutableList(7) { 0 }
-                val limit = 8 - (headSize + 1)
-                val (tailSize, _) = readGroups(p, tail.subList(0, limit))
-                // Concat the head and tail of the IP address
-                run {
-                    val dstTmp9 = head
-                    val srcTmp9 = tail[0 until tailSize]
-                    for (idxTmp9 in srcTmp9.indices) dstTmp9[((8 - tailSize)) + idxTmp9] = srcTmp9[idxTmp9]
-                }
-                head.into()
-            },
-        )
+        return this.readAtomically(closure8@{ p ->
+            // Read the front part of the address; either the whole thing, or up
+            // to the first ::
+            var head = MutableList(8) { 0 }
+            val (headSize, headIpv4) = readGroups(p, head)
+            if (headSize == 8) {
+                return@closure8 head.into()
+            }
+            // IPv4 part is not allowed before `.`
+            if (headIpv4) {
+                return@closure8 null
+            }
+            // Read `.` if previous code parsed less than 8 groups.
+            // `.` indicates one or more groups of 16 bits of zeros.
+            when (val tryResult = p.readGivenChar(':')) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+            when (val tryResult = p.readGivenChar(':')) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+            // Read the back part of the address. The :: must contain at least one
+            // set of zeroes, so our max length is 7.
+            var tail = MutableList(7) { 0 }
+            val limit = 8 - (headSize + 1)
+            val (tailSize, _) = readGroups(p, tail.subList(0, limit))
+            // Concat the head and tail of the IP address
+            run { val dstTmp9 = head; val srcTmp9 = tail[0 until tailSize]; for (idxTmp9 in srcTmp9.indices) dstTmp9[((8 - tailSize)) + idxTmp9] = srcTmp9[idxTmp9] }
+            head.into()
+        })
     }
 
     /**
@@ -360,81 +269,45 @@ public open class Parser(
      * Reads a `:` followed by a port in base 10.
      */
     public open fun readPort(): UShort? {
-        return this.readAtomically(
-            closure10@{ p ->
-                when (val tryResult = p.readGivenChar(':')) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure10 Result.Err(tryResult.error)
-                }
-                p.readDecimal()
-            },
-        )
+        return this.readAtomically(closure10@{ p ->
+            when (val tryResult = p.readGivenChar(':')) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure10 Result.Err(tryResult.error) }
+            p.readDecimal()
+        })
     }
 
     /**
      * Reads a `%` followed by a scope ID in base 10.
      */
     public open fun readScopeId(): UInt? {
-        return this.readAtomically(
-            closure11@{ p ->
-                when (val tryResult = p.readGivenChar('%')) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure11 Result.Err(tryResult.error)
-                }
-                p.readDecimal()
-            },
-        )
+        return this.readAtomically(closure11@{ p ->
+            when (val tryResult = p.readGivenChar('%')) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure11 Result.Err(tryResult.error) }
+            p.readDecimal()
+        })
     }
 
     /**
      * Reads an IPv4 address with a port.
      */
     public open fun readSocketAddrV4(): SocketAddrV4? {
-        return this.readAtomically(
-            closure12@{ p ->
-                val ip =
-                    when (val tryResult = p.readIpv4Addr()) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure12 Result.Err(tryResult.error)
-                    }
-                val port =
-                    when (val tryResult = p.readPort()) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure12 Result.Err(tryResult.error)
-                    }
-                SocketAddrV4.new(ip, port)
-            },
-        )
+        return this.readAtomically(closure12@{ p ->
+            val ip = when (val tryResult = p.readIpv4Addr()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure12 Result.Err(tryResult.error) }
+            val port = when (val tryResult = p.readPort()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure12 Result.Err(tryResult.error) }
+            SocketAddrV4.new(ip, port)
+        })
     }
 
     /**
      * Reads an IPv6 address with a port.
      */
     public open fun readSocketAddrV6(): SocketAddrV6? {
-        return this.readAtomically(
-            closure13@{ p ->
-                when (val tryResult = p.readGivenChar('[')) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error)
-                }
-                val ip =
-                    when (val tryResult = p.readIpv6Addr()) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error)
-                    }
-                val scopeId = p.readScopeId().unwrapOr(0)
-                when (val tryResult = p.readGivenChar(']')) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error)
-                }
-                val port =
-                    when (val tryResult = p.readPort()) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return@closure13 Result.Err(tryResult.error)
-                    }
-                SocketAddrV6.new(ip, port, 0u, scopeId)
-            },
-        )
+        return this.readAtomically(closure13@{ p ->
+            when (val tryResult = p.readGivenChar('[')) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure13 Result.Err(tryResult.error) }
+            val ip = when (val tryResult = p.readIpv6Addr()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure13 Result.Err(tryResult.error) }
+            val scopeId = p.readScopeId().unwrapOr(0)
+            when (val tryResult = p.readGivenChar(']')) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure13 Result.Err(tryResult.error) }
+            val port = when (val tryResult = p.readPort()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure13 Result.Err(tryResult.error) }
+            SocketAddrV6.new(ip, port, 0u, scopeId)
+        })
     }
 
     /**
@@ -484,7 +357,7 @@ public fun fromStrIpAddr(s: String): Result<IpAddr, AddrParseError> = IpAddr.par
 public fun Ipv4Addr.Companion.parseAscii(b: List<UByte>): Result<Ipv4Addr, AddrParseError> {
     // don't try to parse if too long
     return if (b.size > 15) {
-        Result.Err(AddrParseError(AddrKind.Ipv4))
+        Result.Err<Ipv4Addr, AddrParseError>(AddrParseError(AddrKind.Ipv4))
     } else {
         Parser.new(b).parseWith({ p -> p.readIpv4Addr() }, AddrKind.Ipv4)
     }

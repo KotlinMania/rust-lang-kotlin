@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.weak.dlsym
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -12,7 +13,7 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_DEFAULT
 
 public open class DlsymWeak<F> internal constructor(
     nameCtorArg: ConstPtr,
-    funcCtorArg: Atomic<MutPtr>,
+    funcCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
     public var marker: Unit,
 ) {
     // Use a pointer instead of `CStr` to save space.
@@ -23,7 +24,7 @@ public open class DlsymWeak<F> internal constructor(
     public var name: ConstPtr = nameCtorArg
         internal set
 
-    public var func: Atomic<MutPtr> = funcCtorArg
+    public var func: Atomic<MutPtr, Align8<MutPtr>> = funcCtorArg
         internal set
 
     public open fun get(): F? {
@@ -90,7 +91,7 @@ public open class DlsymWeak<F> internal constructor(
     public companion object {
         public operator fun <F> invoke(
             name: ConstPtr,
-            func: Atomic<MutPtr>,
+            func: Atomic<MutPtr, Align8<MutPtr>>,
             marker: Unit,
         ): DlsymWeak<F> = DlsymWeak<F>(
             nameCtorArg = name,

@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -17,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
@@ -33,7 +35,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Ioctl
  */
 public open class Padding<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<MaybeUninit<T>>,
+    public val fieldLayout: TypeLayout<MaybeUninit<T>> = UnresolvedTypeLayout(),
 ) {
     public var field0: MaybeUninit<T>
         get() = value
@@ -45,18 +47,18 @@ public open class Padding<T> internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: MaybeUninit<T>, fieldLayout: TypeLayout<MaybeUninit<T>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: MaybeUninit<T>, fieldLayout: TypeLayout<MaybeUninit<T>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Padding<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Padding<T>(ptr, layout) }, { it.value })
 
     public open fun clone(): Padding<T> = Padding<T>(value, fieldLayout)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // Taken from `MaybeUninit`s debug implementation
         // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("Padding<{..}>").
         val fullName = "Padding"
         val prefixLen = (fullName.indexOf("Padding").takeIf { it >= 0 })!!
-        f.append(fullName.substring(prefixLen))
+        return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }
     }
 
     /**
@@ -74,16 +76,16 @@ public open class Padding<T> internal constructor(
      */
 
     public companion object {
-        public operator fun <T> invoke(value: MaybeUninit<T>, fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: MaybeUninit<T>, fieldLayout: TypeLayout<MaybeUninit<T>> = UnresolvedTypeLayout()): Padding<T> = Padding<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<MaybeUninit<T>> = UnresolvedTypeLayout()): Padding<T> = Padding<T>(fieldStorage, fieldLayout)
 
-        public fun <T> default(fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding(MaybeUninit.zeroed(UnresolvedTypeLayout<T>()), fieldLayout = fieldLayout)
+        public fun <T> default(fieldLayout: TypeLayout<MaybeUninit<T>> = UnresolvedTypeLayout()): Padding<T> = Padding(MaybeUninit.zeroed(UnresolvedTypeLayout<T>()), fieldLayout = fieldLayout)
 
         /**
          * Create a `Padding` initialized with the given value.
          */
-        public fun <T> new(value: T, fieldLayout: TypeLayout<MaybeUninit<T>>): Padding<T> = Padding(MaybeUninit.new(value, UnresolvedTypeLayout<T>()), fieldLayout = fieldLayout)
+        public fun <T> new(value: T, fieldLayout: TypeLayout<MaybeUninit<T>> = UnresolvedTypeLayout()): Padding<T> = Padding(MaybeUninit.new(value, UnresolvedTypeLayout<T>()), fieldLayout = fieldLayout)
     }
 }
 

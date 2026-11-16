@@ -21,7 +21,7 @@ public fun interface FnCallback {
  * to unlock better performance, especially for larger vectors.
  * A planned compiler improvement will enable using `@targetFeature` instead.
  */
-public fun Simd<UByte, N>.swizzleDyn(idxs: Simd<UByte>, n: Int): Simd<UByte, N> {
+public fun Simd<UByte>.swizzleDyn(idxs: Simd<UByte>, n: Int): Simd<UByte> {
     // SAFETY: Intrinsics covered by cfg
     return when (n) {
         // Aarch64

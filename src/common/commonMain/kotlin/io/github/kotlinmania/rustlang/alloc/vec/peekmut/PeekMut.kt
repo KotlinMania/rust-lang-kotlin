@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.alloc.vec.peekmut
 
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -37,9 +39,7 @@ public class DebugTuple(
 public open class PeekMut<T, A : Allocator>(
     public var vec: List<T>,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "PeekMut").field(this.deref()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "PeekMut").field(this.deref()).finish()
 
     public open fun deref(): T {
         val idx = this.vec.size - 1

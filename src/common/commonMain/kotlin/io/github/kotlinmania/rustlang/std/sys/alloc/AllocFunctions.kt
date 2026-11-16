@@ -13,7 +13,7 @@ public fun reallocFallback(ptr: MutPtr, oldLayout: Layout, newSize: Int): MutPtr
         val newPtr = alloc(newLayout)
         if (!newPtr.isNull()) {
             val size = minOf(oldLayout.size(), newSize)
-            ptr.copyNonoverlapping(ptr, newPtr, size, typeLayoutT = PrimitiveLayouts.U8)
+            ptr.copyNonoverlapping((ptr).asConstPtr(), newPtr, size, typeLayoutT = PrimitiveLayouts.U8)
             dealloc(ptr, oldLayout)
         }
         newPtr

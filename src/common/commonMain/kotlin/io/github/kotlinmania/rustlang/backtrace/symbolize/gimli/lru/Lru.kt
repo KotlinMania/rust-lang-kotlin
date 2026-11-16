@@ -18,18 +18,18 @@ public open class Lru<T>(
     public var arr: List<MaybeUninit<T>>,
 )
 
-public fun <T> defaultLruTN(n: Int): Lru<T, N> = Lru(len = 0, arr = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) })
+public fun <T> defaultLruTN(n: Int): Lru<T> = Lru(len = 0, arr = List(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) })
 
-public fun <T> Lru<T, N>.clear(n: Int) {
+public fun <T> Lru<T>.clear(n: Int) {
     val len = this.len
     this.len = 0
     // SAFETY: we can't touch these values again due to setting self.len = 0
     dropInPlace(mutPtrFromRustCast(addrOfMut(((this.arr).subList(0, len)))))
 }
 
-public fun <T> Lru<T, N>.iter(n: Int): Any = ((this.arr).subList(0, this.len)).map({ init -> init.assumeInitRef() })
+public fun <T> Lru<T>.iter(n: Int): Any = ((this.arr).subList(0, this.len)).map({ init -> init.assumeInitRef() })
 
-public fun <T> Lru<T, N>.pushFront(value: T, n: Int): T? {
+public fun <T> Lru<T>.pushFront(value: T, n: Int): T? {
     if (n == 0) {
         return null
     } else if (this.len == n) {
@@ -47,7 +47,7 @@ public fun <T> Lru<T, N>.pushFront(value: T, n: Int): T? {
     return this.arr.firstMut()?.let({ elem1 -> elem1.assumeInitMut() })
 }
 
-public fun <T> Lru<T, N>.moveToFront(idx: Int, n: Int): T? {
+public fun <T> Lru<T>.moveToFront(idx: Int, n: Int): T? {
     val elem = (((this.arr).subList(0, this.len)).getMut(idx) ?: return null)
     // SAFETY: we already bailed if the index is bad, so our slicing will be infallible,
     // so it is permissible to allow the len invariant to decay, as we always restore it

@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.F32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U16x16
 import io.github.kotlinmania.rustlang.corearch.simd.U16x32
 import io.github.kotlinmania.rustlang.corearch.simd.U16x4
-import io.github.kotlinmania.rustlang.corearch.wasm32.u16x8
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 
 // [AVX512BF16 intrinsics].
 //
@@ -31,7 +31,7 @@ public fun testMmMaskCvtne2psPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f)
     val bArray = floatArrayOf(-178.125f, -10.5f, -3.75f, -50.25f)
     val srcArray: UShortArray = ushortArrayOf(0x4332u, 0x4128u, 0x4070u, 0x4249u, 0x4332u, 0x4128u, 0x4070u, 0x4249u)
-    val src = u16x8.fromArray(srcArray).asM128bh()
+    val src = U16x8.fromArray(srcArray).asM128bh()
     val a = F32x4.fromArray(aArray).asM128()
     val b = F32x4.fromArray(bArray).asM128()
     val k: Mmask8 = 0xFFu
@@ -169,7 +169,7 @@ public fun testMm256CvtnepsPbh() {
 public fun testMm256MaskCvtnepsPbh() {
     val aArray = floatArrayOf(178.125f, 10.5f, 3.75f, 50.25f, 16.5f, 255.11f, 1000.158f, 575.575f)
     val srcArray: UShortArray = ushortArrayOf(0xC332u, 0xC128u, 0xC070u, 0xC249u, 0xC184u, 0xC37Fu, 0xC47Au, 0xC410u)
-    val src = u16x8.fromArray(srcArray).asM128bh()
+    val src = U16x8.fromArray(srcArray).asM128bh()
     val a = F32x8.fromArray(aArray).asM256()
     val k: Mmask8 = 0xffu
     val b = mm256MaskCvtnepsPbh(src, k, a)

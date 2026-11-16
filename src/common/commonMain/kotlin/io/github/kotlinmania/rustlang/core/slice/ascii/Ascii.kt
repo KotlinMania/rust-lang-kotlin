@@ -411,15 +411,14 @@ public open class SplitAsciiWhitespace internal constructor(
     public var inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<List<UByte>> =
-        object : AbstractIterator<List<UByte>>() {
-            override fun computeNext() {
-                when (val v = this@SplitAsciiWhitespace.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<List<UByte>> = object : AbstractIterator<List<UByte>>() {
+        override fun computeNext() {
+            when (val v = this@SplitAsciiWhitespace.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): SplitAsciiWhitespace = SplitAsciiWhitespace(inner)
 
@@ -462,17 +461,13 @@ public open class SplitAsciiWhitespace internal constructor(
     public companion object {
         public operator fun invoke(
             inner: Filter<Split<UByte, IsAsciiWhitespace>, BytesIsNotEmpty>,
-        ): SplitAsciiWhitespace =
-            SplitAsciiWhitespace(
-                innerCtorArg = inner,
-            )
+        ): SplitAsciiWhitespace = SplitAsciiWhitespace(
+            innerCtorArg = inner,
+        )
     }
 }
 
-public open class EscapeByte :
-    Fn<UByte>,
-    FnMut<UByte>,
-    FnOnce<UByte, EscapeDefault> {
+public open class EscapeByte : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, EscapeDefault> {
     public open fun clone(): EscapeByte = EscapeByte()
 
     public override fun call(tupleArg0: UByte): EscapeDefault = escapeDefault(byte)
@@ -510,15 +505,14 @@ public open class EscapeAscii internal constructor(
     public var inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<UByte> =
-        object : AbstractIterator<UByte>() {
-            override fun computeNext() {
-                when (val v = this@EscapeAscii.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
+        override fun computeNext() {
+            when (val v = this@EscapeAscii.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): EscapeAscii = EscapeAscii(inner)
 
@@ -569,7 +563,7 @@ public open class EscapeAscii internal constructor(
         for (byte1 in back1) {
             f.append(byte1.toInt().toChar())
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EscapeAscii").finishNonExhaustive()
@@ -577,10 +571,9 @@ public open class EscapeAscii internal constructor(
     public companion object {
         public operator fun invoke(
             inner: FlatMap<Iter<UByte>, EscapeDefault, EscapeByte>,
-        ): EscapeAscii =
-            EscapeAscii(
-                innerCtorArg = inner,
-            )
+        ): EscapeAscii = EscapeAscii(
+            innerCtorArg = inner,
+        )
     }
 }
 

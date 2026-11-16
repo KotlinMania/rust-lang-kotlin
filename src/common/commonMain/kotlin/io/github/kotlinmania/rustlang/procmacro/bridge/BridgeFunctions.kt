@@ -82,21 +82,21 @@ public fun <Unmarked, T> T?.unmark(): Unmarked? =
     }
 
 public fun <Unmarked, T, E> markResultTE(unmarked: Result<Unmarked, Unmarked>): Result<T, E> =
-    when (unmarked) { is Result.Ok<*, *> -> {
+    when (unmarked) { is Result.Ok -> {
         val t = unmarked.value
-        Result.Ok(Mark.Mark(t))
-    }; is Result.Err<*, *> -> {
+        Result.Ok<T, E>(Mark.Mark(t))
+    }; is Result.Err -> {
         val e = unmarked.error
-        Result.Err(Mark.Mark(e))
+        Result.Err<T, E>(Mark.Mark(e))
     } }
 
 public fun <Unmarked, T, E> Result<T, E>.unmark(): Result<Unmarked, Unmarked> =
-    when (this) { is Result.Ok<*, *> -> {
+    when (this) { is Result.Ok -> {
         val t = this.value
-        Result.Ok(t.unmark())
-    }; is Result.Err<*, *> -> {
+        Result.Ok<Unmarked, Unmarked>(t.unmark())
+    }; is Result.Err -> {
         val e = this.error
-        Result.Err(e.unmark())
+        Result.Err<Unmarked, Unmarked>(e.unmark())
     } }
 
 public fun <S, T : Encode<S>> Range<T>.encode(w: Buffer, s: S) {

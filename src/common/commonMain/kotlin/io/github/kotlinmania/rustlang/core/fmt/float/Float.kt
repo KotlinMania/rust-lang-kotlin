@@ -50,9 +50,9 @@ public fun Double.alreadyRoundedValueShouldUseExponential(): Boolean {
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
 public fun <T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T> {
-    val buf: List<MaybeUninit<UByte>> = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
+    val buf: List<MaybeUninit<UByte>>  = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     // enough for f32 and f64
-    val parts: List<MaybeUninit<numfmt.Part>> = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toExactFixedStr(formatExact, num, sign, precision.into(), buf, parts)
     // SAFETY: `toExactFixedStr` and `formatExact` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)
@@ -62,8 +62,8 @@ public fun <T> floatToDecimalCommonExact(fmt: Formatter, num: T, sign: Sign, pre
 // up using the combined stack space of both functions in some cases.
 public fun <T> floatToDecimalCommonShortest(fmt: Formatter, num: T, sign: Sign, precision: UShort): Result where T : DecodableFloat<T> {
     // enough for f32 and f64
-    val buf: List<MaybeUninit<UByte>> = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
-    val parts: List<MaybeUninit<numfmt.Part>> = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
+    val buf: List<MaybeUninit<UByte>>  = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(4) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toShortestStr(formatShortest, num, sign, precision.into(), buf, parts)
     // SAFETY: `toShortestStr` and `formatShortest` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)
@@ -91,9 +91,9 @@ public fun <T> floatToDecimalDisplay(fmt: Formatter, num: T): Result where T : D
 // Don't inline this so callers don't use the stack space this function
 // requires unless they have to.
 public fun <T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign, precision: UShort, upper: Boolean): Result where T : DecodableFloat<T> {
-    val buf: List<MaybeUninit<UByte>> = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
+    val buf: List<MaybeUninit<UByte>>  = List(1024) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
     // enough for f32 and f64
-    val parts: List<MaybeUninit<numfmt.Part>> = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toExactExpStr(formatExact, num, sign, precision.into(), upper, buf, parts)
     // SAFETY: `toExactExpStr` and `formatExact` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)
@@ -103,8 +103,8 @@ public fun <T> floatToExponentialCommonExact(fmt: Formatter, num: T, sign: Sign,
 // up using the combined stack space of both functions in some cases.
 public fun <T> floatToExponentialCommonShortest(fmt: Formatter, num: T, sign: Sign, upper: Boolean): Result where T : DecodableFloat<T> {
     // enough for f32 and f64
-    val buf: List<MaybeUninit<UByte>> = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
-    val parts: List<MaybeUninit<numfmt.Part>> = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
+    val buf: List<MaybeUninit<UByte>>  = List((MAX_SIG_DIGITS).toInt()) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
+    val parts: List<MaybeUninit<numfmt.Part>>  = List(6) { MaybeUninit.uninit(UnresolvedTypeLayout<numfmt.Part>()) }
     val formatted = toShortestExpStr(formatShortest, num, sign, Pair(0, 0), upper, buf, parts)
     // SAFETY: `toShortestExpStr` and `formatShortest` produce only ASCII characters.
     return fmt.padFormattedParts(formatted)

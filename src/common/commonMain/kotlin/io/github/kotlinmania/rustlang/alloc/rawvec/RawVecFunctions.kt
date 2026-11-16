@@ -5,6 +5,8 @@ import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind.*
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // One central function responsible for reporting capacity overflows. This'll
@@ -19,9 +21,9 @@ public fun capacityOverflow(): Nothing {
  *
  * # Safety: cap must be <= `Long.MAX`.
  */
-public fun <T> newCap(cap: Int): Cap {
+public fun <T> newCap(cap: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Cap {
     // SAFETY: Upheld by caller.
-    return if (T.IS_ZST) {
+    return if (((typeLayoutT).sizeBytes == 0L)) {
         ZERO_CAP
     } else {
         Cap.newUnchecked(cap)

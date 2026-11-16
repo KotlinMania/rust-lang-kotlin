@@ -1030,11 +1030,7 @@ public fun Double.Companion.fromBits(v: ULong): Double {
  * }
  * ```
  */
-public fun Double.toBeBytes(): UByteArray =
-    run {
-        val rawBits = this.toRawBits().toULong()
-        ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte())
-    }
+public fun Double.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1054,11 +1050,7 @@ public fun Double.toBeBytes(): UByteArray =
  * }
  * ```
  */
-public fun Double.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toRawBits().toULong()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-    }
+public fun Double.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1088,11 +1080,7 @@ public fun Double.toLeBytes(): UByteArray =
  * }
  * ```
  */
-public fun Double.toNeBytes(): UByteArray =
-    run {
-        val rawBits = this.toRawBits().toULong()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-    }
+public fun Double.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
 
 /**
  * Creates a floating point value from its representation as a byte array in big endian.
@@ -1111,13 +1099,7 @@ public fun Double.toNeBytes(): UByteArray =
  * }
  * ```
  */
-public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double =
-    Double.fromBits(
-        run {
-            val bytesTmp0 = bytes
-            ((bytesTmp0[0].toULong() shl 56) or (bytesTmp0[1].toULong() shl 48) or (bytesTmp0[2].toULong() shl 40) or (bytesTmp0[3].toULong() shl 32) or (bytesTmp0[4].toULong() shl 24) or (bytesTmp0[5].toULong() shl 16) or (bytesTmp0[6].toULong() shl 8) or bytesTmp0[7].toULong())
-        },
-    )
+public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp0 = bytes; ((bytesTmp0[0].toULong() shl 56) or (bytesTmp0[1].toULong() shl 48) or (bytesTmp0[2].toULong() shl 40) or (bytesTmp0[3].toULong() shl 32) or (bytesTmp0[4].toULong() shl 24) or (bytesTmp0[5].toULong() shl 16) or (bytesTmp0[6].toULong() shl 8) or bytesTmp0[7].toULong()) })
 
 /**
  * Creates a floating point value from its representation as a byte array in little endian.
@@ -1136,13 +1118,7 @@ public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double =
  * }
  * ```
  */
-public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double =
-    Double.fromBits(
-        run {
-            val bytesTmp1 = bytes
-            ((bytesTmp1[7].toULong() shl 56) or (bytesTmp1[6].toULong() shl 48) or (bytesTmp1[5].toULong() shl 40) or (bytesTmp1[4].toULong() shl 32) or (bytesTmp1[3].toULong() shl 24) or (bytesTmp1[2].toULong() shl 16) or (bytesTmp1[1].toULong() shl 8) or bytesTmp1[0].toULong())
-        },
-    )
+public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp1 = bytes; ((bytesTmp1[7].toULong() shl 56) or (bytesTmp1[6].toULong() shl 48) or (bytesTmp1[5].toULong() shl 40) or (bytesTmp1[4].toULong() shl 32) or (bytesTmp1[3].toULong() shl 24) or (bytesTmp1[2].toULong() shl 16) or (bytesTmp1[1].toULong() shl 8) or bytesTmp1[0].toULong()) })
 
 /**
  * Creates a floating point value from its representation as a byte array in native endian.
@@ -1172,13 +1148,7 @@ public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double =
  * }
  * ```
  */
-public fun Double.Companion.fromNeBytes(bytes: UByteArray): Double =
-    Double.fromBits(
-        run {
-            val bytesTmp2 = bytes
-            ((bytesTmp2[7].toULong() shl 56) or (bytesTmp2[6].toULong() shl 48) or (bytesTmp2[5].toULong() shl 40) or (bytesTmp2[4].toULong() shl 32) or (bytesTmp2[3].toULong() shl 24) or (bytesTmp2[2].toULong() shl 16) or (bytesTmp2[1].toULong() shl 8) or bytesTmp2[0].toULong())
-        },
-    )
+public fun Double.Companion.fromNeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp2 = bytes; ((bytesTmp2[7].toULong() shl 56) or (bytesTmp2[6].toULong() shl 48) or (bytesTmp2[5].toULong() shl 40) or (bytesTmp2[4].toULong() shl 32) or (bytesTmp2[3].toULong() shl 24) or (bytesTmp2[2].toULong() shl 16) or (bytesTmp2[1].toULong() shl 8) or bytesTmp2[0].toULong()) })
 
 /**
  * Returns the ordering between `self` and `other`.
@@ -1861,6 +1831,4 @@ public fun absSub(x: Double, other: Double): Double = fdim(x, other)
  *
  * [f64.cbrt]: ../../../std/primitive.f64.html#method.cbrt
  */
-public fun cbrt(x: Double): Double =
-    io.github.kotlinmania.rustlang.core.num.imp.libm
-        .cbrt(x)
+public fun cbrt(x: Double): Double = io.github.kotlinmania.rustlang.core.num.imp.libm.cbrt(x)

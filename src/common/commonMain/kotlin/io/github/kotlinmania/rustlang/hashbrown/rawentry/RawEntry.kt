@@ -1,7 +1,9 @@
 // port-lint: source raw_entry.rs
 package io.github.kotlinmania.rustlang.hashbrown.rawentry
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.Equivalent
 import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.equivalent
@@ -345,9 +347,7 @@ public open class RawEntryBuilderMut<K, V, S, A : Allocator>(
             }
         }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "RawEntryBuilder").finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawEntryBuilder").finish()
 }
 
 /**
@@ -668,7 +668,7 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
             is RawEntryMut.Vacant -> this
         }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is RawEntryMut.Vacant -> {
                 val (v) = this
@@ -679,7 +679,6 @@ public sealed class RawEntryMut<K, V, S, A : Allocator> {
                 DebugTuple(f, "RawEntry").field(o).finish()
             }
         }
-    }
 }
 
 /**
@@ -1148,9 +1147,7 @@ public open class RawOccupiedEntryMut<K, V, S, A : Allocator> internal construct
             }
         }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "RawOccupiedEntryMut").field("key", this.key()).field("value", this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawOccupiedEntryMut").field("key", this.key()).field("value", this.get()).finish()
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -1338,9 +1335,7 @@ public open class RawVacantEntryMut<K, V, S, A : Allocator> internal constructor
         return RawOccupiedEntryMut(elem = elem, table = this.table, hashBuilder = this.hashBuilder)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "RawVacantEntryMut").finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawVacantEntryMut").finish()
 
     public companion object {
         public operator fun <K, V, S, A : Allocator> invoke(
@@ -1461,7 +1456,5 @@ public open class RawEntryBuilder<K, V, S, A : Allocator>(
      */
     public open fun fromHash(hash: ULong, isMatch: (K) -> Boolean): Pair<K, V>? = this.search(hash, isMatch)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "RawEntryBuilder").finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "RawEntryBuilder").finish()
 }

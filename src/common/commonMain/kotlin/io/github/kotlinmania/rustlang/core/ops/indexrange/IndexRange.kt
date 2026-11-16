@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -21,17 +22,15 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class IndexRange(
     public var start: Int,
     public var end: Int,
-) : TrustedLen<IndexRange>,
-    Iterable<Int> {
-    override fun iterator(): Iterator<Int> =
-        object : AbstractIterator<Int>() {
-            override fun computeNext() {
-                when (val v = this@IndexRange.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<IndexRange>, Iterable<Int> {
+    override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
+        override fun computeNext() {
+            when (val v = this@IndexRange.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IndexRange = IndexRange(start, end)
 
@@ -135,9 +134,9 @@ public open class IndexRange(
         return Pair(len, len)
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val taken = this.takePrefix(n)
-        return NonZero.new(n - taken.len()).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - taken.len()))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public override fun <B> fold(init: B, f: (B, Int) -> B): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
@@ -150,11 +149,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextUnchecked()
-            accum1 =
-                when (val tryResult = f(accum1, i)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum1
     }
@@ -167,9 +162,9 @@ public open class IndexRange(
             null
         }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val taken = this.takeSuffix(n)
-        return NonZero.new(n - taken.len()).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(n - taken.len()))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public open fun <B> rfold(init: B, f: (B, Int) -> B): B = this.tryRfold(init, NeverShortCircuit.wrapMut2(f)).first
@@ -182,11 +177,7 @@ public open class IndexRange(
         while (this.start != this.end) {
             // SAFETY: We just checked that the range is non-empty
             val i = this.nextBackUnchecked()
-            accum1 =
-                when (val tryResult = f(accum1, i)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            accum1 = when (val tryResult = f(accum1, i)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum1
     }

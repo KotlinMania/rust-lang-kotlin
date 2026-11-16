@@ -1490,13 +1490,21 @@ public actual fun msaSrlriW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSrlriD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrlriD")
 
-public actual fun msaStB(a: V16i8, memAddr: MutPtr, immS10: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStB")
+public actual fun msaStB(a: V16i8, memAddr: MutPtr, immS10: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStB")
+}
 
-public actual fun msaStH(a: V8i16, memAddr: MutPtr, immS11: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStH")
+public actual fun msaStH(a: V8i16, memAddr: MutPtr, immS11: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStH")
+}
 
-public actual fun msaStW(a: V4i32, memAddr: MutPtr, immS12: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStW")
+public actual fun msaStW(a: V4i32, memAddr: MutPtr, immS12: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStW")
+}
 
-public actual fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStD")
+public actual fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStD")
+}
 
 public actual fun msaSubsSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSubsSB")

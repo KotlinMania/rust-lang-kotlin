@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
@@ -3189,9 +3191,7 @@ public class CAnonymousIfrIfru internal constructor(
         ifruDataCtorArg = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive()
 
     public companion object {
         public operator fun invoke(
@@ -3251,9 +3251,7 @@ public class CAnonymousIfcIfcu internal constructor(
         ifcuReqCtorArg = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive()
 
     public companion object {
         public operator fun invoke(
@@ -3377,9 +3375,7 @@ public class Sifields internal constructor(
         sigchld = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "sifields").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "sifields").finishNonExhaustive()
 
     public companion object {
         public operator fun invoke(

@@ -11,17 +11,29 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
 
-public actual fun vcompressstorew(mem: MutPtr, data: I16x32, mask: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vcompressstorew(mem: MutPtr, data: I16x32, mask: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun vcompressstorew256(mem: MutPtr, data: I16x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vcompressstorew256(mem: MutPtr, data: I16x16, mask: UShort) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun vcompressstorew128(mem: MutPtr, data: I16x8, mask: UByte): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vcompressstorew128(mem: MutPtr, data: I16x8, mask: UByte) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun vcompressstoreb(mem: MutPtr, data: I8x64, mask: ULong): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vcompressstoreb(mem: MutPtr, data: I8x64, mask: ULong) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun vcompressstoreb256(mem: MutPtr, data: I8x32, mask: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vcompressstoreb256(mem: MutPtr, data: I8x32, mask: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun vcompressstoreb128(mem: MutPtr, data: I8x16, mask: UShort): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vcompressstoreb128(mem: MutPtr, data: I8x16, mask: UShort) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun vpcompressw(a: I16x32, src: I16x32, mask: UInt): I16x32 =
     throw UnsupportedOperationException("Native FFI addon is not available")

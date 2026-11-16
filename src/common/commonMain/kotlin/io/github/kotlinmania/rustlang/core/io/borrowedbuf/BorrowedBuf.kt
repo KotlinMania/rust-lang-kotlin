@@ -76,11 +76,7 @@ public open class BorrowedBuf<T>(
      */
     public var init: Boolean,
 ) {
-    public open fun fmt(f: Formatter): Result<Unit, Unit> =
-        run {
-            BorrowedBufDebug(init = this.init, filled = this.filled, capacity = this.capacity()).fmt(f)
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: Formatter): Result<Unit, Unit> = BorrowedBufDebug(init = this.init, filled = this.filled, capacity = this.capacity()).fmt(f)
 
     /**
      * Returns the total capacity of the buffer.
@@ -175,7 +171,7 @@ public open class BorrowedBuf<T>(
         /**
          * Creates a new `BorrowedBuf` from a fully initialized slice.
          */
-        public fun <T> from(slice: MutableList<T>, typeLayoutT: TypeLayout<T>): BorrowedBuf<T> = BorrowedBuf(buf = RustMutableReference(MutPtr((((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<MaybeUninit<T>>>()), filled = 0, init = true)
+        public fun <T> from(slice: MutableList<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): BorrowedBuf<T> = BorrowedBuf(buf = RustMutableReference(MutPtr((((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<MaybeUninit<T>>>()), filled = 0, init = true)
 
         /**
          * Creates a new `BorrowedBuf` from an uninitialized buffer.
@@ -201,12 +197,7 @@ public open class BorrowedBufDebug(
     public var filled: Int,
     public var capacity: Int,
 ) {
-    public open fun fmt(f: Formatter): Result<Unit, Unit> =
-        DebugStruct(f, "BorrowedBuf")
-            .field("init", this.init)
-            .field("filled", this.filled)
-            .field("capacity", this.capacity)
-            .finish()
+    public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "BorrowedBuf").field("init", this.init).field("filled", this.filled).field("capacity", this.capacity).finish()
 
     public companion object {
         public fun typeLayout(): TypeLayout<BorrowedBufDebug> =
@@ -515,10 +506,9 @@ public open class BorrowedCursor<T> internal constructor(
         public operator fun <T> invoke(
             buf: NonNull,
             borrowedBuf: NonNull,
-        ): BorrowedCursor<T> =
-            BorrowedCursor<T>(
-                bufCtorArg = buf,
-                borrowedBufCtorArg = borrowedBuf,
-            )
+        ): BorrowedCursor<T> = BorrowedCursor<T>(
+            bufCtorArg = buf,
+            borrowedBufCtorArg = borrowedBuf,
+        )
     }
 }

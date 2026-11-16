@@ -1,9 +1,11 @@
 // port-lint: source io/error/os_functions.rs
 package io.github.kotlinmania.rustlang.core.io.error.osfunctions
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
 import io.github.kotlinmania.rustlang.core.io.error.RawOsError
+import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
  * # Safety
@@ -16,9 +18,9 @@ public fun setFunctions(f: OsFunctions) {
     // these methods to be overridden even when atomic pointers are not supported.
 }
 
-public fun formatOsError(errno: RawOsError, fmt: StringBuilder) {
+public fun formatOsError(errno: RawOsError, fmt: StringBuilder): Result<Unit, Error> {
     val f = OsFunctions.DEFAULT
-    (f.formatOsError)(errno, fmt)
+    return (f.formatOsError)(errno, fmt)
 }
 
 public fun decodeErrorKind(errno: RawOsError): ErrorKind {

@@ -13,12 +13,10 @@ public sealed class SimdAlign(
      * No alignment requirements on the pointer
      */
     public data object Unaligned : SimdAlign(0)
-
     /**
      * The pointer must be aligned to the element type of the SIMD vector
      */
     public data object Element : SimdAlign(1)
-
     /**
      * The pointer must be aligned to the SIMD vector type
      */

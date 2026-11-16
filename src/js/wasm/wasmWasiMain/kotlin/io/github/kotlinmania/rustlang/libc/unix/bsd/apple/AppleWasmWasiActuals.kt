@@ -301,16 +301,24 @@ public actual fun osSyncWakeByAddressAny(addr: MutPtr, size: SizeT, flags: OsSyn
 public actual fun osSyncWakeByAddressAll(addr: MutPtr, size: SizeT, flags: OsSyncWakeByAddressFlagsT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsSyncWakeByAddressAll")
 
-public actual fun osUnfairLockLock(lock: OsUnfairLockT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockLock")
+public actual fun osUnfairLockLock(lock: OsUnfairLockT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockLock")
+}
 
 public actual fun osUnfairLockTrylock(lock: OsUnfairLockT): Boolean =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockTrylock")
 
-public actual fun osUnfairLockUnlock(lock: OsUnfairLockT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockUnlock")
+public actual fun osUnfairLockUnlock(lock: OsUnfairLockT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockUnlock")
+}
 
-public actual fun osUnfairLockAssertOwner(lock: OsUnfairLockT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockAssertOwner")
+public actual fun osUnfairLockAssertOwner(lock: OsUnfairLockT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockAssertOwner")
+}
 
-public actual fun osUnfairLockAssertNotOwner(lock: OsUnfairLockT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockAssertNotOwner")
+public actual fun osUnfairLockAssertNotOwner(lock: OsUnfairLockT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsUnfairLockAssertNotOwner")
+}
 
 public actual fun osLogCreate(subsystem: ConstPtr, category: ConstPtr): OsLogT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleOsLogCreate")
@@ -345,12 +353,16 @@ public actual fun backtrace(buf: MutPtr, sz: CInt): CInt =
 public actual fun backtraceSymbols(addrs: ConstPtr, sz: CInt): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceSymbols")
 
-public actual fun backtraceSymbolsFd(addrs: ConstPtr, sz: CInt, fd: CInt): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceSymbolsFd")
+public actual fun backtraceSymbolsFd(addrs: ConstPtr, sz: CInt, fd: CInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceSymbolsFd")
+}
 
 public actual fun backtraceFromFp(startfp: MutPtr, array: MutPtr, size: CInt): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceFromFp")
 
-public actual fun backtraceImageOffsets(array: ConstPtr, imageOffsets: MutPtr, size: CInt): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceImageOffsets")
+public actual fun backtraceImageOffsets(array: ConstPtr, imageOffsets: MutPtr, size: CInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceImageOffsets")
+}
 
 public actual fun backtraceAsync(array: MutPtr, length: SizeT, taskId: MutPtr): SizeT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleBacktraceAsync")
@@ -643,11 +655,17 @@ public actual fun machErrorString(errorValue: MachErrorT): MutPtr =
 public actual fun memsetS(s: MutPtr, smax: SizeT, c: CInt, n: SizeT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetS")
 
-public actual fun memsetPattern4(b: MutPtr, pattern4: ConstPtr, len: SizeT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetPattern4")
+public actual fun memsetPattern4(b: MutPtr, pattern4: ConstPtr, len: SizeT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetPattern4")
+}
 
-public actual fun memsetPattern8(b: MutPtr, pattern8: ConstPtr, len: SizeT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetPattern8")
+public actual fun memsetPattern8(b: MutPtr, pattern8: ConstPtr, len: SizeT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetPattern8")
+}
 
-public actual fun memsetPattern16(b: MutPtr, pattern16: ConstPtr, len: SizeT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetPattern16")
+public actual fun memsetPattern16(b: MutPtr, pattern16: ConstPtr, len: SizeT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMemsetPattern16")
+}
 
 public actual fun strtonum(numstr: ConstPtr, minval: CLonglong, maxval: CLonglong, errstrp: MutPtr): CLonglong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleStrtonum")
@@ -655,18 +673,28 @@ public actual fun strtonum(numstr: ConstPtr, minval: CLonglong, maxval: CLonglon
 public actual fun mstats(): Mstats =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMstats")
 
-public actual fun mallocPrintf(format: ConstPtr, vararg variadicArgs: Long): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocPrintf")
+public actual fun mallocPrintf(format: ConstPtr, vararg variadicArgs: Long) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocPrintf")
+}
 
 public actual fun mallocZoneCheck(zone: MutPtr): BooleanT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneCheck")
 
-public actual fun mallocZonePrint(zone: MutPtr, verbose: BooleanT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZonePrint")
+public actual fun mallocZonePrint(zone: MutPtr, verbose: BooleanT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZonePrint")
+}
 
-public actual fun mallocZoneStatistics(zone: MutPtr, stats: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneStatistics")
+public actual fun mallocZoneStatistics(zone: MutPtr, stats: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneStatistics")
+}
 
-public actual fun mallocZoneLog(zone: MutPtr, address: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneLog")
+public actual fun mallocZoneLog(zone: MutPtr, address: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneLog")
+}
 
-public actual fun mallocZonePrintPtrInfo(ptr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZonePrintPtrInfo")
+public actual fun mallocZonePrintPtrInfo(ptr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZonePrintPtrInfo")
+}
 
 public actual fun mallocDefaultZone(): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocDefaultZone")
@@ -686,7 +714,9 @@ public actual fun mallocZoneCalloc(zone: MutPtr, numItems: SizeT, size: SizeT): 
 public actual fun mallocZoneRealloc(zone: MutPtr, ptr: MutPtr, size: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneRealloc")
 
-public actual fun mallocZoneFree(zone: MutPtr, ptr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneFree")
+public actual fun mallocZoneFree(zone: MutPtr, ptr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleMallocZoneFree")
+}
 
 public actual fun gethostuuid(id: MutPtr, timeout: ConstPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleGethostuuid")
@@ -817,7 +847,9 @@ public actual fun freadlink(fd: CInt, buf: MutPtr, size: SizeT): CInt =
 public actual fun execvP(file: ConstPtr, searchPath: ConstPtr, argv: ConstPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleExecvP")
 
-public actual fun qsortR(base: MutPtr, num: SizeT, size: SizeT, arg: MutPtr, compar: QsortRComparCallback?): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleQsortR")
+public actual fun qsortR(base: MutPtr, num: SizeT, size: SizeT, arg: MutPtr, compar: QsortRComparCallback?) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleQsortR")
+}
 
 public actual fun clockSettime(clockId: ClockidT, tp: ConstPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsdAppleClockSettime")

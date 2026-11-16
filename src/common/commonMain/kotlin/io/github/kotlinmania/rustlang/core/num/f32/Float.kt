@@ -608,11 +608,7 @@ public fun kotlin.Float.nextUp(): kotlin.Float {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toRawBits().toUInt()
-    if (this.isNaN() || bits ==
-        kotlin.Float.POSITIVE_INFINITY
-            .toBits()
-            .toUInt()
-    ) {
+    if (this.isNaN() || bits == kotlin.Float.POSITIVE_INFINITY.toBits().toUInt()) {
         return this
     }
     val abs = bits and kotlin.Float.SIGN_MASK.inv()
@@ -661,11 +657,7 @@ public fun kotlin.Float.nextDown(): kotlin.Float {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toRawBits().toUInt()
-    if (this.isNaN() || bits ==
-        kotlin.Float.NEGATIVE_INFINITY
-            .toBits()
-            .toUInt()
-    ) {
+    if (this.isNaN() || bits == kotlin.Float.NEGATIVE_INFINITY.toBits().toUInt()) {
         return this
     }
     val abs = bits and kotlin.Float.SIGN_MASK.inv()
@@ -1027,11 +1019,7 @@ public fun kotlin.Float.Companion.fromBits(v: UInt): kotlin.Float {
  * }
  * ```
  */
-public fun kotlin.Float.toBeBytes(): UByteArray =
-    run {
-        val rawBits = this.toRawBits().toUInt()
-        ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte())
-    }
+public fun kotlin.Float.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits().toUInt(); ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1051,11 +1039,7 @@ public fun kotlin.Float.toBeBytes(): UByteArray =
  * }
  * ```
  */
-public fun kotlin.Float.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toRawBits().toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-    }
+public fun kotlin.Float.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1085,11 +1069,7 @@ public fun kotlin.Float.toLeBytes(): UByteArray =
  * }
  * ```
  */
-public fun kotlin.Float.toNeBytes(): UByteArray =
-    run {
-        val rawBits = this.toRawBits().toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-    }
+public fun kotlin.Float.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
 
 /**
  * Creates a floating point value from its representation as a byte array in big endian.
@@ -1108,13 +1088,7 @@ public fun kotlin.Float.toNeBytes(): UByteArray =
  * }
  * ```
  */
-public fun kotlin.Float.Companion.fromBeBytes(bytes: UByteArray): kotlin.Float =
-    kotlin.Float.fromBits(
-        run {
-            val bytesTmp0 = bytes
-            ((bytesTmp0[0].toUInt() shl 24) or (bytesTmp0[1].toUInt() shl 16) or (bytesTmp0[2].toUInt() shl 8) or bytesTmp0[3].toUInt())
-        },
-    )
+public fun kotlin.Float.Companion.fromBeBytes(bytes: UByteArray): kotlin.Float = kotlin.Float.fromBits(run { val bytesTmp0 = bytes; ((bytesTmp0[0].toUInt() shl 24) or (bytesTmp0[1].toUInt() shl 16) or (bytesTmp0[2].toUInt() shl 8) or bytesTmp0[3].toUInt()) })
 
 /**
  * Creates a floating point value from its representation as a byte array in little endian.
@@ -1133,13 +1107,7 @@ public fun kotlin.Float.Companion.fromBeBytes(bytes: UByteArray): kotlin.Float =
  * }
  * ```
  */
-public fun kotlin.Float.Companion.fromLeBytes(bytes: UByteArray): kotlin.Float =
-    kotlin.Float.fromBits(
-        run {
-            val bytesTmp1 = bytes
-            ((bytesTmp1[3].toUInt() shl 24) or (bytesTmp1[2].toUInt() shl 16) or (bytesTmp1[1].toUInt() shl 8) or bytesTmp1[0].toUInt())
-        },
-    )
+public fun kotlin.Float.Companion.fromLeBytes(bytes: UByteArray): kotlin.Float = kotlin.Float.fromBits(run { val bytesTmp1 = bytes; ((bytesTmp1[3].toUInt() shl 24) or (bytesTmp1[2].toUInt() shl 16) or (bytesTmp1[1].toUInt() shl 8) or bytesTmp1[0].toUInt()) })
 
 /**
  * Creates a floating point value from its representation as a byte array in native endian.
@@ -1169,13 +1137,7 @@ public fun kotlin.Float.Companion.fromLeBytes(bytes: UByteArray): kotlin.Float =
  * }
  * ```
  */
-public fun kotlin.Float.Companion.fromNeBytes(bytes: UByteArray): kotlin.Float =
-    kotlin.Float.fromBits(
-        run {
-            val bytesTmp2 = bytes
-            ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt())
-        },
-    )
+public fun kotlin.Float.Companion.fromNeBytes(bytes: UByteArray): kotlin.Float = kotlin.Float.fromBits(run { val bytesTmp2 = bytes; ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt()) })
 
 /**
  * Returns the ordering between `self` and `other`.

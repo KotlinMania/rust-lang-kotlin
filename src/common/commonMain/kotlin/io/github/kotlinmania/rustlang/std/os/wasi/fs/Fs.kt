@@ -118,27 +118,27 @@ public interface FileExt {
             run {
                 val matchVal = this.readAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> { break }
-                    matchVal is Result.Ok<*, *> -> {
-                        val n = (matchVal as Result.Ok<*, *>).value
+                    matchVal is Result.Ok && matchVal.value == 0 -> { break }
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
                         val tmp = buf1
                         buf1 = tmp.subList(n, tmp.size)
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
-                        return Result.Err(e1)
+                        val e1 = matchVal.error
+                        return Result.Err<Unit, Error>(e1)
                     }
                 }
             }
         }
         return if (!buf1.isEmpty()) {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
+            Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF)
         } else {
-            Result.Ok(Unit)
+            Result.Ok<Unit, Error>(Unit)
         }
     }
 
@@ -207,25 +207,25 @@ public interface FileExt {
             run {
                 val matchVal = this.writeAt(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*, *> -> {
-                        val n = (matchVal as Result.Ok<*, *>).value
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
                         buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
-                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
-                        return Result.Err(e1)
+                        val e1 = matchVal.error
+                        return Result.Err<Unit, Error>(e1)
                     }
                 }
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -326,7 +326,7 @@ public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit, E
                 ADVICE_NOREUSE
             }
             else -> {
-                return Result.Err(constError(ErrorKind.InvalidInput, "invalid parameter 'advice'"))
+                return Result.Err<Unit, Error>(constError(ErrorKind.InvalidInput, "invalid parameter 'advice'"))
             }
         }
     return fdAdvise(((this.asRawFd() as Any?) as Fd), offset, len, advice1).mapErr(err2io)
@@ -335,17 +335,17 @@ public fun File.advise(offset: ULong, len: ULong, advice: UByte): Result<Unit, E
 public fun File.allocate(offset: ULong, len: ULong): Result<Unit, Error> = fdAllocate(((this.asRawFd() as Any?) as Fd), offset, len).mapErr(err2io)
 
 public fun File.createDirectory(dir: Path): Result<Unit, Error> {
-    val path = when (val tryResult = osstr2str(dir)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val path = when (val tryResult = osstr2str(dir)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return pathCreateDirectory(((this.asRawFd() as Any?) as Fd), path).mapErr(err2io)
 }
 
 public fun File.removeFile(path: Path): Result<Unit, Error> {
-    val path1 = when (val tryResult = osstr2str(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val path1 = when (val tryResult = osstr2str(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return pathUnlinkFile(((this.asRawFd() as Any?) as Fd), path1).mapErr(err2io)
 }
 
 public fun File.removeDirectory(path: Path): Result<Unit, Error> {
-    val path1 = when (val tryResult = osstr2str(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val path1 = when (val tryResult = osstr2str(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return pathRemoveDirectory(((this.asRawFd() as Any?) as Fd), path1).mapErr(err2io)
 }
 
@@ -437,7 +437,7 @@ public fun DirEntry.ino(): ULong = this.asInner().ino()
  * This corresponds to the `pathLink` syscall.
  */
 public fun link(oldFd: File, oldFlags: UInt, oldPath: Path, newFd: File, newPath: Path): Result<Unit, Error> {
-    return pathLink(((oldFd.asRawFd() as Any?) as Fd), oldFlags, when (val tryResult = osstr2str(oldPath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, ((newFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).mapErr(err2io)
+    return pathLink(((oldFd.asRawFd() as Any?) as Fd), oldFlags, when (val tryResult = osstr2str(oldPath)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }, ((newFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }).mapErr(err2io)
 }
 
 /**
@@ -446,7 +446,7 @@ public fun link(oldFd: File, oldFlags: UInt, oldPath: Path, newFd: File, newPath
  * This corresponds to the `pathRename` syscall.
  */
 public fun rename(oldFd: File, oldPath: Path, newFd: File, newPath: Path): Result<Unit, Error> {
-    return pathRename(((oldFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(oldPath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, ((newFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).mapErr(err2io)
+    return pathRename(((oldFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(oldPath)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }, ((newFd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }).mapErr(err2io)
 }
 
 /**
@@ -455,7 +455,7 @@ public fun rename(oldFd: File, oldPath: Path, newFd: File, newPath: Path): Resul
  * This corresponds to the `pathSymlink` syscall.
  */
 public fun symlink(oldPath: Path, fd: File, newPath: Path): Result<Unit, Error> {
-    return pathSymlink(when (val tryResult = osstr2str(oldPath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, ((fd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).mapErr(err2io)
+    return pathSymlink(when (val tryResult = osstr2str(oldPath)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }, ((fd.asRawFd() as Any?) as Fd), when (val tryResult = osstr2str(newPath)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }).mapErr(err2io)
 }
 
 /**

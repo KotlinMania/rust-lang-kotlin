@@ -185,20 +185,17 @@ public fun <W : Wake> rawWaker(waker: W): RawWaker {
         val waker2 = Arc.fromRaw(ConstPtr(waker1.rawAddress, waker1.rawMeta))
         wakeWFn(waker2)
     }
-
     // Wake by reference, wrap the waker in ManuallyDrop to avoid dropping it
     fun <W : Wake> wakeByRef(waker1: ConstPtr, wakeByRefWFn: (W) -> Unit) {
         // ignore-tidy-undocumented-unchecked
         val waker2 = Arc.fromRaw(ConstPtr(waker1.rawAddress, waker1.rawMeta))
         wakeByRefWFn(waker2)
     }
-
     // Decrement the reference count of the Arc on drop
     fun dropWaker(waker1: ConstPtr) {
         // ignore-tidy-undocumented-unchecked
         Arc.decrementStrongCount(ConstPtr(waker1.rawAddress, waker1.rawMeta))
     }
-
     // Increment the reference count of the arc to clone it.
     //
     // The @inline(always) is to ensure that rawWaker and cloneWaker are
@@ -370,20 +367,17 @@ public fun <W : LocalWake> localRawWaker(waker: W): RawWaker {
         val waker2 = Rc.fromRaw(ConstPtr(waker1.rawAddress, waker1.rawMeta))
         wakeWFn(waker2)
     }
-
     // Wake by reference, wrap the waker in ManuallyDrop to avoid dropping it
     fun <W : LocalWake> wakeByRef(waker1: ConstPtr, wakeByRefWFn: (W) -> Unit) {
         // ignore-tidy-undocumented-unchecked
         val waker2 = Rc.fromRaw(ConstPtr(waker1.rawAddress, waker1.rawMeta))
         wakeByRefWFn(waker2)
     }
-
     // Decrement the reference count of the Rc on drop
     fun dropWaker(waker1: ConstPtr) {
         // ignore-tidy-undocumented-unchecked
         Rc.decrementStrongCount(ConstPtr(waker1.rawAddress, waker1.rawMeta))
     }
-
     // Increment the reference count of the Rc to clone it.
     //
     // Refer to the comment on rawWaker's cloneWaker regarding why this is

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.poison.rwlock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
@@ -156,11 +157,11 @@ public open class RwLock<T>(
     public open fun getCloned(): Result<T, PoisonError<Unit>> =
         run {
             val matchVal = this.read()
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val guard = matchVal.value
-                Result.Ok(guard.clone())
-            }; is Result.Err<*, *> -> {
-                Result.Err(PoisonError.new())
+                Result.Ok<T, PoisonError<Unit>>(guard.clone())
+            }; is Result.Err -> {
+                Result.Err<T, PoisonError<Unit>>(PoisonError.new())
             } }
         }
 
@@ -195,12 +196,12 @@ public open class RwLock<T>(
         } else {
             run {
                 val matchVal = this.write()
-                when (matchVal) { is Result.Ok<*, *> -> {
+                when (matchVal) { is Result.Ok -> {
                     val guard = matchVal.value
                     guard = value
-                    Result.Ok(Unit)
-                }; is Result.Err<*, *> -> {
-                    Result.Err(PoisonError.new(value))
+                    Result.Ok<Unit, PoisonError<T>>(Unit)
+                }; is Result.Err -> {
+                    Result.Err<Unit, PoisonError<T>>(PoisonError.new(value))
                 } }
             }
         }
@@ -230,10 +231,10 @@ public open class RwLock<T>(
     public open fun replace(value: T): LockResult<T> =
         run {
             val matchVal = this.write()
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val guard = matchVal.value
                 Result.Ok(replace(guard, value))
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 Result.Err(PoisonError.new(value))
             } }
         }
@@ -331,7 +332,7 @@ public open class RwLock<T>(
      */
     public open fun tryRead(): TryLockResult<RwLockReadGuard<T>> {
         return if (this.inner.tryRead()) {
-            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -415,7 +416,7 @@ public open class RwLock<T>(
      */
     public open fun tryWrite(): TryLockResult<RwLockWriteGuard<T>> {
         return if (this.inner.tryWrite()) {
-            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })
+            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -549,16 +550,16 @@ public open class RwLock<T>(
      */
     public open fun dataPtr(): MutPtr = this.data.get()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "RwLock")
         run {
             val matchVal = this.tryRead()
             when {
-                matchVal is Result.Ok<*, *> -> {
-                    val guard = (matchVal as Result.Ok<*, *>).value
+                matchVal is Result.Ok -> {
+                    val guard = matchVal.value
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned -> {
+                matchVal is Result.Err && matchVal.error is TryLockError.Poisoned -> {
                     d.field("data", err.getRef())
                 }
                 else -> {
@@ -567,7 +568,7 @@ public open class RwLock<T>(
             }
         }
         d.field("poisoned", this.poison.get())
-        d.finishNonExhaustive()
+        return d.finishNonExhaustive()
     }
 
     public companion object {
@@ -637,13 +638,9 @@ public open class RwLockReadGuard<T>(
         return this.data.asRef()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -706,12 +703,12 @@ public open class RwLockReadGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asRef())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockReadGuard<U>, RwLockReadGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
+                    Result.Ok<MappedRwLockReadGuard<U>, RwLockReadGuard<T>>(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
                 }
             }
         }
@@ -756,13 +753,9 @@ public open class RwLockWriteGuard<T>(
         return this.lock.data.get()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -882,12 +875,12 @@ public open class RwLockWriteGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.lock.data.get())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockWriteGuard<U>, RwLockWriteGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockWriteGuard(data = data1, innerLock = orig1.lock.inner, poisonFlag = orig1.lock.poison, poisonGuard = orig1.poison.clone(), variance = Unit))
+                    Result.Ok<MappedRwLockWriteGuard<U>, RwLockWriteGuard<T>>(MappedRwLockWriteGuard(data = data1, innerLock = orig1.lock.inner, poisonFlag = orig1.lock.poison, poisonGuard = orig1.poison.clone(), variance = Unit))
                 }
             }
         }
@@ -932,13 +925,9 @@ public open class MappedRwLockReadGuard<T>(
         return this.data.asRef()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -990,12 +979,12 @@ public open class MappedRwLockReadGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asRef())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockReadGuard<U>, MappedRwLockReadGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
+                    Result.Ok<MappedRwLockReadGuard<U>, MappedRwLockReadGuard<T>>(MappedRwLockReadGuard(data = data1, innerLock = orig1.innerLock))
                 }
             }
         }
@@ -1059,13 +1048,9 @@ public open class MappedRwLockWriteGuard<T>(
         return this.data.asMut()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
-        this.fmt(f)
-    }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = this.fmt(f)
 
     public companion object {
         /**
@@ -1115,12 +1100,12 @@ public open class MappedRwLockWriteGuard<T>(
             // The signature of the closure guarantees that it will not "leak" the scope of the
             // reference passed to it. If the closure panics, the guard will be dropped.
             return when (val matchVal = f(orig.data.asMut())) {
-                null -> Result.Err(orig)
+                null -> Result.Err<MappedRwLockWriteGuard<U>, MappedRwLockWriteGuard<T>>(orig)
                 else -> {
                     val data = matchVal
                     val data1 = NonNull.from(data)
                     val orig1 = orig
-                    Result.Ok(MappedRwLockWriteGuard(data = data1, innerLock = orig1.innerLock, poisonFlag = orig1.poisonFlag, poisonGuard = orig1.poisonGuard.clone(), variance = Unit))
+                    Result.Ok<MappedRwLockWriteGuard<U>, MappedRwLockWriteGuard<T>>(MappedRwLockWriteGuard(data = data1, innerLock = orig1.innerLock, poisonFlag = orig1.poisonFlag, poisonGuard = orig1.poisonGuard.clone(), variance = Unit))
                 }
             }
         }

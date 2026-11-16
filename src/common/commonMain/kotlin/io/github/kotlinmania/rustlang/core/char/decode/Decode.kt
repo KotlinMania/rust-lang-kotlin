@@ -20,26 +20,21 @@ public open class DecodeUtf16<I>(
     public var iter: I,
     public var buf: UShort?,
 ) : Iterable<Result<Char, DecodeUtf16Error>> where I : Iterator<UShort> {
-    override fun iterator(): Iterator<Result<Char, DecodeUtf16Error>> =
-        object : AbstractIterator<Result<Char, DecodeUtf16Error>>() {
-            override fun computeNext() {
-                when (val v = this@DecodeUtf16.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Result<Char, DecodeUtf16Error>> = object : AbstractIterator<Result<Char, DecodeUtf16Error>>() {
+        override fun computeNext() {
+            when (val v = this@DecodeUtf16.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): DecodeUtf16<I> = DecodeUtf16(iter, buf)
 
     public open fun next(): Result<Char, DecodeUtf16Error>? {
         val u =
             when (val matchVal = this.buf.also { this.buf = null }) {
-                null ->
-                    when (val tryResult = this.iter.next()) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                    }
+                null -> when (val tryResult = this.iter.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 else -> {
                     val buf = matchVal
                     buf
@@ -55,9 +50,7 @@ public open class DecodeUtf16<I>(
             val u21 =
                 when (val matchVal1 = this.iter.next()) {
                     // eof
-                    null -> {
-                        return Result.Err(DecodeUtf16Error(code = u))
-                    }
+                    null -> { return Result.Err(DecodeUtf16Error(code = u)) }
                     else -> {
                         val u2 = matchVal1
                         u2

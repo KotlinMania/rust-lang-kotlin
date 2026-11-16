@@ -86,7 +86,7 @@ public fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, isLe
  * interior mutability will be observable. Same is true if `isLess` panics or `v.len()`
  * exceeds `scratch.len()`.
  */
-public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     val len = v.size
     // Allows for panic-free code-gen by proving this property to the compiler.
     if (len == 0) {
@@ -121,7 +121,7 @@ public fun <T> partition(v: MutableList<T>, pivot: Int, isLess: (T, T) -> Boolea
     return numLt
 }
 
-public fun <T> instPartition(typeLayoutT: TypeLayout<T>): (MutableList<T>, T, (T, T) -> Boolean) -> Int {
+public fun <T> instPartition(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): (MutableList<T>, T, (T, T) -> Boolean) -> Int {
     val MAX_BRANCHLESS_PARTITION_SIZE: Int = 96
     return if (sizeOf<T>(typeLayoutT = typeLayoutT) <= MAX_BRANCHLESS_PARTITION_SIZE) {
         // Specialize for types that are relatively cheap to copy, where branchless optimizations
@@ -178,18 +178,18 @@ public fun <T> partitionHoareBranchyCyclic(v: MutableList<T>, pivot: T, isLess: 
             // Swap the found pair of out-of-order elements via cyclic permutation.
             val isFirstSwapPair = gapOpt == null
             if (isFirstSwapPair) {
-                gapOpt = GapGuard(pos = right, value = read(left))
+                gapOpt = GapGuard(pos = right, value = read((left).asConstPtr()))
             }
             val gap = gapOpt.unwrapUnchecked()
             // Single place where we instantiate ptr.copyNonoverlapping in the partition.
             if (!isFirstSwapPair) {
-                copyNonoverlapping(left, gap.pos, 1)
+                copyNonoverlapping((left).asConstPtr(), gap.pos, 1)
             }
             gap.pos = right
-            copyNonoverlapping(right, left, 1)
+            copyNonoverlapping((right).asConstPtr(), left, 1)
             left = MutPtr((left).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         }
-        left.offsetFromUnsigned(vBase)
+        left.offsetFromUnsigned((vBase).asConstPtr())
         // `gapOpt` goes out of scope and overwrites the last wrong-side element on the right side
         // with the first wrong-side element of the left side that was initially overwritten by the
         // first wrong-side element on the right side element.
@@ -206,7 +206,7 @@ public open class PartitionState<T>(
     public var gap: GapGuardRaw<T>,
 )
 
-public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // Novel partition implementation by Lukas Bergdoll and Orson Peters. Branchless Lomuto
     // partition paired with a cyclic permutation.
     // https://github.com/Voultapher/sort-research-rs/blob/main/writeup/lomcycPartition/text.md
@@ -235,7 +235,7 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
             { state: PartitionState<T> ->
                 val rightIsLt = isLess(state.right, pivot)
                 val left = MutPtr((vBase).rawAddress + ((state.numLt).toLong() * (typeLayoutT).strideBytes))
-                copy(left, state.gap.pos, 1)
+                copy((left).asConstPtr(), state.gap.pos, 1)
                 copyNonoverlapping(state.right, left, 1)
                 state.gap.pos = state.right
                 state.numLt += rightIsLt.toInt()
@@ -246,7 +246,7 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
         // to the parent struct that contains the gap value, invalidating the reference pointer
         // created from a reference to the gap value in the cleanup loop. This is only an issue
         // under Stacked Borrows, Tree Borrows accepts the intuitive code using GapGuard as valid.
-        val gapValue = read(vBase)
+        val gapValue = read((vBase).asConstPtr())
         val state = PartitionState(numLt = 0, right = MutPtr((vBase).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes)), gap = GapGuardRaw(pos = vBase, value = gapValue))
         // Manual unrolling that works well on x86, Arm and with opt-level=s without murdering
         // compile-times. Leaving this to the compiler yields ok to bad results.
@@ -270,12 +270,11 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
         val end = MutPtr((vBase).rawAddress + ((len).toLong() * (typeLayoutT).strideBytes))
         while (true) {
             val isDone = ((state.right).rawAddress.toULong() == (end).rawAddress.toULong())
-            state.right =
-                if (isDone) {
-                    state.gap.value
-                } else {
-                    state.right
-                }
+            state.right = if (isDone) {
+                state.gap.value
+            } else {
+                state.right
+            }
             loopBody(state)
             if (isDone) {
                 forget(state.gap)
@@ -325,7 +324,7 @@ public open class GapGuardRaw<T>(
         // SAFETY: `self` MUST be constructed in a way that makes copying the gap value into
         // `self.pos` sound.
         run {
-            copyNonoverlapping(this.value, this.pos, 1)
+            copyNonoverlapping((this.value).asConstPtr(), this.pos, 1)
         }
     }
 

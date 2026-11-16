@@ -177,20 +177,20 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
     val testResult =
         when {
             // bs.bench(f) {
-            result is Result.Ok<*, *> && result.value is Result.Ok<*, *> && (result.value as Result.Ok<*, *>).value != null -> {
+            result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value != null -> {
                 val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter
                 val bs1 = BenchSamples(nsIterSumm = nsIterSumm, mbS = mbS.toInt())
                 TestResult.TrBench(bs1)
             }
-            result is Result.Ok<*, *> && result.value is Result.Ok<*, *> && (result.value as Result.Ok<*, *>).value == null -> {
+            result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value == null -> {
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
                 val bs2 = BenchSamples(nsIterSumm = Stats.Summary.new(samples), mbS = 0)
                 TestResult.TrBench(bs2)
             }
-            result is Result.Err<*, *> -> TestResult.TrFailed
+            result is Result.Err -> TestResult.TrFailed
             else -> TestResult.TrFailed
         }
     val stdout = data.lock().unwrap().toVec()

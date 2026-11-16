@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.fmt.builders
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -20,7 +21,7 @@ public open class PadAdapter(
             this.state.onNewline = s1.endsWith('\n')
             this.buf.append(s1)
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, Unit>(Unit)
     }
 
     public open fun writeChar(c: Char): Result<Unit, Unit> {
@@ -28,10 +29,7 @@ public open class PadAdapter(
             this.buf.append("    ")
         }
         this.state.onNewline = c == '\n'
-        return run {
-            this.buf.append(c)
-            Result.Ok(Unit)
-        }
+        return run { this.buf.append(c); Result.Ok(Unit) }
     }
 
     public companion object {
@@ -118,11 +116,14 @@ public open class DebugOnce<F>(
  * check((Foo(bar = 10, baz = "Hello World".toString())).toString() == "Foo { bar: 10, baz: \"Hello World\" }")
  * ```
  */
-public open class DebugStruct(
+public open class DebugStruct internal constructor(
     public var fmt: StringBuilder,
-    public var result: Unit,
+    resultCtorArg: Result<Unit, Error>,
     public var hasFields: Boolean,
 ) {
+    public var result: Result<Unit, Error> = resultCtorArg
+        internal set
+
     /**
      * Adds a new field to the generated struct output.
      *
@@ -141,37 +142,31 @@ public open class DebugStruct(
      * ```
      */
     public open fun field(name: String, value: Any): DebugStruct {
-        this.result =
-            this.result.andThen(
-                closure@{
-                    if (this.isPretty()) {
-                        if (!this.hasFields) {
-                            this.fmt.append(" {\n")
-                        }
-                        val slot = null
-                        val state = Default.default()
-                        val writer = PadAdapter.wrap(this.fmt, slot, state)
-                        writer.append(name)
-                        writer.append(": ")
-                        when (val tryResult = value.fmt(writer)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
-                        }
-                        writer.append(",\n")
+        this.result = this.result.andThen(closure@{
+            if (this.isPretty()) {
+                if (!this.hasFields) {
+                    this.fmt.append(" {\n")
+                }
+                val slot = null
+                val state = Default.default()
+                val writer = PadAdapter.wrap(this.fmt, slot, state)
+                writer.append(name)
+                writer.append(": ")
+                when (val tryResult = value.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+                writer.append(",\n")
+            } else {
+                val prefix =
+                    if (this.hasFields) {
+                        ", "
                     } else {
-                        val prefix =
-                            if (this.hasFields) {
-                                ", "
-                            } else {
-                                " { "
-                            }
-                        this.fmt.append(prefix)
-                        this.fmt.append(name)
-                        this.fmt.append(": ")
-                        value.fmt(this.fmt)
+                        " { "
                     }
-                },
-            )
+                this.fmt.append(prefix)
+                this.fmt.append(name)
+                this.fmt.append(": ")
+                value.fmt(this.fmt)
+            }
+        })
         this.hasFields = true
         return this
     }
@@ -195,7 +190,7 @@ public open class DebugStruct(
      * check((Bar(bar = 10, another = "Hello World".toString())).toString() == "Bar { bar: 0x0000000a, another: \"Hello World\" }")
      * ```
      */
-    public open fun fieldWith(name: String, valueFmt: (StringBuilder) -> Unit): DebugStruct = this.field(name, DebugOnce(Cell.new(valueFmt)))
+    public open fun fieldWith(name: String, valueFmt: (StringBuilder) -> Result<Unit, Error>): DebugStruct = this.field(name, DebugOnce(Cell.new(valueFmt)))
 
     /**
      * Marks the struct as non-exhaustive, indicating to the reader that there are some other
@@ -215,26 +210,23 @@ public open class DebugStruct(
      * check("${Bar(bar = 10, hidden = 1.0f)}" == "Bar { bar: 10, .. }")
      * ```
      */
-    public open fun finishNonExhaustive() {
-        this.result =
-            this.result.andThen(
-                closure1@{
-                    if (this.hasFields) {
-                        if (this.isPretty()) {
-                            val slot = null
-                            val state = Default.default()
-                            val writer = PadAdapter.wrap(this.fmt, slot, state)
-                            writer.append("..\n")
-                            this.fmt.append("}")
-                        } else {
-                            this.fmt.append(", .. }")
-                        }
-                    } else {
-                        this.fmt.append(" { .. }")
-                    }
-                },
-            )
-        this.result
+    public open fun finishNonExhaustive(): Result<Unit, Error> {
+        this.result = this.result.andThen(closure1@{
+            if (this.hasFields) {
+                if (this.isPretty()) {
+                    val slot = null
+                    val state = Default.default()
+                    val writer = PadAdapter.wrap(this.fmt, slot, state)
+                    writer.append("..\n")
+                    this.fmt.append("}")
+                } else {
+                    this.fmt.append(", .. }")
+                }
+            } else {
+                this.fmt.append(" { .. }")
+            }
+        })
+        return this.result
     }
 
     /**
@@ -255,21 +247,32 @@ public open class DebugStruct(
      * check((Bar(bar = 10, baz = "Hello World".toString())).toString() == "Bar { bar: 10, baz: \"Hello World\" }")
      * ```
      */
-    public open fun finish() {
+    public open fun finish(): Result<Unit, Error> {
         if (this.hasFields) {
-            this.result =
-                this.result.andThen({
-                    if (this.isPretty()) {
-                        this.fmt.append("}")
-                    } else {
-                        this.fmt.append(" }")
-                    }
-                })
+            this.result = this.result.andThen({
+                if (this.isPretty()) {
+                    this.fmt.append("}")
+                } else {
+                    this.fmt.append(" }")
+                }
+            })
         }
-        this.result
+        return this.result
     }
 
     public open fun isPretty(): Boolean = this.fmt.alternate()
+
+    public companion object {
+        public operator fun invoke(
+            fmt: StringBuilder,
+            result: Result<Unit, Error>,
+            hasFields: Boolean,
+        ): DebugStruct = DebugStruct(
+            fmt = fmt,
+            resultCtorArg = result,
+            hasFields = hasFields,
+        )
+    }
 }
 
 public fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
@@ -322,12 +325,15 @@ public fun debugStructNew(fmt: StringBuilder, name: String): DebugStruct {
  * }
  * ```
  */
-public open class DebugTuple(
+public open class DebugTuple internal constructor(
     public var fmt: StringBuilder,
-    public var result: Unit,
+    resultCtorArg: Result<Unit, Error>,
     public var fields: Int,
     public var emptyName: Boolean,
 ) {
+    public var result: Result<Unit, Error> = resultCtorArg
+        internal set
+
     /**
      * Adds a new field to the generated tuple struct output.
      *
@@ -370,33 +376,27 @@ public open class DebugTuple(
      * ```
      */
     public open fun field(value: Any): DebugTuple {
-        this.result =
-            this.result.andThen(
-                closure2@{
-                    if (this.isPretty()) {
-                        if (this.fields == 0) {
-                            this.fmt.append("(\n")
-                        }
-                        val slot = null
-                        val state = Default.default()
-                        val writer = PadAdapter.wrap(this.fmt, slot, state)
-                        when (val tryResult = value.fmt(writer)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error)
-                        }
-                        writer.append(",\n")
+        this.result = this.result.andThen(closure2@{
+            if (this.isPretty()) {
+                if (this.fields == 0) {
+                    this.fmt.append("(\n")
+                }
+                val slot = null
+                val state = Default.default()
+                val writer = PadAdapter.wrap(this.fmt, slot, state)
+                when (val tryResult = value.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure2 Result.Err(tryResult.error) }
+                writer.append(",\n")
+            } else {
+                val prefix =
+                    if (this.fields == 0) {
+                        "("
                     } else {
-                        val prefix =
-                            if (this.fields == 0) {
-                                "("
-                            } else {
-                                ", "
-                            }
-                        this.fmt.append(prefix)
-                        value.fmt(this.fmt)
+                        ", "
                     }
-                },
-            )
+                this.fmt.append(prefix)
+                value.fmt(this.fmt)
+            }
+        })
         this.fields += 1
         return this
     }
@@ -444,7 +444,7 @@ public open class DebugTuple(
      * }
      * ```
      */
-    public open fun fieldWith(valueFmt: (StringBuilder) -> Unit): DebugTuple = this.field(DebugOnce(Cell.new(valueFmt)))
+    public open fun fieldWith(valueFmt: (StringBuilder) -> Result<Unit, Error>): DebugTuple = this.field(DebugOnce(Cell.new(valueFmt)))
 
     /**
      * Marks the tuple struct as non-exhaustive, indicating to the reader that there are some
@@ -488,26 +488,23 @@ public open class DebugTuple(
      * }
      * ```
      */
-    public open fun finishNonExhaustive() {
-        this.result =
-            this.result.andThen(
-                closure3@{
-                    if (this.fields > 0) {
-                        if (this.isPretty()) {
-                            val slot = null
-                            val state = Default.default()
-                            val writer = PadAdapter.wrap(this.fmt, slot, state)
-                            writer.append("..\n")
-                            this.fmt.append(")")
-                        } else {
-                            this.fmt.append(", ..)")
-                        }
-                    } else {
-                        this.fmt.append("(..)")
-                    }
-                },
-            )
-        this.result
+    public open fun finishNonExhaustive(): Result<Unit, Error> {
+        this.result = this.result.andThen(closure3@{
+            if (this.fields > 0) {
+                if (this.isPretty()) {
+                    val slot = null
+                    val state = Default.default()
+                    val writer = PadAdapter.wrap(this.fmt, slot, state)
+                    writer.append("..\n")
+                    this.fmt.append(")")
+                } else {
+                    this.fmt.append(", ..)")
+                }
+            } else {
+                this.fmt.append("(..)")
+            }
+        })
+        return this.result
     }
 
     /**
@@ -552,22 +549,33 @@ public open class DebugTuple(
      * }
      * ```
      */
-    public open fun finish() {
+    public open fun finish(): Result<Unit, Error> {
         if (this.fields > 0) {
-            this.result =
-                this.result.andThen(
-                    closure4@{
-                        if (this.fields == 1 && this.emptyName && !this.isPretty()) {
-                            this.fmt.append(",")
-                        }
-                        this.fmt.append(")")
-                    },
-                )
+            this.result = this.result.andThen(closure4@{
+                if (this.fields == 1 && this.emptyName && !this.isPretty()) {
+                    this.fmt.append(",")
+                }
+                this.fmt.append(")")
+            })
         }
-        this.result
+        return this.result
     }
 
     public open fun isPretty(): Boolean = this.fmt.alternate()
+
+    public companion object {
+        public operator fun invoke(
+            fmt: StringBuilder,
+            result: Result<Unit, Error>,
+            fields: Int,
+            emptyName: Boolean,
+        ): DebugTuple = DebugTuple(
+            fmt = fmt,
+            resultCtorArg = result,
+            fields = fields,
+            emptyName = emptyName,
+        )
+    }
 }
 
 public fun debugTupleNew(fmt: StringBuilder, name: String): DebugTuple {
@@ -578,43 +586,52 @@ public fun debugTupleNew(fmt: StringBuilder, name: String): DebugTuple {
 /**
  * A helper used to print list-like items with no special formatting.
  */
-public open class DebugInner(
+public open class DebugInner internal constructor(
     public var fmt: StringBuilder,
-    public var result: Unit,
+    resultCtorArg: Result<Unit, Error>,
     public var hasFields: Boolean,
 ) {
+    public var result: Result<Unit, Error> = resultCtorArg
+        internal set
+
     public open fun entry(entry: Any) {
-        this.result =
-            this.result.andThen(
-                closure5@{
-                    if (this.isPretty()) {
-                        if (!this.hasFields) {
-                            this.fmt.append("\n")
-                        }
-                        val slot = null
-                        val state = Default.default()
-                        val writer = PadAdapter.wrap(this.fmt, slot, state)
-                        when (val tryResult = entry.fmt(writer)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.error)
-                        }
-                        writer.append(",\n")
-                    } else {
-                        if (this.hasFields) {
-                            this.fmt.append(", ")
-                        }
-                        entry.fmt(this.fmt)
-                    }
-                },
-            )
+        this.result = this.result.andThen(closure5@{
+            if (this.isPretty()) {
+                if (!this.hasFields) {
+                    this.fmt.append("\n")
+                }
+                val slot = null
+                val state = Default.default()
+                val writer = PadAdapter.wrap(this.fmt, slot, state)
+                when (val tryResult = entry.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure5 Result.Err(tryResult.error) }
+                writer.append(",\n")
+            } else {
+                if (this.hasFields) {
+                    this.fmt.append(", ")
+                }
+                entry.fmt(this.fmt)
+            }
+        })
         this.hasFields = true
     }
 
-    public open fun entryWith(entryFmt: (StringBuilder) -> Unit) {
+    public open fun entryWith(entryFmt: (StringBuilder) -> Result<Unit, Error>) {
         this.entry(DebugOnce(Cell.new(entryFmt)))
     }
 
     public open fun isPretty(): Boolean = this.fmt.alternate()
+
+    public companion object {
+        public operator fun invoke(
+            fmt: StringBuilder,
+            result: Result<Unit, Error>,
+            hasFields: Boolean,
+        ): DebugInner = DebugInner(
+            fmt = fmt,
+            resultCtorArg = result,
+            hasFields = hasFields,
+        )
+    }
 }
 
 /**
@@ -687,7 +704,7 @@ public open class DebugSet(
      * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "{[10, 11], {12, 13}}")
      * ```
      */
-    public open fun entryWith(entryFmt: (StringBuilder) -> Unit): DebugSet {
+    public open fun entryWith(entryFmt: (StringBuilder) -> Result<Unit, Error>): DebugSet {
         this.inner.entryWith(entryFmt)
         return this
     }
@@ -745,26 +762,23 @@ public open class DebugSet(
      * check("${Foo(mutableListOf(1, 2, 3, 4))}" == "{1, 2, ..}")
      * ```
      */
-    public open fun finishNonExhaustive() {
-        this.inner.result =
-            this.inner.result.andThen(
-                closure6@{
-                    if (this.inner.hasFields) {
-                        if (this.inner.isPretty()) {
-                            val slot = null
-                            val state = Default.default()
-                            val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
-                            writer.append("..\n")
-                            this.inner.fmt.append("}")
-                        } else {
-                            this.inner.fmt.append(", ..}")
-                        }
-                    } else {
-                        this.inner.fmt.append("..}")
-                    }
-                },
-            )
-        this.inner.result
+    public open fun finishNonExhaustive(): Result<Unit, Error> {
+        this.inner.result = this.inner.result.andThen(closure6@{
+            if (this.inner.hasFields) {
+                if (this.inner.isPretty()) {
+                    val slot = null
+                    val state = Default.default()
+                    val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
+                    writer.append("..\n")
+                    this.inner.fmt.append("}")
+                } else {
+                    this.inner.fmt.append(", ..}")
+                }
+            } else {
+                this.inner.fmt.append("..}")
+            }
+        })
+        return this.inner.result
     }
 
     /**
@@ -790,9 +804,9 @@ public open class DebugSet(
      * check("${Foo(mutableListOf(10, 11))}" == "{10, 11}")
      * ```
      */
-    public open fun finish() {
+    public open fun finish(): Result<Unit, Error> {
         this.inner.result = this.inner.result.andThen({ this.inner.fmt.append("}") })
-        this.inner.result
+        return this.inner.result
     }
 }
 
@@ -871,7 +885,7 @@ public open class DebugList(
      * check("${Foo(mutableListOf(10, 11), mutableListOf(12, 13))}" == "[[10, 11], {12, 13}]")
      * ```
      */
-    public open fun entryWith(entryFmt: (StringBuilder) -> Unit): DebugList {
+    public open fun entryWith(entryFmt: (StringBuilder) -> Result<Unit, Error>): DebugList {
         this.inner.entryWith(entryFmt)
         return this
     }
@@ -929,25 +943,22 @@ public open class DebugList(
      * check("${Foo(mutableListOf(1, 2, 3, 4))}" == "[1, 2, ..]")
      * ```
      */
-    public open fun finishNonExhaustive() {
-        this.inner.result.andThen(
-            closure7@{
-                if (this.inner.hasFields) {
-                    if (this.inner.isPretty()) {
-                        val slot = null
-                        val state = Default.default()
-                        val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
-                        writer.append("..\n")
-                        this.inner.fmt.append("]")
-                    } else {
-                        this.inner.fmt.append(", ..]")
-                    }
+    public open fun finishNonExhaustive(): Result<Unit, Error> =
+        this.inner.result.andThen(closure7@{
+            if (this.inner.hasFields) {
+                if (this.inner.isPretty()) {
+                    val slot = null
+                    val state = Default.default()
+                    val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
+                    writer.append("..\n")
+                    this.inner.fmt.append("]")
                 } else {
-                    this.inner.fmt.append("..]")
+                    this.inner.fmt.append(", ..]")
                 }
-            },
-        )
-    }
+            } else {
+                this.inner.fmt.append("..]")
+            }
+        })
 
     /**
      * Finishes output and returns any error encountered.
@@ -972,9 +983,9 @@ public open class DebugList(
      * check("${Foo(mutableListOf(10, 11))}" == "[10, 11]")
      * ```
      */
-    public open fun finish() {
+    public open fun finish(): Result<Unit, Error> {
         this.inner.result = this.inner.result.andThen({ this.inner.fmt.append("]") })
-        this.inner.result
+        return this.inner.result
     }
 }
 
@@ -1010,14 +1021,17 @@ public fun debugListNew(fmt: StringBuilder): DebugList {
  * check((Foo(mutableListOf(Pair("A".toString(), 10), Pair("B".toString(), 11)))).toString() == "{\"A\": 10, \"B\": 11}")
  * ```
  */
-public open class DebugMap(
+public open class DebugMap internal constructor(
     public var fmt: StringBuilder,
-    public var result: Unit,
+    resultCtorArg: Result<Unit, Error>,
     public var hasFields: Boolean,
     public var hasKey: Boolean,
     // The state of newlines is tracked between keys and values
     public var state: PadAdapterState,
 ) {
+    public var result: Result<Unit, Error> = resultCtorArg
+        internal set
+
     /**
      * Adds a new entry to the map output.
      *
@@ -1075,36 +1089,27 @@ public open class DebugMap(
      * ```
      */
     public open fun key(key: Any): DebugMap {
-        this.result =
-            this.result.andThen(
-                closure8@{
-                    check(!this.hasKey) { "attempted to begin a new map entry without completing the previous one" }
-                    if (this.isPretty()) {
-                        if (!this.hasFields) {
-                            this.fmt.append("\n")
-                        }
-                        val slot = null
-                        this.state = Default.default()
-                        val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                        when (val tryResult = key.fmt(writer)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error)
-                        }
-                        writer.append(": ")
-                    } else {
-                        if (this.hasFields) {
-                            this.fmt.append(", ")
-                        }
-                        when (val tryResult = key.fmt(this.fmt)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.error)
-                        }
-                        this.fmt.append(": ")
-                    }
-                    this.hasKey = true
-                    Result.Ok(Unit)
-                },
-            )
+        this.result = this.result.andThen(closure8@{
+            check(!this.hasKey) { "attempted to begin a new map entry without completing the previous one" }
+            if (this.isPretty()) {
+                if (!this.hasFields) {
+                    this.fmt.append("\n")
+                }
+                val slot = null
+                this.state = Default.default()
+                val writer = PadAdapter.wrap(this.fmt, slot, this.state)
+                when (val tryResult = key.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+                writer.append(": ")
+            } else {
+                if (this.hasFields) {
+                    this.fmt.append(", ")
+                }
+                when (val tryResult = key.fmt(this.fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure8 Result.Err(tryResult.error) }
+                this.fmt.append(": ")
+            }
+            this.hasKey = true
+            Result.Ok<Unit, Error>(Unit)
+        })
         return this
     }
 
@@ -1146,7 +1151,7 @@ public open class DebugMap(
      * check((Foo(mutableListOf(Pair("A".toString(), 10), Pair("B".toString(), 11)))).toString() == "{entry A: 0x0000000a, entry B: 0x0000000b}")
      * ```
      */
-    public open fun keyWith(keyFmt: (StringBuilder) -> Unit): DebugMap = this.key(DebugOnce(Cell.new(keyFmt)))
+    public open fun keyWith(keyFmt: (StringBuilder) -> Result<Unit, Error>): DebugMap = this.key(DebugOnce(Cell.new(keyFmt)))
 
     /**
      * Adds the value part of a new entry to the map output.
@@ -1181,28 +1186,19 @@ public open class DebugMap(
      * ```
      */
     public open fun value(value: Any): DebugMap {
-        this.result =
-            this.result.andThen(
-                closure9@{
-                    check(this.hasKey) { "attempted to format a map value before its key" }
-                    if (this.isPretty()) {
-                        val slot = null
-                        val writer = PadAdapter.wrap(this.fmt, slot, this.state)
-                        when (val tryResult = value.fmt(writer)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error)
-                        }
-                        writer.append(",\n")
-                    } else {
-                        when (val tryResult = value.fmt(this.fmt)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return@closure9 Result.Err(tryResult.error)
-                        }
-                    }
-                    this.hasKey = false
-                    Result.Ok(Unit)
-                },
-            )
+        this.result = this.result.andThen(closure9@{
+            check(this.hasKey) { "attempted to format a map value before its key" }
+            if (this.isPretty()) {
+                val slot = null
+                val writer = PadAdapter.wrap(this.fmt, slot, this.state)
+                when (val tryResult = value.fmt(writer)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure9 Result.Err(tryResult.error) }
+                writer.append(",\n")
+            } else {
+                when (val tryResult = value.fmt(this.fmt)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure9 Result.Err(tryResult.error) }
+            }
+            this.hasKey = false
+            Result.Ok<Unit, Error>(Unit)
+        })
         this.hasFields = true
         return this
     }
@@ -1245,7 +1241,7 @@ public open class DebugMap(
      * check((Foo(mutableListOf(Pair("A".toString(), 10), Pair("B".toString(), 11)))).toString() == "{entry A: 0x0000000a, entry B: 0x0000000b}")
      * ```
      */
-    public open fun valueWith(valueFmt: (StringBuilder) -> Unit): DebugMap = this.value(DebugOnce(Cell.new(valueFmt)))
+    public open fun valueWith(valueFmt: (StringBuilder) -> Result<Unit, Error>): DebugMap = this.value(DebugOnce(Cell.new(valueFmt)))
 
     /**
      * Adds the contents of an iterator of entries to the map output.
@@ -1306,27 +1302,24 @@ public open class DebugMap(
      * check((Foo(mutableListOf(Pair("A".toString(), 10), Pair("B".toString(), 11), Pair("C".toString(), 12)))).toString() == "{\"A\": 10, \"B\": 11, ..}")
      * ```
      */
-    public open fun finishNonExhaustive() {
-        this.result =
-            this.result.andThen(
-                closure10@{
-                    check(!this.hasKey) { "attempted to finish a map with a partial entry" }
-                    if (this.hasFields) {
-                        if (this.isPretty()) {
-                            val slot = null
-                            val state = Default.default()
-                            val writer = PadAdapter.wrap(this.fmt, slot, state)
-                            writer.append("..\n")
-                            this.fmt.append("}")
-                        } else {
-                            this.fmt.append(", ..}")
-                        }
-                    } else {
-                        this.fmt.append("..}")
-                    }
-                },
-            )
-        this.result
+    public open fun finishNonExhaustive(): Result<Unit, Error> {
+        this.result = this.result.andThen(closure10@{
+            check(!this.hasKey) { "attempted to finish a map with a partial entry" }
+            if (this.hasFields) {
+                if (this.isPretty()) {
+                    val slot = null
+                    val state = Default.default()
+                    val writer = PadAdapter.wrap(this.fmt, slot, state)
+                    writer.append("..\n")
+                    this.fmt.append("}")
+                } else {
+                    this.fmt.append(", ..}")
+                }
+            } else {
+                this.fmt.append("..}")
+            }
+        })
+        return this.result
     }
 
     /**
@@ -1358,16 +1351,31 @@ public open class DebugMap(
      * check((Foo(mutableListOf(Pair("A".toString(), 10), Pair("B".toString(), 11)))).toString() == "{\"A\": 10, \"B\": 11}")
      * ```
      */
-    public open fun finish() {
-        this.result =
-            this.result.andThen({
-                check(!this.hasKey) { "attempted to finish a map with a partial entry" }
-                this.fmt.append("}")
-            })
-        this.result
+    public open fun finish(): Result<Unit, Error> {
+        this.result = this.result.andThen({
+            check(!this.hasKey) { "attempted to finish a map with a partial entry" }
+            this.fmt.append("}")
+        })
+        return this.result
     }
 
     public open fun isPretty(): Boolean = this.fmt.alternate()
+
+    public companion object {
+        public operator fun invoke(
+            fmt: StringBuilder,
+            result: Result<Unit, Error>,
+            hasFields: Boolean,
+            hasKey: Boolean,
+            state: PadAdapterState,
+        ): DebugMap = DebugMap(
+            fmt = fmt,
+            resultCtorArg = result,
+            hasFields = hasFields,
+            hasKey = hasKey,
+            state = state,
+        )
+    }
 }
 
 public fun debugMapNew(fmt: StringBuilder): DebugMap {
@@ -1392,7 +1400,7 @@ public fun debugMapNew(fmt: StringBuilder): DebugMap {
  * check("$wrapped" == "'a'")
  * ```
  */
-public fun fromFn(f: (StringBuilder) -> Unit): FromFn<(StringBuilder) -> Unit> = FromFn(f)
+public fun fromFn(f: (StringBuilder) -> Result<Unit, Error>): FromFn<(StringBuilder) -> Result<Unit, Error>> = FromFn(f)
 
 /**
  * Implements [fmt.Debug] and [fmt.Display] via the provided closure.

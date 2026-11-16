@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.os.linux.process
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
@@ -58,13 +59,13 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd as InnerP
  */
 public open class PidFd internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<InnerPidFd>,
+    public val fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout(),
 ) : AsInner<InnerPidFd>, FromInner<InnerPidFd, PidFd>, IntoInner<InnerPidFd>, AsRawFd, FromRawFd<PidFd>, IntoRawFd, AsFd {
     public var inner: InnerPidFd
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PidFd> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PidFd(ptr, layout) }, { it.inner })
 
@@ -101,7 +102,7 @@ public open class PidFd internal constructor(
      * [Child.tryWait]: process.Child.tryWait
      */
     public open fun tryWait(): Result<ExitStatus?> {
-        return Result.Ok(when (val tryResult = this.inner.tryWait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.map(FromInner::fromInner))
+        return Result.Ok(when (val tryResult = this.inner.tryWait()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }.map(FromInner::fromInner))
     }
 
     public override fun asInner(): InnerPidFd = this.inner
@@ -115,15 +116,15 @@ public open class PidFd internal constructor(
     public override fun asFd(): BorrowedFd = this.asInner().asInner().asFd()
 
     public companion object {
-        public operator fun invoke(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd>): PidFd = PidFd(inner, fieldLayout)
+        public operator fun invoke(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<InnerPidFd>): PidFd = PidFd(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd(fieldStorage, fieldLayout)
 
-        public fun fromInner(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd>): PidFd = PidFd(inner = inner, fieldLayout = fieldLayout)
+        public fun fromInner(inner: InnerPidFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd(inner = inner, fieldLayout = fieldLayout)
 
-        public fun fromRawFd(fd: RawFd, fieldLayout: TypeLayout<InnerPidFd>): PidFd = PidFd.fromInner(InnerPidFd.fromRawFd(fd), fieldLayout = fieldLayout)
+        public fun fromRawFd(fd: RawFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd.fromInner(InnerPidFd.fromRawFd(fd), fieldLayout = fieldLayout)
 
-        public fun from(fd: OwnedFd, fieldLayout: TypeLayout<InnerPidFd>): PidFd = PidFd.fromInner(InnerPidFd.fromInner(FileDesc.fromInner(fd)), fieldLayout = fieldLayout)
+        public fun from(fd: OwnedFd, fieldLayout: TypeLayout<InnerPidFd> = UnresolvedTypeLayout()): PidFd = PidFd.fromInner(InnerPidFd.fromInner(FileDesc.fromInner(fd)), fieldLayout = fieldLayout)
     }
 }
 

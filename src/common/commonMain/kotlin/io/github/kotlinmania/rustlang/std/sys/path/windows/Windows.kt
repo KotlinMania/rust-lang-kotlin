@@ -34,7 +34,7 @@ public val HAS_PREFIXES: Boolean = true
  */
 public open class WCStr internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<UShort>>,
+    public val fieldLayout: TypeLayout<List<UShort>> = UnresolvedTypeLayout(),
 ) {
     public var field0: List<UShort>
         get() = value
@@ -46,7 +46,7 @@ public open class WCStr internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: List<UShort>, fieldLayout: TypeLayout<List<UShort>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: List<UShort>, fieldLayout: TypeLayout<List<UShort>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<WCStr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WCStr(ptr, layout) }, { it.value })
 
@@ -55,9 +55,9 @@ public open class WCStr internal constructor(
     public open fun countBytes(): Int = this.value.size
 
     public companion object {
-        public operator fun invoke(value: List<UShort>, fieldLayout: TypeLayout<List<UShort>>): WCStr = WCStr(value, fieldLayout)
+        public operator fun invoke(value: List<UShort>, fieldLayout: TypeLayout<List<UShort>> = UnresolvedTypeLayout()): WCStr = WCStr(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UShort>>): WCStr = WCStr(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<UShort>> = UnresolvedTypeLayout()): WCStr = WCStr(fieldStorage, fieldLayout)
 
         /**
          * Convert a slice to a WCStr without checks.
@@ -74,7 +74,7 @@ public open class WCStr internal constructor(
 }
 
 public fun <T> withNativePath(path: Path, f: (WCStr) -> Result<T, Error>): Result<T, Error> {
-    val path1 = when (val tryResult = maybeVerbatim(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val path1 = when (val tryResult = maybeVerbatim(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<T, Error>(tryResult.error) }
     // SAFETY: maybeVerbatim returns null-terminated strings
     val path2 = WCStr.fromWcharsWithNullUnchecked(path1)
     return f(path2)
@@ -125,7 +125,7 @@ public fun appendSuffix(path: PathBuf, suffix: OsStr): PathBuf {
  * This path may or may not have a verbatim prefix.
  */
 public fun maybeVerbatim(path: Path): Result<List<UShort>, Error> {
-    val path1 = when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val path1 = when (val tryResult = toU16s(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UShort>, Error>(tryResult.error) }
     return getLongPath(path1, true)
 }
 
@@ -163,7 +163,7 @@ public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List
     val UNC_PREFIX: List<UShort> = listOf(SEP.toUShort(), SEP.toUShort(), QUERY.toUShort(), SEP.toUShort(), U.toUShort(), N.toUShort(), C.toUShort(), SEP.toUShort())
     if (path.startsWith(VERBATIM_PREFIX) || path.startsWith(NT_PREFIX) || path == listOf(0)) {
         // Early return for paths that are already verbatim or empty.
-        return Result.Ok(path)
+        return Result.Ok<List<UShort>, Error>(path)
     } else if (path.size < LEGACY_MAX_PATH) {
         // Early return if an absolute path is less < 260 UTF-16 code units.
         // This is an optimization to avoid calling `GetFullPathNameW` unnecessarily.
@@ -174,14 +174,14 @@ public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List
                 // Does not match if the path starts with a `\` or `/`.
                 matchVal.size == 3 && matchVal[1] == COLON && matchVal[2] == 0 && matchVal[0] != SEP && matchVal[0] != ALT_SEP -> {
                     val drive = matchVal[0]
-                    return Result.Ok(path)
+                    return Result.Ok<List<UShort>, Error>(path)
                 }
                 (matchVal.size >= 3 && matchVal[1] == COLON && (matchVal[2] == SEP || matchVal[2] == ALT_SEP)) && matchVal[0] != SEP && matchVal[0] != ALT_SEP -> {
                     val drive1 = matchVal[0]
-                    return Result.Ok(path)
+                    return Result.Ok<List<UShort>, Error>(path)
                 }
                 // Starts with `\\`, , etc
-                matchVal.size >= 2 && (matchVal[0] == SEP || matchVal[0] == ALT_SEP) && (matchVal[1] == SEP || matchVal[1] == ALT_SEP) -> { return Result.Ok(path) }
+                matchVal.size >= 2 && (matchVal[0] == SEP || matchVal[0] == ALT_SEP) && (matchVal[1] == SEP || matchVal[1] == ALT_SEP) -> { return Result.Ok<List<UShort>, Error>(path) }
                 else -> {}
             }
         }
@@ -222,8 +222,8 @@ public fun getLongPath(path: List<UShort>, preferVerbatim: Boolean): Result<List
         }
         path.extendFromSlice(absolute)
         path.push(0)
-    })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-    return Result.Ok(path)
+    })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+    return Result.Ok<List<UShort>, Error>(path)
 }
 
 /**
@@ -236,11 +236,11 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
     if (prefix.map({ x -> x.isVerbatim() }).unwrapOr(false)) {
         // NULs in verbatim paths are rejected for consistency.
         if (path1.asEncodedBytes().contains(0)) {
-            return Result.Err(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
+            return Result.Err<PathBuf, Error>(constError(ErrorKind.InvalidInput, "strings passed to WinAPI cannot contain NULs"))
         }
-        return Result.Ok(path1.toOwned().into())
+        return Result.Ok<PathBuf, Error>(path1.toOwned().into())
     }
-    val path2 = when (val tryResult = toU16s(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val path2 = when (val tryResult = toU16s(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<PathBuf, Error>(tryResult.error) }
     val lpfilename = path2.asPtr()
     return fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, os2path)
 }

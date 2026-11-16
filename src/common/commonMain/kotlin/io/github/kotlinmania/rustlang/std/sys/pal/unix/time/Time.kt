@@ -56,16 +56,16 @@ public open class Timespec(
                     check(this.tvSec > Long.MIN_VALUE)
                     Pair(subGeToUnsigned(this.tvSec - 1L, other.tvSec), this.tvNsec.asInner() + (NSEC_PER_SEC.toUInt()) - other.tvNsec.asInner())
                 }
-            Result.Ok(Duration.new(secs, nsec))
+            Result.Ok<Duration, Duration>(Duration.new(secs, nsec))
         } else {
             run {
                 val matchVal = other.subTimespec(this)
-                when (matchVal) { is Result.Ok<*, *> -> {
+                when (matchVal) { is Result.Ok -> {
                     val d = matchVal.value
-                    Result.Err(d)
-                }; is Result.Err<*, *> -> {
+                    Result.Err<Duration, Duration>(d)
+                }; is Result.Err -> {
                     val d1 = matchVal.error
-                    Result.Ok(d1)
+                    Result.Ok<Duration, Duration>(d1)
                 } }
             }
         }
@@ -145,9 +145,9 @@ public open class Timespec(
                     Pair(tvSec, tvNsec)
                 }
             return if (tvNsec1 >= 0 && tvNsec1 < NSEC_PER_SEC.toLong()) {
-                Result.Ok(Timespec.newUnchecked(tvSec1, tvNsec1))
+                Result.Ok<Timespec, Error>(Timespec.newUnchecked(tvSec1, tvNsec1))
             } else {
-                Result.Err(constError(ErrorKind.InvalidData, "invalid timestamp"))
+                Result.Err<Timespec, Error>(constError(ErrorKind.InvalidData, "invalid timestamp"))
             }
         }
 

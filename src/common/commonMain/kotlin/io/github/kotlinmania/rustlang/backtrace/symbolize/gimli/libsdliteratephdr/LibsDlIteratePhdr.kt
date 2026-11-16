@@ -12,9 +12,9 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.CInt
-import io.github.kotlinmania.rustlang.libc.DlPhdrInfo
-import io.github.kotlinmania.rustlang.libc.SizeT
 import io.github.kotlinmania.rustlang.libc.dlIteratePhdr
+import io.github.kotlinmania.rustlang.libc.unix.SizeT
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.DlPhdrInfo
 
 public open class CallbackData(
     public var libs: List<Library>,
@@ -77,14 +77,13 @@ public fun callback(info: MutPtr, size: SizeT, data: MutPtr): CInt {
                 OsStr.fromBytes(CStr.fromPtr(dlpiName).toBytes()).toOwned()
             }
         }
-    val zipOffset: ULong? =
-        maps?.let({ maps1 ->
-            // check if file is embedded within a ZIP archive by searching for `! /`
-            extractZipPathAndroid(name)?.let({
-                // find MapsEntry matching library's base address and get its file offset
-                (maps1.iter().indexOf({ m -> m.ipMatches(dlpiAddr.toInt()) }).takeIf { it >= 0 })?.let({ m -> m.offset() })
-            })
+    val zipOffset: ULong? = maps?.let({ maps1 ->
+        // check if file is embedded within a ZIP archive by searching for `! /`
+        extractZipPathAndroid(name)?.let({
+            // find MapsEntry matching library's base address and get its file offset
+            (maps1.iter().indexOf({ m -> m.ipMatches(dlpiAddr.toInt()) }).takeIf { it >= 0 })?.let({ m -> m.offset() })
         })
+    })
     val headers =
         if (dlpiPhdr.isNull() || dlpiPhnum == 0) {
             listOf()

@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.alloc.boxed.iter
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.asynciter.asynciter.AsyncIterator
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -114,42 +116,42 @@ public open class BoxedArrayIntoIter<T, A : Allocator>(
  * Returns an immutable slice of all elements that have not been yielded
  * yet.
  */
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.asSlice(n: Int): List<T> = this.inner.toList()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.asSlice(n: Int): List<T> = this.inner.toList()
 
 /**
  * Returns a mutable slice of all elements that have not been yielded yet.
  */
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.asMutSlice(n: Int): MutableList<T> = this.inner.asMutSlice()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.asMutSlice(n: Int): MutableList<T> = this.inner.asMutSlice()
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.next(n: Int): T? = this.inner.removeFirstOrNull()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.next(n: Int): T? = this.inner.removeFirstOrNull()
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.sizeHint(n: Int): Pair<Int, Int?> {
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.sizeHint(n: Int): Pair<Int, Int?> {
     val len = this.len()
     return Pair(len, len)
 }
 
-public fun <T, A : Allocator, Acc> BoxedArrayIntoIter<T, N, A>.fold(init: Acc, fold: (Acc, T) -> Acc, n: Int): Acc = this.inner.fold(init, fold)
+public fun <T, A : Allocator, Acc> BoxedArrayIntoIter<T, A>.fold(init: Acc, fold: (Acc, T) -> Acc, n: Int): Acc = this.inner.fold(init, fold)
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.count(n: Int): Int = this.len()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.count(n: Int): Int = this.len()
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.last(n: Int): T? = this.nextBack()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.last(n: Int): T? = this.nextBack()
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.inner.advanceBy(n)
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.nextBack(n: Int): Item? = this.inner.removeLastOrNull()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.nextBack(n: Int): Item? = this.inner.removeLastOrNull()
 
-public fun <T, A : Allocator, Acc> BoxedArrayIntoIter<T, N, A>.rfold(init: Acc, rfold: (Acc, Item) -> Acc, n: Int): Acc = this.inner.rfold(init, rfold)
+public fun <T, A : Allocator, Acc> BoxedArrayIntoIter<T, A>.rfold(init: Acc, rfold: (Acc, Item) -> Acc, n: Int): Acc = this.inner.rfold(init, rfold)
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.inner.advanceBackBy(n)
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.len(n: Int): Int = this.inner.size
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.len(n: Int): Int = this.inner.size
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.isEmpty(n: Int): Boolean = this.inner.isEmpty()
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.isEmpty(n: Int): Boolean = this.inner.isEmpty()
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.clone(n: Int): BoxedArrayIntoIter<T, N, A> = BoxedArrayIntoIter(inner = ArrayDeque(this.inner))
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.clone(n: Int): BoxedArrayIntoIter<T, A> = BoxedArrayIntoIter(inner = ArrayDeque(this.inner))
 
-public fun <T, A : Allocator> BoxedArrayIntoIter<T, N, A>.fmt(f: StringBuilder, n: Int) {
+public fun <T, A : Allocator> BoxedArrayIntoIter<T, A>.fmt(f: StringBuilder, n: Int): Result<Unit, Error> {
     // Only print the elements that were not yielded yet: we cannot
     // access the yielded elements anymore.
-    DebugTuple(f, "BoxedArrayIntoIter").field(this.asSlice()).finish()
+    return DebugTuple(f, "BoxedArrayIntoIter").field(this.asSlice()).finish()
 }

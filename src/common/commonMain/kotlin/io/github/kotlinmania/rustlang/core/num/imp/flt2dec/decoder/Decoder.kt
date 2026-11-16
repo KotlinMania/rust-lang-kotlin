@@ -91,23 +91,18 @@ public sealed class FullDecoded {
      * Not-a-number.
      */
     public data object Nan : FullDecoded()
-
     /**
      * Infinities, either positive or negative.
      */
     public data object Infinite : FullDecoded()
-
     /**
      * Zero, either positive or negative.
      */
     public data object Zero : FullDecoded()
-
     /**
      * Finite numbers with further decoded fields.
      */
-    public data class Finite(
-        public var value: Decoded,
-    ) : FullDecoded()
+    public data class Finite(public var value: Decoded) : FullDecoded()
 
     public fun rustEquals(other: FullDecoded): Boolean = this == other
 }

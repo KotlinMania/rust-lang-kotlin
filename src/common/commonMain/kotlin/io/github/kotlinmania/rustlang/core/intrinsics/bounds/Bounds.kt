@@ -24,9 +24,7 @@ public interface ChangePointee<U, out Output> : BuiltinDeref<Any?>
  * # Safety
  * Must actually *be* such a type.
  */
-public interface FloatPrimitive<T, UInt> :
-    Mul<T, T>,
-    Add<T, T> {
+public interface FloatPrimitive<T, UInt> : Mul<T, T>, Add<T, T> {
     public val SIGN_MASK: UInt
 
     public fun toBits(): UInt

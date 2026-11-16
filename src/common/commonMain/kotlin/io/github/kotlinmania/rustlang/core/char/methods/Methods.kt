@@ -216,9 +216,7 @@ public fun <I : Iterable<UShort>> Char.Companion.decodeUtf16(iter: I): DecodeUtf
  * check(null == c)
  * ```
  */
-public fun Char.Companion.fromU32(i: UInt): Char? =
-    io.github.kotlinmania.rustlang.core.char.convert
-        .fromU32(i)
+public fun Char.Companion.fromU32(i: UInt): Char? = io.github.kotlinmania.rustlang.core.char.convert.fromU32(i)
 
 /**
  * Converts a `UInt` to a `char`, ignoring validity.
@@ -255,8 +253,7 @@ public fun Char.Companion.fromU32(i: UInt): Char? =
  */
 public fun Char.Companion.fromU32Unchecked(i: UInt): Char {
     // SAFETY: the safety contract must be upheld by the caller.
-    return io.github.kotlinmania.rustlang.core.char.convert
-        .fromU32Unchecked(i)
+    return io.github.kotlinmania.rustlang.core.char.convert.fromU32Unchecked(i)
 }
 
 /**
@@ -300,9 +297,7 @@ public fun Char.Companion.fromU32Unchecked(i: UInt): Char {
  * val c = Char.fromDigit(1, 37)
  * ```
  */
-public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? =
-    io.github.kotlinmania.rustlang.core.char.convert
-        .fromDigit(num, radix)
+public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? = io.github.kotlinmania.rustlang.core.char.convert.fromDigit(num, radix)
 
 /**
  * Checks if a `char` is a digit in the given radix.
@@ -586,9 +581,7 @@ public fun Char.escapeDefault(): EscapeDefault =
         '\t' -> EscapeDefault.backslash(Char.SmallT)
         '\r' -> EscapeDefault.backslash(Char.SmallR)
         '\n' -> EscapeDefault.backslash(Char.SmallN)
-        '\\', '\'', '"' -> {
-            EscapeDefault.backslash(this.asAscii()!!)
-        }
+        '\\', '\'', '"' -> { EscapeDefault.backslash(this.asAscii()!!) }
         in ' '..'~' -> EscapeDefault.printable(this.asAscii()!!)
         else -> EscapeDefault.unicode(this)
     }
@@ -747,9 +740,7 @@ public fun Char.encodeUtf16(dst: MutableList<UShort>): MutableList<UShort> = enc
  */
 public fun Char.isAlphabetic(): Boolean =
     when (this) {
-        in 'a'..'z', in 'A'..'Z' -> {
-            true
-        }
+        in 'a'..'z', in 'A'..'Z' -> { true }
         in '\u0000'..'\u00a9' -> false
         else -> Alphabetic(this)
     }
@@ -780,9 +771,7 @@ public fun Char.isAlphabetic(): Boolean =
  */
 public fun Char.isCased(): Boolean =
     when (this) {
-        in 'a'..'z', in 'A'..'Z' -> {
-            true
-        }
+        in 'a'..'z', in 'A'..'Z' -> { true }
         in '\u0000'..'\u00a9' -> false
         else -> Lowercase(this) || Uppercase(this) || Lt(this)
     }
@@ -854,9 +843,7 @@ public fun Char.case(): CharCase? =
  */
 public fun Char.isLowercase(): Boolean =
     when (this) {
-        in 'a'..'z' -> {
-            true
-        }
+        in 'a'..'z' -> { true }
         in '\u0000'..'\u00a9' -> false
         else -> Lowercase(this)
     }
@@ -928,9 +915,7 @@ public fun Char.isTitlecase(): Boolean =
  */
 public fun Char.isUppercase(): Boolean =
     when (this) {
-        in 'A'..'Z' -> {
-            true
-        }
+        in 'A'..'Z' -> { true }
         in '\u0000'..'\u00bf' -> false
         else -> Uppercase(this)
     }
@@ -972,9 +957,7 @@ public fun Char.isUppercase(): Boolean =
  */
 public fun Char.isNumeric(): Boolean =
     when (this) {
-        in '0'..'9' -> {
-            true
-        }
+        in '0'..'9' -> { true }
         in '\u0000'..'\u00b1' -> false
         else -> N(this)
     }
@@ -1002,9 +985,7 @@ public fun Char.isNumeric(): Boolean =
  */
 public fun Char.isAlphanumeric(): Boolean =
     when (this) {
-        in 'a'..'z', in 'A'..'Z', in '0'..'9' -> {
-            true
-        }
+        in 'a'..'z', in 'A'..'Z', in '0'..'9' -> { true }
         in '\u0000'..'\u00a9' -> false
         else -> Alphabetic(this) || N(this)
     }
@@ -1032,9 +1013,7 @@ public fun Char.isAlphanumeric(): Boolean =
  */
 public fun Char.isWhitespace(): Boolean =
     when (this) {
-        ' ', in '\t'..'\r' -> {
-            true
-        }
+        ' ', in '\t'..'\r' -> { true }
         in '\u0000'..'\u0084' -> false
         else -> WhiteSpace(this)
     }
@@ -1069,9 +1048,7 @@ public fun Char.isWhitespace(): Boolean =
  */
 public fun Char.isXidContinue(): Boolean =
     when (this) {
-        in 'a'..'z', in 'A'..'Z', in '0'..'9', '_' -> {
-            true
-        }
+        in 'a'..'z', in 'A'..'Z', in '0'..'9', '_' -> { true }
         in '\u0000'..'\u00a9' -> false
         else -> XidContinue(this)
     }
@@ -1106,9 +1083,7 @@ public fun Char.isXidContinue(): Boolean =
  */
 public fun Char.isXidStart(): Boolean =
     when (this) {
-        in 'a'..'z', in 'A'..'Z' -> {
-            true
-        }
+        in 'a'..'z', in 'A'..'Z' -> { true }
         in '\u0000'..'\u00a9' -> false
         else -> XidStart(this)
     }
@@ -1239,9 +1214,7 @@ public fun Char.isFormatControl(): Boolean = this > '\u00ac' && Cf(this)
  */
 public fun Char.isAssigned(): Boolean =
     when (this) {
-        in '\u0000'..'\u0377' -> {
-            true
-        }
+        in '\u0000'..'\u0377' -> { true }
         in '\u0378'..0x3fffd -> !CnPlanes03(this)
         // Assigned character ranges in planes 4 and above.
         // `src / tools / unicode - table - generator / src / main.rs` asserts that this is correct

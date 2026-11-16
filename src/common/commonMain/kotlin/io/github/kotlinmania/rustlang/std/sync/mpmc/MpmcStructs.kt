@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.mpsc.RecvError
@@ -508,9 +509,7 @@ public open class Sender<T>(
         return Sender(flavor = flavor)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Sender").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Sender").finishNonExhaustive()
 }
 
 /**
@@ -1136,9 +1135,7 @@ public open class Receiver<T>(
         return Receiver(flavor = flavor)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Receiver").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Receiver").finishNonExhaustive()
 }
 
 /**

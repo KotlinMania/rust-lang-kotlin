@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.procmacro.bridge
 
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.procmacro.buffer.Buffer
 
@@ -70,11 +71,11 @@ public fun <S> decodeBoolean(r: List<UByte>, s: S): Boolean =
         else -> error("unreachable")
     }
 
-public fun <S> NonZero<UInt>.encode(w: Buffer, s: S) {
+public fun <S> NonZero<UInt, NonZeroU32Inner>.encode(w: Buffer, s: S) {
     this.get().encode(w, s)
 }
 
-public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt> = NonZero.new(UInt.Decode(r, s)).unwrap()
+public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(UInt.Decode(r, s)))!!
 
 public fun <S, A : Encode<S>, B : Encode<S>> Pair<A, B>.encode(w: Buffer, s: S) {
     this.value.encode(w, s)

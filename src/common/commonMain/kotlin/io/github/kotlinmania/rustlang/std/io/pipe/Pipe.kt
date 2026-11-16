@@ -215,13 +215,13 @@ public open class PipeWriter internal constructor(
 
     public open fun write(buf: List<UByte>): Result<Int, Error> = this.value.write(buf)
 
-    public open fun flush(): Result<Unit, Error> = Result.Ok(Unit)
+    public open fun flush(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = this.value.isWriteVectored()
 
-    public open fun flushWrite(): Result<Unit, Error> = Result.Ok(Unit)
+    public open fun flushWrite(): Result<Unit, Error> = Result.Ok<Unit, Error>(Unit)
 
     public open fun writeVectoredWrite(bufs: List<IoSlice>): Result<Int, Error> = this.value.writeVectored(bufs)
 

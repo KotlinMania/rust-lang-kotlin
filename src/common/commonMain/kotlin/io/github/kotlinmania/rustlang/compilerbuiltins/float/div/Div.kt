@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.num.wrappingShl
@@ -97,7 +98,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 //
 // [Newton-Raphson method]: https://en.wikipedia.org/wiki/Newton%27sMethod
 
-public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
+public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTypeLayout(), fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
     val one = F.Int.ONE
     val zero = F.Int.ZERO
     val oneHw = HalfRep.ONE
@@ -458,7 +459,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F>, fromBitsFFn: 
  * The initial estimate should have at least 8 bits of precision. If this is not true, results
  * will be inaccurate.
  */
-public fun <F : Float> getIterations(typeLayoutF: TypeLayout<F>): Pair<Int, Int> {
+public fun <F : Float> getIterations(typeLayoutF: TypeLayout<F> = UnresolvedTypeLayout()): Pair<Int, Int> {
     // Precision doubles with each iteration. Assume we start with 8 bits of precision.
     val totalIterations = F.BITS.ilog2().toInt() - 2
     return if (2 * sizeOf<F>(typeLayoutT = typeLayoutF) <= sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))) {
@@ -496,7 +497,7 @@ public fun <F : Float> getIterations(typeLayoutF: TypeLayout<F>): Pair<Int, Int>
  *
  * Add 2 to `U_N` due to final decrement.
  */
-public fun <F : Float> reciprocalPrecision(typeLayoutF: TypeLayout<F>): UShort {
+public fun <F : Float> reciprocalPrecision(typeLayoutF: TypeLayout<F> = UnresolvedTypeLayout()): UShort {
     val (halfIterations, fullIterations) = getIterations<F>(typeLayoutF = typeLayoutF)
     if (fullIterations < 1) {
         error("Must have at least one full iteration")

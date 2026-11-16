@@ -1,6 +1,7 @@
 // port-lint: source sys/paths/windows.rs
 package io.github.kotlinmania.rustlang.std.sys.paths.windows
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -8,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.EncodeWide
 import io.github.kotlinmania.rustlang.std.os.windows.ffi.OsStringExt
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -89,9 +89,7 @@ public open class SplitPathsRef(
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
 
 public open class JoinPathsError {
-    public open fun fmt(f: StringBuilder) {
-        "path segment contains `\"`".fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "path segment contains `\"`".fmt(f)
 
     public companion object {
         public fun typeLayout(): TypeLayout<JoinPathsError> =
@@ -120,7 +118,7 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
         }
         val v = path1.encodeWide().toMutableList()
         if (v.contains((34u.toUShort()))) {
-            return Result.Err(JoinPathsError())
+            return Result.Err<OsString, JoinPathsError>(JoinPathsError())
         } else if (v.contains(sep)) {
             joined.add(34u.toUShort())
             joined.addAll(v)
@@ -129,14 +127,14 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
             joined.addAll(v)
         }
     }
-    return Result.Ok(OsStringExt.fromWide(joined))
+    return Result.Ok<OsString, JoinPathsError>(OsStringExt.fromWide(joined))
 }
 
-public fun currentExe(): Result<PathBuf, Error> = fillUtf16Buf({ buf, sz -> c.GetModuleFileNameW(MutPtr(0L), buf, sz) }, os2path)
+public fun currentExe(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = fillUtf16Buf({ buf, sz -> c.GetModuleFileNameW(MutPtr(0L), buf, sz) }, os2path)
 
-public fun getcwd(): Result<PathBuf, Error> = fillUtf16Buf({ buf, sz -> c.GetCurrentDirectoryW(sz, buf) }, os2path)
+public fun getcwd(): Result<PathBuf, io.github.kotlinmania.rustlang.std.io.error.Error> = fillUtf16Buf({ buf, sz -> c.GetCurrentDirectoryW(sz, buf) }, os2path)
 
-public fun chdir(p: path.Path): Result<Unit, Error> {
+public fun chdir(p: path.Path): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     val p1: OsStr = p.asRef()
     val p2 = p1.encodeWide().collect<Vec>()
     p2.push(0)

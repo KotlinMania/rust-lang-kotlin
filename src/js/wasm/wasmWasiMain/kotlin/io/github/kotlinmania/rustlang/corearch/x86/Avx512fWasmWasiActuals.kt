@@ -351,95 +351,185 @@ public actual fun vpmovqb128(a: I64x2, src: I8x16, mask: UByte): I8x16 =
 public actual fun vpmovqd128(a: I64x2, src: I32x4, mask: UByte): I32x4 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqd128")
 
-public actual fun vpmovdwmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdwmem")
+public actual fun vpmovdwmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdwmem")
+}
 
-public actual fun vpmovdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdwmem256")
+public actual fun vpmovdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdwmem256")
+}
 
-public actual fun vpmovdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdwmem128")
+public actual fun vpmovdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdwmem128")
+}
 
-public actual fun vpmovsdwmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdwmem")
+public actual fun vpmovsdwmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdwmem")
+}
 
-public actual fun vpmovsdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdwmem256")
+public actual fun vpmovsdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdwmem256")
+}
 
-public actual fun vpmovsdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdwmem128")
+public actual fun vpmovsdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdwmem128")
+}
 
-public actual fun vpmovusdwmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdwmem")
+public actual fun vpmovusdwmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdwmem")
+}
 
-public actual fun vpmovusdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdwmem256")
+public actual fun vpmovusdwmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdwmem256")
+}
 
-public actual fun vpmovusdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdwmem128")
+public actual fun vpmovusdwmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdwmem128")
+}
 
-public actual fun vpmovdbmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdbmem")
+public actual fun vpmovdbmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdbmem")
+}
 
-public actual fun vpmovdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdbmem256")
+public actual fun vpmovdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdbmem256")
+}
 
-public actual fun vpmovdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdbmem128")
+public actual fun vpmovdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovdbmem128")
+}
 
-public actual fun vpmovsdbmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdbmem")
+public actual fun vpmovsdbmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdbmem")
+}
 
-public actual fun vpmovsdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdbmem256")
+public actual fun vpmovsdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdbmem256")
+}
 
-public actual fun vpmovsdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdbmem128")
+public actual fun vpmovsdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsdbmem128")
+}
 
-public actual fun vpmovusdbmem(memAddr: MutPtr, a: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdbmem")
+public actual fun vpmovusdbmem(memAddr: MutPtr, a: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdbmem")
+}
 
-public actual fun vpmovusdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdbmem256")
+public actual fun vpmovusdbmem256(memAddr: MutPtr, a: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdbmem256")
+}
 
-public actual fun vpmovusdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdbmem128")
+public actual fun vpmovusdbmem128(memAddr: MutPtr, a: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusdbmem128")
+}
 
-public actual fun vpmovqwmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqwmem")
+public actual fun vpmovqwmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqwmem")
+}
 
-public actual fun vpmovqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqwmem256")
+public actual fun vpmovqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqwmem256")
+}
 
-public actual fun vpmovqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqwmem128")
+public actual fun vpmovqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqwmem128")
+}
 
-public actual fun vpmovsqwmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqwmem")
+public actual fun vpmovsqwmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqwmem")
+}
 
-public actual fun vpmovsqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqwmem256")
+public actual fun vpmovsqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqwmem256")
+}
 
-public actual fun vpmovsqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqwmem128")
+public actual fun vpmovsqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqwmem128")
+}
 
-public actual fun vpmovusqwmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqwmem")
+public actual fun vpmovusqwmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqwmem")
+}
 
-public actual fun vpmovusqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqwmem256")
+public actual fun vpmovusqwmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqwmem256")
+}
 
-public actual fun vpmovusqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqwmem128")
+public actual fun vpmovusqwmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqwmem128")
+}
 
-public actual fun vpmovqbmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqbmem")
+public actual fun vpmovqbmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqbmem")
+}
 
-public actual fun vpmovqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqbmem256")
+public actual fun vpmovqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqbmem256")
+}
 
-public actual fun vpmovqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqbmem128")
+public actual fun vpmovqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqbmem128")
+}
 
-public actual fun vpmovsqbmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqbmem")
+public actual fun vpmovsqbmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqbmem")
+}
 
-public actual fun vpmovsqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqbmem256")
+public actual fun vpmovsqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqbmem256")
+}
 
-public actual fun vpmovsqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqbmem128")
+public actual fun vpmovsqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqbmem128")
+}
 
-public actual fun vpmovusqbmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqbmem")
+public actual fun vpmovusqbmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqbmem")
+}
 
-public actual fun vpmovusqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqbmem256")
+public actual fun vpmovusqbmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqbmem256")
+}
 
-public actual fun vpmovusqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqbmem128")
+public actual fun vpmovusqbmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqbmem128")
+}
 
-public actual fun vpmovqdmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqdmem")
+public actual fun vpmovqdmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqdmem")
+}
 
-public actual fun vpmovqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqdmem256")
+public actual fun vpmovqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqdmem256")
+}
 
-public actual fun vpmovqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqdmem128")
+public actual fun vpmovqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqdmem128")
+}
 
-public actual fun vpmovsqdmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqdmem")
+public actual fun vpmovsqdmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqdmem")
+}
 
-public actual fun vpmovsqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqdmem256")
+public actual fun vpmovsqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqdmem256")
+}
 
-public actual fun vpmovsqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqdmem128")
+public actual fun vpmovsqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovsqdmem128")
+}
 
-public actual fun vpmovusqdmem(memAddr: MutPtr, a: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqdmem")
+public actual fun vpmovusqdmem(memAddr: MutPtr, a: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqdmem")
+}
 
-public actual fun vpmovusqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqdmem256")
+public actual fun vpmovusqdmem256(memAddr: MutPtr, a: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqdmem256")
+}
 
-public actual fun vpmovusqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqdmem128")
+public actual fun vpmovusqdmem128(memAddr: MutPtr, a: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovusqdmem128")
+}
 
 public actual fun vpmovqb(a: I64x8, src: I8x16, mask: UByte): I8x16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpmovqb")
@@ -558,53 +648,101 @@ public actual fun vpgatherqq(src: I64x8, slice: ConstPtr, offsets: I64x8, mask: 
 public actual fun vpgatherqd(src: I32x8, slice: ConstPtr, offsets: I64x8, mask: Byte, scale: Int): I32x8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpgatherqd")
 
-public actual fun vscatterdpd(slice: MutPtr, mask: Byte, offsets: I32x8, src: F64x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdpd")
+public actual fun vscatterdpd(slice: MutPtr, mask: Byte, offsets: I32x8, src: F64x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdpd")
+}
 
-public actual fun vscatterdps(slice: MutPtr, mask: Short, offsets: I32x16, src: F32x16, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdps")
+public actual fun vscatterdps(slice: MutPtr, mask: Short, offsets: I32x16, src: F32x16, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdps")
+}
 
-public actual fun vscatterqpd(slice: MutPtr, mask: Byte, offsets: I64x8, src: F64x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqpd")
+public actual fun vscatterqpd(slice: MutPtr, mask: Byte, offsets: I64x8, src: F64x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqpd")
+}
 
-public actual fun vscatterqps(slice: MutPtr, mask: Byte, offsets: I64x8, src: F32x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqps")
+public actual fun vscatterqps(slice: MutPtr, mask: Byte, offsets: I64x8, src: F32x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqps")
+}
 
-public actual fun vpscatterdq(slice: MutPtr, mask: Byte, offsets: I32x8, src: I64x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdq")
+public actual fun vpscatterdq(slice: MutPtr, mask: Byte, offsets: I32x8, src: I64x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdq")
+}
 
-public actual fun vpscatterdd(slice: MutPtr, mask: Short, offsets: I32x16, src: I32x16, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdd")
+public actual fun vpscatterdd(slice: MutPtr, mask: Short, offsets: I32x16, src: I32x16, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdd")
+}
 
-public actual fun vpscatterqq(slice: MutPtr, mask: Byte, offsets: I64x8, src: I64x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqq")
+public actual fun vpscatterqq(slice: MutPtr, mask: Byte, offsets: I64x8, src: I64x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqq")
+}
 
-public actual fun vpscatterqd(slice: MutPtr, mask: Byte, offsets: I64x8, src: I32x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqd")
+public actual fun vpscatterqd(slice: MutPtr, mask: Byte, offsets: I64x8, src: I32x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqd")
+}
 
-public actual fun vpscatterdd128(slice: MutPtr, k: UByte, offsets: I32x4, src: I32x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdd128")
+public actual fun vpscatterdd128(slice: MutPtr, k: UByte, offsets: I32x4, src: I32x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdd128")
+}
 
-public actual fun vpscatterdq128(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x2, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdq128")
+public actual fun vpscatterdq128(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x2, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdq128")
+}
 
-public actual fun vscatterdpd128(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x2, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdpd128")
+public actual fun vscatterdpd128(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x2, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdpd128")
+}
 
-public actual fun vscatterdps128(slice: MutPtr, k: UByte, offsets: I32x4, src: F32x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdps128")
+public actual fun vscatterdps128(slice: MutPtr, k: UByte, offsets: I32x4, src: F32x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdps128")
+}
 
-public actual fun vpscatterqd128(slice: MutPtr, k: UByte, offsets: I64x2, src: I32x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqd128")
+public actual fun vpscatterqd128(slice: MutPtr, k: UByte, offsets: I64x2, src: I32x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqd128")
+}
 
-public actual fun vpscatterqq128(slice: MutPtr, k: UByte, offsets: I64x2, src: I64x2, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqq128")
+public actual fun vpscatterqq128(slice: MutPtr, k: UByte, offsets: I64x2, src: I64x2, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqq128")
+}
 
-public actual fun vscatterqpd128(slice: MutPtr, k: UByte, offsets: I64x2, src: F64x2, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqpd128")
+public actual fun vscatterqpd128(slice: MutPtr, k: UByte, offsets: I64x2, src: F64x2, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqpd128")
+}
 
-public actual fun vscatterqps128(slice: MutPtr, k: UByte, offsets: I64x2, src: F32x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqps128")
+public actual fun vscatterqps128(slice: MutPtr, k: UByte, offsets: I64x2, src: F32x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqps128")
+}
 
-public actual fun vpscatterdd256(slice: MutPtr, k: UByte, offsets: I32x8, src: I32x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdd256")
+public actual fun vpscatterdd256(slice: MutPtr, k: UByte, offsets: I32x8, src: I32x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdd256")
+}
 
-public actual fun vpscatterdq256(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdq256")
+public actual fun vpscatterdq256(slice: MutPtr, k: UByte, offsets: I32x4, src: I64x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterdq256")
+}
 
-public actual fun vscatterdpd256(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdpd256")
+public actual fun vscatterdpd256(slice: MutPtr, k: UByte, offsets: I32x4, src: F64x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdpd256")
+}
 
-public actual fun vscatterdps256(slice: MutPtr, k: UByte, offsets: I32x8, src: F32x8, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdps256")
+public actual fun vscatterdps256(slice: MutPtr, k: UByte, offsets: I32x8, src: F32x8, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterdps256")
+}
 
-public actual fun vpscatterqd256(slice: MutPtr, k: UByte, offsets: I64x4, src: I32x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqd256")
+public actual fun vpscatterqd256(slice: MutPtr, k: UByte, offsets: I64x4, src: I32x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqd256")
+}
 
-public actual fun vpscatterqq256(slice: MutPtr, k: UByte, offsets: I64x4, src: I64x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqq256")
+public actual fun vpscatterqq256(slice: MutPtr, k: UByte, offsets: I64x4, src: I64x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpscatterqq256")
+}
 
-public actual fun vscatterqpd256(slice: MutPtr, k: UByte, offsets: I64x4, src: F64x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqpd256")
+public actual fun vscatterqpd256(slice: MutPtr, k: UByte, offsets: I64x4, src: F64x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqpd256")
+}
 
-public actual fun vscatterqps256(slice: MutPtr, k: UByte, offsets: I64x4, src: F32x4, scale: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqps256")
+public actual fun vscatterqps256(slice: MutPtr, k: UByte, offsets: I64x4, src: F32x4, scale: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVscatterqps256")
+}
 
 public actual fun vpgatherdd128(src: I32x4, slice: ConstPtr, offsets: I32x4, k: UByte, scale: Int): I32x4 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpgatherdd128")
@@ -822,29 +960,53 @@ public actual fun vcompresspd256(a: F64x4, src: F64x4, mask: UByte): F64x4 =
 public actual fun vcompresspd128(a: F64x2, src: F64x2, mask: UByte): F64x2 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompresspd128")
 
-public actual fun vcompressstored(mem: MutPtr, data: I32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstored")
+public actual fun vcompressstored(mem: MutPtr, data: I32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstored")
+}
 
-public actual fun vcompressstored256(mem: MutPtr, data: I32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstored256")
+public actual fun vcompressstored256(mem: MutPtr, data: I32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstored256")
+}
 
-public actual fun vcompressstored128(mem: MutPtr, data: I32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstored128")
+public actual fun vcompressstored128(mem: MutPtr, data: I32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstored128")
+}
 
-public actual fun vcompressstoreq(mem: MutPtr, data: I64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreq")
+public actual fun vcompressstoreq(mem: MutPtr, data: I64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreq")
+}
 
-public actual fun vcompressstoreq256(mem: MutPtr, data: I64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreq256")
+public actual fun vcompressstoreq256(mem: MutPtr, data: I64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreq256")
+}
 
-public actual fun vcompressstoreq128(mem: MutPtr, data: I64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreq128")
+public actual fun vcompressstoreq128(mem: MutPtr, data: I64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreq128")
+}
 
-public actual fun vcompressstoreps(mem: MutPtr, data: F32x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreps")
+public actual fun vcompressstoreps(mem: MutPtr, data: F32x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreps")
+}
 
-public actual fun vcompressstoreps256(mem: MutPtr, data: F32x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreps256")
+public actual fun vcompressstoreps256(mem: MutPtr, data: F32x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreps256")
+}
 
-public actual fun vcompressstoreps128(mem: MutPtr, data: F32x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreps128")
+public actual fun vcompressstoreps128(mem: MutPtr, data: F32x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstoreps128")
+}
 
-public actual fun vcompressstorepd(mem: MutPtr, data: F64x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstorepd")
+public actual fun vcompressstorepd(mem: MutPtr, data: F64x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstorepd")
+}
 
-public actual fun vcompressstorepd256(mem: MutPtr, data: F64x4, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstorepd256")
+public actual fun vcompressstorepd256(mem: MutPtr, data: F64x4, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstorepd256")
+}
 
-public actual fun vcompressstorepd128(mem: MutPtr, data: F64x2, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstorepd128")
+public actual fun vcompressstorepd128(mem: MutPtr, data: F64x2, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVcompressstorepd128")
+}
 
 public actual fun vpexpandd(a: I32x16, src: I32x16, mask: UShort): I32x16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512fVpexpandd")

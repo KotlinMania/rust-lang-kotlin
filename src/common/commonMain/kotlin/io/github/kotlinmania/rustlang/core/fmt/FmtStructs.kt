@@ -496,43 +496,23 @@ public open class Formatter(
         val min = this.options.width
         return if (width >= Int.from(min)) {
             // We're over the minimum width, so then we can just write the bytes.
-            when (val tryResult = writePrefix(this, sign, prefix1)) {
-                is RustResult.Ok<*, *> -> tryResult.value
-                is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-            }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             this.buf.append(buf)
         } else if (this.signAwareZeroPad()) {
             // The sign and prefix goes before the padding if the fill character
             // is zero
             val oldOptions = this.options
             this.options.fill('0').align(Alignment.Right)
-            when (val tryResult = writePrefix(this, sign, prefix1)) {
-                is RustResult.Ok<*, *> -> tryResult.value
-                is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-            }
-            val postPadding =
-                when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) {
-                    is RustResult.Ok<*, *> -> tryResult.value
-                    is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            val postPadding = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             this.buf.append(buf)
-            when (val tryResult = postPadding.write(this)) {
-                is RustResult.Ok<*, *> -> tryResult.value
-                is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-            }
+            when (val tryResult = postPadding.write(this)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             this.options = oldOptions
             RustResult.Ok(Unit)
         } else {
             // Otherwise, the sign and prefix goes after the padding
-            val postPadding1 =
-                when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) {
-                    is RustResult.Ok<*, *> -> tryResult.value
-                    is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                }
-            when (val tryResult = writePrefix(this, sign, prefix1)) {
-                is RustResult.Ok<*, *> -> tryResult.value
-                is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-            }
+            val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = writePrefix(this, sign, prefix1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             this.buf.append(buf)
             postPadding1.write(this)
         }
@@ -585,15 +565,12 @@ public open class Formatter(
                     val remaining1 =
                         run {
                             val matchVal1 = iter.advanceBy(Int.from(maxCharCount))
-                            when (matchVal1) {
-                                is RustResult.Ok<*, *> -> {
-                                    0
-                                }
-                                is RustResult.Err<*, *> -> {
-                                    val remaining = matchVal1.error
-                                    remaining.get()
-                                }
-                            }
+                            when (matchVal1) { is RustResult.Ok -> {
+                                0
+                            }; is RustResult.Err -> {
+                                val remaining = matchVal1.error
+                                remaining.get()
+                            } }
                         }
                     // SAFETY: The offset of `.charIndices()` is guaranteed to be
                     // in-bounds and between character boundaries.
@@ -605,11 +582,7 @@ public open class Formatter(
         return if (charCount < Int.from(this.options.width)) {
             // If we're under the minimum width, then fill up the minimum width
             // with the specified string + some alignment.
-            val postPadding =
-                when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) {
-                    is RustResult.Ok<*, *> -> tryResult.value
-                    is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                }
+            val postPadding = when (val tryResult = this.padding(this.options.width - charCount.toUShort(), Alignment.Left)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
             this.buf.append(s1)
             postPadding.write(this)
         } else {
@@ -625,7 +598,7 @@ public open class Formatter(
      * Callers are responsible for ensuring post-padding is written after the
      * thing that is being padded.
      */
-    public open fun padding(padding: UShort, default: Alignment): Result<PostPadding, Error> {
+    public open fun padding(padding: UShort, default: Alignment): io.github.kotlinmania.rustlang.core.result.Result<PostPadding, Error> {
         val align = (this.options.getAlign() ?: default)
         val fill = this.options.getFill()
         val paddingLeft =
@@ -637,7 +610,7 @@ public open class Formatter(
         for (unused in 0 until paddingLeft) {
             this.buf.append(fill)
         }
-        return RustResult.Ok(PostPadding.new(fill, (padding - paddingLeft).toUShort()))
+        return RustResult.Ok<PostPadding, Error>(PostPadding.new(fill, (padding - paddingLeft).toUShort()))
     }
 
     /**
@@ -683,27 +656,17 @@ public open class Formatter(
                     val len2 =
                         run {
                             val matchVal = UShort.tryFrom(len)
-                            when (matchVal) {
-                                is RustResult.Ok<*, *> -> {
-                                    val len1 = matchVal.value
-                                    len1
-                                }
-                                is RustResult.Err<*, *> -> {
-                                    error("unreachable")
-                                }
-                            }
+                            when (matchVal) { is RustResult.Ok -> {
+                                val len1 = matchVal.value
+                                len1
+                            }; is RustResult.Err -> {
+                                error("unreachable")
+                            } }
                         }
-                    val postPadding =
-                        when (val tryResult = this.padding(width - len2, Alignment.Right)) {
-                            is RustResult.Ok<*, *> -> tryResult.value
-                            is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                        }
+                    val postPadding = when (val tryResult = this.padding(width - len2, Alignment.Right)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = this.writeFormattedParts(formatted1)) {
-                            is RustResult.Ok<*, *> -> tryResult.value
-                            is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                        }
+                        when (val tryResult = this.writeFormattedParts(formatted1)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
                     }
                     postPadding.write(this)
                 }
@@ -751,20 +714,14 @@ public open class Formatter(
                     }
                     // SAFETY: Per the precondition.
                     run {
-                        when (val tryResult = writeBytes(this.buf, s[0 until len])) {
-                            is RustResult.Ok<*, *> -> tryResult.value
-                            is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                        }
+                        when (val tryResult = writeBytes(this.buf, s[0 until len])) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
                     }
                 }
                 // SAFETY: Per the precondition.
                 is numfmt.Part.Copy -> {
                     val (buf) = part
                     run {
-                        when (val tryResult = writeBytes(this.buf, buf)) {
-                            is RustResult.Ok<*, *> -> tryResult.value
-                            is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error)
-                        }
+                        when (val tryResult = writeBytes(this.buf, buf)) { is RustResult.Ok -> tryResult.value; is RustResult.Err -> return RustResult.Err(tryResult.error) }
                     }
                 }
             }
@@ -1575,8 +1532,7 @@ public open class Formatter(
 public open class Arguments internal constructor(
     templateCtorArg: NonNull,
     argsCtorArg: NonNull,
-) : Debug,
-    Display {
+) : Debug, Display {
     public var template: NonNull = templateCtorArg
         internal set
 
@@ -1596,7 +1552,7 @@ public open class Arguments internal constructor(
             null -> {}
             else -> {
                 val s = matchVal
-                return s.len()
+                return s.length
             }
         }
         // Iterate over the template, counting the length of literal pieces.
@@ -1617,13 +1573,7 @@ public open class Arguments internal constructor(
                     template = template.add(n.toInt())
                 } else if (n == 128) {
                     // Long literal string piece.
-                    val len =
-                        Int.from(
-                            run {
-                                val bytesTmp1 = template.castArray().read()
-                                ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort()
-                            },
-                        )
+                    val len = Int.from(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
                     length += len
                     template = template.add(2 + len)
                 } else {
@@ -1736,11 +1686,10 @@ public open class Arguments internal constructor(
         public operator fun invoke(
             template: NonNull,
             args: NonNull,
-        ): Arguments =
-            Arguments(
-                templateCtorArg = template,
-                argsCtorArg = args,
-            )
+        ): Arguments = Arguments(
+            templateCtorArg = template,
+            argsCtorArg = args,
+        )
 
         /**
          * Used by the formatArgs() macro to create a fmt.Arguments object.

@@ -78,7 +78,7 @@ public fun MutPtr.cast(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
  * check(unaligned.tryCastAligned<UInt>() == null)
  * ```
  */
-public fun <U> MutPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): MutPtr? =
+public fun <U> MutPtr.tryCastAligned(typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout()): MutPtr? =
     if (this.isAlignedTo(alignOf<U>(typeLayoutT = typeLayoutU))) {
         MutPtr((this).rawAddress)
     } else {
@@ -115,7 +115,7 @@ public fun <U> MutPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): MutPtr? =
  *     var ptr = (localStorageL4C0.elementMutPtr(0)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
  *     val thin = MutPtr(ptr.rawAddress, ptr.rawMeta)
  *     run {
- *         ptr = MutPtr((thin).rawAddress + ((8).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(ptr)
+ *         ptr = MutPtr((thin).rawAddress + ((8).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((ptr).asConstPtr())
  *         println("${(UnresolvedTypeLayout<Any>()).readNative((ptr).rawAddress)}")
  *         // will print "3"
  *     }
@@ -141,7 +141,7 @@ public fun <U> MutPtr.tryCastAligned(typeLayoutU: TypeLayout<U>): MutPtr? =
  *     val x1 = MutPtr(localStorageL4C0.asMutPtr().rawAddress)
  *     val y1 = MutPtr(localStorageL5C0.asMutPtr().rawAddress)
  *     val offset = (x1.rawAddress.toInt() - y1.rawAddress.toInt()) / 4
- *     val bad = MutPtr((x1).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U32).strideBytes)).withMetadataOf(y1)
+ *     val bad = MutPtr((x1).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U32).strideBytes)).withMetadataOf((y1).asConstPtr())
  *     // This dereference is UB. The pointer only has provenance for `x` but points to `y`.
  *     println("$bad")
  * }
@@ -282,7 +282,7 @@ public fun MutPtr.toRawParts(): Pair<MutPtr, Metadata> = Pair(this, metadata(thi
  * [asRefUnchecked]: #method.asRefUnchecked-1
  * [asMut]: #method.asMut
  */
-public fun <T> MutPtr.asRef(typeLayoutT: TypeLayout<T>): T? {
+public fun <T> MutPtr.asRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? {
     // SAFETY: the caller must guarantee that `self` is valid for a
     // reference if it isn't null.
     return if (((this).rawAddress == 0L)) {
@@ -321,7 +321,7 @@ public fun <T> MutPtr.asRef(typeLayoutT: TypeLayout<T>): T? {
  * }
  * ```
  */
-public fun <T> MutPtr.asRefUnchecked(typeLayoutT: TypeLayout<T>): T {
+public fun <T> MutPtr.asRefUnchecked(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must guarantee that `self` is valid for a reference
     return (typeLayoutT).readNative((this).rawAddress)
 }
@@ -356,7 +356,7 @@ public fun <T> MutPtr.asRefUnchecked(typeLayoutT: TypeLayout<T>): T {
  * }
  * ```
  */
-public fun <T> MutPtr.asUninitRef(typeLayoutT: TypeLayout<T>): MaybeUninit<T>? {
+public fun <T> MutPtr.asUninitRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T>? {
     // SAFETY: the caller must guarantee that `self` meets all the
     // requirements for a reference.
     return if (((this).rawAddress == 0L)) {
@@ -386,7 +386,7 @@ public fun <T> MutPtr.asUninitRef(typeLayoutT: TypeLayout<T>): MaybeUninit<T>? {
  * }
  * ```
  */
-public fun <T> MutPtr.offset(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
+public fun <T> MutPtr.offset(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr {
     fun runtimeOffsetNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         // We can use constEvalSelect here because this is only for UB checks.
         return run {
@@ -419,7 +419,7 @@ public fun <T> MutPtr.offset(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
  */
 public fun MutPtr.byteOffset(count: Int): MutPtr {
     // SAFETY: the caller must uphold the safety contract for `offset`.
-    return MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(this)
+    return MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((this).asConstPtr())
 }
 
 /**
@@ -478,7 +478,7 @@ public fun MutPtr.byteOffset(count: Int): MutPtr {
  * }
  * ```
  */
-public fun <T> MutPtr.wrappingOffset(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
+public fun <T> MutPtr.wrappingOffset(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr {
     // SAFETY: the `arithOffset` intrinsic has no prerequisites to be called.
     return (MutPtr(this.rawAddress + (count).toLong() * 1L)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
 }
@@ -495,7 +495,7 @@ public fun <T> MutPtr.wrappingOffset(count: Int, typeLayoutT: TypeLayout<T>): Mu
  * For non-`Sized` pointees this operation changes only the data pointer,
  * leaving the metadata untouched.
  */
-public fun MutPtr.wrappingByteOffset(count: Int): MutPtr = MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(this)
+public fun MutPtr.wrappingByteOffset(count: Int): MutPtr = MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((this).asConstPtr())
 
 /**
  * Masks out bits of the pointer according to a mask.
@@ -536,7 +536,7 @@ public fun MutPtr.wrappingByteOffset(count: Int): MutPtr = MutPtr((MutPtr((this)
  * }
  * ```
  */
-public fun MutPtr.mask(mask: Int): MutPtr = MutPtr((ConstPtr(MutPtr((this).rawAddress).rawAddress and (mask).toLong())).rawAddress).withMetadataOf(this)
+public fun MutPtr.mask(mask: Int): MutPtr = MutPtr((ConstPtr(MutPtr((this).rawAddress).rawAddress and (mask).toLong())).rawAddress).withMetadataOf((this).asConstPtr())
 
 /**
  * Returns `None` if the pointer is null, or else returns a unique reference to
@@ -594,7 +594,7 @@ public fun MutPtr.mask(mask: Int): MutPtr = MutPtr((ConstPtr(MutPtr((this).rawAd
  * // It'll print: "[4, 2, 3]".
  * ```
  */
-public fun <T> MutPtr.asMut(typeLayoutT: TypeLayout<T>): T? {
+public fun <T> MutPtr.asMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? {
     // SAFETY: the caller must guarantee that `self` is be valid for
     // a mutable reference if it isn't null.
     return if (((this).rawAddress == 0L)) {
@@ -634,7 +634,7 @@ public fun <T> MutPtr.asMut(typeLayoutT: TypeLayout<T>): T? {
  * // It'll print: "[4, 2, 3]".
  * ```
  */
-public fun <T> MutPtr.asMutUnchecked(typeLayoutT: TypeLayout<T>): T {
+public fun <T> MutPtr.asMutUnchecked(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must guarantee that `self` is valid for a reference
     return RustMutableReference(MutPtr((this).rawAddress), typeLayoutT)
 }
@@ -663,7 +663,7 @@ public fun <T> MutPtr.asMutUnchecked(typeLayoutT: TypeLayout<T>): T {
  *
  * [isNull]: #method.isNull-1
  */
-public fun <T> MutPtr.asUninitMut(typeLayoutT: TypeLayout<T>): MaybeUninit<T>? {
+public fun <T> MutPtr.asUninitMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T>? {
     // SAFETY: the caller must guarantee that `self` meets all the
     // requirements for a reference.
     return if (((this).rawAddress == 0L)) {
@@ -806,7 +806,7 @@ public fun MutPtr.guaranteedNe(other: MutPtr): Boolean? = (ConstPtr(this.rawAddr
  * }
  * ```
  */
-public fun <T> MutPtr.offsetFrom(origin: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> MutPtr.offsetFrom(origin: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: the caller must uphold the safety contract for `offsetFrom`.
     return ((((ConstPtr(this.rawAddress, this.rawMeta))).rawAddress - (origin).rawAddress) / (typeLayoutT).strideBytes).toInt()
 }
@@ -853,7 +853,7 @@ public fun MutPtr.byteOffsetFrom(origin: ConstPtr): Int {
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * fun blah(ptr: MutPtr, origin: MutPtr, count: Int): Boolean {
- *     return ptr.offsetFromUnsigned(origin) == count && ((MutPtr((origin).rawAddress + ((count).toLong() * (PrimitiveLayouts.I32).strideBytes))).rawAddress.toULong() == (ptr).rawAddress.toULong()) && ((MutPtr((ptr).rawAddress - ((count).toLong() * (PrimitiveLayouts.I32).strideBytes))).rawAddress.toULong() == (origin).rawAddress.toULong())
+ *     return ptr.offsetFromUnsigned((origin).asConstPtr()) == count && ((MutPtr((origin).rawAddress + ((count).toLong() * (PrimitiveLayouts.I32).strideBytes))).rawAddress.toULong() == (ptr).rawAddress.toULong()) && ((MutPtr((ptr).rawAddress - ((count).toLong() * (PrimitiveLayouts.I32).strideBytes))).rawAddress.toULong() == (origin).rawAddress.toULong())
  * }
  * ```
  *
@@ -885,16 +885,16 @@ public fun MutPtr.byteOffsetFrom(origin: ConstPtr): Int {
  * run {
  *     val ptr1: MutPtr = MutPtr((p).rawAddress + ((1).toLong() * (PrimitiveLayouts.I32).strideBytes))
  *     val ptr2: MutPtr = MutPtr((p).rawAddress + ((3).toLong() * (PrimitiveLayouts.I32).strideBytes))
- *     check(ptr2.offsetFromUnsigned(ptr1) == 2)
+ *     check(ptr2.offsetFromUnsigned((ptr1).asConstPtr()) == 2)
  *     check(MutPtr((ptr1).rawAddress + ((2).toLong() * (PrimitiveLayouts.I32).strideBytes)) == ptr2)
  *     check(MutPtr((ptr2).rawAddress - ((2).toLong() * (PrimitiveLayouts.I32).strideBytes)) == ptr1)
- *     check(ptr2.offsetFromUnsigned(ptr2) == 0)
+ *     check(ptr2.offsetFromUnsigned((ptr2).asConstPtr()) == 0)
  * }
  * // This would be incorrect, as the pointers are not correctly ordered:
  * // ptr1.offsetFrom(ptr2)
  * ```
  */
-public fun <T> MutPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> MutPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: the caller must uphold the safety contract for `offsetFromUnsigned`.
     return (ConstPtr(this.rawAddress, this.rawMeta)).offsetFromUnsigned(origin)
 }
@@ -916,7 +916,7 @@ public fun <T> MutPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayo
  */
 public fun MutPtr.byteOffsetFromUnsigned(origin: MutPtr): Int {
     // SAFETY: the caller must uphold the safety contract for `byteOffsetFromUnsigned`.
-    return (ConstPtr(this.rawAddress, this.rawMeta)).byteOffsetFromUnsigned(origin)
+    return (ConstPtr(this.rawAddress, this.rawMeta)).byteOffsetFromUnsigned((origin).asConstPtr())
 }
 
 /**
@@ -938,7 +938,7 @@ public fun MutPtr.byteOffsetFromUnsigned(origin: MutPtr): Int {
  * }
  * ```
  */
-public fun <T> MutPtr.add(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
+public fun <T> MutPtr.add(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr {
     fun runtimeAddNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         return run {
             val byteOffset = count1.checkedMul(size) ?: return false
@@ -968,7 +968,7 @@ public fun <T> MutPtr.add(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
  */
 public fun MutPtr.byteAdd(count: Int): MutPtr {
     // SAFETY: the caller must uphold the safety contract for `add`.
-    return MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(this)
+    return MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((this).asConstPtr())
 }
 
 /**
@@ -990,7 +990,7 @@ public fun MutPtr.byteAdd(count: Int): MutPtr {
  * }
  * ```
  */
-public fun <T> MutPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
+public fun <T> MutPtr.sub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr {
     fun runtimeSubNowrap(thisRef: ConstPtr, count1: Int, size: Int): Boolean {
         return run {
             val byteOffset = count1.checkedMul(size) ?: return false
@@ -998,7 +998,7 @@ public fun <T> MutPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
         }
     }
     Unit
-    return if (T.IS_ZST) {
+    return if (((typeLayoutT).sizeBytes == 0L)) {
         // Pointer arithmetic does nothing when the pointee is a ZST.
         this
     } else {
@@ -1026,7 +1026,7 @@ public fun <T> MutPtr.sub(count: Int, typeLayoutT: TypeLayout<T>): MutPtr {
  */
 public fun MutPtr.byteSub(count: Int): MutPtr {
     // SAFETY: the caller must uphold the safety contract for `sub`.
-    return MutPtr((MutPtr((this).rawAddress)).rawAddress - ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(this)
+    return MutPtr((MutPtr((this).rawAddress)).rawAddress - ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((this).asConstPtr())
 }
 
 /**
@@ -1084,7 +1084,7 @@ public fun MutPtr.byteSub(count: Int): MutPtr {
  * }
  * ```
  */
-public fun <T> MutPtr.wrappingAdd(count: Int, typeLayoutT: TypeLayout<T>): MutPtr = MutPtr((this).rawAddress + ((count).toLong() * (typeLayoutT).strideBytes))
+public fun <T> MutPtr.wrappingAdd(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr = MutPtr((this).rawAddress + ((count).toLong() * (typeLayoutT).strideBytes))
 
 /**
  * Adds an unsigned offset in bytes to a pointer using wrapping arithmetic.
@@ -1097,7 +1097,7 @@ public fun <T> MutPtr.wrappingAdd(count: Int, typeLayoutT: TypeLayout<T>): MutPt
  * For non-`Sized` pointees this operation changes only the data pointer,
  * leaving the metadata untouched.
  */
-public fun MutPtr.wrappingByteAdd(count: Int): MutPtr = MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(this)
+public fun MutPtr.wrappingByteAdd(count: Int): MutPtr = MutPtr((MutPtr((this).rawAddress)).rawAddress + ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((this).asConstPtr())
 
 /**
  * Subtracts an unsigned offset from a pointer using wrapping arithmetic.
@@ -1155,7 +1155,7 @@ public fun MutPtr.wrappingByteAdd(count: Int): MutPtr = MutPtr((MutPtr((this).ra
  * }
  * ```
  */
-public fun <T> MutPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T>): MutPtr = MutPtr((this).rawAddress + (((count).wrappingNeg()).toLong() * (typeLayoutT).strideBytes))
+public fun <T> MutPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr = MutPtr((this).rawAddress + (((count).wrappingNeg()).toLong() * (typeLayoutT).strideBytes))
 
 /**
  * Subtracts an unsigned offset in bytes from a pointer using wrapping arithmetic.
@@ -1168,7 +1168,7 @@ public fun <T> MutPtr.wrappingSub(count: Int, typeLayoutT: TypeLayout<T>): MutPt
  * For non-`Sized` pointees this operation changes only the data pointer,
  * leaving the metadata untouched.
  */
-public fun MutPtr.wrappingByteSub(count: Int): MutPtr = MutPtr((MutPtr((this).rawAddress)).rawAddress - ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf(this)
+public fun MutPtr.wrappingByteSub(count: Int): MutPtr = MutPtr((MutPtr((this).rawAddress)).rawAddress - ((count).toLong() * (PrimitiveLayouts.U8).strideBytes)).withMetadataOf((this).asConstPtr())
 
 /**
  * Reads the value from `self` without moving it. This leaves the
@@ -1178,9 +1178,9 @@ public fun MutPtr.wrappingByteSub(count: Int): MutPtr = MutPtr((MutPtr((this).ra
  *
  * See [ptr.read] for safety concerns and examples.
  */
-public fun <T> MutPtr.read(typeLayoutT: TypeLayout<T>): T {
+public fun <T> MutPtr.read(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for .
-    return read(this)
+    return read((this).asConstPtr())
 }
 
 /**
@@ -1195,9 +1195,9 @@ public fun <T> MutPtr.read(typeLayoutT: TypeLayout<T>): T {
  *
  * See [ptr.readVolatile] for safety concerns and examples.
  */
-public fun <T> MutPtr.readVolatile(typeLayoutT: TypeLayout<T>): T {
+public fun <T> MutPtr.readVolatile(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `readVolatile`.
-    return readVolatile(this)
+    return readVolatile((this).asConstPtr())
 }
 
 /**
@@ -1210,9 +1210,9 @@ public fun <T> MutPtr.readVolatile(typeLayoutT: TypeLayout<T>): T {
  *
  * See [ptr.readUnaligned] for safety concerns and examples.
  */
-public fun <T> MutPtr.readUnaligned(typeLayoutT: TypeLayout<T>): T {
+public fun <T> MutPtr.readUnaligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `readUnaligned`.
-    return readUnaligned(this)
+    return readUnaligned((this).asConstPtr())
 }
 
 /**
@@ -1225,9 +1225,9 @@ public fun <T> MutPtr.readUnaligned(typeLayoutT: TypeLayout<T>): T {
  *
  * See [ptr.copy] for safety concerns and examples.
  */
-public fun <T> MutPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copy`.
-    copy(this, dest, count)
+    copy((this).asConstPtr(), dest, count)
 }
 
 /**
@@ -1240,9 +1240,9 @@ public fun <T> MutPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T
  *
  * See [ptr.copyNonoverlapping] for safety concerns and examples.
  */
-public fun <T> MutPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-    copyNonoverlapping(this, dest, count)
+    copyNonoverlapping((this).asConstPtr(), dest, count)
 }
 
 /**
@@ -1255,7 +1255,7 @@ public fun <T> MutPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT
  *
  * See [ptr.copy] for safety concerns and examples.
  */
-public fun <T> MutPtr.copyFrom(src: ConstPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.copyFrom(src: ConstPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copy`.
     copy(src, this, count, typeLayoutT = typeLayoutT)
 }
@@ -1270,7 +1270,7 @@ public fun <T> MutPtr.copyFrom(src: ConstPtr, count: Int, typeLayoutT: TypeLayou
  *
  * See [ptr.copyNonoverlapping] for safety concerns and examples.
  */
-public fun <T> MutPtr.copyFromNonoverlapping(src: ConstPtr, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.copyFromNonoverlapping(src: ConstPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
     copyNonoverlapping(src, this, count, typeLayoutT = typeLayoutT)
 }
@@ -1295,7 +1295,7 @@ public fun MutPtr.dropInPlace() {
  *
  * See [ptr.write] for safety concerns and examples.
  */
-public fun <T> MutPtr.write(value: T, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.write(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `write`.
     write(this, value)
 }
@@ -1308,7 +1308,7 @@ public fun <T> MutPtr.write(value: T, typeLayoutT: TypeLayout<T>) {
  *
  * See [ptr.writeBytes] for safety concerns and examples.
  */
-public fun <T> MutPtr.writeBytes(value: UByte, count: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.writeBytes(value: UByte, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `writeBytes`.
     writeBytes(this, value, count)
 }
@@ -1325,7 +1325,7 @@ public fun <T> MutPtr.writeBytes(value: UByte, count: Int, typeLayoutT: TypeLayo
  *
  * See [ptr.writeVolatile] for safety concerns and examples.
  */
-public fun <T> MutPtr.writeVolatile(value: T, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.writeVolatile(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `writeVolatile`.
     writeVolatile(this, value)
 }
@@ -1340,7 +1340,7 @@ public fun <T> MutPtr.writeVolatile(value: T, typeLayoutT: TypeLayout<T>) {
  *
  * See [ptr.writeUnaligned] for safety concerns and examples.
  */
-public fun <T> MutPtr.writeUnaligned(value: T, typeLayoutT: TypeLayout<T>) {
+public fun <T> MutPtr.writeUnaligned(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `writeUnaligned`.
     writeUnaligned(this, value)
 }
@@ -1417,12 +1417,12 @@ public fun MutPtr.swap(with: MutPtr) {
  * }
  * ```
  */
-public fun <T> MutPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> MutPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     if (!align.isPowerOfTwo()) {
         error("align_offset: align is not a power-of-two")
     }
     // SAFETY: `align` has been checked to be a power of 2 above
-    val ret = alignOffset(this, align)
+    val ret = alignOffset((this).asConstPtr(), align)
     return ret
 }
 
@@ -1437,12 +1437,13 @@ public fun <T> MutPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int {
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * // On some platforms, the alignment of i32 is less than 4.
  * @repr(align(4))
- * open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int>) {
+ * open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) {
  *     public var field0: Int
  *         get() = value
  *         set(v) {
@@ -1453,7 +1454,7 @@ public fun <T> MutPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int {
  *         get() = fieldLayout.readNative(fieldStorage.rawAddress)
  *         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
  *
- *     public constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+ *     public constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
  *
  *     public fun pointerLayout(): TypeLayout<AlignedI32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value })
  * }
@@ -1463,7 +1464,7 @@ public fun <T> MutPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T>): Int {
  * check(!MutPtr((ptr).rawAddress + ((1).toLong())).isAligned())
  * ```
  */
-public fun <T> MutPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.isAlignedTo(alignOf<T>(typeLayoutT = typeLayoutT))
+public fun <T> MutPtr.isAligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = this.isAlignedTo(alignOf<T>(typeLayoutT = typeLayoutT))
 
 /**
  * Returns whether the pointer is aligned to `align`.
@@ -1483,6 +1484,7 @@ public fun <T> MutPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.isAl
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+ * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
@@ -1490,7 +1492,7 @@ public fun <T> MutPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.isAl
  * public fun doctestEntry() {
  *     // On some platforms, the alignment of i32 is less than 4.
  *     @repr(align(4))
- *     open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int>) {
+ *     open class AlignedI32(public val fieldStorage: MutPtr, public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) {
  *         public var field0: Int
  *             get() = value
  *             set(v) {
@@ -1501,7 +1503,7 @@ public fun <T> MutPtr.isAligned(typeLayoutT: TypeLayout<T>): Boolean = this.isAl
  *             get() = fieldLayout.readNative(fieldStorage.rawAddress)
  *             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
  *
- *         public constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+ *         public constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
  *
  *         public fun pointerLayout(): TypeLayout<AlignedI32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> AlignedI32(ptr, layout) }, { it.value })
  *     }
@@ -1840,8 +1842,7 @@ public fun <T> MutPtr.asUninitSliceMut(): MutableList<MaybeUninit<T>>? =
         null
     } else {
         // SAFETY: the caller must uphold the safety contract for `asUninitSliceMut`.
-        io.github.kotlinmania.rustlang.core.slice.raw
-            .fromRawPartsMut(MutPtr(this.rawAddress, this.rawMeta), this.len())
+        io.github.kotlinmania.rustlang.core.slice.raw.fromRawPartsMut(MutPtr(this.rawAddress, this.rawMeta), this.len())
     }
 
 /**
@@ -1893,7 +1894,7 @@ public fun MutPtr.asMutSlice(n: Int): MutPtr = this
 /**
  * For thin pointers, equality is by address, as produced by the [`mut.T.addr`](pointer.addr) method.
  */
-public fun <T> MutPtr.eq(other: MutPtr, typeLayoutT: TypeLayout<T>): Boolean = (typeLayoutT).readNative((this).rawAddress) == (typeLayoutT).readNative((other).rawAddress)
+public fun <T> MutPtr.eq(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (typeLayoutT).readNative((this).rawAddress) == (typeLayoutT).readNative((other).rawAddress)
 
 /**
  * Pointer equality is an equivalence relation.
@@ -1916,13 +1917,13 @@ public fun MutPtr.cmp(other: MutPtr): Ordering =
  */
 public fun MutPtr.partialCmp(other: MutPtr): Ordering? = this.cmp(other)
 
-public fun <T> MutPtr.lt(other: MutPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
+public fun <T> MutPtr.lt(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) < 0)
 
-public fun <T> MutPtr.le(other: MutPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
+public fun <T> MutPtr.le(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) <= 0)
 
-public fun <T> MutPtr.gt(other: MutPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
+public fun <T> MutPtr.gt(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) > 0)
 
-public fun <T> MutPtr.ge(other: MutPtr, typeLayoutT: TypeLayout<T>): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
+public fun <T> MutPtr.ge(other: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean = (kmCompareValues((typeLayoutT).readNative((this).rawAddress), (typeLayoutT).readNative((other).rawAddress)) >= 0)
 
 /**
  * Returns the default value of [`nullMut`][ptr.nullMut].

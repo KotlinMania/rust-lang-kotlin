@@ -298,7 +298,7 @@ public inline fun <reified T> Any.downcastMut(): T? =
  * The contained value must be of type `T`. Calling this method
  * with the incorrect type is *undefined behavior*.
  */
-public fun <T> Any.downcastUncheckedRef(typeLayoutT: TypeLayout<T>): T {
+public fun <T> Any.downcastUncheckedRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     if (false) {
         check(this.isMatch<T>())
     }
@@ -327,7 +327,7 @@ public fun <T> Any.downcastUncheckedRef(typeLayoutT: TypeLayout<T>): T {
  * The contained value must be of type `T`. Calling this method
  * with the incorrect type is *undefined behavior*.
  */
-public fun <T> Any.downcastUncheckedMut(typeLayoutT: TypeLayout<T>): T {
+public fun <T> Any.downcastUncheckedMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     if (false) {
         check(this.isMatch<T>())
     }
@@ -575,10 +575,9 @@ public open class TypeId internal constructor(
             return null
         }
         return if (when (val matchVal = traitRepresentedByTypeId.info().kind) {
-                is TypeKind.DynTrait -> true
-                else -> false
-            } && typeIdVtable(this, traitRepresentedByTypeId) != null
-        ) {
+            is TypeKind.DynTrait -> true
+            else -> false
+        } && typeIdVtable(this, traitRepresentedByTypeId) != null) {
             TraitImpl(vtable = vtable)
         } else {
             null
@@ -588,17 +587,10 @@ public open class TypeId internal constructor(
     public open fun asU128(): U128 {
         val bytes = MutableList(16) { 0 }
         // This is a provenance-stripping memcpy.
-        for ((i, chunk) in this.data
-            .iter()
-            .copied()
-            .mapIndexed { index, item -> Pair(index, item) }) {
+        for ((i, chunk) in this.data.iter().copied().mapIndexed { index, item -> Pair(index, item) }) {
             val chunk1 = chunk.addr().toNeBytes()
             val start = i * chunk1.size
-            run {
-                val dstTmp0 = bytes
-                val srcTmp0 = chunk1
-                for (idxTmp0 in srcTmp0.indices) dstTmp0[(start) + idxTmp0] = srcTmp0[idxTmp0]
-            }
+            run { val dstTmp0 = bytes; val srcTmp0 = chunk1; for (idxTmp0 in srcTmp0.indices) dstTmp0[(start) + idxTmp0] = srcTmp0[idxTmp0] }
         }
         return U128.fromLeBytes(bytes)
     }
@@ -622,7 +614,7 @@ public open class TypeId internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt("TypeId(${this.asU128()})")
+    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = f.writeFmt("TypeId(${this.asU128()})")
 
     public companion object {
         public fun typeLayout(): TypeLayout<TypeId> =
@@ -647,10 +639,9 @@ public open class TypeId internal constructor(
 
         public operator fun invoke(
             data: List<ConstPtr>,
-        ): TypeId =
-            TypeId(
-                dataCtorArg = data,
-            )
+        ): TypeId = TypeId(
+            dataCtorArg = data,
+        )
 
         /**
          * Returns the `TypeId` of the generic type parameter.

@@ -8,13 +8,12 @@ import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -122,9 +121,7 @@ public open class CString(
     // Invariant 2: the slice contains only one zero byte.
     // Improper usage of unchecked function can break Invariant 2, but not Invariant 1.
     public var inner: List<UByte>,
-) : Borrow<CStr>,
-    FromStr<NulError>,
-    AsRef<CStr> {
+) : Borrow<CStr>, FromStr<NulError>, AsRef<CStr> {
     public open fun clone(): CString = CString(inner)
 
     /**
@@ -333,9 +330,7 @@ public open class CString(
      * Delegates to the [CStr] implementation of [fmt.Debug],
      * showing invalid UTF-8 as hex escapes.
      */
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.asCStr()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asCStr()).toString()); Result.Ok(Unit) }
 
     public open fun borrow(): CStr = this
 
@@ -393,14 +388,13 @@ public open class CString(
                 val bytes: List<UByte> = this.into()
                 return when (val matchVal = memchr(0, bytes)) {
                     // SAFETY: We ensured there's no null bytes.
-                    null -> Result.Ok(CString.fromVecUnchecked(bytes))
+                    null -> Result.Ok<CString, NulError>(CString.fromVecUnchecked(bytes))
                     else -> {
                         val i = matchVal
-                        Result.Err(NulError(i, bytes))
+                        Result.Err<CString, NulError>(NulError(i, bytes))
                     }
                 }
             }
-
             // Specialization for avoiding reallocation
             // Without that it is not inlined into specializations
             fun specNewImplBytes(bytes: List<UByte>): Result<CString, NulError> {
@@ -417,10 +411,10 @@ public open class CString(
                 // This allows better optimizations if lto enabled.
                 return when (val matchVal = memchr(0, bytes)) {
                     // SAFETY: We ensured there's no null bytes.
-                    null -> Result.Ok(CString.fromVecUnchecked(buffer))
+                    null -> Result.Ok<CString, NulError>(CString.fromVecUnchecked(buffer))
                     else -> {
                         val i = matchVal
-                        Result.Err(NulError(i, buffer))
+                        Result.Err<CString, NulError>(NulError(i, buffer))
                     }
                 }
             }
@@ -524,7 +518,7 @@ public open class CString(
                 fun strlen(s: ConstPtr): ULong = 0uL
                 val len = strlen(ptr) + 1
                 // Including the NUL byte
-                val slice = linearMutSliceView(ptr, len.toInt(), UnresolvedTypeLayout<CChar>())
+                val slice = Slice.fromRawPartsMut(ptr, len)
                 CString(inner = Box.fromRaw((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }))
             }
         }
@@ -593,13 +587,13 @@ public open class CString(
                     val nulPos1 = nulPos
                     // SAFETY: We know there is only one nul byte, at the end
                     // of the vec.
-                    Result.Ok(CString.fromVecWithNulUnchecked(v))
+                    Result.Ok<CString, FromVecWithNulError>(CString.fromVecWithNulUnchecked(v))
                 }
                 nulPos != null -> {
                     val nulPos2 = nulPos
-                    Result.Err(FromVecWithNulError(errorKind = FromBytesWithNulErrorKind.InteriorNul(nulPos2), bytes = v))
+                    Result.Err<CString, FromVecWithNulError>(FromVecWithNulError(errorKind = FromBytesWithNulErrorKind.InteriorNul(nulPos2), bytes = v))
                 }
-                else -> Result.Err(FromVecWithNulError(errorKind = FromBytesWithNulErrorKind.NotNulTerminated, bytes = v))
+                else -> Result.Err<CString, FromVecWithNulError>(FromVecWithNulError(errorKind = FromBytesWithNulErrorKind.NotNulTerminated, bytes = v))
             }
         }
 
@@ -630,16 +624,15 @@ public open class CString(
          * Converts a <code>[Vec]<[NonZero]<[u8]>></code> into a [CString] without
          * copying nor checking for inner nul bytes.
          */
-        public fun from(v: List<NonZero<UByte>>): CString {
+        public fun from(v: List<NonZero<UByte, NonZeroU8Inner>>): CString {
             // Transmute `List<NonZero<UByte>>` to `List<UByte>`.
-            val v1: List<UByte> =
-                run {
-                    val (ptr: MutPtr, len, cap) = Vec.intoRawParts(v)
-                    // SAFETY:
-                    // - transmuting between `NonZero<UByte>` and `UByte` is sound;
-                    // - `alloc.Layout<NonZero<UByte>> == alloc.Layout<UByte>`.
-                    Vec.fromRawParts(MutPtr((ptr).rawAddress), len, cap)
-                }
+            val v1: List<UByte> = run {
+                val (ptr: MutPtr, len, cap) = Vec.intoRawParts(v)
+                // SAFETY:
+                // - transmuting between `NonZero<UByte>` and `UByte` is sound;
+                // - `alloc.Layout<NonZero<UByte>> == alloc.Layout<UByte>`.
+                Vec.fromRawParts(MutPtr((ptr).rawAddress), len, cap)
+            }
             // SAFETY: `v` cannot contain nul bytes, given the type-level
             // invariant of `NonZero<UByte>`.
             return CString.fromVecUnchecked(v1)
@@ -716,15 +709,11 @@ public open class NulError(
      */
     public open fun intoVec(): List<UByte> = this.field1
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("nul byte found in provided data at position: ${this.field0}")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("nul byte found in provided data at position: ${this.field0}"); Result.Ok(Unit) }
 }
 
 public sealed class FromBytesWithNulErrorKind {
-    public data class InteriorNul(
-        public var value: Int,
-    ) : FromBytesWithNulErrorKind()
+    public data class InteriorNul(public var value: Int) : FromBytesWithNulErrorKind()
     public data object NotNulTerminated : FromBytesWithNulErrorKind()
 
     public fun rustEquals(other: FromBytesWithNulErrorKind): Boolean = this == other
@@ -794,17 +783,16 @@ public open class FromVecWithNulError(
      */
     public open fun intoBytes(): List<UByte> = this.bytes
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (val matchVal = this.errorKind) {
             is FromBytesWithNulErrorKind.InteriorNul -> {
                 val (pos) = matchVal
-                f.append("data provided contains an interior nul byte at pos $pos")
+                run { f.append("data provided contains an interior nul byte at pos $pos"); Result.Ok(Unit) }
             }
             FromBytesWithNulErrorKind.NotNulTerminated -> {
-                f.append("data provided is not nul terminated")
+                run { f.append("data provided is not nul terminated"); Result.Ok(Unit) }
             }
         }
-    }
 }
 
 /**
@@ -834,9 +822,7 @@ public open class IntoStringError(
      */
     public open fun utf8Error(): Utf8Error = this.error
 
-    public open fun fmt(f: StringBuilder) {
-        "C string contained non-utf8 bytes".fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "C string contained non-utf8 bytes".fmt(f)
 
     public open fun source(): Any? = this.error
 }
@@ -933,11 +919,7 @@ public fun CStr.cloneInto(target: CString) {
     val src = this.toBytesWithNul()
     // If the lengths match, we can reuse the existing allocation without any overhead.
     if (target.inner.size == src.len()) {
-        run {
-            val dstTmp0 = target.inner
-            val srcTmp0 = src
-            for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
-        }
+        run { val dstTmp0 = target.inner; val srcTmp0 = src; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
     } else {
         // Reuse the existing allocation's capacity by converting to a Vec.
         // We temporarily replace `target` with a valid dummy to remain panic-safe.

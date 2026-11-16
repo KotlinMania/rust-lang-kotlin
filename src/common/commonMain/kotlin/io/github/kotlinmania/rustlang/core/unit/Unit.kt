@@ -1,7 +1,7 @@
 // port-lint: source unit.rs
 package io.github.kotlinmania.rustlang.core.unit
 
-import io.github.kotlinmania.rustlang.core.any.TypeId
+import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
 
 /**
  * Collapses all unit items from an iterator into one.
@@ -26,4 +26,4 @@ public interface IsUnit {
 }
 
 // `typeId` erases scopes, but that's OK here because "is it ()" never depends on scopes
-public val IS_UNIT: Boolean = TypeId<T>() == TypeId<Unit>()
+public val IS_UNIT: Boolean = typeId<T>() == typeId<Unit>()

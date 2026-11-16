@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -44,7 +45,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class Saturating<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) {
     public var field0: T
         get() = value
@@ -54,11 +55,9 @@ public open class Saturating<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Saturating<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Saturating<T>(ptr, layout) }, { it.value })
 
@@ -1549,14 +1548,7 @@ public fun Saturating<Int>.reverseBits(): Saturating<Int> = Saturating(this.valu
  * import std.num.Saturating; if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Saturating.Companion.fromBe(x: Saturating<Int>, fieldLayout: TypeLayout<Int>): Saturating<Int> =
-    Saturating(
-        run {
-            val swapVal0 = (x.value)
-            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
-        },
-        fieldLayout = fieldLayout,
-    )
+public fun Saturating.Companion.fromBe(x: Saturating<Int>, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): Saturating<Int> = Saturating(run { val swapVal0 = (x.value); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) }, fieldLayout = fieldLayout)
 
 /**
  * Converts an integer from little endian to the target's endianness.
@@ -1570,7 +1562,7 @@ public fun Saturating.Companion.fromBe(x: Saturating<Int>, fieldLayout: TypeLayo
  * import std.num.Saturating; if cfg(targetEndian = "little") {} else {}
  * ```
  */
-public fun Saturating.Companion.fromLe(x: Saturating<Int>, fieldLayout: TypeLayout<Int>): Saturating<Int> = Saturating(x.value, fieldLayout = fieldLayout)
+public fun Saturating.Companion.fromLe(x: Saturating<Int>, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): Saturating<Int> = Saturating(x.value, fieldLayout = fieldLayout)
 
 /**
  * Converts `self` to big endian from the target's endianness.

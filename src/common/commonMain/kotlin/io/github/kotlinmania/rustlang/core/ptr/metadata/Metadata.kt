@@ -3,9 +3,7 @@ package io.github.kotlinmania.rustlang.core.ptr.metadata
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
 import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
 import io.github.kotlinmania.rustlang.core.mem.alignOf
@@ -226,7 +224,7 @@ public open class DynMetadata<Dyn> internal constructor(
 
     public override fun clone(): DynMetadata<Dyn> = DynMetadata(this.vtablePtr, this.phantom)
 
-    public open fun eq(other: DynMetadata<Dyn>): Boolean = Eq<VTable>(this.vtablePtr(), other.vtablePtr())
+    public open fun eq(other: DynMetadata<Dyn>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq<VTable>(this.vtablePtr(), other.vtablePtr())
 
     public open fun cmp(other: DynMetadata<Dyn>): Ordering = ConstPtr.cmp(this.vtablePtr(), other.vtablePtr())
 
@@ -234,7 +232,7 @@ public open class DynMetadata<Dyn> internal constructor(
 
     public override fun hashCode(): Int {
         var hasher = 0
-        Hash<VTable>(this.vtablePtr(), hasher)
+        io.github.kotlinmania.rustlang.core.ptr.hash<VTable>(this.vtablePtr(), hasher)
         return hasher
     }
 
@@ -242,10 +240,9 @@ public open class DynMetadata<Dyn> internal constructor(
         public operator fun <Dyn> invoke(
             vtablePtr: NonNull,
             phantom: Unit,
-        ): DynMetadata<Dyn> =
-            DynMetadata<Dyn>(
-                vtablePtrCtorArg = vtablePtr,
-                phantom = phantom,
-            )
+        ): DynMetadata<Dyn> = DynMetadata<Dyn>(
+            vtablePtrCtorArg = vtablePtr,
+            phantom = phantom,
+        )
     }
 }

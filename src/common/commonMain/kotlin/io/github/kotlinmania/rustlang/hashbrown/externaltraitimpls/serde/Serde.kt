@@ -1,6 +1,7 @@
 // port-lint: source external_trait_impls/serde.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.serde
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.HashMap
@@ -23,20 +24,18 @@ public fun <K, V, S, A, D> deserializeHashMapKVSA(deserializer: D, defaultSFn: (
     open class MapVisitor<K, V, S, A>(
         public var marker: Unit,
     ) : Visitor where A : Allocator {
-        public open fun expecting(formatter: StringBuilder) {
-            formatter.append("a map")
-        }
+        public open fun expecting(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append("a map"); Result.Ok(Unit) }
 
         public open fun <M> visitMap(map: M, defaultSFn: () -> S, defaultAFn: () -> A): Result<MutableMap<K, V>, Error> where M : MapAccess {
             val values = HashMap.withCapacityAndHasherIn(SizeHint.cautious(map.sizeHint()), defaultSFn(), defaultAFn())
             while (true) {
-                val matchVal = when (val tryResult = map.nextEntry()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val matchVal = when (val tryResult = map.nextEntry()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MutableMap<K, V>, Error>(tryResult.error) }
                 if (matchVal == null) break
                 val key = matchVal.first
                 val value = matchVal.second
                 values.insert(key, value)
             }
-            return Result.Ok(values)
+            return Result.Ok<MutableMap<K, V>, Error>(values)
         }
     }
     val visitor = MapVisitor(marker = Unit)
@@ -49,19 +48,17 @@ public fun <T, S, A, D> deserializeHashSetTSA(deserializer: D, defaultSFn: () ->
     open class SeqVisitor<T, S, A>(
         public var marker: Unit,
     ) : Visitor where A : Allocator {
-        public open fun expecting(formatter: StringBuilder) {
-            formatter.append("a sequence")
-        }
+        public open fun expecting(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append("a sequence"); Result.Ok(Unit) }
 
         public open fun <M> visitSeq(seq: M, defaultSFn: () -> S, defaultAFn: () -> A): Result<MutableSet<T>, Error> where M : SeqAccess {
             val values = HashSet.withCapacityAndHasherIn(SizeHint.cautious(seq.sizeHint()), defaultSFn(), defaultAFn())
             while (true) {
-                val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MutableSet<T>, Error>(tryResult.error) }
                 if (matchVal == null) break
                 val value = matchVal
                 values.insert(value)
             }
-            return Result.Ok(values)
+            return Result.Ok<MutableSet<T>, Error>(values)
         }
     }
     val visitor = SeqVisitor(marker = Unit)
@@ -78,20 +75,18 @@ public fun <T, S, A, D> deserializeDeserializeInPlaceHashSetTSA(deserializer: D,
                 value = v
             }
 
-        public open fun expecting(formatter: StringBuilder) {
-            formatter.append("a sequence")
-        }
+        public open fun expecting(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append("a sequence"); Result.Ok(Unit) }
 
         public open fun <M> visitSeq(seq: M, defaultSFn: () -> S): Result<Unit, Error> where M : SeqAccess {
             this.value.clear()
             this.value.reserve(SizeHint.cautious(seq.sizeHint()))
             while (true) {
-                val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val matchVal = when (val tryResult = seq.nextElement()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
                 if (matchVal == null) break
                 val value = matchVal
                 this.value.add(value)
             }
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, Error>(Unit)
         }
     }
     return deserializer.deserializeSeq(SeqInPlaceVisitor(place))

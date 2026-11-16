@@ -1,6 +1,8 @@
 // port-lint: source sync/mpmc/error.rs
 package io.github.kotlinmania.rustlang.std.sync.mpmc
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.mpsc.SendError
 
 /**
@@ -23,16 +25,13 @@ public sealed class SendTimeoutError<T> {
 
     public fun rustEquals(other: SendTimeoutError<T>): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder) {
-        "SendTimeoutError(..)".fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "SendTimeoutError(..)".fmt(f)
 
-    public open fun fmtDisplay(f: StringBuilder) {
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is SendTimeoutError.Timeout -> "timed out waiting on send operation".fmt(f)
             is SendTimeoutError.Disconnected -> "sending on a disconnected channel".fmt(f)
         }
-    }
 
     public companion object {
         public fun <T> from(err: SendError<T>): SendTimeoutError<T> =

@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
@@ -17,7 +18,7 @@ import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.scope
 
-public fun <T> rehashInPlace(table: RawTable<T>, hasher: (T) -> ULong, typeLayoutT: TypeLayout<T>) {
+public fun <T> rehashInPlace(table: RawTable<T, Global>, hasher: (T) -> ULong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     run {
         table.table.rehashInPlace({ table1, index -> hasher(table1.bucket<T>(index).asRef()) }, sizeOf<T>(typeLayoutT = typeLayoutT), if (needsDrop<T>()) {
             { ptr -> dropInPlace(ptr.cast()) }
@@ -47,8 +48,8 @@ public class RawTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testMinimumCapacityForSmallTypes() {
-        fun <T> testT(typeLayoutT: TypeLayout<T>) {
-            val rawTable: RawTable<T> = RawTable.withCapacity(1)
+        fun <T> testT(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+            val rawTable: RawTable<T, Global> = RawTable.withCapacity(1)
             val actualBuckets = rawTable.numBuckets()
             val minBuckets = Group.WIDTH / sizeOf<T>(typeLayoutT = typeLayoutT)
             check(actualBuckets >= minBuckets) { "expected at least $minBuckets buckets, got $actualBuckets buckets" }
@@ -87,7 +88,7 @@ public class RawTestMapInlineTests {
      */
     @kotlin.test.Test
     public fun testDropUninitialized() {
-        val table = RawTable.newUninitialized(Global, 8, Fallibility.Nothing).unwrap()
+        val table = RawTable.newUninitialized(io.github.kotlinmania.rustlang.alloc.alloc.Global(), 8, Fallibility.Nothing).unwrap()
         (table).let { }
     }
 
@@ -100,7 +101,7 @@ public class RawTestMapInlineTests {
         run {
             // SAFETY: The `buckets` is power of two and we're not
             // trying to actually use the returned RawTable.
-            val table = RawTable.newUninitialized(Global, 8, Fallibility.Nothing).unwrap()
+            val table = RawTable.newUninitialized(io.github.kotlinmania.rustlang.alloc.alloc.Global(), 8, Fallibility.Nothing).unwrap()
             // WE SIMULATE, AS IT WERE, A FULL TABLE.
             // SAFETY: We checked that the table is allocated and therefore the table already has
             // `self.bucketMask + 1 + Group.WIDTH` number of control bytes (see TableLayout.calculateLayoutFor)
@@ -166,13 +167,13 @@ public class RawTestMapInlineTests {
             public open fun clone(): MyAlloc = MyAlloc(inner)
 
             public override fun allocate(layout: Layout): Result<NonNull, AllocError> {
-                val g = Global
+                val g = io.github.kotlinmania.rustlang.alloc.alloc.Global()
                 return g.allocate(layout)
             }
 
             public override fun deallocate(ptr: NonNull, layout: Layout) {
                 run {
-                    val g = Global
+                    val g = io.github.kotlinmania.rustlang.alloc.alloc.Global()
                     g.deallocate(ptr, layout)
                 }
             }

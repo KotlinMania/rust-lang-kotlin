@@ -7,10 +7,12 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlonglong
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.GidT
 import io.github.kotlinmania.rustlang.libc.unix.UidT
@@ -357,9 +359,7 @@ public open class RiscvMcFpState(
     public var d: RiscvMcDExtState? = null,
     public var q: RiscvMcQExtState? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__riscv_mc_fp_state").finishNonExhaustive()
 }
 
 public open class RiscvMcFExtState(

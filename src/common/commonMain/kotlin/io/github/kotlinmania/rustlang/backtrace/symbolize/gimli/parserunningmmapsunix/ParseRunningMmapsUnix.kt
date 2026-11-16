@@ -94,61 +94,42 @@ public open class MapsEntry(
             val state = s
             val rangeStr = parseStart(state)
             if (rangeStr.isEmpty()) {
-                return Result.Err(error("Couldn't find address"))
+                return Result.Err<MapsEntry, String>(error("Couldn't find address"))
             }
             val permsStr = parseStart(state)
             if (permsStr.isEmpty()) {
-                return Result.Err(error("Couldn't find permissions"))
+                return Result.Err<MapsEntry, String>(error("Couldn't find permissions"))
             }
             val offsetStr = parseStart(state)
             if (offsetStr.isEmpty()) {
-                return Result.Err(error("Couldn't find offset"))
+                return Result.Err<MapsEntry, String>(error("Couldn't find offset"))
             }
             val devStr = parseStart(state)
             if (devStr.isEmpty()) {
-                return Result.Err(error("Couldn't find dev"))
+                return Result.Err<MapsEntry, String>(error("Couldn't find dev"))
             }
             val inodeStr = parseStart(state)
             if (inodeStr.isEmpty()) {
-                return Result.Err(error("Couldn't find inode"))
+                return Result.Err<MapsEntry, String>(error("Couldn't find inode"))
             }
             // Pathname may be omitted in which case it will be empty
             val pathnameStr = state.trimAsciiStart()
             val hex = { s1 -> Int.fromStrRadix(s1, 16u).mapErr({ error("Couldn't parse hex number") }) }
             val hex64 = { s1 -> ULong.fromStrRadix(s1, 16u).mapErr({ error("Couldn't parse hex number") }) }
             val address =
-                when (
-                    val matchVal =
-                        rangeStr.let { s ->
-                            val idx = s.indexOf('-')
-                            if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1))
-                        }
-                ) {
+                when (val matchVal = rangeStr.let { s -> val idx = s.indexOf('-'); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) }) {
                     null -> {
-                        return Result.Err(error("Couldn't parse address range"))
+                        return Result.Err<MapsEntry, String>(error("Couldn't parse address range"))
                     }
                     else -> {
                         val start = matchVal.first
                         val limit = matchVal.second
-                        Pair(
-                            when (val tryResult = hex(start)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            },
-                            when (val tryResult = hex(limit)) {
-                                is Result.Ok<*, *> -> tryResult.value
-                                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                            },
-                        )
+                        Pair(when (val tryResult = hex(start)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MapsEntry, String>(tryResult.error) }, when (val tryResult = hex(limit)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MapsEntry, String>(tryResult.error) })
                     }
                 }
-            val offset =
-                when (val tryResult = hex64(offsetStr)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            val offset = when (val tryResult = hex64(offsetStr)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<MapsEntry, String>(tryResult.error) }
             val pathname = pathnameStr.into()
-            return Result.Ok(MapsEntry(address = address, offset = offset, pathname = pathname))
+            return Result.Ok<MapsEntry, String>(MapsEntry(address = address, offset = offset, pathname = pathname))
         }
     }
 }
@@ -164,14 +145,9 @@ public fun parseMaps(): Result<List<MapsEntry>, String> {
         // Unsafe is unfortunately necessary to get the bounds check removed (for code size).
         // SAFETY: matchIdx is the position of the newline, so it must be valid.
         val line = buf1.getUnchecked(0 until matchIdx)
-        v.add(
-            when (val tryResult = line.parse()) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            },
-        )
+        v.add(when (val tryResult = line.parse()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<MapsEntry>, String>(tryResult.error) })
         // SAFETY: matchIdx is the position of the newline, so the byte after it must be valid.
         buf1 = buf1.getUnchecked((matchIdx + 1) until Int.MAX_VALUE)
     }
-    return Result.Ok(v)
+    return Result.Ok<List<MapsEntry>, String>(v)
 }

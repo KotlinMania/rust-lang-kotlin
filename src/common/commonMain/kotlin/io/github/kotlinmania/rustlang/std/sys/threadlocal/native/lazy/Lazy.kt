@@ -126,7 +126,7 @@ public open class Storage<T, D> internal constructor(
  * * `ptr` must point to an instance of `Storage<T, ()>` and be valid for
  *   accessing that instance.
  */
-public fun <T> destroy(ptr: MutPtr, typeLayoutT: TypeLayout<T>) {
+public fun <T> destroy(ptr: MutPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // Print a nice abort message if a panic occurs.
     abortOnDtorUnwind({
         val storage = (UnresolvedTypeLayout<Storage<T, Unit>>()).readNative(((ConstPtr(ptr.rawAddress, ptr.rawMeta))).rawAddress)

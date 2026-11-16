@@ -1322,22 +1322,20 @@ public fun testMmMovemaskPd() {
 
 public open class Memory internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<DoubleArray>,
+    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
 ) {
     public var data: DoubleArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
 
     public companion object {
-        public operator fun invoke(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>): Memory = Memory(data, fieldLayout)
+        public operator fun invoke(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): Memory = Memory(data, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray>): Memory = Memory(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): Memory = Memory(fieldStorage, fieldLayout)
     }
 }
 
@@ -1376,15 +1374,13 @@ public fun testMmLoadlPd() {
 public fun testMmStreamPd() {
     open class Memory(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) {
-                fieldLayout.writeNative(fieldStorage.rawAddress, value)
-            }
+            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 128L)), AlignedTypeLayout(fieldLayout, 128L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 128L)), AlignedTypeLayout(fieldLayout, 128L))
 
         public fun pointerLayout(): TypeLayout<Memory> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Memory(ptr, layout) }, { it.data })
     }

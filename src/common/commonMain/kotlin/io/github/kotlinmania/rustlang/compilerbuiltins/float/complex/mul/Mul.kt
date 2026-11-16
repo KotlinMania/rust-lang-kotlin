@@ -27,13 +27,11 @@ public fun <F : Float> complexMul(a: F, b: F, c: F, d: F): Complex<F> {
         return z
     }
     val zeroIfNan =
-        { x: F ->
-            if (x.isNan()) {
-                F.ZERO.copysign(x)
-            } else {
-                x
-            }
-        }
+        { x: F -> if (x.isNan()) {
+            F.ZERO.copysign(x)
+        } else {
+            x
+        } }
     val signedUnitIfInf =
         { x: F ->
             val mag =

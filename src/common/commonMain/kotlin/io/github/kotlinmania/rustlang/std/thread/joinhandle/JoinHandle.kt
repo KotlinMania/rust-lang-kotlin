@@ -1,6 +1,7 @@
 // port-lint: source thread/join_handle.rs
 package io.github.kotlinmania.rustlang.std.thread.joinhandle
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.thread.Result
@@ -172,7 +173,5 @@ public open class JoinHandle<T>(
 
     public override fun intoInner(): Thread = this.value.intoInner()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "JoinHandle").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "JoinHandle").finishNonExhaustive()
 }

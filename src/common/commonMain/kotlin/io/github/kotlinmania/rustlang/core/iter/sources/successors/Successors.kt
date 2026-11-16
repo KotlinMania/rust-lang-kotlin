@@ -67,15 +67,14 @@ public open class Successors<T, F>(
     public var next: T?,
     public var succ: F,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Successors.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Successors.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Successors<T, F> = Successors(next, succ)
 

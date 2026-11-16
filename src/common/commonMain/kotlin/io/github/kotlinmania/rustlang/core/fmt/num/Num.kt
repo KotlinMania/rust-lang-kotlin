@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.isAscii
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.numbuffer.NumBuffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -84,11 +85,7 @@ public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        f.append((this.castUnsigned()).toString())
-        Result.Ok(Unit)
-    }
+public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
 
 /**
  * Format unsigned integers in the radix.
@@ -121,11 +118,7 @@ public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        f.append((this.castUnsigned()).toString())
-        Result.Ok(Unit)
-    }
+public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
 
 /**
  * Format unsigned integers in the radix.
@@ -186,11 +179,7 @@ public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        f.append((this.castUnsigned()).toString())
-        Result.Ok(Unit)
-    }
+public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
 
 /**
  * Format unsigned integers in the radix.
@@ -223,11 +212,7 @@ public fun U128.fmt(f: StringBuilder): Result<Unit, Unit> {
 /**
  * Format signed integers in the two’s-complement form.
  */
-public fun I128.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        f.append((this.castUnsigned()).toString())
-        Result.Ok(Unit)
-    }
+public fun I128.fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.castUnsigned()).toString()); Result.Ok(Unit) }
 
 // The string of all two-digit numbers in range 00..99 is used as a lookup table.
 public var DECIMAL_PAIRS: UByteArray = "00010203040506070809101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899".encodeToByteArray().toUByteArray()
@@ -248,7 +233,7 @@ public fun sliceBufferToStr(buf: List<MaybeUninit<UByte>>, offset: Int): String 
     return String.fromUtf8Unchecked(written.assumeInitRef())
 }
 
-public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: UByte) {
+public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: UByte): Result<Unit, Error> {
     val MAX_DEC_N: Int = U128.MAX_VALUE.ilog10().toInt() + 1
     val MAX_COEF_LEN: Int = MAX_DEC_N + ".".len()
     val MAX_TEXT_LEN: Int = MAX_COEF_LEN + "e99".len()
@@ -328,11 +313,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
                 buf[i].write(48u + digit.toUByte())
             }
             run {
-                for (i1 in fractionRange
-                    .clone()
-                    .skip(1)
-                    .rev()
-                    .stepBy(2)) {
+                for (i1 in fractionRange.clone().skip(1).rev().stepBy(2)) {
                     val pair = (remain % U128(0x0uL, 0x64uL)).toInt()
                     remain /= U128(0x0uL, 0x64uL)
                     buf[i1 - 1].write(DECIMAL_PAIRS[pair * 2 + 0])
@@ -378,7 +359,7 @@ public fun expU128(f: StringBuilder, n: U128, isNonnegative: Boolean, letterE: U
             }
         }
     val text = buf[0 until textLen].assumeInitRef()
-    if (morePrec == 0) {
+    return if (morePrec == 0) {
         val asStr = String.fromUtf8Unchecked(text)
         f.padIntegral(isNonnegative, "", asStr)
     } else {

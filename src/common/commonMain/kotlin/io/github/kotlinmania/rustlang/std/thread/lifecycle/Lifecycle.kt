@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -37,7 +38,7 @@ import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): Result<JoinInner<T>, Error> {
     val stackSize1 =
         (stackSize ?: closure1@{
-            var MIN: Atomic<Int> = AtomicUsize.new(0)
+            var MIN: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
             when (val matchVal = MIN.load(Ordering.Relaxed)) {
                 0 -> {}
                 else -> {
@@ -98,7 +99,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
             Box.fromRaw(ptr1)
         }
     val init = ThreadInit(handle = thread.clone(), rustStart = rustStart1)
-    return Result.Ok(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }, thread = thread, packet = myPacket))
+    return Result.Ok<JoinInner<T>, Error>(JoinInner(native = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.thread.unix.Thread.new(stackSize1, init)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<JoinInner<T>, Error>(tryResult.error) }, thread = thread, packet = myPacket))
 }
 
 /**
@@ -178,7 +179,7 @@ public open class Packet<T> internal constructor(
         // the scope function will panic.
         val unhandledPanic =
             when (val matchVal = this.result.getMut()) {
-                is Result.Err<*, *> -> true
+                is Result.Err -> true
                 else -> false
             }
         // Drop the result without causing unwinding.

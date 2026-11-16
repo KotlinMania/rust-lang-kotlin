@@ -92,10 +92,7 @@ public class DebugStruct(
 public open class BufReader<R>(
     public var buf: Buffer,
     public var inner: R,
-) : SpecReadByte,
-    Read<BufReader<R>>,
-    BufRead<BufReader<R>>,
-    Seek {
+) : SpecReadByte, Read<BufReader<R>>, BufRead<BufReader<R>>, Seek {
     /**
      * Attempt to look ahead `n` bytes.
      *
@@ -136,11 +133,7 @@ public open class BufReader<R>(
             if (this.buf.pos() > 0) {
                 this.buf.backshift()
             }
-            val new =
-                when (val tryResult = this.buf.readMore(this.inner)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            val new = when (val tryResult = this.buf.readMore(this.inner)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             if (new == 0) {
                 // end of file, no more bytes to read
                 return Result.Ok(this.buf.buffer())
@@ -190,7 +183,9 @@ public open class BufReader<R>(
      * }
      * ```
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<R> = this::inner
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<R> {
+        return this::inner
+    }
 
     /**
      * Returns a reference to the internally buffered data.
@@ -289,15 +284,13 @@ public open class BufReader<R>(
                     return Result.Ok(Unit)
                 }
             }
-        } else {
-            when (val matchVal1 = pos.checkedAdd(offset.toULong())) {
-                null -> {}
-                else -> {
-                    val newPos = matchVal1
-                    if (newPos <= this.buf.filled().toULong()) {
-                        this.buf.consume(offset.toInt())
-                        return Result.Ok(Unit)
-                    }
+        } else when (val matchVal1 = pos.checkedAdd(offset.toULong())) {
+            null -> {}
+            else -> {
+                val newPos = matchVal1
+                if (newPos <= this.buf.filled().toULong()) {
+                    this.buf.consume(offset.toInt())
+                    return Result.Ok(Unit)
                 }
             }
         }
@@ -321,16 +314,8 @@ public open class BufReader<R>(
             this.discardBuffer()
             return this.inner.read(buf)
         }
-        val rem =
-            when (val tryResult = this.fillBuf()) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
-        val nread =
-            when (val tryResult = rem.read(buf)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val rem = when (val tryResult = this.fillBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        val nread = when (val tryResult = rem.read(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         this.consume(nread)
         return Result.Ok(nread)
     }
@@ -344,15 +329,8 @@ public open class BufReader<R>(
             return this.inner.readBuf(cursor)
         }
         val prev = cursor.written()
-        val rem =
-            when (val tryResult = this.fillBuf()) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
-        when (val tryResult = rem.readBuf(cursor.reborrow())) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        val rem = when (val tryResult = this.fillBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = rem.readBuf(cursor.reborrow())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         // actually never fails
         this.consume(cursor.written() - prev)
         // slice impl of readBuf known to never unfill buf
@@ -364,14 +342,7 @@ public open class BufReader<R>(
     // generation for the common path where the buffer has enough bytes to fill the passed-in
     // buffer.
     public override fun readExact(buf: MutableList<UByte>): Result<Unit> {
-        if (this.buf.consumeWith(buf.size, { claimed ->
-                run {
-                    val dstTmp0 = buf
-                    val srcTmp0 = claimed
-                    for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
-                }
-            })
-        ) {
+        if (this.buf.consumeWith(buf.size, { claimed -> run { val dstTmp0 = buf; val srcTmp0 = claimed; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] } })) {
             return Result.Ok(Unit)
         }
         return defaultReadExact(this, buf)
@@ -390,16 +361,8 @@ public open class BufReader<R>(
             this.discardBuffer()
             return this.inner.readVectored(bufs)
         }
-        val rem =
-            when (val tryResult = this.fillBuf()) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
-        val nread =
-            when (val tryResult = rem.readVectored(bufs)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val rem = when (val tryResult = this.fillBuf()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        val nread = when (val tryResult = rem.readVectored(bufs)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         this.consume(nread)
         return Result.Ok(nread)
     }
@@ -410,23 +373,11 @@ public open class BufReader<R>(
     // delegate to the inner implementation.
     public override fun readToEnd(buf: List<UByte>): Result<Int> {
         val innerBuf = this.buffer()
-        when (val tryResult = buf.tryReserve(innerBuf.len())) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
-        when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = buf.tryReserve(innerBuf.len())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         val nread = innerBuf.len()
         this.discardBuffer()
-        return Result.Ok(
-            nread +
-                when (val tryResult = this.inner.readToEnd(buf)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                },
-        )
+        return Result.Ok(nread + when (val tryResult = this.inner.readToEnd(buf)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
     }
 
     // The inner reader might have an optimized `readToEnd`. Drain our buffer and then
@@ -454,19 +405,9 @@ public open class BufReader<R>(
             // everything into a side buffer first and then call `fromUtf8` on the complete
             // buffer.
             val bytes = mutableListOf()
-            when (val tryResult = this.readToEnd(bytes)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
-            val string =
-                when (val tryResult = fromUtf8(bytes).mapErr({ Error.INVALID_UTF8 })) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
-            when (val tryResult = buf.tryPushStr(string)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+            when (val tryResult = this.readToEnd(bytes)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            val string = when (val tryResult = fromUtf8(bytes).mapErr({ Error.INVALID_UTF8 })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            when (val tryResult = buf.tryPushStr(string)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             Result.Ok(string.len())
         }
     }
@@ -477,9 +418,7 @@ public open class BufReader<R>(
         this.buf.consume(amt)
     }
 
-    public open fun fmt(fmt: StringBuilder) {
-        DebugStruct(fmt, "BufReader").field("reader", this.inner).field("buffer", "${this.buf.filled() - this.buf.pos()}/${this.capacity()}").finish()
-    }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(fmt, "BufReader").field("reader", this.inner).field("buffer", "${this.buf.filled() - this.buf.pos()}/${this.capacity()}").finish()
 
     /**
      * Seek to an offset, in bytes, in the underlying reader.
@@ -518,33 +457,18 @@ public open class BufReader<R>(
             when (val matchVal = n.checkedSub(remainder)) {
                 null -> {
                     // seek backwards by our remainder, and then by the offset
-                    when (val tryResult = this.inner.seek(SeekFrom.Current(-remainder))) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                    }
+                    when (val tryResult = this.inner.seek(SeekFrom.Current(-remainder))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                     this.discardBuffer()
-                    result =
-                        when (val tryResult = this.inner.seek(SeekFrom.Current(n))) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                        }
+                    result = when (val tryResult = this.inner.seek(SeekFrom.Current(n))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
                 else -> {
                     val offset = matchVal
-                    result =
-                        when (val tryResult = this.inner.seek(SeekFrom.Current(offset))) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                        }
+                    result = when (val tryResult = this.inner.seek(SeekFrom.Current(offset))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 }
             }
         } else {
             // Seeking with Start/End doesn't care about our buffer length.
-            result =
-                when (val tryResult = this.inner.seek(pos)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            result = when (val tryResult = this.inner.seek(pos)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         this.discardBuffer()
         return Result.Ok(result)
@@ -627,16 +551,8 @@ public open class BufReader<R>(
          * to retrieve the inner reader `R`.
          */
         public fun <R> tryNewWith(f: () -> Result<R>): Result<BufReader<R>> {
-            val buf =
-                when (val tryResult = Buffer.tryWithCapacity(DEFAULT_BUF_SIZE)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
-            val inner =
-                when (val tryResult = f()) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            val buf = when (val tryResult = Buffer.tryWithCapacity(DEFAULT_BUF_SIZE)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+            val inner = when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             return Result.Ok(BufReader(inner = inner, buf = buf))
         }
 

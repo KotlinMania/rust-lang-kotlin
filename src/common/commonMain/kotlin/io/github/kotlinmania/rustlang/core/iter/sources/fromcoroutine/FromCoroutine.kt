@@ -73,15 +73,14 @@ public open class FromCoroutine<G>(
             value = v
         }
 
-    override fun iterator(): Iterator<Yield> =
-        object : AbstractIterator<Yield>() {
-            override fun computeNext() {
-                when (val v = this@FromCoroutine.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Yield> = object : AbstractIterator<Yield>() {
+        override fun computeNext() {
+            when (val v = this@FromCoroutine.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): FromCoroutine<G> = FromCoroutine(value)
 

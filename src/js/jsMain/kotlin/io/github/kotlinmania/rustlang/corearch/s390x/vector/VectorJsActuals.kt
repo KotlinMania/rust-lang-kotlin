@@ -139,12 +139,16 @@ public actual fun vfaezfs(a: VectorSignedInt, b: VectorSignedInt, c: Int): Packe
 public actual fun vll(a: UInt, b: ConstPtr): VectorSignedChar =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vstl(a: VectorSignedChar, b: UInt, c: MutPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vstl(a: VectorSignedChar, b: UInt, c: MutPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun vlrl(a: UInt, b: ConstPtr): VectorUnsignedChar =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
     if (s390xVectorNapiAddon != null) (s390xVectorNapiAddon.corearchS390xVectorLcbb(a.rawAddress.toString(), b.toInt()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")

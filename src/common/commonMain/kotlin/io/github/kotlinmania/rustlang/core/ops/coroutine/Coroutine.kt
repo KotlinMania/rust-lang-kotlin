@@ -19,10 +19,7 @@ public sealed class CoroutineState<Y, R> {
      * corresponds to the expression passed to `yield` and allows coroutines to
      * provide a value each time they yield.
      */
-    public data class Yielded<Y, R>(
-        public var value: Y,
-    ) : CoroutineState<Y, R>()
-
+    public data class Yielded<Y, R>(public var value: Y) : CoroutineState<Y, R>()
     /**
      * The coroutine completed with a return value.
      *
@@ -30,9 +27,7 @@ public sealed class CoroutineState<Y, R> {
      * provided value. Once a coroutine has returned `Complete` it is
      * considered a programmer error to call `resume` again.
      */
-    public data class Complete<Y, R>(
-        public var value: R,
-    ) : CoroutineState<Y, R>()
+    public data class Complete<Y, R>(public var value: R) : CoroutineState<Y, R>()
 
     public fun rustEquals(other: CoroutineState<Y, R>): Boolean = this == other
 }

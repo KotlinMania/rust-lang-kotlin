@@ -26,9 +26,9 @@ public fun peerCred(socket: UnixStream): Result<UCred, Error> {
     return run {
         val ret = getsockopt(socket.asRawFd(), SOL_SOCKET, SO_PEERCRED, ((localStorageL57C8.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, ucredSize1)
         if (ret == 0 && ucredSize1 == sizeOf(ucred, typeLayoutT = UnresolvedTypeLayout<Ucred>())) {
-            Result.Ok(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
+            Result.Ok<UCred, Error>(UCred(uid = ucred.uid, gid = ucred.gid, pid = ucred.pid))
         } else {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
     }
 }

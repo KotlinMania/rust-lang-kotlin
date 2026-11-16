@@ -119,9 +119,13 @@ public actual fun vpmovswb128(a: I16x8, src: I8x16, mask: UByte): I8x16 =
 public actual fun vpmovuswb128(a: U16x8, src: U8x16, mask: UByte): U8x16 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun vpmovswbmem(memAddr: MutPtr, a: I16x32, mask: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vpmovswbmem(memAddr: MutPtr, a: I16x32, mask: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun vpmovuswbmem(memAddr: MutPtr, a: I16x32, mask: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun vpmovuswbmem(memAddr: MutPtr, a: I16x32, mask: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun vpavgb(a: U8x64, b: U8x64): U8x64 =
     throw UnsupportedOperationException("Native FFI addon is not available")

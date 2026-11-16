@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.hashbrown
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
@@ -918,9 +919,7 @@ public open class HashSet<T, S, A : Allocator>(
         return this.iter().all({ key -> other.contains(key) })
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "{", "}")) } }.entries(this.iter()).finish()
 
     public open fun <I : Iterable<T>> extend(iter: I) {
         this.map.extend(iter.iterator().map({ k -> Pair(k, Unit) }))
@@ -1283,7 +1282,7 @@ public open class HashSet<T, S, A : Allocator>(
  * val set: MutableSet<Int> = mutableSetOf()
  * ```
  */
-public fun <T> HashSet.Companion.new(): HashSet<T, DefaultHashBuilder> = HashSet(map = mutableMapOf())
+public fun <T> HashSet.Companion.new(): HashSet<T, DefaultHashBuilder, Global> = HashSet(map = mutableMapOf())
 
 /**
  * Creates an empty `HashSet` with the specified capacity.
@@ -1311,7 +1310,7 @@ public fun <T> HashSet.Companion.new(): HashSet<T, DefaultHashBuilder> = HashSet
  * check(set.capacity() >= 10)
  * ```
  */
-public fun <T> HashSet.Companion.withCapacity(capacity: Int): HashSet<T, DefaultHashBuilder> = HashSet(map = mutableMapOf())
+public fun <T> HashSet.Companion.withCapacity(capacity: Int): HashSet<T, DefaultHashBuilder, Global> = HashSet(map = mutableMapOf())
 
 /**
  * Creates an empty `HashSet`.
@@ -1482,9 +1481,7 @@ public open class Iter<K> internal constructor(
 
     public open fun len(): Int = this.iter.len()
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <K> invoke(
@@ -1537,9 +1534,9 @@ public open class IntoIter<K, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.iter.len()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val entriesIter = this.iter.iter().map({ (k, _) -> k })
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(entriesIter).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(entriesIter).finish()
     }
 
     public companion object {
@@ -1593,9 +1590,9 @@ public open class Drain<K, A : Allocator> internal constructor(
 
     public open fun len(): Int = this.iter.len()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val entriesIter = this.iter.iter().map({ (k, _) -> k })
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(entriesIter).finish()
+        return object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(entriesIter).finish()
     }
 
     public companion object {
@@ -1697,9 +1694,7 @@ public open class Intersection<T, S, A : Allocator> internal constructor(
             }
         })
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1763,9 +1758,7 @@ public open class Difference<T, S, A : Allocator> internal constructor(
             }
         })
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1809,9 +1802,7 @@ public open class SymmetricDifference<T, S, A : Allocator> internal constructor(
 
     public open fun <B> fold(init: B, f: (B, T) -> B): B = this.iter.fold(init, f)
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
@@ -1847,9 +1838,7 @@ public open class Union<T, S, A : Allocator> internal constructor(
 
     public open fun clone(): Union<T, S, A> = Union(iter = this.iter.clone())
 
-    public open fun fmt(f: StringBuilder) {
-        object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.clone()).finish()
 
     public open fun next(): T? = this.iter.next()
 
@@ -1985,7 +1974,7 @@ public sealed class Entry<T, S, A> {
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Entry.Vacant -> {
                 val (v) = this
@@ -1996,7 +1985,6 @@ public sealed class Entry<T, S, A> {
                 DebugTuple(f, "Entry").field(o).finish()
             }
         }
-    }
 
     /**
      * Sets the value of the entry, and returns an `OccupiedEntry`.
@@ -2119,9 +2107,7 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
     public var inner: OccupiedEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
 
     /**
      * Gets a reference to the value in the entry.
@@ -2221,9 +2207,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
     public var inner: VacantEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "VacantEntry").field(this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.get()).finish()
 
     /**
      * Gets a reference to the value that would be used when inserting
@@ -2293,7 +2277,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
 }
 
 public fun assertCovariance() {
-    fun set(v: HashSet<String>): HashSet<String> = v
+    fun set(v: HashSet<String, DefaultHashBuilder, Global>): HashSet<String, DefaultHashBuilder, Global> = v
     fun iter(v: Iter<String>): Iter<String> = v
     fun <A : Allocator> intoIter(v: IntoIter<String, A>): IntoIter<String, A> = v
     fun <A : Allocator> difference(v: Difference<String, DefaultHashBuilder, A>): Difference<String, DefaultHashBuilder, A> = v

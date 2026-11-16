@@ -27,7 +27,7 @@ public fun hostname(): Result<OsString, Error> {
             }
         }
     // Reserve space for the nul terminator too.
-    val buf = when (val tryResult = Vec.tryWithCapacity(hostNameMax + 1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val buf = when (val tryResult = Vec.tryWithCapacity(hostNameMax + 1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OsString, Error>(tryResult.error) }
     while (true) {
         // SAFETY: `buf.capacity()` bytes of `buf` are writable.
         val r = gethostname(buf.asMutPtr().cast(), buf.capacity())
@@ -56,7 +56,7 @@ public fun hostname(): Result<OsString, Error> {
                     // SAFETY: `len + 1` bytes have been initialized (we exclude
                     // the nul terminator from the string).
                     buf.setLen(len)
-                    return Result.Ok(OsString.fromVec(buf))
+                    return Result.Ok<OsString, Error>(OsString.fromVec(buf))
                 }
             }
             // As `buf.capacity()` is always less than or equal to `Long.MAX`
@@ -69,10 +69,10 @@ public fun hostname(): Result<OsString, Error> {
             // size and should be returned to the user.
             else -> {
                 val err = matchVal1
-                return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err))
+                return Result.Err<OsString, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(err))
             }
         }
         // Resize the buffer (according to `List`s resizing rules) and try again.
-        when (val tryResult = buf.tryReserve(buf.capacity() + 1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = buf.tryReserve(buf.capacity() + 1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OsString, Error>(tryResult.error) }
     }
 }

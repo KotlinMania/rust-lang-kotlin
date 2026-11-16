@@ -24,7 +24,7 @@ public fun setBytes(dest: MutPtr, c: UByte, count: Int) {}
 public fun compareBytes(a: ConstPtr, b: ConstPtr, n: Int): Int {
     val a1 = a
     val b1 = b
-    fun <T> cmp(a2: ConstPtr, b2: ConstPtr, n1: Int, f: (ConstPtr, ConstPtr, Int) -> Int, typeLayoutT: TypeLayout<T>): Int {
+    fun <T> cmp(a2: ConstPtr, b2: ConstPtr, n1: Int, f: (ConstPtr, ConstPtr, Int) -> Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
         var a23 = a2
         var b23 = b2
         // Ensure T is not a ZST.
@@ -84,12 +84,11 @@ public fun cStringLength(s: ConstPtr): Int {
     val align = s1.rawAddress.toInt() and 15
     var s2 = ConstPtr(((s1.rawAddress.toInt()) - align).toLong())
     val zero = mmSet1Epi8(0)
-    val x =
-        run {
-            val r: Any?
-            Unit
-            r
-        }
+    val x = run {
+        val r: Any?
+        Unit
+        r
+    }
     val cmp = mmMovemaskEpi8(mmCmpeqEpi8(x, zero)) shr align
     if (cmp != 0) {
         return n + cmp.trailingZeros().toInt()
@@ -97,12 +96,11 @@ public fun cStringLength(s: ConstPtr): Int {
     n += 16 - align
     s2 = ConstPtr((s2).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<M128i>()).strideBytes))
     while (true) {
-        val x1 =
-            run {
-                val r1: Any?
-                Unit
-                r1
-            }
+        val x1 = run {
+            val r1: Any?
+            Unit
+            r1
+        }
         val cmp1 = mmMovemaskEpi8(mmCmpeqEpi8(x1, zero)).toUInt()
         if (cmp1 == 0u) {
             n += 16

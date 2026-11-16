@@ -20,7 +20,7 @@ public fun peerCred(socket: UnixStream): Result<UCred, Error> {
     return run {
         val ret = getpeereid(socket.asRawFd(), cred.uid, cred.gid)
         if (ret != 0) {
-            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            return Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
         val localStorageL119C12 = AddressableLocal(1, UnresolvedTypeLayout<PidT>())
         val pid by localStorageL119C12
@@ -28,9 +28,9 @@ public fun peerCred(socket: UnixStream): Result<UCred, Error> {
         val ret1 = getsockopt(socket.asRawFd(), SOL_LOCAL, LOCAL_PEERPID, ((localStorageL119C12.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, pidSize)
         if (ret1 == 0 && pidSize == sizeOf<PidT>(typeLayoutT = UnresolvedTypeLayout<PidT>())) {
             cred.pid = pid
-            Result.Ok(cred)
+            Result.Ok<UCred, Error>(cred)
         } else {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
     }
 }

@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -56,9 +57,9 @@ public open class RawVec<T, A : Allocator> internal constructor(
      * A specialized version of `self.reserve(len, 1)` which requires the
      * caller to ensure `len == self.capacity()`.
      */
-    public open fun growOne() {
+    public open fun growOne(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
-        this.inner.growOne(T.LAYOUT)
+        this.inner.growOne(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
@@ -106,7 +107,7 @@ public open class RawVec<T, A : Allocator> internal constructor(
      *
      * This will always be `Int.MAX` if `T` is zero-sized.
      */
-    public open fun capacity(typeLayoutT: TypeLayout<T>): Int = this.inner.capacity(sizeOf<T>(typeLayoutT = typeLayoutT))
+    public open fun capacity(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int = this.inner.capacity(sizeOf<T>(typeLayoutT = typeLayoutT))
 
     /**
      * Returns a shared reference to the allocator backing this `RawVec`.
@@ -134,17 +135,17 @@ public open class RawVec<T, A : Allocator> internal constructor(
      *
      * Aborts on OOM.
      */
-    public open fun reserve(len: Int, additional: Int) {
+    public open fun reserve(len: Int, additional: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
-        this.inner.reserve(len, additional, T.LAYOUT)
+        this.inner.reserve(len, additional, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
      * The same as `reserve`, but returns on errors instead of panicking or aborting.
      */
-    public open fun tryReserve(len: Int, additional: Int): Result<Unit, TryReserveError> {
+    public open fun tryReserve(len: Int, additional: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, TryReserveError> {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
-        return this.inner.tryReserve(len, additional, T.LAYOUT)
+        return this.inner.tryReserve(len, additional, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
@@ -166,17 +167,17 @@ public open class RawVec<T, A : Allocator> internal constructor(
      *
      * Aborts on OOM.
      */
-    public open fun reserveExact(len: Int, additional: Int) {
+    public open fun reserveExact(len: Int, additional: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
-        this.inner.reserveExact(len, additional, T.LAYOUT)
+        this.inner.reserveExact(len, additional, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
      * The same as `reserveExact`, but returns on errors instead of panicking or aborting.
      */
-    public open fun tryReserveExact(len: Int, additional: Int): Result<Unit, TryReserveError> {
+    public open fun tryReserveExact(len: Int, additional: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, TryReserveError> {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
-        return this.inner.tryReserveExact(len, additional, T.LAYOUT)
+        return this.inner.tryReserveExact(len, additional, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
@@ -191,9 +192,9 @@ public open class RawVec<T, A : Allocator> internal constructor(
      *
      * Aborts on OOM.
      */
-    public open fun shrinkToFit(cap: Int) {
+    public open fun shrinkToFit(cap: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: All calls on self.inner pass T.Layout as the elemLayout
-        this.inner.shrinkToFit(cap, T.LAYOUT)
+        this.inner.shrinkToFit(cap, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
@@ -208,34 +209,33 @@ public open class RawVec<T, A : Allocator> internal constructor(
      *
      * Panics if the given amount is *larger* than the current capacity.
      */
-    public open fun tryShrinkToFit(cap: Int): Result<Unit, TryReserveError> {
+    public open fun tryShrinkToFit(cap: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, TryReserveError> {
         // SAFETY: Layout is valid for T.
-        return this.inner.tryShrinkToFit(cap, T.LAYOUT)
+        return this.inner.tryShrinkToFit(cap, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     /**
      * Frees the memory owned by the `RawVec` *without* trying to drop its contents.
      */
-    public open fun drop() {
+    public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: We are in a Drop impl, self.inner will not be used again.
-        this.inner.deallocate(T.LAYOUT)
+        this.inner.deallocate(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
     }
 
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             inner: RawVecInner<A>,
             marker: Unit,
-        ): RawVec<T, A> =
-            RawVec<T, A>(
-                innerCtorArg = inner,
-                marker = marker,
-            )
+        ): RawVec<T, A> = RawVec<T, A>(
+            innerCtorArg = inner,
+            marker = marker,
+        )
 
         /**
          * Like `withCapacity`, but parameterized over the choice of
          * allocator for the returned `RawVec`.
          */
-        public fun <T, A : Allocator> withCapacityIn(capacity: Int, alloc: A): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityIn(capacity, alloc, T.LAYOUT), marker = Unit)
+        public fun <T, A : Allocator> withCapacityIn(capacity: Int, alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityIn(capacity, alloc, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), marker = Unit)
 
         public val MIN_NON_ZERO_CAP: Int = minNonZeroCap(sizeOf<T>(typeLayoutT = UnresolvedTypeLayout<T>()))
 
@@ -245,7 +245,7 @@ public open class RawVec<T, A : Allocator> internal constructor(
          */
         public fun <T, A : Allocator> newIn(alloc: A): RawVec<T, A> {
             // Check assumption made in `currentMemory`
-            check(T.LAYOUT.size() % T.LAYOUT.align() == 0)
+            check(Layout.fromSizeAlignUnchecked((UnresolvedTypeLayout<T>()).sizeBytes.toInt(), (UnresolvedTypeLayout<T>()).alignBytes.toInt()).size() % Layout.fromSizeAlignUnchecked((UnresolvedTypeLayout<T>()).sizeBytes.toInt(), (UnresolvedTypeLayout<T>()).alignBytes.toInt()).align() == 0)
             return RawVec(inner = RawVecInner.newIn(alloc, Alignment.of<T>()), marker = Unit)
         }
 
@@ -253,26 +253,23 @@ public open class RawVec<T, A : Allocator> internal constructor(
          * Like `tryWithCapacity`, but parameterized over the choice of
          * allocator for the returned `RawVec`.
          */
-        public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<RawVec<T, A>, TryReserveError> =
+        public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<RawVec<T, A>, TryReserveError> =
             run {
-                val matchVal = RawVecInner.tryWithCapacityIn(capacity, alloc, T.LAYOUT)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        val inner = matchVal.value
-                        Result.Ok(RawVec(inner = inner, marker = Unit))
-                    }
-                    is Result.Err<*, *> -> {
-                        val e = matchVal.error
-                        Result.Err(e)
-                    }
-                }
+                val matchVal = RawVecInner.tryWithCapacityIn(capacity, alloc, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()))
+                when (matchVal) { is Result.Ok -> {
+                    val inner = matchVal.value
+                    Result.Ok<RawVec<T, A>, TryReserveError>(RawVec(inner = inner, marker = Unit))
+                }; is Result.Err -> {
+                    val e = matchVal.error
+                    Result.Err<RawVec<T, A>, TryReserveError>(e)
+                } }
             }
 
         /**
          * Like `withCapacityZeroed`, but parameterized over the choice
          * of allocator for the returned `RawVec`.
          */
-        public fun <T, A : Allocator> withCapacityZeroedIn(capacity: Int, alloc: A): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, alloc, T.LAYOUT), marker = Unit)
+        public fun <T, A : Allocator> withCapacityZeroedIn(capacity: Int, alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, A> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, alloc, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), marker = Unit)
 
         /**
          * Reconstitutes a `RawVec` from a pointer, capacity, and allocator.
@@ -286,11 +283,11 @@ public open class RawVec<T, A : Allocator> internal constructor(
          * If the `ptr` and `capacity` come from a `RawVec` created via `alloc`, then this is
          * guaranteed.
          */
-        public fun <T, A : Allocator> fromRawPartsIn(ptr: MutPtr, capacity: Int, alloc: A): RawVec<T, A> {
+        public fun <T, A : Allocator> fromRawPartsIn(ptr: MutPtr, capacity: Int, alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, A> {
             // SAFETY: Precondition passed to the caller
             return run {
                 val ptr1 = ptr
-                val capacity1 = newCap<T>(capacity)
+                val capacity1 = newCap<T>(capacity, typeLayoutT = typeLayoutT)
                 RawVec(inner = RawVecInner.fromRawPartsIn(ptr1, capacity1, alloc), marker = Unit)
             }
         }
@@ -302,11 +299,11 @@ public open class RawVec<T, A : Allocator> internal constructor(
          *
          * See [RawVec.fromRawPartsIn].
          */
-        public fun <T, A : Allocator> fromNonnullIn(ptr: NonNull, capacity: Int, alloc: A): RawVec<T, A> {
+        public fun <T, A : Allocator> fromNonnullIn(ptr: NonNull, capacity: Int, alloc: A, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, A> {
             // SAFETY: Precondition passed to the caller
             return run {
                 val ptr1 = ptr.cast()
-                val capacity1 = newCap<T>(capacity)
+                val capacity1 = newCap<T>(capacity, typeLayoutT = typeLayoutT)
                 RawVec(inner = RawVecInner.fromNonnullIn(ptr1, capacity1, alloc), marker = Unit)
             }
         }
@@ -320,7 +317,7 @@ public open class RawVec<T, A : Allocator> internal constructor(
  * `RawVec` with capacity `Int.MAX`. Useful for implementing
  * delayed allocation.
  */
-public fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global)
+public fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global())
 
 /**
  * Creates a `RawVec` (on the system heap) with exactly the
@@ -339,12 +336,12 @@ public fun <T> RawVec.Companion.new(): RawVec<T, Global> = RawVec.newIn(Global)
  *
  * Aborts on OOM.
  */
-public fun <T> RawVec.Companion.withCapacity(capacity: Int): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacity(capacity, T.LAYOUT), marker = Unit)
+public fun <T> RawVec.Companion.withCapacity(capacity: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacity(capacity, Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), marker = Unit)
 
 /**
  * Like `withCapacity`, but guarantees the buffer is zeroed.
  */
-public fun <T> RawVec.Companion.withCapacityZeroed(capacity: Int): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, Global, T.LAYOUT), marker = Unit)
+public fun <T> RawVec.Companion.withCapacityZeroed(capacity: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RawVec<T, Global> = RawVec(inner = RawVecInner.withCapacityZeroedIn(capacity, Global(), Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())), marker = Unit)
 
 /**
  * Like a `RawVec`, but only generic over the allocator, not the type.
@@ -401,14 +398,10 @@ public open class RawVecInner<A : Allocator> internal constructor(
         if (elemLayout.size() == 0) {
             // Since we return a capacity of `Int.MAX` when `elemSize` is
             // 0, getting to here necessarily means the `RawVec` is overfull.
-            return Result.Err(CapacityOverflow.into())
+            return Result.Err<Unit, TryReserveError>(CapacityOverflow.into())
         }
         // Nothing we can really do about these checks, sadly.
-        val requiredCap =
-            when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(CapacityOverflow))) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val requiredCap = when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // This guarantees exponential growth. The doubling cannot overflow
         // because `cap <= Long.MAX` and the type of `cap` is `Int`.
         val cap = max(this.cap.asInner() * 2, requiredCap)
@@ -416,14 +409,10 @@ public open class RawVecInner<A : Allocator> internal constructor(
         // SAFETY:
         // - cap >= len + additional
         // - other preconditions passed to caller
-        val ptr =
-            when (val tryResult = this.finishGrow(cap1, elemLayout)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val ptr = when (val tryResult = this.finishGrow(cap1, elemLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // SAFETY: `finishGrow` would have failed if `cap> Long.MAX`
         this.setPtrAndCap(ptr, cap1)
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     // not marked inline(never) since we want optimizers to be able to observe the specifics of this
@@ -437,11 +426,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
      * - `cap` must be greater than the current capacity
      */
     public open fun finishGrow(cap: Int, elemLayout: Layout): Result<NonNull, TryReserveError> {
-        val newLayout =
-            when (val tryResult = layoutArray(cap, elemLayout)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val newLayout = when (val tryResult = layoutArray(cap, elemLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, TryReserveError>(tryResult.error) }
         // SAFETY: Upheld by caller.
         val memory =
             when (val matchVal = this.currentMemory(elemLayout)) {
@@ -539,10 +524,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
         if (this.needsToGrow(len, additional, elemLayout)) {
             // SAFETY: Precondition passed to caller
             run {
-                when (val tryResult = this.growAmortized(len, additional, elemLayout)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+                when (val tryResult = this.growAmortized(len, additional, elemLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
             }
         }
         // SAFETY: If we've already grown, we will not need to again immediately after.
@@ -550,7 +532,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
             // Inform the optimizer that the reservation has succeeded or wasn't needed
             assertUnchecked(!this.needsToGrow(len, additional, elemLayout))
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
@@ -580,10 +562,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
         if (this.needsToGrow(len, additional, elemLayout)) {
             // SAFETY: Precondition passed to caller
             run {
-                when (val tryResult = this.growExact(len, additional, elemLayout)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+                when (val tryResult = this.growExact(len, additional, elemLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
             }
         }
         // SAFETY: If we've already grown, we will not need to again immediately after.
@@ -591,7 +570,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
             // Inform the optimizer that the reservation has succeeded or wasn't needed
             assertUnchecked(!this.needsToGrow(len, additional, elemLayout))
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
@@ -647,22 +626,14 @@ public open class RawVecInner<A : Allocator> internal constructor(
         if (elemLayout.size() == 0) {
             // Since we return a capacity of `Int.MAX` when the type size is
             // 0, getting to here necessarily means the `RawVec` is overfull.
-            return Result.Err(CapacityOverflow.into())
+            return Result.Err<Unit, TryReserveError>(CapacityOverflow.into())
         }
-        val cap =
-            when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(CapacityOverflow))) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val cap = when (val tryResult = (len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // SAFETY: preconditions passed to caller
-        val ptr =
-            when (val tryResult = this.finishGrow(cap, elemLayout)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val ptr = when (val tryResult = this.finishGrow(cap, elemLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // SAFETY: `finishGrow` would have failed if `cap> Long.MAX`
         this.setPtrAndCap(ptr, cap)
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
@@ -693,7 +664,7 @@ public open class RawVecInner<A : Allocator> internal constructor(
      */
     public open fun shrinkUnchecked(cap: Int, elemLayout: Layout): Result<Unit, TryReserveError> {
         // SAFETY: Precondition passed to caller
-        val (ptr, layout) = (this.currentMemory(elemLayout)) ?: return Result.Ok(Unit)
+        val (ptr, layout) = (this.currentMemory(elemLayout)) ?: return Result.Ok<Unit, TryReserveError>(Unit)
         // If shrinking to 0, deallocate the buffer. We don't reach this point
         // for the T.IsZst case since currentMemory() will have returned
         // None.
@@ -713,17 +684,14 @@ public open class RawVecInner<A : Allocator> internal constructor(
                 run {
                     val newSize = elemLayout.size().uncheckedMul(cap)
                     val newLayout = Layout.fromSizeAlignUnchecked(newSize, layout.align())
-                    when (val tryResult = this.alloc.shrink(ptr, layout, newLayout).mapErr({ AllocError(layout = newLayout, nonExhaustive = Unit) })) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                    }
+                    when (val tryResult = this.alloc.shrink(ptr, layout, newLayout).mapErr({ AllocError(layout = newLayout, nonExhaustive = Unit) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
                 }
             // SAFETY: if the allocation is valid, then the capacity is too
             run {
                 this.setPtrAndCap(ptr1, cap)
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
@@ -756,31 +724,27 @@ public open class RawVecInner<A : Allocator> internal constructor(
             ptr: NonNull,
             cap: Cap,
             alloc: A,
-        ): RawVecInner<A> =
-            RawVecInner<A>(
-                ptrCtorArg = ptr,
-                cap = cap,
-                alloc = alloc,
-            )
+        ): RawVecInner<A> = RawVecInner<A>(
+            ptrCtorArg = ptr,
+            cap = cap,
+            alloc = alloc,
+        )
 
         public fun <A : Allocator> withCapacityIn(capacity: Int, alloc: A, elemLayout: Layout): RawVecInner<A> =
             run {
                 val matchVal = RawVecInner.tryAllocateIn(capacity, AllocInit.Uninitialized, alloc, elemLayout)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        val thisRef = matchVal.value
-                        // SAFETY: We already allocated at least `capacity`.
-                        run {
-                            // Make it more obvious that a subsequent Vec.reserve(capacity) will not allocate.
-                            assertUnchecked(!thisRef.needsToGrow(0, capacity, elemLayout))
-                        }
-                        thisRef
+                when (matchVal) { is Result.Ok -> {
+                    val thisRef = matchVal.value
+                    // SAFETY: We already allocated at least `capacity`.
+                    run {
+                        // Make it more obvious that a subsequent Vec.reserve(capacity) will not allocate.
+                        assertUnchecked(!thisRef.needsToGrow(0, capacity, elemLayout))
                     }
-                    is Result.Err<*, *> -> {
-                        val err = matchVal.error
-                        handleError(err)
-                    }
-                }
+                    thisRef
+                }; is Result.Err -> {
+                    val err = matchVal.error
+                    handleError(err)
+                } }
             }
 
         public fun <A : Allocator> tryAllocateIn(capacity: Int, init: AllocInit, alloc: A, elemLayout: Layout): Result<RawVecInner<A>, TryReserveError> {
@@ -789,19 +753,16 @@ public open class RawVecInner<A : Allocator> internal constructor(
             val layout1 =
                 run {
                     val matchVal = layoutArray(capacity, elemLayout)
-                    when (matchVal) {
-                        is Result.Ok<*, *> -> {
-                            val layout = matchVal.value
-                            layout
-                        }
-                        is Result.Err<*, *> -> {
-                            return Result.Err(CapacityOverflow.into())
-                        }
-                    }
+                    when (matchVal) { is Result.Ok -> {
+                        val layout = matchVal.value
+                        layout
+                    }; is Result.Err -> {
+                        return Result.Err<RawVecInner<A>, TryReserveError>(CapacityOverflow.into())
+                    } }
                 }
             // Don't allocate here because `Drop` will not deallocate when `capacity` is 0.
             if (layout1.size() == 0) {
-                return Result.Ok(RawVecInner.newIn(alloc, elemLayout.alignment()))
+                return Result.Ok<RawVecInner<A>, TryReserveError>(RawVecInner.newIn(alloc, elemLayout.alignment()))
             }
             val result =
                 when (init) {
@@ -809,19 +770,16 @@ public open class RawVecInner<A : Allocator> internal constructor(
                     AllocInit.Zeroed -> alloc.allocateZeroed(layout1)
                 }
             val ptr1 =
-                when (result) {
-                    is Result.Ok<*, *> -> {
-                        val ptr = result.value
-                        ptr
-                    }
-                    is Result.Err<*, *> -> {
-                        return Result.Err(AllocError(layout = layout1, nonExhaustive = Unit).into())
-                    }
-                }
+                when (result) { is Result.Ok -> {
+                    val ptr = result.value
+                    ptr
+                }; is Result.Err -> {
+                    return Result.Err<RawVecInner<A>, TryReserveError>(AllocError(layout = layout1, nonExhaustive = Unit).into())
+                } }
             // Allocators currently return a `NonNull<[UByte]>` whose length
             // matches the size requested. If that ever changes, the capacity
             // here should change to `ptr.len() / sizeOf<T>()`.
-            return Result.Ok(RawVecInner(ptr = ptr1.cast(), cap = Cap.newUnchecked(capacity), alloc = alloc))
+            return Result.Ok<RawVecInner<A>, TryReserveError>(RawVecInner(ptr = ptr1.cast(), cap = Cap.newUnchecked(capacity), alloc = alloc))
         }
 
         public fun <A : Allocator> newIn(alloc: A, align: Alignment): RawVecInner<A> {
@@ -835,16 +793,13 @@ public open class RawVecInner<A : Allocator> internal constructor(
         public fun <A : Allocator> withCapacityZeroedIn(capacity: Int, alloc: A, elemLayout: Layout): RawVecInner<A> =
             run {
                 val matchVal = RawVecInner.tryAllocateIn(capacity, AllocInit.Zeroed, alloc, elemLayout)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        val res = matchVal.value
-                        res
-                    }
-                    is Result.Err<*, *> -> {
-                        val err = matchVal.error
-                        handleError(err)
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    val res = matchVal.value
+                    res
+                }; is Result.Err -> {
+                    val err = matchVal.error
+                    handleError(err)
+                } }
             }
 
         public fun <A : Allocator> fromRawPartsIn(ptr: MutPtr, cap: Cap, alloc: A): RawVecInner<A> {
@@ -858,15 +813,12 @@ public open class RawVecInner<A : Allocator> internal constructor(
 
 public fun RawVecInner.Companion.withCapacity(capacity: Int, elemLayout: Layout): RawVecInner<Global> =
     run {
-        val matchVal = RawVecInner.tryAllocateIn(capacity, AllocInit.Uninitialized, Global, elemLayout)
-        when (matchVal) {
-            is Result.Ok<*, *> -> {
-                val res = matchVal.value
-                res
-            }
-            is Result.Err<*, *> -> {
-                val err = matchVal.error
-                handleError(err)
-            }
-        }
+        val matchVal = RawVecInner.tryAllocateIn(capacity, AllocInit.Uninitialized, Global(), elemLayout)
+        when (matchVal) { is Result.Ok -> {
+            val res = matchVal.value
+            res
+        }; is Result.Err -> {
+            val err = matchVal.error
+            handleError(err)
+        } }
     }

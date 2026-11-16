@@ -1,6 +1,7 @@
 // port-lint: source types.rs
 package io.github.kotlinmania.rustlang.test
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
@@ -110,9 +111,7 @@ public sealed class TestName {
         return TestName.AlignedTestName(name3, padding)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.asSlice()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.asSlice()).toString()); Result.Ok(Unit) }
 }
 
 // A function that runs a test. If the function returns successfully,
@@ -238,8 +237,9 @@ public sealed class TestFn {
             }
         }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append(when (this) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
+        run {
+f.append(when (this) {
             is StaticTestFn -> "StaticTestFn(..)"
             is StaticBenchFn -> "StaticBenchFn(..)"
             is StaticBenchAsTestFn -> "StaticBenchAsTestFn(..)"
@@ -247,7 +247,8 @@ public sealed class TestFn {
             is DynBenchFn -> "DynBenchFn(..)"
             is DynBenchAsTestFn -> "DynBenchAsTestFn(..)"
         })
-    }
+Result.Ok(Unit)
+}
 }
 
 public sealed class Runnable {

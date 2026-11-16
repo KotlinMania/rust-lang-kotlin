@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarrylessMul
 import io.github.kotlinmania.rustlang.core.intrinsics.fallback.DisjointBitOr
 import io.github.kotlinmania.rustlang.core.intrinsics.fallback.FunnelShift
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
@@ -289,7 +290,7 @@ public fun <T : CarryingMulAdd<T, U>, U> carryingMulAdd(multiplier: T, multiplic
  * primitives via the `rotateLeft` method. For example,
  * [u32.rotateLeft]
  */
-public fun <T : FunnelShift<T>> rotateLeft(x: T, shift: UInt, typeLayoutT: TypeLayout<T>): T {
+public fun <T : FunnelShift<T>> rotateLeft(x: T, shift: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // Make sure to call the intrinsic for `funnelShl`, not the fallback impl.
     // SAFETY: we modulo `shift` so that the result is definitely less than the size of
     // `T` in bits.
@@ -308,7 +309,7 @@ public fun <T : FunnelShift<T>> rotateLeft(x: T, shift: UInt, typeLayoutT: TypeL
  * primitives via the `rotateRight` method. For example,
  * [u32.rotateRight]
  */
-public fun <T : FunnelShift<T>> rotateRight(x: T, shift: UInt, typeLayoutT: TypeLayout<T>): T {
+public fun <T : FunnelShift<T>> rotateRight(x: T, shift: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // Make sure to call the intrinsic for `funnelShr`, not the fallback impl.
     // SAFETY: we modulo `shift` so that the result is definitely less than the size of
     // `T` in bits.

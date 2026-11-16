@@ -1,6 +1,8 @@
 // port-lint: source sync/nonpoison/condvar.rs
 package io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
@@ -417,9 +419,7 @@ public open class Condvar(
         this.inner.notifyAll()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Condvar").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Condvar").finishNonExhaustive()
 
     public companion object {
         /**

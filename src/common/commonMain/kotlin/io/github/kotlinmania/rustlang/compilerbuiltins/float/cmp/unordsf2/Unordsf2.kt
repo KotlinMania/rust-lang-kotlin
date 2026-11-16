@@ -3,6 +3,4 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.unordsf2
 
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.CmpResult
 
-public fun unordsf2(a: Float, b: Float): CmpResult =
-    io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp
-        .unordsf2(a, b)
+public fun unordsf2(a: Float, b: Float): CmpResult = io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.unordsf2(a, b)

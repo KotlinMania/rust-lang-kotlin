@@ -20,15 +20,25 @@ public actual fun lvewx(p: ConstPtr): VectorSignedInt =
 public actual fun lvxl(p: ConstPtr): VectorUnsignedInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecLvxl")
 
-public actual fun stvx(a: VectorSignedInt, p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvx")
+public actual fun stvx(a: VectorSignedInt, p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvx")
+}
 
-public actual fun stvebx(a: VectorSignedChar, p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvebx")
+public actual fun stvebx(a: VectorSignedChar, p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvebx")
+}
 
-public actual fun stvehx(a: VectorSignedShort, p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvehx")
+public actual fun stvehx(a: VectorSignedShort, p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvehx")
+}
 
-public actual fun stvewx(a: VectorSignedInt, p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvewx")
+public actual fun stvewx(a: VectorSignedInt, p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvewx")
+}
 
-public actual fun stvxl(a: VectorSignedInt, p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvxl")
+public actual fun stvxl(a: VectorSignedInt, p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecStvxl")
+}
 
 public actual fun vperm(a: VectorSignedInt, b: VectorSignedInt, c: VectorUnsignedChar): VectorSignedInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchPowerpcAltivecVperm")

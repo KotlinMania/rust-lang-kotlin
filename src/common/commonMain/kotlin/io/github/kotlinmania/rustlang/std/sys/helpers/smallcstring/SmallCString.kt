@@ -51,11 +51,11 @@ public fun <T> runWithCstrStack(bytes: List<UByte>, f: (CStr) -> Result<T, Error
     }
     return run {
         val matchVal = CStr.fromBytesWithNul(Slice.fromRawParts(bufPtr, bytes.size + 1))
-        when (matchVal) { is Result.Ok<*, *> -> {
+        when (matchVal) { is Result.Ok -> {
             val s = matchVal.value
             f(s)
-        }; is Result.Err<*, *> -> {
-            Result.Err(NUL_ERR)
+        }; is Result.Err -> {
+            Result.Err<T, Error>(NUL_ERR)
         } }
     }
 }
@@ -63,10 +63,10 @@ public fun <T> runWithCstrStack(bytes: List<UByte>, f: (CStr) -> Result<T, Error
 public fun <T> runWithCstrAllocating(bytes: List<UByte>, f: (CStr) -> Result<T, Error>): Result<T, Error> =
     run {
         val matchVal = CString.new(bytes)
-        when (matchVal) { is Result.Ok<*, *> -> {
+        when (matchVal) { is Result.Ok -> {
             val s = matchVal.value
             f(s)
-        }; is Result.Err<*, *> -> {
-            Result.Err(NUL_ERR)
+        }; is Result.Err -> {
+            Result.Err<T, Error>(NUL_ERR)
         } }
     }

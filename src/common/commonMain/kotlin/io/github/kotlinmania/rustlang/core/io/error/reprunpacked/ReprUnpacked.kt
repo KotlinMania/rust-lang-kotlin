@@ -71,10 +71,9 @@ public open class Repr internal constructor(
     public companion object {
         public operator fun invoke(
             value: Inner,
-        ): Repr =
-            Repr(
-                valueCtorArg = value,
-            )
+        ): Repr = Repr(
+            valueCtorArg = value,
+        )
 
         public fun newCustom(b: CustomOwner): Repr = Repr(Inner.Custom(b))
 

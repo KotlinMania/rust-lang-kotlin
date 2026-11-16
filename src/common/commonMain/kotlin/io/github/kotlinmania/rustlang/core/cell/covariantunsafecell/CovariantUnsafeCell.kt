@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.cell.covariantunsafecell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -50,7 +51,7 @@ public class DebugStruct(
  */
 public open class CovariantUnsafeCell<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UnsafeCell<T>>,
+    public val fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout(),
 ) {
     public var field0: UnsafeCell<T>
         get() = value
@@ -60,11 +61,9 @@ public open class CovariantUnsafeCell<T> internal constructor(
 
     public var value: UnsafeCell<T>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CovariantUnsafeCell<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CovariantUnsafeCell<T>(ptr, layout) }, { it.value })
 
@@ -139,9 +138,9 @@ public open class CovariantUnsafeCell<T> internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "CovariantUnsafeCell").finishNonExhaustive()
 
     public companion object {
-        public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>>): CovariantUnsafeCell<T> = CovariantUnsafeCell<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): CovariantUnsafeCell<T> = CovariantUnsafeCell<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<T>>): CovariantUnsafeCell<T> = CovariantUnsafeCell<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): CovariantUnsafeCell<T> = CovariantUnsafeCell<T>(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of `CovariantUnsafeCell` which will wrap the specified value.
@@ -159,7 +158,7 @@ public open class CovariantUnsafeCell<T> internal constructor(
          * }
          * ```
          */
-        public fun <T> new(value: T, fieldLayout: TypeLayout<T>): CovariantUnsafeCell<T> = CovariantUnsafeCell(UnsafeCell.new(value), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T>(ptr, layout) }, { it.value }))
+        public fun <T> new(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()): CovariantUnsafeCell<T> = CovariantUnsafeCell(UnsafeCell.new(value), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T>(ptr, layout) }, { it.value }))
 
         /**
          * Gets a mutable pointer to the wrapped value.

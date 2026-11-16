@@ -107,7 +107,9 @@ public actual fun utimensat(dirfd: CInt, path: ConstPtr, times: ConstPtr, flag: 
 public actual fun duplocale(base: LocaleT): LocaleT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeDuplocale")
 
-public actual fun freelocale(loc: LocaleT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeFreelocale")
+public actual fun freelocale(loc: LocaleT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeFreelocale")
+}
 
 public actual fun newlocale(mask: CInt, locale: ConstPtr, base: LocaleT): LocaleT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeNewlocale")
@@ -181,7 +183,9 @@ public actual fun fexecve(fd: CInt, argv: ConstPtr, envp: ConstPtr): CInt =
 public actual fun getifaddrs(ifap: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeGetifaddrs")
 
-public actual fun freeifaddrs(ifa: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeFreeifaddrs")
+public actual fun freeifaddrs(ifa: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeFreeifaddrs")
+}
 
 public actual fun bind(socket: CInt, address: ConstPtr, addressLen: SocklenT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeBind")
@@ -228,7 +232,9 @@ public actual fun setdomainname(name: ConstPtr, len: SizeT): CInt =
 public actual fun ifNameindex(): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeIfNameindex")
 
-public actual fun ifFreenameindex(ptr: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeIfFreenameindex")
+public actual fun ifFreenameindex(ptr: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeIfFreenameindex")
+}
 
 public actual fun getpwnamR(name: ConstPtr, pwd: MutPtr, buf: MutPtr, buflen: SizeT, result: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeGetpwnamR")

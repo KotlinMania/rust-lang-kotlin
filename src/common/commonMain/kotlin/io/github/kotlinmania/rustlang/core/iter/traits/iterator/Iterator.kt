@@ -43,6 +43,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -285,21 +286,21 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         /**
          * Helper trait to specialize `advanceBy` via `tryFold` for `Sized` iterators.
          */
         interface SpecAdvanceBy {
-            public fun specAdvanceBy(n1: Int): Result<Unit, NonZero<Int>>
+            public fun specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
         }
-        fun <Item, I : Iterator<I, Any?>> I.specAdvanceBy(n1: Int): Result<Unit, NonZero<Int>> {
+        fun <Item, I : Iterator<I, Any?>> I.specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
             for (i in 0 until n1) {
                 if (this.next() == null) {
                     // SAFETY: `i` is always less than `n`.
-                    return Result.Err(NonZero.newUnchecked(n1 - i))
+                    return Result.Err<Unit, NonZero<Int, NonZeroUsizeInner>>(NonZero.newUnchecked<NonZeroUsizeInner, Int>(n1 - i))
                 }
             }
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
         }
         return this.specAdvanceBy(n)
     }
@@ -1958,11 +1959,7 @@ public interface Iterator<SelfType, Item> {
             val trueCount1 = trueCount
             return { x ->
                 val p = predicate1(x)
-                (trueCount1).let { targetPlace ->
-                    var currentValue = targetPlace.read()
-                    currentValue += (p.toInt())
-                    targetPlace.write(currentValue)
-                }
+                (trueCount1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (p.toInt()); targetPlace.write(currentValue) }
                 !p
             }
         }
@@ -2102,11 +2099,7 @@ public interface Iterator<SelfType, Item> {
             val matchVal = this.next()
             if (matchVal == null) break
             val x = matchVal
-            accum =
-                when (val tryResult = f(accum, x)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         }
         return accum
     }
@@ -2401,7 +2394,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun all(f: (Item) -> Boolean): Boolean {
-        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit> =
+        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit, Unit> =
             { x ->
                 if (f1(x)) {
                     ControlFlow.Continue()
@@ -2447,7 +2440,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun any(f: (Item) -> Boolean): Boolean {
-        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit> =
+        fun <T> check(f1: (T) -> Boolean): (Unit, T) -> ControlFlow<Unit, Unit> =
             { x ->
                 if (f1(x)) {
                     ControlFlow.Break()
@@ -2512,7 +2505,7 @@ public interface Iterator<SelfType, Item> {
      * Note that `iter.find(f)` is equivalent to `iter.filter(f).next()`.
      */
     public fun find(predicate: (Item) -> Boolean): Item? {
-        fun <T> check(predicate1: (T) -> Boolean): (Unit, T) -> ControlFlow<T> =
+        fun <T> check(predicate1: (T) -> Boolean): (Unit, T) -> ControlFlow<T, Unit> =
             { x ->
                 if (predicate1(x)) {
                     ControlFlow.Break(x)
@@ -2538,16 +2531,14 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <B> findMap(f: (Item) -> B?): B? {
-        fun <T, B> check(f1: (T) -> B?): (Unit, T) -> ControlFlow<B> =
-            { x ->
-                when (val matchVal = f1(x)) {
-                    null -> ControlFlow.Continue()
-                    else -> {
-                        val x1 = matchVal
-                        ControlFlow.Break(x1)
-                    }
+        fun <T, B> check(f1: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
+            { x -> when (val matchVal = f1(x)) {
+                null -> ControlFlow.Continue()
+                else -> {
+                    val x1 = matchVal
+                    ControlFlow.Break(x1)
                 }
-            }
+            } }
         return this.tryFold(check(f)).breakValue()
     }
 
@@ -2651,11 +2642,7 @@ public interface Iterator<SelfType, Item> {
                 if (predicate1(x)) {
                     ControlFlow.Break((acc1).read())
                 } else {
-                    (acc1).let { targetPlace ->
-                        var currentValue = targetPlace.read()
-                        currentValue += (1)
-                        targetPlace.write(currentValue)
-                    }
+                    (acc1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
                     ControlFlow.Continue()
                 }
             }
@@ -3118,16 +3105,14 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <Item, IntoIter, I> cmpBy(other: I, cmp: (Item, I.Item) -> Ordering): Ordering {
-        fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering> =
-            { x, y ->
-                when (val matchVal = cmp1(x, y)) {
-                    Ordering.Equal -> ControlFlow.Continue()
-                    else -> {
-                        val nonEq = matchVal
-                        ControlFlow.Break(nonEq)
-                    }
+        fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering, Unit> =
+            { x, y -> when (val matchVal = cmp1(x, y)) {
+                Ordering.Equal -> ControlFlow.Continue()
+                else -> {
+                    val nonEq = matchVal
+                    ControlFlow.Break(nonEq)
                 }
-            }
+            } }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(cmp))) {
             is ControlFlow.Continue -> {
                 val (ord) = matchVal
@@ -3195,16 +3180,14 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <Item, IntoIter, I> partialCmpBy(other: I, partialCmp: (Item, I.Item) -> Ordering?): Ordering? {
-        fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?> =
-            { x, y ->
-                when (val matchVal = partialCmp1(x, y)) {
-                    Ordering.Equal -> ControlFlow.Continue()
-                    else -> {
-                        val nonEq = matchVal
-                        ControlFlow.Break(nonEq)
-                    }
+        fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?, Unit> =
+            { x, y -> when (val matchVal = partialCmp1(x, y)) {
+                Ordering.Equal -> ControlFlow.Continue()
+                else -> {
+                    val nonEq = matchVal
+                    ControlFlow.Break(nonEq)
                 }
-            }
+            } }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(partialCmp))) {
             is ControlFlow.Continue -> {
                 val (ord) = matchVal
@@ -3246,7 +3229,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun <Item, IntoIter, I> eqBy(other: I, eq: (Item, I.Item) -> Boolean): Boolean {
-        fun <X, Y> compare(eq1: (Item, I.Item) -> Boolean): (X, Y) -> ControlFlow<Unit> =
+        fun <X, Y> compare(eq1: (Item, I.Item) -> Boolean): (X, Y) -> ControlFlow<Unit, Unit> =
             { x, y ->
                 if (eq1(x, y)) {
                     ControlFlow.Continue()
@@ -3390,9 +3373,7 @@ public interface Iterator<SelfType, Item> {
         }
         var last =
             when (val matchVal = this.next()) {
-                null -> {
-                    return true
-                }
+                null -> { return true }
                 else -> {
                     val e = matchVal
                     e
@@ -3430,12 +3411,12 @@ public interface Iterator<SelfType, Item> {
 }
 
 public interface SpecIterEq<B : Iterator<B, Any?>, Item, T> : Iterator<T, Any?> {
-    public fun specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit>): Boolean
+    public fun specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean
 }
 
-public fun <Item, A : Iterator<A, Any?>, B : Iterator<B, Any?>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit>): Boolean = iterEq(this, b, f)
+public fun <Item, A : Iterator<A, Any?>, B : Iterator<B, Any?>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean = iterEq(this, b, f)
 
-public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>): Boolean where A : Iterator<A, Any?>, A : TrustedLen<A>, B : Iterator<B, Any?>, B : TrustedLen<B> {
+public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Any?>, A : TrustedLen<A>, B : Iterator<B, Any?>, B : TrustedLen<B> {
     // we *can't* short-circuit if:
     run {
         val matchVal = Pair(this.sizeHint(), b.sizeHint())
@@ -3448,9 +3429,7 @@ public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>
             // ... or both of them are longer than `Int.MAX` (i.e. have an unknown length).
             matchVal.first.second == null && matchVal.second.second == null -> {}
             // otherwise, we can ascertain that they are unequal without actually comparing items
-            else -> {
-                return false
-            }
+            else -> { return false }
         }
     }
     return iterEq(this, b, f)
@@ -3468,25 +3447,20 @@ public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit>
  * Isolates the logic shared by ['cmpBy'](Iterator.cmpBy),
  * ['partialCmpBy'](Iterator.partialCmpBy), and ['eqBy'](Iterator.eqBy).
  */
-public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T>): ControlFlow<T, Ordering> where A : Iterator<A, Any?>, B : Iterator<B, Any?> {
-    fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T>): (X) -> ControlFlow<ControlFlow<T, Ordering>> where B : Iterator<B, Any?> =
-        { x ->
-            when (val matchVal = b1.next()) {
-                null -> ControlFlow.Break(ControlFlow.Continue(Ordering.Greater))
-                else -> {
-                    val y = matchVal
-                    f1(x, y).mapBreak(ControlFlow.Break)
-                }
+public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T, Unit>): ControlFlow<T, Ordering> where A : Iterator<A, Any?>, B : Iterator<B, Any?> {
+    fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T, Unit>): (X) -> ControlFlow<ControlFlow<T, Ordering>, Unit> where B : Iterator<B, Any?> =
+        { x -> when (val matchVal = b1.next()) {
+            null -> ControlFlow.Break(ControlFlow.Continue(Ordering.Greater))
+            else -> {
+                val y = matchVal
+                f1(x, y).mapBreak(ControlFlow.Break)
             }
-        }
+        } }
     return when (val matchVal = a.tryForEach(compare(b, f))) {
-        is ControlFlow.Continue ->
-            ControlFlow.Continue(
-                when (val matchVal1 = b.next()) {
-                    null -> Ordering.Equal
-                    else -> Ordering.Less
-                },
-            )
+        is ControlFlow.Continue -> ControlFlow.Continue(when (val matchVal1 = b.next()) {
+            null -> Ordering.Equal
+            else -> Ordering.Less
+        })
         is ControlFlow.Break -> {
             val (x) = matchVal
             x
@@ -3494,7 +3468,7 @@ public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> Contro
     }
 }
 
-public fun <Item, A, B> iterEq(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<Unit>): Boolean where A : Iterator<A, Any?>, B : Iterator<B, Any?> = iterCompare(a, b, f).continueValue().isSomeAnd({ ord -> ord == Ordering.Equal })
+public fun <Item, A, B> iterEq(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Any?>, B : Iterator<B, Any?> = iterCompare(a, b, f).continueValue().isSomeAnd({ ord -> ord == Ordering.Equal })
 
 /**
  * Helper trait to specialize `fold` and `tryFold` for `I where I: Sized`
@@ -3522,11 +3496,7 @@ public fun <Item, I : Iterator<I, Any?>, B, R> I.specTryFold(init: B, f: (B, Ite
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum =
-            when (val tryResult = f(accum, x)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return accum
 }

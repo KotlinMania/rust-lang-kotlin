@@ -43,12 +43,12 @@ public fun uniqueThreadExit() {
     run {
         val matchVal = EXITING_THREAD_ID.compareExchange(MutPtr(0L), thisThreadId, Acquire, Relaxed)
         when {
-            matchVal is Result.Ok<*, *> -> {
+            matchVal is Result.Ok -> {
                 // This is the first thread to call `uniqueThreadExit`,
                 // and this is the first time it is called. Continue exiting.
             }
-            matchVal is Result.Err<*, *> && (((matchVal as Result.Err<*, *>).error).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
-                val exitingThreadId = (matchVal as Result.Err<*, *>).error
+            matchVal is Result.Err && (((matchVal as Result.Err).error).rawAddress.toULong() == (thisThreadId).rawAddress.toULong()) -> {
+                val exitingThreadId = matchVal.error
                 // This is the first thread to call `uniqueThreadExit`,
                 // but this is the second time it is called.
                 // Abort the process.

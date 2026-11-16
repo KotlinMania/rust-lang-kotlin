@@ -185,14 +185,14 @@ public fun Error.intoInner(): Any? {
  */
 public fun <E> Error.downcast(): Result<E, Error> =
     if (this.getRef() != null && e.isMatch<E>()) {
-        if (this.intoInner() != null && b.downcast<E>() is Result.Ok<*, *>) {
-            Result.Ok(err)
+        if (this.intoInner() != null && b.downcast<E>() is Result.Ok) {
+            Result.Ok<E, Error>(err)
         } else {
             // SAFETY: We have just checked that the condition is true
             unreachableUnchecked()
         }
     } else {
-        Result.Err(this)
+        Result.Err<E, Error>(this)
     }
 
 /**

@@ -1,6 +1,7 @@
 // port-lint: source os/unix/net/stream.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
 import io.github.kotlinmania.rustlang.std.io.Read
 import io.github.kotlinmania.rustlang.std.io.Write
-import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
@@ -101,7 +101,7 @@ public open class UnixStream(
             value = v
         }
 
-    public open fun fmt(fmt: StringBuilder) {
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Error> {
         val builder = DebugStruct(fmt, "UnixStream")
         builder.field("fd", this.value.asInner())
         when (val matchVal = this.localAddr()) {
@@ -118,7 +118,7 @@ public open class UnixStream(
             }
             else -> {}
         }
-        builder.finish()
+        return builder.finish()
     }
 
     /**
@@ -140,7 +140,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun tryClone(): Result<UnixStream, Error> = this.value.duplicate().map({ UnixStream(it) })
+    public open fun tryClone(): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.duplicate().map({ UnixStream(it) })
 
     /**
      * Returns the socket address of the local half of this connection.
@@ -156,7 +156,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun localAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
+    public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
 
     /**
      * Returns the socket address of the remote half of this connection.
@@ -172,7 +172,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun peerAddr(): Result<SocketAddr, Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
+    public open fun peerAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
 
     /**
      * Gets the peer credentials for this Unix domain socket.
@@ -189,7 +189,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun peerCred(): Result<UCred, Error> = peerCred(this)
+    public open fun peerCred(): Result<UCred, io.github.kotlinmania.rustlang.std.io.error.Error> = peerCred(this)
 
     /**
      * Sets the read timeout for the socket.
@@ -228,7 +228,7 @@ public open class UnixStream(
      * }
      * ```
      */
-    public open fun setReadTimeout(timeout: Duration?): Result<Unit, Error> = this.value.setTimeout(timeout, SO_RCVTIMEO)
+    public open fun setReadTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_RCVTIMEO)
 
     /**
      * Sets the write timeout for the socket.
@@ -268,7 +268,7 @@ public open class UnixStream(
      * }
      * ```
      */
-    public open fun setWriteTimeout(timeout: Duration?): Result<Unit, Error> = this.value.setTimeout(timeout, SO_SNDTIMEO)
+    public open fun setWriteTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_SNDTIMEO)
 
     /**
      * Returns the read timeout of this socket.
@@ -286,7 +286,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun readTimeout(): Result<Duration?, Error> = this.value.timeout(SO_RCVTIMEO)
+    public open fun readTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_RCVTIMEO)
 
     /**
      * Returns the write timeout of this socket.
@@ -305,7 +305,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun writeTimeout(): Result<Duration?, Error> = this.value.timeout(SO_SNDTIMEO)
+    public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
 
     /**
      * Moves the socket into or out of nonblocking mode.
@@ -321,7 +321,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> = this.value.setNonblocking(nonblocking)
+    public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setNonblocking(nonblocking)
 
     /**
      * Set the id of the socket for network filtering purpose
@@ -336,7 +336,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun setMark(mark: UInt): Result<Unit, Error> = this.value.setMark(mark)
+    public open fun setMark(mark: UInt): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setMark(mark)
 
     /**
      * Returns the value of the `SO_ERROR` option.
@@ -357,7 +357,7 @@ public open class UnixStream(
      * On Redox this always returns `None`.
      * ```
      */
-    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> = this.value.takeError()
+    public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.takeError()
 
     /**
      * Shuts down the read, write, or both halves of this connection.
@@ -378,7 +378,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun shutdown(how: Shutdown): Result<Unit, Error> = this.value.shutdown(how)
+    public open fun shutdown(how: Shutdown): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.shutdown(how)
 
     /**
      * Receives data on the socket from the remote address to which it is
@@ -402,7 +402,7 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun peek(buf: MutableList<UByte>): Result<Int, Error> = this.value.peek(buf)
+    public open fun peek(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.peek(buf)
 
     /**
      * Receives data and ancillary data from socket.
@@ -441,9 +441,9 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Int, Error> {
-        val (count, _, _) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(count)
+    public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
+        val (count, _, _) = when (val tryResult = recvVectoredWithAncillaryFrom(this.value, bufs, ancillary)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+        return Result.Ok<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(count)
     }
 
     /**
@@ -477,23 +477,23 @@ public open class UnixStream(
      * }
      * ```kotlin
      */
-    public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
+    public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
 
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = Read.read(this, buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Read.read(this, buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = Read.readBuf(this, buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Read.readBuf(this, buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = Read.readVectored(this, bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Read.readVectored(this, bufs)
 
     public open fun isReadVectored(): Boolean = Read.isReadVectored(this)
 
-    public open fun write(buf: List<UByte>): Result<Int, Error> = Write.write(this, buf)
+    public open fun write(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Write.write(this, buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = Write.writeVectored(this, bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = Write.writeVectored(this, bufs)
 
     public open fun isWriteVectored(): Boolean = Write.isWriteVectored(this)
 
-    public open fun flush(): Result<Unit, Error> = Write.flush(this)
+    public open fun flush(): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = Write.flush(this)
 
     public override fun asRawFd(): RawFd = this.value.asRawFd()
 
@@ -520,12 +520,12 @@ public open class UnixStream(
          * };
          * ```kotlin
          */
-        public fun connect(path: Path): Result<UnixStream, Error> {
+        public fun connect(path: Path): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> {
             return run {
-                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(inner.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                Result.Ok(UnixStream(inner))
+                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+                val (addr, len) = when (val tryResult = SockaddrUn(path)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.connect(inner.asRawFd(), constPtrFromRustCast((addrOf(addr))), len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+                Result.Ok<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(UnixStream(inner))
             }
         }
 
@@ -551,11 +551,11 @@ public open class UnixStream(
          * }
          * ```kotlin
          */
-        public fun connectAddr(socketAddr: SocketAddr): Result<UnixStream, Error> {
+        public fun connectAddr(socketAddr: SocketAddr): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> {
             return run {
-                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                when (val tryResult = cvt(connect(inner.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                Result.Ok(UnixStream(inner))
+                val inner = when (val tryResult = Socket.new(AF_UNIX, SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+                when (val tryResult = cvt(connect(inner.asRawFd(), (addrOf(socketAddr.addr)), socketAddr.len))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+                Result.Ok<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error>(UnixStream(inner))
             }
         }
 
@@ -577,9 +577,9 @@ public open class UnixStream(
          * };
          * ```kotlin
          */
-        public fun pair(): Result<Pair<UnixStream, UnixStream>, Error> {
-            val (i1, i2) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_STREAM)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            return Result.Ok(Pair(UnixStream(i1), UnixStream(i2)))
+        public fun pair(): Result<Pair<UnixStream, UnixStream>, io.github.kotlinmania.rustlang.std.io.error.Error> {
+            val (i1, i2) = when (val tryResult = Socket.newPair(AF_UNIX, SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<UnixStream, UnixStream>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+            return Result.Ok<Pair<UnixStream, UnixStream>, io.github.kotlinmania.rustlang.std.io.error.Error>(Pair(UnixStream(i1), UnixStream(i2)))
         }
 
         public fun fromRawFd(fd: RawFd): UnixStream = UnixStream(Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd))))

@@ -12,17 +12,29 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-public actual fun vcompressstorew(mem: MutPtr, data: I16x32, mask: UInt): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstorew")
+public actual fun vcompressstorew(mem: MutPtr, data: I16x32, mask: UInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstorew")
+}
 
-public actual fun vcompressstorew256(mem: MutPtr, data: I16x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstorew256")
+public actual fun vcompressstorew256(mem: MutPtr, data: I16x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstorew256")
+}
 
-public actual fun vcompressstorew128(mem: MutPtr, data: I16x8, mask: UByte): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstorew128")
+public actual fun vcompressstorew128(mem: MutPtr, data: I16x8, mask: UByte) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstorew128")
+}
 
-public actual fun vcompressstoreb(mem: MutPtr, data: I8x64, mask: ULong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstoreb")
+public actual fun vcompressstoreb(mem: MutPtr, data: I8x64, mask: ULong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstoreb")
+}
 
-public actual fun vcompressstoreb256(mem: MutPtr, data: I8x32, mask: UInt): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstoreb256")
+public actual fun vcompressstoreb256(mem: MutPtr, data: I8x32, mask: UInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstoreb256")
+}
 
-public actual fun vcompressstoreb128(mem: MutPtr, data: I8x16, mask: UShort): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstoreb128")
+public actual fun vcompressstoreb128(mem: MutPtr, data: I8x16, mask: UShort) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vcompressstoreb128")
+}
 
 public actual fun vpcompressw(a: I16x32, src: I16x32, mask: UInt): I16x32 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86Avx512vbmi2Vpcompressw")

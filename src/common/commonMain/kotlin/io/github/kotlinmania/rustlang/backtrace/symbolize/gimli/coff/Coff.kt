@@ -15,20 +15,9 @@ public typealias Pe = ImageNtHeaders64
 
 public fun Mapping.Companion.new(path: Path): Mapping? {
     val map = (mmap(path) ?: return null)
-    return Mapping.mk(
-        map,
-        closure@{ data, stash ->
-            Context.new(
-                stash,
-                when (val tryResult = Object.parse(data)) {
-                    is Result.Ok<*, *> -> tryResult.value
-                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
-                },
-                null,
-                null,
-            )
-        },
-    )
+    return Mapping.mk(map, closure@{ data, stash ->
+        Context.new(stash, when (val tryResult = Object.parse(data)) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }, null, null)
+    })
 }
 
 public open class Object(
@@ -52,21 +41,15 @@ public open class Object(
         val i2 =
             run {
                 val matchVal = this.symbols.binarySearchByKey(addr1, { p -> p.first })
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        val i = matchVal.value
-                        i
-                    }
-                    is Result.Err<*, *> -> {
-                        val i1 = matchVal.error
-                        (i1.checkedSub(1) ?: return null)
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    val i = matchVal.value
+                    i
+                }; is Result.Err -> {
+                    val i1 = matchVal.error
+                    (i1.checkedSub(1) ?: return null)
+                } }
             }
-        return this.symbols[i2]
-            .second
-            .name(this.strings)
-            .ok()
+        return this.symbols[i2].second.name(this.strings).ok()
     }
 
     public open fun searchObjectMap(addr: ULong): Pair<Context, ULong>? = null

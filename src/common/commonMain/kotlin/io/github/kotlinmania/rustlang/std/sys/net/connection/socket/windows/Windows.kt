@@ -300,7 +300,7 @@ public open class Socket(
 
     public open fun pollConnected(timeout: Duration): Result<Unit, Error> {
         if (timeout.asSecs() == 0 && timeout.subsecNanos() == 0) {
-            return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
+            return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
         }
         val timeout1 = c.Timeval(tvSec = (minOf(timeout.asSecs(), Long.MAX_VALUE.toULong()).toLong()).toInt(), tvUsec = (timeout.subsecMicros().toLong()).toInt())
         if (timeout1.tvSec == 0 && timeout1.tvUsec == 0) {
@@ -316,21 +316,21 @@ public open class Socket(
         val errorfds = fds1
         val count = run {
             val result = c.select(1, MutPtr(0L), writefds, errorfds, timeout1)
-            when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = cvt(result)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         }
         return when (count) {
-            0 -> Result.Err(constError(ErrorKind.TimedOut, "connection timed out"))
+            0 -> Result.Err<Unit, Error>(constError(ErrorKind.TimedOut, "connection timed out"))
             else -> {
                 if (writefds.fdCount != 1) {
-                    when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }) {
+                    when (val matchVal = when (val tryResult = this.takeError()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }) {
                         null -> {}
                         else -> {
                             val e = matchVal
-                            return Result.Err(e)
+                            return Result.Err<Unit, Error>(e)
                         }
                     }
                 }
-                Result.Ok(Unit)
+                Result.Ok<Unit, Error>(Unit)
             }
         }
     }
@@ -338,13 +338,13 @@ public open class Socket(
     public open fun accept(storage: MutPtr, len: MutPtr): Result<Socket, Error> {
         val socket = c.accept(this.asRaw(), storage, len)
         return when (socket) {
-            c.invalidSocket -> Result.Err(lastError())
-            else -> Result.Ok(Socket.fromRaw(socket))
+            c.invalidSocket -> Result.Err<Socket, Error>(lastError())
+            else -> Result.Ok<Socket, Error>(Socket.fromRaw(socket))
         }
     }
 
     public open fun duplicate(): Result<Socket, Error> {
-        return Result.Ok(Socket(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+        return Result.Ok<Socket, Error>(Socket(when (val tryResult = this.value.tryClone()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Socket, Error>(tryResult.error) }))
     }
 
     public open fun recvWithFlags(buf: BorrowedCursor<UByte>, flags: CInt): Result<Unit, Error> {
@@ -356,22 +356,22 @@ public open class Socket(
             c.socketError -> {
                 val error = c.WSAGetLastError()
                 if (error == c.WSAESHUTDOWN) {
-                    Result.Ok(Unit)
+                    Result.Ok<Unit, Error>(Unit)
                 } else {
-                    Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+                    Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
                 }
             }
             else -> {
                 buf.advance(result)
-                Result.Ok(Unit)
+                Result.Ok<Unit, Error>(Unit)
             }
         }
     }
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), 0)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(buf1.len())
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), 0)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
+        return Result.Ok<Int, Error>(buf1.len())
     }
 
     public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = this.recvWithFlags(buf, 0)
@@ -385,13 +385,13 @@ public open class Socket(
         val localStorageL258C8 = AddressableLocal(0, PrimitiveLayouts.I32)
         val result = c.WSARecv(this.asRaw(), (bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, length, RustMutableReference(localStorageL257C8.asMutPtr(), localStorageL257C8.layout), RustMutableReference(localStorageL258C8.asMutPtr(), localStorageL258C8.layout), MutPtr(0L), null)
         return when (result) {
-            0 -> Result.Ok(nread)
+            0 -> Result.Ok<Int, Error>(nread)
             else -> {
                 val error = c.WSAGetLastError()
                 if (error == c.WSAESHUTDOWN) {
-                    Result.Ok(0)
+                    Result.Ok<Int, Error>(0)
                 } else {
-                    Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+                    Result.Err<Int, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
                 }
             }
         }
@@ -401,8 +401,8 @@ public open class Socket(
 
     public open fun peek(buf: MutableList<UByte>): Result<Int, Error> {
         val buf1 = BorrowedBuf.from(buf)
-        when (val tryResult = this.recvWithFlags(buf1.unfilled(), c.MSG_PEEK)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(buf1.len())
+        when (val tryResult = this.recvWithFlags(buf1.unfilled(), c.MSG_PEEK)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
+        return Result.Ok<Int, Error>(buf1.len())
     }
 
     public open fun recvFromWithFlags(buf: MutableList<UByte>, flags: CInt): Result<Pair<Int, SocketAddr>, Error> {
@@ -417,12 +417,12 @@ public open class Socket(
             c.socketError -> {
                 val error = c.WSAGetLastError()
                 if (error == c.WSAESHUTDOWN) {
-                    Result.Ok(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+                    Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(0, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }))
                 } else {
-                    Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+                    Result.Err<Pair<Int, SocketAddr>, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
                 }
             }
-            else -> Result.Ok(Pair(result, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+            else -> Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(result, when (val tryResult = socketAddrFromC(storage, addrlen)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }))
         }
     }
 
@@ -448,7 +448,7 @@ public open class Socket(
                     val dur1 = dur
                     val timeout = dur2timeout(dur1)
                     if (timeout == 0u) {
-                        return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
+                        return Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.ZERO_TIMEOUT)
                     }
                     timeout
                 }
@@ -457,13 +457,13 @@ public open class Socket(
     }
 
     public open fun timeout(kind: CInt): Result<Duration?, Error> {
-        val raw: UInt = when (val tryResult = getsockopt(this, c.SOL_SOCKET, kind)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val raw: UInt = when (val tryResult = getsockopt(this, c.SOL_SOCKET, kind)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
         return if (raw == 0u) {
-            Result.Ok(null)
+            Result.Ok<Duration?, Error>(null)
         } else {
             val secs = raw / 1000u
             val nsec = (raw % 1000u) * 1000000u
-            Result.Ok(Duration.new(secs.toULong(), nsec))
+            Result.Ok<Duration?, Error>(Duration.new(secs.toULong(), nsec))
         }
     }
 
@@ -490,30 +490,30 @@ public open class Socket(
     }
 
     public open fun linger(): Result<Duration?, Error> {
-        val value: c.Linger = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_LINGER)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
+        val value: c.Linger = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_LINGER)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
+        return Result.Ok<Duration?, Error>((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
     }
 
     public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, c.SOL_SOCKET, c.SO_KEEPALIVE, keepalive.toInt())
 
     public open fun keepalive(): Result<Boolean, Error> {
-        val raw: c.Bool = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_KEEPALIVE)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok((raw != 0).toUByte())
+        val raw: c.Bool = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_KEEPALIVE)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
     public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, c.IPPROTO_TCP, c.TCP_NODELAY, nodelay.toInt())
 
     public open fun nodelay(): Result<Boolean, Error> {
-        val raw: c.Bool = when (val tryResult = getsockopt(this, c.IPPROTO_TCP, c.TCP_NODELAY)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok((raw != 0).toUByte())
+        val raw: c.Bool = when (val tryResult = getsockopt(this, c.IPPROTO_TCP, c.TCP_NODELAY)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
     public open fun takeError(): Result<io.github.kotlinmania.rustlang.std.io.Error?, Error> {
-        val raw: CInt = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_ERROR)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val raw: CInt = when (val tryResult = getsockopt(this, c.SOL_SOCKET, c.SO_ERROR)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<io.github.kotlinmania.rustlang.std.io.Error?, Error>(tryResult.error) }
         return if (raw == 0) {
-            Result.Ok(null)
+            Result.Ok<io.github.kotlinmania.rustlang.std.io.Error?, Error>(null)
         } else {
-            Result.Ok(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(raw))
+            Result.Ok<io.github.kotlinmania.rustlang.std.io.Error?, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(raw))
         }
     }
 
@@ -537,20 +537,20 @@ public open class Socket(
         public fun new(family: CInt, ty: CInt): Result<Socket, Error> {
             val socket = c.WSASocketW(family, ty, 0, MutPtr(0L), 0, c.WSA_FLAG_OVERLAPPED or c.WSA_FLAG_NO_HANDLE_INHERIT)
             return if (socket != c.INVALID_SOCKET) {
-                Result.Ok(Socket.fromRaw(socket))
+                Result.Ok<Socket, Error>(Socket.fromRaw(socket))
             } else {
                 val error = c.WSAGetLastError()
                 if (error != c.WSAEPROTOTYPE && error != c.WSAEINVAL) {
-                    return Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+                    return Result.Err<Socket, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
                 }
                 val socket1 = c.WSASocketW(family, ty, 0, MutPtr(0L), 0, c.WSA_FLAG_OVERLAPPED)
                 if (socket1 == c.INVALID_SOCKET) {
-                    return Result.Err(lastError())
+                    return Result.Err<Socket, Error>(lastError())
                 }
                 run {
                     val socket2 = Socket.fromRaw(socket1)
-                    when (val tryResult = socket2.value.setNoInherit()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                    Result.Ok(socket2)
+                    when (val tryResult = socket2.value.setNoInherit()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Socket, Error>(tryResult.error) }
+                    Result.Ok<Socket, Error>(socket2)
                 }
             }
         }

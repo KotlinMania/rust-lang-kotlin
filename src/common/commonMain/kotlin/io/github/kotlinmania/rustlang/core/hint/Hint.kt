@@ -758,14 +758,12 @@ public sealed class Locality {
      * Typically prefetches into L3 cache (if the CPU supports it).
      */
     public data object L3 : Locality()
-
     /**
      * Data is expected to be reused in the near future.
      *
      * Typically prefetches into L2 cache.
      */
     public data object L2 : Locality()
-
     /**
      * Data is expected to be reused very soon.
      *

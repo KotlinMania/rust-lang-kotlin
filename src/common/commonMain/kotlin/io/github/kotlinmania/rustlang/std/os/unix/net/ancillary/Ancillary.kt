@@ -61,12 +61,12 @@ public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSli
         if (msg.msgControllen > 0) {
             msg.msgControl = ancillary.buffer.asMutPtr()
         }
-        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(tryResult.error) }
         ancillary.length = msg.msgControllen.toInt()
         ancillary.truncated = (msg.msgFlags and MSG_CTRUNC == MSG_CTRUNC).toUByte()
         val truncated = msg.msgFlags and MSG_TRUNC == MSG_TRUNC
         val addr = SocketAddr.fromParts(msgName, msg.msgNamelen)
-        Result.Ok(Triple(count, truncated, addr))
+        Result.Ok<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(Triple(count, truncated, addr))
     }
 }
 
@@ -75,7 +75,7 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
-                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
             } else {
                 Pair(MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
@@ -95,7 +95,7 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
     }
 }
 
-public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutableReference<Int>, source: List<T>, cmsgLevel: CInt, cmsgType: CInt, typeLayoutT: TypeLayout<T>): Boolean {
+public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutableReference<Int>, source: List<T>, cmsgLevel: CInt, cmsgType: CInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
     val length1 = length
     val cmsgSize = source.size.checkedMul(sizeOf<T>(typeLayoutT = typeLayoutT))
     val sourceLen2 =
@@ -170,7 +170,7 @@ public open class AncillaryDataIter<T>(
         }
     }
 
-    public open fun next(typeLayoutT: TypeLayout<T>): T? =
+    public open fun next(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
         if (sizeOf<T>(typeLayoutT = typeLayoutT) <= this.data.size) {
             run {
                 val unit = readUnaligned(this.data.asPtr())
@@ -380,16 +380,16 @@ public sealed class AncillaryData {
                 val data1 = linearSliceView(data, dataLen.toInt(), PrimitiveLayouts.U8)
                 when (val matchVal = cmsg.cmsgLevel) {
                     SOL_SOCKET -> when (val matchVal1 = cmsg.cmsgType) {
-                        io.github.kotlinmania.rustlang.libc.ScmRights -> Result.Ok(AncillaryData.asRights(data1))
-                        io.github.kotlinmania.rustlang.libc.ScmCredentials -> Result.Ok(AncillaryData.asCredentials(data1))
+                        io.github.kotlinmania.rustlang.libc.ScmRights -> Result.Ok<AncillaryData, AncillaryError>(AncillaryData.asRights(data1))
+                        io.github.kotlinmania.rustlang.libc.ScmCredentials -> Result.Ok<AncillaryData, AncillaryError>(AncillaryData.asCredentials(data1))
                         else -> {
                             val cmsgType = matchVal1
-                            Result.Err(AncillaryError.Unknown(cmsgLevel = SOL_SOCKET, cmsgType = cmsgType))
+                            Result.Err<AncillaryData, AncillaryError>(AncillaryError.Unknown(cmsgLevel = SOL_SOCKET, cmsgType = cmsgType))
                         }
                     }
                     else -> {
                         val cmsgLevel = matchVal
-                        Result.Err(AncillaryError.Unknown(cmsgLevel = cmsgLevel, cmsgType = cmsg.cmsgType))
+                        Result.Err<AncillaryData, AncillaryError>(AncillaryError.Unknown(cmsgLevel = cmsgLevel, cmsgType = cmsg.cmsgType))
                     }
                 }
             }
@@ -427,7 +427,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.

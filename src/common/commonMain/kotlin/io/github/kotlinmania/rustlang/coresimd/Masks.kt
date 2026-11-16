@@ -4,6 +4,7 @@
 package io.github.kotlinmania.rustlang.coresimd
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -11,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.num.reverseBits
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // Types and traits associated with masking elements of vectors.
 // Types representing
@@ -167,7 +169,7 @@ public val FALSE4: Int = 0
  */
 public open class Mask<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Simd<T, N>>,
+    public val fieldLayout: TypeLayout<Simd<T, N>> = UnresolvedTypeLayout(),
 ) where T : MaskElement<T> {
     public var field0: Simd<T, N>
         get() = value
@@ -179,23 +181,23 @@ public open class Mask<T> internal constructor(
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Simd<T, N>, fieldLayout: TypeLayout<Simd<T, N>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Simd<T, N>, fieldLayout: TypeLayout<Simd<T, N>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Mask<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Mask<T>(ptr, layout) }, { it.value })
 
     public companion object {
-        public operator fun <T> invoke(value: Simd<T, N>, fieldLayout: TypeLayout<Simd<T, N>>): Mask<T> = Mask<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: Simd<T, N>, fieldLayout: TypeLayout<Simd<T, N>> = UnresolvedTypeLayout()): Mask<T> = Mask<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Simd<T, N>>): Mask<T> = Mask<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Simd<T, N>> = UnresolvedTypeLayout()): Mask<T> = Mask<T>(fieldStorage, fieldLayout)
     }
 }
 
-public fun <T> Mask<T, N>.clone(n: Int): Mask<T, N> where T : MaskElement<T> = Mask(this.value)
+public fun <T> Mask<T>.clone(n: Int): Mask<T> where T : MaskElement<T> = Mask(this.value)
 
 /**
  * Constructs a mask by setting all elements to the given value.
  */
-public fun <T> Mask.Companion.splat(value: Boolean, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> =
+public fun <T> Mask.Companion.splat(value: Boolean, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> where T : MaskElement<T> =
     Mask(Simd.splat(if (value) {
         T.TRUE
     } else {
@@ -205,7 +207,7 @@ public fun <T> Mask.Companion.splat(value: Boolean, fieldLayout: TypeLayout<Simd
 /**
  * Converts an array of bools to a SIMD mask.
  */
-public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> where T : MaskElement<T> {
     // SAFETY: Rust's bool has a layout of 1 byte (u8) with a value of
     // true:    0b00000001
     // false:   0b00000000
@@ -222,7 +224,7 @@ public fun <T> Mask.Companion.fromArray(array: BooleanArray, fieldLayout: TypeLa
 /**
  * Converts a SIMD mask to an array of bools.
  */
-public fun <T> Mask<T, N>.toArray(n: Int): BooleanArray where T : MaskElement<T> {
+public fun <T> Mask<T>.toArray(n: Int): BooleanArray where T : MaskElement<T> {
     // This follows mostly the same logic as fromArray.
     // SAFETY: Rust's bool has a layout of 1 byte (u8) with a value of
     // true:    0b00000001
@@ -247,7 +249,7 @@ public fun <T> Mask<T, N>.toArray(n: Int): BooleanArray where T : MaskElement<T>
  * # Safety
  * All elements must be either 0 or -1.
  */
-public fun <T> Mask.Companion.fromSimdUnchecked(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>>, n: Int, validTFn: (Simd<T>) -> Boolean): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask.Companion.fromSimdUnchecked(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int, validTFn: (Simd<T>) -> Boolean): Mask<T> where T : MaskElement<T> {
     // Safety: the caller must confirm this invariant
     run {}
     return Mask(value, fieldLayout = fieldLayout)
@@ -260,7 +262,7 @@ public fun <T> Mask.Companion.fromSimdUnchecked(value: Simd<T>, fieldLayout: Typ
  * # Panics
  * Panics if any element is not 0 or -1.
  */
-public fun <T> Mask.Companion.fromSimd(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask.Companion.fromSimd(value: Simd<T>, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> where T : MaskElement<T> {
     check(T.valid(value)) { "all values must be either 0 or -1" }
     // Safety: the validity has been checked
     return Mask.fromSimdUnchecked(value, fieldLayout = fieldLayout)
@@ -270,12 +272,12 @@ public fun <T> Mask.Companion.fromSimd(value: Simd<T>, fieldLayout: TypeLayout<S
  * Converts the mask to a vector of integers, where 0 represents `false` and -1
  * represents `true`.
  */
-public fun <T> Mask<T, N>.toSimd(n: Int): Simd<T> where T : MaskElement<T> = this.value
+public fun <T> Mask<T>.toSimd(n: Int): Simd<T> where T : MaskElement<T> = this.value
 
 /**
  * Converts the mask to a mask of any other element size.
  */
-public fun <T, U : MaskElement<U>> Mask<T, N>.cast(n: Int): Mask<U> where T : MaskElement<T> {
+public fun <T, U : MaskElement<U>> Mask<T>.cast(n: Int): Mask<U> where T : MaskElement<T> {
     // Safety: mask elements are integers
     return Mask(run { val _simdArg0 = this.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
@@ -286,7 +288,7 @@ public fun <T, U : MaskElement<U>> Mask<T, N>.cast(n: Int): Mask<U> where T : Ma
  * # Safety
  * `index` must be less than `self.len()`.
  */
-public fun <T> Mask<T, N>.testUnchecked(index: Int, n: Int, eqTFn: (T, T) -> Boolean): Boolean where T : MaskElement<T> {
+public fun <T> Mask<T>.testUnchecked(index: Int, n: Int, eqTFn: (T, T) -> Boolean): Boolean where T : MaskElement<T> {
     // Safety: the caller must confirm this invariant
     return eqTFn(this.value.asArray().getUnchecked(index), T.TRUE)
 }
@@ -297,7 +299,7 @@ public fun <T> Mask<T, N>.testUnchecked(index: Int, n: Int, eqTFn: (T, T) -> Boo
  * # Panics
  * Panics if `index` is greater than or equal to the number of elements in the vector.
  */
-public fun <T> Mask<T, N>.test(index: Int, n: Int, eqTFn: (T, T) -> Boolean): Boolean where T : MaskElement<T> = eqTFn(this.value[index], T.TRUE)
+public fun <T> Mask<T>.test(index: Int, n: Int, eqTFn: (T, T) -> Boolean): Boolean where T : MaskElement<T> = eqTFn(this.value[index], T.TRUE)
 
 /**
  * Sets the value of the specified element.
@@ -305,7 +307,7 @@ public fun <T> Mask<T, N>.test(index: Int, n: Int, eqTFn: (T, T) -> Boolean): Bo
  * # Safety
  * `index` must be less than `self.len()`.
  */
-public fun <T> Mask<T, N>.setUnchecked(index: Int, value: Boolean, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.setUnchecked(index: Int, value: Boolean, n: Int) where T : MaskElement<T> {
     // Safety: the caller must confirm this invariant
     this.value.asMutArray().getUncheckedMut(index) = if (value) {
         T.TRUE
@@ -320,7 +322,7 @@ public fun <T> Mask<T, N>.setUnchecked(index: Int, value: Boolean, n: Int) where
  * # Panics
  * Panics if `index` is greater than or equal to the number of elements in the vector.
  */
-public fun <T> Mask<T, N>.set(index: Int, value: Boolean, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.set(index: Int, value: Boolean, n: Int) where T : MaskElement<T> {
     this.value[index] = if (value) {
         T.TRUE
     } else {
@@ -331,7 +333,7 @@ public fun <T> Mask<T, N>.set(index: Int, value: Boolean, n: Int) where T : Mask
 /**
  * Returns true if any element is set, or false otherwise.
  */
-public fun <T> Mask<T, N>.any(n: Int): Boolean where T : MaskElement<T> {
+public fun <T> Mask<T>.any(n: Int): Boolean where T : MaskElement<T> {
     // Safety: `self` is a mask vector
     return run { val _simdArg0 = this.value; false }
 }
@@ -339,7 +341,7 @@ public fun <T> Mask<T, N>.any(n: Int): Boolean where T : MaskElement<T> {
 /**
  * Returns true if all elements are set, or false otherwise.
  */
-public fun <T> Mask<T, N>.all(n: Int): Boolean where T : MaskElement<T> {
+public fun <T> Mask<T>.all(n: Int): Boolean where T : MaskElement<T> {
     // Safety: `self` is a mask vector
     return run { val _simdArg0 = this.value; false }
 }
@@ -349,7 +351,7 @@ public fun <T> Mask<T, N>.all(n: Int): Boolean where T : MaskElement<T> {
  *
  * Each bit is set if the corresponding element in the mask is `true`.
  */
-public fun <T> Mask<T, N>.toBitmask(n: Int): ULong where T : MaskElement<T> {
+public fun <T> Mask<T>.toBitmask(n: Int): ULong where T : MaskElement<T> {
     fun <T, U : FixEndianness<U>> toBitmaskImpl(mask: Mask<T>, m: Int, n: Int): U where T : MaskElement<T> {
         val resized = mask.resize(false)
         // Safety: `resized` is an integer vector with length M, which must match T
@@ -382,7 +384,7 @@ public fun <T> Mask<T, N>.toBitmask(n: Int): ULong where T : MaskElement<T> {
  * For each bit, if it is set, the corresponding element in the mask is set to `true`.
  * If the mask contains more than 64 elements, the remainder are set to `false`.
  */
-public fun <T> Mask.Companion.fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask(bitmask.select(Simd.splat(T.TRUE), Simd.splat(T.FALSE)), fieldLayout = fieldLayout)
+public fun <T> Mask.Companion.fromBitmask(bitmask: ULong, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> where T : MaskElement<T> = Mask(bitmask.select(Simd.splat(T.TRUE), Simd.splat(T.FALSE)), fieldLayout = fieldLayout)
 
 /**
  * Finds the index of the first set element.
@@ -394,7 +396,7 @@ public fun <T> Mask.Companion.fromBitmask(bitmask: ULong, fieldLayout: TypeLayou
  * check(mask.firstSet() == 1)
  * ```
  */
-public fun <T> Mask<T, N>.firstSet(n: Int): Int? where T : MaskElement<T> {
+public fun <T> Mask<T>.firstSet(n: Int): Int? where T : MaskElement<T> {
     // If bitmasks are efficient, using them is better
     if (false && n <= 64) {
         return this.toBitmask().lowestOne().map({ i -> i.toInt() })
@@ -446,7 +448,7 @@ public fun <T> Mask<T, N>.firstSet(n: Int): Int? where T : MaskElement<T> {
  * check(mask.lastSet() == 6)
  * ```
  */
-public fun <T> Mask<T, N>.lastSet(n: Int): Int? where T : MaskElement<T> {
+public fun <T> Mask<T>.lastSet(n: Int): Int? where T : MaskElement<T> {
     // If bitmasks are efficient, using them is better
     if (false && n <= 64) {
         return this.toBitmask().highestOne().map({ i -> i.toInt() })
@@ -485,77 +487,75 @@ public fun <T> Mask<T, N>.lastSet(n: Int): Int? where T : MaskElement<T> {
 }
 
 // vector/array conversion
-public fun <T> fromMaskTN(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask.fromArray(array, fieldLayout = fieldLayout)
+public fun <T> fromMaskTN(array: BooleanArray, fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> where T : MaskElement<T> = Mask.fromArray(array, fieldLayout = fieldLayout)
 
 public fun <T> fromBooleanArrayn(vector: Mask<T>, n: Int): BooleanArray where T : MaskElement<T> = vector.toArray()
 
-public fun <T> defaultMaskTN(fieldLayout: TypeLayout<Simd<T>>, n: Int): Mask<T, N> where T : MaskElement<T> = Mask.splat(false, fieldLayout = fieldLayout)
+public fun <T> defaultMaskTN(fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(), n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(false, fieldLayout = fieldLayout)
 
-public fun <T> Mask<T, N>.eq(other: Mask<T, N>, n: Int): Boolean where T : MaskElement<T> = this.value == other.value
+public fun <T> Mask<T>.eq(other: Mask<T>, n: Int): Boolean where T : MaskElement<T> = this.value == other.value
 
-public fun <T> Mask<T, N>.partialCmp(other: Mask<T, N>, n: Int): Ordering? where T : MaskElement<T> = this.value.partialCmp(other.value)
+public fun <T> Mask<T>.partialCmp(other: Mask<T>, n: Int): Ordering? where T : MaskElement<T> = this.value.partialCmp(other.value)
 
-public fun <T> Mask<T, N>.fmt(f: StringBuilder, n: Int) where T : MaskElement<T> {
-    object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries((0 until n).map({ i -> this.test(i) })).finish()
-}
+public fun <T> Mask<T>.fmt(f: StringBuilder, n: Int): Result<Unit, Error> where T : MaskElement<T> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries((0 until n).map({ i -> this.test(i) })).finish()
 
-public fun <T> Mask<T, N>.bitand(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.bitand(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
     return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
-public fun <T> Mask<T, N>.bitand(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this and Mask.splat(rhs, fieldLayout = this.fieldLayout)
+public fun <T> Mask<T>.bitand(rhs: Boolean, n: Int): Mask<T> where T : MaskElement<T> = this and Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
 public fun <T> Boolean.bitand(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) and rhs
 
-public fun <T> Mask<T, N>.bitor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.bitor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
     return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
-public fun <T> Mask<T, N>.bitor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this or Mask.splat(rhs, fieldLayout = this.fieldLayout)
+public fun <T> Mask<T>.bitor(rhs: Boolean, n: Int): Mask<T> where T : MaskElement<T> = this or Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
 public fun <T> Boolean.bitor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) or rhs
 
-public fun <T> Mask<T, N>.bitxor(rhs: Mask<T, N>, n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.bitxor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> {
     // Safety: `self` is an integer vector
     return Mask(run { val _simdArg0 = this.value; val _simdArg1 = rhs.value; _simdArg0 }, fieldLayout = this.fieldLayout)
 }
 
-public fun <T> Mask<T, N>.bitxor(rhs: Boolean, n: Int): Mask<T, N> where T : MaskElement<T> = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)
+public fun <T> Mask<T>.bitxor(rhs: Boolean, n: Int): Mask<T> where T : MaskElement<T> = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)
 
 public fun <T> Boolean.bitxor(rhs: Mask<T>, n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(this, fieldLayout = UnresolvedTypeLayout<Simd<T>>()) xor rhs
 
-public fun <T> Mask<T, N>.not(n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(true, fieldLayout = this.fieldLayout) xor this
+public fun <T> Mask<T>.not(n: Int): Mask<T> where T : MaskElement<T> = Mask.splat(true, fieldLayout = this.fieldLayout) xor this
 
-public fun <T> Mask<T, N>.bitandAssign(rhs: Mask<T, N>, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.bitandAssign(rhs: Mask<T>, n: Int) where T : MaskElement<T> {
     this = this and rhs
 }
 
-public fun <T> Mask<T, N>.bitandAssign(rhs: Boolean, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.bitandAssign(rhs: Boolean, n: Int) where T : MaskElement<T> {
     this = this and Mask.splat(rhs, fieldLayout = this.fieldLayout)
 }
 
-public fun <T> Mask<T, N>.bitorAssign(rhs: Mask<T, N>, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.bitorAssign(rhs: Mask<T>, n: Int) where T : MaskElement<T> {
     this = this or rhs
 }
 
-public fun <T> Mask<T, N>.bitorAssign(rhs: Boolean, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.bitorAssign(rhs: Boolean, n: Int) where T : MaskElement<T> {
     this = this or Mask.splat(rhs, fieldLayout = this.fieldLayout)
 }
 
-public fun <T> Mask<T, N>.bitxorAssign(rhs: Mask<T, N>, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.bitxorAssign(rhs: Mask<T>, n: Int) where T : MaskElement<T> {
     this = this xor rhs
 }
 
-public fun <T> Mask<T, N>.bitxorAssign(rhs: Boolean, n: Int) where T : MaskElement<T> {
+public fun <T> Mask<T>.bitxorAssign(rhs: Boolean, n: Int) where T : MaskElement<T> {
     this = this xor Mask.splat(rhs, fieldLayout = this.fieldLayout)
 }
 
-public fun fromMaskShortN(value: Mask<Byte>, n: Int): Mask<Short, N> = value.cast()
+public fun fromMaskShortN(value: Mask<Byte>, n: Int): Mask<Short> = value.cast()
 
-public fun fromMaskIntN(value: Mask<Byte>, n: Int): Mask<Int, N> = value.cast()
+public fun fromMaskIntN(value: Mask<Byte>, n: Int): Mask<Int> = value.cast()
 
-public fun fromMaskLongN(value: Mask<Byte>, n: Int): Mask<Long, N> = value.cast()
+public fun fromMaskLongN(value: Mask<Byte>, n: Int): Mask<Long> = value.cast()
 
-public fun fromMaskByteN(value: Mask<Short>, n: Int): Mask<Byte, N> = value.cast()
+public fun fromMaskByteN(value: Mask<Short>, n: Int): Mask<Byte> = value.cast()

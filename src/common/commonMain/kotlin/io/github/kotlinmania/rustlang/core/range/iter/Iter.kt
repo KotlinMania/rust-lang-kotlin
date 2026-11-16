@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.range.RangeFrom
@@ -21,23 +22,21 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class RangeIter<A>(
     public var value: Range<A>,
-) : TrustedLen<RangeIter<A>>,
-    Iterable<A> {
+) : TrustedLen<RangeIter<A>>, Iterable<A> {
     public var field0: Range<A>
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@RangeIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@RangeIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): RangeIter<A> = RangeIter(value)
 
@@ -77,7 +76,7 @@ public open class RangeIter<A>(
 
     public override fun isSorted(): Boolean = true
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public override fun iteratorGetUnchecked(idx: Int): A {
         // SAFETY: The TrustedRandomAccess contract requires that callers only pass an index
@@ -91,7 +90,7 @@ public open class RangeIter<A>(
 
     public open fun nthBack(n: Int): A? = this.value.nthBack(n)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 }
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = false
@@ -121,23 +120,21 @@ public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.into
  */
 public open class RangeInclusiveIter<A>(
     public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
-) : TrustedLen<RangeInclusiveIter<A>>,
-    Iterable<A> {
+) : TrustedLen<RangeInclusiveIter<A>>, Iterable<A> {
     public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@RangeInclusiveIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@RangeInclusiveIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): RangeInclusiveIter<A> = RangeInclusiveIter(value)
 
@@ -184,13 +181,13 @@ public open class RangeInclusiveIter<A>(
 
     public override fun isSorted(): Boolean = true
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun nextBack(): A? = this.value.nextBack()
 
     public open fun nthBack(n: Int): A? = this.value.nthBack(n)
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 }
 
 public fun <A : Step<A>> RangeInclusive<A>.intoIter(): RangeInclusiveIter<A> = RangeInclusiveIter(this.into())
@@ -205,17 +202,15 @@ public open class RangeFromIter<A>(
      * Only used when overflow checks are enabled.
      */
     public var exhausted: Boolean,
-) : TrustedLen<RangeFromIter<A>>,
-    Iterable<A> {
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@RangeFromIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<RangeFromIter<A>>, Iterable<A> {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@RangeFromIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): RangeFromIter<A> = RangeFromIter(start, exhausted)
 
@@ -264,11 +259,10 @@ public open class RangeFromIter<A>(
             this.exhausted = false
         }
         if (false) {
-            val n =
-                Step.forwardChecked(this.start.clone(), 1) ?: run {
-                    this.exhausted = true
-                    return this.start.clone()
-                }
+            val n = Step.forwardChecked(this.start.clone(), 1) ?: run {
+                this.exhausted = true
+                return this.start.clone()
+            }
             return replace(this.start, n)
         }
         val n1 = Step.forward(this.start.clone(), 1)

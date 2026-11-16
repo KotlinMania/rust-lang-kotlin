@@ -8,12 +8,10 @@ public sealed class Alignment {
      * Indication that contents should be left-aligned.
      */
     public data object Left : Alignment()
-
     /**
      * Indication that contents should be right-aligned.
      */
     public data object Right : Alignment()
-
     /**
      * Indication that contents should be center-aligned.
      */
@@ -43,7 +41,7 @@ public sealed class Alignment {
  * check("$pythagoreanTriple" == "(3, 4, 5)")
  * ```
  */
-public typealias Result = Result<Unit, Error>
+public typealias Result = io.github.kotlinmania.rustlang.core.result.Result<Unit, Error>
 
 /**
  * A trait for writing or formatting into Unicode-accepting buffers or streams.
@@ -163,7 +161,6 @@ public sealed class Sign {
      * Represents the `+` flag.
      */
     public data object Plus : Sign()
-
     /**
      * Represents the `-` flag.
      */
@@ -181,7 +178,6 @@ public sealed class DebugAsHex {
      * Use lower-case hexadecimal integers for the `Debug` trait (like [the `x` type](../../std/fmt/index.html#formatting-traits)).
      */
     public data object Lower : DebugAsHex()
-
     /**
      * Use upper-case hexadecimal integers for the `Debug` trait (like [the `X` type](../../std/fmt/index.html#formatting-traits)).
      */

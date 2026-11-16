@@ -1,6 +1,7 @@
 // port-lint: source external_trait_impls/rayon/helpers.rs
 package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.helpers
 
+import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.collections.linkedlist.LinkedList
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator
@@ -10,7 +11,7 @@ import io.github.kotlinmania.rustlang.hashbrown.rayon.iter.IntoParallelIterator
 /**
  * Helper for collecting parallel iterators to an intermediary
  */
-public fun <I : IntoParallelIterator> collect(iter: I): Pair<LinkedList<List<Item>>, Int> {
+public fun <I : IntoParallelIterator> collect(iter: I): Pair<LinkedList<List<Item>, Global>, Int> {
     val list = iter.intoParIter().collectVecList()
     val len = list.iter().map(Vec::len).sum()
     return Pair(list, len)

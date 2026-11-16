@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.fmt.num.imp
 
 import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.cmp.Eq
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.num.DECIMAL_PAIRS
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -14,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
 
-public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: UByte) {
+public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: UByte): Result<Unit, Error> {
     val MAX_DEC_N: Int = ULong.MAX_VALUE.ilog10().toInt() + 1
     val MAX_COEF_LEN: Int = MAX_DEC_N + ".".len()
     val MAX_TEXT_LEN: Int = MAX_COEF_LEN + "e99".len()
@@ -94,11 +95,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
                 buf[i].write(48u + digit.toUByte())
             }
             run {
-                for (i1 in fractionRange
-                    .clone()
-                    .skip(1)
-                    .rev()
-                    .stepBy(2)) {
+                for (i1 in fractionRange.clone().skip(1).rev().stepBy(2)) {
                     val pair = (remain % 100uL).toInt()
                     remain /= 100uL
                     buf[i1 - 1].write(DECIMAL_PAIRS[pair * 2 + 0])
@@ -144,7 +141,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
             }
         }
     val text = buf[0 until textLen].assumeInitRef()
-    if (morePrec == 0) {
+    return if (morePrec == 0) {
         val asStr = String.fromUtf8Unchecked(text)
         f.padIntegral(isNonnegative, "", asStr)
     } else {
@@ -161,50 +158,18 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
     }
 }
 
-public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.unsignedAbs().toULong(), this >= 0.toByte(), 101u)
-        Result.Ok(Unit)
-    }
+public fun Byte.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0.toByte(), 101u)
 
-public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.toULong(), true, 101u)
-        Result.Ok(Unit)
-    }
+public fun UByte.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u)
 
-public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.unsignedAbs().toULong(), this >= 0.toShort(), 101u)
-        Result.Ok(Unit)
-    }
+public fun Short.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0.toShort(), 101u)
 
-public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.toULong(), true, 101u)
-        Result.Ok(Unit)
-    }
+public fun UShort.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u)
 
-public fun Int.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.unsignedAbs().toULong(), this >= 0, 101u)
-        Result.Ok(Unit)
-    }
+public fun Int.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0, 101u)
 
-public fun UInt.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.toULong(), true, 101u)
-        Result.Ok(Unit)
-    }
+public fun UInt.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.toULong(), true, 101u)
 
-public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this.unsignedAbs().toULong(), this >= 0L, 101u)
-        Result.Ok(Unit)
-    }
+public fun Long.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this.unsignedAbs().toULong(), this >= 0L, 101u)
 
-public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> =
-    run {
-        expU64(f, this, true, 101u)
-        Result.Ok(Unit)
-    }
+public fun ULong.fmt(f: StringBuilder): Result<Unit, Unit> = expU64(f, this, true, 101u)

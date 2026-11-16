@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.rev
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -69,7 +70,7 @@ public fun <I> Rev<I>.next(): Item? = this.iter.nextBack()
 
 public fun <I> Rev<I>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
 
-public fun <I> Rev<I>.advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.iter.advanceBackBy(n)
+public fun <I> Rev<I>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBackBy(n)
 
 public fun <I> Rev<I>.nth(n: Int): Item? = this.iter.nthBack(n)
 
@@ -81,7 +82,7 @@ public fun <I> Rev<I>.find(predicate: (Item) -> Boolean): Item? = this.iter.rfin
 
 public fun <I> Rev<I>.nextBack(): Item? = this.iter.next()
 
-public fun <I> Rev<I>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.iter.advanceBy(n)
+public fun <I> Rev<I>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBy(n)
 
 public fun <I> Rev<I>.nthBack(n: Int): Item? = this.iter.nth(n)
 

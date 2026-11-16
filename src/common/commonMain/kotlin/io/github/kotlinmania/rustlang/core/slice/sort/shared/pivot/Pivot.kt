@@ -63,7 +63,7 @@ public fun <T> choosePivot(v: List<T>, isLess: (T, T) -> Boolean): Int {
  * SAFETY: a, b, c must point to the start of initialized regions of memory of
  * at least n elements.
  */
-public fun <T> median3Rec(a: ConstPtr, b: ConstPtr, c: ConstPtr, n: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> median3Rec(a: ConstPtr, b: ConstPtr, c: ConstPtr, n: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     var a1 = a
     var b1 = b
     var c1 = c

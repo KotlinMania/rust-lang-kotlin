@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -54,18 +55,15 @@ public open class TakeWhile<I, P>(
     public var iter: I,
     public var flag: Boolean,
     public var predicate: P,
-) : TrustedFused,
-    SourceIter<Source>,
-    Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@TakeWhile.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedFused, SourceIter<Source>, Iterable<Item> {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@TakeWhile.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): TakeWhile<I, P> = TakeWhile(iter, flag, predicate)
 
@@ -157,6 +155,6 @@ public open class TakeWhile<I, P>(
     }
 }
 
-public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -33,7 +34,7 @@ public fun interface LazyKeyDtorCallback {
  * dependencies with the rest of `std`.
  */
 public open class LazyKey internal constructor(
-    keyCtorArg: Atomic<Int>,
+    keyCtorArg: Atomic<Int, Align8<Int>>,
     /**
      * Destructor for the TLS value.
      */
@@ -42,7 +43,7 @@ public open class LazyKey internal constructor(
     /**
      * Inner static TLS key (internals).
      */
-    public var key: Atomic<Int> = keyCtorArg
+    public var key: Atomic<Int, Align8<Int>> = keyCtorArg
         internal set
 
     public open fun force(): Key =
@@ -92,9 +93,9 @@ public open class LazyKey internal constructor(
         }
         return run {
             val matchVal1 = this.key.compareExchange(KEY_SENTVAL, key.toInt(), Ordering.Release, Ordering.Acquire)
-            when (matchVal1) { is Result.Ok<*, *> -> {
+            when (matchVal1) { is Result.Ok -> {
                 key.toInt()
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 val n = matchVal1.error
                 run {
                     destroy(key)
@@ -106,7 +107,7 @@ public open class LazyKey internal constructor(
 
     public companion object {
         public operator fun invoke(
-            key: Atomic<Int>,
+            key: Atomic<Int, Align8<Int>>,
             dtor: LazyKeyDtorCallback?,
         ): LazyKey = LazyKey(
             keyCtorArg = key,

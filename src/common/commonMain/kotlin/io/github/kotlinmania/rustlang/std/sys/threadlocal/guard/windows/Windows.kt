@@ -185,7 +185,7 @@ public fun enable() {
                 // If we lost, we'll use the winning key and free our losing key.
                 run {
                     val matchVal = KEY.compareExchange(currentKey, newKey, Ordering.Release, Ordering.Acquire)
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         // If the current DLL is unloaded, the registered `cleanup` hook will not be available later during thread exit,
                         // triggering a `STATUS_ACCESS_VIOLATION`. To avoid this, we use the `atexit` hook, which is called during DLL unload
                         // to manually free the FLS slot, triggering the destructors.
@@ -222,7 +222,7 @@ public fun enable() {
                             }
                         }
                         newKey
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val otherKey = matchVal.error
                         c.FlsFree(newKey)
                         otherKey

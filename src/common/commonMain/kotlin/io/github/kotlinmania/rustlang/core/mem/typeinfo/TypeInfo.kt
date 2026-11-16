@@ -90,81 +90,62 @@ public sealed class TypeKind {
      * Tuples.
      */
     public data object Tuple : TypeKind()
-
     /**
      * Arrays.
      */
     public data object Array : TypeKind()
-
     /**
      * Slices.
      */
     public data object Slice : TypeKind()
-
     /**
      * Dynamic Traits.
      */
-    public data class DynTrait(
-        public var value: DynTrait,
-    ) : TypeKind()
-
+    public data class DynTrait(public var value: DynTrait) : TypeKind()
     /**
      * Structs.
      */
     public data object Struct : TypeKind()
-
     /**
      * Enums.
      */
     public data object Enum : TypeKind()
-
     /**
      * Unions.
      */
     public data object Union : TypeKind()
-
     /**
      * Primitive boolean type.
      */
     public data object Bool : TypeKind()
-
     /**
      * Primitive character type.
      */
     public data object Char : TypeKind()
-
     /**
      * Primitive signed and unsigned integer type.
      */
     public data object Int : TypeKind()
-
     /**
      * Primitive floating-point type.
      */
     public data object Float : TypeKind()
-
     /**
      * String slice type.
      */
-    public data class Str(
-        public var value: Str,
-    ) : TypeKind()
-
+    public data class Str(public var value: Str) : TypeKind()
     /**
      * References.
      */
     public data object Reference : TypeKind()
-
     /**
      * Pointers.
      */
     public data object Pointer : TypeKind()
-
     /**
      * Function pointers.
      */
     public data object FnPtr : TypeKind()
-
     /**
      * Note(#146922): add all the common types
      * non exhaustive list:
@@ -215,23 +196,15 @@ public sealed class Generic {
     /**
      * Scopes.
      */
-    public data class Lifetime(
-        public var value: Lifetime,
-    ) : Generic()
-
+    public data class Lifetime(public var value: Lifetime) : Generic()
     /**
      * Types.
      */
-    public data class Type(
-        public var value: GenericType,
-    ) : Generic()
-
+    public data class Type(public var value: GenericType) : Generic()
     /**
      * Const parameters.
      */
-    public data class Const(
-        public var value: Const,
-    ) : Generic()
+    public data class Const(public var value: Const) : Generic()
 }
 
 /**
@@ -359,15 +332,11 @@ public sealed class Abi {
     /**
      * Named abi, e.g. extern "custom", "stdcall" etc.
      */
-    public data class Named(
-        public var value: String,
-    ) : Abi()
-
+    public data class Named(public var value: String) : Abi()
     /**
      * Default
      */
     public data object ExternRust : Abi()
-
     /**
      * C-calling convention
      */

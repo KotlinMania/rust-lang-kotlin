@@ -41,11 +41,7 @@ public interface TryCaptureGeneric<E, M> {
 
 public fun <E> Wrapper<E>.tryCapture(arg0: Capture<E, TryCaptureWithoutDebug>) {}
 
-public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit, Unit> =
-    run {
-        f.append("N/A")
-        Result.Ok(Unit)
-    }
+public fun <E> Capture<E, TryCaptureWithoutDebug>.fmt(f: Formatter): Result<Unit, Error> = run { f.append("N/A"); Result.Ok(Unit) }
 
 // ***** TryCapture - Printable *****
 

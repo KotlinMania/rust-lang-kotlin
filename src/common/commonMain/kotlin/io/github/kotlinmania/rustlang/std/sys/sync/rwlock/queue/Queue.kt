@@ -10,6 +10,8 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -213,12 +215,12 @@ public open class Node internal constructor(
     public var tail: AtomicLink,
     public var write: Boolean,
     threadCtorArg: OnceCell<Thread>,
-    completedCtorArg: Atomic<Boolean>,
+    completedCtorArg: Atomic<Boolean, Align1<UByte>>,
 ) {
     public var thread: OnceCell<Thread> = threadCtorArg
         internal set
 
-    public var completed: Atomic<Boolean> = completedCtorArg
+    public var completed: Atomic<Boolean, Align1<UByte>> = completedCtorArg
         internal set
 
     /**
@@ -252,7 +254,7 @@ public open class Node internal constructor(
             tail: AtomicLink,
             write: Boolean,
             thread: OnceCell<Thread>,
-            completed: Atomic<Boolean>,
+            completed: Atomic<Boolean, Align1<UByte>>,
         ): Node = Node(
             next = next,
             prev = prev,
@@ -290,12 +292,12 @@ public open class Node internal constructor(
  * An atomic node pointer with relaxed operations.
  */
 public open class AtomicLink internal constructor(
-    valueCtorArg: Atomic<MutPtr>,
+    valueCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
 ) {
-    public var value: Atomic<MutPtr> = valueCtorArg
+    public var value: Atomic<MutPtr, Align8<MutPtr>> = valueCtorArg
         internal set
 
-    public var field0: Atomic<MutPtr>
+    public var field0: Atomic<MutPtr, Align8<MutPtr>>
         get() = value
         set(v) {
             value = v
@@ -309,7 +311,7 @@ public open class AtomicLink internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: Atomic<MutPtr>,
+            value: Atomic<MutPtr, Align8<MutPtr>>,
         ): AtomicLink = AtomicLink(
             valueCtorArg = value,
         )
@@ -480,9 +482,9 @@ public open class RwLock internal constructor(
                     // The lock is available, try locking it.
                     run {
                         val matchVal1 = this.state.compareExchangeWeak(state, next, Acquire, Relaxed)
-                        when (matchVal1) { is Result.Ok<*, *> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             return
-                        }; is Result.Err<*, *> -> {
+                        }; is Result.Err -> {
                             val new = matchVal1.error
                             state = new
                         } }
@@ -571,7 +573,7 @@ public open class RwLock internal constructor(
                 null
             }
         })
-            when (matchVal) { is Result.Ok<*, *> -> {}; is Result.Err<*, *> -> {
+            when (matchVal) { is Result.Ok -> {}; is Result.Err -> {
                 val state = matchVal.error
                 this.readUnlockContended(state)
             } }
@@ -639,9 +641,9 @@ public open class RwLock internal constructor(
                 val next = current.mask(LOCKED.inv())
                 run {
                     val matchVal = this.state.compareExchangeWeak(current, next, Release, Relaxed)
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         return
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val new = matchVal.error
                         current = new
                         continue
@@ -652,12 +654,12 @@ public open class RwLock internal constructor(
             val next1 = current.mapAddr({ addr -> (addr and LOCKED.inv()) or QUEUE_LOCKED })
             run {
                 val matchVal1 = this.state.compareExchangeWeak(current, next1, AcqRel, Relaxed)
-                when (matchVal1) { is Result.Ok<*, *> -> {
+                when (matchVal1) { is Result.Ok -> {
                     // SAFETY: This thread just acquired the queue lock, and this function's safety
                     // contract requires that there are threads already queued on the lock.
                     this.unlockQueue(next1)
                     return
-                }; is Result.Err<*, *> -> {
+                }; is Result.Err -> {
                     val new1 = matchVal1.error
                     current = new1
                 } }
@@ -714,9 +716,9 @@ public open class RwLock internal constructor(
                 val next = state1.mapAddr({ addr -> addr or DOWNGRADED })
                 run {
                     val matchVal = this.state.compareExchangeWeak(state1, next, Release, Relaxed)
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         return
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val new = matchVal.error
                         state1 = new
                     } }
@@ -764,9 +766,9 @@ public open class RwLock internal constructor(
                 // Leave waking up waiters to them by releasing the queue lock.
                 run {
                     val matchVal = this.state.compareExchangeWeak(state1, state1.mask(QUEUE_LOCKED.inv()), Release, Acquire)
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         return
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val new = matchVal.error
                         state1 = new
                         continue

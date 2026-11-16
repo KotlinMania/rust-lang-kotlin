@@ -555,7 +555,7 @@ public fun testVldrqP128() {
 public fun testVstrqP128() {
     val v: List<P128> = listOf(1, 2)
     val e: P128 = U128(0x0uL, 0x2uL)
-    val r: P128 = U128(0x0uL, 0x1uL)
+    val r: P128  = U128(0x0uL, 0x1uL)
     run {
         vstrqP128(r, v[1])
     }

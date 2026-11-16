@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.io.error.osfunctions.setFunctions
 import io.github.kotlinmania.rustlang.core.io.error.repr.Repr
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun interface OsFunctionsFormatOsErrorCallback {
-    public operator fun invoke(arg0: RawOsError, arg1: StringBuilder)
+    public operator fun invoke(arg0: RawOsError, arg1: StringBuilder): io.github.kotlinmania.rustlang.core.result.Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>
 }
 
 public fun interface OsFunctionsDecodeErrorKindCallback {
@@ -119,7 +120,7 @@ public class DebugTuple(
  * }
  * ```
  */
-public typealias Result<T> = Result<T, Error>
+public typealias Result<T> = io.github.kotlinmania.rustlang.core.result.Result<T, Error>
 
 // Note(#74481): Hard-links required to link from `core` to `std`
 
@@ -136,24 +137,18 @@ public typealias Result<T> = Result<T, Error>
 public open class Error(
     public var repr: Repr,
 ) {
-    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> =
-        run {
-            f.append((this.repr).toString())
-            RustResult.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): RustResult<Unit, Unit> = run { f.append((this.repr).toString()); RustResult.Ok(Unit) }
 
-    public open fun intoCustomOwner(): Result<CustomOwner, Error> =
+    public open fun intoCustomOwner(): io.github.kotlinmania.rustlang.core.result.Result<CustomOwner, Error> =
         if (when (val matchVal = this.repr.data()) {
-                is ErrorData.Custom -> true
-                else -> false
-            }
-        ) {
-            val c =
-                this.repr.intoData() ?: // SAFETY: Checked above using `matches`.
-                    unreachableUnchecked()
-            RustResult.Ok(c)
+            is ErrorData.Custom -> true
+            else -> false
+        }) {
+            val c = this.repr.intoData() ?: // SAFETY: Checked above using `matches`.
+unreachableUnchecked()
+            RustResult.Ok<CustomOwner, Error>(c)
         } else {
-            RustResult.Err(this)
+            RustResult.Err<CustomOwner, Error>(this)
         }
 
     // Note(#74481): Hard-links required to link from `core` to `std` for incoherent method
@@ -399,17 +394,11 @@ public open class Error(
             }
             is ErrorData.Custom -> {
                 val (c) = matchVal
-                run {
-                    fmt.append((c.errorRef()).toString())
-                    RustResult.Ok(Unit)
-                }
+                run { fmt.append((c.errorRef()).toString()); RustResult.Ok(Unit) }
             }
             is ErrorData.Simple -> {
                 val (kind) = matchVal
-                run {
-                    kind.fmt(fmt)
-                    RustResult.Ok(Unit)
-                }
+                kind.fmt(fmt)
             }
             is ErrorData.SimpleMessage -> {
                 val (msg) = matchVal
@@ -461,7 +450,6 @@ public open class Error(
          * Intended for use for errors not exposed to the user, where allocating onto
          * the heap (for normal construction via Error.new) is too costly.
          */
-
         /**
          * Converts an [ErrorKind] into an [Error].
          *
@@ -520,18 +508,10 @@ public open class Error(
 // Only derive debug in tests, to make sure it
 // doesn't accidentally get printed.
 public sealed class ErrorData<C> {
-    public data class Os<C>(
-        public var value: RawOsError,
-    ) : ErrorData<C>()
-    public data class Simple<C>(
-        public var value: ErrorKind,
-    ) : ErrorData<C>()
-    public data class SimpleMessage<C>(
-        public var value: SimpleMessage,
-    ) : ErrorData<C>()
-    public data class Custom<C>(
-        public var value: C,
-    ) : ErrorData<C>()
+    public data class Os<C>(public var value: RawOsError) : ErrorData<C>()
+    public data class Simple<C>(public var value: ErrorKind) : ErrorData<C>()
+    public data class SimpleMessage<C>(public var value: SimpleMessage) : ErrorData<C>()
+    public data class Custom<C>(public var value: C) : ErrorData<C>()
 }
 
 // `@repr(align(4))` is probably redundant, it should have that value or
@@ -557,22 +537,13 @@ public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
     when (val matchVal = this.data()) {
         is ErrorData.Os -> {
             val (code) = matchVal
-            DebugStruct(fmt, "Os")
-                .field("code", code)
-                .field("kind", decodeErrorKind(code))
-                .field(
-                    "message",
-                    fmt.fromFn({ fmt1 ->
-                        fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
-                    }),
-                ).finish()
+            DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.fromFn({ fmt1 ->
+                fmt1.writeFmt("\"${fmt.fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
+            })).finish()
         }
         is ErrorData.Custom -> {
             val (c) = matchVal
-            run {
-                fmt.append((c).toString())
-                RustResult.Ok(Unit)
-            }
+            run { fmt.append((c).toString()); RustResult.Ok(Unit) }
         }
         is ErrorData.Simple -> {
             val (kind) = matchVal
@@ -678,7 +649,7 @@ public open class Custom(
  */
 public open class CustomOwner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<NonNull>,
+    public val fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout(),
 ) {
     public var field0: NonNull
         get() = value
@@ -688,11 +659,9 @@ public open class CustomOwner internal constructor(
 
     public var value: NonNull
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: NonNull, fieldLayout: TypeLayout<NonNull>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CustomOwner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CustomOwner(ptr, layout) }, { it.value })
 
@@ -729,9 +698,9 @@ public open class CustomOwner internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(value: NonNull, fieldLayout: TypeLayout<NonNull>): CustomOwner = CustomOwner(value, fieldLayout)
+        public operator fun invoke(value: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): CustomOwner = CustomOwner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonNull>): CustomOwner = CustomOwner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): CustomOwner = CustomOwner(fieldStorage, fieldLayout)
 
         /**
          * # Safety
@@ -739,7 +708,7 @@ public open class CustomOwner internal constructor(
          * * `custom` must point to valid `Custom`.
          * * The `outerDrop` of the provided `custom` must be the drop function for this pointer.
          */
-        public fun fromRaw(custom: NonNull, fieldLayout: TypeLayout<NonNull>): CustomOwner {
+        public fun fromRaw(custom: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): CustomOwner {
             // INVARIANT: by the preconditions, `custom.outerDrop` is the drop for `custom`.
             return CustomOwner(custom, fieldLayout = fieldLayout)
         }
@@ -786,75 +755,61 @@ public sealed class ErrorKind {
      * An entity was not found, often a file.
      */
     public data object NotFound : ErrorKind()
-
     /**
      * The operation lacked the necessary privileges to complete.
      */
     public data object PermissionDenied : ErrorKind()
-
     /**
      * The connection was refused by the remote server.
      */
     public data object ConnectionRefused : ErrorKind()
-
     /**
      * The connection was reset by the remote server.
      */
     public data object ConnectionReset : ErrorKind()
-
     /**
      * The remote host is not reachable.
      */
     public data object HostUnreachable : ErrorKind()
-
     /**
      * The network containing the remote host is not reachable.
      */
     public data object NetworkUnreachable : ErrorKind()
-
     /**
      * The connection was aborted (terminated) by the remote server.
      */
     public data object ConnectionAborted : ErrorKind()
-
     /**
      * The network operation failed because it was not connected yet.
      */
     public data object NotConnected : ErrorKind()
-
     /**
      * A socket address could not be bound because the address is already in
      * use elsewhere.
      */
     public data object AddrInUse : ErrorKind()
-
     /**
      * A nonexistent interface was requested or the requested address was not
      * local.
      */
     public data object AddrNotAvailable : ErrorKind()
-
     /**
      * The system's networking is down.
      */
     public data object NetworkDown : ErrorKind()
-
     /**
      * The operation failed because a pipe was closed.
      */
     public data object BrokenPipe : ErrorKind()
-
     /**
      * An entity already exists, often a file.
      */
     public data object AlreadyExists : ErrorKind()
-
     /**
      * The operation needs to block to complete, but the blocking operation was
      * requested to not occur.
      */
     public data object WouldBlock : ErrorKind()
-
     /**
      * A filesystem object is, unexpectedly, not a directory.
      *
@@ -862,24 +817,20 @@ public sealed class ErrorKind {
      * components was, in fact, a plain file.
      */
     public data object NotADirectory : ErrorKind()
-
     /**
      * The filesystem object is, unexpectedly, a directory.
      *
      * A directory was specified when a non-directory was expected.
      */
     public data object IsADirectory : ErrorKind()
-
     /**
      * A non-empty directory was specified where an empty directory was expected.
      */
     public data object DirectoryNotEmpty : ErrorKind()
-
     /**
      * The filesystem or storage medium is read-only, but a write operation was attempted.
      */
     public data object ReadOnlyFilesystem : ErrorKind()
-
     /**
      * Loop in the filesystem or IO subsystem; often, too many levels of symbolic links.
      *
@@ -890,7 +841,6 @@ public sealed class ErrorKind {
      * system-specific limit on the depth of symlink traversal.
      */
     public data object FilesystemLoop : ErrorKind()
-
     /**
      * Stale network file handle.
      *
@@ -898,12 +848,10 @@ public sealed class ErrorKind {
      * by problems with the network or server.
      */
     public data object StaleNetworkFileHandle : ErrorKind()
-
     /**
      * A parameter was incorrect.
      */
     public data object InvalidInput : ErrorKind()
-
     /**
      * Data not valid for the operation were encountered.
      *
@@ -917,12 +865,10 @@ public sealed class ErrorKind {
      * [InvalidInput]: ErrorKind.InvalidInput
      */
     public data object InvalidData : ErrorKind()
-
     /**
      * The I/O operation's timeout expired, causing it to be canceled.
      */
     public data object TimedOut : ErrorKind()
-
     /**
      * An error returned when an operation could not be completed because a
      * call to [`write`][write] returned [Ok].
@@ -934,14 +880,12 @@ public sealed class ErrorKind {
      * [Ok]: Ok
      */
     public data object WriteZero : ErrorKind()
-
     /**
      * The underlying storage (typically, a filesystem) is full.
      *
      * This does not include out of quota errors.
      */
     public data object StorageFull : ErrorKind()
-
     /**
      * Seek on unseekable file.
      *
@@ -949,12 +893,10 @@ public sealed class ErrorKind {
      * example, on Unix, a named pipe opened with `File.open`.
      */
     public data object NotSeekable : ErrorKind()
-
     /**
      * Filesystem quota or some other kind of quota was exceeded.
      */
     public data object QuotaExceeded : ErrorKind()
-
     /**
      * File larger than allowed or supported.
      *
@@ -963,12 +905,10 @@ public sealed class ErrorKind {
      * their own errors.
      */
     public data object FileTooLarge : ErrorKind()
-
     /**
      * Resource is busy.
      */
     public data object ResourceBusy : ErrorKind()
-
     /**
      * Executable file is busy.
      *
@@ -976,7 +916,6 @@ public sealed class ErrorKind {
      * operating systems detect this situation.)
      */
     public data object ExecutableFileBusy : ErrorKind()
-
     /**
      * Deadlock (avoided).
      *
@@ -984,26 +923,22 @@ public sealed class ErrorKind {
      * at all, on a best-effort basis.
      */
     public data object Deadlock : ErrorKind()
-
     /**
      * Cross-device or cross-filesystem (hard) link or rename.
      */
     public data object CrossesDevices : ErrorKind()
-
     /**
      * Too many (hard) links to the same filesystem object.
      *
      * The filesystem does not support making so many hardlinks to the same file.
      */
     public data object TooManyLinks : ErrorKind()
-
     /**
      * A filename was invalid.
      *
      * This error can also occur if a length limit for a name was exceeded.
      */
     public data object InvalidFilename : ErrorKind()
-
     /**
      * Program argument list too long.
      *
@@ -1011,14 +946,12 @@ public sealed class ErrorKind {
      * arguments would have been exceeded.
      */
     public data object ArgumentListTooLong : ErrorKind()
-
     /**
      * This operation was interrupted.
      *
      * Interrupted operations can typically be retried.
      */
     public data object Interrupted : ErrorKind()
-
     /**
      * This operation is unsupported on this platform.
      *
@@ -1038,25 +971,21 @@ public sealed class ErrorKind {
      * read.
      */
     public data object UnexpectedEof : ErrorKind()
-
     /**
      * An operation could not be completed, because it failed
      * to allocate enough memory.
      */
     public data object OutOfMemory : ErrorKind()
-
     /**
      * The operation was partially successful and needs to be checked
      * later on due to not blocking.
      */
     public data object InProgress : ErrorKind()
-
     /**
      * The process or the whole system has reached its limit on the number of
      * open files or sockets.
      */
     public data object TooManyOpenFiles : ErrorKind()
-
     /**
      * A low-level input/output error.
      *
@@ -1085,7 +1014,6 @@ public sealed class ErrorKind {
      * [error]: Error
      */
     public data object Other : ErrorKind()
-
     /**
      * Any I/O error from the standard library that's not part of this list.
      *
@@ -1159,11 +1087,7 @@ public sealed class ErrorKind {
      * check("entity not found" == ErrorKind.NotFound.toString())
      * ```
      */
-    public open fun fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
-        run {
-            fmt.append(this.asStr())
-            RustResult.Ok(Unit)
-        }
+    public open fun fmt(fmt: StringBuilder): RustResult<Unit, Unit> = run { fmt.append(this.asStr()); RustResult.Ok(Unit) }
 
     public companion object {
         // This compiles to the same code as the check+reinterpret, but doesn't require

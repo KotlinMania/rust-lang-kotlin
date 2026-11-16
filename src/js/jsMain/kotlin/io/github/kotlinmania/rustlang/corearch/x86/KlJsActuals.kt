@@ -4,7 +4,9 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-public actual fun loadiwkey(integrityKey: M128i, keyLo: M128i, keyHi: M128i, control: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun loadiwkey(integrityKey: M128i, keyLo: M128i, keyHi: M128i, control: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun encodekey128(keyMetadata: UInt, key: M128i): EncodeKey128Output =
     throw UnsupportedOperationException("Native FFI addon is not available")

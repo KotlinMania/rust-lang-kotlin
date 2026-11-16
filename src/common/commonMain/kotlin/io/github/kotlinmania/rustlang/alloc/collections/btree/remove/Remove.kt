@@ -44,7 +44,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
             run {
                 val matchVal = pos.intoNode().forgetType().chooseParentKv()
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value is Left -> {
+                    matchVal is Result.Ok && matchVal.value is Left -> {
                         check(leftParentKv.rightChildLen() == MIN_LEN - 1)
                         if (leftParentKv.canMerge()) {
                             leftParentKv.mergeTrackingChildEdge(Right(idx), alloc.clone())
@@ -53,7 +53,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                             leftParentKv.stealLeft(idx)
                         }
                     }
-                    matchVal is Result.Ok<*, *> && matchVal.value is Right -> {
+                    matchVal is Result.Ok && matchVal.value is Right -> {
                         check(rightParentKv.leftChildLen() == MIN_LEN - 1)
                         if (rightParentKv.canMerge()) {
                             rightParentKv.mergeTrackingChildEdge(Left(idx), alloc.clone())
@@ -64,7 +64,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, KV>.remov
                     }
                     // ignore-tidy-undocumented-unchecked
                     else -> {
-                        val pos1 = (matchVal as Result.Err<*, *>).error
+                        val pos1 = matchVal.error
                         Handle.newEdge(pos1, idx)
                     }
                 }
@@ -95,12 +95,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.r
     // Remove an adjacent KV from its leaf and then put it back in place of
     // the element we were asked to remove. Prefer the left adjacent KV,
     // for the reasons listed in `chooseParentKv`.
-    val leftLeafKv =
-        this
-            .leftEdge()
-            .descend()
-            .lastLeafEdge()
-            .leftKv()
+    val leftLeafKv = this.leftEdge().descend().lastLeafEdge().leftKv()
     // ignore-tidy-undocumented-unchecked
     val leftLeafKv1 = leftLeafKv.ok().unwrapUnchecked()
     val (leftKv, leftHole) = leftLeafKv1.removeLeafKv(handleEmptiedInternalRoot, alloc)

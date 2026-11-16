@@ -8,9 +8,7 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 
-public interface UAddSub<T> :
-    DInt,
-    Int {
+public interface UAddSub<T> : DInt, Int {
     public fun uadd(other: T): T
 
     public fun uaddOne(): T

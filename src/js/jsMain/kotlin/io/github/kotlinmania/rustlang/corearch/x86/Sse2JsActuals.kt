@@ -92,7 +92,9 @@ public actual fun psrlq(a: I64x2, count: I64x2): I64x2 =
 public actual fun cvtps2dq(a: M128): I32x4 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun maskmovdqu(a: I8x16, mask: I8x16, memAddr: MutPtr): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun maskmovdqu(a: I8x16, mask: I8x16, memAddr: MutPtr) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun packsswb(a: I16x8, b: I16x8): I8x16 =
     throw UnsupportedOperationException("Native FFI addon is not available")

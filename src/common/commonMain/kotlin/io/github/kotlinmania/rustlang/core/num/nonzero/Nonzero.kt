@@ -94,8 +94,9 @@ public interface ZeroablePrimitive<T, out NonZeroInner>
  * import core.num.NonZero
  * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
  * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+ * import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
  *
- * check(sizeOf<NonZero<UInt>?>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt>?>()) == sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
+ * check(sizeOf<NonZero<UInt, NonZeroU32Inner>?>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt, NonZeroU32Inner>?>()) == sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
  * ```
  *
  * # Layout
@@ -110,10 +111,11 @@ public interface ZeroablePrimitive<T, out NonZeroInner>
  *
  * ```kotlin
  * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+ * import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
  * import std.num.NonZero
  *
- * check(sizeOf<NonZero<UInt>>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt>>()) == sizeOf<NonZero<UInt>?>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt>?>()))
- * check(alignOf<NonZero<UInt>>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt>>()) == alignOf<NonZero<UInt>?>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt>?>()))
+ * check(sizeOf<NonZero<UInt, NonZeroU32Inner>>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt, NonZeroU32Inner>>()) == sizeOf<NonZero<UInt, NonZeroU32Inner>?>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt, NonZeroU32Inner>?>()))
+ * check(alignOf<NonZero<UInt, NonZeroU32Inner>>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt, NonZeroU32Inner>>()) == alignOf<NonZero<UInt, NonZeroU32Inner>?>(typeLayoutT = UnresolvedTypeLayout<NonZero<UInt, NonZeroU32Inner>?>()))
  * ```
  *
  * # Note on generic usage
@@ -127,15 +129,8 @@ public interface ZeroablePrimitive<T, out NonZeroInner>
  */
 public open class NonZero<T, NonZeroInner> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<NonZeroInner>,
-) : fmt.LowerExp,
-    fmt.UpperExp,
-    Freeze,
-    UseCloned<NonZero<T, NonZeroInner>>,
-    TrivialClone<NonZero<T, NonZeroInner>>,
-    StructuralPartialEq,
-    BitOr<NonZero<T, NonZeroInner>, NonZero<T, NonZeroInner>>,
-    BitOrAssign<NonZero<T, NonZeroInner>> {
+    public val fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout(),
+) : fmt.LowerExp, fmt.UpperExp, Freeze, UseCloned<NonZero<T, NonZeroInner>>, TrivialClone<NonZero<T, NonZeroInner>>, StructuralPartialEq, BitOr<NonZero<T, NonZeroInner>, NonZero<T, NonZeroInner>>, BitOrAssign<NonZero<T, NonZeroInner>> {
     public var field0: T.NonZeroInner
         get() = value
         set(v) {
@@ -144,11 +139,9 @@ public open class NonZero<T, NonZeroInner> internal constructor(
 
     public var value: NonZeroInner
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: NonZeroInner, fieldLayout: TypeLayout<NonZeroInner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: NonZeroInner, fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZero<T, NonZeroInner>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZero<T, NonZeroInner>(ptr, layout) }, { it.value })
 
@@ -261,14 +254,14 @@ public open class NonZero<T, NonZeroInner> internal constructor(
     }
 
     public companion object {
-        public operator fun <T, NonZeroInner> invoke(value: NonZeroInner, fieldLayout: TypeLayout<NonZeroInner>): NonZero<T, NonZeroInner> = NonZero<T, NonZeroInner>(value, fieldLayout)
+        public operator fun <T, NonZeroInner> invoke(value: NonZeroInner, fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner> = NonZero<T, NonZeroInner>(value, fieldLayout)
 
-        public fun <T, NonZeroInner> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroInner>): NonZero<T, NonZeroInner> = NonZero<T, NonZeroInner>(fieldStorage, fieldLayout)
+        public fun <T, NonZeroInner> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner> = NonZero<T, NonZeroInner>(fieldStorage, fieldLayout)
 
         /**
          * Creates a non-zero if the given value is not zero.
          */
-        public fun <NonZeroInner, T> new(n: T, typeLayoutT: TypeLayout<T>): NonZero<T, NonZeroInner>? {
+        public fun <NonZeroInner, T> new(n: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner>? {
             // SAFETY: Memory layout optimization guarantees that `Option<NonZero<T>>` has
             // the same layout and size as `T`, with `0` representing `None`.
             return transmuteWithLayouts(n, typeLayoutT, UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
@@ -450,11 +443,8 @@ public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int)
  * ```kotlin
  * ```
  */
-public class NonZeroU8(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroU8Inner>,
-) : NonZero<UByte, NonZeroU8Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU8Inner, fieldLayout: TypeLayout<NonZeroU8Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU8(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU8Inner> = UnresolvedTypeLayout()) : NonZero<UByte, NonZeroU8Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroU8Inner, fieldLayout: TypeLayout<NonZeroU8Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -507,7 +497,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.trailingZeros(): UInt = kmCttzU8(this.
 public fun NonZero<UByte, NonZeroU8Inner>.isolateHighestOne(): NonZero<UByte, NonZeroU8Inner> =
     run {
         val bit = ((((1.toUByte()).toUInt() shl ((8u - 1u).toInt())).toUByte()).uncheckedShr(this.leadingZeros()))
-        NonZero.newUnchecked(bit.toUByte())
+        NonZero.newUnchecked<NonZeroU8Inner, UByte>(bit.toUByte())
     }
 
 /**
@@ -522,7 +512,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.isolateHighestOne(): NonZero<UByte, No
 public fun NonZero<UByte, NonZeroU8Inner>.isolateLowestOne(): NonZero<UByte, NonZeroU8Inner> {
     val n = this.get()
     val n1 = n and n.wrappingNeg()
-    return NonZero.newUnchecked(n1)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(n1)
 }
 
 /**
@@ -557,7 +547,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.lowestOne(): UInt = this.trailingZeros
  * check(b.countOnes() == NonZero.new(3).getOrElse { return Result.failure(it) })
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.countOnes(): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked(this.get().countOnes())
+public fun NonZero<UByte, NonZeroU8Inner>.countOnes(): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(this.get().countOnes())
 
 /**
  * Shifts the bits to the left by a specified amount, `n`,
@@ -574,7 +564,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.countOnes(): NonZero<UInt, NonZeroU32I
  */
 public fun NonZero<UByte, NonZeroU8Inner>.rotateLeft(n: UInt): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get().rotateLeft(n)
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -593,7 +583,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.rotateLeft(n: UInt): NonZero<UByte, No
  */
 public fun NonZero<UByte, NonZeroU8Inner>.rotateRight(n: UInt): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get().rotateRight(n)
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -610,7 +600,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.rotateRight(n: UInt): NonZero<UByte, N
  */
 public fun NonZero<UByte, NonZeroU8Inner>.swapBytes(): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -628,7 +618,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.swapBytes(): NonZero<UByte, NonZeroU8I
  */
 public fun NonZero<UByte, NonZeroU8Inner>.reverseBits(): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get().reverseBits()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -656,7 +646,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.reverseBits(): NonZero<UByte, NonZeroU
  */
 public fun NonZero.Companion.fromBe(x: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> {
     val result = x.get()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -684,7 +674,7 @@ public fun NonZero.Companion.fromBe(x: NonZero<UByte, NonZeroU8Inner>): NonZero<
  */
 public fun NonZero.Companion.fromLe(x: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> {
     val result = x.get()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -708,7 +698,7 @@ public fun NonZero.Companion.fromLe(x: NonZero<UByte, NonZeroU8Inner>): NonZero<
  */
 public fun NonZero<UByte, NonZeroU8Inner>.toBe(): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -732,7 +722,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.toBe(): NonZero<UByte, NonZeroU8Inner>
  */
 public fun NonZero<UByte, NonZeroU8Inner>.toLe(): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -755,7 +745,7 @@ public val MIN: NonZero<UByte, NonZeroU8Inner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX: NonZero<UByte, NonZeroU8Inner> = NonZero.new(UByte.MAX_VALUE)!!
+public val MAX: NonZero<UByte, NonZeroU8Inner> = (NonZero.new<NonZeroU8Inner, UByte>(UByte.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -776,7 +766,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedAdd(other: UByte): NonZero<UByt
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
         }
     }
 
@@ -809,7 +799,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedAdd(other: UByte): NonZero<UByt
  * }
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.strictAdd(other: UByte): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().strictAdd(other))
+public fun NonZero<UByte, NonZeroU8Inner>.strictAdd(other: UByte): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().strictAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -821,7 +811,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.strictAdd(other: UByte): NonZero<UByte
  * check(max == max.saturatingAdd(1))
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.saturatingAdd(other: UByte): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().saturatingAdd(other))
+public fun NonZero<UByte, NonZeroU8Inner>.saturatingAdd(other: UByte): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().saturatingAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value,
@@ -845,7 +835,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.saturatingAdd(other: UByte): NonZero<U
  *
  * [checkedAdd]: Self.checkedAdd
  */
-public fun NonZero<UByte, NonZeroU8Inner>.uncheckedAdd(other: UByte): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().uncheckedAdd(other))
+public fun NonZero<UByte, NonZeroU8Inner>.uncheckedAdd(other: UByte): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().uncheckedAdd(other))
 
 /**
  * Calculates the quotient of `self` and `rhs`, rounding the result towards positive infinity.
@@ -861,7 +851,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.uncheckedAdd(other: UByte): NonZero<UB
  */
 public fun NonZero<UByte, NonZeroU8Inner>.divCeil(rhs: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> {
     val v = (this.get() - 1u) / rhs.get() + 1u
-    return NonZero.newUnchecked(v)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(v)
 }
 
 /**
@@ -885,7 +875,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedNextPowerOfTwo(): NonZero<UByte
         }
         else -> {
             val nz = matchVal
-            NonZero.newUnchecked(nz)
+            NonZero.newUnchecked<NonZeroU8Inner, UByte>(nz)
         }
     }
 
@@ -933,7 +923,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.ilog10(): UInt = u8(this).toUInt()
  * check(four.midpoint(one) == two)
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.midpoint(rhs: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().midpoint(rhs.get()))
+public fun NonZero<UByte, NonZeroU8Inner>.midpoint(rhs: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().midpoint(rhs.get()))
 
 /**
  * Returns `true` if and only if `self == (1<<k)` for some `k`.
@@ -961,7 +951,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.isPowerOfTwo(): Boolean = kmCtpopU8(th
  */
 public fun NonZero<UByte, NonZeroU8Inner>.isqrt(): NonZero<UByte, NonZeroU8Inner> {
     val result = this.get().isqrt()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
 }
 
 /**
@@ -972,7 +962,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.isqrt(): NonZero<UByte, NonZeroU8Inner
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.castSigned(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().castSigned())
+public fun NonZero<UByte, NonZeroU8Inner>.castSigned(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().castSigned())
 
 /**
  * Returns the minimum number of bits required to represent `self`.
@@ -982,7 +972,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.castSigned(): NonZero<Byte, NonZeroI8I
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.bitWidth(): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked(NonZero.BITS - this.leadingZeros())
+public fun NonZero<UByte, NonZeroU8Inner>.bitWidth(): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(NonZero.BITS - this.leadingZeros())
 
 /**
  * Multiplies two non-zero integers together.
@@ -1003,7 +993,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedMul(other: NonZero<UByte, NonZe
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
         }
     }
 
@@ -1036,7 +1026,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedMul(other: NonZero<UByte, NonZe
  * }
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.strictMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().strictMul(other.get()))
+public fun NonZero<UByte, NonZeroU8Inner>.strictMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().strictMul(other.get()))
 
 /**
  * Multiplies two non-zero integers together.
@@ -1048,7 +1038,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.strictMul(other: NonZero<UByte, NonZer
  * check(max == four.saturatingMul(max))
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.saturatingMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().saturatingMul(other.get().toUByte()))
+public fun NonZero<UByte, NonZeroU8Inner>.saturatingMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().saturatingMul(other.get().toUByte()))
 
 /**
  * Multiplies two non-zero integers together,
@@ -1072,7 +1062,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.saturatingMul(other: NonZero<UByte, No
  *
  * [checkedMul]: Self.checkedMul
  */
-public fun NonZero<UByte, NonZeroU8Inner>.uncheckedMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().uncheckedMul(other.get()))
+public fun NonZero<UByte, NonZeroU8Inner>.uncheckedMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().uncheckedMul(other.get()))
 
 /**
  * Raises non-zero value to an integer power.
@@ -1093,7 +1083,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedPow(other: UInt): NonZero<UByte
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU8Inner, UByte>(result)
         }
     }
 
@@ -1126,7 +1116,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedPow(other: UInt): NonZero<UByte
  * }
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.strictPow(exp: UInt): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().strictPow(exp))
+public fun NonZero<UByte, NonZeroU8Inner>.strictPow(exp: UInt): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().strictPow(exp))
 
 /**
  * Raise non-zero value to an integer power.
@@ -1138,7 +1128,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.strictPow(exp: UInt): NonZero<UByte, N
  * check(max == max.saturatingPow(3))
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.saturatingPow(other: UInt): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().saturatingPow(other))
+public fun NonZero<UByte, NonZeroU8Inner>.saturatingPow(other: UInt): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().saturatingPow(other))
 
 /**
  * Parses a non-zero integer from an ASCII-byte slice with decimal digits.
@@ -1204,24 +1194,21 @@ public fun NonZero.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UI
     val n1 =
         run {
             val matchVal = UByte.fromAsciiBytesRadixImpl(src, radix)
-            when (matchVal) {
-                is Result.Ok<*, *> -> {
-                    val n = matchVal.value
-                    n
-                }
-                is Result.Err<*, *> -> {
-                    val err = matchVal.error
-                    return Result.Err(err)
-                }
-            }
+            when (matchVal) { is Result.Ok -> {
+                val n = matchVal.value
+                n
+            }; is Result.Err -> {
+                val err = matchVal.error
+                return Result.Err<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(err)
+            } }
         }
-    return when (val matchVal1 = NonZero.new(n1)) {
+    return when (val matchVal1 = NonZero.new<NonZeroU8Inner, UByte>(n1)) {
         null -> {
-            Result.Err(ParseIntError(kind = IntErrorKind.Zero))
+            Result.Err<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(ParseIntError(kind = IntErrorKind.Zero))
         }
         else -> {
             val n2 = matchVal1
-            Result.Ok(n2)
+            Result.Ok<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(n2)
         }
     }
 }
@@ -1337,11 +1324,8 @@ public fun UByte.remAssign(other: NonZero<UByte, NonZeroU8Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU16(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroU16Inner>,
-) : NonZero<UShort, NonZeroU16Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU16Inner, fieldLayout: TypeLayout<NonZeroU16Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU16(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU16Inner> = UnresolvedTypeLayout()) : NonZero<UShort, NonZeroU16Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroU16Inner, fieldLayout: TypeLayout<NonZeroU16Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -1375,7 +1359,7 @@ public val MIN1: NonZero<UShort, NonZeroU16Inner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX1: NonZero<UShort, NonZeroU16Inner> = NonZero.new(UShort.MAX_VALUE)!!
+public val MAX1: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>(UShort.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -1396,7 +1380,7 @@ public fun NonZero<UShort, NonZeroU16Inner>.checkedAdd(other: UShort): NonZero<U
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU16Inner, UShort>(result)
         }
     }
 
@@ -1429,7 +1413,7 @@ public fun NonZero<UShort, NonZeroU16Inner>.checkedAdd(other: UShort): NonZero<U
  * }
  * ```
  */
-public fun NonZero<UShort, NonZeroU16Inner>.strictAdd(other: UShort): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked(this.get().strictAdd(other))
+public fun NonZero<UShort, NonZeroU16Inner>.strictAdd(other: UShort): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked<NonZeroU16Inner, UShort>(this.get().strictAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -1441,7 +1425,7 @@ public fun NonZero<UShort, NonZeroU16Inner>.strictAdd(other: UShort): NonZero<US
  * check(max == max.saturatingAdd(1))
  * ```
  */
-public fun NonZero<UShort, NonZeroU16Inner>.saturatingAdd(other: UShort): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked(this.get().saturatingAdd(other))
+public fun NonZero<UShort, NonZeroU16Inner>.saturatingAdd(other: UShort): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked<NonZeroU16Inner, UShort>(this.get().saturatingAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value,
@@ -1465,7 +1449,7 @@ public fun NonZero<UShort, NonZeroU16Inner>.saturatingAdd(other: UShort): NonZer
  *
  * [checkedAdd]: Self.checkedAdd
  */
-public fun NonZero<UShort, NonZeroU16Inner>.uncheckedAdd(other: UShort): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked(this.get().uncheckedAdd(other))
+public fun NonZero<UShort, NonZeroU16Inner>.uncheckedAdd(other: UShort): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked<NonZeroU16Inner, UShort>(this.get().uncheckedAdd(other))
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -1547,11 +1531,8 @@ public fun UShort.remAssign(other: NonZero<UShort, NonZeroU16Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU32(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroU32Inner>,
-) : NonZero<UInt, NonZeroU32Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU32Inner, fieldLayout: TypeLayout<NonZeroU32Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU32(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU32Inner> = UnresolvedTypeLayout()) : NonZero<UInt, NonZeroU32Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroU32Inner, fieldLayout: TypeLayout<NonZeroU32Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -1585,7 +1566,7 @@ public val MIN2: NonZero<UInt, NonZeroU32Inner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX2: NonZero<UInt, NonZeroU32Inner> = NonZero.new(UInt.MAX_VALUE)!!
+public val MAX2: NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(UInt.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -1606,7 +1587,7 @@ public fun NonZero<UInt, NonZeroU32Inner>.checkedAdd(other: UInt): NonZero<UInt,
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU32Inner, UInt>(result)
         }
     }
 
@@ -1639,7 +1620,7 @@ public fun NonZero<UInt, NonZeroU32Inner>.checkedAdd(other: UInt): NonZero<UInt,
  * }
  * ```
  */
-public fun NonZero<UInt, NonZeroU32Inner>.strictAdd(other: UInt): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked(this.get().strictAdd(other))
+public fun NonZero<UInt, NonZeroU32Inner>.strictAdd(other: UInt): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(this.get().strictAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -1651,7 +1632,7 @@ public fun NonZero<UInt, NonZeroU32Inner>.strictAdd(other: UInt): NonZero<UInt, 
  * check(max == max.saturatingAdd(1))
  * ```
  */
-public fun NonZero<UInt, NonZeroU32Inner>.saturatingAdd(other: UInt): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked(this.get().saturatingAdd(other))
+public fun NonZero<UInt, NonZeroU32Inner>.saturatingAdd(other: UInt): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(this.get().saturatingAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value,
@@ -1675,7 +1656,7 @@ public fun NonZero<UInt, NonZeroU32Inner>.saturatingAdd(other: UInt): NonZero<UI
  *
  * [checkedAdd]: Self.checkedAdd
  */
-public fun NonZero<UInt, NonZeroU32Inner>.uncheckedAdd(other: UInt): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked(this.get().uncheckedAdd(other))
+public fun NonZero<UInt, NonZeroU32Inner>.uncheckedAdd(other: UInt): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(this.get().uncheckedAdd(other))
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -1757,11 +1738,8 @@ public fun UInt.remAssign(other: NonZero<UInt, NonZeroU32Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU64(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroU64Inner>,
-) : NonZero<ULong, NonZeroU64Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU64Inner, fieldLayout: TypeLayout<NonZeroU64Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU64(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU64Inner> = UnresolvedTypeLayout()) : NonZero<ULong, NonZeroU64Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroU64Inner, fieldLayout: TypeLayout<NonZeroU64Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -1795,7 +1773,7 @@ public val MIN3: NonZero<ULong, NonZeroU64Inner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX3: NonZero<ULong, NonZeroU64Inner> = NonZero.new(ULong.MAX_VALUE)!!
+public val MAX3: NonZero<ULong, NonZeroU64Inner> = (NonZero.new<NonZeroU64Inner, ULong>(ULong.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -1816,7 +1794,7 @@ public fun NonZero<ULong, NonZeroU64Inner>.checkedAdd(other: ULong): NonZero<ULo
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU64Inner, ULong>(result)
         }
     }
 
@@ -1849,7 +1827,7 @@ public fun NonZero<ULong, NonZeroU64Inner>.checkedAdd(other: ULong): NonZero<ULo
  * }
  * ```
  */
-public fun NonZero<ULong, NonZeroU64Inner>.strictAdd(other: ULong): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked(this.get().strictAdd(other))
+public fun NonZero<ULong, NonZeroU64Inner>.strictAdd(other: ULong): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked<NonZeroU64Inner, ULong>(this.get().strictAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -1861,7 +1839,7 @@ public fun NonZero<ULong, NonZeroU64Inner>.strictAdd(other: ULong): NonZero<ULon
  * check(max == max.saturatingAdd(1))
  * ```
  */
-public fun NonZero<ULong, NonZeroU64Inner>.saturatingAdd(other: ULong): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked(this.get().saturatingAdd(other))
+public fun NonZero<ULong, NonZeroU64Inner>.saturatingAdd(other: ULong): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked<NonZeroU64Inner, ULong>(this.get().saturatingAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value,
@@ -1885,7 +1863,7 @@ public fun NonZero<ULong, NonZeroU64Inner>.saturatingAdd(other: ULong): NonZero<
  *
  * [checkedAdd]: Self.checkedAdd
  */
-public fun NonZero<ULong, NonZeroU64Inner>.uncheckedAdd(other: ULong): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked(this.get().uncheckedAdd(other))
+public fun NonZero<ULong, NonZeroU64Inner>.uncheckedAdd(other: ULong): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked<NonZeroU64Inner, ULong>(this.get().uncheckedAdd(other))
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -1967,11 +1945,8 @@ public fun ULong.remAssign(other: NonZero<ULong, NonZeroU64Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU128(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroU128Inner>,
-) : NonZero<U128, NonZeroU128Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU128Inner, fieldLayout: TypeLayout<NonZeroU128Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU128(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU128Inner> = UnresolvedTypeLayout()) : NonZero<U128, NonZeroU128Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroU128Inner, fieldLayout: TypeLayout<NonZeroU128Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -2005,7 +1980,7 @@ public val MIN4: NonZero<U128, NonZeroU128Inner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX4: NonZero<U128, NonZeroU128Inner> = NonZero.new(U128.MAX_VALUE)!!
+public val MAX4: NonZero<U128, NonZeroU128Inner> = (NonZero.new<NonZeroU128Inner, U128>(U128.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -2026,7 +2001,7 @@ public fun NonZero<U128, NonZeroU128Inner>.checkedAdd(other: U128): NonZero<U128
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroU128Inner, U128>(result)
         }
     }
 
@@ -2059,7 +2034,7 @@ public fun NonZero<U128, NonZeroU128Inner>.checkedAdd(other: U128): NonZero<U128
  * }
  * ```
  */
-public fun NonZero<U128, NonZeroU128Inner>.strictAdd(other: U128): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked(this.get().strictAdd(other))
+public fun NonZero<U128, NonZeroU128Inner>.strictAdd(other: U128): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked<NonZeroU128Inner, U128>(this.get().strictAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -2071,7 +2046,7 @@ public fun NonZero<U128, NonZeroU128Inner>.strictAdd(other: U128): NonZero<U128,
  * check(max == max.saturatingAdd(1))
  * ```
  */
-public fun NonZero<U128, NonZeroU128Inner>.saturatingAdd(other: U128): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked(this.get().saturatingAdd(other))
+public fun NonZero<U128, NonZeroU128Inner>.saturatingAdd(other: U128): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked<NonZeroU128Inner, U128>(this.get().saturatingAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value,
@@ -2095,7 +2070,7 @@ public fun NonZero<U128, NonZeroU128Inner>.saturatingAdd(other: U128): NonZero<U
  *
  * [checkedAdd]: Self.checkedAdd
  */
-public fun NonZero<U128, NonZeroU128Inner>.uncheckedAdd(other: U128): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked(this.get().uncheckedAdd(other))
+public fun NonZero<U128, NonZeroU128Inner>.uncheckedAdd(other: U128): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked<NonZeroU128Inner, U128>(this.get().uncheckedAdd(other))
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -2177,11 +2152,8 @@ public fun U128.remAssign(other: NonZero<U128, NonZeroU128Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroUsize(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroUsizeInner>,
-) : NonZero<Int, NonZeroUsizeInner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroUsizeInner, fieldLayout: TypeLayout<NonZeroUsizeInner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroUsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroUsizeInner> = UnresolvedTypeLayout()) : NonZero<Int, NonZeroUsizeInner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroUsizeInner, fieldLayout: TypeLayout<NonZeroUsizeInner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -2215,7 +2187,7 @@ public val MIN5: NonZero<Int, NonZeroUsizeInner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX5: NonZero<Int, NonZeroUsizeInner> = NonZero.new(Int.MAX_VALUE)!!
+public val MAX5: NonZero<Int, NonZeroUsizeInner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -2236,7 +2208,7 @@ public fun NonZero<Int, NonZeroUsizeInner>.checkedAdd(other: Int): NonZero<Int, 
         }
         else -> {
             val result = matchVal
-            NonZero.newUnchecked(result)
+            NonZero.newUnchecked<NonZeroUsizeInner, Int>(result)
         }
     }
 
@@ -2269,7 +2241,7 @@ public fun NonZero<Int, NonZeroUsizeInner>.checkedAdd(other: Int): NonZero<Int, 
  * }
  * ```
  */
-public fun NonZero<Int, NonZeroUsizeInner>.strictAdd(other: Int): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked(this.get().strictAdd(other))
+public fun NonZero<Int, NonZeroUsizeInner>.strictAdd(other: Int): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked<NonZeroUsizeInner, Int>(this.get().strictAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -2281,7 +2253,7 @@ public fun NonZero<Int, NonZeroUsizeInner>.strictAdd(other: Int): NonZero<Int, N
  * check(max == max.saturatingAdd(1))
  * ```
  */
-public fun NonZero<Int, NonZeroUsizeInner>.saturatingAdd(other: Int): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked(this.get().saturatingAdd(other))
+public fun NonZero<Int, NonZeroUsizeInner>.saturatingAdd(other: Int): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked<NonZeroUsizeInner, Int>(this.get().saturatingAdd(other))
 
 /**
  * Adds an unsigned integer to a non-zero value,
@@ -2305,7 +2277,7 @@ public fun NonZero<Int, NonZeroUsizeInner>.saturatingAdd(other: Int): NonZero<In
  *
  * [checkedAdd]: Self.checkedAdd
  */
-public fun NonZero<Int, NonZeroUsizeInner>.uncheckedAdd(other: Int): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked(this.get().uncheckedAdd(other))
+public fun NonZero<Int, NonZeroUsizeInner>.uncheckedAdd(other: Int): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked<NonZeroUsizeInner, Int>(this.get().uncheckedAdd(other))
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -2387,11 +2359,8 @@ public fun Int.remAssign(other: NonZero<Int, NonZeroUsizeInner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroI8(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroI8Inner>,
-) : NonZero<Byte, NonZeroI8Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI8Inner, fieldLayout: TypeLayout<NonZeroI8Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI8(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI8Inner> = UnresolvedTypeLayout()) : NonZero<Byte, NonZeroI8Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroI8Inner, fieldLayout: TypeLayout<NonZeroI8Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -2418,7 +2387,7 @@ public val BITS6: UInt = 8u
  * ```kotlin
  * ```
  */
-public val MIN6: NonZero<Byte, NonZeroI8Inner> = NonZero.new(Byte.MIN_VALUE)!!
+public val MIN6: NonZero<Byte, NonZeroI8Inner> = (NonZero.new<NonZeroI8Inner, Byte>(Byte.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -2433,7 +2402,7 @@ public val MIN6: NonZero<Byte, NonZeroI8Inner> = NonZero.new(Byte.MIN_VALUE)!!
  * ```kotlin
  * ```
  */
-public val MAX6: NonZero<Byte, NonZeroI8Inner> = NonZero.new(Byte.MAX_VALUE)!!
+public val MAX6: NonZero<Byte, NonZeroI8Inner> = (NonZero.new<NonZeroI8Inner, Byte>(Byte.MAX_VALUE))!!
 
 /**
  * Computes the absolute value of self.
@@ -2446,7 +2415,7 @@ public val MAX6: NonZero<Byte, NonZeroI8Inner> = NonZero.new(Byte.MAX_VALUE)!!
  * check(pos == neg.abs())
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.abs(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().abs())
+public fun NonZero<Byte, NonZeroI8Inner>.abs(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().abs())
 
 /**
  * Checked absolute value.
@@ -2467,7 +2436,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.checkedAbs(): NonZero<Byte, NonZeroI8In
         }
         else -> {
             val nz = matchVal
-            NonZero.newUnchecked(nz)
+            NonZero.newUnchecked<NonZeroI8Inner, Byte>(nz)
         }
     }
 
@@ -2485,7 +2454,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.checkedAbs(): NonZero<Byte, NonZeroI8In
  */
 public fun NonZero<Byte, NonZeroI8Inner>.overflowingAbs(): Pair<NonZero<Byte, NonZeroI8Inner>, Boolean> {
     val (nz, flag) = this.get().overflowingAbs()
-    return Pair(NonZero.newUnchecked(nz), flag)
+    return Pair(NonZero.newUnchecked<NonZeroI8Inner, Byte>(nz), flag)
 }
 
 /**
@@ -2500,7 +2469,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.overflowingAbs(): Pair<NonZero<Byte, No
  * check(max == minPlus.saturatingAbs())
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.saturatingAbs(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().saturatingAbs())
+public fun NonZero<Byte, NonZeroI8Inner>.saturatingAbs(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().saturatingAbs())
 
 /**
  * Wrapping absolute value, see
@@ -2514,7 +2483,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.saturatingAbs(): NonZero<Byte, NonZeroI
  * check(max == (-max).wrappingAbs())
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.wrappingAbs(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().wrappingAbs())
+public fun NonZero<Byte, NonZeroI8Inner>.wrappingAbs(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().wrappingAbs())
 
 /**
  * Computes the absolute value of self
@@ -2528,7 +2497,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.wrappingAbs(): NonZero<Byte, NonZeroI8I
  * check(uMax == iMin.unsignedAbs())
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.unsignedAbs(): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().unsignedAbs())
+public fun NonZero<Byte, NonZeroI8Inner>.unsignedAbs(): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().unsignedAbs())
 
 /**
  * Returns `true` if `self` is positive and `false` if the
@@ -2571,7 +2540,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.checkedNeg(): NonZero<Byte, NonZeroI8In
         null -> {}
         else -> {
             val result = matchVal
-            return NonZero.newUnchecked(result)
+            return NonZero.newUnchecked<NonZeroI8Inner, Byte>(result)
         }
     }
     return null
@@ -2605,7 +2574,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.checkedNeg(): NonZero<Byte, NonZeroI8In
  * }
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.strictNeg(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().strictNeg())
+public fun NonZero<Byte, NonZeroI8Inner>.strictNeg(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().strictNeg())
 
 /**
  * Negates self, overflowing if this is equal to the minimum value.
@@ -2621,7 +2590,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.strictNeg(): NonZero<Byte, NonZeroI8Inn
  */
 public fun NonZero<Byte, NonZeroI8Inner>.overflowingNeg(): Pair<NonZero<Byte, NonZeroI8Inner>, Boolean> {
     val (result, overflow) = this.get().overflowingNeg()
-    return Pair((NonZero.newUnchecked(result)), overflow)
+    return Pair((NonZero.newUnchecked<NonZeroI8Inner, Byte>(result)), overflow)
 }
 
 /**
@@ -2662,7 +2631,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.saturatingNeg(): NonZero<Byte, NonZeroI
  */
 public fun NonZero<Byte, NonZeroI8Inner>.wrappingNeg(): NonZero<Byte, NonZeroI8Inner> {
     val result = this.get().wrappingNeg()
-    return NonZero.newUnchecked(result)
+    return NonZero.newUnchecked<NonZeroI8Inner, Byte>(result)
 }
 
 /**
@@ -2673,7 +2642,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.wrappingNeg(): NonZero<Byte, NonZeroI8I
  * ```kotlin
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.castUnsigned(): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked(this.get().castUnsigned())
+public fun NonZero<Byte, NonZeroI8Inner>.castUnsigned(): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().castUnsigned())
 
 /**
  * Clamps this number to a symmetric range centred around zero.
@@ -2695,7 +2664,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.castUnsigned(): NonZero<UByte, NonZeroU
  * }
  * ```
  */
-public fun NonZero<Byte, NonZeroI8Inner>.clampMagnitude(limit: NonZero<UByte, NonZeroU8Inner>): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().clampMagnitude(limit.get()))
+public fun NonZero<Byte, NonZeroI8Inner>.clampMagnitude(limit: NonZero<UByte, NonZeroU8Inner>): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().clampMagnitude(limit.get()))
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -2720,7 +2689,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.clampMagnitude(limit: NonZero<UByte, No
  */
 public fun fromStrNonZeroByte(src: String): Result<NonZero<Byte, NonZeroI8Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
 
-public fun NonZero<Byte, NonZeroI8Inner>.neg(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked(this.get().neg())
+public fun NonZero<Byte, NonZeroI8Inner>.neg(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().neg())
 
 /**
  * This enables some memory layout optimization.
@@ -2747,11 +2716,8 @@ public fun NonZero<Byte, NonZeroI8Inner>.neg(): NonZero<Byte, NonZeroI8Inner> = 
  * ```kotlin
  * ```
  */
-public class NonZeroI16(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroI16Inner>,
-) : NonZero<Short, NonZeroI16Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI16Inner, fieldLayout: TypeLayout<NonZeroI16Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI16(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI16Inner> = UnresolvedTypeLayout()) : NonZero<Short, NonZeroI16Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroI16Inner, fieldLayout: TypeLayout<NonZeroI16Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -2778,7 +2744,7 @@ public val BITS7: UInt = 16u
  * ```kotlin
  * ```
  */
-public val MIN7: NonZero<Short, NonZeroI16Inner> = NonZero.new(Short.MIN_VALUE)!!
+public val MIN7: NonZero<Short, NonZeroI16Inner> = (NonZero.new<NonZeroI16Inner, Short>(Short.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -2793,7 +2759,7 @@ public val MIN7: NonZero<Short, NonZeroI16Inner> = NonZero.new(Short.MIN_VALUE)!
  * ```kotlin
  * ```
  */
-public val MAX7: NonZero<Short, NonZeroI16Inner> = NonZero.new(Short.MAX_VALUE)!!
+public val MAX7: NonZero<Short, NonZeroI16Inner> = (NonZero.new<NonZeroI16Inner, Short>(Short.MAX_VALUE))!!
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -2843,11 +2809,8 @@ public fun fromStrNonZeroShort(src: String): Result<NonZero<Short, NonZeroI16Inn
  * ```kotlin
  * ```
  */
-public class NonZeroI32(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroI32Inner>,
-) : NonZero<Int, NonZeroI32Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI32Inner, fieldLayout: TypeLayout<NonZeroI32Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI32(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI32Inner> = UnresolvedTypeLayout()) : NonZero<Int, NonZeroI32Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroI32Inner, fieldLayout: TypeLayout<NonZeroI32Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -2874,7 +2837,7 @@ public val BITS8: UInt = 32u
  * ```kotlin
  * ```
  */
-public val MIN8: NonZero<Int, NonZeroI32Inner> = NonZero.new(Int.MIN_VALUE)!!
+public val MIN8: NonZero<Int, NonZeroI32Inner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -2889,7 +2852,7 @@ public val MIN8: NonZero<Int, NonZeroI32Inner> = NonZero.new(Int.MIN_VALUE)!!
  * ```kotlin
  * ```
  */
-public val MAX8: NonZero<Int, NonZeroI32Inner> = NonZero.new(Int.MAX_VALUE)!!
+public val MAX8: NonZero<Int, NonZeroI32Inner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MAX_VALUE))!!
 
 /**
  * This enables some memory layout optimization.
@@ -2916,11 +2879,8 @@ public val MAX8: NonZero<Int, NonZeroI32Inner> = NonZero.new(Int.MAX_VALUE)!!
  * ```kotlin
  * ```
  */
-public class NonZeroI64(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroI64Inner>,
-) : NonZero<Long, NonZeroI64Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI64Inner, fieldLayout: TypeLayout<NonZeroI64Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI64(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI64Inner> = UnresolvedTypeLayout()) : NonZero<Long, NonZeroI64Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroI64Inner, fieldLayout: TypeLayout<NonZeroI64Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -2947,7 +2907,7 @@ public val BITS9: UInt = 64u
  * ```kotlin
  * ```
  */
-public val MIN9: NonZero<Long, NonZeroI64Inner> = NonZero.new(Long.MIN_VALUE)!!
+public val MIN9: NonZero<Long, NonZeroI64Inner> = (NonZero.new<NonZeroI64Inner, Long>(Long.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -2962,7 +2922,7 @@ public val MIN9: NonZero<Long, NonZeroI64Inner> = NonZero.new(Long.MIN_VALUE)!!
  * ```kotlin
  * ```
  */
-public val MAX9: NonZero<Long, NonZeroI64Inner> = NonZero.new(Long.MAX_VALUE)!!
+public val MAX9: NonZero<Long, NonZeroI64Inner> = (NonZero.new<NonZeroI64Inner, Long>(Long.MAX_VALUE))!!
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -3012,11 +2972,8 @@ public fun fromStrNonZeroLong(src: String): Result<NonZero<Long, NonZeroI64Inner
  * ```kotlin
  * ```
  */
-public class NonZeroI128(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroI128Inner>,
-) : NonZero<I128, NonZeroI128Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI128Inner, fieldLayout: TypeLayout<NonZeroI128Inner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI128(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI128Inner> = UnresolvedTypeLayout()) : NonZero<I128, NonZeroI128Inner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroI128Inner, fieldLayout: TypeLayout<NonZeroI128Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -3043,7 +3000,7 @@ public val BITS10: UInt = 128u
  * ```kotlin
  * ```
  */
-public val MIN10: NonZero<I128, NonZeroI128Inner> = NonZero.new(I128.MIN_VALUE)!!
+public val MIN10: NonZero<I128, NonZeroI128Inner> = (NonZero.new<NonZeroI128Inner, I128>(I128.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -3058,7 +3015,7 @@ public val MIN10: NonZero<I128, NonZeroI128Inner> = NonZero.new(I128.MIN_VALUE)!
  * ```kotlin
  * ```
  */
-public val MAX10: NonZero<I128, NonZeroI128Inner> = NonZero.new(I128.MAX_VALUE)!!
+public val MAX10: NonZero<I128, NonZeroI128Inner> = (NonZero.new<NonZeroI128Inner, I128>(I128.MAX_VALUE))!!
 
 /**
  * Parses a non-zero integer from a string slice with decimal digits.
@@ -3108,11 +3065,8 @@ public fun fromStrNonZeroI128(src: String): Result<NonZero<I128, NonZeroI128Inne
  * ```kotlin
  * ```
  */
-public class NonZeroIsize(
-    fieldStorage: MutPtr,
-    fieldLayout: TypeLayout<NonZeroIsizeInner>,
-) : NonZero<Int, NonZeroIsizeInner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroIsizeInner, fieldLayout: TypeLayout<NonZeroIsizeInner>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroIsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroIsizeInner> = UnresolvedTypeLayout()) : NonZero<Int, NonZeroIsizeInner>(fieldStorage, fieldLayout) {
+    public constructor(value: NonZeroIsizeInner, fieldLayout: TypeLayout<NonZeroIsizeInner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
     public companion object
 }
 
@@ -3139,7 +3093,7 @@ public val BITS11: UInt = 32u
  * ```kotlin
  * ```
  */
-public val MIN11: NonZero<Int, NonZeroIsizeInner> = NonZero.new(Int.MIN_VALUE)!!
+public val MIN11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -3154,4 +3108,4 @@ public val MIN11: NonZero<Int, NonZeroIsizeInner> = NonZero.new(Int.MIN_VALUE)!!
  * ```kotlin
  * ```
  */
-public val MAX11: NonZero<Int, NonZeroIsizeInner> = NonZero.new(Int.MAX_VALUE)!!
+public val MAX11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MAX_VALUE))!!

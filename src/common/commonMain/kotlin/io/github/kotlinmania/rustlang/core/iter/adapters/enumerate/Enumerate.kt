@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -30,22 +31,15 @@ public typealias Source<I> = I.Source
 public open class Enumerate<I>(
     public var iter: I,
     public var count: Int,
-) : TrustedRandomAccess,
-    TrustedRandomAccessNoCoerce,
-    TrustedFused,
-    TrustedLen<Enumerate<I>>,
-    SourceIter<Source>,
-    InPlaceIterable,
-    Iterable<Pair<Int, Item>> {
-    override fun iterator(): Iterator<Pair<Int, Item>> =
-        object : AbstractIterator<Pair<Int, Item>>() {
-            override fun computeNext() {
-                when (val v = this@Enumerate.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Enumerate<I>>, SourceIter<Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
+    override fun iterator(): Iterator<Pair<Int, Item>> = object : AbstractIterator<Pair<Int, Item>>() {
+        override fun computeNext() {
+            when (val v = this@Enumerate.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Enumerate<I> = Enumerate(iter, count)
 
@@ -111,11 +105,7 @@ public open class Enumerate<I>(
             val count1 = count
             return { acc, item ->
                 val acc1 = fold1(acc, Pair((count1).read(), item))
-                (count1).let { targetPlace ->
-                    var currentValue = targetPlace.read()
-                    currentValue += (1)
-                    targetPlace.write(currentValue)
-                }
+                (count1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
                 acc1
             }
         }
@@ -134,18 +124,15 @@ public open class Enumerate<I>(
         return this.iter.fold(init, enumerate(this.count, fold))
     }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val remaining = this.iter.advanceBy(n)
         val advanced =
-            when (remaining) {
-                is Result.Ok<*, *> -> {
-                    n
-                }
-                is Result.Err<*, *> -> {
-                    val rem = remaining.error
-                    n - rem.get()
-                }
-            }
+            when (remaining) { is Result.Ok -> {
+                n
+            }; is Result.Err -> {
+                val rem = remaining.error
+                n - rem.get()
+            } }
         this.count += advanced
         return remaining
     }
@@ -201,7 +188,7 @@ public open class Enumerate<I>(
         return this.iter.rfold(init, enumerate(count, fold))
     }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         // we do not need to update the count since that only tallies the number of items
         // consumed from the front. consuming items from the back can never reduce that.
         return this.iter.advanceBackBy(n)
@@ -246,9 +233,9 @@ public open class Enumerate<I>(
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = I.MAY_HAVE_SIDE_EFFECT
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
 
         /**
          * Creates an `Enumerate` iterator from the default value of `I`

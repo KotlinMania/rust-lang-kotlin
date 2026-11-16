@@ -182,11 +182,10 @@ public open class Repr internal constructor(
         public operator fun invoke(
             field0: NonNull,
             field1: Unit,
-        ): Repr =
-            Repr(
-                field0CtorArg = field0,
-                field1 = field1,
-            )
+        ): Repr = Repr(
+            field0CtorArg = field0,
+            field1 = field1,
+        )
 
         public fun newCustom(b: CustomOwner): Repr {
             val p = b.intoRaw().asPtr().cast()
@@ -224,12 +223,10 @@ public open class Repr internal constructor(
             val ptr = NonNull.newUnchecked(tagged)
             val res = Repr(ptr, Unit)
             if (false) {
-                check(
-                    when (val matchVal1 = res.data()) {
-                        is ErrorData.Custom -> true
-                        else -> false
-                    },
-                ) { "repr(custom) encoding failed" }
+                check(when (val matchVal1 = res.data()) {
+                    is ErrorData.Custom -> true
+                    else -> false
+                }) { "repr(custom) encoding failed" }
             }
             return res
         }
@@ -240,18 +237,16 @@ public open class Repr internal constructor(
             val utagged1 = NonZeroUsize.newUnchecked(utagged)
             val res = Repr(NonNull.withoutProvenance(utagged1), Unit)
             if (false) {
-                check(
-                    run {
-                        val matchVal = res.data()
-                        when {
-                            matchVal is ErrorData.Os && (matchVal as ErrorData.Os).value == code -> {
-                                val (c) = matchVal
-                                true
-                            }
-                            else -> false
+                check(run {
+                    val matchVal = res.data()
+                    when {
+                        matchVal is ErrorData.Os && (matchVal as ErrorData.Os).value == code -> {
+                            val (c) = matchVal
+                            true
                         }
-                    },
-                ) { "repr(os) encoding failed for $code" }
+                        else -> false
+                    }
+                }) { "repr(os) encoding failed for $code" }
             }
             return res
         }
@@ -262,18 +257,16 @@ public open class Repr internal constructor(
             val utagged1 = NonZeroUsize.newUnchecked(utagged)
             val res = Repr(NonNull.withoutProvenance(utagged1), Unit)
             if (false) {
-                check(
-                    run {
-                        val matchVal = res.data()
-                        when {
-                            matchVal is ErrorData.Simple && (matchVal as ErrorData.Simple).value == kind -> {
-                                val (k) = matchVal
-                                true
-                            }
-                            else -> false
+                check(run {
+                    val matchVal = res.data()
+                    when {
+                        matchVal is ErrorData.Simple && (matchVal as ErrorData.Simple).value == kind -> {
+                            val (k) = matchVal
+                            true
                         }
-                    },
-                ) { "repr(simple) encoding failed $kind" }
+                        else -> false
+                    }
+                }) { "repr(simple) encoding failed $kind" }
             }
             return res
         }

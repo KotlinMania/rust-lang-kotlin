@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.std.sys.io.error.windows
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -78,11 +79,11 @@ public fun decodeErrorKind(errno: Int): ErrorKind {
 /**
  * Gets a detailed string description for the given error number.
  */
-public fun formatError(errnum: Int, f: StringBuilder) {
+public fun formatError(errnum: Int, f: StringBuilder): Result<Unit, Error> {
     var errnum1 = errnum
     val localStorageL99C4 = AddressableArrayLocal.fromUShortArray(UShortArray(2048) { 0.toUShort() })
     val buf by localStorageL99C4
-    run {
+    return run {
         var module = MutPtr(0L)
         var flags = 0
         // NTSTATUS errors may be encoded as HRESULT, which may returned from
@@ -101,15 +102,15 @@ public fun formatError(errnum: Int, f: StringBuilder) {
         if (res == 0) {
             // Sometimes FormatMessageW can fail e.g., system doesn't like 0 as langId,
             val fmErr = errno()
-            return f.append("OS Error $errnum (FormatMessageW() returned error $fmErr)")
+            return run { f.append("OS Error $errnum (FormatMessageW() returned error $fmErr)"); Result.Ok(Unit) }
         }
         run {
             val matchVal = String.fromUtf16(((buf).sliceArray(0 until res)))
-            when (matchVal) { is Result.Ok<*, *> -> {
+            when (matchVal) { is Result.Ok -> {
                 val msg = matchVal.value
                 // Trim trailing CRLF inserted by FormatMessageW
                 f.append(msg.trimAsciiEnd())
-            }; is Result.Err<*, *> -> {
+            }; is Result.Err -> {
                 f.append("OS Error $errnum1 (FormatMessageW() returned invalid UTF-16)")
             } }
         }

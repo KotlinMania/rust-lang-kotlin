@@ -100,7 +100,7 @@ public interface Swizzle {
 /**
  * Reverse the order of the elements in the vector.
  */
-public fun <Mask, T> Simd<T, N>.reverse(n: Int): Simd<T, N> {
+public fun <Mask, T> Simd<T>.reverse(n: Int): Simd<T> {
     open class Reverse : Swizzle {
         public val INDEX: IntArray = run {
             val index = MutableList(n) { 0 }
@@ -127,7 +127,7 @@ public fun <Mask, T> Simd<T, N>.reverse(n: Int): Simd<T, N> {
  * check(y.toArray() == listOf(3, 0, 1, 2))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.rotateElementsLeft(n: Int, offset: Int): Simd<T, N> {
+public fun <Mask, T> Simd<T>.rotateElementsLeft(n: Int, offset: Int): Simd<T> {
     open class Rotate : Swizzle {
         public val INDEX: IntArray = run {
             val offset = offset % n
@@ -155,7 +155,7 @@ public fun <Mask, T> Simd<T, N>.rotateElementsLeft(n: Int, offset: Int): Simd<T,
  * check(y.toArray() == listOf(1, 2, 3, 0))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.rotateElementsRight(n: Int, offset: Int): Simd<T, N> {
+public fun <Mask, T> Simd<T>.rotateElementsRight(n: Int, offset: Int): Simd<T> {
     open class Rotate : Swizzle {
         public val INDEX: IntArray = run {
             val offset = n - offset % n
@@ -182,7 +182,7 @@ public fun <Mask, T> Simd<T, N>.rotateElementsRight(n: Int, offset: Int): Simd<T
  * check(y.toArray() == listOf(255, 255, 255, 255))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.shiftElementsLeft(padding: T, n: Int, offset: Int): Simd<T, N> {
+public fun <Mask, T> Simd<T>.shiftElementsLeft(padding: T, n: Int, offset: Int): Simd<T> {
     open class Shift : Swizzle {
         public val INDEX: IntArray = run {
             val index = IntArray(n) { n }
@@ -208,7 +208,7 @@ public fun <Mask, T> Simd<T, N>.shiftElementsLeft(padding: T, n: Int, offset: In
  * check(y.toArray() == listOf(255, 255, 255, 255))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.shiftElementsRight(padding: T, n: Int, offset: Int): Simd<T, N> {
+public fun <Mask, T> Simd<T>.shiftElementsRight(padding: T, n: Int, offset: Int): Simd<T> {
     open class Shift : Swizzle {
         public val INDEX: IntArray = run {
             val index = IntArray(n) { n }
@@ -239,7 +239,7 @@ public fun <Mask, T> Simd<T, N>.shiftElementsRight(padding: T, n: Int, offset: I
  * check(y.toArray() == listOf(2, 6, 3, 7))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.interleave(other: Simd<T, N>, n: Int): Pair<Simd<T, N>, Simd<T, N>> {
+public fun <Mask, T> Simd<T>.interleave(other: Simd<T>, n: Int): Pair<Simd<T>, Simd<T>> {
     fun interleave(high: Boolean, n: Int): IntArray {
         val idx = MutableList((n1).toInt()) { 0 }
         var i = 0
@@ -284,7 +284,7 @@ public fun <Mask, T> Simd<T, N>.interleave(other: Simd<T, N>, n: Int): Pair<Simd
  * check(y.toArray() == listOf(4, 5, 6, 7))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.deinterleave(other: Simd<T, N>, n: Int): Pair<Simd<T, N>, Simd<T, N>> {
+public fun <Mask, T> Simd<T>.deinterleave(other: Simd<T>, n: Int): Pair<Simd<T>, Simd<T>> {
     fun deinterleave(second: Boolean, n: Int): IntArray {
         val idx = MutableList((n1).toInt()) { 0 }
         var i = 0
@@ -315,7 +315,7 @@ public fun <Mask, T> Simd<T, N>.deinterleave(other: Simd<T, N>, n: Int): Pair<Si
  * check(x.resize(9).toArray() == listOf(0, 1))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.resize(value: T, n: Int, m: Int): Simd<T> {
+public fun <Mask, T> Simd<T>.resize(value: T, n: Int, m: Int): Simd<T> {
     open class Resize : Swizzle {
         public val INDEX: IntArray = run {
             val index = MutableList(m) { 0 }
@@ -342,7 +342,7 @@ public fun <Mask, T> Simd<T, N>.resize(value: T, n: Int, m: Int): Simd<T> {
  * check((x, extract, 1) == (2 > Unit.toArray()))
  * ```
  */
-public fun <Mask, T> Simd<T, N>.extract(n: Int, start: Int, len: Int): Simd<T> {
+public fun <Mask, T> Simd<T>.extract(n: Int, start: Int, len: Int): Simd<T> {
     open class Extract : Swizzle {
         public val INDEX: IntArray = run {
             check(start + len <= n) { "index out of bounds" }
@@ -361,7 +361,7 @@ public fun <Mask, T> Simd<T, N>.extract(n: Int, start: Int, len: Int): Simd<T> {
 /**
  * Reverse the order of the elements in the mask.
  */
-public fun <T> Mask<T, N>.reverse(n: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.reverse(n: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().reverse())
 }
@@ -371,7 +371,7 @@ public fun <T> Mask<T, N>.reverse(n: Int): Mask<T, N> where T : MaskElement<T> {
  * while the last `self.len() - OFFSET` elements move to the front. After calling `rotateElementsLeft`,
  * the element previously at index `OFFSET` will become the first element in the slice.
  */
-public fun <T> Mask<T, N>.rotateElementsLeft(n: Int, offset: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.rotateElementsLeft(n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().rotateElementsLeft())
 }
@@ -381,7 +381,7 @@ public fun <T> Mask<T, N>.rotateElementsLeft(n: Int, offset: Int): Mask<T, N> wh
  * the end while the last `OFFSET` elements move to the front. After calling `rotateElementsRight`,
  * the element previously at index `self.len() - OFFSET` will become the first element in the slice.
  */
-public fun <T> Mask<T, N>.rotateElementsRight(n: Int, offset: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.rotateElementsRight(n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().rotateElementsRight())
 }
@@ -390,7 +390,7 @@ public fun <T> Mask<T, N>.rotateElementsRight(n: Int, offset: Int): Mask<T, N> w
  * Shifts the mask elements to the left by `OFFSET`, filling in with
  * `padding` from the right.
  */
-public fun <T> Mask<T, N>.shiftElementsLeft(padding: Boolean, n: Int, offset: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.shiftElementsLeft(padding: Boolean, n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().shiftElementsLeft(if (padding) {
         T.TRUE
@@ -403,7 +403,7 @@ public fun <T> Mask<T, N>.shiftElementsLeft(padding: Boolean, n: Int, offset: In
  * Shifts the mask elements to the right by `OFFSET`, filling in with
  * `padding` from the left.
  */
-public fun <T> Mask<T, N>.shiftElementsRight(padding: Boolean, n: Int, offset: Int): Mask<T, N> where T : MaskElement<T> {
+public fun <T> Mask<T>.shiftElementsRight(padding: Boolean, n: Int, offset: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().shiftElementsRight(if (padding) {
         T.TRUE
@@ -428,7 +428,7 @@ public fun <T> Mask<T, N>.shiftElementsRight(padding: Boolean, n: Int, offset: I
  * check(y.toArray() == booleanArrayOf(false, true, true, true))
  * ```
  */
-public fun <T> Mask<T, N>.interleave(other: Mask<T, N>, n: Int): Pair<Mask<T, N>, Mask<T, N>> where T : MaskElement<T> {
+public fun <T> Mask<T>.interleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>> where T : MaskElement<T> {
     val (lo, hi) = this.toSimd().interleave(other.toSimd())
     // Safety: swizzles are safe for masks
     return Pair(Mask.fromSimdUnchecked(lo), Mask.fromSimdUnchecked(hi))
@@ -453,7 +453,7 @@ public fun <T> Mask<T, N>.interleave(other: Mask<T, N>, n: Int): Pair<Mask<T, N>
  * check(y.toArray() == booleanArrayOf(true, true, false, true))
  * ```
  */
-public fun <T> Mask<T, N>.deinterleave(other: Mask<T, N>, n: Int): Pair<Mask<T, N>, Mask<T, N>> where T : MaskElement<T> {
+public fun <T> Mask<T>.deinterleave(other: Mask<T>, n: Int): Pair<Mask<T>, Mask<T>> where T : MaskElement<T> {
     val (even, odd) = this.toSimd().deinterleave(other.toSimd())
     // Safety: swizzles are safe for masks
     return Pair(Mask.fromSimdUnchecked(even), Mask.fromSimdUnchecked(odd))
@@ -471,7 +471,7 @@ public fun <T> Mask<T, N>.deinterleave(other: Mask<T, N>, n: Int): Pair<Mask<T, 
  * check(x.resize(true).toArray() == booleanArrayOf(false, true))
  * ```
  */
-public fun <T> Mask<T, N>.resize(value: Boolean, n: Int, m: Int): Mask<T> where T : MaskElement<T> {
+public fun <T> Mask<T>.resize(value: Boolean, n: Int, m: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().resize(if (value) {
         T.TRUE
@@ -488,7 +488,7 @@ public fun <T> Mask<T, N>.resize(value: Boolean, n: Int, m: Int): Mask<T> where 
  * check((x, extract, 1) == (2 > Unit.toArray()))
  * ```
  */
-public fun <T> Mask<T, N>.extract(n: Int, start: Int, len: Int): Mask<T> where T : MaskElement<T> {
+public fun <T> Mask<T>.extract(n: Int, start: Int, len: Int): Mask<T> where T : MaskElement<T> {
     // Safety: swizzles are safe for masks
     return Mask.fromSimdUnchecked(this.toSimd().extract())
 }

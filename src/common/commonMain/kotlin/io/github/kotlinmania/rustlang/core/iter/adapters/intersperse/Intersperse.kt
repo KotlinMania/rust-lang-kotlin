@@ -41,15 +41,14 @@ public open class Intersperse<I>(
     public var nextItem: Item?,
     public var iter: I,
 ) : Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@Intersperse.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@Intersperse.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Intersperse<I> = Intersperse(started, separator, nextItem, iter)
 
@@ -100,23 +99,16 @@ public open class IntersperseWith<I, G>(
     public var nextItem: Item?,
     public var iter: I,
 ) : Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@IntersperseWith.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@IntersperseWith.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        DebugStruct(f, "IntersperseWith")
-            .field("started", this.started)
-            .field("separator", this.separator)
-            .field("iter", this.iter)
-            .field("next_item", this.nextItem)
-            .finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "IntersperseWith").field("started", this.started).field("separator", this.separator).field("iter", this.iter).field("next_item", this.nextItem).finish()
 
     public open fun clone(): IntersperseWith<I, G> = IntersperseWith(started = this.started, separator = this.separator.clone(), iter = this.iter.clone(), nextItem = this.nextItem)
 
@@ -154,12 +146,9 @@ public open class IntersperseWith<I, G>(
 
 public fun <Item, I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> {
     val (lo, hi) = iter.sizeHint()
-    return Pair(
-        lo.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).saturatingAdd(lo),
-        hi.andThen({ hi1 ->
-            hi1.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).checkedAdd(hi1)
-        }),
-    )
+    return Pair(lo.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).saturatingAdd(lo), hi.andThen({ hi1 ->
+        hi1.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).checkedAdd(hi1)
+    }))
 }
 
 public fun <Item, I, B> intersperseFold(iter: I, init: B, f: (B, I.Item) -> B, separator: () -> I.Item, started: Boolean, nextItem: Item?): B {

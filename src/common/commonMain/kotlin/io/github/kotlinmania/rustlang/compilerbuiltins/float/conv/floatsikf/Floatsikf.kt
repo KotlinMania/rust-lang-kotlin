@@ -7,6 +7,4 @@ import io.github.kotlinmania.rustlang.core.F128
 // Conversions from signed integers to floats.
 // Conversions from floats to unsigned integers.
 // Conversions from floats to signed integers.
-public fun floatsikf(i: Int): F128 =
-    io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
-        .floatsikf(i)
+public fun floatsikf(i: Int): F128 = io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.floatsikf(i)

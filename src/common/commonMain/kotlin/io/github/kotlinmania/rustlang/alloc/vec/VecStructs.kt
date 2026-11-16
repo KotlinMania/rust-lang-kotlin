@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.chunkedRetain
 import io.github.kotlinmania.rustlang.alloc.wtf8.cloneInto
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -42,6 +43,7 @@ import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -282,11 +284,7 @@ import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 public open class Vec<T, A : Allocator> internal constructor(
     bufCtorArg: RawVec<T, A>,
     public var len: Int,
-) : ExtendFromWithinSpec,
-    DerefPure,
-    AsRef<Vec<T, A>>,
-    AsMut<Vec<T, A>>,
-    Iterable<T> {
+) : ExtendFromWithinSpec, DerefPure, AsRef<Vec<T, A>>, AsMut<Vec<T, A>>, Iterable<T> {
     public var buf: RawVec<T, A> = bufCtorArg
         internal set
 
@@ -454,7 +452,9 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * var vec: Vec<Int> = Vec.withCapacity(10)
+     * import alloc.Global
+     *
+     * var vec: Vec<Int, Global> = Vec.withCapacity(10)
      * vec.push(42)
      * check(vec.capacity() >= 10)
      * ```
@@ -543,8 +543,10 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * fun processData(data: List<UInt>): Result<Vec<UInt>> {
-     *     var output: Vec<UInt> = Vec.new()
+     * import alloc.Global
+     *
+     * fun processData(data: List<UInt>): Result<Vec<UInt, Global>> {
+     *     var output: Vec<UInt, Global> = Vec.new()
      *     // Pre-reserve the memory, exiting if we can't
      *     output.tryReserve(data.size).getOrElse { return Result.failure(it) }
      *     // Now we know this can't OOM in the middle of our complex work
@@ -579,8 +581,10 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
-     * fun processData(data: List<UInt>): Result<Vec<UInt>> {
-     *     var output: Vec<UInt> = Vec.new()
+     * import alloc.Global
+     *
+     * fun processData(data: List<UInt>): Result<Vec<UInt, Global>> {
+     *     var output: Vec<UInt, Global> = Vec.new()
      *     // Pre-reserve the memory, exiting if we can't
      *     output.tryReserveExact(data.size).getOrElse { return Result.failure(it) }
      *     // Now we know this can't OOM in the middle of our complex work
@@ -680,7 +684,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         if (this.capacity() > this.len) {
             this.buf.tryShrinkToFit(this.len)
         } else {
-            Result.Ok(Unit)
+            Result.Ok<Unit, TryReserveError>(Unit)
         }
 
     /**
@@ -716,7 +720,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         if (this.capacity() > minCapacity) {
             this.buf.tryShrinkToFit(max(this.len, minCapacity))
         } else {
-            Result.Ok(Unit)
+            Result.Ok<Unit, TryReserveError>(Unit)
         }
 
     /**
@@ -765,25 +769,28 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import alloc.Global
+     *
      * @feature(allocSliceIntoArray)
      * public fun doctestEntry() {
-     *     val vec: Vec<Int> = mutableListOf(1, 2, 3)
+     *     val vec: Vec<Int, Global> = mutableListOf(1, 2, 3)
      *     val boxArray: IntArray = vec.toMutableList().intoArray().unwrap()
      *     val notEnoughElements: Result<IntArray> = vec.intoArray()
      *     check(notEnoughElements == Result.failure(mutableListOf(1, 2, 3)))
      * }
      * ```
      */
-    public open fun intoArray(n: Int): Result<List<T>, Vec<T, A>> =
-        if (this.len() == n) {
+    public open fun intoArray(n: Int): Result<List<T>, Vec<T, A>> {
+        return if (this.len() == n) {
             // SAFETY: `Holder.intoArray` is guaranteed to return `Ok` if the
             // length of the slice is equal to `N`.
             // `self.intoBoxedSlice().len()` is equal to `self.len()`,
             // which we just checked.
-            Result.Ok(this.intoBoxedSlice().intoArray().unwrapUnchecked())
+            Result.Ok<List<T>, Vec<T, A>>(this.intoBoxedSlice().intoArray().unwrapUnchecked())
         } else {
-            Result.Err(this)
+            Result.Err<List<T>, Vec<T, A>>(this)
         }
+    }
 
     /**
      * Shortens the vector, keeping the first `len` elements and dropping
@@ -995,9 +1002,11 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import alloc.Global
+     *
      * // Allocate vector big enough for 4 elements.
      * val size = 4
-     * var x: Vec<Int> = Vec.withCapacity(size)
+     * var x: Vec<Int, Global> = Vec.withCapacity(size)
      * val xPtr = x.asMutPtr()
      * // Initialize elements via raw pointer writes, then set length.
      * run {
@@ -1068,11 +1077,13 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      * ```kotlin
+     * import alloc.Global
+     *
      * @feature(vecAsNonNull)
      * public fun doctestEntry() {
      *     // Allocate vector big enough for 4 elements.
      *     val size = 4
-     *     var x: Vec<Int> = Vec.withCapacity(size)
+     *     var x: Vec<Int, Global> = Vec.withCapacity(size)
      *     val xPtr = x.asNonNull()
      *     // Initialize elements via raw pointer writes, then set length.
      *     run {
@@ -1143,11 +1154,12 @@ public open class Vec<T, A : Allocator> internal constructor(
      * is serving as a buffer for other code, particularly over FFI:
      *
      * ```kotlin
+     * import alloc.Global
      * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
      * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
      * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
      *
-     * fun getDictionary(): Vec<UByte>? {
+     * fun getDictionary(): Vec<UByte, Global>? {
      *     // Per the FFI method's docs, "32768 bytes is always enough".
      *     var dict = Vec.withCapacity(32768)
      *     val localStorageL6C4 = AddressableLocal(0, PrimitiveLayouts.I32)
@@ -1452,7 +1464,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * check(vec == listOf(2, 3, 4))
      * ```
      */
-    public open fun retainMut(f: (T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+    public open fun retainMut(f: (T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // Vec: [Kept, Kept, Hole, Hole, Hole, Hole, Unchecked, Unchecked]
         // |            ^- write                ^- read             |
         // |<-              originalLen                          ->|
@@ -1698,17 +1710,16 @@ public open class Vec<T, A : Allocator> internal constructor(
         var firstDuplicateIdx: Int = 1
         val start = this.asMutPtr()
         while (firstDuplicateIdx != len) {
-            val foundDuplicate =
-                run {
-                    // SAFETY: firstDuplicate always in range [1..len).
-                    // Note that we start iteration from 1 so we never overflow.
-                    val prev = start.add((firstDuplicateIdx - 1))
-                    // ignore-tidy-undocumented-unchecked
-                    val current = start.add(firstDuplicateIdx)
-                    // We explicitly say in docs that references are reversed.
-                    // ignore-tidy-undocumented-unchecked
-                    sameBucket(current, prev)
-                }
+            val foundDuplicate = run {
+                // SAFETY: firstDuplicate always in range [1..len).
+                // Note that we start iteration from 1 so we never overflow.
+                val prev = start.add((firstDuplicateIdx - 1))
+                // ignore-tidy-undocumented-unchecked
+                val current = start.add(firstDuplicateIdx)
+                // We explicitly say in docs that references are reversed.
+                // ignore-tidy-undocumented-unchecked
+                sameBucket(current, prev)
+            }
             if (foundDuplicate) {
                 break
             }
@@ -1830,12 +1841,13 @@ public open class Vec<T, A : Allocator> internal constructor(
      * A manual, panic-free alternative to [FromIterator]:
      *
      * ```kotlin
+     * import alloc.Global
      * import core.iter
      *
      * @feature(vecPushWithinCapacity)
      * public fun doctestEntry(): Result<Unit> {
-     *     fun <T> fromIterFallible(iter: Any): Result<Vec<T>> {
-     *         var vec: Vec<T> = Vec.new()
+     *     fun <T> fromIterFallible(iter: Any): Result<Vec<T, Global>> {
+     *         var vec: Vec<T, Global> = Vec.new()
      *         for (value in iter) {
      *             when (val matchVal = vec.pushWithinCapacity(value)) {
      *                 is Err -> {
@@ -1860,7 +1872,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      */
     public open fun pushWithinCapacity(value: T): Result<T, T> {
         if (this.len == this.buf.capacity()) {
-            return Result.Err(value)
+            return Result.Err<T, T>(value)
         }
         // ignore-tidy-undocumented-unchecked
         val end = this.asMutPtr().add(this.len)
@@ -1868,7 +1880,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         write(end, value)
         this.len += 1
         // SAFETY: We just wrote a value to the pointer that will live the scope of the reference.
-        return Result.Ok(end)
+        return Result.Ok<T, T>(end)
     }
 
     /**
@@ -1998,21 +2010,18 @@ public open class Vec<T, A : Allocator> internal constructor(
      * Appends elements to `self` from other buffer, returning [TryReserveError] on OOM.
      */
     public open fun tryAppendElements(other: ConstPtr): Result<Unit, TryReserveError> {
-        when (val tryResult = this.tryReserve(other.len())) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = this.tryReserve(other.len())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         // ignore-tidy-undocumented-unchecked
         run {
             this.appendElementsUnreserved(other)
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, TryReserveError>(Unit)
     }
 
     /**
      * Appends elements to `self` from other buffer without reserving additional capacity.
      */
-    public open fun appendElementsUnreserved(other: ConstPtr, typeLayoutT: TypeLayout<T>) {
+    public open fun appendElementsUnreserved(other: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         val count = other.len()
         val len = this.len()
         if (count > 0) {
@@ -2121,7 +2130,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * check(a.size == 3)
      * ```
      */
-    public open fun len(): Int {
+    public open fun len(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
         val len = this.len
         // SAFETY: The maximum capacity of `List<T>` is `Long.MAX` bytes, so the maximum value can
         // be returned is `Int.checkedDiv(sizeOf<T>()).unwrapOr(Int.MAX)`, which
@@ -2396,20 +2405,22 @@ public open class Vec<T, A : Allocator> internal constructor(
      * ```kotlin
      * @file:OptIn(ExperimentalUnsignedTypes.cls)
      *
+     * import alloc.Global
+     *
      * @feature(vecIntoChunks)
      * public fun doctestEntry() {
      *     val vec = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
      *     check(vec.intoChunks() == listOf(listOf(0, 1, 2), listOf(3, 4, 5)))
      *     val vec1 = mutableListOf(0, 1, 2, 3)
-     *     val chunks: Vec<UByteArray> = vec1.intoChunks()
+     *     val chunks: Vec<UByteArray, Global> = vec1.intoChunks()
      *     check(chunks.isEmpty())
      *     val flat = mutableListOf(0, 8 * 8 * 8)
-     *     val reshaped: Vec<List<List<UByteArray>>> = flat.intoChunks().intoChunks().intoChunks()
+     *     val reshaped: Vec<List<List<UByteArray>>, Global> = flat.intoChunks().intoChunks().intoChunks()
      *     check(reshaped.len() == 1)
      * }
      * ```
      */
-    public open fun intoChunks(n: Int): Vec<List<T>, A> {
+    public open fun intoChunks(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Vec<List<T>, A> {
         run {
             check(n != 0) { "chunk size must be greater than zero" }
         }
@@ -2419,7 +2430,7 @@ public open class Vec<T, A : Allocator> internal constructor(
             this.truncate(len - lenRemainder)
         }
         val capRemainder = cap % n
-        if (T.IS_ZST.inv() && capRemainder != 0) {
+        if ((((typeLayoutT).sizeBytes == 0L)).inv() && capRemainder != 0) {
             this.buf.shrinkToFit(cap - capRemainder)
         }
         val (ptr, _, _, alloc) = this.intoRawPartsWithAllocator()
@@ -2441,12 +2452,14 @@ public open class Vec<T, A : Allocator> internal constructor(
      * # Examples
      *
      *  ```kotlin
+     *  import alloc.Global
+     *
      *  @feature(vecRecycle, transmutability)
      *  public fun doctestEntry() {
-     *      val a: Vec<UByte> = mutableListOf(0, 100)
+     *      val a: Vec<UByte, Global> = mutableListOf(0, 100)
      *      val capacity = a.capacity()
      *      val addr = a.asPtr().addr()
-     *      val b: Vec<Byte> = a.recycle()
+     *      val b: Vec<Byte, Global> = a.recycle()
      *      check(b.len() == 0)
      *      check(b.capacity() == capacity)
      *      check(b.asPtr().addr() == addr)
@@ -2624,7 +2637,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * check(vec == listOf(1, 2, 3, 2))
      * ```
      */
-    public open fun dedup(typeLayoutT: TypeLayout<T>) {
+    public open fun dedup(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // Vectorize the process of finding first duplicate if possible
         when (val matchVal = dedupSimdChunkSize<T>(typeLayoutT = typeLayoutT)) {
             null -> {
@@ -2727,8 +2740,10 @@ public open class Vec<T, A : Allocator> internal constructor(
      * as required by the `core.borrow.Borrow` implementation.
      *
      * ```kotlin
+     * import alloc.Global
+     *
      * val b = RandomState.new()
-     * val v: Vec<UByte> = mutableListOf(0xa8, 0x3c, 0x09)
+     * val v: Vec<UByte, Global> = mutableListOf(0xa8, 0x3c, 0x09)
      * val s: List<UByte> = listOf(0xa8u.toUByte(), 0x3cu.toUByte(), 0x09u.toUByte())
      * check(b.hashOne(v) == b.hashOne(s))
      * ```
@@ -2759,7 +2774,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * check(vIter.removeFirstOrNull() == null)
      * ```
      */
-    public open fun intoIter(): IntoIter<T, A> {
+    public open fun intoIter(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): IntoIter<T, A> {
         val me = this
         // ignore-tidy-undocumented-unchecked
         return run {
@@ -2767,7 +2782,7 @@ public open class Vec<T, A : Allocator> internal constructor(
             val buf = me.buf.nonNull()
             val begin = buf.asPtr()
             val end =
-                if (T.IS_ZST) {
+                if (((typeLayoutT).sizeBytes == 0L)) {
                     begin.wrappingByteAdd(me.len())
                 } else {
                     constPtrFromRustCast(begin.add(me.len()))
@@ -2776,6 +2791,8 @@ public open class Vec<T, A : Allocator> internal constructor(
             IntoIter(buf = buf, phantom = Unit, cap = cap, alloc = alloc, ptr = buf, end = end)
         }
     }
+
+    public open fun intoIter(): ArrayDeque<T> = this.iter()
 
     public open fun <I : Iterable<T>> extend(iter: I) {
         Vec.specExtend(this, iter.iterator())
@@ -3010,9 +3027,7 @@ public open class Vec<T, A : Allocator> internal constructor(
         // RawVec handles deallocation
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
     public open fun asRef(): Vec<T, A> = this
 
@@ -3026,11 +3041,10 @@ public open class Vec<T, A : Allocator> internal constructor(
         public operator fun <T, A : Allocator> invoke(
             buf: RawVec<T, A>,
             len: Int,
-        ): Vec<T, A> =
-            Vec<T, A>(
-                bufCtorArg = buf,
-                len = len,
-            )
+        ): Vec<T, A> = Vec<T, A>(
+            bufCtorArg = buf,
+            len = len,
+        )
 
         /**
          * Constructs a new, empty `List<T, A>` with at least the specified capacity
@@ -3119,16 +3133,7 @@ public open class Vec<T, A : Allocator> internal constructor(
          * [will not allocate]: self#memory-layout
          */
         public fun <T, A : Allocator> tryWithCapacityIn(capacity: Int, alloc: A): Result<Vec<T, A>, TryReserveError> {
-            return Result.Ok(
-                Vec(
-                    buf =
-                        when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                        },
-                    len = 0,
-                ),
-            )
+            return Result.Ok<Vec<T, A>, TryReserveError>(Vec(buf = when (val tryResult = RawVec.tryWithCapacityIn(capacity, alloc)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Vec<T, A>, TryReserveError>(tryResult.error) }, len = 0))
         }
 
         /**
@@ -3329,10 +3334,12 @@ public open class Vec<T, A : Allocator> internal constructor(
  * # Examples
  *
  * ```kotlin
- * var vec: Vec<Int> = Vec.new()
+ * import alloc.Global
+ *
+ * var vec: Vec<Int, Global> = Vec.new()
  * ```
  */
-public fun <T> Vec.Companion.new(): Vec<T> = Vec(buf = RawVec.new(), len = 0)
+public fun <T> Vec.Companion.new(): Vec<T, Global> = Vec(buf = RawVec.new(), len = 0)
 
 /**
  * Constructs a new, empty `List<T>` with at least the specified capacity.
@@ -3383,7 +3390,7 @@ public fun <T> Vec.Companion.new(): Vec<T> = Vec(buf = RawVec.new(), len = 0)
  * check(vecUnits.capacity() == Int.MAX_VALUE)
  * ```
  */
-public fun <T> Vec.Companion.withCapacity(capacity: Int): Vec<T> = Vec.withCapacityIn(capacity, Global)
+public fun <T> Vec.Companion.withCapacity(capacity: Int): Vec<T, Global> = Vec.withCapacityIn(capacity, Global())
 
 /**
  * Constructs a new, empty `List<T>` with at least the specified capacity.
@@ -3399,7 +3406,7 @@ public fun <T> Vec.Companion.withCapacity(capacity: Int): Vec<T> = Vec.withCapac
  *
  * [will not allocate]: self#memory-layout
  */
-public fun <T> Vec.Companion.tryWithCapacity(capacity: Int): Result<Vec<T>, TryReserveError> = Vec.tryWithCapacityIn(capacity, Global)
+public fun <T> Vec.Companion.tryWithCapacity(capacity: Int): Result<Vec<T, Global>, TryReserveError> = Vec.tryWithCapacityIn(capacity, Global())
 
 /**
  * Creates a `List<T>` directly from a pointer, a length, and a capacity.
@@ -3470,9 +3477,9 @@ public fun <T> Vec.Companion.tryWithCapacity(capacity: Int): Result<Vec<T>, TryR
  * }
  * ```
  */
-public fun <T> Vec.Companion.fromRawParts(ptr: MutPtr, length: Int, capacity: Int): Vec<T> {
+public fun <T> Vec.Companion.fromRawParts(ptr: MutPtr, length: Int, capacity: Int): Vec<T, Global> {
     // SAFETY: Upheld by caller.
-    return Vec.fromRawPartsIn(ptr, length, capacity, Global)
+    return Vec.fromRawPartsIn(ptr, length, capacity, Global())
 }
 
 /**
@@ -3540,9 +3547,9 @@ public fun <T> Vec.Companion.fromRawParts(ptr: MutPtr, length: Int, capacity: In
  * }
  * ```
  */
-public fun <T> Vec.Companion.fromParts(ptr: NonNull, length: Int, capacity: Int): Vec<T> {
+public fun <T> Vec.Companion.fromParts(ptr: NonNull, length: Int, capacity: Int): Vec<T, Global> {
     // SAFETY: Upheld by caller.
-    return Vec.fromPartsIn(ptr, length, capacity, Global)
+    return Vec.fromPartsIn(ptr, length, capacity, Global())
 }
 
 /**
@@ -3584,7 +3591,7 @@ public fun <T> Vec.Companion.fromParts(ptr: NonNull, length: Int, capacity: Int)
  * check(a == listOf(1, 2, 4, 8, 16, 32))
  * ```
  */
-public fun <T> Vec.Companion.fromFn(length: Int, f: (Int) -> T): Vec<T> = (0 until length).map(f).collect()
+public fun <T> Vec.Companion.fromFn(length: Int, f: (Int) -> T): Vec<T, Global> = (0 until length).map(f).collect()
 
 /**
  * Decomposes a `List<T>` into its raw components: `(pointer, length, capacity)`.
@@ -3608,9 +3615,10 @@ public fun <T> Vec.Companion.fromFn(length: Int, f: (Int) -> T): Vec<T> = (0 unt
  * # Examples
  *
  * ```kotlin
+ * import alloc.Global
  * import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
  *
- * val v: Vec<Int> = mutableListOf(-1, 0, 1)
+ * val v: Vec<Int, Global> = mutableListOf(-1, 0, 1)
  * val (ptr, len, cap) = v.intoRawParts()
  * val rebuilt = run {
  *     // We can now make changes to the components, such as
@@ -3621,7 +3629,7 @@ public fun <T> Vec.Companion.fromFn(length: Int, f: (Int) -> T): Vec<T> = (0 unt
  * check(rebuilt == listOf(4294967295, 0, 1))
  * ```
  */
-public fun <T> Vec<T>.intoRawParts(): Triple<MutPtr, Int, Int> {
+public fun <T> Vec<T, Global>.intoRawParts(): Triple<MutPtr, Int, Int> {
     val me = this
     return Triple(me.asMutPtr(), me.len(), me.capacity())
 }
@@ -3645,7 +3653,9 @@ public fun <T> Vec<T>.intoRawParts(): Triple<MutPtr, Int, Int> {
  * # Examples
  *
  * ```kotlin
- * val v: Vec<Int> = mutableListOf(-1, 0, 1)
+ * import alloc.Global
+ *
+ * val v: Vec<Int, Global> = mutableListOf(-1, 0, 1)
  * val (ptr, len, cap) = v.intoParts()
  * val rebuilt = run {
  *     // We can now make changes to the components, such as
@@ -3656,7 +3666,7 @@ public fun <T> Vec<T>.intoRawParts(): Triple<MutPtr, Int, Int> {
  * check(rebuilt == listOf(4294967295, 0, 1))
  * ```
  */
-public fun <T> Vec<T>.intoParts(): Triple<NonNull, Int, Int> {
+public fun <T> Vec<T, Global>.intoParts(): Triple<NonNull, Int, Int> {
     val (ptr, len, capacity) = this.intoRawParts()
     // SAFETY: A `List` always has a non-null pointer.
     return Triple(NonNull.newUnchecked(ptr), len, capacity)
@@ -3669,11 +3679,11 @@ public fun <T> Vec<T>.intoParts(): Triple<NonNull, Int, Int> {
  * This method must be called if the memory used by `List` needs to appear in the final
  * values of constants.
  */
-public fun <T> Vec<T>.constMakeGlobal(): List<T> where T : Freeze {
+public fun <T> Vec<T, Global>.constMakeGlobal(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where T : Freeze {
     // `constMakeGlobal` requires the pointer to point to the beginning of a heap allocation,
     // which is not the case when `self.capacity()` is 0, or if `T.IS_ZST`,
     // which is why we instead return a new slice in this case.
-    return if (this.capacity() == 0 || T.IS_ZST) {
+    return if (this.capacity() == 0 || ((typeLayoutT).sizeBytes == 0L)) {
         val me = this
         // ignore-tidy-undocumented-unchecked
         linearSliceView(NonNull.dangling().asPtr(), me.len.toInt(), PrimitiveLayouts.U8)
@@ -3711,10 +3721,10 @@ public fun <A : Allocator> Vec<UByte, A>.tryExtendFromSliceOfBytes(other: List<U
  * check(flattened.pop() == 6)
  * ```
  */
-public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int): Vec<T, A> {
+public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Vec<T, A> {
     val (ptr, len, cap, alloc) = this.intoRawPartsWithAllocator()
     val (newLen, newCap) =
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             Pair((len.checkedMul(n) ?: error("the product of vec len and N shouldn't overflow")), Int.MAX_VALUE)
         } else {
             // SAFETY:
@@ -3766,9 +3776,11 @@ public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int): Vec<T, A> {
  * [owned slice]: Holder
  *
  * ```kotlin
- * var LONG_LIVED: Mutex<Vec<Vec<UShort>>> = Mutex.new(Vec.new())
+ * import alloc.Global
+ *
+ * var LONG_LIVED: Mutex<Vec<Vec<UShort, Global>, Global>> = Mutex.new(Vec.new())
  * for (i in 0 until 10) {
- *     val bigTemporary: Vec<UShort> = (0 until 1024).collect()
+ *     val bigTemporary: Vec<UShort, Global> = (0 until 1024).collect()
  *     // discard most items
  *     var result: Vec = bigTemporary.intoIter().filter({ i1 -> i1 % 100 == 0 }).collect()
  *     // without this a lot of unused capacity might be moved into the global
@@ -3777,7 +3789,7 @@ public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int): Vec<T, A> {
  * }
  * ```
  */
-public fun <T, I : Iterable<T>> fromIteratorFromIterVecT(iter: I): Vec<T> = Vec.fromIter(iter.iterator())
+public fun <T, I : Iterable<T>> fromIteratorFromIterVecT(iter: I): Vec<T, Global> = Vec.fromIter(iter.iterator())
 
 /**
  * Implements comparison of vectors, [lexicographically](Ord#lexicographical-comparison).
@@ -3789,7 +3801,7 @@ public fun <T, A1, A2> Vec<T, A1>.partialCmp(other: Vec<T, A2>): Ordering? where
  *
  * The vector will not allocate until elements are pushed onto it.
  */
-public fun <T> defaultVecT(): Vec<T> = Vec.new()
+public fun <T> defaultVecT(): Vec<T, Global> = Vec.new()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.
@@ -3800,7 +3812,7 @@ public fun <T> defaultVecT(): Vec<T> = Vec.new()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: List<T>): Vec<T> = s.toMutableList()
+public fun <T> fromVecT(s: List<T>): Vec<T, Global> = s.toMutableList()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.
@@ -3811,7 +3823,7 @@ public fun <T> fromVecT(s: List<T>): Vec<T> = s.toMutableList()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: MutableList<T>): Vec<T> = s.toMutableList()
+public fun <T> fromVecT(s: MutableList<T>): Vec<T, Global> = s.toMutableList()
 
 /**
  * Allocates a `List<T>` and fills it by cloning `s`s items.
@@ -3822,7 +3834,7 @@ public fun <T> fromVecT(s: MutableList<T>): Vec<T> = s.toMutableList()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: List<T>, n: Int): Vec<T> = Vec.from(s.asSlice())
+public fun <T> fromVecT(s: List<T>, n: Int): Vec<T, Global> = Vec.from(s.asSlice())
 
 /**
  * Allocates a `List<UByte>` and fills it with a UTF-8 string.
@@ -3833,4 +3845,4 @@ public fun <T> fromVecT(s: List<T>, n: Int): Vec<T> = Vec.from(s.asSlice())
  * check(Vec.from("123") == mutableListOf(49u, 50u, 51u))
  * ```
  */
-public fun fromVecUByte(s: String): Vec<UByte> = fromUByte(s.encodeToByteArray().map { it.toUByte() })
+public fun fromVecUByte(s: String): Vec<UByte, Global> = fromUByte(s.encodeToByteArray().map { it.toUByte() })

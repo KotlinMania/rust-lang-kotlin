@@ -2235,28 +2235,28 @@ public fun testMsaInsveD() {
 }
 
 public fun testMsaLdB() {
-    val a: ByteArray = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31)
+    val a: ByteArray  = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31)
     val p = (mutPtrFromRustCast(a[4])).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val r = i8x16.new(13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28)
     check(r == transmute(msaLdB(p, 9)))
 }
 
 public fun testMsaLdH() {
-    val a: ShortArray = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+    val a: ShortArray  = shortArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val p = (mutPtrFromRustCast(a[4])).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val r = i16x8.new(3, 4, 5, 6, 7, 8, 9, 10)
     check(r == transmute(msaLdH(p, -2)))
 }
 
 public fun testMsaLdW() {
-    val a: IntArray = intArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
+    val a: IntArray  = intArrayOf(0, 1, 2, 3, 4, 5, 6, 7)
     val p = (mutPtrFromRustCast(a[3])).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val r = i32x4.new(2, 3, 4, 5)
     check(r == transmute(msaLdW(p, -4)))
 }
 
 public fun testMsaLdD() {
-    val a: LongArray = longArrayOf(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L)
+    val a: LongArray  = longArrayOf(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L)
     val p = (mutPtrFromRustCast(a[4])).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val r = i64x2.new(0, 1)
     check(r == transmute(msaLdD(p, -32)))

@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.alloc.vec.sveretain.PanicGuard
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.hint.unlikely
 import io.github.kotlinmania.rustlang.core.iter.sources.fromfn.fromFn
@@ -26,7 +27,6 @@ import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
-import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -364,15 +364,7 @@ public class DebugTuple(
  */
 public open class RustAllocString(
     public var vec: MutableList<UByte>,
-) : Pattern<Searcher>,
-    Add<String, String>,
-    AddAssign<String>,
-    DerefPure,
-    FromStr<Nothing>,
-    SpecToString,
-    AsRef<String>,
-    AsMut<String>,
-    Appendable {
+) : Pattern<Searcher>, Add<String, String>, AddAssign<String>, DerefPure, FromStr<Nothing>, SpecToString, AsRef<String>, AsMut<String>, Appendable {
     /**
      * Decomposes a `String` into its raw components: `(pointer, length, capacity)`.
      *
@@ -517,7 +509,7 @@ public open class RustAllocString(
      * ```
      */
     public open fun <R> extendFromWithin(src: R) where R : RangeBounds<Int> {
-        val src1 = Range(src, 0 until this.len())
+        val src1 = Slice.range(src, 0 until this.len())
         check(this.isCharBoundary(start))
         check(this.isCharBoundary(end))
         this.vec.extendFromWithin(src1)
@@ -896,34 +888,27 @@ public open class RustAllocString(
      * ```
      */
     public open fun <Searcher, P : Pattern<Any?>> removeMatches(pat: P) {
-        val rejections1 =
-            run {
-                val searcher = pat.intoSearcher(this)
-                // Per Searcher.next:
-                //
-                // A Match result needs to contain the whole matched pattern,
-                // however Reject results may be split up into arbitrary many
-                // adjacent fragments. Both ranges may have zero length.
-                //
-                // In practice the implementation of Searcher.nextMatch tends to
-                // be more efficient, so we use it here and do some work to invert
-                // matches into rejections since that's what we want to copy below.
-                var front = 0
-                val rejections: Vec =
-                    fromFn(
-                        closure@{
-                            val (start, end) =
-                                when (val tryResult = searcher.nextMatch()) {
-                                    is Result.Ok<*, *> -> tryResult.value
-                                    is Result.Err<*, *> -> return@closure Result.Err(tryResult.error)
-                                }
-                            val prevFront = front
-                            front = end
-                            Pair(prevFront, start)
-                        },
-                    ).collect()
-                rejections.intoIter().chain(listOf(Pair(front, this.len())))
-            }
+        val rejections1 = run {
+            val searcher = pat.intoSearcher(this)
+            // Per Searcher.next:
+            //
+            // A Match result needs to contain the whole matched pattern,
+            // however Reject results may be split up into arbitrary many
+            // adjacent fragments. Both ranges may have zero length.
+            //
+            // In practice the implementation of Searcher.nextMatch tends to
+            // be more efficient, so we use it here and do some work to invert
+            // matches into rejections since that's what we want to copy below.
+            var front = 0
+            val rejections: Vec =
+                fromFn(closure@{
+                    val (start, end) = when (val tryResult = searcher.nextMatch()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure Result.Err(tryResult.error) }
+                    val prevFront = front
+                    front = end
+                    Pair(prevFront, start)
+                }).collect()
+            rejections.intoIter().chain(listOf(Pair(front, this.len())))
+        }
         var len = 0
         val ptr = this.vec.asMutPtr()
         for ((start, end) in rejections1) {
@@ -1022,7 +1007,7 @@ public open class RustAllocString(
                 // within bounds because it is always behind `read`.
                 run {
                     val ptr = g.s.vec.asMutPtr()
-                    copy(MutPtr((ptr).rawAddress + ((read).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((ptr).rawAddress + ((g.write).toLong() * (PrimitiveLayouts.U8).strideBytes)), chLen)
+                    copy((MutPtr((ptr).rawAddress + ((read).toLong() * (PrimitiveLayouts.U8).strideBytes))).asConstPtr(), MutPtr((ptr).rawAddress + ((g.write).toLong() * (PrimitiveLayouts.U8).strideBytes)), chLen)
                 }
                 g.write += chLen
             }
@@ -1269,7 +1254,7 @@ public open class RustAllocString(
         // of the vector version. The data is just plain bytes.
         // Because the range removal happens in Drop, if the Drain iterator is leaked,
         // the removal will not happen.
-        val structVal = Range(range, 0 until this.len())
+        val structVal = Slice.range(range, 0 until this.len())
         val start = structVal.start
         val end = structVal.end
         check(this.isCharBoundary(start))
@@ -1347,7 +1332,7 @@ public open class RustAllocString(
      */
     public open fun <R> replaceRange(range: R, replaceWith: String) where R : RangeBounds<Int> {
         // We avoid #81138 (nondeterministic RangeBounds impls) because we only use `range` once, here.
-        val checkedRange = Range(range, 0 until this.len())
+        val checkedRange = Slice.range(range, 0 until this.len())
         check(this.isCharBoundary(checkedRange.start)) { "start of range should be a character boundary" }
         check(this.isCharBoundary(checkedRange.end)) { "end of range should be a character boundary" }
         if (replaceWith.length > checkedRange.len()) {
@@ -1387,9 +1372,7 @@ public open class RustAllocString(
     public open fun <Searcher, P : Pattern<Any?>> replaceFirst(from: P, to: String) {
         val range =
             when (val matchVal = this.matchIndices(from).next()) {
-                null -> {
-                    return
-                }
+                null -> { return }
                 else -> {
                     val start = matchVal.first
                     val matchStr = matchVal.second
@@ -1419,9 +1402,7 @@ public open class RustAllocString(
     public open fun <Searcher, P : Pattern<Any?>> replaceLast(from: P, to: String) {
         val range =
             when (val matchVal = this.rmatchIndices(from).next()) {
-                null -> {
-                    return
-                }
+                null -> { return }
                 else -> {
                     val start = matchVal.first
                     val matchStr = matchVal.second
@@ -1589,13 +1570,9 @@ public open class RustAllocString(
 
     public open fun neCowString(other: String): Boolean = PartialEq.ne(this, other)
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDebug(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
     public override fun hashCode(): Int {
         var hasher = 0
@@ -1679,7 +1656,6 @@ public open class RustAllocString(
         }
         if (middle != null) {
             val middle1 = middle
-
             /**
              * Ensures a spare capacity of N bytes and then passes that as MaybeUninit
              * slice to a closure that returns the bytes written, then
@@ -1697,14 +1673,7 @@ public open class RustAllocString(
                 val oldLen = bytes.size
                 // SAFETY: We reserved enough space for the requested number of bytes.
                 run {
-                    val spare: List<MaybeUninit<T>> =
-                        bytes
-                            .spareCapacityMut()
-                            .asMutPtr()
-                            .cast()
-                            .castUninit()
-                            .castArray()
-                            .asMutUnchecked()
+                    val spare: List<MaybeUninit<T>> = bytes.spareCapacityMut().asMutPtr().cast().castUninit().castArray().asMutUnchecked()
                     val written = then(spare)
                     bytes.setLen(oldLen + written)
                 }
@@ -1759,12 +1728,14 @@ public open class RustAllocString(
      * particular, [fmt.Write.writeStr] uses [`pushStr`][String.pushStr]
      * and [fmt.Write.writeChar] uses [`push`][String.push].
      */
-    public open fun writeStr(s: String) {
+    public open fun writeStr(s: String): Result<Unit, Error> {
         this.pushStr(s)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun writeChar(c: Char) {
+    public open fun writeChar(c: Char): Result<Unit, Error> {
         this.push(c)
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     public companion object {
@@ -1836,15 +1807,7 @@ public open class RustAllocString(
          * or if the memory allocator reports failure.
          */
         public fun tryWithCapacity(capacity: Int): Result<String, TryReserveError> {
-            return Result.Ok(
-                String(
-                    vec =
-                        when (val tryResult = Vec.tryWithCapacity(capacity)) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                        },
-                ),
-            )
+            return Result.Ok<String, TryReserveError>(String(vec = when (val tryResult = Vec.tryWithCapacity(capacity)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, TryReserveError>(tryResult.error) }))
         }
 
         /**
@@ -1904,15 +1867,12 @@ public open class RustAllocString(
         public fun fromUtf8(vec: List<UByte>): Result<String, FromUtf8Error> =
             run {
                 val matchVal = String.fromUtf8(vec)
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        Result.Ok(String(vec = vec))
-                    }
-                    is Result.Err<*, *> -> {
-                        val e = matchVal.error
-                        Result.Err(FromUtf8Error(bytes = vec, error = e))
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    Result.Ok<String, FromUtf8Error>(String(vec = vec))
+                }; is Result.Err -> {
+                    val e = matchVal.error
+                    Result.Err<String, FromUtf8Error>(FromUtf8Error(bytes = vec, error = e))
+                } }
             }
 
         /**
@@ -2057,10 +2017,10 @@ public open class RustAllocString(
         public fun fromUtf16Units(units: Any, capacity: Int): Result<String, FromUtf16Error> {
             var ret = String.withCapacity(capacity)
             for (c in Char.decodeUtf16(units)) {
-                val c1 = c ?: return Result.Err(FromUtf16Error(kind = FromUtf16ErrorKind.LoneSurrogate))
+                val c1 = when (val tryResult = c) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.LoneSurrogate)) }
                 ret += c1
             }
-            return Result.Ok(ret)
+            return Result.Ok<String, FromUtf16Error>(ret)
         }
 
         /**
@@ -2102,7 +2062,7 @@ public open class RustAllocString(
          * ```
          */
         public fun fromUtf16le(v: List<UByte>): Result<String, FromUtf16Error> {
-            val (chunks, _) = v.asChunks() ?: return Result.Err(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
+            val (chunks, _) = v.asChunks() ?: return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
             // SAFETY: The aligned part of `v` can be transmuted into a valid u16 slice.
             return run {
                 val matchVal = Pair(true, v.alignTo<UShort>())
@@ -2183,7 +2143,7 @@ public open class RustAllocString(
          * ```
          */
         public fun fromUtf16be(v: List<UByte>): Result<String, FromUtf16Error> {
-            val (chunks, _) = v.asChunks() ?: return Result.Err(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
+            val (chunks, _) = v.asChunks() ?: return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.OddBytes))
             // SAFETY: The aligned part of `v` can be transmuted into a valid u16 slice.
             return run {
                 val matchVal = Pair(false, v.alignTo<UShort>())
@@ -2375,7 +2335,7 @@ public open class RustAllocString(
          */
         public fun default(): String = String.new()
 
-        public fun fromStr(s: String): Result<String, Nothing> = Result.Ok(String.from(s))
+        public fun fromStr(s: String): Result<String, Nothing> = Result.Ok<String, Nothing>(String.from(s))
 
         /**
          * Converts a `String` into a [String].
@@ -2549,17 +2509,16 @@ public open class FromUtf8Error(
      */
     public open fun intoUtf8Lossy(): String {
         val REPLACEMENT: String = "�"
-        var res =
-            run {
-                val v = ArrayList<UByte>(this.bytes.size)
-                // `Utf8Error.validUpTo` returns the maximum index of validated
-                // UTF-8 bytes. Copy the valid bytes into the output buffer.
-                v.addAll(((this.bytes).subList(0, this.error.validUpTo())))
-                // SAFETY: This is safe because the only bytes present in the buffer
-                // were validated as UTF-8 by the call to `String.fromUtf8` which
-                // produced this `FromUtf8Error`.
-                String.fromUtf8Unchecked(v)
-            }
+        var res = run {
+            val v = ArrayList<UByte>(this.bytes.size)
+            // `Utf8Error.validUpTo` returns the maximum index of validated
+            // UTF-8 bytes. Copy the valid bytes into the output buffer.
+            v.addAll(((this.bytes).subList(0, this.error.validUpTo())))
+            // SAFETY: This is safe because the only bytes present in the buffer
+            // were validated as UTF-8 by the call to `String.fromUtf8` which
+            // produced this `FromUtf8Error`.
+            String.fromUtf8Unchecked(v)
+        }
         val iter = ((this.bytes).subList(this.error.validUpTo(), (this.bytes).size)).utf8Chunks()
         for (chunk in iter) {
             res += chunk.valid()
@@ -2610,9 +2569,7 @@ public open class FromUtf8Error(
      */
     public open fun utf8Error(): Utf8Error = this.error
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.error).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.error).toString()); Result.Ok(Unit) }
 }
 
 /**
@@ -2633,12 +2590,11 @@ public open class FromUtf8Error(
 public open class FromUtf16Error(
     public var kind: FromUtf16ErrorKind,
 ) {
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this.kind) {
             FromUtf16ErrorKind.LoneSurrogate -> "invalid utf-16: lone surrogate found"
             FromUtf16ErrorKind.OddBytes -> "invalid utf-16: odd number of bytes"
         }.fmt(f)
-    }
 }
 
 public sealed class FromUtf16ErrorKind {
@@ -2759,13 +2715,11 @@ public fun <T> T.specToString(): String {
 public fun Char.specToStringChar(): String = this.asStr().toOwned()
 
 public fun Boolean.specToString(): String =
-    String.from(
-        if (this) {
-            "true"
-        } else {
-            "false"
-        },
-    )
+    String.from(if (this) {
+        "true"
+    } else {
+        "false"
+    })
 
 public fun Byte.specToString(): String {
     val SIZE: Int = Byte.MAX_VALUE.ilog10().toInt() + 1
@@ -2971,21 +2925,17 @@ public fun fromVecUByte(string: String): List<UByte> = string.intoBytes()
  */
 public open class IntoChars(
     public var bytes: ArrayDeque<UByte>,
-) : FromCharIterSpec,
-    Iterable<Char> {
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@IntoChars.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : FromCharIterSpec, Iterable<Char> {
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@IntoChars.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IntoChars").field(this.asStr()).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoChars").field(this.asStr()).finish()
 
     /**
      * Views the underlying data as a subslice of the original data.
@@ -3091,28 +3041,23 @@ public open class Drain internal constructor(
      * Current remaining range to remove
      */
     public var iter: Chars,
-) : AsRef<String>,
-    FromCharIterSpec,
-    Iterable<Char> {
+) : AsRef<String>, FromCharIterSpec, Iterable<Char> {
     /**
      * Will be used as &a mut String in the destructor
      */
     public var string: MutPtr = stringCtorArg
         internal set
 
-    override fun iterator(): Iterator<Char> =
-        object : AbstractIterator<Char>() {
-            override fun computeNext() {
-                when (val v = this@Drain.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Char> = object : AbstractIterator<Char>() {
+        override fun computeNext() {
+            when (val v = this@Drain.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Drain").field(this.asStr()).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Drain").field(this.asStr()).finish()
 
     public open fun drop() {
         // Use Vec.drain. "Reaffirm" the bounds checks to avoid
@@ -3163,12 +3108,11 @@ public open class Drain internal constructor(
             start: Int,
             end: Int,
             iter: Chars,
-        ): Drain =
-            Drain(
-                stringCtorArg = string,
-                start = start,
-                end = end,
-                iter = iter,
-            )
+        ): Drain = Drain(
+            stringCtorArg = string,
+            start = start,
+            end = end,
+            iter = iter,
+        )
     }
 }

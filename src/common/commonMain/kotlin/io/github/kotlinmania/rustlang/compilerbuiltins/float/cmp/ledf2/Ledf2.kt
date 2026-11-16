@@ -3,6 +3,4 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.ledf2
 
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.CmpResult
 
-public fun ledf2(a: Double, b: Double): CmpResult =
-    io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp
-        .ledf2(a, b)
+public fun ledf2(a: Double, b: Double): CmpResult = io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp.ledf2(a, b)

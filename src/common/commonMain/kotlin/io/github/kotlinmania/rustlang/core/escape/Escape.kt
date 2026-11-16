@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.escape
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -64,22 +65,15 @@ public fun escapeAscii(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rus
         10u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallN)
         92u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.ReverseSolidus)
         39u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.Apostrophe)
-        34u -> {
-            backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark)
-        }
+        34u -> { backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark) }
         in 0x00..0x1F, 0x7F -> hexEscape(byte)
-        else ->
-            when (
-                val matchVal =
-                    io.github.kotlinmania.rustlang.core.ascii.Char
-                        .fromU8(byte)
-            ) {
-                null -> hexEscape(byte)
-                else -> {
-                    val a = matchVal
-                    verbatim(a)
-                }
+        else -> when (val matchVal = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(byte)) {
+            null -> hexEscape(byte)
+            else -> {
+                val a = matchVal
+                verbatim(a)
             }
+        }
     }
 }
 
@@ -187,12 +181,11 @@ public open class EscapeIterInner<Escaping> internal constructor(
             data: MaybeEscapedCharacter,
             alive: Range<UByte>,
             escaping: Unit,
-        ): EscapeIterInner<Escaping> =
-            EscapeIterInner<Escaping>(
-                data = data,
-                aliveCtorArg = alive,
-                escaping = escaping,
-            )
+        ): EscapeIterInner<Escaping> = EscapeIterInner<Escaping>(
+            data = data,
+            aliveCtorArg = alive,
+            escaping = escaping,
+        )
     }
 }
 
@@ -203,7 +196,7 @@ public val LITERAL_ESCAPE_START: UByte = 128u
  *
  * `data.escapeSeq` must contain an escape sequence in the range given by `alive`.
  */
-public fun <Escaping> EscapeIterInner.Companion.new(data: MaybeEscapedCharacter, alive: Range<UByte>, n: Int): EscapeIterInner<N, Escaping> {
+public fun <Escaping> EscapeIterInner.Companion.new(data: MaybeEscapedCharacter, alive: Range<UByte>, n: Int): EscapeIterInner<Escaping> {
     // Longer escape sequences are not useful given `alive.end` is at most
     // `Self.LITERAL_ESCAPE_START`.
     check(n < EscapeIterInner.LITERAL_ESCAPE_START.toInt())
@@ -213,39 +206,39 @@ public fun <Escaping> EscapeIterInner.Companion.new(data: MaybeEscapedCharacter,
     return EscapeIterInner(data = data, alive = alive, escaping = Unit)
 }
 
-public fun <Escaping> EscapeIterInner.Companion.backslash(c: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): EscapeIterInner<N, Escaping> {
+public fun <Escaping> EscapeIterInner.Companion.backslash(c: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): EscapeIterInner<Escaping> {
     val (escapeSeq, alive) = backslash(c)
     // SAFETY: `escapeSeq` contains an escape sequence in the range given by `alive`.
     return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive)
 }
 
-public fun <Escaping> EscapeIterInner.Companion.ascii(c: UByte, n: Int): EscapeIterInner<N, Escaping> {
+public fun <Escaping> EscapeIterInner.Companion.ascii(c: UByte, n: Int): EscapeIterInner<Escaping> {
     val (escapeSeq, alive) = escapeAscii(c)
     // SAFETY: `escapeSeq` contains an escape sequence in the range given by `alive`.
     return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive)
 }
 
-public fun <Escaping> EscapeIterInner.Companion.unicode(c: Char, n: Int): EscapeIterInner<N, Escaping> {
+public fun <Escaping> EscapeIterInner.Companion.unicode(c: Char, n: Int): EscapeIterInner<Escaping> {
     val (escapeSeq, alive) = escapeUnicode(c)
     // SAFETY: `escapeSeq` contains an escape sequence in the range given by `alive`.
     return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive)
 }
 
-public fun <Escaping> EscapeIterInner.Companion.empty(n: Int): EscapeIterInner<N, Escaping> {
+public fun <Escaping> EscapeIterInner.Companion.empty(n: Int): EscapeIterInner<Escaping> {
     // SAFETY: `0 .. 0` ensures an empty escape sequence.
     return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = List(n) { io.github.kotlinmania.rustlang.core.ascii.Char.Null }), 0 until 0)
 }
 
-public fun <Escaping> EscapeIterInner<N, Escaping>.len(n: Int): Int = Int.from(this.alive.end - this.alive.start)
+public fun <Escaping> EscapeIterInner<Escaping>.len(n: Int): Int = Int.from(this.alive.end - this.alive.start)
 
-public fun <Escaping> EscapeIterInner<N, Escaping>.advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.alive.advanceBy(n)
+public fun <Escaping> EscapeIterInner<Escaping>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.alive.advanceBy(n)
 
-public fun <Escaping> EscapeIterInner<N, Escaping>.advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.alive.advanceBackBy(n)
+public fun <Escaping> EscapeIterInner<Escaping>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.alive.advanceBackBy(n)
 
 /**
  * Returns a `char` if `self.data` contains one in its `literal` variant.
  */
-public fun <Escaping> EscapeIterInner<N, Escaping>.toChar(n: Int): Char? {
+public fun <Escaping> EscapeIterInner<Escaping>.toChar(n: Int): Char? {
     if (this.alive.end > EscapeIterInner.LITERAL_ESCAPE_START) {
         // SAFETY: We just checked that `self.data` contains a `char` in
         // its `literal` variant.
@@ -263,52 +256,43 @@ public fun <Escaping> EscapeIterInner<N, Escaping>.toChar(n: Int): Char? {
  * - `self.data` must contain printable ASCII characters in its `escapeSeq` variant.
  * - `self.alive` must be a valid range for `self.data.escapeSeq`.
  */
-public fun <Escaping> EscapeIterInner<N, Escaping>.toStrUnchecked(n: Int): String {
+public fun <Escaping> EscapeIterInner<Escaping>.toStrUnchecked(n: Int): String {
     if (false) {
         check(this.alive.end <= EscapeIterInner.LITERAL_ESCAPE_START)
     }
     // SAFETY: The caller guarantees `self.data` contains printable ASCII
     // characters in its `escapeSeq` variant, and `self.alive` is
     // a valid range for `self.data.escapeSeq`.
-    return this.data.escapeSeq
-        .getUnchecked(Int.from(this.alive.start) until Int.from(this.alive.end))
-        .asStr()
+    return this.data.escapeSeq.getUnchecked(Int.from(this.alive.start) until Int.from(this.alive.end)).asStr()
 }
 
-public fun EscapeIterInner<N, AlwaysEscaped>.next(n: Int): UByte? {
+public fun EscapeIterInner<AlwaysEscaped>.next(n: Int): UByte? {
     val i = (this.alive.next() ?: return null)
     // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
     // contains printable ASCII characters in its `escapeSeq`
     // variant, and `i` is guaranteed to be a valid index for
     // `self.data.escapeSeq`.
-    return this.data.escapeSeq
-        .getUnchecked(Int.from(i))
-        .toU8()
+    return this.data.escapeSeq.getUnchecked(Int.from(i)).toU8()
 }
 
-public fun EscapeIterInner<N, AlwaysEscaped>.nextBack(n: Int): UByte? {
+public fun EscapeIterInner<AlwaysEscaped>.nextBack(n: Int): UByte? {
     val i = (this.alive.nextBack() ?: return null)
     // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
     // contains printable ASCII characters in its `escapeSeq`
     // variant, and `i` is guaranteed to be a valid index for
     // `self.data.escapeSeq`.
-    return this.data.escapeSeq
-        .getUnchecked(Int.from(i))
-        .toU8()
+    return this.data.escapeSeq.getUnchecked(Int.from(i)).toU8()
 }
 
 // This is the only way to create any `EscapeIterInner` containing a `char` in
 // the `literal` variant of its `self.data`, meaning the `AlwaysEscaped` marker
 // guarantees that `self.data` contains printable ASCII characters in its
 // `escapeSeq` variant.
-public fun EscapeIterInner.Companion.printable(c: Char, n: Int): EscapeIterInner<N, MaybeEscaped> = EscapeIterInner(data = MaybeEscapedCharacter(literal = c), alive = EscapeIterInner.LITERAL_ESCAPE_START until (EscapeIterInner.LITERAL_ESCAPE_START + 1), escaping = Unit)
+public fun EscapeIterInner.Companion.printable(c: Char, n: Int): EscapeIterInner<MaybeEscaped> = EscapeIterInner(data = MaybeEscapedCharacter(literal = c), alive = EscapeIterInner.LITERAL_ESCAPE_START until (EscapeIterInner.LITERAL_ESCAPE_START + 1), escaping = Unit)
 
-public fun EscapeIterInner<N, AlwaysEscaped>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> {
+public fun EscapeIterInner<AlwaysEscaped>.fmt(f: StringBuilder, n: Int): Result<Unit, Unit> {
     // SAFETY: The `AlwaysEscaped` marker guarantees that `self.data`
     // contains printable ASCII chars, and `self.alive` is
     // guaranteed to be a valid range for `self.data`.
-    return run {
-        f.append(this.toStrUnchecked())
-        Result.Ok(Unit)
-    }
+    return run { f.append(this.toStrUnchecked()); Result.Ok(Unit) }
 }

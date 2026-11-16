@@ -107,7 +107,6 @@ public sealed class IntErrorKind {
      * This variant will be constructed when parsing an empty string.
      */
     public data object Empty : IntErrorKind()
-
     /**
      * Contains an invalid digit in its context.
      *
@@ -118,17 +117,14 @@ public sealed class IntErrorKind {
      * either on its own or in the middle of a number.
      */
     public data object InvalidDigit : IntErrorKind()
-
     /**
      * Integer is too large to store in target integer type.
      */
     public data object PosOverflow : IntErrorKind()
-
     /**
      * Integer is too small to store in target integer type.
      */
     public data object NegOverflow : IntErrorKind()
-
     /**
      * Value was Zero
      *
@@ -136,7 +132,6 @@ public sealed class IntErrorKind {
      * has a value of zero, which would be illegal for non-zero types.
      */
     public data object Zero : IntErrorKind()
-
     /**
      * Value is not a power of two.
      *

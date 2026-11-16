@@ -1,6 +1,7 @@
 // port-lint: source thread/main_thread.rs
 package io.github.kotlinmania.rustlang.std.thread.mainthread
 
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.std.thread.id.ThreadId
 // Note however that this also means that the name reported in pre-main functions
 // will be incorrect, but that's just something we have to live with.
 
-public var MAIN: Atomic<ULong> = AtomicU64.new(0)
+public var MAIN: Atomic<ULong, Align8<ULong>> = AtomicU64.new(0)
 
 public fun get(): Any? = ThreadId.fromU64(MAIN.load(Relaxed))
 

@@ -42,7 +42,7 @@ public fun getOrInit(): Any =
  */
 public fun setCurrent(thread: Thread): Result<Unit, Thread> {
     if (((CURRENT.get()).rawAddress.toULong() != (NONE).rawAddress.toULong())) {
-        return Result.Err(thread)
+        return Result.Err<Unit, Thread>(thread)
     }
     run {
         val matchVal = get()
@@ -51,14 +51,14 @@ public fun setCurrent(thread: Thread): Result<Unit, Thread> {
                 val id = matchVal
             }
             matchVal == null -> set(thread.id())
-            else -> { return Result.Err(thread) }
+            else -> { return Result.Err<Unit, Thread>(thread) }
         }
     }
     // Make sure that `rt.threadCleanup` will be run, which will
     // call `dropCurrent`.
     enable()
     CURRENT.set(MutPtr((thread.intoRaw()).rawAddress))
-    return Result.Ok(Unit)
+    return Result.Ok<Unit, Thread>(Unit)
 }
 
 /**

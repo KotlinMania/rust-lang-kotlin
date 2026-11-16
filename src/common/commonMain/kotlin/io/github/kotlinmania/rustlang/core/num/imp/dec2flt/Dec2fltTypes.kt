@@ -14,11 +14,10 @@ public interface Lemire<T> : FloatExt<T> {
      * Maximum exponent for a fast path case, or `⌊(SIG_BITS+1)/log2(5)⌋`
      */
     public val MAX_EXPONENT_FAST_PATH: Long
-        get() =
-            run {
-                val log25 = 3.321928094887362 - 1.0
-                (T.SIG_TOTAL_BITS.toDouble() / log25).toLong()
-            }
+        get() = run {
+        val log25 = 3.321928094887362 - 1.0
+        (T.SIG_TOTAL_BITS.toDouble() / log25).toLong()
+    }
 
     /**
      * Minimum exponent for a fast path case, or `-⌊(SIG_BITS+1)/log2(5)⌋`

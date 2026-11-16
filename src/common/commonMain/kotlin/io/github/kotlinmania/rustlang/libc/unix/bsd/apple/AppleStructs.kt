@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -18,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.unix.GidT
 import io.github.kotlinmania.rustlang.libc.unix.IFNAMSIZ
@@ -7744,9 +7746,7 @@ public class CAnonymousIfkData internal constructor(
         ifkValue = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ifk_data").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifk_data").finishNonExhaustive()
 
     public open fun eq(other: CAnonymousIfkData): Boolean = ((this.ifkPtr).rawAddress.toULong() == (other.ifkPtr).rawAddress.toULong()) && this.ifkValue == other.ifkValue
 
@@ -7812,9 +7812,7 @@ public class CAnonymousIfrIfru internal constructor(
         ifruFunctionalType = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifr_ifru").finishNonExhaustive()
 
     public open fun eq(other: CAnonymousIfrIfru): Boolean = this.ifruAddr == other.ifruAddr && this.ifruDstaddr == other.ifruDstaddr && this.ifruBroadaddr == other.ifruBroadaddr && this.ifruFlags == other.ifruFlags && this.ifruMetrics == other.ifruMetrics && this.ifruMtu == other.ifruMtu && this.ifruPhys == other.ifruPhys && this.ifruMedia == other.ifruMedia && this.ifruIntval == other.ifruIntval && ((this.ifruData).rawAddress.toULong() == (other.ifruData).rawAddress.toULong()) && this.ifruDevmtu == other.ifruDevmtu && this.ifruKpi == other.ifruKpi && this.ifruWakeFlags == other.ifruWakeFlags && this.ifruRouteRefcnt == other.ifruRouteRefcnt && (this.ifruCap.zip(other.ifruCap)).all({ (a, b) -> a == b }) && this.ifruFunctionalType == other.ifruFunctionalType
 
@@ -7897,9 +7895,7 @@ public class CAnonymousIfcIfcu internal constructor(
         ifcuReqCtorArg = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifc_ifcu").finishNonExhaustive()
 
     public open fun eq(other: CAnonymousIfcIfcu): Boolean = ((this.ifcuBuf).rawAddress.toULong() == (other.ifcuBuf).rawAddress.toULong()) && ((this.ifcuReq).rawAddress.toULong() == (other.ifcuReq).rawAddress.toULong())
 
@@ -7953,9 +7949,7 @@ public class CAnonymousIfrIfru6 internal constructor(
         ifruScopeId = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ifr_ifru6").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ifr_ifru6").finishNonExhaustive()
 
     public open fun eq(other: CAnonymousIfrIfru6): Boolean = this.ifruAddr == other.ifruAddr && this.ifruDstaddr == other.ifruDstaddr && this.ifruFlags == other.ifruFlags && this.ifruFlags6 == other.ifruFlags6 && this.ifruMetrics == other.ifruMetrics && this.ifruIntval == other.ifruIntval && ((this.ifruData).rawAddress.toULong() == (other.ifruData).rawAddress.toULong()) && (this.ifruScopeId.zip(other.ifruScopeId)).all({ (a, b) -> a == b })
 
@@ -8022,9 +8016,7 @@ public class Semun internal constructor(
         arrayCtorArg = null,
     )
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "semun").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "semun").finishNonExhaustive()
 
     public open fun eq(other: Semun): Boolean = this.value == other.value
 

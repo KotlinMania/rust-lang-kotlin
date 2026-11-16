@@ -94,7 +94,7 @@ public open class Layout(
     public open fun alignTo(align: Int): Result<Layout, LayoutError> =
         when (val matchVal = Alignment.new(align)) {
             null -> {
-                Result.Err(LayoutError())
+                Result.Err<Layout, LayoutError>(LayoutError())
             }
             else -> {
                 val alignment = matchVal
@@ -226,23 +226,20 @@ public open class Layout(
     public open fun repeat(n: Int): Result<Pair<Layout, Int>, LayoutError> {
         // Note(const-Note): the following could be way shorter with `?`
         val padded = this.padToAlign()
-        val result =
-            (
-                when (val matchVal = n.checkedSub(1)) {
-                    null -> {
-                        if (false) {
-                            check(n == 0)
-                        }
-                        this.repeatPacked(0)
-                    }
-                    else -> {
-                        val k = matchVal
-                        val repeated = padded.repeatPacked(k) ?: return Result.Err(LayoutError())
-                        repeated.extendPacked(this)
-                    }
+        val result = when (val tryResult1 = (when (val matchVal = n.checkedSub(1)) {
+            null -> {
+                if (false) {
+                    check(n == 0)
                 }
-            ) ?: return Result.Err(LayoutError())
-        return Result.Ok(Pair(result, padded.size()))
+                this.repeatPacked(0)
+            }
+            else -> {
+                val k = matchVal
+                val repeated = when (val tryResult = padded.repeatPacked(k)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
+                repeated.extendPacked(this)
+            }
+        })) { is Result.Ok -> tryResult1.value; is Result.Err -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
+        return Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(result, padded.size()))
     }
 
     /**
@@ -295,10 +292,10 @@ public open class Layout(
         return when (val matchVal = Layout.fromSizeAlignment(newSize, newAlignment)) {
             is Ok -> {
                 val layout = matchVal.value
-                Result.Ok(Pair(layout, offset))
+                Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(layout, offset))
             }
             else -> {
-                Result.Err(LayoutError())
+                Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError())
             }
         }
     }
@@ -320,7 +317,7 @@ public open class Layout(
     public open fun repeatPacked(n: Int): Result<Layout, LayoutError> =
         when (val matchVal = this.size.checkedMul(n)) {
             null -> {
-                Result.Err(LayoutError())
+                Result.Err<Layout, LayoutError>(LayoutError())
             }
             else -> {
                 val size = matchVal
@@ -362,9 +359,9 @@ public open class Layout(
         public fun fromSizeAlign(size: Int, align: Int): Result<Layout, LayoutError> =
             if (Layout.isSizeAlignValid(size, align)) {
                 // SAFETY: Layout.isSizeAlignValid checks the preconditions for this call.
-                Result.Ok(Layout(size = size, align = transmute(align)))
+                Result.Ok<Layout, LayoutError>(Layout(size = size, align = transmute(align)))
             } else {
-                Result.Err(LayoutError())
+                Result.Err<Layout, LayoutError>(LayoutError())
             }
 
         public fun isSizeAlignValid(size: Int, align: Int): Boolean {
@@ -405,9 +402,9 @@ public open class Layout(
         public fun fromSizeAlignment(size: Int, alignment: Alignment): Result<Layout, LayoutError> =
             if (Layout.isSizeAlignmentValid(size, alignment)) {
                 // SAFETY: Layout.size invariants checked above.
-                Result.Ok(Layout(size = size, align = alignment))
+                Result.Ok<Layout, LayoutError>(Layout(size = size, align = alignment))
             } else {
-                Result.Err(LayoutError())
+                Result.Err<Layout, LayoutError>(LayoutError())
             }
 
         /**
@@ -441,7 +438,7 @@ public open class Layout(
         /**
          * Constructs a `Layout` suitable for holding a value of type `T`.
          */
-        public fun <T> new(): Layout = T.LAYOUT
+        public fun <T> new(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Layout = Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt())
 
         /**
          * Produces layout describing a record that could be used to
@@ -502,7 +499,7 @@ public open class Layout(
          * On arithmetic overflow or when the total size would exceed
          * `Long.MAX`, returns `LayoutError`.
          */
-        public fun <T> array(n: Int): Result<Layout, LayoutError> {
+        public fun <T> array(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Layout, LayoutError> {
             fun inner(elementLayout: Layout, n1: Int): Result<Layout, LayoutError> {
                 val elementSize = elementLayout.size
                 val alignment = elementLayout.align
@@ -513,7 +510,7 @@ public open class Layout(
                 // That'd usually be a bad idea, but thankfully here the element size
                 // and alignment are constants, so the compiler will fold all of it.
                 if (elementSize != 0 && n1 > Layout.maxSizeForAlignment(alignment) / elementSize) {
-                    return Result.Err(LayoutError())
+                    return Result.Err<Layout, LayoutError>(LayoutError())
                 }
                 // SAFETY: We just checked that we won't overflow `Int` when we multiply.
                 // This is a useless hint inside this function, but after inlining this helps
@@ -523,10 +520,10 @@ public open class Layout(
                 // SAFETY: We just checked above that the `arraySize` will not
                 // exceed `Long.MAX` even when rounded up to the alignment.
                 // And `Alignment` guarantees it's a power of two.
-                return Result.Ok(Layout.fromSizeAlignmentUnchecked(arraySize, alignment))
+                return Result.Ok<Layout, LayoutError>(Layout.fromSizeAlignmentUnchecked(arraySize, alignment))
             }
             // Reduce the amount of code we need to monomorphize per `T`.
-            return inner(T.LAYOUT, n)
+            return inner(Layout.fromSizeAlignUnchecked((typeLayoutT).sizeBytes.toInt(), (typeLayoutT).alignBytes.toInt()), n)
         }
     }
 }
@@ -543,11 +540,7 @@ public open class LayoutError {
     public open fun clone(): LayoutError = LayoutError()
 
     // (we need this for downstream impl of trait Error)
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append("invalid parameters to Layout::from_size_align")
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("invalid parameters to Layout::from_size_align"); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<LayoutError> =

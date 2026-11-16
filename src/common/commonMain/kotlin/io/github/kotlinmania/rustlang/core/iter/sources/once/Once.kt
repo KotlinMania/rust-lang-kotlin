@@ -60,27 +60,21 @@ public fun <T> once(value: T): Once<T> = Once(inner = value.intoIter())
  */
 public open class Once<T>(
     public var inner: IntoIter<T>,
-) : TrustedLen<Once<T>>,
-    Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Once.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<Once<T>>, Iterable<T> {
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Once.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Once<T> = Once(inner)
 
     public override fun next(): T? = this.inner.removeFirstOrNull()
 
-    public override fun sizeHint(): Pair<Int, Int?> =
-        run {
-            val n = this.inner.size
-            Pair(n, n)
-        }
+    public override fun sizeHint(): Pair<Int, Int?> = run { val n = this.inner.size; Pair(n, n) }
 
     public open fun nextBack(): T? = this.inner.removeLastOrNull()
 

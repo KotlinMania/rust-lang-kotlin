@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -78,7 +79,7 @@ public val OUTPUT_CAPTURE: LocalKey<Cell<LocalStream?>> = threadLocalInner(key, 
  * the same thread*. Within the same thread, things always have a perfectly
  * consistent order. So Ordering.Relaxed is fine.
  */
-public var OUTPUT_CAPTURE_USED: Atomic<Boolean> = AtomicBool.new(false)
+public var OUTPUT_CAPTURE_USED: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(false)
 
 /**
  * A handle to a raw instance of the standard input stream of this process.
@@ -105,14 +106,14 @@ public open class StdinRaw(
 
     public open fun readExact(buf: MutableList<UByte>): Result<Unit, Error> {
         if (buf.isEmpty()) {
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, Error>(Unit)
         }
         return handleEbadf(this.value.readExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
 
     public open fun readBufExact(buf: BorrowedCursor<UByte>): Result<Unit, Error> {
         if (buf.capacity() == 0) {
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, Error>(Unit)
         }
         return handleEbadf(this.value.readBufExact(buf), { Result.Err(io.github.kotlinmania.rustlang.std.io.Error.READ_EXACT_EOF) })
     }
@@ -225,8 +226,8 @@ public fun stderrRaw(): StderrRaw = StderrRaw(Stdio.Stderr.new())
 
 public fun <T> handleEbadf(r: Result<T, Error>, default: () -> Result<T, Error>): Result<T, Error> =
     when {
-        r is Result.Err<*, *> && Stdio.isEbadf((r as Result.Err<*, *>).error) -> {
-            val e = (r as Result.Err<*, *>).error
+        r is Result.Err && Stdio.isEbadf((r as Result.Err).error) -> {
+            val e = r.error
             default()
         }
         else -> {
@@ -368,9 +369,7 @@ public open class Stdin internal constructor(
      */
     public open fun lines(): Lines<StdinLock> = this.lock().lines()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Stdin").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Stdin").finishNonExhaustive()
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.lock().read(buf)
 
@@ -475,9 +474,7 @@ public open class StdinLock internal constructor(
 
     public open fun readLine(buf: String): Result<Int, Error> = this.inner.readLine(buf)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "StdinLock").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "StdinLock").finishNonExhaustive()
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -608,9 +605,7 @@ public open class Stdout internal constructor(
         return StdoutLock(inner = this.inner.lock())
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Stdout").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Stdout").finishNonExhaustive()
 
     public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
@@ -679,9 +674,7 @@ public open class StdoutLock internal constructor(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "StdoutLock").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "StdoutLock").finishNonExhaustive()
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -841,9 +834,7 @@ public open class Stderr internal constructor(
         return StderrLock(inner = this.inner.lock())
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Stderr").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "Stderr").finishNonExhaustive()
 
     public open fun write(buf: List<UByte>): Result<Int, Error> = (this).write(buf)
 
@@ -905,9 +896,7 @@ public open class StderrLock internal constructor(
 
     public open fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit, Error> = this.inner.borrowMut().writeAllVectored(bufs)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "StderrLock").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "StderrLock").finishNonExhaustive()
 
     public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
 
@@ -983,7 +972,7 @@ public fun setOutputCapture(sink: LocalStream?): LocalStream? = trySetOutputCapt
 public fun trySetOutputCapture(sink: LocalStream?): Result<LocalStream?, AccessError> {
     if (sink == null && !OUTPUT_CAPTURE_USED.load(Ordering.Relaxed)) {
         // OUTPUT_CAPTURE is definitely None since OUTPUT_CAPTURE_USED is false.
-        return Result.Ok(null)
+        return Result.Ok<LocalStream?, AccessError>(null)
     }
     OUTPUT_CAPTURE_USED.store(true, Ordering.Relaxed)
     return OUTPUT_CAPTURE.tryWith({ slot -> slot.replace(sink) })

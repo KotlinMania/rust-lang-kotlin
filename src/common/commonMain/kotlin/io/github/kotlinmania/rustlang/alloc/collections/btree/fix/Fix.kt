@@ -24,35 +24,35 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeThroughParent(alloc: A): Result<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>> {
     val len = this.len()
     return if (len >= MIN_LEN) {
-        Result.Ok(null)
+        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
     } else {
         run {
             val matchVal = this.chooseParentKv()
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value is Left -> {
+                matchVal is Result.Ok && matchVal.value is Left -> {
                     if (leftParentKv.canMerge()) {
                         val parent = leftParentKv.mergeTrackingParent(alloc)
-                        Result.Ok(parent)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent)
                     } else {
                         leftParentKv.bulkStealLeft(MIN_LEN - len)
-                        Result.Ok(null)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
-                matchVal is Result.Ok<*, *> && matchVal.value is Right -> {
+                matchVal is Result.Ok && matchVal.value is Right -> {
                     if (rightParentKv.canMerge()) {
                         val parent1 = rightParentKv.mergeTrackingParent(alloc)
-                        Result.Ok(parent1)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent1)
                     } else {
                         rightParentKv.bulkStealRight(MIN_LEN - len)
-                        Result.Ok(null)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
                 else -> {
-                    val root = (matchVal as Result.Err<*, *>).error
+                    val root = matchVal.error
                     if (len > 0) {
-                        Result.Ok(null)
+                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     } else {
-                        Result.Err(root)
+                        Result.Err<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(root)
                     }
                 }
             }
@@ -74,14 +74,12 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
         run {
             val matchVal = this.fixNodeThroughParent(alloc.clone())
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value != null -> this = parent.forgetType()
-                matchVal is Result.Ok<*, *> && matchVal.value == null -> {
-                    val None = (matchVal as Result.Ok<*, *>).value
+                matchVal is Result.Ok && matchVal.value != null -> this = parent.forgetType()
+                matchVal is Result.Ok && matchVal.value == null -> {
+                    val None = matchVal.value
                     return true
                 }
-                else -> {
-                    return false
-                }
+                else -> { return false }
             }
         }
     }

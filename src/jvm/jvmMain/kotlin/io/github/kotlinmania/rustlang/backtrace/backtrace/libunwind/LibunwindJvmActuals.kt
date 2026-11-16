@@ -3,7 +3,7 @@
 package io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.libc.UintptrT
+import io.github.kotlinmania.rustlang.libc.unix.UintptrT
 
 private object BacktraceLibunwindJniBridge {
     init {
@@ -45,10 +45,7 @@ private object BacktraceLibunwindJniBridge {
         val stream = BacktraceLibunwindJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted =
-                java.nio.file.Files
-                    .createTempFile("kmcore_jni-", suffix)
-                    .toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->

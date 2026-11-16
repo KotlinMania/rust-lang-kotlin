@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge.client
 
 import io.github.kotlinmania.rustlang.core.cell.RefCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -68,9 +69,7 @@ public open class Span(
         this.handle.encode(w, s)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append(Methods.spanDebug(this))
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(Methods.spanDebug(this)); Result.Ok(Unit) }
 
     public companion object {
         public fun <S> decode(r: List<UByte>, s: S): Span = Span(handle = Handle.Handle.decode(r, s))

@@ -209,18 +209,18 @@ public interface Write<T> {
             run {
                 val matchVal = this.write(buf1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
                         return Result.Err(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*, *> -> {
-                        val n = (matchVal as Result.Ok<*, *>).value
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
                         buf1 = ((buf1).subList(n, (buf1).size))
                     }
-                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                        val e1 = matchVal.error
                         return Result.Err(e1)
                     }
                 }
@@ -281,18 +281,18 @@ public interface Write<T> {
             run {
                 val matchVal = this.writeVectored(bufs)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
+                    matchVal is Result.Ok && matchVal.value == 0 -> {
                         return Result.Err(Error.WRITE_ALL_EOF)
                     }
-                    matchVal is Result.Ok<*, *> -> {
-                        val n = (matchVal as Result.Ok<*, *>).value
+                    matchVal is Result.Ok -> {
+                        val n = matchVal.value
                         IoSlice.advanceSlices(bufs, n)
                     }
-                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                        val e = matchVal.error
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                        val e1 = matchVal.error
                         return Result.Err(e1)
                     }
                 }
@@ -388,39 +388,32 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: fmt.Arguments): Resu
         public var inner: T,
         public var error: Result<Unit>,
     ) : Appendable {
-        public open fun writeStr(s: String) {
+        public open fun writeStr(s: String): Result<Unit, Error> =
             run {
                 val matchVal = this.inner.writeAll(s.encodeToByteArray().map { it.toUByte() })
-                when (matchVal) {
-                    is Result.Ok<*, *> -> {
-                        Unit
-                    }
-                    is Result.Err<*, *> -> {
-                        val e = matchVal.error
-                        this.error = Result.Err(e)
-                        Result.Err(fmt.Error)
-                    }
-                }
+                when (matchVal) { is Result.Ok -> {
+                    Result.Ok<Unit, Error>(Unit)
+                }; is Result.Err -> {
+                    val e = matchVal.error
+                    this.error = Result.Err<Unit, Error>(e)
+                    Result.Err<Unit, Error>(fmt.Error)
+                } }
             }
-        }
     }
     val output = Adapter(inner = thisRef, error = Result.Ok(Unit))
     return run {
         val matchVal = fmt.Write(output, args)
-        when (matchVal) {
-            is Result.Ok<*, *> -> {
-                Result.Ok(Unit)
+        when (matchVal) { is Result.Ok -> {
+            Result.Ok(Unit)
+        }; is Result.Err -> {
+            // Check whether the error came from the underlying `Write`.
+            if (output.error.isErr()) {
+                output.error
+            } else {
+                // This shouldn't happen: the underlying stream did not error,
+                // but somehow the formatter still errored?
+                error("a formatting trait implementation returned an error when the underlying stream did not")
             }
-            is Result.Err<*, *> -> {
-                // Check whether the error came from the underlying `Write`.
-                if (output.error.isErr()) {
-                    output.error
-                } else {
-                    // This shouldn't happen: the underlying stream did not error,
-                    // but somehow the formatter still errored?
-                    error("a formatting trait implementation returned an error when the underlying stream did not")
-                }
-            }
-        }
+        } }
     }
 }

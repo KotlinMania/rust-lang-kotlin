@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.replace
@@ -13,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // A doubly-linked list with owned nodes.
@@ -138,22 +140,20 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public open fun popFrontNode(): Node<T>? {
         // SAFETY: This method takes care not to create mutable references to
         // whole nodes, to maintain validity of aliasing pointers into `element`.
-        return this.head?.let({ node ->
-            run {
-                val node1 = Box.fromRawIn(node.asPtr(), this.alloc)
-                this.head = node1.next
-                when (val matchVal = this.head) {
-                    null -> this.tail = null
-                    // Not creating new mutable (unique!) references overlapping `element`.
-                    else -> {
-                        val head = matchVal
-                        head.asPtr().prev = null
-                    }
+        return this.head?.let({ node -> run {
+            val node1 = Box.fromRawIn(node.asPtr(), this.alloc)
+            this.head = node1.next
+            when (val matchVal = this.head) {
+                null -> this.tail = null
+                // Not creating new mutable (unique!) references overlapping `element`.
+                else -> {
+                    val head = matchVal
+                    head.asPtr().prev = null
                 }
-                this.len -= 1
-                node1
             }
-        })
+            this.len -= 1
+            node1
+        } })
     }
 
     /**
@@ -189,22 +189,20 @@ public open class LinkedList<T, A : Allocator> internal constructor(
     public open fun popBackNode(): Node<T>? {
         // SAFETY: This method takes care not to create mutable references to
         // whole nodes, to maintain validity of aliasing pointers into `element`.
-        return this.tail?.let({ node ->
-            run {
-                val node1 = Box.fromRawIn(node.asPtr(), this.alloc)
-                this.tail = node1.prev
-                when (val matchVal = this.tail) {
-                    null -> this.head = null
-                    // Not creating new mutable (unique!) references overlapping `element`.
-                    else -> {
-                        val tail = matchVal
-                        tail.asPtr().next = null
-                    }
+        return this.tail?.let({ node -> run {
+            val node1 = Box.fromRawIn(node.asPtr(), this.alloc)
+            this.tail = node1.prev
+            when (val matchVal = this.tail) {
+                null -> this.head = null
+                // Not creating new mutable (unique!) references overlapping `element`.
+                else -> {
+                    val tail = matchVal
+                    tail.asPtr().next = null
                 }
-                this.len -= 1
-                node1
             }
-        })
+            this.len -= 1
+            node1
+        } })
     }
 
     /**
@@ -1077,16 +1075,7 @@ public open class LinkedList<T, A : Allocator> internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        object {
-            val entries = mutableListOf<Any?>()
-            fun entry(v: Any?) = apply { entries.add(v) }
-            fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }
-            fun finish() {
-                f.append(entries.joinToString(", ", "[", "]"))
-            }
-        }.entries(this).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this).finish()
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1104,14 +1093,13 @@ public open class LinkedList<T, A : Allocator> internal constructor(
             len: Int,
             alloc: A,
             marker: Unit,
-        ): LinkedList<T, A> =
-            LinkedList<T, A>(
-                headCtorArg = head,
-                tailCtorArg = tail,
-                len = len,
-                alloc = alloc,
-                marker = marker,
-            )
+        ): LinkedList<T, A> = LinkedList<T, A>(
+            headCtorArg = head,
+            tailCtorArg = tail,
+            len = len,
+            alloc = alloc,
+            marker = marker,
+        )
 
         /**
          * Constructs an empty `LinkedList<T, A>`.
@@ -1150,12 +1138,11 @@ public open class Node<T> internal constructor(
             next: NonNull?,
             prev: NonNull?,
             element: T,
-        ): Node<T> =
-            Node<T>(
-                nextCtorArg = next,
-                prevCtorArg = prev,
-                element = element,
-            )
+        ): Node<T> = Node<T>(
+            nextCtorArg = next,
+            prevCtorArg = prev,
+            element = element,
+        )
 
         public fun <T> new(element: T): Node<T> = Node(next = null, prev = null, element = element)
     }
@@ -1172,27 +1159,23 @@ public open class Iter<T> internal constructor(
     tailCtorArg: NonNull?,
     public var len: Int,
     public var marker: Unit,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var head: NonNull? = headCtorArg
         internal set
 
     public var tail: NonNull? = tailCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Iter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Iter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Iter").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global, marker = Unit)).field(this.len).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Iter").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global(), marker = Unit)).field(this.len).finish()
 
     // Note(#26925) Remove in favor of `@derive(Clone)`
     public open fun clone(): Iter<T> = Iter(this.head, this.tail, this.len, this.marker).copy()
@@ -1239,13 +1222,12 @@ public open class Iter<T> internal constructor(
             tail: NonNull?,
             len: Int,
             marker: Unit,
-        ): Iter<T> =
-            Iter<T>(
-                headCtorArg = head,
-                tailCtorArg = tail,
-                len = len,
-                marker = marker,
-            )
+        ): Iter<T> = Iter<T>(
+            headCtorArg = head,
+            tailCtorArg = tail,
+            len = len,
+            marker = marker,
+        )
 
         /**
          * Creates an empty `linkedList.Iter`.
@@ -1272,27 +1254,23 @@ public open class IterMut<T> internal constructor(
     tailCtorArg: NonNull?,
     public var len: Int,
     public var marker: Unit,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var head: NonNull? = headCtorArg
         internal set
 
     public var tail: NonNull? = tailCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IterMut.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IterMut.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IterMut").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global, marker = Unit)).field(this.len).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IterMut").field(LinkedList(head = this.head, tail = this.tail, len = this.len, alloc = Global(), marker = Unit)).field(this.len).finish()
 
     public open fun next(): T? {
         if (this.len == 0) {
@@ -1336,13 +1314,12 @@ public open class IterMut<T> internal constructor(
             tail: NonNull?,
             len: Int,
             marker: Unit,
-        ): IterMut<T> =
-            IterMut<T>(
-                headCtorArg = head,
-                tailCtorArg = tail,
-                len = len,
-                marker = marker,
-            )
+        ): IterMut<T> = IterMut<T>(
+            headCtorArg = head,
+            tailCtorArg = tail,
+            len = len,
+            marker = marker,
+        )
 
         public fun <T> default(): IterMut<T> = IterMut(head = null, tail = null, len = 0, marker = Default.default())
     }
@@ -1358,26 +1335,22 @@ public open class IterMut<T> internal constructor(
  */
 public open class IntoIter<T, A : Allocator> internal constructor(
     listCtorArg: LinkedList<T, A>,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IntoIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IntoIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IntoIter<T, A> = IntoIter(list)
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IntoIter").field(this.list).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.list).finish()
 
     public open fun next(): T? = this.list.removeFirstOrNull()
 
@@ -1388,17 +1361,16 @@ public open class IntoIter<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             list: LinkedList<T, A>,
-        ): IntoIter<T, A> =
-            IntoIter<T, A>(
-                listCtorArg = list,
-            )
+        ): IntoIter<T, A> = IntoIter<T, A>(
+            listCtorArg = list,
+        )
     }
 }
 
 /**
  * Creates an empty `LinkedList<T>`.
  */
-public fun <T> defaultLinkedListT(): LinkedList<T> = LinkedList.new()
+public fun <T> defaultLinkedListT(): LinkedList<T, Global> = LinkedList.new()
 
 /**
  * Creates an empty `LinkedList`.
@@ -1411,7 +1383,7 @@ public fun <T> defaultLinkedListT(): LinkedList<T> = LinkedList.new()
  * val list: LinkedList<UInt> = LinkedList.new()
  * ```
  */
-public fun <T> LinkedList.Companion.new(): LinkedList<T> = LinkedList(head = null, tail = null, len = 0, alloc = Global, marker = Unit)
+public fun <T> LinkedList.Companion.new(): LinkedList<T, Global> = LinkedList(head = null, tail = null, len = 0, alloc = Global(), marker = Unit)
 
 /**
  * Moves all elements from `other` to the end of the list.
@@ -1440,7 +1412,7 @@ public fun <T> LinkedList.Companion.new(): LinkedList<T> = LinkedList(head = nul
  * check(list2.isEmpty())
  * ```
  */
-public fun <T> LinkedList<T>.append(other: LinkedList<T>) {
+public fun <T> LinkedList<T, Global>.append(other: LinkedList<T, Global>) {
     when (val matchVal = this.tail) {
         null -> swap(this, other)
         else -> {
@@ -1493,9 +1465,7 @@ public open class Cursor<T, A : Allocator> internal constructor(
         return Cursor(index = index, current = current, list = list)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Cursor").field(this.list).field(this.index()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Cursor").field(this.list).field(this.index()).finish()
 
     /**
      * Returns the cursor position index within the `LinkedList`.
@@ -1643,12 +1613,11 @@ public open class Cursor<T, A : Allocator> internal constructor(
             index: Int,
             current: NonNull?,
             list: LinkedList<T, A>,
-        ): Cursor<T, A> =
-            Cursor<T, A>(
-                index = index,
-                currentCtorArg = current,
-                listCtorArg = list,
-            )
+        ): Cursor<T, A> = Cursor<T, A>(
+            index = index,
+            currentCtorArg = current,
+            listCtorArg = list,
+        )
     }
 }
 
@@ -1675,9 +1644,7 @@ public open class CursorMut<T, A : Allocator> internal constructor(
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "CursorMut").field(this.list).field(this.index()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "CursorMut").field(this.list).field(this.index()).finish()
 
     /**
      * Returns the cursor position index within the `LinkedList`.
@@ -2108,12 +2075,11 @@ public open class CursorMut<T, A : Allocator> internal constructor(
             index: Int,
             current: NonNull?,
             list: LinkedList<T, A>,
-        ): CursorMut<T, A> =
-            CursorMut<T, A>(
-                index = index,
-                currentCtorArg = current,
-                listCtorArg = list,
-            )
+        ): CursorMut<T, A> = CursorMut<T, A>(
+            index = index,
+            currentCtorArg = current,
+            listCtorArg = list,
+        )
     }
 }
 
@@ -2125,7 +2091,7 @@ public open class CursorMut<T, A : Allocator> internal constructor(
  * If the cursor is pointing at the "ghost" non-element then the new elements are
  * inserted at the start of the `LinkedList`.
  */
-public fun <T> CursorMut<T>.spliceAfter(list: LinkedList<T>) {
+public fun <T> CursorMut<T, Global>.spliceAfter(list: LinkedList<T, Global>) {
     val (spliceHead, spliceTail, spliceLen) = list.detachAllNodes() ?: return
     // SAFETY:
     // * If `self.current` is `Some`, then `node` is a pointer to a live node in `list`
@@ -2159,7 +2125,7 @@ public fun <T> CursorMut<T>.spliceAfter(list: LinkedList<T>) {
  * If the cursor is pointing at the "ghost" non-element then the new elements are
  * inserted at the end of the `LinkedList`.
  */
-public fun <T> CursorMut<T>.spliceBefore(list: LinkedList<T>) {
+public fun <T> CursorMut<T, Global>.spliceBefore(list: LinkedList<T, Global>) {
     val (spliceHead, spliceTail, spliceLen) =
         run {
             val matchVal = list.detachAllNodes()
@@ -2168,9 +2134,7 @@ public fun <T> CursorMut<T>.spliceBefore(list: LinkedList<T>) {
                     val parts = matchVal
                     parts
                 }
-                else -> {
-                    return
-                }
+                else -> { return }
             }
         }
     // SAFETY:
@@ -2214,15 +2178,14 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
     public var it: NonNull? = itCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@ExtractIf.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@ExtractIf.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): T? {
         while (this.it != null) {
@@ -2243,10 +2206,10 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = Pair(0, this.oldLen - this.idx)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // SAFETY: If `node` is `Some`, then `node` is a pointer to a live node in `list`.
         val peek = this.it?.let({ node -> node.asRef().element })
-        DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive()
+        return DebugStruct(f, "ExtractIf").field("peek", peek).finishNonExhaustive()
     }
 
     public companion object {
@@ -2256,14 +2219,13 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
             pred: F,
             idx: Int,
             oldLen: Int,
-        ): ExtractIf<T, F, A> =
-            ExtractIf<T, F, A>(
-                listCtorArg = list,
-                itCtorArg = it,
-                pred = pred,
-                idx = idx,
-                oldLen = oldLen,
-            )
+        ): ExtractIf<T, F, A> = ExtractIf<T, F, A>(
+            listCtorArg = list,
+            itCtorArg = it,
+            pred = pred,
+            idx = idx,
+            oldLen = oldLen,
+        )
     }
 }
 
@@ -2277,19 +2239,19 @@ public open class ExtractIf<T, F, A : Allocator> internal constructor(
  * check(iter.len() == 0)
  * ```
  */
-public fun <T> defaultIntoIterT(): IntoIter<T> = LinkedList.new().intoIter()
+public fun <T> defaultIntoIterT(): IntoIter<T, Global> = LinkedList.new().intoIter()
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterLinkedListT(iter: I): LinkedList<T> {
-    val list: LinkedList<T> = LinkedList.new()
+public fun <T, I : Iterable<T>> fromIteratorFromIterLinkedListT(iter: I): LinkedList<T, Global> {
+    val list: LinkedList<T, Global>  = LinkedList.new()
     list.extend(iter)
     return list
 }
 
-public fun <Item, IntoIter, I, A : Allocator> LinkedList<I.Item, A>.specExtend(iter: I) {
+public fun <Item, IntoIter, I, A : Allocator> LinkedList<Item, A>.specExtend(iter: I) {
     iter.iterator().forEach({ elt -> this.addLast(elt) })
 }
 
-public fun <T> LinkedList<T>.specExtend(other: LinkedList<T>) {
+public fun <T> LinkedList<T, Global>.specExtend(other: LinkedList<T, Global>) {
     this.append(other)
 }
 
@@ -2304,11 +2266,11 @@ public fun <T> LinkedList<T>.specExtend(other: LinkedList<T>) {
  * check(list1 == list2)
  * ```
  */
-public fun <T> fromLinkedListT(arr: List<T>, n: Int): LinkedList<T> = LinkedList.fromIter(arr)
+public fun <T> fromLinkedListT(arr: List<T>, n: Int): LinkedList<T, Global> = LinkedList.fromIter(arr)
 
 // Ensure that `LinkedList` and its read-only iterators are covariant in their type parameters.
 public fun assertCovariance() {
-    fun a(x: LinkedList<String>): LinkedList<String> = x
+    fun a(x: LinkedList<String, Global>): LinkedList<String, Global> = x
     fun b(x: Iter<String>): Iter<String> = x
-    fun c(x: IntoIter<String>): IntoIter<String> = x
+    fun c(x: IntoIter<String, Global>): IntoIter<String, Global> = x
 }

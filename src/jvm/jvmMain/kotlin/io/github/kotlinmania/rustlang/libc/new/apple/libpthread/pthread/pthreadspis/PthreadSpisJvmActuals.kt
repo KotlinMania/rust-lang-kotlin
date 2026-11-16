@@ -47,10 +47,7 @@ private object NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge {
         val stream = NewAppleLibpthreadPthreadPthreadspisPthreadSpisJniBridge::class.java.classLoader?.getResourceAsStream(resourcePath)
         if (stream != null) {
             val suffix = "." + libFileName.substringAfterLast('.')
-            val extracted =
-                java.nio.file.Files
-                    .createTempFile("kmcore_jni-", suffix)
-                    .toFile()
+            val extracted = java.nio.file.Files.createTempFile("kmcore_jni-", suffix).toFile()
             extracted.deleteOnExit()
             stream.use { input ->
                 extracted.outputStream().use { output ->

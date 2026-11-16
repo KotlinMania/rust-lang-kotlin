@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Occupied
@@ -40,7 +39,7 @@ import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.scope
 import io.github.kotlinmania.rustlang.std.thread.scoped.ScopedJoinHandle
 
-public typealias HM = HashMap<Int, Int>
+public typealias HM = HashMap<Int, Int, DefaultHashBuilder, Global>
 
 public typealias Hasher = DefaultHasher
 
@@ -102,13 +101,13 @@ public open class MyAlloc(
     public open fun clone(): MyAlloc = MyAlloc(inner)
 
     public override fun allocate(layout: Layout): Result<NonNull, AllocError> {
-        val g = Global
+        val g = io.github.kotlinmania.rustlang.alloc.alloc.Global()
         return g.allocate(layout)
     }
 
     public override fun deallocate(ptr: NonNull, layout: Layout) {
         run {
-            val g = Global
+            val g = io.github.kotlinmania.rustlang.alloc.alloc.Global()
             g.deallocate(ptr, layout)
         }
     }
@@ -189,7 +188,7 @@ public open class CheckedCloneDrop<T>(
  * to distinguish between a test panic and an error in the input data.
  */
 public fun <I, T, A> getTestMap(iter: I, fn: (ULong) -> T, alloc: A, cloneIFn: (I) -> I = { it }): Result<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String> where I : Iterator<Pair<Boolean, Boolean>>, A : Allocator {
-    val map: HashMap<ULong, CheckedCloneDrop<T>, A>  = HashMap.withCapacityIn(iter.sizeHint().first, alloc)
+    val map: HashMap<ULong, CheckedCloneDrop<T>, A, Global>  = HashMap.withCapacityIn(iter.sizeHint().first, alloc)
     run {
         var guard =
             Guard(map, { map1 ->
@@ -201,7 +200,7 @@ public fun <I, T, A> getTestMap(iter: I, fn: (ULong) -> T, alloc: A, cloneIFn: (
         // Hash and Key must be equal to each other for controlling the elements placement.
         for ((panicInClone, panicInDrop) in cloneIFn(iter)) {
             if (true && panicInDrop) {
-                return Result.Err("panic_in_drop can be set with a type that doesn't need to be dropped")
+                return Result.Err<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String>("panic_in_drop can be set with a type that doesn't need to be dropped")
             }
             guard.table.insert(count, Pair(count, CheckedCloneDrop.new(panicInClone, panicInDrop, fn(count))), { (k, _) -> k })
             count += 1
@@ -210,22 +209,22 @@ public fun <I, T, A> getTestMap(iter: I, fn: (ULong) -> T, alloc: A, cloneIFn: (
         var checkCount = 0
         for ((key, value, panicInClone1, panicInDrop1) in (guard.iter().zip(iter))) {
             if (key != checkCount) {
-                return Result.Err("key != check_count,\nkey: `$key`,\ncheck_count: `$checkCount`")
+                return Result.Err<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String>("key != check_count,\nkey: `$key`,\ncheck_count: `$checkCount`")
             }
             if (value.dropped || value.panicInClone != panicInClone1 || value.panicInDrop != panicInDrop1 || value.data != fn(checkCount)) {
-                return Result.Err("Value is not equal to expected,\nvalue: `$value`,\nexpected: `CheckedCloneDrop { panic_in_clone: $panicInClone1, panic_in_drop: $panicInDrop1, dropped: false, data: ${fn(checkCount)} }`")
+                return Result.Err<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String>("Value is not equal to expected,\nvalue: `$value`,\nexpected: `CheckedCloneDrop { panic_in_clone: $panicInClone1, panic_in_drop: $panicInDrop1, dropped: false, data: ${fn(checkCount)} }`")
             }
             checkCount += 1
         }
         if (guard.len() != checkCount.toInt()) {
-            return Result.Err("map.len() != check_count,\nmap.len(): `${guard.len()}`,\ncheck_count: `$checkCount`")
+            return Result.Err<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String>("map.len() != check_count,\nmap.len(): `${guard.len()}`,\ncheck_count: `$checkCount`")
         }
         if (count != checkCount) {
-            return Result.Err("count != check_count,\ncount: `$count`,\ncheck_count: `$checkCount`")
+            return Result.Err<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String>("count != check_count,\ncount: `$count`,\ncheck_count: `$checkCount`")
         }
         forget(guard)
     }
-    return Result.Ok(map)
+    return Result.Ok<HashMap<ULong, CheckedCloneDrop<T>, DefaultHashBuilder, A>, String>(map)
 }
 
 public val DISARMED: Boolean = false
@@ -409,13 +408,13 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testEmptyRemove() {
-        val m: HashMap<Int, Boolean>  = HashMap.new()
+        val m: HashMap<Int, Boolean, DefaultHashBuilder, Global>  = HashMap.new()
         check(m.remove(0) == null)
     }
 
     @kotlin.test.Test
     public fun testEmptyEntry() {
-        val m: HashMap<Int, Boolean>  = HashMap.new()
+        val m: HashMap<Int, Boolean, DefaultHashBuilder, Global>  = HashMap.new()
         when (val matchVal = m.entry(0)) {
             is Occupied -> error("panic")
             is Vacant -> {}
@@ -426,7 +425,7 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testEmptyEntryRef() {
-        val m: HashMap<String, Boolean>  = HashMap.new()
+        val m: HashMap<String, Boolean, DefaultHashBuilder, Global>  = HashMap.new()
         when (val matchVal = m.entryRef("poneyland")) {
             is EntryRef.Occupied -> error("panic")
             is EntryRef.Vacant -> {}
@@ -437,7 +436,7 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testEmptyIter() {
-        val m: HashMap<Int, Boolean>  = HashMap.new()
+        val m: HashMap<Int, Boolean, DefaultHashBuilder, Global>  = HashMap.new()
         check(m.drain().next() == null)
         check(m.keys().next() == null)
         check(m.values().next() == null)
@@ -515,7 +514,7 @@ public class MapTestMapInlineTests {
             }
         }
         check(m.get(5) == new)
-        val hashmap: HashMap<Int, String>  = HashMap.default()
+        val hashmap: HashMap<Int, String, DefaultHashBuilder, Global>  = HashMap.default()
         val key = 1
         val result = hashmap.get(key)
         check(result == null)
@@ -699,7 +698,7 @@ public class MapTestMapInlineTests {
     @kotlin.test.Test
     public fun testShow() {
         val map = HashMap.new()
-        val empty: HashMap<Int, Int> = HashMap.new()
+        val empty: HashMap<Int, Int, DefaultHashBuilder, Global> = HashMap.new()
         map.insert(1, 2)
         map.insert(3, 4)
         val mapStr = "$map"
@@ -1085,7 +1084,7 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testVacantEntryRefKey() {
-        val a: HashMap<String, String>  = HashMap.new()
+        val a: HashMap<String, String, DefaultHashBuilder, Global>  = HashMap.new()
         val key = "hello there"
         val value = "value goes here"
         check(a.isEmpty())
@@ -1196,7 +1195,7 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testRetain() {
-        val map: HashMap<Int, Int>  = (0 until 100).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
+        val map: HashMap<Int, Int, DefaultHashBuilder, Global>  = (0 until 100).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
         map.retain({ k -> k % 2 == 0 })
         check(map.len() == 50)
         check(map[2] == 20)
@@ -1207,7 +1206,7 @@ public class MapTestMapInlineTests {
     @kotlin.test.Test
     public fun testExtractIf() {
         run {
-            val map: HashMap<Int, Int>  = (0 until 8).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
+            val map: HashMap<Int, Int, DefaultHashBuilder, Global>  = (0 until 8).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
             val drained = map.extractIf({ k -> k % 2 == 0 })
             val out = drained.collect<Vec>()
             out.sortUnstable()
@@ -1215,7 +1214,7 @@ public class MapTestMapInlineTests {
             check(map.len() == 4)
         }
         run {
-            val map1: HashMap<Int, Int>  = (0 until 8).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
+            val map1: HashMap<Int, Int, DefaultHashBuilder, Global>  = (0 until 8).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
             map1.extractIf({ k -> k % 2 == 0 }).forEach(drop)
             check(map1.len() == 4)
         }
@@ -1225,32 +1224,32 @@ public class MapTestMapInlineTests {
     @kotlin.test.Test
     public fun testTryReserve() {
         val MAX_ISIZE: Int = Int.MAX_VALUE
-        val emptyBytes: HashMap<UByte, UByte>  = HashMap.new()
+        val emptyBytes: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
         run {
             val matchVal = emptyBytes.tryReserve(Int.MAX_VALUE)
-            if (matchVal is Result.Err<*, *> && matchVal.error == CapacityOverflow) {} else {
+            if (matchVal is Result.Err && matchVal.error == CapacityOverflow) {} else {
                 error("usize::MAX should trigger an overflow!")
             }
         }
         run {
             val matchVal1 = emptyBytes.tryReserve(MAX_ISIZE)
-            if (matchVal1 is Result.Err<*, *> && matchVal1.error == CapacityOverflow) {} else {
+            if (matchVal1 is Result.Err && matchVal1.error == CapacityOverflow) {} else {
                 error("isize::MAX should trigger an overflow!")
             }
         }
         run {
             val matchVal3 = emptyBytes.tryReserve(MAX_ISIZE / 5)
-            if (matchVal3 is Result.Err<*, *> && matchVal3.error is AllocError) {} else {
+            if (matchVal3 is Result.Err && matchVal3.error is AllocError) {} else {
                 // This may succeed if there is enough free memory. Attempt to
                 // allocate a few more hashmaps to ensure the allocation will fail.
-                val emptyBytes2: HashMap<UByte, UByte>  = HashMap.new()
+                val emptyBytes2: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
                 emptyBytes2.tryReserve(MAX_ISIZE / 5)
-                val emptyBytes3: HashMap<UByte, UByte>  = HashMap.new()
+                val emptyBytes3: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
                 emptyBytes3.tryReserve(MAX_ISIZE / 5)
-                val emptyBytes4: HashMap<UByte, UByte>  = HashMap.new()
+                val emptyBytes4: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
                 run {
                     val matchVal2 = emptyBytes4.tryReserve(MAX_ISIZE / 5)
-                    if (matchVal2 is Result.Err<*, *> && matchVal2.error is AllocError) {} else {
+                    if (matchVal2 is Result.Err && matchVal2.error is AllocError) {} else {
                         error("isize::MAX / 5 should trigger an OOM!")
                     }
                 }
@@ -1265,7 +1264,7 @@ public class MapTestMapInlineTests {
 
             public open fun buildHasher(): DefaultHasher = DefaultHasher.new()
         }
-        val EMPTY_MAP: HashMap<UInt, String, MyHasher> = HashMap.withHasher(MyHasher())
+        val EMPTY_MAP: HashMap<UInt, String, MyHasher, Global> = HashMap.withHasher(MyHasher())
         val map = EMPTY_MAP
         map.insert(17, "seventeen".toOwned())
         check("seventeen" == map[17])
@@ -1381,10 +1380,10 @@ public class MapTestMapInlineTests {
                 val map1: HashMap<ULong, CheckedCloneDrop<List<ULong>>, DefaultHashBuilder, MyAlloc> =
                     run {
                         val matchVal = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
-                        when (matchVal) { is Result.Ok<*, *> -> {
+                        when (matchVal) { is Result.Ok -> {
                             val map = matchVal.value
                             map
-                        }; is Result.Err<*, *> -> {
+                        }; is Result.Err -> {
                             val msg = matchVal.error
                             error("$msg")
                         } }
@@ -1404,13 +1403,13 @@ public class MapTestMapInlineTests {
             val dropped: AtomicI8 = AtomicI8.new(2)
             run {
                 check(ARMED_FLAGS.size == DISARMED_FLAGS.size)
-                val map1: HashMap<ULong, CheckedCloneDrop<ULong>, DefaultHashBuilder> =
+                val map1: HashMap<ULong, CheckedCloneDrop<ULong>, DefaultHashBuilder, Global> =
                     run {
                         val matchVal = getTestMap((DISARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> n }, MyAlloc.new(dropped.clone()))
-                        when (matchVal) { is Result.Ok<*, *> -> {
+                        when (matchVal) { is Result.Ok -> {
                             val map = matchVal.value
                             map
-                        }; is Result.Err<*, *> -> {
+                        }; is Result.Err -> {
                             val msg = matchVal.error
                             error("$msg")
                         } }
@@ -1418,10 +1417,10 @@ public class MapTestMapInlineTests {
                 var map2 =
                     run {
                         val matchVal1 = getTestMap((DISARMED_FLAGS.zip(ARMED_FLAGS)), { n -> n }, MyAlloc.new(dropped.clone()))
-                        when (matchVal1) { is Result.Ok<*, *> -> {
+                        when (matchVal1) { is Result.Ok -> {
                             val map2 = matchVal1.value
                             map2
-                        }; is Result.Err<*, *> -> {
+                        }; is Result.Err -> {
                             val msg1 = matchVal1.error
                             error("$msg")
                         } }
@@ -1447,10 +1446,10 @@ public class MapTestMapInlineTests {
             var map1 =
                 run {
                     val matchVal = getTestMap((DISARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val map = matchVal.value
                         map
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val msg = matchVal.error
                         error("$msg")
                     } }
@@ -1461,10 +1460,10 @@ public class MapTestMapInlineTests {
                         val scopeMap =
                             run {
                                 val matchVal1 = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n * 2) }, MyAlloc.new(dropped.clone()))
-                                when (matchVal1) { is Result.Ok<*, *> -> {
+                                when (matchVal1) { is Result.Ok -> {
                                     val map2 = matchVal1.value
                                     map2
-                                }; is Result.Err<*, *> -> {
+                                }; is Result.Err -> {
                                     val msg1 = matchVal1.error
                                     return@closure msg1
                                 } }
@@ -1513,10 +1512,10 @@ public class MapTestMapInlineTests {
             var map1 =
                 run {
                     val matchVal = getTestMap((booleanArrayOf(DISARMED).zip(booleanArrayOf(DISARMED))), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
-                    when (matchVal) { is Result.Ok<*, *> -> {
+                    when (matchVal) { is Result.Ok -> {
                         val map = matchVal.value
                         map
-                    }; is Result.Err<*, *> -> {
+                    }; is Result.Err -> {
                         val msg = matchVal.error
                         error("$msg")
                     } }
@@ -1527,10 +1526,10 @@ public class MapTestMapInlineTests {
                         val scopeMap =
                             run {
                                 val matchVal1 = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n * 2) }, MyAlloc.new(dropped.clone()))
-                                when (matchVal1) { is Result.Ok<*, *> -> {
+                                when (matchVal1) { is Result.Ok -> {
                                     val map2 = matchVal1.value
                                     map2
-                                }; is Result.Err<*, *> -> {
+                                }; is Result.Err -> {
                                     val msg1 = matchVal1.error
                                     return@closure1 msg1
                                 } }
@@ -1596,26 +1595,26 @@ public open class MmapAllocator(
                 n
             }
         return when (val matchVal = n1 and (this.pageSize - 1)) {
-            0 -> Result.Ok(n1)
+            0 -> Result.Ok<Int, AllocError>(n1)
             else -> {
                 val rem = matchVal
-                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok(it) } ?: Result.Err(AllocError))
+                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))
             }
         }
     }
 
     public override fun allocate(layout: Layout): Result<NonNull, AllocError> {
         if (layout.align() > this.pageSize) {
-            return Result.Err(AllocError)
+            return Result.Err<NonNull, AllocError>(AllocError())
         }
         val nullVal = MutPtr(0L)
-        val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }).toULong()
+        val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }).toULong()
         val prot = PROT_READ or PROT_WRITE
         val flags = MAP_PRIVATE or MAP_ANON
         val addr = mmap(nullVal, len, prot, flags, -1, 0)
         // mmap returns MAP_FAILED on failure, not Null.
         if (addr == MAP_FAILED) {
-            return Result.Err(AllocError)
+            return Result.Err<NonNull, AllocError>(AllocError())
         }
         return when (val matchVal = NonNull.new(addr.cast())) {
             null -> {
@@ -1623,12 +1622,12 @@ public open class MmapAllocator(
                 // cannot return null as a valid pointer in our type system,
                 // we attempt to handle it.
                 munmap(addr, len)
-                Result.Err(AllocError)
+                Result.Err<NonNull, AllocError>(AllocError())
             }
             else -> {
                 val data = matchVal
                 // SAFETY: this is NonNull.sliceFromRawParts.
-                Result.Ok(NonNull.newUnchecked(sliceFromRawPartsMut(data.asPtr(), len)))
+                Result.Ok<NonNull, AllocError>(NonNull.newUnchecked(sliceFromRawPartsMut(data.asPtr(), len)))
             }
         }
     }
@@ -1666,13 +1665,13 @@ public open class MmapAllocator(
         public fun new(): Result<MmapAllocator, AllocError> {
             val result = sysconf(SC_PAGESIZE)
             if (result < 1) {
-                return Result.Err(AllocError)
+                return Result.Err<MmapAllocator, AllocError>(AllocError())
             }
             val pageSize = result.toInt()
             return if (pageSize.isPowerOfTwo()) {
-                Result.Ok(MmapAllocator(pageSize = pageSize))
+                Result.Ok<MmapAllocator, AllocError>(MmapAllocator(pageSize = pageSize))
             } else {
-                Result.Err(AllocError)
+                Result.Err<MmapAllocator, AllocError>(AllocError())
             }
         }
     }
@@ -1682,7 +1681,7 @@ public class MapTestMapWithMmapAllocationsInlineTests {
     @kotlin.test.Test
     public fun testTinyAllocationGetsRoundedToPageSize() {
         val alloc = MmapAllocator.new().unwrap()
-        val map: HashMap<Int, Unit>  = HashMap.withCapacityIn(1, alloc)
+        val map: HashMap<Int, Unit, DefaultHashBuilder, Global>  = HashMap.withCapacityIn(1, alloc)
         // Size of an element plus its control byte.
         val roughBucketSize = sizeOf<Pair<Int, Unit>>(typeLayoutT = UnresolvedTypeLayout<Pair<Int, Unit>>()) + 1
         // Accounting for some misc. padding that's likely in the allocation

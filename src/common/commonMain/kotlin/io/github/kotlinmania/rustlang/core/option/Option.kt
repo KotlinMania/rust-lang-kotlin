@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -603,23 +604,15 @@ public typealias TryType<T> = Option<T>
 /**
  * The `Option` type. See [the module level documentation](self) for more.
  */
-public sealed class Option<T> :
-    UseCloned<Option<T>>,
-    TrivialClone<Option<T>>,
-    StructuralPartialEq,
-    Try<Option<T>, T, Option<Nothing>>,
-    FromResidual<Option<Nothing>, Option<T>> {
+public sealed class Option<T> : UseCloned<Option<T>>, TrivialClone<Option<T>>, StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
     /**
      * No value.
      */
-    public class None<T> : Option<T>()
-
+    public class None<T>() : Option<T>()
     /**
      * Some value of type `T`.
      */
-    public data class Some<T>(
-        public var value: T,
-    ) : Option<T>()
+    public data class Some<T>(public var value: T) : Option<T>()
 
     // ////////////////////////////////////////////////////////////////////////
     // Type implementation
@@ -1273,9 +1266,9 @@ public sealed class Option<T> :
         when (this) {
             is Some -> {
                 val (v) = this
-                Result.Ok(v)
+                Result.Ok<T, E>(v)
             }
-            null -> Result.Err(err)
+            null -> Result.Err<T, E>(err)
         }
 
     /**
@@ -1299,9 +1292,9 @@ public sealed class Option<T> :
         when (this) {
             is Some -> {
                 val (v) = this
-                Result.Ok(v)
+                Result.Ok<T, E>(v)
             }
-            null -> Result.Err(err())
+            null -> Result.Err<T, E>(err())
         }
 
     /**
@@ -1728,13 +1721,7 @@ public sealed class Option<T> :
      */
     public open fun <R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Any?> {
         if (this == null) {
-            this =
-                Some(
-                    when (val tryResult = f()) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                    },
-                )
+            this = Some(when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -1815,9 +1802,7 @@ public sealed class Option<T> :
      * check(old1 == null)
      * ```
      */
-    public open fun replace(value: T): Option<T> =
-        io.github.kotlinmania.rustlang.core.mem
-            .replace(this, Some(value))
+    public open fun replace(value: T): Option<T> = io.github.kotlinmania.rustlang.core.mem.replace(this, Some(value))
 
     /**
      * Makes a tuple of the value in `self` and the value in another `Option`.
@@ -2205,15 +2190,15 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
  */
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
     when {
-        this is Some && (this as Some<T>).value is Result.Ok<*, *> -> {
-            val x = ((this as Some<T>).value as Result.Ok<*, *>).value
-            Result.Ok(Some(x))
+        this is Some && (this as Some<T>).value is Result.Ok -> {
+            val x = ((this as Some<T>).value as Result.Ok).value
+            Result.Ok<Option<T>, E>(Some(x))
         }
-        this is Some && (this as Some<T>).value is Result.Err<*, *> -> {
-            val e = ((this as Some<T>).value as Result.Err<*, *>).error
-            Result.Err(e)
+        this is Some && (this as Some<T>).value is Result.Err -> {
+            val e = ((this as Some<T>).value as Result.Err).error
+            Result.Err<Option<T>, E>(e)
         }
-        else -> Result.Ok(None)
+        else -> Result.Ok<Option<T>, E>(None)
     }
 
 public fun unwrapFailed(): Nothing = panic("called `Option::unwrap()` on a `None` value")
@@ -2248,17 +2233,15 @@ public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 // ////////////////////////////////////////////////////////////////////////
 public open class Item<A>(
     public var opt: Option<A>,
-) : TrustedLen<Item<A>>,
-    Iterable<A> {
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@Item.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<Item<A>>, Iterable<A> {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@Item.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Item<A> = Item(opt)
 
@@ -2283,17 +2266,15 @@ public open class Item<A>(
  */
 public open class Iter<A>(
     public var inner: Item<A>,
-) : TrustedLen<Iter<A>>,
-    Iterable<A> {
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@Iter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<Iter<A>>, Iterable<A> {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@Iter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public override fun next(): Option<A> = this.inner.next()
 
@@ -2313,17 +2294,15 @@ public open class Iter<A>(
  */
 public open class IterMut<A>(
     public var inner: Item<A>,
-) : TrustedLen<IterMut<A>>,
-    Iterable<A> {
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@IterMut.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<IterMut<A>>, Iterable<A> {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@IterMut.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public override fun next(): Option<A> = this.inner.next()
 
@@ -2341,17 +2320,15 @@ public open class IterMut<A>(
  */
 public open class IntoIter<A>(
     public var inner: Item<A>,
-) : TrustedLen<IntoIter<A>>,
-    Iterable<A> {
-    override fun iterator(): Iterator<A> =
-        object : AbstractIterator<A>() {
-            override fun computeNext() {
-                when (val v = this@IntoIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<IntoIter<A>>, Iterable<A> {
+    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
+        override fun computeNext() {
+            when (val v = this@IntoIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IntoIter<A> = IntoIter(inner)
 
@@ -2367,17 +2344,15 @@ public open class IntoIter<A>(
  */
 public open class OptionFlatten<A>(
     public var iter: Option<A>,
-) : TrustedLen<OptionFlatten<A>>,
-    Iterable<Item> {
-    override fun iterator(): Iterator<Item> =
-        object : AbstractIterator<Item>() {
-            override fun computeNext() {
-                when (val v = this@OptionFlatten.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedLen<OptionFlatten<A>>, Iterable<Item> {
+    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
+        override fun computeNext() {
+            when (val v = this@OptionFlatten.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): OptionFlatten<A> = OptionFlatten(iter)
 
@@ -2399,13 +2374,13 @@ public open class OptionFlatten<A>(
             null -> Pair(0, Some(0))
         }
 
-    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int>> =
+    public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
                 iter.advanceBy(n)
             }
-            null -> NonZero.new(n).mapOr(Result.Ok(Unit), { Result.Err(it) })
+            null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
         }
 
     public override fun nth(n: Int): Option<Item> =
@@ -2462,13 +2437,13 @@ public open class OptionFlatten<A>(
             null -> None
         }
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> =
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = this.iter) {
             is Some -> {
                 val (iter) = matchVal
                 iter.advanceBackBy(n)
             }
-            null -> NonZero.new(n).mapOr(Result.Ok(Unit), { Result.Err(it) })
+            null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
         }
 
     public open fun nthBack(n: Int): Option<Item> =

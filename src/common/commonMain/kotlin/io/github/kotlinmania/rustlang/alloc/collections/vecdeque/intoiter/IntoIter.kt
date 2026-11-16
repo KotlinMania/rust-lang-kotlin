@@ -4,9 +4,11 @@ package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -47,28 +49,24 @@ public class DebugTuple(
  */
 public open class IntoIter<T, A : Allocator> internal constructor(
     innerCtorArg: VecDeque<T, A>,
-) : TrustedLen,
-    Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var inner: VecDeque<T, A> = innerCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IntoIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IntoIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IntoIter<T, A> = IntoIter(inner)
 
     public open fun intoVecdeque(): VecDeque<T, A> = this.inner
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "IntoIter").field(this.inner).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "IntoIter").field(this.inner).finish()
 
     public open fun next(): T? = this.inner.removeFirstOrNull()
 
@@ -77,7 +75,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
         return Pair(len, len)
     }
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val len = this.inner.len
         val rem =
             if (len < n) {
@@ -87,7 +85,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
                 this.inner.drain(0 until n)
                 0
             }
-        return NonZero.new(rem).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(rem))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public open fun count(): Int = this.inner.len
@@ -106,37 +104,24 @@ public open class IntoIter<T, A : Allocator> internal constructor(
         }
         val guard = Guard(deque = this.inner, consumed = 0)
         val (head, tail) = guard.deque.asSlices()
-        init1 =
-            when (
-                val tryResult =
-                    head
-                        .iter()
-                        .map({ elem ->
-                            guard.consumed += 1
-                            // SAFETY: Because we incremented `guard.consumed`, the
-                            // deque effectively forgot the element, so we can take
-                            // ownership
-                            read(elem)
-                        })
-                        .tryFold(init1, f)
-            ) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
-        return tail
-            .iter()
-            .map({ elem ->
-                guard.consumed += 1
-                // SAFETY: Same as above.
-                read(elem)
-            })
-            .tryFold(init1, f)
+        init1 = when (val tryResult = head.iter().map({ elem ->
+            guard.consumed += 1
+            // SAFETY: Because we incremented `guard.consumed`, the
+            // deque effectively forgot the element, so we can take
+            // ownership
+            read(elem)
+        }).tryFold(init1, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        return tail.iter().map({ elem ->
+            guard.consumed += 1
+            // SAFETY: Same as above.
+            read(elem)
+        }).tryFold(init1, f)
     }
 
     public open fun <B> fold(init: B, f: (B, T) -> B): B =
-        when (val matchVal = this.tryFold(init, { b, item -> Result.Ok(f(b, item)) })) {
-            is Result.Ok<*, *> -> {
-                val b = (matchVal as Result.Ok<*, *>).value
+        when (val matchVal = this.tryFold(init, { b, item -> Result.Ok<B, Nothing>(f(b, item)) })) {
+            is Result.Ok -> {
+                val b = matchVal.value
                 b
             }
         }
@@ -154,7 +139,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
             this.inner.head = this.inner.toWrappedIndex(n)
             this.inner.len -= n
             // SAFETY: We initialized the entire array with items from `head`
-            return Result.Ok(rawArr.transpose().assumeInit())
+            return Result.Ok<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>(rawArr.transpose().assumeInit())
         }
         // SAFETY: Same argument as above.
         copyNonoverlapping(head.asPtr(), rawArrPtr, head.len())
@@ -165,7 +150,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
             this.inner.head = this.inner.toWrappedIndex(n)
             this.inner.len -= n
             // SAFETY: We initialized the entire array with items from `head` and `tail`
-            Result.Ok(rawArr.transpose().assumeInit())
+            Result.Ok<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>(rawArr.transpose().assumeInit())
         } else {
             // SAFETY: Same argument as above.
             copyNonoverlapping(tail.asPtr(), rawArrPtr.add(head.len()), tail.len())
@@ -175,16 +160,13 @@ public open class IntoIter<T, A : Allocator> internal constructor(
             this.inner.len = 0
             // SAFETY: We copied all elements from both slices to the beginning of the array, so
             // the given range is initialized.
-            Result.Err(
-                io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-                    .newUnchecked(rawArr, 0 until init),
-            )
+            Result.Err<List<T>, io.github.kotlinmania.rustlang.core.array.iter.IntoIter<T>>(io.github.kotlinmania.rustlang.core.array.iter.IntoIter.newUnchecked(rawArr, 0 until init))
         }
     }
 
     public open fun nextBack(): T? = this.inner.popBack()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> {
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
         val len = this.inner.len
         val rem =
             if (len < n) {
@@ -194,7 +176,7 @@ public open class IntoIter<T, A : Allocator> internal constructor(
                 this.inner.truncate(len - n)
                 0
             }
-        return NonZero.new(rem).mapOr(Result.Ok(Unit), { Result.Err(it) })
+        return ((NonZero.new<NonZeroUsizeInner, Int>(rem))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
     }
 
     public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
@@ -210,35 +192,22 @@ public open class IntoIter<T, A : Allocator> internal constructor(
         }
         val guard = Guard(deque = this.inner, consumed = 0)
         val (head, tail) = guard.deque.asSlices()
-        init1 =
-            when (
-                val tryResult =
-                    tail
-                        .iter()
-                        .map({ elem ->
-                            guard.consumed += 1
-                            // SAFETY: See `tryFold`s safety comment.
-                            read(elem)
-                        })
-                        .tryRfold(init1, f)
-            ) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
-        return head
-            .iter()
-            .map({ elem ->
-                guard.consumed += 1
-                // SAFETY: Same as above.
-                read(elem)
-            })
-            .tryRfold(init1, f)
+        init1 = when (val tryResult = tail.iter().map({ elem ->
+            guard.consumed += 1
+            // SAFETY: See `tryFold`s safety comment.
+            read(elem)
+        }).tryRfold(init1, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        return head.iter().map({ elem ->
+            guard.consumed += 1
+            // SAFETY: Same as above.
+            read(elem)
+        }).tryRfold(init1, f)
     }
 
     public open fun <B> rfold(init: B, f: (B, T) -> B): B =
-        when (val matchVal = this.tryRfold(init, { b, item -> Result.Ok(f(b, item)) })) {
-            is Result.Ok<*, *> -> {
-                val b = (matchVal as Result.Ok<*, *>).value
+        when (val matchVal = this.tryRfold(init, { b, item -> Result.Ok<B, Nothing>(f(b, item)) })) {
+            is Result.Ok -> {
+                val b = matchVal.value
                 b
             }
         }
@@ -248,10 +217,9 @@ public open class IntoIter<T, A : Allocator> internal constructor(
     public companion object {
         public operator fun <T, A : Allocator> invoke(
             inner: VecDeque<T, A>,
-        ): IntoIter<T, A> =
-            IntoIter<T, A>(
-                innerCtorArg = inner,
-            )
+        ): IntoIter<T, A> = IntoIter<T, A>(
+            innerCtorArg = inner,
+        )
 
         public fun <T, A : Allocator> new(inner: VecDeque<T, A>): IntoIter<T, A> = IntoIter(inner = inner)
     }

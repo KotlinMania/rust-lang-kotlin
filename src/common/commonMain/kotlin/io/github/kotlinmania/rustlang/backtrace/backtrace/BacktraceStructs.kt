@@ -1,6 +1,8 @@
 package io.github.kotlinmania.rustlang.backtrace.backtrace
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.Frame as FrameImp
 
 public class DebugStruct(
@@ -78,7 +80,5 @@ public open class Frame(
      */
     public open fun moduleBaseAddress(): MutPtr? = this.inner.moduleBaseAddress()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Frame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Frame").field("ip", this.ip()).field("symbol_address", this.symbolAddress()).finish()
 }

@@ -98,6 +98,5 @@ public fun crash(): Nothing = kmAbort()
  * execution.
  */
 public fun resumableBreakpoint() {
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .resumableBreakpoint()
+    io.github.kotlinmania.rustlang.core.intrinsics.resumableBreakpoint()
 }

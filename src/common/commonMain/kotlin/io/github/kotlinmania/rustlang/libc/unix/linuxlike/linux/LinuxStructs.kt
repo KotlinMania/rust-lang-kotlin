@@ -8,15 +8,18 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CShort
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.*
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S16
 import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.types.S32
@@ -2671,43 +2674,43 @@ public open class PthreadRwlockattrT(
 
 public open class PthreadCondattrT internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByteArray>,
+    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
 ) {
     public var size: UByteArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(size: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(size, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+    internal constructor(size: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(size, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
 
     public fun pointerLayout(): TypeLayout<PthreadCondattrT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PthreadCondattrT(ptr, layout) }, { it.size })
 
     public open fun clone(): PthreadCondattrT = PthreadCondattrT(size, fieldLayout)
 
     public companion object {
-        public operator fun invoke(size: UByteArray, fieldLayout: TypeLayout<UByteArray>): PthreadCondattrT = PthreadCondattrT(size, fieldLayout)
+        public operator fun invoke(size: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): PthreadCondattrT = PthreadCondattrT(size, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray>): PthreadCondattrT = PthreadCondattrT(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): PthreadCondattrT = PthreadCondattrT(fieldStorage, fieldLayout)
     }
 }
 
 public open class PthreadBarrierattrT internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByteArray>,
+    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
 ) {
     public var size: UByteArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(size: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(size, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+    internal constructor(size: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(size, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
 
     public fun pointerLayout(): TypeLayout<PthreadBarrierattrT> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PthreadBarrierattrT(ptr, layout) }, { it.size })
 
     public open fun clone(): PthreadBarrierattrT = PthreadBarrierattrT(size, fieldLayout)
 
     public companion object {
-        public operator fun invoke(size: UByteArray, fieldLayout: TypeLayout<UByteArray>): PthreadBarrierattrT = PthreadBarrierattrT(size, fieldLayout)
+        public operator fun invoke(size: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): PthreadBarrierattrT = PthreadBarrierattrT(size, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray>): PthreadBarrierattrT = PthreadBarrierattrT(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): PthreadBarrierattrT = PthreadBarrierattrT(fieldStorage, fieldLayout)
     }
 }
 
@@ -4318,9 +4321,7 @@ public open class IwreqData(
     public var param: IwParam? = null,
     public var data: IwPoint? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "iwreq_data").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "iwreq_data").finishNonExhaustive()
 }
 
 public open class IwEvent(
@@ -4334,9 +4335,7 @@ public open class IwEvent(
 public open class CAnonymousIwreq(
     public var ifrnName: UByteArray? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_iwreq").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_iwreq").finishNonExhaustive()
 }
 
 public open class Iwreq(
@@ -4351,18 +4350,14 @@ public open class CAnonymousPtpPeroutRequest1(
     public var start: PtpClockTime? = null,
     public var phase: PtpClockTime? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ptp_perout_request_1").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ptp_perout_request_1").finishNonExhaustive()
 }
 
 public open class CAnonymousPtpPeroutRequest2(
     public var on: PtpClockTime? = null,
     public var rsv: UIntArray? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_ptp_perout_request_2").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_ptp_perout_request_2").finishNonExhaustive()
 }
 
 public open class PtpPeroutRequest(
@@ -4387,7 +4382,5 @@ public open class CAnonymousXskTxMetadataUnion(
     public var request: XskTxMetadataRequest? = null,
     public var completion: XskTxMetadataCompletion? = null,
 ) {
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "__c_anonymous_xsk_tx_metadata_union").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "__c_anonymous_xsk_tx_metadata_union").finishNonExhaustive()
 }

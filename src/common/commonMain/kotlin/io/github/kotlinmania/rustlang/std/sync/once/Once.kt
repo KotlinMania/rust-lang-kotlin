@@ -1,6 +1,9 @@
 // port-lint: source sync/once.rs
 package io.github.kotlinmania.rustlang.std.sync.once
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
+
 // A "once initialization" primitive
 //
 // This primitive is meant to be used to run one-time initialization. An
@@ -276,9 +279,7 @@ public open class Once(
         this.inner.setState(newState)
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Once").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Once").finishNonExhaustive()
 
     public companion object {
         /**
@@ -350,9 +351,7 @@ public open class OnceState(
         this.inner.poison()
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OnceState").field("poisoned", this.isPoisoned()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OnceState").field("poisoned", this.isPoisoned()).finish()
 }
 
 /**

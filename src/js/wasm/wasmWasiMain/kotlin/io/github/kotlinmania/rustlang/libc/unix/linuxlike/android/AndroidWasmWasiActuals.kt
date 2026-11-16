@@ -120,7 +120,9 @@ public actual fun setpriority(which: CInt, who: IdT, prio: CInt): CInt =
 public actual fun schedCpualloc(count: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidSchedCpualloc")
 
-public actual fun schedCpufree(set: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidSchedCpufree")
+public actual fun schedCpufree(set: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidSchedCpufree")
+}
 
 public actual fun schedCpucount(setsize: SizeT, set: ConstPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidSchedCpucount")
@@ -152,7 +154,9 @@ public actual fun setutent(): Unit =
 public actual fun getutent(): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidGetutent")
 
-public actual fun seekdir(dirp: MutPtr, loc: CLong): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidSeekdir")
+public actual fun seekdir(dirp: MutPtr, loc: CLong) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidSeekdir")
+}
 
 public actual fun telldir(dirp: MutPtr): CLong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidTelldir")
@@ -493,9 +497,13 @@ public actual fun regexec(preg: ConstPtr, input: ConstPtr, nmatch: SizeT, pmatch
 public actual fun regerror(errcode: CInt, preg: ConstPtr, errbuf: MutPtr, errbufSize: SizeT): SizeT =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidRegerror")
 
-public actual fun regfree(preg: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidRegfree")
+public actual fun regfree(preg: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidRegfree")
+}
 
-public actual fun androidSetAbortMessage(msg: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidAndroidSetAbortMessage")
+public actual fun androidSetAbortMessage(msg: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidAndroidSetAbortMessage")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixLinuxlikeAndroidGettid")
 private external fun wasiLibcUnixLinuxlikeAndroidGettid(): Int
@@ -551,7 +559,9 @@ private external fun wasiLibcUnixLinuxlikeAndroidArc4randomUniform(upperBound: I
 public actual fun arc4randomUniform(upperBound: UInt): UInt =
     wasiLibcUnixLinuxlikeAndroidArc4randomUniform(upperBound.toInt()).toUInt()
 
-public actual fun arc4randomBuf(buf: MutPtr, n: SizeT): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidArc4randomBuf")
+public actual fun arc4randomBuf(buf: MutPtr, n: SizeT) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidArc4randomBuf")
+}
 
 public actual fun reallocarray(ptr: MutPtr, nmemb: SizeT, size: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixLinuxlikeAndroidReallocarray")

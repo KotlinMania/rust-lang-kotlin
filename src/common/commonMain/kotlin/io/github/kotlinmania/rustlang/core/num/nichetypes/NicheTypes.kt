@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
@@ -16,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 
 public open class Nanoseconds internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UInt>,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: UInt
         get() = value
@@ -26,11 +27,9 @@ public open class Nanoseconds internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Nanoseconds> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Nanoseconds(ptr, layout) }, { it.value })
 
@@ -53,11 +52,11 @@ public open class Nanoseconds internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = UInt.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt>): Nanoseconds = Nanoseconds(value, fieldLayout)
+        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Nanoseconds = Nanoseconds(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt>): Nanoseconds = Nanoseconds(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Nanoseconds = Nanoseconds(fieldStorage, fieldLayout)
 
-        public fun new(value: UInt, fieldLayout: TypeLayout<UInt>): Nanoseconds? =
+        public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Nanoseconds? =
             if (value in 0..999999999) {
                 Nanoseconds(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -87,7 +86,7 @@ public val HALF_USIZE_MINUS_ONE: Int = HALF_USIZE - 1
 
 public open class NonZeroU8Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByte>,
+    public val fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: UByte
         get() = value
@@ -97,11 +96,9 @@ public open class NonZeroU8Inner internal constructor(
 
     public var value: UByte
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU8Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU8Inner(ptr, layout) }, { it.value })
 
@@ -124,11 +121,11 @@ public open class NonZeroU8Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = UByte.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte>): NonZeroU8Inner = NonZeroU8Inner(value, fieldLayout)
+        public operator fun invoke(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): NonZeroU8Inner = NonZeroU8Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte>): NonZeroU8Inner = NonZeroU8Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): NonZeroU8Inner = NonZeroU8Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: UByte, fieldLayout: TypeLayout<UByte>): NonZeroU8Inner? =
+        public fun new(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): NonZeroU8Inner? =
             if (value >= 1) {
                 NonZeroU8Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -149,7 +146,7 @@ public open class NonZeroU8Inner internal constructor(
 
 public open class NonZeroU16Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UShort>,
+    public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: UShort
         get() = value
@@ -159,11 +156,9 @@ public open class NonZeroU16Inner internal constructor(
 
     public var value: UShort
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU16Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU16Inner(ptr, layout) }, { it.value })
 
@@ -186,11 +181,11 @@ public open class NonZeroU16Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = UShort.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort>): NonZeroU16Inner = NonZeroU16Inner(value, fieldLayout)
+        public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): NonZeroU16Inner = NonZeroU16Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort>): NonZeroU16Inner = NonZeroU16Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): NonZeroU16Inner = NonZeroU16Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: UShort, fieldLayout: TypeLayout<UShort>): NonZeroU16Inner? =
+        public fun new(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): NonZeroU16Inner? =
             if (value >= 1) {
                 NonZeroU16Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -211,7 +206,7 @@ public open class NonZeroU16Inner internal constructor(
 
 public open class NonZeroU32Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UInt>,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: UInt
         get() = value
@@ -221,11 +216,9 @@ public open class NonZeroU32Inner internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU32Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU32Inner(ptr, layout) }, { it.value })
 
@@ -248,11 +241,11 @@ public open class NonZeroU32Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = UInt.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt>): NonZeroU32Inner = NonZeroU32Inner(value, fieldLayout)
+        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): NonZeroU32Inner = NonZeroU32Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt>): NonZeroU32Inner = NonZeroU32Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): NonZeroU32Inner = NonZeroU32Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: UInt, fieldLayout: TypeLayout<UInt>): NonZeroU32Inner? =
+        public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): NonZeroU32Inner? =
             if (value >= 1) {
                 NonZeroU32Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -273,7 +266,7 @@ public open class NonZeroU32Inner internal constructor(
 
 public open class NonZeroU64Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<ULong>,
+    public val fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: ULong
         get() = value
@@ -283,11 +276,9 @@ public open class NonZeroU64Inner internal constructor(
 
     public var value: ULong
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: ULong, fieldLayout: TypeLayout<ULong>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU64Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU64Inner(ptr, layout) }, { it.value })
 
@@ -310,11 +301,11 @@ public open class NonZeroU64Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = ULong.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: ULong, fieldLayout: TypeLayout<ULong>): NonZeroU64Inner = NonZeroU64Inner(value, fieldLayout)
+        public operator fun invoke(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): NonZeroU64Inner = NonZeroU64Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ULong>): NonZeroU64Inner = NonZeroU64Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): NonZeroU64Inner = NonZeroU64Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: ULong, fieldLayout: TypeLayout<ULong>): NonZeroU64Inner? =
+        public fun new(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): NonZeroU64Inner? =
             if (value >= 1) {
                 NonZeroU64Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -335,7 +326,7 @@ public open class NonZeroU64Inner internal constructor(
 
 public open class NonZeroU128Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<U128>,
+    public val fieldLayout: TypeLayout<U128> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: U128
         get() = value
@@ -345,11 +336,9 @@ public open class NonZeroU128Inner internal constructor(
 
     public var value: U128
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: U128, fieldLayout: TypeLayout<U128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: U128, fieldLayout: TypeLayout<U128> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroU128Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroU128Inner(ptr, layout) }, { it.value })
 
@@ -372,11 +361,11 @@ public open class NonZeroU128Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = U128.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: U128, fieldLayout: TypeLayout<U128>): NonZeroU128Inner = NonZeroU128Inner(value, fieldLayout)
+        public operator fun invoke(value: U128, fieldLayout: TypeLayout<U128> = UnresolvedTypeLayout()): NonZeroU128Inner = NonZeroU128Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<U128>): NonZeroU128Inner = NonZeroU128Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<U128> = UnresolvedTypeLayout()): NonZeroU128Inner = NonZeroU128Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: U128, fieldLayout: TypeLayout<U128>): NonZeroU128Inner? =
+        public fun new(value: U128, fieldLayout: TypeLayout<U128> = UnresolvedTypeLayout()): NonZeroU128Inner? =
             if (value >= 1) {
                 NonZeroU128Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -397,7 +386,7 @@ public open class NonZeroU128Inner internal constructor(
 
 public open class NonZeroI8Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Byte>,
+    public val fieldLayout: TypeLayout<Byte> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Byte
         get() = value
@@ -407,11 +396,9 @@ public open class NonZeroI8Inner internal constructor(
 
     public var value: Byte
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Byte, fieldLayout: TypeLayout<Byte>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Byte, fieldLayout: TypeLayout<Byte> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI8Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI8Inner(ptr, layout) }, { it.value })
 
@@ -434,11 +421,11 @@ public open class NonZeroI8Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Byte.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Byte, fieldLayout: TypeLayout<Byte>): NonZeroI8Inner = NonZeroI8Inner(value, fieldLayout)
+        public operator fun invoke(value: Byte, fieldLayout: TypeLayout<Byte> = UnresolvedTypeLayout()): NonZeroI8Inner = NonZeroI8Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Byte>): NonZeroI8Inner = NonZeroI8Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Byte> = UnresolvedTypeLayout()): NonZeroI8Inner = NonZeroI8Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: Byte, fieldLayout: TypeLayout<Byte>): NonZeroI8Inner? =
+        public fun new(value: Byte, fieldLayout: TypeLayout<Byte> = UnresolvedTypeLayout()): NonZeroI8Inner? =
             if (value < 0 || value >= 1) {
                 NonZeroI8Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -459,7 +446,7 @@ public open class NonZeroI8Inner internal constructor(
 
 public open class NonZeroI16Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Short>,
+    public val fieldLayout: TypeLayout<Short> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Short
         get() = value
@@ -469,11 +456,9 @@ public open class NonZeroI16Inner internal constructor(
 
     public var value: Short
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Short, fieldLayout: TypeLayout<Short>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Short, fieldLayout: TypeLayout<Short> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI16Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI16Inner(ptr, layout) }, { it.value })
 
@@ -496,11 +481,11 @@ public open class NonZeroI16Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Short.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Short, fieldLayout: TypeLayout<Short>): NonZeroI16Inner = NonZeroI16Inner(value, fieldLayout)
+        public operator fun invoke(value: Short, fieldLayout: TypeLayout<Short> = UnresolvedTypeLayout()): NonZeroI16Inner = NonZeroI16Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Short>): NonZeroI16Inner = NonZeroI16Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Short> = UnresolvedTypeLayout()): NonZeroI16Inner = NonZeroI16Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: Short, fieldLayout: TypeLayout<Short>): NonZeroI16Inner? =
+        public fun new(value: Short, fieldLayout: TypeLayout<Short> = UnresolvedTypeLayout()): NonZeroI16Inner? =
             if (value < 0 || value >= 1) {
                 NonZeroI16Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -521,7 +506,7 @@ public open class NonZeroI16Inner internal constructor(
 
 public open class NonZeroI32Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Int
         get() = value
@@ -531,11 +516,9 @@ public open class NonZeroI32Inner internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI32Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI32Inner(ptr, layout) }, { it.value })
 
@@ -558,11 +541,11 @@ public open class NonZeroI32Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Int.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): NonZeroI32Inner = NonZeroI32Inner(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroI32Inner = NonZeroI32Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): NonZeroI32Inner = NonZeroI32Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroI32Inner = NonZeroI32Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: Int, fieldLayout: TypeLayout<Int>): NonZeroI32Inner? =
+        public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroI32Inner? =
             if (value < 0 || value >= 1) {
                 NonZeroI32Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -583,7 +566,7 @@ public open class NonZeroI32Inner internal constructor(
 
 public open class NonZeroI64Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Long>,
+    public val fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Long
         get() = value
@@ -593,11 +576,9 @@ public open class NonZeroI64Inner internal constructor(
 
     public var value: Long
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Long, fieldLayout: TypeLayout<Long>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI64Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI64Inner(ptr, layout) }, { it.value })
 
@@ -620,11 +601,11 @@ public open class NonZeroI64Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Long.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Long, fieldLayout: TypeLayout<Long>): NonZeroI64Inner = NonZeroI64Inner(value, fieldLayout)
+        public operator fun invoke(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): NonZeroI64Inner = NonZeroI64Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Long>): NonZeroI64Inner = NonZeroI64Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): NonZeroI64Inner = NonZeroI64Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: Long, fieldLayout: TypeLayout<Long>): NonZeroI64Inner? =
+        public fun new(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): NonZeroI64Inner? =
             if (value < 0 || value >= 1) {
                 NonZeroI64Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -645,7 +626,7 @@ public open class NonZeroI64Inner internal constructor(
 
 public open class NonZeroI128Inner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<I128>,
+    public val fieldLayout: TypeLayout<I128> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: I128
         get() = value
@@ -655,11 +636,9 @@ public open class NonZeroI128Inner internal constructor(
 
     public var value: I128
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: I128, fieldLayout: TypeLayout<I128>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: I128, fieldLayout: TypeLayout<I128> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroI128Inner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroI128Inner(ptr, layout) }, { it.value })
 
@@ -682,11 +661,11 @@ public open class NonZeroI128Inner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = I128.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: I128, fieldLayout: TypeLayout<I128>): NonZeroI128Inner = NonZeroI128Inner(value, fieldLayout)
+        public operator fun invoke(value: I128, fieldLayout: TypeLayout<I128> = UnresolvedTypeLayout()): NonZeroI128Inner = NonZeroI128Inner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<I128>): NonZeroI128Inner = NonZeroI128Inner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<I128> = UnresolvedTypeLayout()): NonZeroI128Inner = NonZeroI128Inner(fieldStorage, fieldLayout)
 
-        public fun new(value: I128, fieldLayout: TypeLayout<I128>): NonZeroI128Inner? =
+        public fun new(value: I128, fieldLayout: TypeLayout<I128> = UnresolvedTypeLayout()): NonZeroI128Inner? =
             if (value < 0 || value >= 1) {
                 NonZeroI128Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -707,7 +686,7 @@ public open class NonZeroI128Inner internal constructor(
 
 public open class UsizeNoHighBit internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Int
         get() = value
@@ -717,11 +696,9 @@ public open class UsizeNoHighBit internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<UsizeNoHighBit> = TransparentTypeLayout(fieldLayout, { ptr, layout -> UsizeNoHighBit(ptr, layout) }, { it.value })
 
@@ -744,11 +721,11 @@ public open class UsizeNoHighBit internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Int.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): UsizeNoHighBit = UsizeNoHighBit(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBit = UsizeNoHighBit(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): UsizeNoHighBit = UsizeNoHighBit(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBit = UsizeNoHighBit(fieldStorage, fieldLayout)
 
-        public fun new(value: Int, fieldLayout: TypeLayout<Int>): UsizeNoHighBit? =
+        public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBit? =
             if (value in 0..HALF_USIZE) {
                 UsizeNoHighBit(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -769,7 +746,7 @@ public open class UsizeNoHighBit internal constructor(
 
 public open class UsizeNoHighBitMinusOne internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Int
         get() = value
@@ -779,11 +756,9 @@ public open class UsizeNoHighBitMinusOne internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<UsizeNoHighBitMinusOne> = TransparentTypeLayout(fieldLayout, { ptr, layout -> UsizeNoHighBitMinusOne(ptr, layout) }, { it.value })
 
@@ -806,11 +781,11 @@ public open class UsizeNoHighBitMinusOne internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Int.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): UsizeNoHighBitMinusOne = UsizeNoHighBitMinusOne(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBitMinusOne = UsizeNoHighBitMinusOne(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): UsizeNoHighBitMinusOne = UsizeNoHighBitMinusOne(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBitMinusOne = UsizeNoHighBitMinusOne(fieldStorage, fieldLayout)
 
-        public fun new(value: Int, fieldLayout: TypeLayout<Int>): UsizeNoHighBitMinusOne? =
+        public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBitMinusOne? =
             if (value in 0..HALF_USIZE_MINUS_ONE) {
                 UsizeNoHighBitMinusOne(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -831,7 +806,7 @@ public open class UsizeNoHighBitMinusOne internal constructor(
 
 public open class NonZeroUsizeInner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Int
         get() = value
@@ -841,11 +816,9 @@ public open class NonZeroUsizeInner internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroUsizeInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroUsizeInner(ptr, layout) }, { it.value })
 
@@ -868,11 +841,11 @@ public open class NonZeroUsizeInner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Int.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): NonZeroUsizeInner = NonZeroUsizeInner(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroUsizeInner = NonZeroUsizeInner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): NonZeroUsizeInner = NonZeroUsizeInner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroUsizeInner = NonZeroUsizeInner(fieldStorage, fieldLayout)
 
-        public fun new(value: Int, fieldLayout: TypeLayout<Int>): NonZeroUsizeInner? =
+        public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroUsizeInner? =
             if (value >= 1) {
                 NonZeroUsizeInner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -893,7 +866,7 @@ public open class NonZeroUsizeInner internal constructor(
 
 public open class NonZeroIsizeInner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Int
         get() = value
@@ -903,11 +876,9 @@ public open class NonZeroIsizeInner internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroIsizeInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroIsizeInner(ptr, layout) }, { it.value })
 
@@ -930,11 +901,11 @@ public open class NonZeroIsizeInner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Int.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): NonZeroIsizeInner = NonZeroIsizeInner(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroIsizeInner = NonZeroIsizeInner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): NonZeroIsizeInner = NonZeroIsizeInner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroIsizeInner = NonZeroIsizeInner(fieldStorage, fieldLayout)
 
-        public fun new(value: Int, fieldLayout: TypeLayout<Int>): NonZeroIsizeInner? =
+        public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroIsizeInner? =
             if (value < 0 || value >= 1) {
                 NonZeroIsizeInner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -955,7 +926,7 @@ public open class NonZeroIsizeInner internal constructor(
 
 public open class U32NotAllOnes internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UInt>,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: UInt
         get() = value
@@ -965,11 +936,9 @@ public open class U32NotAllOnes internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<U32NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> U32NotAllOnes(ptr, layout) }, { it.value })
 
@@ -992,11 +961,11 @@ public open class U32NotAllOnes internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = UInt.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt>): U32NotAllOnes = U32NotAllOnes(value, fieldLayout)
+        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): U32NotAllOnes = U32NotAllOnes(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt>): U32NotAllOnes = U32NotAllOnes(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): U32NotAllOnes = U32NotAllOnes(fieldStorage, fieldLayout)
 
-        public fun new(value: UInt, fieldLayout: TypeLayout<UInt>): U32NotAllOnes? =
+        public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): U32NotAllOnes? =
             if (value in 0 until UInt.MAX_VALUE) {
                 U32NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -1017,7 +986,7 @@ public open class U32NotAllOnes internal constructor(
 
 public open class I32NotAllOnes internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Int>,
+    public val fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Int
         get() = value
@@ -1027,11 +996,9 @@ public open class I32NotAllOnes internal constructor(
 
     public var value: Int
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Int, fieldLayout: TypeLayout<Int>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<I32NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> I32NotAllOnes(ptr, layout) }, { it.value })
 
@@ -1054,11 +1021,11 @@ public open class I32NotAllOnes internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Int.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int>): I32NotAllOnes = I32NotAllOnes(value, fieldLayout)
+        public operator fun invoke(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): I32NotAllOnes = I32NotAllOnes(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int>): I32NotAllOnes = I32NotAllOnes(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): I32NotAllOnes = I32NotAllOnes(fieldStorage, fieldLayout)
 
-        public fun new(value: Int, fieldLayout: TypeLayout<Int>): I32NotAllOnes? =
+        public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): I32NotAllOnes? =
             if (value < -1 || value >= 0) {
                 I32NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -1079,7 +1046,7 @@ public open class I32NotAllOnes internal constructor(
 
 public open class U64NotAllOnes internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<ULong>,
+    public val fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: ULong
         get() = value
@@ -1089,11 +1056,9 @@ public open class U64NotAllOnes internal constructor(
 
     public var value: ULong
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: ULong, fieldLayout: TypeLayout<ULong>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<U64NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> U64NotAllOnes(ptr, layout) }, { it.value })
 
@@ -1116,11 +1081,11 @@ public open class U64NotAllOnes internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = ULong.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: ULong, fieldLayout: TypeLayout<ULong>): U64NotAllOnes = U64NotAllOnes(value, fieldLayout)
+        public operator fun invoke(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): U64NotAllOnes = U64NotAllOnes(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ULong>): U64NotAllOnes = U64NotAllOnes(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): U64NotAllOnes = U64NotAllOnes(fieldStorage, fieldLayout)
 
-        public fun new(value: ULong, fieldLayout: TypeLayout<ULong>): U64NotAllOnes? =
+        public fun new(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): U64NotAllOnes? =
             if (value in 0 until ULong.MAX_VALUE) {
                 U64NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -1141,7 +1106,7 @@ public open class U64NotAllOnes internal constructor(
 
 public open class I64NotAllOnes internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Long>,
+    public val fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Long
         get() = value
@@ -1151,11 +1116,9 @@ public open class I64NotAllOnes internal constructor(
 
     public var value: Long
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Long, fieldLayout: TypeLayout<Long>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<I64NotAllOnes> = TransparentTypeLayout(fieldLayout, { ptr, layout -> I64NotAllOnes(ptr, layout) }, { it.value })
 
@@ -1178,11 +1141,11 @@ public open class I64NotAllOnes internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Long.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Long, fieldLayout: TypeLayout<Long>): I64NotAllOnes = I64NotAllOnes(value, fieldLayout)
+        public operator fun invoke(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): I64NotAllOnes = I64NotAllOnes(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Long>): I64NotAllOnes = I64NotAllOnes(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): I64NotAllOnes = I64NotAllOnes(fieldStorage, fieldLayout)
 
-        public fun new(value: Long, fieldLayout: TypeLayout<Long>): I64NotAllOnes? =
+        public fun new(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): I64NotAllOnes? =
             if (value < -1 || value >= 0) {
                 I64NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -1203,7 +1166,7 @@ public open class I64NotAllOnes internal constructor(
 
 public open class NonZeroCharInner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Char>,
+    public val fieldLayout: TypeLayout<Char> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: Char
         get() = value
@@ -1213,11 +1176,9 @@ public open class NonZeroCharInner internal constructor(
 
     public var value: Char
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Char, fieldLayout: TypeLayout<Char>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Char, fieldLayout: TypeLayout<Char> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<NonZeroCharInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZeroCharInner(ptr, layout) }, { it.value })
 
@@ -1240,11 +1201,11 @@ public open class NonZeroCharInner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = Char.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: Char, fieldLayout: TypeLayout<Char>): NonZeroCharInner = NonZeroCharInner(value, fieldLayout)
+        public operator fun invoke(value: Char, fieldLayout: TypeLayout<Char> = UnresolvedTypeLayout()): NonZeroCharInner = NonZeroCharInner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Char>): NonZeroCharInner = NonZeroCharInner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Char> = UnresolvedTypeLayout()): NonZeroCharInner = NonZeroCharInner(fieldStorage, fieldLayout)
 
-        public fun new(value: Char, fieldLayout: TypeLayout<Char>): NonZeroCharInner? =
+        public fun new(value: Char, fieldLayout: TypeLayout<Char> = UnresolvedTypeLayout()): NonZeroCharInner? =
             if (value in '\u0001'..0x10ffff) {
                 NonZeroCharInner(transmute(value), fieldLayout = fieldLayout)
             } else {
@@ -1269,7 +1230,7 @@ public typealias NotAllOnes<T> = Type
 
 public open class CodePointInner internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UInt>,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) : StructuralPartialEq {
     public var field0: UInt
         get() = value
@@ -1279,11 +1240,9 @@ public open class CodePointInner internal constructor(
 
     public var value: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CodePointInner> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CodePointInner(ptr, layout) }, { it.value })
 
@@ -1306,11 +1265,11 @@ public open class CodePointInner internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = UInt.fmt(this.asInner(), f)
 
     public companion object {
-        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt>): CodePointInner = CodePointInner(value, fieldLayout)
+        public operator fun invoke(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): CodePointInner = CodePointInner(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt>): CodePointInner = CodePointInner(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): CodePointInner = CodePointInner(fieldStorage, fieldLayout)
 
-        public fun new(value: UInt, fieldLayout: TypeLayout<UInt>): CodePointInner? =
+        public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): CodePointInner? =
             if (value in 0..0x10ffff) {
                 CodePointInner(transmute(value), fieldLayout = fieldLayout)
             } else {

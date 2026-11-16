@@ -625,7 +625,7 @@ public open class File(
      * ```
      */
     public open fun tryClone(): Result<File, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        return Result.Ok(File(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+        return Result.Ok<File, io.github.kotlinmania.rustlang.std.io.error.Error>(File(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<File, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }))
     }
 
     /**
@@ -721,9 +721,7 @@ public open class File(
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.File = this.inner
 
-    public open fun fmt(f: StringBuilder) {
-        this.inner.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.inner.fmt(f)
 
     /**
      * Reads some bytes from the file.
@@ -774,14 +772,14 @@ public open class File(
     // Reserves space in the buffer based on the file size when available.
     public open fun readToEnd(buf: List<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val size = bufferCapacityRequired(this)
-        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
         return defaultReadToEnd(this, buf, size)
     }
 
     // Reserves space in the buffer based on the file size when available.
     public open fun readToString(buf: String): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
         val size = bufferCapacityRequired(this)
-        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        when (val tryResult = buf.tryReserve((size ?: 0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
         return defaultReadToString(this, buf, size)
     }
 
@@ -1139,7 +1137,7 @@ public sealed class TryLockError {
      */
     public data object WouldBlock : TryLockError()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is TryLockError.Error -> {
                 val (err) = this
@@ -1147,14 +1145,12 @@ public sealed class TryLockError {
             }
             TryLockError.WouldBlock -> "WouldBlock".fmt(f)
         }
-    }
 
-    public open fun fmtDisplay(f: StringBuilder) {
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is TryLockError.Error -> "lock acquisition failed due to I/O error"
             TryLockError.WouldBlock -> "lock acquisition failed because the operation would block"
         }.fmt(f)
-    }
 }
 
 /**
@@ -1468,7 +1464,7 @@ public open class Dir(
      * ```
      */
     public open fun tryClone(): Result<Dir, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        return Result.Ok(Dir(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }))
+        return Result.Ok<Dir, io.github.kotlinmania.rustlang.std.io.error.Error>(Dir(inner = when (val tryResult = this.inner.duplicate()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Dir, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }))
     }
 
     /**
@@ -1527,9 +1523,7 @@ public open class Dir(
 
     public override fun intoInner(): io.github.kotlinmania.rustlang.std.sys.fs.common.Dir = this.inner
 
-    public open fun fmt(f: StringBuilder) {
-        this.inner.fmt(f)
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.inner.fmt(f)
 
     public companion object {
         /**
@@ -1871,7 +1865,7 @@ public open class Metadata(
      */
     public open fun created(): Result<SystemTime, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.created().map(FromInner::fromInner)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
         val debug = DebugStruct(f, "Metadata")
         debug.field("file_type", this.fileType())
         debug.field("permissions", this.permissions())
@@ -1897,7 +1891,7 @@ public open class Metadata(
             }
             else -> {}
         }
-        debug.finishNonExhaustive()
+        return debug.finishNonExhaustive()
     }
 
     public override fun intoInner(): FileAttr = this.value
@@ -2140,9 +2134,7 @@ public open class DirEntry(
      */
     public open fun fileName(): OsString = this.value.fileName()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "DirEntry").field(this.path()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugTuple(f, "DirEntry").field(this.path()).finish()
 
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.DirEntry = this.value
 }
@@ -2721,9 +2713,7 @@ public open class FileType(
      */
     public open fun isSymlink(): Boolean = this.value.isSymlink()
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "FileType").field("is_file", this.isFile()).field("is_dir", this.isDir()).field("is_symlink", this.isSymlink()).finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "FileType").field("is_file", this.isFile()).field("is_dir", this.isDir()).field("is_symlink", this.isSymlink()).finishNonExhaustive()
 
     public override fun asInner(): io.github.kotlinmania.rustlang.std.sys.fs.unix.FileType = this.value
 }
@@ -2781,7 +2771,7 @@ public open class DirBuilder(
         // if path's parent is None, it is "/" path, which should
         // return Ok immediately
         if (path.isEmpty() || path.parent() == null) {
-            return Result.Ok(Unit)
+            return Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
         }
         val ancestors = path.ancestors()
         var uncreatedDirs = 0
@@ -2795,22 +2785,22 @@ public open class DirBuilder(
             run {
                 val matchVal = this.inner.mkdir(ancestor)
                 when {
-                    matchVal is Result.Ok<*, *> -> { break }
-                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.NotFound -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                    matchVal is Result.Ok -> { break }
+                    matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.NotFound -> {
+                        val e = matchVal.error
                         uncreatedDirs += 1
                     }
                     // we check if the err is AlreadyExists for two reasons
                     // - in case the path exists as a *file*
                     // - and to avoid calls to .isDir() in case of other errs
                     // (i.e. PermissionDenied)
-                    matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.AlreadyExists && ancestor.isDir() -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                    matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.AlreadyExists && ancestor.isDir() -> {
+                        val e1 = matchVal.error
                         break
                     }
                     else -> {
-                        val e2 = (matchVal as Result.Err<*, *>).error
-                        return Result.Err(e2)
+                        val e2 = matchVal.error
+                        return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(e2)
                     }
                 }
             }
@@ -2823,13 +2813,13 @@ public open class DirBuilder(
                 is Err -> {
                     val e3 = matchVal1.error
                     if (e3.kind() != ErrorKind.AlreadyExists || !uncreatedDir.isDir()) {
-                        return Result.Err(e3)
+                        return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(e3)
                     }
                 }
                 else -> {}
             }
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(Unit)
     }
 
     public override fun asInnerMut(): io.github.kotlinmania.rustlang.std.sys.fs.unix.DirBuilder = this.inner
@@ -2881,11 +2871,11 @@ public open class DirBuilder(
  */
 public fun read(path: Path): Result<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error> {
     fun inner(path1: Path): Result<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        val file = when (val tryResult = File.open(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val file = when (val tryResult = File.open(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
         val size = file.metadata().map({ m -> Int.tryFrom(m.len()).unwrapOr(Int.MAX_VALUE) }).ok()
-        val bytes = when (val tryResult = Vec.tryWithCapacity(size.unwrapOr(0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = defaultReadToEnd(file, bytes, size)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(bytes)
+        val bytes = when (val tryResult = Vec.tryWithCapacity(size.unwrapOr(0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+        when (val tryResult = defaultReadToEnd(file, bytes, size)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+        return Result.Ok<List<UByte>, io.github.kotlinmania.rustlang.std.io.error.Error>(bytes)
     }
     return inner(path)
 }
@@ -2924,12 +2914,12 @@ public fun read(path: Path): Result<List<UByte>, io.github.kotlinmania.rustlang.
  */
 public fun readToString(path: Path): Result<String, io.github.kotlinmania.rustlang.std.io.error.Error> {
     fun inner(path1: Path): Result<String, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        val file = when (val tryResult = File.open(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val file = when (val tryResult = File.open(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
         val size = file.metadata().map({ m -> Int.tryFrom(m.len()).unwrapOr(Int.MAX_VALUE) }).ok()
         val string = ""
-        when (val tryResult = string.tryReserveExact(size.unwrapOr(0))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        when (val tryResult = defaultReadToString(file, string, size)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-        return Result.Ok(string)
+        when (val tryResult = string.tryReserveExact(size.unwrapOr(0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+        when (val tryResult = defaultReadToString(file, string, size)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<String, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }
+        return Result.Ok<String, io.github.kotlinmania.rustlang.std.io.error.Error>(string)
     }
     return inner(path)
 }
@@ -2962,7 +2952,7 @@ public fun readToString(path: Path): Result<String, io.github.kotlinmania.rustla
  */
 public fun write(path: Path, contents: List<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
     fun inner(path1: Path, contents1: List<UByte>): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> {
-        return when (val tryResult = File.create(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.writeAll(contents1)
+        return when (val tryResult = File.create(path1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, io.github.kotlinmania.rustlang.std.io.error.Error>(tryResult.error) }.writeAll(contents1)
     }
     return inner(path, contents)
 }

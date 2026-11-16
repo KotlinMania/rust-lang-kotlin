@@ -18,7 +18,7 @@ public interface SizedTypeProperties {
         get() = (UnresolvedTypeLayout<SizedTypeProperties>()).alignBytes.toInt()
 
     public val ALIGNMENT: Alignment
-        get() = Alignment.new(SizedTypeProperties.ALIGN).unwrap()
+        get() = Alignment.new(SizedTypeProperties.ALIGN)!!
 
     /**
      * `true` if this type requires no storage.
@@ -27,10 +27,14 @@ public interface SizedTypeProperties {
      * # Examples
      *
      * ```kotlin
+     * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+     * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+     * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+     *
      * @feature(sizedTypeProperties)
      * public fun doctestEntry() {
-     *     fun <T> doSomethingWith() {
-     *         if (T.IS_ZST) {
+     *     fun <T> doSomethingWith(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+     *         if (((typeLayoutT).sizeBytes == 0L)) {
      *             // ... special approach ...
      *         } else {
      *             // ... the normal thing ...
@@ -39,9 +43,9 @@ public interface SizedTypeProperties {
      *     open class MyUnit
      *     check(MyUnit.IS_ZST)
      *     // For negative checks, consider using UFCS to emphasize the negation
-     *     check(Int.IS_ZST.inv())
+     *     check((((PrimitiveLayouts.I32).sizeBytes == 0L)).inv())
      *     // As it can sometimes hide in the type otherwise
-     *     check(String.IS_ZST.inv())
+     *     check((((UnresolvedTypeLayout<String>()).sizeBytes == 0L)).inv())
      * }
      * ```
      */
@@ -58,12 +62,11 @@ public interface SizedTypeProperties {
      * which is never allowed for a single object.
      */
     public val MAX_SLICE_LEN: Int
-        get() =
-            when (val matchVal = SizedTypeProperties.SIZE) {
-                0 -> Int.MAX_VALUE
-                else -> {
-                    val n = matchVal
-                    (Int.MAX_VALUE) / n
-                }
-            }
+        get() = when (val matchVal = SizedTypeProperties.SIZE) {
+        0 -> Int.MAX_VALUE
+        else -> {
+            val n = matchVal
+            (Int.MAX_VALUE) / n
+        }
+    }
 }

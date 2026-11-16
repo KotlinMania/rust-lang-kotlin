@@ -21,30 +21,20 @@ public open class FieldRepresentingType<T>(
     public var phantom: Unit,
 )
 
-public fun <T> FieldRepresentingType<T, Variant, Field>.fmt(f: StringBuilder, variant: UInt, field: UInt): Result<Unit, Unit> {
+public fun <T> FieldRepresentingType<T, Field>.fmt(f: StringBuilder, variant: UInt, field: UInt): Result<Unit, Unit> {
     sealed class Member {
-        public data class Name(
-            public var value: String,
-        ) : Member()
-        public data class Index(
-            public var value: UInt,
-        ) : Member()
+        public data class Name(public var value: String) : Member()
+        public data class Index(public var value: UInt) : Member()
 
         public open fun fmt(f1: StringBuilder): Result<Unit, Unit> =
             when (this) {
                 is Name -> {
                     val (name) = this
-                    run {
-                        f1.append((name).toString())
-                        Result.Ok(Unit)
-                    }
+                    run { f1.append((name).toString()); Result.Ok(Unit) }
                 }
                 is Index -> {
                     val (idx) = this
-                    run {
-                        f1.append((idx).toString())
-                        Result.Ok(Unit)
-                    }
+                    run { f1.append((idx).toString()); Result.Ok(Unit) }
                 }
             }
     }
@@ -80,19 +70,19 @@ public fun <T> FieldRepresentingType<T, Variant, Field>.fmt(f: StringBuilder, va
     // `
 }
 
-public fun <T> FieldRepresentingType<T, Variant, Field>.clone(variant: UInt, field: UInt): FieldRepresentingType<T, Variant, Field> = FieldRepresentingType(this.phantom)
+public fun <T> FieldRepresentingType<T, Field>.clone(variant: UInt, field: UInt): FieldRepresentingType<T, Field> = FieldRepresentingType(this.phantom)
 
-public fun <T> defaultFieldRepresentingTypeTVariantField(variant: UInt, field: UInt): FieldRepresentingType<T, Variant, Field> = FieldRepresentingType(phantom = Unit)
+public fun <T> defaultFieldRepresentingTypeTVariantField(variant: UInt, field: UInt): FieldRepresentingType<T, Field> = FieldRepresentingType(phantom = Unit)
 
-public fun <T, H> FieldRepresentingType<T, Variant, Field>.hash(state: H, variant: UInt, field: UInt) {
+public fun <T, H> FieldRepresentingType<T, Field>.hash(state: H, variant: UInt, field: UInt) {
     this.phantom.hash(state)
 }
 
-public fun <T> FieldRepresentingType<T, Variant, Field>.eq(other: FieldRepresentingType<T, Variant, Field>, variant: UInt, field: UInt): Boolean = this.phantom == other.phantom
+public fun <T> FieldRepresentingType<T, Field>.eq(other: FieldRepresentingType<T, Field>, variant: UInt, field: UInt): Boolean = this.phantom == other.phantom
 
-public fun <T> FieldRepresentingType<T, Variant, Field>.partialCmp(other: FieldRepresentingType<T, Variant, Field>, variant: UInt, field: UInt): Ordering? = this.phantom.partialCmp(other.phantom)
+public fun <T> FieldRepresentingType<T, Field>.partialCmp(other: FieldRepresentingType<T, Field>, variant: UInt, field: UInt): Ordering? = this.phantom.partialCmp(other.phantom)
 
-public fun <T> FieldRepresentingType<T, Variant, Field>.cmp(other: FieldRepresentingType<T, Variant, Field>, variant: UInt, field: UInt): Ordering = this.phantom.cmp(other.phantom)
+public fun <T> FieldRepresentingType<T, Field>.cmp(other: FieldRepresentingType<T, Field>, variant: UInt, field: UInt): Ordering = this.phantom.cmp(other.phantom)
 
 // NOTE: the compiler provides the impl of `Field` for `FieldRepresentingType` when it can guarantee
 // the safety requirements of this trait. It also has to manually add the correct trait bounds on

@@ -90,7 +90,7 @@ public fun <T> quicksort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
  * If `isLess` is not a strict total order or panics, `scratch.len()<v.len()`,
  * or `pivotPos >= v.len()`, the result and `v`s state is sound but unspecified.
  */
-public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, pivotPos: Int, pivotGoesLeft: Boolean, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, pivotPos: Int, pivotGoesLeft: Boolean, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     val len = v.size
     if (scratch.size < len || pivotPos >= len) {
         kmAbort()
@@ -245,7 +245,7 @@ public open class PartitionState<T>(
          * `scan` and `scratch` must point to valid disjoint buffers of length `len`. The
          * scan buffer must be initialized.
          */
-        public fun <T> new(scan: ConstPtr, scratch: MutPtr, len: Int, typeLayoutT: TypeLayout<T>): PartitionState<T> {
+        public fun <T> new(scan: ConstPtr, scratch: MutPtr, len: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): PartitionState<T> {
             // SAFETY: See function safety comment.
             return PartitionState(scratchBase = scratch, scan = scan, numLeft = 0, scratchRev = MutPtr((scratch).rawAddress + ((len).toLong() * (typeLayoutT).strideBytes)))
         }

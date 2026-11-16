@@ -2,12 +2,14 @@
 package io.github.kotlinmania.rustlang.std.sync.mpmc.zero
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -43,9 +45,7 @@ public open class ZeroToken internal constructor(
             value = v
         }
 
-    public open fun fmt(f: StringBuilder) {
-        f.append(((this.value).rawAddress.toInt()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(((this.value).rawAddress.toInt()).toString()); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<ZeroToken> =
@@ -86,7 +86,7 @@ public open class Packet<T> internal constructor(
      * Equals `true` if the packet is allocated on the stack.
      */
     public var onStack: Boolean,
-    readyCtorArg: Atomic<Boolean>,
+    readyCtorArg: Atomic<Boolean, Align1<UByte>>,
     /**
      * The message.
      */
@@ -95,7 +95,7 @@ public open class Packet<T> internal constructor(
     /**
      * Equals `true` once the packet is ready for reading or writing.
      */
-    public var ready: Atomic<Boolean> = readyCtorArg
+    public var ready: Atomic<Boolean, Align1<UByte>> = readyCtorArg
         internal set
 
     /**
@@ -111,7 +111,7 @@ public open class Packet<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             onStack: Boolean,
-            ready: Atomic<Boolean>,
+            ready: Atomic<Boolean, Align1<UByte>>,
             msg: UnsafeCell<T?>,
         ): Packet<T> = Packet<T>(
             onStack = onStack,
@@ -168,26 +168,26 @@ public open class Channel<T> internal constructor(
     /**
      * Writes a message into the packet.
      */
-    public open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T>): Result<Unit, T> {
+    public open fun write(token: Token, msg: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<Unit, T> {
         // If there is no packet, the channel is disconnected.
         if (((token.zero.value).rawAddress == 0L)) {
-            return Result.Err(msg)
+            return Result.Err<Unit, T>(msg)
         }
         run {
             val packet = (UnresolvedTypeLayout<Packet<T>>()).readNative((((token.zero.value).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             packet.msg.get().write(msg)
             packet.ready.store(true, Ordering.Release)
         }
-        return Result.Ok(Unit)
+        return Result.Ok<Unit, T>(Unit)
     }
 
     /**
      * Reads a message from the packet.
      */
-    public open fun read(token: Token, typeLayoutT: TypeLayout<T>): Result<T, Unit> {
+    public open fun read(token: Token, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<T, Unit> {
         // If there is no packet, the channel is disconnected.
         if (((token.zero.value).rawAddress == 0L)) {
-            return Result.Err(Unit)
+            return Result.Err<T, Unit>(Unit)
         }
         val packet = (UnresolvedTypeLayout<Packet<T>>()).readNative((((token.zero.value).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         return if (packet.onStack) {
@@ -196,7 +196,7 @@ public open class Channel<T> internal constructor(
             // order to signal that the packet can be destroyed.
             val msg = packet.msg.get().replace(null).unwrap()
             packet.ready.store(true, Ordering.Release)
-            Result.Ok(msg)
+            Result.Ok<T, Unit>(msg)
         } else {
             // Wait until the message becomes available, then read it and destroy the
             // heap-allocated packet.
@@ -204,7 +204,7 @@ public open class Channel<T> internal constructor(
             run {
                 val msg1 = packet.msg.get().replace(null).unwrap()
                 (Box.fromRaw((token.zero.value).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).let { }
-                Result.Ok(msg1)
+                Result.Ok<T, Unit>(msg1)
             }
         }
     }
@@ -219,9 +219,9 @@ public open class Channel<T> internal constructor(
         return when (val matchVal = inner.receivers.trySelect()) {
             null -> {
                 if (inner.isDisconnected) {
-                    Result.Err(TrySendError.Disconnected(msg))
+                    Result.Err<Unit, TrySendError<T>>(TrySendError.Disconnected(msg))
                 } else {
-                    Result.Err(TrySendError.Full(msg))
+                    Result.Err<Unit, TrySendError<T>>(TrySendError.Full(msg))
                 }
             }
             else -> {
@@ -231,7 +231,7 @@ public open class Channel<T> internal constructor(
                 run {
                     this.write(token, msg).ok()!!
                 }
-                Result.Ok(Unit)
+                Result.Ok<Unit, TrySendError<T>>(Unit)
             }
         }
     }
@@ -252,11 +252,11 @@ public open class Channel<T> internal constructor(
                 run {
                     this.write(token, msg).ok()!!
                 }
-                return Result.Ok(Unit)
+                return Result.Ok<Unit, SendTimeoutError<T>>(Unit)
             }
         }
         if (inner.isDisconnected) {
-            return Result.Err(SendTimeoutError.Disconnected(msg))
+            return Result.Err<Unit, SendTimeoutError<T>>(SendTimeoutError.Disconnected(msg))
         }
         return Context.with({ cx ->
             // Prepare for blocking until a receiver wakes us up.
@@ -299,9 +299,9 @@ public open class Channel<T> internal constructor(
         return when (val matchVal = inner.senders.trySelect()) {
             null -> {
                 if (inner.isDisconnected) {
-                    Result.Err(TryRecvError.Disconnected)
+                    Result.Err<T, TryRecvError>(TryRecvError.Disconnected)
                 } else {
-                    Result.Err(TryRecvError.Empty)
+                    Result.Err<T, TryRecvError>(TryRecvError.Empty)
                 }
             }
             else -> {
@@ -332,7 +332,7 @@ public open class Channel<T> internal constructor(
             }
         }
         if (inner.isDisconnected) {
-            return Result.Err(RecvTimeoutError.Disconnected)
+            return Result.Err<T, RecvTimeoutError>(RecvTimeoutError.Disconnected)
         }
         return Context.with({ cx ->
             // Prepare for blocking until a sender wakes us up.

@@ -296,7 +296,7 @@ public fun <T> forgetUnsized(t: T) {}
  * [const.T]: primitive@pointer
  * [Box.T]: ../../std/boxed/struct.Holder.html
  */
-public fun <T> sizeOf(): Int {
+public fun <T> sizeOf(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // By making this a constant, we also guarantee that the constant can be successfully evaluated
     // in any program execution that actually executes `sizeOf`. Which is relevant because the
     // constant can fail to evaluate if the type is too big. Someone might do something cursed where
@@ -304,7 +304,7 @@ public fun <T> sizeOf(): Int {
     // sizeOf on the type to ensure it exists, so if we fully DCE'd sizeOf calls that would be
     // considered unsound... but by making this a constant, it participates in the usual "required
     // consts" system, and we are safe.
-    return sizedTypePropertiesSizeT
+    return (typeLayoutT).sizeBytes.toInt()
 }
 
 /**
@@ -331,7 +331,7 @@ public fun <T> sizeOf(): Int {
  *
  * [sizeOf.T]: sizeOf
  */
-public fun <T> sizeOfVal(value: T, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> sizeOfVal(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: `val` is a reference, so it's a valid raw pointer
     return (typeLayoutT).sizeBytes.toInt()
 }
@@ -389,7 +389,7 @@ public fun <T> sizeOfVal(value: T, typeLayoutT: TypeLayout<T>): Int {
  * }
  * ```
  */
-public fun <T> sizeOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> sizeOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: the caller must provide a valid raw pointer
     return (if (value.rawMeta > 0L) (value.rawMeta * (typeLayoutT).sizeBytes).toInt() else (typeLayoutT).sizeBytes.toInt())
 }
@@ -411,7 +411,7 @@ public fun <T> sizeOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
  * check(4 == mem.minAlignOf<Int>())
  * ```
  */
-public fun <T> minAlignOf(): Int = sizedTypePropertiesAlignT
+public fun <T> minAlignOf(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int = (typeLayoutT).alignBytes.toInt()
 
 /**
  * Returns the [ABI]-required minimum alignment of the type of the value that `val` points to in
@@ -429,7 +429,7 @@ public fun <T> minAlignOf(): Int = sizedTypePropertiesAlignT
  * check(4 == mem.minAlignOfVal(5))
  * ```
  */
-public fun <T> minAlignOfVal(value: T, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> minAlignOfVal(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: val is a reference, so it's a valid raw pointer
     return (typeLayoutT).alignBytes.toInt()
 }
@@ -454,7 +454,7 @@ public fun <T> minAlignOfVal(value: T, typeLayoutT: TypeLayout<T>): Int {
  *
  * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
  */
-public fun <T> alignOf(): Int = sizedTypePropertiesAlignT
+public fun <T> alignOf(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int = (typeLayoutT).alignBytes.toInt()
 
 /**
  * Returns the [ABI]-required minimum alignment of the type of the value that `val` points to, in
@@ -487,7 +487,7 @@ public fun <T> alignOf(): Int = sizedTypePropertiesAlignT
  *
  * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
  */
-public fun <T> alignOfVal(value: T, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> alignOfVal(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: val is a reference, so it's a valid raw pointer
     return (typeLayoutT).alignBytes.toInt()
 }
@@ -545,7 +545,7 @@ public fun <T> alignOfVal(value: T, typeLayoutT: TypeLayout<T>): Int {
  *
  * [type-layout]: ../../reference/type-layout.html#r-layout.primitive
  */
-public fun <T> alignOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> alignOfValRaw(value: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     // SAFETY: the caller must provide a valid raw pointer
     return (typeLayoutT).alignBytes.toInt()
 }
@@ -714,7 +714,7 @@ public inline fun <reified T> uninitialized(): T {
  * check(5 == y)
  * ```
  */
-public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T>) {
+public fun <T> swap(x: T, y: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY:  guarantees these are typed readable and writable
     // as well as non-overlapping.
     typedSwapNonoverlapping(x, y, typeLayoutT = typeLayoutT)
@@ -826,7 +826,7 @@ public fun <T> take(dest: T, defaultTFn: () -> T): T = replace(dest, defaultTFn(
  * check(buffer.buf[0] == 2)
  * ```
  */
-public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T>): T {
+public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // It may be tempting to use `swap` to avoid `unchecked` here. Don't!
     // The compiler optimizes the implementation below to two `memcpy`s
     // while `swap` would require at least three. See PR#83022 for details.
@@ -999,12 +999,12 @@ public fun <T> copy(x: T): T = x
  * }
  * ```
  */
-public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst>, typeLayoutSrc: TypeLayout<Src>): Dst {
+public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout(), typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout()): Dst {
     // library UB because it's possible for the `Src` to be only a subset of the allocation
     // and thus for a failure to not be immediate language UB
     Unit
     // If Dst has a higher alignment requirement, src might not be suitably aligned.
-    return if (alignOf<Dst>() > alignOfVal<Src>(src, typeLayoutT = typeLayoutSrc)) {
+    return if (alignOf<Dst>(typeLayoutT = typeLayoutDst) > alignOfVal<Src>(src, typeLayoutT = typeLayoutSrc)) {
         // SAFETY: `src` is a reference which is guaranteed to be valid for reads.
         // The caller must guarantee that the actual transmutation is safe.
         readUnaligned((constPtrFromRustCast(src)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, typeLayoutT = typeLayoutDst)
@@ -1064,26 +1064,24 @@ public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst>, ty
  * }
  * ```
  */
-public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src>, typeLayoutDst: TypeLayout<Dst>): Dst {
+public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout(), typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout()): Dst {
     open class Transmute<A, B>(
         public var a: A? = null,
         public var b: B? = null,
     )
-    return when (Src.SIZE.cmp(Dst.SIZE)) {
+    return when (((typeLayoutSrc).sizeBytes.toInt()).cmp((typeLayoutDst).sizeBytes.toInt())) {
         // SAFETY: When Dst is bigger, the union is the size of Dst
-        Ordering.Less ->
-            run {
-                val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
-                transmuteUnchecked(Transmute(a = a))
-            }
+        Ordering.Less -> run {
+            val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
+            transmuteUnchecked(Transmute(a = a))
+        }
         // SAFETY: When they're the same size, we can use the MIR primitive
         Ordering.Equal -> transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
         // SAFETY: When Src is bigger, the union is the size of Src
-        Ordering.Greater ->
-            run {
-                val u: Transmute<Src, Dst> = transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
-                transmuteNeo(u.b, typeLayoutSrc = UnresolvedTypeLayout<B>())
-            }
+        Ordering.Greater -> run {
+            val u: Transmute<Src, Dst> = transmuteWithLayouts(src, typeLayoutSrc, typeLayoutDst)
+            transmuteNeo(u.b, typeLayoutSrc = UnresolvedTypeLayout<B>())
+        }
     }
 }
 
@@ -1119,8 +1117,8 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src>, 
  * unchecked { transmuteNeo::<u32, u16>(123) };
  * ```
  */
-public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src>): Dst {
-    check(Src.SIZE == Dst.SIZE)
+public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout()): Dst {
+    check((typeLayoutSrc).sizeBytes.toInt() == (UnresolvedTypeLayout<Dst>()).sizeBytes.toInt())
     // SAFETY: the const-assert just checked that they're the same size,
     // and any other safety invariants need to be upheld by the caller.
     return transmuteWithLayouts(src, typeLayoutSrc, UnresolvedTypeLayout<Dst>())
@@ -1296,7 +1294,7 @@ public fun <T> variantCount(): Int = 1
  * [inhabited]: https://doc.rust-lang.org/reference/glossary.html#inhabited
  */
 public inline fun <reified T> conjureZst(): T {
-    constAssert(T.IS_ZST, "mem::conjure_zst invoked on a non-zero-sized type", "mem::conjure_zst invoked on type {name}, which is not zero-sized", name, any, typeName, T)
+    constAssert(((UnresolvedTypeLayout<T>()).sizeBytes == 0L), "mem::conjure_zst invoked on a non-zero-sized type", "mem::conjure_zst invoked on type {name}, which is not zero-sized", name, any, typeName, T)
     // SAFETY: because the caller must guarantee that it's inhabited and zero-sized,
     // there's nothing in the representation that needs to be set.
     // `assumeInit` calls `assertInhabited`, so we don't need to here.

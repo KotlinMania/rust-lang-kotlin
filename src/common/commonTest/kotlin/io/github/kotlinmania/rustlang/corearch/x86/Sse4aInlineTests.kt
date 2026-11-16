@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -12,12 +13,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 // `i686`s Streaming SIMD Extensions 4a (`SSE4a`)
 
 // Normally this requires SSE2, but for tests it does not matter whether we use the instruction.
-public fun mmCvtsi128Si64(a: M128i): Long =
-    run {
-        val _simdArg0 = a.asI64x2()
-        val _simdArg1 = 0L
-        _simdArg0
-    }
+public fun mmCvtsi128Si64(a: M128i): Long = run { val _simdArg0 = a.asI64x2(); val _simdArg1 = 0L; _simdArg0 }
 
 public fun testMmExtractSi64() {
     val b = 0x600L
@@ -76,22 +72,20 @@ public fun testMmInsertiSi64() {
 
 public open class MemoryF64 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<DoubleArray>,
+    public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
 ) {
     public var data: DoubleArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<MemoryF64> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MemoryF64(ptr, layout) }, { it.data })
 
     public companion object {
-        public operator fun invoke(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>): MemoryF64 = MemoryF64(data, fieldLayout)
+        public operator fun invoke(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MemoryF64 = MemoryF64(data, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray>): MemoryF64 = MemoryF64(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()): MemoryF64 = MemoryF64(fieldStorage, fieldLayout)
     }
 }
 
@@ -114,22 +108,20 @@ public fun testMmStreamSd() {
 
 public open class MemoryF32 internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<FloatArray>,
+    public val fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout(),
 ) {
     public var data: FloatArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
+    internal constructor(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 16L)), AlignedTypeLayout(fieldLayout, 16L))
 
     public fun pointerLayout(): TypeLayout<MemoryF32> = TransparentTypeLayout(fieldLayout, { ptr, layout -> MemoryF32(ptr, layout) }, { it.data })
 
     public companion object {
-        public operator fun invoke(data: FloatArray, fieldLayout: TypeLayout<FloatArray>): MemoryF32 = MemoryF32(data, fieldLayout)
+        public operator fun invoke(data: FloatArray, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MemoryF32 = MemoryF32(data, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray>): MemoryF32 = MemoryF32(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<FloatArray> = UnresolvedTypeLayout()): MemoryF32 = MemoryF32(fieldStorage, fieldLayout)
     }
 }
 

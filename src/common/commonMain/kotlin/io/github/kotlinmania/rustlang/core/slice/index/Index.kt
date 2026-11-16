@@ -6,9 +6,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
@@ -18,7 +20,6 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
 import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.range.Range
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Indexing implementations for `[T]`.
@@ -46,14 +47,14 @@ public fun sliceIndexFail(start: Int, end: Int, len: Int): Nothing {
 // them in safe indexing is unnecessary and hurts inlining and debug runtime perf.
 // Both the safe and unchecked public methods share these helpers,
 // which use intrinsics directly to get *no* extra checks.
-public fun <T> getOffsetLenNoubcheck(ptr: ConstPtr, offset: Int, len: Int, typeLayoutT: TypeLayout<T>): ConstPtr {
+public fun <T> getOffsetLenNoubcheck(ptr: ConstPtr, offset: Int, len: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     val ptr1 = ConstPtr(ptr.rawAddress, ptr.rawMeta)
     // SAFETY: The caller already checked these preconditions
     val ptr2 = ConstPtr(ptr1.rawAddress + (offset).toLong() * (typeLayoutT).strideBytes)
     return ConstPtr(ptr2.rawAddress, (len).toLong())
 }
 
-public fun <T> getOffsetLenMutNoubcheck(ptr: MutPtr, offset: Int, len: Int, typeLayoutT: TypeLayout<T>): MutPtr {
+public fun <T> getOffsetLenMutNoubcheck(ptr: MutPtr, offset: Int, len: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutPtr {
     val ptr1 = MutPtr(ptr.rawAddress, ptr.rawMeta)
     // SAFETY: The caller already checked these preconditions
     val ptr2 = MutPtr(ptr1.rawAddress + (offset).toLong() * (typeLayoutT).strideBytes)
@@ -283,23 +284,23 @@ public fun <T> Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
 }
 
-public fun <T> IntRange.get(slice: List<T>): List<T>? = Range.from(this).get(slice)
+public fun <T> range.Range<Int>.get(slice: List<T>): List<T>? = Range.from(this).get(slice)
 
-public fun <T> IntRange.getMut(slice: MutableList<T>): MutableList<T>? = Range.from(this).getMut(slice)
+public fun <T> range.Range<Int>.getMut(slice: MutableList<T>): MutableList<T>? = Range.from(this).getMut(slice)
 
-public fun IntRange.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun range.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return Range.from(this).getUnchecked(slice)
 }
 
-public fun IntRange.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun range.Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return Range.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> IntRange.index(slice: List<T>): List<T> = Range.from(this).index(slice)
+public fun <T> range.Range<Int>.index(slice: List<T>): List<T> = Range.from(this).index(slice)
 
-public fun <T> IntRange.indexMut(slice: MutableList<T>): MutableList<T> = Range.from(this).indexMut(slice)
+public fun <T> range.Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> = Range.from(this).indexMut(slice)
 
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
@@ -361,23 +362,23 @@ public fun <T> RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
 }
 
-public fun <T> RangeFrom<Int>.getTSlice(slice: List<T>): List<T>? = RangeFrom.from(this).get(slice)
+public fun <T> range.RangeFrom<Int>.get(slice: List<T>): List<T>? = RangeFrom.from(this).get(slice)
 
-public fun <T> RangeFrom<Int>.getMutTSlice(slice: MutableList<T>): MutableList<T>? = RangeFrom.from(this).getMut(slice)
+public fun <T> range.RangeFrom<Int>.getMut(slice: MutableList<T>): MutableList<T>? = RangeFrom.from(this).getMut(slice)
 
-public fun RangeFrom<Int>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
+public fun range.RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return RangeFrom.from(this).getUnchecked(slice)
 }
 
-public fun RangeFrom<Int>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
+public fun range.RangeFrom<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return RangeFrom.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> RangeFrom<Int>.indexTSlice(slice: List<T>): List<T> = RangeFrom.from(this).index(slice)
+public fun <T> range.RangeFrom<Int>.index(slice: List<T>): List<T> = RangeFrom.from(this).index(slice)
 
-public fun <T> RangeFrom<Int>.indexMutTSlice(slice: MutableList<T>): MutableList<T> = RangeFrom.from(this).indexMut(slice)
+public fun <T> range.RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> = RangeFrom.from(this).indexMut(slice)
 
 public fun <T> RangeFull.get(slice: List<T>): List<T>? = slice
 
@@ -427,12 +428,11 @@ public fun <T> RangeInclusive<Int>.index(slice: List<T>): List<T> {
     val len = slice.size
     if (end < len) {
         end = end + 1
-        start =
-            if (exhausted) {
-                end
-            } else {
-                start
-            }
+        start = if (exhausted) {
+            end
+        } else {
+            start
+        }
         when (val matchVal = end.checkedSub(start.toInt())) {
             null -> {}
             else -> {
@@ -452,12 +452,11 @@ public fun <T> RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<
     val len = slice.size
     if (end < len) {
         end = end + 1
-        start =
-            if (exhausted) {
-                end
-            } else {
-                start
-            }
+        start = if (exhausted) {
+            end
+        } else {
+            start
+        }
         when (val matchVal = end.checkedSub(start.toInt())) {
             null -> {}
             else -> {
@@ -470,23 +469,23 @@ public fun <T> RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<
     return sliceIndexFail(start, end, slice.size)
 }
 
-public fun <T> IntRange.getTSlice(slice: List<T>): List<T>? = RangeInclusive.from(this).get(slice)
+public fun <T> range.RangeInclusive<Int>.get(slice: List<T>): List<T>? = RangeInclusive.from(this).get(slice)
 
-public fun <T> IntRange.getMutTSlice(slice: MutableList<T>): MutableList<T>? = RangeInclusive.from(this).getMut(slice)
+public fun <T> range.RangeInclusive<Int>.getMut(slice: MutableList<T>): MutableList<T>? = RangeInclusive.from(this).getMut(slice)
 
-public fun IntRange.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
+public fun range.RangeInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return RangeInclusive.from(this).getUnchecked(slice)
 }
 
-public fun IntRange.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
+public fun range.RangeInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return RangeInclusive.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> IntRange.indexTSlice(slice: List<T>): List<T> = RangeInclusive.from(this).index(slice)
+public fun <T> range.RangeInclusive<Int>.index(slice: List<T>): List<T> = RangeInclusive.from(this).index(slice)
 
-public fun <T> IntRange.indexMutTSlice(slice: MutableList<T>): MutableList<T> = RangeInclusive.from(this).indexMut(slice)
+public fun <T> range.RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<T> = RangeInclusive.from(this).indexMut(slice)
 
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
@@ -512,23 +511,23 @@ public fun <T> RangeToInclusive<Int>.indexMut(slice: MutableList<T>): MutableLis
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
  */
-public fun <T> RangeToInclusive<Int>.getTSlice(slice: List<T>): List<T>? = (0..this.last).get(slice)
+public fun <T> range.RangeToInclusive<Int>.get(slice: List<T>): List<T>? = (0..this.last).get(slice)
 
-public fun <T> RangeToInclusive<Int>.getMutTSlice(slice: MutableList<T>): MutableList<T>? = (0..this.last).getMut(slice)
+public fun <T> range.RangeToInclusive<Int>.getMut(slice: MutableList<T>): MutableList<T>? = (0..this.last).getMut(slice)
 
-public fun RangeToInclusive<Int>.getUncheckedTSlice(slice: ConstPtr): ConstPtr {
+public fun range.RangeToInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return (0..this.last).getUnchecked(slice)
 }
 
-public fun RangeToInclusive<Int>.getUncheckedMutTSlice(slice: MutPtr): MutPtr {
+public fun range.RangeToInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return (0..this.last).getUncheckedMut(slice)
 }
 
-public fun <T> RangeToInclusive<Int>.indexTSlice(slice: List<T>): List<T> = (0..this.last).index(slice)
+public fun <T> range.RangeToInclusive<Int>.index(slice: List<T>): List<T> = (0..this.last).index(slice)
 
-public fun <T> RangeToInclusive<Int>.indexMutTSlice(slice: MutableList<T>): MutableList<T> = (0..this.last).indexMut(slice)
+public fun <T> range.RangeToInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<T> = (0..this.last).indexMut(slice)
 
 /**
  * Performs bounds checking of a range.
@@ -674,13 +673,8 @@ public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>)
 }
 
 public sealed class RangeError {
-    public data class EndPastLen(
-        public var end: Int,
-    ) : RangeError()
-    public data class StartPastEnd(
-        public var start: Int,
-        public var end: Int,
-    ) : RangeError()
+    public data class EndPastLen(public var end: Int) : RangeError()
+    public data class StartPastEnd(public var start: Int, public var end: Int) : RangeError()
 
     public open fun report(len: Int): Nothing =
         when (this) {
@@ -705,7 +699,7 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
         when {
             end is Bound.Included && (end as Bound.Included).value >= len -> {
                 val (end) = end as Bound.Included
-                return Result.Err(RangeError.EndPastLen(end = end))
+                return Result.Err<Range<Int>, RangeError>(RangeError.EndPastLen(end = end))
             }
             // Cannot overflow because `end<len` implies `end<Int.MAX`.
             end is Bound.Included -> {
@@ -714,7 +708,7 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
             }
             end is Bound.Excluded && (end as Bound.Excluded).value > len -> {
                 val (end2) = end as Bound.Excluded
-                return Result.Err(RangeError.EndPastLen(end = end2))
+                return Result.Err<Range<Int>, RangeError>(RangeError.EndPastLen(end = end2))
             }
             end is Bound.Excluded -> {
                 val (end3) = end
@@ -726,7 +720,7 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
         when {
             start is Bound.Excluded && (start as Bound.Excluded).value >= end4 -> {
                 val (start) = start as Bound.Excluded
-                return Result.Err(RangeError.StartPastEnd(start = start, end = end4))
+                return Result.Err<Range<Int>, RangeError>(RangeError.StartPastEnd(start = start, end = end4))
             }
             // Cannot overflow because `start<end` implies `start<Int.MAX`.
             start is Bound.Excluded -> {
@@ -735,7 +729,7 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
             }
             start is Bound.Included && (start as Bound.Included).value > end4 -> {
                 val (start2) = start as Bound.Included
-                return Result.Err(RangeError.StartPastEnd(start = start2, end = end4))
+                return Result.Err<Range<Int>, RangeError>(RangeError.StartPastEnd(start = start2, end = end4))
             }
             start is Bound.Included -> {
                 val (start3) = start
@@ -743,7 +737,7 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
             }
             else -> 0
         }
-    return Result.Ok(start4 until end4)
+    return Result.Ok<Range<Int>, RangeError>(start4 until end4)
 }
 
 /**
@@ -753,16 +747,13 @@ public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>):
 public fun intoSliceRange(len: Int, bounds: Pair<Bound<Int>, Bound<Int>>): Range<Int> =
     run {
         val matchVal = tryIntoSliceRange(len, bounds)
-        when (matchVal) {
-            is Result.Ok<*, *> -> {
-                val range = matchVal.value
-                range
-            }
-            is Result.Err<*, *> -> {
-                val e = matchVal.error
-                e.report(len)
-            }
-        }
+        when (matchVal) { is Result.Ok -> {
+            val range = matchVal.value
+            range
+        }; is Result.Err -> {
+            val e = matchVal.error
+            e.report(len)
+        } }
     }
 
 public fun <T> Pair<Bound<Int>, Bound<Int>>.get(slice: List<T>): List<T>? {

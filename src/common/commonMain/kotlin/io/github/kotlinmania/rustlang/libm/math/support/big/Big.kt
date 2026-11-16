@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.libm.math.support.big
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
@@ -14,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.ops.bit.Shl
 import io.github.kotlinmania.rustlang.core.ops.bit.Shr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
@@ -107,13 +109,9 @@ public open class U256(
 
     public override fun hi(): U128 = this.hi
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtLowerHex(f: StringBuilder) {
-        cfgSelectNofmt(feature, "compiler-builtins", f, unsupportedBranch, pfx, f, alternate, "0x", "", write, f, "{pfx}{:032x}{:032x}", this, hi, this, lo)
-    }
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = cfgSelectNofmt(feature, "compiler-builtins", f, unsupportedBranch, pfx, f, alternate, "0x", "", write, f, "{pfx}{:032x}{:032x}", this, hi, this, lo)
 
     public companion object {
         public fun typeLayout(): TypeLayout<U256> =
@@ -242,13 +240,9 @@ public open class I256(
 
     public override fun hi(): I128 = this.hi
 
-    public open fun fmt(f: StringBuilder) {
-        f.append((this.unsigned()).toString())
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtLowerHex(f: StringBuilder) {
-        f.append((this.unsigned()).toString())
-    }
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Error> = run { f.append((this.unsigned()).toString()); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<I256> =

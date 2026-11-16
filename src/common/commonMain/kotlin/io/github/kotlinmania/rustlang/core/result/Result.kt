@@ -549,22 +549,15 @@ public typealias TryType<T, E> = Result<T, E>
  *
  * See the [module documentation](self) for details.
  */
-public sealed class Result<T, E> :
-    UseCloned<Result<T, E>>,
-    Try<Result<T, E>, T, Result<Nothing, E>> {
+public sealed class Result<T, E> : UseCloned<Result<T, E>>, Try<Result<T, E>, T, Result<Nothing, E>> {
     /**
      * Contains the success value
      */
-    public data class Ok<T, E>(
-        public var value: T,
-    ) : Result<T, E>()
-
+    public data class Ok<T, E>(public var value: T) : Result<T, E>()
     /**
      * Contains the error value
      */
-    public data class Err<T, E>(
-        public var value: E,
-    ) : Result<T, E>() {
+    public data class Err<T, E>(public var value: E) : Result<T, E>() {
         public val error: E get() = value
     }
 
@@ -1826,15 +1819,14 @@ public fun <T> unwrapFailed(msg: String, error: T): Nothing {
 public open class Iter<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Iter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Iter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): T? = this.inner.also { this.inner = null }
 
@@ -1861,15 +1853,14 @@ public open class Iter<T>(
 public open class IterMut<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IterMut.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IterMut.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun next(): T? = this.inner.also { this.inner = null }
 
@@ -1899,15 +1890,14 @@ public open class IterMut<T>(
 public open class IntoIter<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@IntoIter.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@IntoIter.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): IntoIter<T> = IntoIter(inner)
 

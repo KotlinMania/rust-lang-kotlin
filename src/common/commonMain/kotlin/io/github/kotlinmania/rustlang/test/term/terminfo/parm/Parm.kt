@@ -117,7 +117,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                     val (c1) = matchVal as Number
                                     output.add(c1.toUByte())
                                 }
-                                else -> { return Result.Err("stack is empty".toString()) }
+                                else -> { return Result.Err<List<UByte>, String>("stack is empty".toString()) }
                             }
                         }
                     }
@@ -127,8 +127,8 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                     '\'' -> state = CharConstant
                     '{' -> state = IntConstant(0)
                     'l' -> when (val matchVal1 = stack.removeLastOrNull()) {
-                        null -> { return Result.Err("stack is empty".toString()) }
-                        else -> { return Result.Err("a non-str was used with %l".toString()) }
+                        null -> { return Result.Err<List<UByte>, String>("stack is empty".toString()) }
+                        else -> { return Result.Err<List<UByte>, String>("a non-str was used with %l".toString()) }
                     }
                     '+', '-', '/', '*', '^', '&', '|', 'm' -> {
                         run {
@@ -149,7 +149,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                         else -> error("All cases handled")
                                     }))
                                 }
-                                else -> { return Result.Err("stack is empty".toString()) }
+                                else -> { return Result.Err<List<UByte>, String>("stack is empty".toString()) }
                             }
                         }
                     }
@@ -172,7 +172,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                     0
                                 }))
                             }
-                            else -> { return Result.Err("stack is empty".toString()) }
+                            else -> { return Result.Err<List<UByte>, String>("stack is empty".toString()) }
                         }
                     }
                     '!', '~' -> when (val matchVal4 = stack.removeLastOrNull()) {
@@ -185,7 +185,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                                 else -> error("unreachable")
                             }))
                         }
-                        null -> { return Result.Err("stack is empty".toString()) }
+                        null -> { return Result.Err<List<UByte>, String>("stack is empty".toString()) }
                     }
                     'i' -> run {
                         val matchVal5 = Pair(mparams[0], mparams[1])
@@ -202,12 +202,12 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                     'd', 'o', 'x', 'X', 's' -> {
                         when (val matchVal6 = stack.removeLastOrNull()) {
                             null -> {
-                                return Result.Err("stack is empty".toString())
+                                return Result.Err<List<UByte>, String>("stack is empty".toString())
                             }
                             else -> {
                                 val arg = matchVal6
                                 val flags = Flags.new()
-                                val res = when (val tryResult = format(arg, FormatOp.fromChar(cur), flags)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                                val res = when (val tryResult = format(arg, FormatOp.fromChar(cur), flags)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                 output.extend(res.iter().cloned())
                             }
                         }
@@ -235,18 +235,18 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         when {
                             matchVal7 != null && matchVal7 is Number && matchVal7.value == 0 -> state = SeekIfElse(0)
                             matchVal7 != null && matchVal7 is Number -> Unit
-                            else -> { return Result.Err("stack is empty".toString()) }
+                            else -> { return Result.Err<List<UByte>, String>("stack is empty".toString()) }
                         }
                     }
                     'e' -> state = SeekIfEnd(0)
                     ';' -> Unit
-                    else -> { return Result.Err("unrecognized format option $cur") }
+                    else -> { return Result.Err<List<UByte>, String>("unrecognized format option $cur") }
                 }
             }
             PushParam -> {
                 // params are 1-indexed
                 stack.add(mparams[when (val matchVal8 = cur.toDigit(10u)) {
-                    null -> { return Result.Err("bad param number".toString()) }
+                    null -> { return Result.Err<List<UByte>, String>("bad param number".toString()) }
                     else -> {
                         val d = matchVal8
                         d.toInt() - 1
@@ -257,7 +257,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                 if (cur.isAsciiUppercase()) {
                     when (val matchVal9 = stack.removeLastOrNull()) {
                         null -> {
-                            return Result.Err("stack is empty".toString())
+                            return Result.Err<List<UByte>, String>("stack is empty".toString())
                         }
                         else -> {
                             val arg1 = matchVal9
@@ -268,7 +268,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                 } else if (cur.isAsciiLowercase()) {
                     when (val matchVal10 = stack.removeLastOrNull()) {
                         null -> {
-                            return Result.Err("stack is empty".toString())
+                            return Result.Err<List<UByte>, String>("stack is empty".toString())
                         }
                         else -> {
                             val arg2 = matchVal10
@@ -277,7 +277,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                     }
                 } else {
-                    return Result.Err("bad variable name in %P".toString())
+                    return Result.Err<List<UByte>, String>("bad variable name in %P".toString())
                 }
             }
             GetVar -> {
@@ -288,7 +288,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                     val idx3 = (cur.toUByte()) - 97u
                     stack.add(vars.dynVa[idx3.toInt()].clone())
                 } else {
-                    return Result.Err("bad variable name in %g".toString())
+                    return Result.Err<List<UByte>, String>("bad variable name in %g".toString())
                 }
             }
             CharConstant -> {
@@ -297,7 +297,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
             }
             CharClose -> {
                 if (cur != '\'') {
-                    return Result.Err("malformed character constant".toString())
+                    return Result.Err<List<UByte>, String>("malformed character constant".toString())
                 }
             }
             is IntConstant -> {
@@ -307,12 +307,12 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                     state = Nothing
                 } else when (val matchVal11 = cur.toDigit(10u)) {
                     null -> {
-                        return Result.Err("bad int constant".toString())
+                        return Result.Err<List<UByte>, String>("bad int constant".toString())
                     }
                     else -> {
                         val digit = matchVal11
                         when (val matchVal12 = i.checkedMul(10)?.let({ iTen -> iTen.checkedAdd(digit.toInt()) })) {
-                            null -> { return Result.Err("int constant too large".toString()) }
+                            null -> { return Result.Err<List<UByte>, String>("int constant too large".toString()) }
                             else -> {
                                 val i1 = matchVal12
                                 state = IntConstant(i1)
@@ -331,11 +331,11 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         matchVal13.second == 'd' -> {
                             when (val matchVal14 = stack.removeLastOrNull()) {
                                 null -> {
-                                    return Result.Err("stack is empty".toString())
+                                    return Result.Err<List<UByte>, String>("stack is empty".toString())
                                 }
                                 else -> {
                                     val arg3 = matchVal14
-                                    val res1 = when (val tryResult = format(arg3, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                                    val res1 = when (val tryResult = format(arg3, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res1.iter().cloned())
                                     // will cause state to go to Nothing
                                     oldState = FormatPattern(flags2, fstate1)
@@ -345,11 +345,11 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         matchVal13.second == 'o' -> {
                             when (val matchVal15 = stack.removeLastOrNull()) {
                                 null -> {
-                                    return Result.Err("stack is empty".toString())
+                                    return Result.Err<List<UByte>, String>("stack is empty".toString())
                                 }
                                 else -> {
                                     val arg4 = matchVal15
-                                    val res2 = when (val tryResult = format(arg4, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                                    val res2 = when (val tryResult = format(arg4, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res2.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -358,11 +358,11 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         matchVal13.second == 'x' -> {
                             when (val matchVal16 = stack.removeLastOrNull()) {
                                 null -> {
-                                    return Result.Err("stack is empty".toString())
+                                    return Result.Err<List<UByte>, String>("stack is empty".toString())
                                 }
                                 else -> {
                                     val arg5 = matchVal16
-                                    val res3 = when (val tryResult = format(arg5, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                                    val res3 = when (val tryResult = format(arg5, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res3.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -371,11 +371,11 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         matchVal13.second == 'X' -> {
                             when (val matchVal17 = stack.removeLastOrNull()) {
                                 null -> {
-                                    return Result.Err("stack is empty".toString())
+                                    return Result.Err<List<UByte>, String>("stack is empty".toString())
                                 }
                                 else -> {
                                     val arg6 = matchVal17
-                                    val res4 = when (val tryResult = format(arg6, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                                    val res4 = when (val tryResult = format(arg6, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res4.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -384,11 +384,11 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         matchVal13.second == 's' -> {
                             when (val matchVal18 = stack.removeLastOrNull()) {
                                 null -> {
-                                    return Result.Err("stack is empty".toString())
+                                    return Result.Err<List<UByte>, String>("stack is empty".toString())
                                 }
                                 else -> {
                                     val arg7 = matchVal18
-                                    val res5 = when (val tryResult = format(arg7, FormatOp.fromChar(cur), flags2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                                    val res5 = when (val tryResult = format(arg7, FormatOp.fromChar(cur), flags2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<UByte>, String>(tryResult.error) }
                                     output.extend(res5.iter().cloned())
                                     oldState = FormatPattern(flags2, fstate1)
                                 }
@@ -417,7 +417,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                             val old = flags2.width
                             flags2.width = flags2.width * 10 + (cur.toInt() - '0'.code)
                             if (flags2.width < old) {
-                                return Result.Err("format width overflow".toString())
+                                return Result.Err<List<UByte>, String>("format width overflow".toString())
                             }
                         }
                         matchVal13.first == FormatState.Width && matchVal13.second == '.' -> {
@@ -427,10 +427,10 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                             val old1 = flags2.precision
                             flags2.precision = flags2.precision * 10 + (cur.toInt() - '0'.code)
                             if (flags2.precision < old1) {
-                                return Result.Err("format precision overflow".toString())
+                                return Result.Err<List<UByte>, String>("format precision overflow".toString())
                             }
                         }
-                        else -> { return Result.Err("invalid format specifier".toString()) }
+                        else -> { return Result.Err<List<UByte>, String>("invalid format specifier".toString()) }
                     }
                 }
             }
@@ -483,7 +483,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
             state = Nothing
         }
     }
-    return Result.Ok(output)
+    return Result.Ok<List<UByte>, String>(output)
 }
 
 public open class Flags(
@@ -601,7 +601,7 @@ public fun format(value: Param, op: FormatOp, flags: Flags): Result<List<UByte>,
                             "$d"
                         }
                     }
-                    FormatOp.String -> { return Result.Err("non-number on stack with %s".toString()) }
+                    FormatOp.String -> { return Result.Err<List<UByte>, String>("non-number on stack with %s".toString()) }
                 }.intoBytes()
             }
         }
@@ -616,5 +616,5 @@ public fun format(value: Param, op: FormatOp, flags: Flags): Result<List<UByte>,
             s = s
         }
     }
-    return Result.Ok(s)
+    return Result.Ok<List<UByte>, String>(s)
 }

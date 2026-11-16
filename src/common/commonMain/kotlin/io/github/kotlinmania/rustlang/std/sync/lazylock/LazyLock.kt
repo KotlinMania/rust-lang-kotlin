@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.lazylock
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.once.Once
@@ -134,7 +135,7 @@ public open class LazyLock<T, F> internal constructor(
      */
     public open fun derefMut(): T = LazyLock.forceMut(this)
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugTuple(f, "LazyLock")
         when (val matchVal = LazyLock.get(this)) {
             null -> d.field("<uninit>")
@@ -143,7 +144,7 @@ public open class LazyLock<T, F> internal constructor(
                 d.field(v)
             }
         }
-        d.finish()
+        return d.finish()
     }
 
     // We never create a `F` from a `LazyLock<T, F>` so it is fine
@@ -208,10 +209,10 @@ public open class LazyLock<T, F> internal constructor(
                     val data = ptr.read(thisRef1.data).intoInner()
                     when (state1) {
                         OnceExclusiveState.Incomplete -> {
-                            Result.Err(ManuallyDrop.intoInner(data.f))
+                            Result.Err<T, () -> T>(ManuallyDrop.intoInner(data.f))
                         }
                         OnceExclusiveState.Complete -> {
-                            Result.Ok(ManuallyDrop.intoInner(data.value))
+                            Result.Ok<T, () -> T>(ManuallyDrop.intoInner(data.value))
                         }
                         OnceExclusiveState.Poisoned -> error("unreachable")
                     }
@@ -452,7 +453,7 @@ public open class LazyLock<T, F> internal constructor(
 /**
  * Creates a new lazy value using `Default` as the initializing function.
  */
-public fun <T> defaultLazyLockT(defaultTFn: () -> T): LazyLock<T> = LazyLock.new(defaultTFn)
+public fun <T> defaultLazyLockT(defaultTFn: () -> T): LazyLock<T, () -> T> = LazyLock.new(defaultTFn)
 
 public fun panicPoisoned(): Nothing {
     error("LazyLock instance has previously been poisoned")

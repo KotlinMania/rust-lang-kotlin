@@ -253,7 +253,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
             null -> {}
             else -> {
                 val c = matchVal
-                buf[i] = MaybeUninit.new(c, PrimitiveLayouts.U8)
+                buf[i] = MaybeUninit.new(c, UnresolvedTypeLayout<Option>())
                 i += 1
                 k += 1
             }
@@ -377,7 +377,7 @@ public fun formatExact(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: 
                 // the additional digit can only be added when `k == limit` (edge case).
                 k += 1
                 if (k > limit && len < buf.size) {
-                    buf[len] = MaybeUninit.new(c, PrimitiveLayouts.U8)
+                    buf[len] = MaybeUninit.new(c, UnresolvedTypeLayout<Option>())
                     len += 1
                 }
             }

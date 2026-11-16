@@ -28,13 +28,13 @@ public open class DisplayBuffer internal constructor(
         val bytes = s.encodeToByteArray().map { it.toUByte() }
         return when (val matchVal = this.buf.getMut(this.len until (this.len + bytes.size))) {
             null -> {
-                Result.Err(fmt.Error)
+                Result.Err<Unit, Unit>(fmt.Error)
             }
             else -> {
                 val buf = matchVal
                 buf.writeCopyOfSlice(bytes)
                 this.len += bytes.size
-                Result.Ok(Unit)
+                Result.Ok<Unit, Unit>(Unit)
             }
         }
     }
@@ -43,11 +43,10 @@ public open class DisplayBuffer internal constructor(
         public operator fun invoke(
             buf: MutableList<MaybeUninit<UByte>>,
             len: Int,
-        ): DisplayBuffer =
-            DisplayBuffer(
-                bufCtorArg = buf,
-                len = len,
-            )
+        ): DisplayBuffer = DisplayBuffer(
+            bufCtorArg = buf,
+            len = len,
+        )
 
         public fun new(buf: MutableList<MaybeUninit<UByte>>): DisplayBuffer = DisplayBuffer(buf = buf, len = 0)
 

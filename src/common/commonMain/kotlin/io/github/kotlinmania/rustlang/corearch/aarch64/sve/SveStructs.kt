@@ -18,13 +18,7 @@ public open class SvboolT(
     public open fun clone(): SvboolT = SvboolT(value)
 
     public override fun sveInto(): Svbool2T {
-        fun convertFromSvbool(b: SvboolT): Svbool2T =
-            run {
-                val ptr = kmAllocZeroed(maxOf(1L, (Svbool2T.typeLayout()).sizeBytes), maxOf(1L, (Svbool2T.typeLayout()).alignBytes))
-                val res = (Svbool2T.typeLayout()).readNative(ptr)
-                kmDealloc(ptr, maxOf(1L, (Svbool2T.typeLayout()).sizeBytes), maxOf(1L, (Svbool2T.typeLayout()).alignBytes))
-                res
-            }
+        fun convertFromSvbool(b: SvboolT): Svbool2T = run { val ptr = kmAllocZeroed(maxOf(1L, (Svbool2T.typeLayout()).sizeBytes), maxOf(1L, (Svbool2T.typeLayout()).alignBytes)); val res = (Svbool2T.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (Svbool2T.typeLayout()).sizeBytes), maxOf(1L, (Svbool2T.typeLayout()).alignBytes)); res }
         return convertFromSvbool(this)
     }
 
@@ -2043,13 +2037,7 @@ public open class Svbool2T(
     public open fun clone(): Svbool2T = Svbool2T(value)
 
     public override fun sveInto(): SvboolT {
-        fun convertToSvbool(b: Svbool2T): SvboolT =
-            run {
-                val ptr = kmAllocZeroed(maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes))
-                val res = (SvboolT.typeLayout()).readNative(ptr)
-                kmDealloc(ptr, maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes))
-                res
-            }
+        fun convertToSvbool(b: Svbool2T): SvboolT = run { val ptr = kmAllocZeroed(maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); val res = (SvboolT.typeLayout()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (SvboolT.typeLayout()).sizeBytes), maxOf(1L, (SvboolT.typeLayout()).alignBytes)); res }
         return convertToSvbool(this)
     }
 

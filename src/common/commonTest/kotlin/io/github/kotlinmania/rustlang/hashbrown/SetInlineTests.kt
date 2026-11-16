@@ -4,10 +4,11 @@ package io.github.kotlinmania.rustlang.hashbrown
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 
-public typealias HS = HashSet<Int>
+public typealias HS = HashSet<Int, DefaultHashBuilder, Global>
 
 public typealias Hasher = DefaultHasher
 
@@ -355,7 +356,7 @@ public class SetTestSetInlineTests {
     @kotlin.test.Test
     public fun testRetain() {
         val xs = listOf(1, 2, 3, 4, 5, 6)
-        val set: HashSet<Int>  = xs.iter().copied().toMutableSet()
+        val set: HashSet<Int, DefaultHashBuilder, Global>  = xs.iter().copied().toMutableSet()
         set.retain({ k -> k % 2 == 0 })
         check(set.len() == 3)
         check(set.contains(2))
@@ -366,7 +367,7 @@ public class SetTestSetInlineTests {
     @kotlin.test.Test
     public fun testExtractIf() {
         run {
-            val set: HashSet<Int>  = (0 until 8).toMutableSet()
+            val set: HashSet<Int, DefaultHashBuilder, Global>  = (0 until 8).toMutableSet()
             val drained = set.extractIf({ k -> k % 2 == 0 })
             val out = drained.collect<Vec>()
             out.sortUnstable()
@@ -374,7 +375,7 @@ public class SetTestSetInlineTests {
             check(set.len() == 4)
         }
         run {
-            val set1: HashSet<Int>  = (0 until 8).toMutableSet()
+            val set1: HashSet<Int, DefaultHashBuilder, Global>  = (0 until 8).toMutableSet()
             set1.extractIf({ k -> k % 2 == 0 }).forEach(drop)
             check(set1.len() == 4)
         }
@@ -387,7 +388,7 @@ public class SetTestSetInlineTests {
 
             public open fun buildHasher(): DefaultHasher = DefaultHasher.new()
         }
-        val EMPTY_SET: HashSet<UInt, MyHasher> = HashSet.withHasher(MyHasher())
+        val EMPTY_SET: HashSet<UInt, MyHasher, Global> = HashSet.withHasher(MyHasher())
         val set = EMPTY_SET
         set.insert(19)
         check(set.contains(19))
@@ -455,7 +456,7 @@ public class SetTestSetInlineTests {
                     return state
                 }
             }
-            val set: HashSet<Invalid>  = HashSet.new()
+            val set: HashSet<Invalid, DefaultHashBuilder, Global>  = HashSet.new()
             val key = InvalidRef(count = 1u, other = 1u)
             val value = Invalid(count = 1u, other = 2u)
             if (makeHash(set.hasher(), key) == makeHash(set.hasher(), value)) {

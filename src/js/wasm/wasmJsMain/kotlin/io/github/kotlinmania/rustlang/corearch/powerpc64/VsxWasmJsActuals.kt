@@ -9,4 +9,6 @@ import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorSignedInt
 public actual fun lxvl(a: ConstPtr, l: ULong): VectorSignedInt =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun stxvl(v: VectorSignedInt, a: MutPtr, l: ULong): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun stxvl(v: VectorSignedInt, a: MutPtr, l: ULong) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}

@@ -68,16 +68,16 @@ public sealed class Feature {
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "altivec" -> Result.Ok(Feature::altivec)
-                "vsx" -> Result.Ok(Feature::vsx)
-                "power8" -> Result.Ok(Feature::power8)
-                "power8-altivec" -> Result.Ok(Feature::power8Altivec)
-                "power8-vector" -> Result.Ok(Feature::power8Vector)
-                "power8-crypto" -> Result.Ok(Feature::power8Crypto)
-                "power9" -> Result.Ok(Feature::power9)
-                "power9-altivec" -> Result.Ok(Feature::power9Altivec)
-                "power9-vector" -> Result.Ok(Feature::power9Vector)
-                else -> Result.Err(Unit)
+                "altivec" -> Result.Ok<Feature, Unit>(Feature::altivec)
+                "vsx" -> Result.Ok<Feature, Unit>(Feature::vsx)
+                "power8" -> Result.Ok<Feature, Unit>(Feature::power8)
+                "power8-altivec" -> Result.Ok<Feature, Unit>(Feature::power8Altivec)
+                "power8-vector" -> Result.Ok<Feature, Unit>(Feature::power8Vector)
+                "power8-crypto" -> Result.Ok<Feature, Unit>(Feature::power8Crypto)
+                "power9" -> Result.Ok<Feature, Unit>(Feature::power9)
+                "power9-altivec" -> Result.Ok<Feature, Unit>(Feature::power9Altivec)
+                "power9-vector" -> Result.Ok<Feature, Unit>(Feature::power9Vector)
+                else -> Result.Err<Feature, Unit>(Unit)
             }
     }
 }

@@ -260,7 +260,7 @@ public fun <T : Error> Error.isMatch(): Boolean {
  * Returns some reference to the inner value if it is of type `T`, or
  * `None` if it isn't.
  */
-public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T>): T? =
+public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
     if (this.isMatch<T>()) {
         // SAFETY: `is` ensures this type cast is correct
         (typeLayoutT).readNative((((constPtrFromRustCast(this)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
@@ -272,7 +272,7 @@ public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T>): T? =
  * Returns some mutable reference to the inner value if it is of type `T`, or
  * `None` if it isn't.
  */
-public fun <T : Error> Error.downcastMut(typeLayoutT: TypeLayout<T>): T? =
+public fun <T : Error> Error.downcastMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
     if (this.isMatch<T>()) {
         // SAFETY: `is` ensures this type cast is correct
         RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), typeLayoutT)
@@ -484,7 +484,7 @@ public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
  */
 public open class Request internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Tagged<Erased>>,
+    public val fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout(),
 ) {
     public var field0: Tagged<Erased>
         get() = value
@@ -494,11 +494,9 @@ public open class Request internal constructor(
 
     public var value: Tagged<Erased>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<Request> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Request(ptr, layout) }, { it.value })
 
@@ -819,9 +817,9 @@ public open class Request internal constructor(
     public open fun fmt(f: Formatter): Result<Unit, Unit> = DebugStruct(f, "Request").finishNonExhaustive()
 
     public companion object {
-        public operator fun invoke(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>>): Request = Request(value, fieldLayout)
+        public operator fun invoke(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Tagged<Erased>>): Request = Request(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(fieldStorage, fieldLayout)
     }
 }
 
@@ -890,7 +888,7 @@ public open class Ref<I>(
  */
 public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Reified?>,
+    public val fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout(),
 ) : Erased {
     public var field0: I.Reified?
         get() = value
@@ -900,18 +898,16 @@ public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
 
     public var value: Reified?
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<TaggedOption<I, Reified>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> TaggedOption<I, Reified>(ptr, layout) }, { it.value })
 
     public companion object {
-        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
+        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
 
-        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?>): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
+        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
     }
 }
 
@@ -966,15 +962,14 @@ public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I
 public open class Source(
     public var current: Error?,
 ) : Iterable<Error> {
-    override fun iterator(): Iterator<Error> =
-        object : AbstractIterator<Error>() {
-            override fun computeNext() {
-                when (val v = this@Source.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<Error> = object : AbstractIterator<Error>() {
+        override fun computeNext() {
+            when (val v = this@Source.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Source = Source(current)
 

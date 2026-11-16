@@ -79,17 +79,16 @@ public fun u8(n: UByte): UByte = U8_ISQRT_WITH_REMAINDER[n.toInt()].first
  * `n` must be nonzero.
  */
 public fun u16Stages(n: UShort): UShort {
-    val (s1, r1) =
-        run {
-            val N_SHIFT: UInt = 16u - 8u
-            if (false) {
-                check(n != 0u.toUShort()) { "`\$n` is  zero in `first_stage!`." }
-            }
-            val n1 = (n.toUInt() shr (N_SHIFT.toInt())).toUShort()
-            val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-            assertUnchecked(s != 0)
-            Pair(s, r)
+    val (s1, r1) = run {
+        val N_SHIFT: UInt = 16u - 8u
+        if (false) {
+            check(n != 0u.toUShort()) { "`\$n` is  zero in `first_stage!`." }
         }
+        val n1 = (n.toUInt() shr (N_SHIFT.toInt())).toUShort()
+        val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
+        assertUnchecked(s != 0)
+        Pair(s, r)
+    }
     return run {
         val HALF_BITS: UInt = 16u shr 1
         val QUARTER_BITS: UInt = 16u shr 2
@@ -119,42 +118,40 @@ public fun u16Stages(n: UShort): UShort {
  * `n` must be nonzero.
  */
 public fun u32Stages(n: UInt): UInt {
-    val (s1, r1) =
-        run {
-            val N_SHIFT: UInt = 32u - 8u
-            if (false) {
-                check(n != 0u) { "`\$n` is  zero in `first_stage!`." }
-            }
-            val n1 = n shr N_SHIFT.toInt()
-            val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-            assertUnchecked(s != 0)
-            Pair(s, r)
+    val (s1, r1) = run {
+        val N_SHIFT: UInt = 32u - 8u
+        if (false) {
+            check(n != 0u) { "`\$n` is  zero in `first_stage!`." }
         }
-    val (s3, r3) =
-        run {
-            val N_SHIFT: UInt = 32u - 16u
-            val HALF_BITS: UInt = 16u shr 1
-            val QUARTER_BITS: UInt = 16u shr 2
-            val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
-            val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
-            if (false) {
-                check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
-            }
-            val n2 = (n shr N_SHIFT.toInt()).toUShort()
-            val lo = n2 and LOWER_HALF_1_BITS
-            val numerator = (((r1.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or ((lo.toUInt() shr (QUARTER_BITS.toInt())).toUShort())
-            val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
-            val q = numerator / denominator
-            val u = numerator % denominator
-            var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-            var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
-            if (overflow) {
-                r2 = r2.wrappingAdd(2u * s2 - 1u)
-                s2 -= 1u
-            }
-            assertUnchecked(s2 != 0u.toUShort())
-            Pair(s2, r2)
+        val n1 = n shr N_SHIFT.toInt()
+        val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
+        assertUnchecked(s != 0)
+        Pair(s, r)
+    }
+    val (s3, r3) = run {
+        val N_SHIFT: UInt = 32u - 16u
+        val HALF_BITS: UInt = 16u shr 1
+        val QUARTER_BITS: UInt = 16u shr 2
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
+        if (false) {
+            check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
+        val n2 = (n shr N_SHIFT.toInt()).toUShort()
+        val lo = n2 and LOWER_HALF_1_BITS
+        val numerator = (((r1.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or ((lo.toUInt() shr (QUARTER_BITS.toInt())).toUShort())
+        val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
+        val q = numerator / denominator
+        val u = numerator % denominator
+        var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
+        var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
+        if (overflow) {
+            r2 = r2.wrappingAdd(2u * s2 - 1u)
+            s2 -= 1u
+        }
+        assertUnchecked(s2 != 0u.toUShort())
+        Pair(s2, r2)
+    }
     return run {
         val HALF_BITS: UInt = 32u shr 1
         val QUARTER_BITS: UInt = 32u shr 2
@@ -184,67 +181,64 @@ public fun u32Stages(n: UInt): UInt {
  * `n` must be nonzero.
  */
 public fun u64Stages(n: ULong): ULong {
-    val (s1, r1) =
-        run {
-            val N_SHIFT: UInt = 64u - 8u
-            if (false) {
-                check(n != 0uL) { "`\$n` is  zero in `first_stage!`." }
-            }
-            val n1 = n shr N_SHIFT.toInt()
-            val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-            assertUnchecked(s != 0)
-            Pair(s, r)
+    val (s1, r1) = run {
+        val N_SHIFT: UInt = 64u - 8u
+        if (false) {
+            check(n != 0uL) { "`\$n` is  zero in `first_stage!`." }
         }
-    val (s3, r3) =
-        run {
-            val N_SHIFT: UInt = 64u - 16u
-            val HALF_BITS: UInt = 16u shr 1
-            val QUARTER_BITS: UInt = 16u shr 2
-            val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
-            val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
-            if (false) {
-                check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
-            }
-            val n2 = (n shr N_SHIFT.toInt()).toUShort()
-            val lo = n2 and LOWER_HALF_1_BITS
-            val numerator = (((r1.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or ((lo.toUInt() shr (QUARTER_BITS.toInt())).toUShort())
-            val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
-            val q = numerator / denominator
-            val u = numerator % denominator
-            var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-            var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
-            if (overflow) {
-                r2 = r2.wrappingAdd(2u * s2 - 1u)
-                s2 -= 1u
-            }
-            assertUnchecked(s2 != 0u.toUShort())
-            Pair(s2, r2)
+        val n1 = n shr N_SHIFT.toInt()
+        val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
+        assertUnchecked(s != 0)
+        Pair(s, r)
+    }
+    val (s3, r3) = run {
+        val N_SHIFT: UInt = 64u - 16u
+        val HALF_BITS: UInt = 16u shr 1
+        val QUARTER_BITS: UInt = 16u shr 2
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
+        if (false) {
+            check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
-    val (s5, r5) =
-        run {
-            val N_SHIFT: UInt = 64u - 32u
-            val HALF_BITS: UInt = 32u shr 1
-            val QUARTER_BITS: UInt = 32u shr 2
-            val LOWER_HALF_1_BITS: UInt = (1u shl HALF_BITS.toInt()) - 1u
-            val LOWEST_QUARTER_1_BITS: UInt = (1u shl QUARTER_BITS.toInt()) - 1u
-            if (false) {
-                check(s3 != 0) { "`\$s` is  zero in `middle_stage!`." }
-            }
-            val n3 = (n shr N_SHIFT.toInt()).toUInt()
-            val lo1 = n3 and LOWER_HALF_1_BITS
-            val numerator1 = ((r3.toUInt()) shl QUARTER_BITS.toInt()) or (lo1 shr QUARTER_BITS.toInt())
-            val denominator1 = (s3.toUInt()) shl 1
-            val q1 = numerator1 / denominator1
-            val u1 = numerator1 % denominator1
-            var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
-            var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
-            if (overflow1) {
-                r4 = r4.wrappingAdd(2u * s4 - 1u)
-                s4 -= 1u
-            }
-            assertUnchecked(s4 != 0u)
-            Pair(s4, r4)
+        val n2 = (n shr N_SHIFT.toInt()).toUShort()
+        val lo = n2 and LOWER_HALF_1_BITS
+        val numerator = (((r1.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or ((lo.toUInt() shr (QUARTER_BITS.toInt())).toUShort())
+        val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
+        val q = numerator / denominator
+        val u = numerator % denominator
+        var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
+        var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
+        if (overflow) {
+            r2 = r2.wrappingAdd(2u * s2 - 1u)
+            s2 -= 1u
         }
+        assertUnchecked(s2 != 0u.toUShort())
+        Pair(s2, r2)
+    }
+    val (s5, r5) = run {
+        val N_SHIFT: UInt = 64u - 32u
+        val HALF_BITS: UInt = 32u shr 1
+        val QUARTER_BITS: UInt = 32u shr 2
+        val LOWER_HALF_1_BITS: UInt = (1u shl HALF_BITS.toInt()) - 1u
+        val LOWEST_QUARTER_1_BITS: UInt = (1u shl QUARTER_BITS.toInt()) - 1u
+        if (false) {
+            check(s3 != 0) { "`\$s` is  zero in `middle_stage!`." }
+        }
+        val n3 = (n shr N_SHIFT.toInt()).toUInt()
+        val lo1 = n3 and LOWER_HALF_1_BITS
+        val numerator1 = ((r3.toUInt()) shl QUARTER_BITS.toInt()) or (lo1 shr QUARTER_BITS.toInt())
+        val denominator1 = (s3.toUInt()) shl 1
+        val q1 = numerator1 / denominator1
+        val u1 = numerator1 % denominator1
+        var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
+        var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
+        if (overflow1) {
+            r4 = r4.wrappingAdd(2u * s4 - 1u)
+            s4 -= 1u
+        }
+        assertUnchecked(s4 != 0u)
+        Pair(s4, r4)
+    }
     return run {
         val HALF_BITS: UInt = 64u shr 1
         val QUARTER_BITS: UInt = 64u shr 2
@@ -274,92 +268,88 @@ public fun u64Stages(n: ULong): ULong {
  * `n` must be nonzero.
  */
 public fun u128Stages(n: U128): U128 {
-    val (s1, r1) =
-        run {
-            val N_SHIFT: UInt = 128u - 8u
-            if (false) {
-                check(n != U128(0x0uL, 0x0uL)) { "`\$n` is  zero in `first_stage!`." }
-            }
-            val n1 = n shr N_SHIFT.toInt()
-            val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
-            assertUnchecked(s != 0)
-            Pair(s, r)
+    val (s1, r1) = run {
+        val N_SHIFT: UInt = 128u - 8u
+        if (false) {
+            check(n != U128(0x0uL, 0x0uL)) { "`\$n` is  zero in `first_stage!`." }
         }
-    val (s3, r3) =
-        run {
-            val N_SHIFT: UInt = 128u - 16u
-            val HALF_BITS: UInt = 16u shr 1
-            val QUARTER_BITS: UInt = 16u shr 2
-            val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
-            val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
-            if (false) {
-                check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
-            }
-            val n2 = (n shr N_SHIFT.toInt()).toUShort()
-            val lo = n2 and LOWER_HALF_1_BITS
-            val numerator = (((r1.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or ((lo.toUInt() shr (QUARTER_BITS.toInt())).toUShort())
-            val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
-            val q = numerator / denominator
-            val u = numerator % denominator
-            var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
-            var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
-            if (overflow) {
-                r2 = r2.wrappingAdd(2u * s2 - 1u)
-                s2 -= 1u
-            }
-            assertUnchecked(s2 != 0u.toUShort())
-            Pair(s2, r2)
+        val n1 = n shr N_SHIFT.toInt()
+        val (s, r) = U8_ISQRT_WITH_REMAINDER[n1.toInt()]
+        assertUnchecked(s != 0)
+        Pair(s, r)
+    }
+    val (s3, r3) = run {
+        val N_SHIFT: UInt = 128u - 16u
+        val HALF_BITS: UInt = 16u shr 1
+        val QUARTER_BITS: UInt = 16u shr 2
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
+        if (false) {
+            check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
-    val (s5, r5) =
-        run {
-            val N_SHIFT: UInt = 128u - 32u
-            val HALF_BITS: UInt = 32u shr 1
-            val QUARTER_BITS: UInt = 32u shr 2
-            val LOWER_HALF_1_BITS: UInt = (1u shl HALF_BITS.toInt()) - 1u
-            val LOWEST_QUARTER_1_BITS: UInt = (1u shl QUARTER_BITS.toInt()) - 1u
-            if (false) {
-                check(s3 != 0) { "`\$s` is  zero in `middle_stage!`." }
-            }
-            val n3 = (n shr N_SHIFT.toInt()).toUInt()
-            val lo1 = n3 and LOWER_HALF_1_BITS
-            val numerator1 = ((r3.toUInt()) shl QUARTER_BITS.toInt()) or (lo1 shr QUARTER_BITS.toInt())
-            val denominator1 = (s3.toUInt()) shl 1
-            val q1 = numerator1 / denominator1
-            val u1 = numerator1 % denominator1
-            var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
-            var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
-            if (overflow1) {
-                r4 = r4.wrappingAdd(2u * s4 - 1u)
-                s4 -= 1u
-            }
-            assertUnchecked(s4 != 0u)
-            Pair(s4, r4)
+        val n2 = (n shr N_SHIFT.toInt()).toUShort()
+        val lo = n2 and LOWER_HALF_1_BITS
+        val numerator = (((r1.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or ((lo.toUInt() shr (QUARTER_BITS.toInt())).toUShort())
+        val denominator = ((s1.toUShort()).toUInt() shl 1).toUShort()
+        val q = numerator / denominator
+        val u = numerator % denominator
+        var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
+        var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
+        if (overflow) {
+            r2 = r2.wrappingAdd(2u * s2 - 1u)
+            s2 -= 1u
         }
-    val (s7, r7) =
-        run {
-            val N_SHIFT: UInt = 128u - 64u
-            val HALF_BITS: UInt = 64u shr 1
-            val QUARTER_BITS: UInt = 64u shr 2
-            val LOWER_HALF_1_BITS: ULong = (1uL shl HALF_BITS.toInt()) - 1uL
-            val LOWEST_QUARTER_1_BITS: ULong = (1uL shl QUARTER_BITS.toInt()) - 1uL
-            if (false) {
-                check(s5 != 0) { "`\$s` is  zero in `middle_stage!`." }
-            }
-            val n4 = (n shr N_SHIFT.toInt()).toULong()
-            val lo2 = n4 and LOWER_HALF_1_BITS
-            val numerator2 = ((r5.toULong()) shl QUARTER_BITS.toInt()) or (lo2 shr QUARTER_BITS.toInt())
-            val denominator2 = (s5.toULong()) shl 1
-            val q2 = numerator2 / denominator2
-            val u2 = numerator2 % denominator2
-            var s6 = (s5 shl QUARTER_BITS.toInt()).toULong() + q2
-            var (r6, overflow2) = ((u2 shl QUARTER_BITS.toInt()) or (lo2 and LOWEST_QUARTER_1_BITS)).overflowingSub(q2 * q2)
-            if (overflow2) {
-                r6 = r6.wrappingAdd(2uL * s6 - 1uL)
-                s6 -= 1uL
-            }
-            assertUnchecked(s6 != 0uL)
-            Pair(s6, r6)
+        assertUnchecked(s2 != 0u.toUShort())
+        Pair(s2, r2)
+    }
+    val (s5, r5) = run {
+        val N_SHIFT: UInt = 128u - 32u
+        val HALF_BITS: UInt = 32u shr 1
+        val QUARTER_BITS: UInt = 32u shr 2
+        val LOWER_HALF_1_BITS: UInt = (1u shl HALF_BITS.toInt()) - 1u
+        val LOWEST_QUARTER_1_BITS: UInt = (1u shl QUARTER_BITS.toInt()) - 1u
+        if (false) {
+            check(s3 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
+        val n3 = (n shr N_SHIFT.toInt()).toUInt()
+        val lo1 = n3 and LOWER_HALF_1_BITS
+        val numerator1 = ((r3.toUInt()) shl QUARTER_BITS.toInt()) or (lo1 shr QUARTER_BITS.toInt())
+        val denominator1 = (s3.toUInt()) shl 1
+        val q1 = numerator1 / denominator1
+        val u1 = numerator1 % denominator1
+        var s4 = (s3 shl QUARTER_BITS.toInt()).toUInt() + q1
+        var (r4, overflow1) = ((u1 shl QUARTER_BITS.toInt()) or (lo1 and LOWEST_QUARTER_1_BITS)).overflowingSub(q1 * q1)
+        if (overflow1) {
+            r4 = r4.wrappingAdd(2u * s4 - 1u)
+            s4 -= 1u
+        }
+        assertUnchecked(s4 != 0u)
+        Pair(s4, r4)
+    }
+    val (s7, r7) = run {
+        val N_SHIFT: UInt = 128u - 64u
+        val HALF_BITS: UInt = 64u shr 1
+        val QUARTER_BITS: UInt = 64u shr 2
+        val LOWER_HALF_1_BITS: ULong = (1uL shl HALF_BITS.toInt()) - 1uL
+        val LOWEST_QUARTER_1_BITS: ULong = (1uL shl QUARTER_BITS.toInt()) - 1uL
+        if (false) {
+            check(s5 != 0) { "`\$s` is  zero in `middle_stage!`." }
+        }
+        val n4 = (n shr N_SHIFT.toInt()).toULong()
+        val lo2 = n4 and LOWER_HALF_1_BITS
+        val numerator2 = ((r5.toULong()) shl QUARTER_BITS.toInt()) or (lo2 shr QUARTER_BITS.toInt())
+        val denominator2 = (s5.toULong()) shl 1
+        val q2 = numerator2 / denominator2
+        val u2 = numerator2 % denominator2
+        var s6 = (s5 shl QUARTER_BITS.toInt()).toULong() + q2
+        var (r6, overflow2) = ((u2 shl QUARTER_BITS.toInt()) or (lo2 and LOWEST_QUARTER_1_BITS)).overflowingSub(q2 * q2)
+        if (overflow2) {
+            r6 = r6.wrappingAdd(2uL * s6 - 1uL)
+            s6 -= 1uL
+        }
+        assertUnchecked(s6 != 0uL)
+        Pair(s6, r6)
+    }
     return run {
         val HALF_BITS: UInt = 128u shr 1
         val QUARTER_BITS: UInt = 128u shr 2

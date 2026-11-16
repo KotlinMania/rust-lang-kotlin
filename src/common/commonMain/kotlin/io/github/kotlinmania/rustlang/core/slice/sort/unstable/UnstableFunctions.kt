@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.core.slice.sort.unstable
 
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.slice.index.range
 import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
@@ -15,9 +17,9 @@ import io.github.kotlinmania.rustlang.core.slice.sort.unstable.quicksort.quickso
  * Upholds all safety properties outlined here:
  * <https://github.com/Voultapher/sort-research-rs/blob/main/writeup/sortSafety/text.md>
  */
-public fun <T> sort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
+public fun <T> sort(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // Arrays of zero-sized types are always all-equal, and thus sorted.
-    if (T.IS_ZST) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         return
     }
     // Instrumenting the standard library showed that 90+% of the calls to sort
@@ -36,14 +38,14 @@ public fun <T> sort(v: MutableList<T>, isLess: (T, T) -> Boolean) {
  * 2. Every element in `v[start .. end]`, which is sorted, and smaller than or equal to
  * 3. Every element in `v[end ..]`.
  */
-public fun <T, R> partialSort(v: MutableList<T>, range: R, isLess: (T, T) -> Boolean) where R : RangeBounds<Int<R>> {
+public fun <T, R> partialSort(v: MutableList<T>, range: R, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) where R : RangeBounds<Int<R>> {
     val v1 = v
     // A heuristic factor to decide whether to partition the slice or not.
     // If the range bound is close to the edges of the slice, it's not worth
     // partitioning first.
     val PARTITION_THRESHOLD: Int = 8
     // Arrays of zero-sized types are always all-equal, and thus sorted.
-    if (T.IS_ZST) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         return
     }
     val len = v1.size

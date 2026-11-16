@@ -31,13 +31,9 @@ public class DebugTuple(
 }
 
 public sealed class State<T, F> {
-    public data class Uninit<T, F>(
-        public var value: F,
-    ) : State<T, F>()
-    public data class Init<T, F>(
-        public var value: T,
-    ) : State<T, F>()
-    public class Poisoned<T, F> : State<T, F>()
+    public data class Uninit<T, F>(public var value: F) : State<T, F>()
+    public data class Init<T, F>(public var value: T) : State<T, F>()
+    public class Poisoned<T, F>() : State<T, F>()
 }
 
 /**
@@ -127,10 +123,9 @@ public open class LazyCell<T, F> internal constructor(
     public companion object {
         public operator fun <T, F> invoke(
             state: UnsafeCell<State<T, F>>,
-        ): LazyCell<T, F> =
-            LazyCell<T, F>(
-                stateCtorArg = state,
-            )
+        ): LazyCell<T, F> = LazyCell<T, F>(
+            stateCtorArg = state,
+        )
 
         /**
          * Creates a new lazy value with the given initializing function.
@@ -174,11 +169,11 @@ public open class LazyCell<T, F> internal constructor(
             when (val matchVal = thisRef.state.intoInner()) {
                 is State.Init -> {
                     val (data) = matchVal
-                    Result.Ok(data)
+                    Result.Ok<T, () -> T>(data)
                 }
                 is State.Uninit -> {
                     val (f) = matchVal
-                    Result.Err(f)
+                    Result.Err<T, () -> T>(f)
                 }
                 State.Poisoned -> panicPoisoned()
             }
@@ -274,10 +269,9 @@ public open class LazyCell<T, F> internal constructor(
                         }
                     }
                 }
-                val f =
-                    state ?: // `unreachable()` here won't optimize out because the function is cold.
+                val f = state ?: // `unreachable()` here won't optimize out because the function is cold.
 // SAFETY: Precondition.
-                        unreachableUnchecked()
+unreachableUnchecked()
                 // SAFETY: We never drop the state after we read `f`, and we write a valid value back
                 // in any case, panic or success. `f` can't access the `LazyCell` because it is mutably
                 // borrowed.
@@ -403,7 +397,7 @@ public open class LazyCell<T, F> internal constructor(
 /**
  * Creates a new lazy value using `Default` as the initializing function.
  */
-public fun <T> defaultLazyCellT(defaultTFn: () -> T): LazyCell<T> = LazyCell.new(defaultTFn)
+public fun <T> defaultLazyCellT(defaultTFn: () -> T): LazyCell<T, () -> T> = LazyCell.new(defaultTFn)
 
 public fun panicPoisoned(): Nothing {
     error("LazyCell instance has previously been poisoned")

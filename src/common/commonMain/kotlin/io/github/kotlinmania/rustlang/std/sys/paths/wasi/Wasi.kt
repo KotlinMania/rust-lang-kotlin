@@ -23,11 +23,11 @@ public fun getcwd(): Result<PathBuf, Error> {
                 val len = CStr.fromPtr((buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).toBytes().len()
                 buf.setLen(len)
                 buf.shrinkToFit()
-                return Result.Ok(PathBuf.from(OsString.fromVec(buf)))
+                return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(buf)))
             } else {
                 val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
-                    return Result.Err(error)
+                    return Result.Err<PathBuf, Error>(error)
                 }
             }
             // Trigger the internal buffer resizing logic of `List` by requiring
@@ -40,10 +40,10 @@ public fun getcwd(): Result<PathBuf, Error> {
 }
 
 public fun chdir(p: path.Path): Result<Unit, Error> {
-    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return when (result == (0)) {
-        true -> Result.Ok(Unit)
-        false -> Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        true -> Result.Ok<Unit, Error>(Unit)
+        false -> Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
 }
 

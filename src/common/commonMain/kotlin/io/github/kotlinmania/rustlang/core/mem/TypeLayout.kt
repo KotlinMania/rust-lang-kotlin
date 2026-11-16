@@ -1637,16 +1637,14 @@ private fun nativePtrFromList(values: List<*>): MutPtr {
         is Char -> allocNativeArrayFromList(values, PrimitiveLayouts.CHAR) { it as Char }
         is F16 -> allocNativeArrayFromList(values, PrimitiveLayouts.F16_LAYOUT) { it as F16 }
         is F128 -> allocNativeArrayFromList(values, PrimitiveLayouts.F128_LAYOUT) { it as F128 }
-        is U128 ->
-            allocNativeArrayFromList(
-                values,
-                PrimitiveLayouts.u128Layout({ hi, lo -> U128(hi, lo) }, { it.high }, { it.low }),
-            ) { it as U128 }
-        is I128 ->
-            allocNativeArrayFromList(
-                values,
-                PrimitiveLayouts.i128Layout({ hi, lo -> I128(hi, lo) }, { it.high }, { it.low }),
-            ) { it as I128 }
+        is U128 -> allocNativeArrayFromList(
+            values,
+            PrimitiveLayouts.u128Layout({ hi, lo -> U128(hi, lo) }, { it.high }, { it.low }),
+        ) { it as U128 }
+        is I128 -> allocNativeArrayFromList(
+            values,
+            PrimitiveLayouts.i128Layout({ hi, lo -> I128(hi, lo) }, { it.high }, { it.low }),
+        ) { it as I128 }
         is ConstPtr -> allocNativeArrayFromList(values, PrimitiveLayouts.constPtrLayout()) { it as ConstPtr }
         is MutPtr -> allocNativeArrayFromList(values, PrimitiveLayouts.mutPtrLayout()) { it as MutPtr }
         is RustMutableReference<*> -> {
@@ -1681,10 +1679,9 @@ public fun mutPtrFromRustCast(value: Any?): MutPtr =
         is ULongArray -> AddressableArrayLocal.fromULongArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
         is FloatArray -> AddressableArrayLocal.fromFloatArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
         is DoubleArray -> AddressableArrayLocal.fromDoubleArray(value).let { MutPtr(it.rawAddress, it.length.toLong()) }
-        is String ->
-            value.encodeToByteArray().let { bytes ->
-                AddressableArrayLocal.fromByteArray(bytes).let { MutPtr(it.rawAddress, it.length.toLong()) }
-            }
+        is String -> value.encodeToByteArray().let { bytes ->
+            AddressableArrayLocal.fromByteArray(bytes).let { MutPtr(it.rawAddress, it.length.toLong()) }
+        }
         is List<*> -> nativePtrFromList(value)
         else -> throw UnsupportedOperationException(
             "Cannot convert ${value?.let { it::class.simpleName } ?: "null"} to raw native pointer",
@@ -2031,7 +2028,7 @@ private fun <T> layoutFrom128Pair(
     return layout.readBytes(buf, 0)
 }
 
-public fun <T> ctpopWithLayout(
+                public fun <T> ctpopWithLayout(
     x: T,
     layout: TypeLayout<T>,
 ): UInt =
@@ -2047,7 +2044,7 @@ public fun <T> ctpopWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for ctpopWithLayout")
     }
 
-public fun <T> ctlzWithLayout(
+                    public fun <T> ctlzWithLayout(
     x: T,
     layout: TypeLayout<T>,
 ): UInt =
@@ -2063,7 +2060,7 @@ public fun <T> ctlzWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for ctlzWithLayout")
     }
 
-public fun <T> cttzWithLayout(
+                    public fun <T> cttzWithLayout(
     x: T,
     layout: TypeLayout<T>,
 ): UInt =
@@ -2079,7 +2076,7 @@ public fun <T> cttzWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for cttzWithLayout")
     }
 
-public fun <T> bswapWithLayout(
+                    public fun <T> bswapWithLayout(
     x: T,
     layout: TypeLayout<T>,
 ): T =
@@ -2130,7 +2127,7 @@ public fun <T> rotateLeftWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for rotateLeftWithLayout")
     }
 
-public fun <T> rotateRightWithLayout(
+                    public fun <T> rotateRightWithLayout(
     x: T,
     shift: UInt,
     layout: TypeLayout<T>,
@@ -2148,7 +2145,7 @@ public fun <T> rotateRightWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for rotateRightWithLayout")
     }
 
-public fun <T> wrappingAddWithLayout(
+                    public fun <T> wrappingAddWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2167,7 +2164,7 @@ public fun <T> wrappingAddWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for wrappingAddWithLayout")
     }
 
-public fun <T> wrappingSubWithLayout(
+                    public fun <T> wrappingSubWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2186,7 +2183,7 @@ public fun <T> wrappingSubWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for wrappingSubWithLayout")
     }
 
-public fun <T> wrappingMulWithLayout(
+                    public fun <T> wrappingMulWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2205,7 +2202,7 @@ public fun <T> wrappingMulWithLayout(
         else -> error("Unsupported layout sizeBytes=${layout.sizeBytes} for wrappingMulWithLayout")
     }
 
-public fun <T> saturatingAddWithLayout(
+                    public fun <T> saturatingAddWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2234,7 +2231,7 @@ public fun <T> saturatingAddWithLayout(
     return layout.fromBitsU64(res)
 }
 
-public fun <T> saturatingSubWithLayout(
+                    public fun <T> saturatingSubWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2263,7 +2260,7 @@ public fun <T> saturatingSubWithLayout(
     return layout.fromBitsU64(res)
 }
 
-public fun <T> addWithOverflowWithLayout(
+                    public fun <T> addWithOverflowWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2318,7 +2315,7 @@ public fun <T> addWithOverflowWithLayout(
     }
 }
 
-public fun <T> subWithOverflowWithLayout(
+                    public fun <T> subWithOverflowWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2373,7 +2370,7 @@ public fun <T> subWithOverflowWithLayout(
     }
 }
 
-public fun <T> mulWithOverflowWithLayout(
+                    public fun <T> mulWithOverflowWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2428,7 +2425,7 @@ public fun <T> mulWithOverflowWithLayout(
     }
 }
 
-public fun <T> uncheckedDivWithLayout(
+                    public fun <T> uncheckedDivWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2458,7 +2455,7 @@ public fun <T> uncheckedDivWithLayout(
     return layout.fromBitsU64(res)
 }
 
-public fun <T> uncheckedRemWithLayout(
+                    public fun <T> uncheckedRemWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
@@ -2488,13 +2485,13 @@ public fun <T> uncheckedRemWithLayout(
     return layout.fromBitsU64(res)
 }
 
-public fun <T> exactDivWithLayout(
+                    public fun <T> exactDivWithLayout(
     a: T,
     b: T,
     layout: TypeLayout<T>,
 ): T = uncheckedDivWithLayout(a, b, layout)
 
-public fun <T> uncheckedShlWithLayout(
+                public fun <T> uncheckedShlWithLayout(
     x: T,
     shift: UInt,
     layout: TypeLayout<T>,
@@ -2767,25 +2764,15 @@ private fun evalFloatBinary32(
         "minnum" -> kmMinnumf32(a, b)
         "maxnum" -> kmMaxnumf32(a, b)
         "minimum" ->
-            if (a.isNaN()) {
-                a
-            } else if (b.isNaN()) {
-                b
-            } else if (a == 0.0f && b == 0.0f && (a.toRawBits() < 0 || b.toRawBits() < 0)) {
-                -0.0f
-            } else {
-                kmMinnumf32(a, b)
-            }
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0f && b == 0.0f && (a.toRawBits() < 0 || b.toRawBits() < 0)) -0.0f
+            else kmMinnumf32(a, b)
         "maximum" ->
-            if (a.isNaN()) {
-                a
-            } else if (b.isNaN()) {
-                b
-            } else if (a == 0.0f && b == 0.0f && (a.toRawBits() >= 0 || b.toRawBits() >= 0)) {
-                +0.0f
-            } else {
-                kmMaxnumf32(a, b)
-            }
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0f && b == 0.0f && (a.toRawBits() >= 0 || b.toRawBits() >= 0)) +0.0f
+            else kmMaxnumf32(a, b)
         "fadd" -> a + b
         "fsub" -> a - b
         "fmul" -> a * b
@@ -2805,25 +2792,15 @@ private fun evalFloatBinary64(
         "minnum" -> kmMinnumf64(a, b)
         "maxnum" -> kmMaxnumf64(a, b)
         "minimum" ->
-            if (a.isNaN()) {
-                a
-            } else if (b.isNaN()) {
-                b
-            } else if (a == 0.0 && b == 0.0 && (a.toRawBits() < 0L || b.toRawBits() < 0L)) {
-                -0.0
-            } else {
-                kmMinnumf64(a, b)
-            }
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0 && b == 0.0 && (a.toRawBits() < 0L || b.toRawBits() < 0L)) -0.0
+            else kmMinnumf64(a, b)
         "maximum" ->
-            if (a.isNaN()) {
-                a
-            } else if (b.isNaN()) {
-                b
-            } else if (a == 0.0 && b == 0.0 && (a.toRawBits() >= 0L || b.toRawBits() >= 0L)) {
-                +0.0
-            } else {
-                kmMaxnumf64(a, b)
-            }
+            if (a.isNaN()) a
+            else if (b.isNaN()) b
+            else if (a == 0.0 && b == 0.0 && (a.toRawBits() >= 0L || b.toRawBits() >= 0L)) +0.0
+            else kmMaxnumf64(a, b)
         "fadd" -> a + b
         "fsub" -> a - b
         "fmul" -> a * b

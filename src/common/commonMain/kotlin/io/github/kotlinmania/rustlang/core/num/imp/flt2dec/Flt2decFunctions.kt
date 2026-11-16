@@ -156,30 +156,18 @@ public fun digitsToExpStr(buf: List<UByte>, exp: Short, fracDigits: Int, upper: 
     val exp1 = exp.toInt() - 1
     // avoid underflow when exp is i16.Min
     if (exp1 < 0) {
-        parts[n] =
-            MaybeUninit.new(
-                Part.Copy(
-                    if (upper) {
-                        "E-".encodeToByteArray()
-                    } else {
-                        "e-".encodeToByteArray()
-                    },
-                ),
-                UnresolvedTypeLayout<Part>(),
-            )
+        parts[n] = MaybeUninit.new(Part.Copy(if (upper) {
+            "E-".encodeToByteArray()
+        } else {
+            "e-".encodeToByteArray()
+        }), UnresolvedTypeLayout<Part>())
         parts[n + 1] = MaybeUninit.new(Part.Num((-exp1).toUShort()), UnresolvedTypeLayout<Part>())
     } else {
-        parts[n] =
-            MaybeUninit.new(
-                Part.Copy(
-                    if (upper) {
-                        "E".encodeToByteArray()
-                    } else {
-                        "e".encodeToByteArray()
-                    },
-                ),
-                UnresolvedTypeLayout<Part>(),
-            )
+        parts[n] = MaybeUninit.new(Part.Copy(if (upper) {
+            "E".encodeToByteArray()
+        } else {
+            "e".encodeToByteArray()
+        }), UnresolvedTypeLayout<Part>())
         parts[n + 1] = MaybeUninit.new(Part.Num(exp1.toUShort()), UnresolvedTypeLayout<Part>())
     }
     // SAFETY: we just initialized the elements `.. n + 2`.
@@ -308,21 +296,15 @@ public fun <T> toShortestExpStr(formatShortest: (Decoded, MutableList<MaybeUnini
             Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
         FullDecoded.Zero -> {
-            parts[0] =
-                if (decBounds.first <= 0 && 0 < decBounds.second) {
-                    MaybeUninit.new(Part.Copy("0".encodeToByteArray()), UnresolvedTypeLayout<Part>())
+            parts[0] = if (decBounds.first <= 0 && 0 < decBounds.second) {
+                MaybeUninit.new(Part.Copy("0".encodeToByteArray()), UnresolvedTypeLayout<Part>())
+            } else {
+                MaybeUninit.new(Part.Copy(if (upper) {
+                    "0E0".encodeToByteArray()
                 } else {
-                    MaybeUninit.new(
-                        Part.Copy(
-                            if (upper) {
-                                "0E0".encodeToByteArray()
-                            } else {
-                                "0e0".encodeToByteArray()
-                            },
-                        ),
-                        UnresolvedTypeLayout<Part>(),
-                    )
-                }
+                    "0e0".encodeToByteArray()
+                }), UnresolvedTypeLayout<Part>())
+            }
             // SAFETY: we just initialized the elements `.. 1`.
             Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
         }
@@ -365,15 +347,11 @@ public fun <T> toShortestExpStr(formatShortest: (Decoded, MutableList<MaybeUnini
  */
 public fun estimateMaxBufLen(exp: Short): Int =
     21 +
-        (
-            (
-                if (exp < 0.toShort()) {
-                    -12
-                } else {
-                    5
-                } * exp.toInt()
-            ) shr 4
-        )
+        ((if (exp < 0.toShort()) {
+            -12
+        } else {
+            5
+        } * exp.toInt()) shr 4)
 
 /**
  * Formats given floating point number into the exponential form with
@@ -415,30 +393,18 @@ public fun <T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByt
                 // [0.][0000][e0]
                 parts[0] = MaybeUninit.new(Part.Copy("0.".encodeToByteArray()), UnresolvedTypeLayout<Part>())
                 parts[1] = MaybeUninit.new(Part.Zero(fracDigits), UnresolvedTypeLayout<Part>())
-                parts[2] =
-                    MaybeUninit.new(
-                        Part.Copy(
-                            if (upper) {
-                                "E0".encodeToByteArray()
-                            } else {
-                                "e0".encodeToByteArray()
-                            },
-                        ),
-                        UnresolvedTypeLayout<Part>(),
-                    )
+                parts[2] = MaybeUninit.new(Part.Copy(if (upper) {
+                    "E0".encodeToByteArray()
+                } else {
+                    "e0".encodeToByteArray()
+                }), UnresolvedTypeLayout<Part>())
                 Formatted(sign = sign1, parts = ((parts).subList(0, 3)).assumeInitRef())
             } else {
-                parts[0] =
-                    MaybeUninit.new(
-                        Part.Copy(
-                            if (upper) {
-                                "0E0".encodeToByteArray()
-                            } else {
-                                "0e0".encodeToByteArray()
-                            },
-                        ),
-                        UnresolvedTypeLayout<Part>(),
-                    )
+                parts[0] = MaybeUninit.new(Part.Copy(if (upper) {
+                    "0E0".encodeToByteArray()
+                } else {
+                    "0e0".encodeToByteArray()
+                }), UnresolvedTypeLayout<Part>())
                 Formatted(sign = sign1, parts = ((parts).subList(0, 1)).assumeInitRef())
             }
         }

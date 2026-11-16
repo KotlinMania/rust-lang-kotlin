@@ -3,9 +3,11 @@ package io.github.kotlinmania.rustlang.alloc.vec.iszero
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.num.wrapping.Wrapping
@@ -61,8 +63,8 @@ public fun <T> List<T>.isZeroFromTArrayn(n: Int): Boolean {
     return n == 0
 }
 
-public fun <T : IsZero> List<T>.isZeroFromTArraynFromTArrayn(n: Int): Boolean =
-    if (T.IS_ZST) {
+public fun <T : IsZero> List<T>.isZeroFromTArrayn(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
+    return if (((typeLayoutT).sizeBytes == 0L)) {
         // If T is a ZST, then there is at most one possible value of `T`,
         // so we only need to check one element for zeroness.
         // We can't unconditionally return `true` here, since, e.g.
@@ -79,6 +81,7 @@ public fun <T : IsZero> List<T>.isZeroFromTArraynFromTArrayn(n: Int): Boolean =
         // Feel free to tweak if you have better evidence.
         n <= 16 && this.all({ IsZero.isZero(it) })
     }
+}
 
 public fun <A : IsZero, B : IsZero, C : IsZero, D : IsZero, E : IsZero, F : IsZero, G : IsZero, H : IsZero> List<Any?>.isZero(): Boolean {
     val (A, B, C, D, E, F, G, H) = this
@@ -123,7 +126,7 @@ public fun <G : IsZero, H : IsZero> Pair<G, H>.isZero(): Boolean {
 // `SpecFromElem`.
 public fun <T> T?.isZero(): Boolean = this == null
 
-public fun NonZero<UByte>?.isZero(): Boolean = this == null
+public fun NonZero<UByte, NonZeroU8Inner>?.isZero(): Boolean = this == null
 
 public fun UByte?.isZero(): Boolean {
     run {

@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.std.panicking
 import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.any.Any
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.panic.location.Location
@@ -13,6 +14,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -298,7 +300,7 @@ public fun defaultHook(info: PanicHookInfo) {
                     writeMsg(err)
                 }
             })
-            var FIRST_PANIC: Atomic<Boolean> = AtomicBool.new(true)
+            var FIRST_PANIC: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(true)
             when (backtrace) {
                 BacktraceStyle.Short -> {
                     (lock.print(err, PrintFmt.Short)).let { }
@@ -320,7 +322,7 @@ public fun defaultHook(info: PanicHookInfo) {
         }
     run {
         val matchVal1 = trySetOutputCapture(null)
-        if (matchVal1 is Result.Ok<*, *> && matchVal1.value != null) {
+        if (matchVal1 is Result.Ok && matchVal1.value != null) {
             write(local.lock().unwrapOrElse({ e -> e.intoInner() }))
             trySetOutputCapture(local).ok()
         } else {
@@ -338,7 +340,7 @@ public fun defaultHook(info: PanicHookInfo) {
 /**
  * Invoke a closure, capturing the cause of an unwinding panic if one occurs.
  */
-public fun <R> catchUnwind(f: () -> R): Result<R, RustAny> = Result.Ok(f())
+public fun <R> catchUnwind(f: () -> R): Result<R, RustAny> = Result.Ok<R, RustAny>(f())
 
 /**
  * Determines whether the current thread is unwinding because of panic.
@@ -374,17 +376,16 @@ public fun panicHandler(info: PanicInfo): Nothing {
 
         public open fun get(): RustAny = this.fill()
 
-        public open fun fmt(f: StringBuilder) {
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> =
             when (val matchVal = this.string) {
                 null -> {
-                    f.append((this.inner).toString())
+                    run { f.append((this.inner).toString()); Result.Ok(Unit) }
                 }
                 else -> {
                     val s = matchVal
-                    f.append(s)
+                    run { f.append(s); Result.Ok(Unit) }
                 }
             }
-        }
     }
     open class StaticStrPayload(
         public var value: String,
@@ -401,9 +402,7 @@ public fun panicHandler(info: PanicInfo): Nothing {
 
         public open fun asStr(): String? = this.value
 
-        public open fun fmt(f: StringBuilder) {
-            f.append(this.value)
-        }
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(this.value); Result.Ok(Unit) }
     }
     val loc = info.location().unwrap()
     // The current implementation always returns Some
@@ -459,15 +458,14 @@ public fun <M> beginPanic(msg: M): Nothing {
                 }
             }
 
-        public open fun fmt(f: StringBuilder) {
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> =
             when (val matchVal = this.inner) {
                 null -> Process.abort()
                 else -> {
                     val a = matchVal
-                    f.append(payloadAsStr(a))
+                    run { f.append(payloadAsStr(a)); Result.Ok(Unit) }
                 }
             }
-        }
     }
     if (false) {
         kmAbort()
@@ -584,9 +582,7 @@ public fun resumeUnwind(payload: RustAny): Nothing {
 
         public open fun get(): RustAny = this.value
 
-        public open fun fmt(f: StringBuilder) {
-            f.append(payloadAsStr(this.value))
-        }
+        public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append(payloadAsStr(this.value)); Result.Ok(Unit) }
     }
     when (val matchVal = increase(false)) {
         null -> {}

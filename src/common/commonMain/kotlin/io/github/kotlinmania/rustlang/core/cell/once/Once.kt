@@ -99,15 +99,12 @@ public open class OnceCell<T>(
     public open fun set(value: T): Result<Unit, T> =
         run {
             val matchVal = this.tryInsert(value)
-            when (matchVal) {
-                is Result.Ok<*, *> -> {
-                    Result.Ok(Unit)
-                }
-                is Result.Err<*, *> -> {
-                    val value1 = matchVal.error.second
-                    Result.Err(value1)
-                }
-            }
+            when (matchVal) { is Result.Ok -> {
+                Result.Ok<Unit, T>(Unit)
+            }; is Result.Err -> {
+                val value1 = matchVal.error.second
+                Result.Err<Unit, T>(value1)
+            } }
         }
 
     /**
@@ -139,7 +136,7 @@ public open class OnceCell<T>(
             null -> {}
             else -> {
                 val old = matchVal
-                return Result.Err(Pair(old, value))
+                return Result.Err<T, Pair<T, T>>(Pair(old, value))
             }
         }
         // SAFETY: This is the only place where we set the slot, no races
@@ -147,7 +144,7 @@ public open class OnceCell<T>(
         // checked that slot is currently `None`, so this write
         // maintains the `inner`s invariant.
         val slot = this.inner.get()
-        return Result.Ok(slot.insert(value))
+        return Result.Ok<T, Pair<T, T>>(slot.insert(value))
     }
 
     /**
@@ -175,9 +172,9 @@ public open class OnceCell<T>(
      * ```
      */
     public open fun getOrInit(f: () -> T): T =
-        when (val matchVal = this.getOrTryInit({ Result.Ok(f()) })) {
-            is Result.Ok<*, *> -> {
-                val value = (matchVal as Result.Ok<*, *>).value
+        when (val matchVal = this.getOrTryInit({ Result.Ok<T, Nothing>(f()) })) {
+            is Result.Ok -> {
+                val value = matchVal.value
                 value
             }
         }
@@ -209,9 +206,9 @@ public open class OnceCell<T>(
      * ```
      */
     public open fun getMutOrInit(f: () -> T): T =
-        when (val matchVal = this.getMutOrTryInit({ Result.Ok(f()) })) {
-            is Result.Ok<*, *> -> {
-                val value = (matchVal as Result.Ok<*, *>).value
+        when (val matchVal = this.getMutOrTryInit({ Result.Ok<T, Nothing>(f()) })) {
+            is Result.Ok -> {
+                val value = matchVal.value
                 value
             }
         }
@@ -252,7 +249,7 @@ public open class OnceCell<T>(
             null -> {}
             else -> {
                 val value = matchVal
-                return Result.Ok(value)
+                return Result.Ok<T, E>(value)
             }
         }
         return this.tryInit(f)
@@ -292,22 +289,15 @@ public open class OnceCell<T>(
      */
     public open fun <E> getMutOrTryInit(f: () -> Result<T, E>): Result<T, E> {
         if (this.get() == null) {
-            when (val tryResult = this.tryInit(f)) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+            when (val tryResult = this.tryInit(f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<T, E>(tryResult.error) }
         }
-        return Result.Ok(this.getMut()!!)
+        return Result.Ok<T, E>(this.getMut()!!)
     }
 
     // Avoid inlining the initialization closure into the common path that fetches
     // the already initialized value
     public open fun <E> tryInit(f: () -> Result<T, E>): Result<T, E> {
-        val value =
-            when (val tryResult = f()) {
-                is Result.Ok<*, *> -> tryResult.value
-                is Result.Err<*, *> -> return Result.Err(tryResult.error)
-            }
+        val value = when (val tryResult = f()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<T, E>(tryResult.error) }
         // Note that *some* forms of reentrant initialization might lead to
         // UB (see `reentrantInit` test). I believe that just removing this
         // `panic`, while keeping `tryInsert` would be sound, but it seems
@@ -315,7 +305,7 @@ public open class OnceCell<T>(
         return when (val matchVal = this.tryInsert(value)) {
             is Ok -> {
                 val value1 = matchVal.value
-                Result.Ok(value1)
+                Result.Ok<T, E>(value1)
             }
             else -> {
                 error("reentrant init")
@@ -366,10 +356,7 @@ public open class OnceCell<T>(
      * check(cell1.get() == null)
      * ```
      */
-    public open fun take(): T? =
-        io.github.kotlinmania.rustlang.core.mem
-            .take(this)
-            .intoInner()
+    public open fun take(): T? = io.github.kotlinmania.rustlang.core.mem.take(this).intoInner()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val d = DebugTuple(f, "OnceCell")

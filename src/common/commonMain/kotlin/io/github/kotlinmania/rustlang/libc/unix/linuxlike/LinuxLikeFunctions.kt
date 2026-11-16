@@ -55,17 +55,17 @@ public fun io(ty: UInt, nr: UInt): Ioctl = ioc(IOC_NONE, ty, nr, 0)
 /**
  * Build an ioctl number for an read-only ioctl.
  */
-public fun <T> ior(ty: UInt, nr: UInt, typeLayoutT: TypeLayout<T>): Ioctl = ioc(IOC_READ, ty, nr, sizeOf<T>(typeLayoutT = typeLayoutT))
+public fun <T> ior(ty: UInt, nr: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Ioctl = ioc(IOC_READ, ty, nr, sizeOf<T>(typeLayoutT = typeLayoutT))
 
 /**
  * Build an ioctl number for an write-only ioctl.
  */
-public fun <T> iow(ty: UInt, nr: UInt, typeLayoutT: TypeLayout<T>): Ioctl = ioc(IOC_WRITE, ty, nr, sizeOf<T>(typeLayoutT = typeLayoutT))
+public fun <T> iow(ty: UInt, nr: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Ioctl = ioc(IOC_WRITE, ty, nr, sizeOf<T>(typeLayoutT = typeLayoutT))
 
 /**
  * Build an ioctl number for a read-write ioctl.
  */
-public fun <T> iowr(ty: UInt, nr: UInt, typeLayoutT: TypeLayout<T>): Ioctl = ioc(IOC_READ or IOC_WRITE, ty, nr, sizeOf<T>(typeLayoutT = typeLayoutT))
+public fun <T> iowr(ty: UInt, nr: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Ioctl = ioc(IOC_READ or IOC_WRITE, ty, nr, sizeOf<T>(typeLayoutT = typeLayoutT))
 
 public expect fun ioctl(fd: CInt, request: Ioctl, vararg variadicArgs: Long): CInt
 

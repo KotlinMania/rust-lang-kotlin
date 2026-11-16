@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.time.windows
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -98,9 +99,9 @@ public open class SystemTime(
         val me = this.intervals()
         val other1 = other.intervals()
         return if (me >= other1) {
-            Result.Ok(intervals2dur((me - other1).toULong()))
+            Result.Ok<Duration, Duration>(intervals2dur((me - other1).toULong()))
         } else {
-            Result.Err(intervals2dur((other1 - me).toULong()))
+            Result.Err<Duration, Duration>(intervals2dur((other1 - me).toULong()))
         }
     }
 
@@ -124,9 +125,7 @@ public open class SystemTime(
 
     public open fun cmp(other: SystemTime): Ordering = this.intervals().cmp(other.intervals())
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "SystemTime").field("intervals", this.intervals()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "SystemTime").field("intervals", this.intervals()).finish()
 
     public override fun intoInner(): c.Filetime = this.t
 

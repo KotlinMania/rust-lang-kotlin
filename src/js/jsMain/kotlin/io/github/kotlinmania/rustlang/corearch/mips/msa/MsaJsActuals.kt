@@ -1491,13 +1491,21 @@ public actual fun msaSrlriW(a: V4i32, b: Int): V4i32 =
 public actual fun msaSrlriD(a: V2i64, b: Int): V2i64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun msaStB(a: V16i8, memAddr: MutPtr, immS10: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun msaStB(a: V16i8, memAddr: MutPtr, immS10: Int) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun msaStH(a: V8i16, memAddr: MutPtr, immS11: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun msaStH(a: V8i16, memAddr: MutPtr, immS11: Int) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun msaStW(a: V4i32, memAddr: MutPtr, immS12: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun msaStW(a: V4i32, memAddr: MutPtr, immS12: Int) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun msaSubsSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("Native FFI addon is not available")

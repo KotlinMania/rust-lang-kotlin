@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.needsDrop
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -62,19 +63,15 @@ public typealias Source<I> = I.Source
 public open class FilterMap<I, F>(
     public var iter: I,
     public var f: F,
-) : TrustedFused,
-    SourceIter<Source>,
-    InPlaceIterable,
-    Iterable<B> {
-    override fun iterator(): Iterator<B> =
-        object : AbstractIterator<B>() {
-            override fun computeNext() {
-                when (val v = this@FilterMap.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+) : TrustedFused, SourceIter<Source>, InPlaceIterable, Iterable<B> {
+    override fun iterator(): Iterator<B> = object : AbstractIterator<B>() {
+        override fun computeNext() {
+            when (val v = this@FilterMap.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): FilterMap<I, F> = FilterMap(iter, f)
 
@@ -120,12 +117,12 @@ public open class FilterMap<I, F>(
         return when (result) {
             is ControlFlow.Break -> {
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok(MaybeUninit.arrayAssumeInit(array))
+                Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array))
             }
             is ControlFlow.Continue -> {
                 val initialized = guard1.initialized
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err(IntoIter.newUnchecked(array, 0 until initialized))
+                Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized))
             }
         }
     }
@@ -141,16 +138,14 @@ public open class FilterMap<I, F>(
     public open fun <Acc> fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
 
     public open fun nextBack(): B? {
-        fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B> =
-            { x ->
-                when (val matchVal = f(x)) {
-                    null -> ControlFlow.Continue()
-                    else -> {
-                        val x1 = matchVal
-                        ControlFlow.Break(x1)
-                    }
+        fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
+            { x -> when (val matchVal = f(x)) {
+                null -> ControlFlow.Continue()
+                else -> {
+                    val x1 = matchVal
+                    ControlFlow.Break(x1)
                 }
-            }
+            } }
         return this.iter.tryRfold(find(this.f)).breakValue()
     }
 
@@ -191,30 +186,26 @@ public open class FilterMap<I, F>(
 
         public fun <I, F> new(iter: I, f: F): FilterMap<I, F> = FilterMap(iter = iter, f = f)
 
-        public val EXPAND_BY: NonZero<Int>? = I.EXPAND_BY
+        public val EXPAND_BY: NonZero<Int, NonZeroUsizeInner>? = I.EXPAND_BY
 
-        public val MERGE_BY: NonZero<Int>? = I.MERGE_BY
+        public val MERGE_BY: NonZero<Int, NonZeroUsizeInner>? = I.MERGE_BY
     }
 }
 
 public fun <T, B, Acc> filterMapFold(f: (T) -> B?, fold: (Acc, B) -> Acc): (Acc, T) -> Acc =
-    { acc, item ->
-        when (val matchVal = f(item)) {
-            null -> acc
-            else -> {
-                val x = matchVal
-                fold(acc, x)
-            }
+    { acc, item -> when (val matchVal = f(item)) {
+        null -> acc
+        else -> {
+            val x = matchVal
+            fold(acc, x)
         }
-    }
+    } }
 
 public fun <T, B, Acc, R : Try<R, Acc, Any?>> filterMapTryFold(f: (T) -> B?, fold: (Acc, B) -> R): (Acc, T) -> R =
-    { acc, item ->
-        when (val matchVal = f(item)) {
-            null -> acc
-            else -> {
-                val x = matchVal
-                fold(acc, x)
-            }
+    { acc, item -> when (val matchVal = f(item)) {
+        null -> acc
+        else -> {
+            val x = matchVal
+            fold(acc, x)
         }
-    }
+    } }

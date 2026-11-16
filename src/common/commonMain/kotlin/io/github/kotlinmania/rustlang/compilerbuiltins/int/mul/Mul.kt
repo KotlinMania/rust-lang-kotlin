@@ -8,15 +8,11 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 
-public interface Mul<T> :
-    DInt,
-    Int {
+public interface Mul<T> : DInt, Int {
     public fun mul(rhs: T): T
 }
 
-public interface UMulo<T> :
-    DInt,
-    Int {
+public interface UMulo<T> : DInt, Int {
     public fun mulo(rhs: T): Pair<T, Boolean> =
         run {
             val matchVal = Pair(this.hi().isZero(), rhs.hi().isZero())

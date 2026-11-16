@@ -29,9 +29,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class PhantomCovariantLifetime internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<PhantomCovariant<Unit>>,
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomCovariantLifetime>,
-    Variance<PhantomCovariantLifetime> {
+    public val fieldLayout: TypeLayout<PhantomCovariant<Unit>> = UnresolvedTypeLayout(),
+) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomCovariantLifetime>, Variance<PhantomCovariantLifetime> {
     public var field0: PhantomCovariant<Unit>
         get() = value
         set(v) {
@@ -40,11 +39,9 @@ public open class PhantomCovariantLifetime internal constructor(
 
     public var value: PhantomCovariant<Unit>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: PhantomCovariant<Unit>, fieldLayout: TypeLayout<PhantomCovariant<Unit>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: PhantomCovariant<Unit>, fieldLayout: TypeLayout<PhantomCovariant<Unit>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomCovariantLifetime> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomCovariantLifetime(ptr, layout) }, { it.value })
 
@@ -53,14 +50,14 @@ public open class PhantomCovariantLifetime internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomCovariantLifetime").toString())
 
     public companion object {
-        public operator fun invoke(value: PhantomCovariant<Unit>, fieldLayout: TypeLayout<PhantomCovariant<Unit>>): PhantomCovariantLifetime = PhantomCovariantLifetime(value, fieldLayout)
+        public operator fun invoke(value: PhantomCovariant<Unit>, fieldLayout: TypeLayout<PhantomCovariant<Unit>> = UnresolvedTypeLayout()): PhantomCovariantLifetime = PhantomCovariantLifetime(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<PhantomCovariant<Unit>>): PhantomCovariantLifetime = PhantomCovariantLifetime(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<PhantomCovariant<Unit>> = UnresolvedTypeLayout()): PhantomCovariantLifetime = PhantomCovariantLifetime(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of the variance marker.
          */
-        public fun new(fieldLayout: TypeLayout<Unit>): PhantomCovariantLifetime = PhantomCovariantLifetime(PhantomCovariant(Unit, fieldLayout = fieldLayout), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomCovariant<Unit>(ptr, layout) }, { it.value }))
+        public fun new(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomCovariantLifetime = PhantomCovariantLifetime(PhantomCovariant(Unit, fieldLayout = fieldLayout), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomCovariant<Unit>(ptr, layout) }, { it.value }))
 
         public val VALUE: PhantomCovariantLifetime = PhantomCovariantLifetime.new(fieldLayout = UnresolvedTypeLayout<Unit>())
     }
@@ -84,9 +81,8 @@ public open class PhantomCovariantLifetime internal constructor(
  */
 public open class PhantomContravariantLifetime internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<PhantomContravariant<Unit>>,
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomContravariantLifetime>,
-    Variance<PhantomContravariantLifetime> {
+    public val fieldLayout: TypeLayout<PhantomContravariant<Unit>> = UnresolvedTypeLayout(),
+) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomContravariantLifetime>, Variance<PhantomContravariantLifetime> {
     public var field0: PhantomContravariant<Unit>
         get() = value
         set(v) {
@@ -95,11 +91,9 @@ public open class PhantomContravariantLifetime internal constructor(
 
     public var value: PhantomContravariant<Unit>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: PhantomContravariant<Unit>, fieldLayout: TypeLayout<PhantomContravariant<Unit>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: PhantomContravariant<Unit>, fieldLayout: TypeLayout<PhantomContravariant<Unit>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomContravariantLifetime> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomContravariantLifetime(ptr, layout) }, { it.value })
 
@@ -108,14 +102,14 @@ public open class PhantomContravariantLifetime internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomContravariantLifetime").toString())
 
     public companion object {
-        public operator fun invoke(value: PhantomContravariant<Unit>, fieldLayout: TypeLayout<PhantomContravariant<Unit>>): PhantomContravariantLifetime = PhantomContravariantLifetime(value, fieldLayout)
+        public operator fun invoke(value: PhantomContravariant<Unit>, fieldLayout: TypeLayout<PhantomContravariant<Unit>> = UnresolvedTypeLayout()): PhantomContravariantLifetime = PhantomContravariantLifetime(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<PhantomContravariant<Unit>>): PhantomContravariantLifetime = PhantomContravariantLifetime(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<PhantomContravariant<Unit>> = UnresolvedTypeLayout()): PhantomContravariantLifetime = PhantomContravariantLifetime(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of the variance marker.
          */
-        public fun new(fieldLayout: TypeLayout<Unit>): PhantomContravariantLifetime = PhantomContravariantLifetime(PhantomContravariant(Unit, fieldLayout = fieldLayout), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomContravariant<Unit>(ptr, layout) }, { it.value }))
+        public fun new(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomContravariantLifetime = PhantomContravariantLifetime(PhantomContravariant(Unit, fieldLayout = fieldLayout), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomContravariant<Unit>(ptr, layout) }, { it.value }))
 
         public val VALUE: PhantomContravariantLifetime = PhantomContravariantLifetime.new(fieldLayout = UnresolvedTypeLayout<Unit>())
     }
@@ -137,9 +131,8 @@ public open class PhantomContravariantLifetime internal constructor(
  */
 public open class PhantomInvariantLifetime internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<PhantomInvariant<Unit>>,
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomInvariantLifetime>,
-    Variance<PhantomInvariantLifetime> {
+    public val fieldLayout: TypeLayout<PhantomInvariant<Unit>> = UnresolvedTypeLayout(),
+) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomInvariantLifetime>, Variance<PhantomInvariantLifetime> {
     public var field0: PhantomInvariant<Unit>
         get() = value
         set(v) {
@@ -148,11 +141,9 @@ public open class PhantomInvariantLifetime internal constructor(
 
     public var value: PhantomInvariant<Unit>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: PhantomInvariant<Unit>, fieldLayout: TypeLayout<PhantomInvariant<Unit>>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: PhantomInvariant<Unit>, fieldLayout: TypeLayout<PhantomInvariant<Unit>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomInvariantLifetime> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomInvariantLifetime(ptr, layout) }, { it.value })
 
@@ -161,14 +152,14 @@ public open class PhantomInvariantLifetime internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = f.writeFmt(("PhantomInvariantLifetime").toString())
 
     public companion object {
-        public operator fun invoke(value: PhantomInvariant<Unit>, fieldLayout: TypeLayout<PhantomInvariant<Unit>>): PhantomInvariantLifetime = PhantomInvariantLifetime(value, fieldLayout)
+        public operator fun invoke(value: PhantomInvariant<Unit>, fieldLayout: TypeLayout<PhantomInvariant<Unit>> = UnresolvedTypeLayout()): PhantomInvariantLifetime = PhantomInvariantLifetime(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<PhantomInvariant<Unit>>): PhantomInvariantLifetime = PhantomInvariantLifetime(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<PhantomInvariant<Unit>> = UnresolvedTypeLayout()): PhantomInvariantLifetime = PhantomInvariantLifetime(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of the variance marker.
          */
-        public fun new(fieldLayout: TypeLayout<Unit>): PhantomInvariantLifetime = PhantomInvariantLifetime(PhantomInvariant(Unit, fieldLayout = fieldLayout), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomInvariant<Unit>(ptr, layout) }, { it.value }))
+        public fun new(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomInvariantLifetime = PhantomInvariantLifetime(PhantomInvariant(Unit, fieldLayout = fieldLayout), fieldLayout = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomInvariant<Unit>(ptr, layout) }, { it.value }))
 
         public val VALUE: PhantomInvariantLifetime = PhantomInvariantLifetime.new(fieldLayout = UnresolvedTypeLayout<Unit>())
     }
@@ -193,10 +184,8 @@ public open class PhantomInvariantLifetime internal constructor(
  */
 public open class PhantomCovariant<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Unit>,
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomCovariant<T>>,
-    Variance<PhantomCovariant<T>>,
-    TrivialClone<PhantomCovariant<T>> {
+    public val fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout(),
+) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomCovariant<T>>, Variance<PhantomCovariant<T>>, TrivialClone<PhantomCovariant<T>> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -205,11 +194,9 @@ public open class PhantomCovariant<T> internal constructor(
 
     public var value: Unit
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Unit, fieldLayout: TypeLayout<Unit>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Unit, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomCovariant<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomCovariant<T>(ptr, layout) }, { it.value })
 
@@ -226,18 +213,18 @@ public open class PhantomCovariant<T> internal constructor(
     public override fun hashCode(): Int = 0
 
     public companion object {
-        public operator fun <T> invoke(value: Unit, fieldLayout: TypeLayout<Unit>): PhantomCovariant<T> = PhantomCovariant<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: Unit, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomCovariant<T> = PhantomCovariant<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Unit>): PhantomCovariant<T> = PhantomCovariant<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomCovariant<T> = PhantomCovariant<T>(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of the variance marker.
          */
-        public fun <T> new(fieldLayout: TypeLayout<Unit>): PhantomCovariant<T> = PhantomCovariant(Unit, fieldLayout = fieldLayout)
+        public fun <T> new(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomCovariant<T> = PhantomCovariant(Unit, fieldLayout = fieldLayout)
 
         public val VALUE: PhantomCovariant<T> = PhantomCovariant.new(fieldLayout = UnresolvedTypeLayout<Unit>())
 
-        public fun <T> default(fieldLayout: TypeLayout<Unit>): PhantomCovariant<T> = PhantomCovariant(Unit, fieldLayout = fieldLayout)
+        public fun <T> default(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomCovariant<T> = PhantomCovariant(Unit, fieldLayout = fieldLayout)
     }
 }
 
@@ -260,10 +247,8 @@ public open class PhantomCovariant<T> internal constructor(
  */
 public open class PhantomContravariant<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Unit>,
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomContravariant<T>>,
-    Variance<PhantomContravariant<T>>,
-    TrivialClone<PhantomContravariant<T>> {
+    public val fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout(),
+) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomContravariant<T>>, Variance<PhantomContravariant<T>>, TrivialClone<PhantomContravariant<T>> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -272,11 +257,9 @@ public open class PhantomContravariant<T> internal constructor(
 
     public var value: Unit
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Unit, fieldLayout: TypeLayout<Unit>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Unit, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomContravariant<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomContravariant<T>(ptr, layout) }, { it.value })
 
@@ -293,18 +276,18 @@ public open class PhantomContravariant<T> internal constructor(
     public override fun hashCode(): Int = 0
 
     public companion object {
-        public operator fun <T> invoke(value: Unit, fieldLayout: TypeLayout<Unit>): PhantomContravariant<T> = PhantomContravariant<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: Unit, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomContravariant<T> = PhantomContravariant<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Unit>): PhantomContravariant<T> = PhantomContravariant<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomContravariant<T> = PhantomContravariant<T>(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of the variance marker.
          */
-        public fun <T> new(fieldLayout: TypeLayout<Unit>): PhantomContravariant<T> = PhantomContravariant(Unit, fieldLayout = fieldLayout)
+        public fun <T> new(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomContravariant<T> = PhantomContravariant(Unit, fieldLayout = fieldLayout)
 
         public val VALUE: PhantomContravariant<T> = PhantomContravariant.new(fieldLayout = UnresolvedTypeLayout<Unit>())
 
-        public fun <T> default(fieldLayout: TypeLayout<Unit>): PhantomContravariant<T> = PhantomContravariant(Unit, fieldLayout = fieldLayout)
+        public fun <T> default(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomContravariant<T> = PhantomContravariant(Unit, fieldLayout = fieldLayout)
     }
 }
 
@@ -324,10 +307,8 @@ public open class PhantomContravariant<T> internal constructor(
  */
 public open class PhantomInvariant<T> internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Unit>,
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomInvariant<T>>,
-    Variance<PhantomInvariant<T>>,
-    TrivialClone<PhantomInvariant<T>> {
+    public val fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout(),
+) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomInvariant<T>>, Variance<PhantomInvariant<T>>, TrivialClone<PhantomInvariant<T>> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -336,11 +317,9 @@ public open class PhantomInvariant<T> internal constructor(
 
     public var value: Unit
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: Unit, fieldLayout: TypeLayout<Unit>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: Unit, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<PhantomInvariant<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> PhantomInvariant<T>(ptr, layout) }, { it.value })
 
@@ -357,18 +336,18 @@ public open class PhantomInvariant<T> internal constructor(
     public override fun hashCode(): Int = 0
 
     public companion object {
-        public operator fun <T> invoke(value: Unit, fieldLayout: TypeLayout<Unit>): PhantomInvariant<T> = PhantomInvariant<T>(value, fieldLayout)
+        public operator fun <T> invoke(value: Unit, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomInvariant<T> = PhantomInvariant<T>(value, fieldLayout)
 
-        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Unit>): PhantomInvariant<T> = PhantomInvariant<T>(fieldStorage, fieldLayout)
+        public fun <T> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomInvariant<T> = PhantomInvariant<T>(fieldStorage, fieldLayout)
 
         /**
          * Constructs a new instance of the variance marker.
          */
-        public fun <T> new(fieldLayout: TypeLayout<Unit>): PhantomInvariant<T> = PhantomInvariant(Unit, fieldLayout = fieldLayout)
+        public fun <T> new(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomInvariant<T> = PhantomInvariant(Unit, fieldLayout = fieldLayout)
 
         public val VALUE: PhantomInvariant<T> = PhantomInvariant.new(fieldLayout = UnresolvedTypeLayout<Unit>())
 
-        public fun <T> default(fieldLayout: TypeLayout<Unit>): PhantomInvariant<T> = PhantomInvariant(Unit, fieldLayout = fieldLayout)
+        public fun <T> default(fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout()): PhantomInvariant<T> = PhantomInvariant(Unit, fieldLayout = fieldLayout)
     }
 }
 

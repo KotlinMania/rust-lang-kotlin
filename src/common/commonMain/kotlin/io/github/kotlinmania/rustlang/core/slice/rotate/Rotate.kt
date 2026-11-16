@@ -26,8 +26,8 @@ public typealias BufType = IntArray
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
-    if (T.IS_ZST) {
+public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+    if (((typeLayoutT).sizeBytes == 0L)) {
         return
     }
     // abort early if the rotate is a no-op
@@ -59,7 +59,7 @@ public fun <T> ptrRotate(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLa
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // `T` is not a zero-sized type, so it's okay to divide by its size.
     if (!false && constMin(left, right) <= sizeOf<BufType>(typeLayoutT = PrimitiveArrayLayouts.usize64Array((32).toInt())) / sizeOf<T>(typeLayoutT = typeLayoutT)) {
         // SAFETY: guaranteed by the caller
@@ -83,7 +83,7 @@ public fun <T> ptrRotateDispatch(left: Int, mid: MutPtr, right: Int, typeLayoutT
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // The `[T; 0]` here is to ensure this is appropriately aligned for T
     val rawarray = MaybeUninit.uninit(UnresolvedTypeLayout<Pair<BufType, List<T>>>())
     val buf = mutPtrFromRustCast(rawarray.asMutPtr())
@@ -103,18 +103,18 @@ public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT:
         // - `dim + left = mid - left + right + left = mid + right` and we write `[dim, dim+left)`
         run {
             // 1)
-            copyNonoverlapping(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), buf, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), buf, left, typeLayoutT = typeLayoutT)
             // 2)
-            copy(mid, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
+            copy((mid).asConstPtr(), MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
             // 3)
-            copyNonoverlapping(buf, dim, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((buf).asConstPtr(), dim, left, typeLayoutT = typeLayoutT)
         }
     } else {
         // SAFETY: same reasoning as above but with `left` and `right` reversed
         run {
-            copyNonoverlapping(mid, buf, right, typeLayoutT = typeLayoutT)
-            copy(MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), dim, left, typeLayoutT = typeLayoutT)
-            copyNonoverlapping(buf, MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((mid).asConstPtr(), buf, right, typeLayoutT = typeLayoutT)
+            copy((MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), dim, left, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((buf).asConstPtr(), MutPtr((mid).rawAddress - ((left).toLong() * (typeLayoutT).strideBytes)), right, typeLayoutT = typeLayoutT)
         }
     }
 }
@@ -156,7 +156,7 @@ public fun <T> ptrRotateMemmove(left: Int, mid: MutPtr, right: Int, typeLayoutT:
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateGcd(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateGcd(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // Algorithm 2
     // Microbenchmarks indicate that the average performance for random shifts is better all
     // the way until about `left + right == 32`, but the worst case performance breaks even
@@ -265,7 +265,7 @@ public fun <T> ptrRotateGcd(left: Int, mid: MutPtr, right: Int, typeLayoutT: Typ
  *
  * The specified range must be valid for reading and writing.
  */
-public fun <T> ptrRotateSwap(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T>) {
+public fun <T> ptrRotateSwap(left: Int, mid: MutPtr, right: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     var left1 = left
     var mid1 = mid
     var right1 = right

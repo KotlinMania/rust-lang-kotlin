@@ -75,23 +75,20 @@ public fun <K, V, Q, A : AllocatorClone> Root<K, V>.splitOff(key: Q, alloc: A): 
                     leftNode = edge1.descend()
                     rightNode = node.firstEdge().descend()
                 }
-                matchVal1.first is Leaf && matchVal1.second is Leaf -> {
-                    break
-                }
+                matchVal1.first is Leaf && matchVal1.second is Leaf -> { break }
                 else -> error("unreachable")
             }
         }
-        splitEdge =
-            when (val matchVal2 = leftNode.searchNode(key)) {
-                is Found -> {
-                    val (kv1) = matchVal2
-                    kv1.leftEdge()
-                }
-                is GoDown -> {
-                    val (edge2) = matchVal2
-                    edge2
-                }
+        splitEdge = when (val matchVal2 = leftNode.searchNode(key)) {
+            is Found -> {
+                val (kv1) = matchVal2
+                kv1.leftEdge()
             }
+            is GoDown -> {
+                val (edge2) = matchVal2
+                edge2
+            }
+        }
     }
     leftRoot.fixRightBorder(alloc.clone())
     rightRoot.fixLeftBorder(alloc)

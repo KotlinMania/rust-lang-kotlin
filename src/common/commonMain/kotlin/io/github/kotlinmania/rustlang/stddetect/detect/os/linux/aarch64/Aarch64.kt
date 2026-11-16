@@ -9,11 +9,11 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.PROP_VALUE_MAX
 import io.github.kotlinmania.rustlang.libc.systemPropertyGet
+import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.PROP_VALUE_MAX
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 
@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 /**
  * Try to read the features from the auxiliary vector.
  */
-public fun detectFeatures(): Initializer {
+public fun detectFeatures(): cache.Initializer {
     val isExynos9810 = run {
         // Samsung Exynos 9810 has a bug that big and little cores have different
         // ISAs. And on older Android (pre-9), the kernel incorrectly reports
@@ -43,7 +43,7 @@ public fun detectFeatures(): Initializer {
         }
         else -> {}
     }
-    return Cache.Initializer.default()
+    return cache.Initializer.default()
 }
 
 /**
@@ -158,8 +158,8 @@ public open class AtHwcap(
      * The feature dependencies here come directly from LLVM's feature definitions:
      * <https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/AArch64/AArch64.td>
      */
-    public open fun cache(isExynos9810: Boolean): Initializer {
-        val value = Cache.Initializer.default()
+    public open fun cache(isExynos9810: Boolean): cache.Initializer {
+        val value = cache.Initializer.default()
         run {
             var enableFeature =
                 { f, enable ->

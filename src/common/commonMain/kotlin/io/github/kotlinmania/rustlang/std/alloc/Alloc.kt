@@ -172,7 +172,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
 
     public open fun allocImpl(layout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
         return when (val matchVal = layout.size()) {
-            0 -> Result.Ok(layout.danglingPtr().castSlice(0))
+            0 -> Result.Ok<NonNull, AllocError>(layout.danglingPtr().castSlice(0))
             // SAFETY: `layout` is non-zero in size,
             else -> {
                 val size = matchVal
@@ -183,8 +183,8 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         } else {
                             imp.alloc(layout)
                         }
-                    val ptr = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                    Result.Ok(ptr.castSlice(size))
+                    val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                    Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                 }
             }
         }
@@ -207,11 +207,11 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             rawPtr.add(oldSize).writeBytes(0, newSize - oldSize)
                         }
-                        Result.Ok(ptr1.castSlice(newSize))
+                        Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
                 // SAFETY: because `newLayout.size()` must be greater than or equal to `oldSize`,
@@ -222,10 +222,10 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 else -> {
                     val oldSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), oldSize1)
+                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        ptr.copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldSize1)
                         Allocator.deallocate(this, ptr, oldLayout)
-                        Result.Ok(newPtr)
+                        Result.Ok<NonNull, AllocError>(newPtr)
                     }
                 }
             }
@@ -264,7 +264,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 // SAFETY: conditions must be upheld by the caller
                 matchVal == 0 -> run {
                     Allocator.deallocate(this, ptr, oldLayout)
-                    Result.Ok(newLayout.danglingPtr().castSlice(0))
+                    Result.Ok<NonNull, AllocError>(newLayout.danglingPtr().castSlice(0))
                 }
                 // SAFETY: `newSize` is non-zero. Other conditions must be upheld by the caller
                 oldLayout.align() == newLayout.align() -> {
@@ -273,8 +273,8 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = NonNull.new(rawPtr).okOr(AllocError)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                        Result.Ok(ptr1.castSlice(newSize))
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
                 // SAFETY: because `newSize` must be smaller than or equal to `oldLayout.size()`,
@@ -285,10 +285,10 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                 else -> {
                     val newSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                        ptr.copyNonoverlapping(ptr.asPtr(), newPtr.asMutPtr(), newSize1)
+                        val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        ptr.copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1)
                         Allocator.deallocate(this, ptr, oldLayout)
-                        Result.Ok(newPtr)
+                        Result.Ok<NonNull, AllocError>(newPtr)
                     }
                 }
             }

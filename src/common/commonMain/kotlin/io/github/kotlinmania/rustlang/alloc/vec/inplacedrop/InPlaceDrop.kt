@@ -14,7 +14,7 @@ public open class InPlaceDrop<T>(
 ) {
     public open fun len(): Int {
         // ignore-tidy-undocumented-unchecked
-        return this.dst.offsetFromUnsigned(this.inner)
+        return this.dst.offsetFromUnsigned((this.inner).asConstPtr())
     }
 
     public open fun drop() {
@@ -61,10 +61,7 @@ public open class InPlaceDstDataSrcBufDrop<Src, Dest>(
     public open fun drop() {
         // ignore-tidy-undocumented-unchecked
         run {
-            this.ptr
-                .asPtr()
-                .castSlice(this.len)
-                .dropInPlace()
+            this.ptr.asPtr().castSlice(this.len).dropInPlace()
         }
     }
 }

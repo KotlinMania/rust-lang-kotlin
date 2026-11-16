@@ -87,637 +87,510 @@ public sealed class AsciiChar(
      * U+0000 (The default variant)
      */
     public data object Null : AsciiChar(0u)
-
     /**
      * U+0001
      */
     public data object StartOfHeading : AsciiChar(1u)
-
     /**
      * U+0002
      */
     public data object StartOfText : AsciiChar(2u)
-
     /**
      * U+0003
      */
     public data object EndOfText : AsciiChar(3u)
-
     /**
      * U+0004
      */
     public data object EndOfTransmission : AsciiChar(4u)
-
     /**
      * U+0005
      */
     public data object Enquiry : AsciiChar(5u)
-
     /**
      * U+0006
      */
     public data object Acknowledge : AsciiChar(6u)
-
     /**
      * U+0007
      */
     public data object Bell : AsciiChar(7u)
-
     /**
      * U+0008
      */
     public data object Backspace : AsciiChar(8u)
-
     /**
      * U+0009
      */
     public data object CharacterTabulation : AsciiChar(9u)
-
     /**
      * U+000A
      */
     public data object LineFeed : AsciiChar(10u)
-
     /**
      * U+000B
      */
     public data object LineTabulation : AsciiChar(11u)
-
     /**
      * U+000C
      */
     public data object FormFeed : AsciiChar(12u)
-
     /**
      * U+000D
      */
     public data object CarriageReturn : AsciiChar(13u)
-
     /**
      * U+000E
      */
     public data object ShiftOut : AsciiChar(14u)
-
     /**
      * U+000F
      */
     public data object ShiftIn : AsciiChar(15u)
-
     /**
      * U+0010
      */
     public data object DataLinkEscape : AsciiChar(16u)
-
     /**
      * U+0011
      */
     public data object DeviceControlOne : AsciiChar(17u)
-
     /**
      * U+0012
      */
     public data object DeviceControlTwo : AsciiChar(18u)
-
     /**
      * U+0013
      */
     public data object DeviceControlThree : AsciiChar(19u)
-
     /**
      * U+0014
      */
     public data object DeviceControlFour : AsciiChar(20u)
-
     /**
      * U+0015
      */
     public data object NegativeAcknowledge : AsciiChar(21u)
-
     /**
      * U+0016
      */
     public data object SynchronousIdle : AsciiChar(22u)
-
     /**
      * U+0017
      */
     public data object EndOfTransmissionBlock : AsciiChar(23u)
-
     /**
      * U+0018
      */
     public data object Cancel : AsciiChar(24u)
-
     /**
      * U+0019
      */
     public data object EndOfMedium : AsciiChar(25u)
-
     /**
      * U+001A
      */
     public data object Substitute : AsciiChar(26u)
-
     /**
      * U+001B
      */
     public data object Escape : AsciiChar(27u)
-
     /**
      * U+001C
      */
     public data object InformationSeparatorFour : AsciiChar(28u)
-
     /**
      * U+001D
      */
     public data object InformationSeparatorThree : AsciiChar(29u)
-
     /**
      * U+001E
      */
     public data object InformationSeparatorTwo : AsciiChar(30u)
-
     /**
      * U+001F
      */
     public data object InformationSeparatorOne : AsciiChar(31u)
-
     /**
      * U+0020
      */
     public data object Space : AsciiChar(32u)
-
     /**
      * U+0021
      */
     public data object ExclamationMark : AsciiChar(33u)
-
     /**
      * U+0022
      */
     public data object QuotationMark : AsciiChar(34u)
-
     /**
      * U+0023
      */
     public data object NumberSign : AsciiChar(35u)
-
     /**
      * U+0024
      */
     public data object DollarSign : AsciiChar(36u)
-
     /**
      * U+0025
      */
     public data object PercentSign : AsciiChar(37u)
-
     /**
      * U+0026
      */
     public data object Ampersand : AsciiChar(38u)
-
     /**
      * U+0027
      */
     public data object Apostrophe : AsciiChar(39u)
-
     /**
      * U+0028
      */
     public data object LeftParenthesis : AsciiChar(40u)
-
     /**
      * U+0029
      */
     public data object RightParenthesis : AsciiChar(41u)
-
     /**
      * U+002A
      */
     public data object Asterisk : AsciiChar(42u)
-
     /**
      * U+002B
      */
     public data object PlusSign : AsciiChar(43u)
-
     /**
      * U+002C
      */
     public data object Comma : AsciiChar(44u)
-
     /**
      * U+002D
      */
     public data object HyphenMinus : AsciiChar(45u)
-
     /**
      * U+002E
      */
     public data object FullStop : AsciiChar(46u)
-
     /**
      * U+002F
      */
     public data object Solidus : AsciiChar(47u)
-
     /**
      * U+0030
      */
     public data object Digit0 : AsciiChar(48u)
-
     /**
      * U+0031
      */
     public data object Digit1 : AsciiChar(49u)
-
     /**
      * U+0032
      */
     public data object Digit2 : AsciiChar(50u)
-
     /**
      * U+0033
      */
     public data object Digit3 : AsciiChar(51u)
-
     /**
      * U+0034
      */
     public data object Digit4 : AsciiChar(52u)
-
     /**
      * U+0035
      */
     public data object Digit5 : AsciiChar(53u)
-
     /**
      * U+0036
      */
     public data object Digit6 : AsciiChar(54u)
-
     /**
      * U+0037
      */
     public data object Digit7 : AsciiChar(55u)
-
     /**
      * U+0038
      */
     public data object Digit8 : AsciiChar(56u)
-
     /**
      * U+0039
      */
     public data object Digit9 : AsciiChar(57u)
-
     /**
      * U+003A
      */
     public data object Colon : AsciiChar(58u)
-
     /**
      * U+003B
      */
     public data object Semicolon : AsciiChar(59u)
-
     /**
      * U+003C
      */
     public data object LessThanSign : AsciiChar(60u)
-
     /**
      * U+003D
      */
     public data object EqualsSign : AsciiChar(61u)
-
     /**
      * U+003E
      */
     public data object GreaterThanSign : AsciiChar(62u)
-
     /**
      * U+003F
      */
     public data object QuestionMark : AsciiChar(63u)
-
     /**
      * U+0040
      */
     public data object CommercialAt : AsciiChar(64u)
-
     /**
      * U+0041
      */
     public data object CapitalA : AsciiChar(65u)
-
     /**
      * U+0042
      */
     public data object CapitalB : AsciiChar(66u)
-
     /**
      * U+0043
      */
     public data object CapitalC : AsciiChar(67u)
-
     /**
      * U+0044
      */
     public data object CapitalD : AsciiChar(68u)
-
     /**
      * U+0045
      */
     public data object CapitalE : AsciiChar(69u)
-
     /**
      * U+0046
      */
     public data object CapitalF : AsciiChar(70u)
-
     /**
      * U+0047
      */
     public data object CapitalG : AsciiChar(71u)
-
     /**
      * U+0048
      */
     public data object CapitalH : AsciiChar(72u)
-
     /**
      * U+0049
      */
     public data object CapitalI : AsciiChar(73u)
-
     /**
      * U+004A
      */
     public data object CapitalJ : AsciiChar(74u)
-
     /**
      * U+004B
      */
     public data object CapitalK : AsciiChar(75u)
-
     /**
      * U+004C
      */
     public data object CapitalL : AsciiChar(76u)
-
     /**
      * U+004D
      */
     public data object CapitalM : AsciiChar(77u)
-
     /**
      * U+004E
      */
     public data object CapitalN : AsciiChar(78u)
-
     /**
      * U+004F
      */
     public data object CapitalO : AsciiChar(79u)
-
     /**
      * U+0050
      */
     public data object CapitalP : AsciiChar(80u)
-
     /**
      * U+0051
      */
     public data object CapitalQ : AsciiChar(81u)
-
     /**
      * U+0052
      */
     public data object CapitalR : AsciiChar(82u)
-
     /**
      * U+0053
      */
     public data object CapitalS : AsciiChar(83u)
-
     /**
      * U+0054
      */
     public data object CapitalT : AsciiChar(84u)
-
     /**
      * U+0055
      */
     public data object CapitalU : AsciiChar(85u)
-
     /**
      * U+0056
      */
     public data object CapitalV : AsciiChar(86u)
-
     /**
      * U+0057
      */
     public data object CapitalW : AsciiChar(87u)
-
     /**
      * U+0058
      */
     public data object CapitalX : AsciiChar(88u)
-
     /**
      * U+0059
      */
     public data object CapitalY : AsciiChar(89u)
-
     /**
      * U+005A
      */
     public data object CapitalZ : AsciiChar(90u)
-
     /**
      * U+005B
      */
     public data object LeftSquareBracket : AsciiChar(91u)
-
     /**
      * U+005C
      */
     public data object ReverseSolidus : AsciiChar(92u)
-
     /**
      * U+005D
      */
     public data object RightSquareBracket : AsciiChar(93u)
-
     /**
      * U+005E
      */
     public data object CircumflexAccent : AsciiChar(94u)
-
     /**
      * U+005F
      */
     public data object LowLine : AsciiChar(95u)
-
     /**
      * U+0060
      */
     public data object GraveAccent : AsciiChar(96u)
-
     /**
      * U+0061
      */
     public data object SmallA : AsciiChar(97u)
-
     /**
      * U+0062
      */
     public data object SmallB : AsciiChar(98u)
-
     /**
      * U+0063
      */
     public data object SmallC : AsciiChar(99u)
-
     /**
      * U+0064
      */
     public data object SmallD : AsciiChar(100u)
-
     /**
      * U+0065
      */
     public data object SmallE : AsciiChar(101u)
-
     /**
      * U+0066
      */
     public data object SmallF : AsciiChar(102u)
-
     /**
      * U+0067
      */
     public data object SmallG : AsciiChar(103u)
-
     /**
      * U+0068
      */
     public data object SmallH : AsciiChar(104u)
-
     /**
      * U+0069
      */
     public data object SmallI : AsciiChar(105u)
-
     /**
      * U+006A
      */
     public data object SmallJ : AsciiChar(106u)
-
     /**
      * U+006B
      */
     public data object SmallK : AsciiChar(107u)
-
     /**
      * U+006C
      */
     public data object SmallL : AsciiChar(108u)
-
     /**
      * U+006D
      */
     public data object SmallM : AsciiChar(109u)
-
     /**
      * U+006E
      */
     public data object SmallN : AsciiChar(110u)
-
     /**
      * U+006F
      */
     public data object SmallO : AsciiChar(111u)
-
     /**
      * U+0070
      */
     public data object SmallP : AsciiChar(112u)
-
     /**
      * U+0071
      */
     public data object SmallQ : AsciiChar(113u)
-
     /**
      * U+0072
      */
     public data object SmallR : AsciiChar(114u)
-
     /**
      * U+0073
      */
     public data object SmallS : AsciiChar(115u)
-
     /**
      * U+0074
      */
     public data object SmallT : AsciiChar(116u)
-
     /**
      * U+0075
      */
     public data object SmallU : AsciiChar(117u)
-
     /**
      * U+0076
      */
     public data object SmallV : AsciiChar(118u)
-
     /**
      * U+0077
      */
     public data object SmallW : AsciiChar(119u)
-
     /**
      * U+0078
      */
     public data object SmallX : AsciiChar(120u)
-
     /**
      * U+0079
      */
     public data object SmallY : AsciiChar(121u)
-
     /**
      * U+007A
      */
     public data object SmallZ : AsciiChar(122u)
-
     /**
      * U+007B
      */
     public data object LeftCurlyBracket : AsciiChar(123u)
-
     /**
      * U+007C
      */
     public data object VerticalLine : AsciiChar(124u)
-
     /**
      * U+007D
      */
     public data object RightCurlyBracket : AsciiChar(125u)
-
     /**
      * U+007E
      */
     public data object Tilde : AsciiChar(126u)
-
     /**
      * U+007F
      */
@@ -1335,10 +1208,7 @@ public sealed class AsciiChar(
                 }
                 else -> Pair(listOf(Apostrophe, this, Apostrophe, Null, Null, Null), 3)
             }
-        return run {
-            f.append(buf[0 until len].asStr())
-            Result.Ok(Unit)
-        }
+        return run { f.append(buf[0 until len].asStr()); Result.Ok(Unit) }
     }
 
     public companion object {

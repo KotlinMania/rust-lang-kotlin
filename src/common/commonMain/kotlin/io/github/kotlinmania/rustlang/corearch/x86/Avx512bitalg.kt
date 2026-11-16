@@ -4,10 +4,10 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
+import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
-import io.github.kotlinmania.rustlang.corearch.wasm32.i16x8
 
 // Bit-oriented Algorithms (BITALG)
 //
@@ -93,7 +93,7 @@ public fun mmPopcntEpi16(a: M128i): M128i = transmute(run { val _simdArg0 = a.as
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_maskz_popcnt_epi16)
  */
-public fun mmMaskzPopcntEpi16(k: Mmask8, a: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI16x8(); _simdArg0 }; val _simdArg2 = i16x8.ZERO; _simdArg1 })
+public fun mmMaskzPopcntEpi16(k: Mmask8, a: M128i): M128i = transmute(run { val _simdArg0 = k; val _simdArg1 = run { val _simdArg0 = a.asI16x8(); _simdArg0 }; val _simdArg2 = I16x8.ZERO; _simdArg1 })
 
 /**
  * For each packed 16-bit integer maps the value to the number of logical 1 bits.

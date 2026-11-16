@@ -106,15 +106,13 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
  */
 public open class CStr internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<CChar>>,
+    public val fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout(),
 ) : AsRef<CStr> {
     public var inner: List<CChar>
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>>) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    internal constructor(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<CStr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CStr(ptr, layout) }, { it.inner })
 
@@ -122,11 +120,7 @@ public open class CStr internal constructor(
      * Shows the underlying bytes as a normal string, with invalid UTF-8
      * presented as hex escape sequences.
      */
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((ByteStr.fromBytes(this.toBytes())).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.toBytes())).toString()); Result.Ok(Unit) }
 
     /**
      * Returns the inner pointer to this C string.
@@ -375,9 +369,9 @@ public open class CStr internal constructor(
     public override fun asRef(): CStr = this
 
     public companion object {
-        public operator fun invoke(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>>): CStr = CStr(inner, fieldLayout)
+        public operator fun invoke(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(inner, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<CChar>>): CStr = CStr(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(fieldStorage, fieldLayout)
 
         public fun default(): CStr = ""
 
@@ -501,7 +495,7 @@ public open class CStr internal constructor(
         public fun fromBytesUntilNul(bytes: List<UByte>): Result<CStr, FromBytesUntilNulError> {
             val nulPos = memchr.memchr(0, bytes)
             return when (nulPos) {
-                null -> Result.Err(FromBytesUntilNulError())
+                null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError())
                 else -> {
                     val nulPos1 = nulPos
                     // Note(const-Note) replace with range index
@@ -509,7 +503,7 @@ public open class CStr internal constructor(
                     val subslice = linearSliceView(bytes.asPtr(), (nulPos1 + 1).toInt(), PrimitiveLayouts.U8)
                     // SAFETY: We know there is a nul byte at nulPos, so this slice
                     // (ending at the nul byte) is a well-formed C string.
-                    Result.Ok(CStr.fromBytesWithNulUnchecked(subslice))
+                    Result.Ok<CStr, FromBytesUntilNulError>(CStr.fromBytesWithNulUnchecked(subslice))
                 }
             }
         }
@@ -561,13 +555,13 @@ public open class CStr internal constructor(
                     val nulPos1 = nulPos
                     // SAFETY: We know there is only one nul byte, at the end
                     // of the byte slice.
-                    Result.Ok(CStr.fromBytesWithNulUnchecked(bytes))
+                    Result.Ok<CStr, FromBytesWithNulError>(CStr.fromBytesWithNulUnchecked(bytes))
                 }
                 nulPos != null -> {
                     val position = nulPos
-                    Result.Err(FromBytesWithNulError.InteriorNul(position = position))
+                    Result.Err<CStr, FromBytesWithNulError>(FromBytesWithNulError.InteriorNul(position = position))
                 }
-                else -> Result.Err(FromBytesWithNulError.NotNulTerminated)
+                else -> Result.Err<CStr, FromBytesWithNulError>(FromBytesWithNulError.NotNulTerminated)
             }
         }
 
@@ -621,10 +615,7 @@ public sealed class FromBytesWithNulError {
     /**
      * Data provided contains an interior nul byte at byte `position`.
      */
-    public data class InteriorNul(
-        public var position: Int,
-    ) : FromBytesWithNulError()
-
+    public data class InteriorNul(public var position: Int) : FromBytesWithNulError()
     /**
      * Data provided is not nul terminated.
      */
@@ -719,15 +710,14 @@ public open class Bytes internal constructor(
     public var ptr: NonNull = ptrCtorArg
         internal set
 
-    override fun iterator(): Iterator<UByte> =
-        object : AbstractIterator<UByte>() {
-            override fun computeNext() {
-                when (val v = this@Bytes.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
+        override fun computeNext() {
+            when (val v = this@Bytes.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): Bytes = Bytes(ptr, phantom)
 
@@ -765,18 +755,17 @@ public open class Bytes internal constructor(
 
     public open fun count(): Int {
         // SAFETY: We always hold a valid pointer to a C string
-        return strlen(this.ptr.asPtr().cast()).toInt().asInner()
+        return strlen((this.ptr.asPtr().cast()).asConstPtr()).toInt().asInner()
     }
 
     public companion object {
         public operator fun invoke(
             ptr: NonNull,
             phantom: Unit,
-        ): Bytes =
-            Bytes(
-                ptrCtorArg = ptr,
-                phantom = phantom,
-            )
+        ): Bytes = Bytes(
+            ptrCtorArg = ptr,
+            phantom = phantom,
+        )
 
         public fun new(s: CStr): Bytes = Bytes(ptr = s.asNonNullPtr().cast(), phantom = Unit)
     }
@@ -804,15 +793,7 @@ public open class Bytes internal constructor(
 public open class Display(
     public var cStr: CStr,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.cStr).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.cStr).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString()); Result.Ok(Unit) }
 }

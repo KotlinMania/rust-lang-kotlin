@@ -86,12 +86,7 @@ public open class Location internal constructor(
         return this.col == other.col && this.line == other.line && this.file() == other.file()
     }
 
-    public open fun cmp(other: Location): Ordering =
-        this
-            .file()
-            .cmp(other.file())
-            .thenWith({ this.line.cmp(other.line) })
-            .thenWith({ this.col.cmp(other.col) })
+    public open fun cmp(other: Location): Ordering = this.file().cmp(other.file()).thenWith({ this.line.cmp(other.line) }).thenWith({ this.col.cmp(other.col) })
 
     public open fun partialCmp(other: Location): Ordering? = this.cmp(other)
 
@@ -103,12 +98,7 @@ public open class Location internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        DebugStruct(f, "Location")
-            .field("file", this.file())
-            .field("line", this.line)
-            .field("column", this.col)
-            .finish()
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Location").field("file", this.file()).field("line", this.line).field("column", this.col).finish()
 
     /**
      * Returns the name of the source file from which the panic originated.
@@ -225,12 +215,11 @@ public open class Location internal constructor(
             filename: NonNull,
             line: UInt,
             col: UInt,
-        ): Location =
-            Location(
-                filenameCtorArg = filename,
-                line = line,
-                col = col,
-            )
+        ): Location = Location(
+            filenameCtorArg = filename,
+            line = line,
+            col = col,
+        )
 
         /**
          * Returns the source location of the caller of this function. If that function's caller is

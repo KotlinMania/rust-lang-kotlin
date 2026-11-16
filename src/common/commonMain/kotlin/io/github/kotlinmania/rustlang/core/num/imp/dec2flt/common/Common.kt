@@ -39,24 +39,12 @@ public interface ByteSlice<T> {
 public fun List<UByte>.readU64(): ULong {
     val tmp = MutableList(8) { 0 }
     tmp.copyFromSlice(((this).subList(0, 8)))
-    return run {
-        val bytesTmp0 = tmp
-        ((bytesTmp0[7].toULong() shl 56) or (bytesTmp0[6].toULong() shl 48) or (bytesTmp0[5].toULong() shl 40) or (bytesTmp0[4].toULong() shl 32) or (bytesTmp0[3].toULong() shl 24) or (bytesTmp0[2].toULong() shl 16) or (bytesTmp0[1].toULong() shl 8) or bytesTmp0[0].toULong())
-    }
+    return run { val bytesTmp0 = tmp; ((bytesTmp0[7].toULong() shl 56) or (bytesTmp0[6].toULong() shl 48) or (bytesTmp0[5].toULong() shl 40) or (bytesTmp0[4].toULong() shl 32) or (bytesTmp0[3].toULong() shl 24) or (bytesTmp0[2].toULong() shl 16) or (bytesTmp0[1].toULong() shl 8) or bytesTmp0[0].toULong()) }
 }
 
 // inlining this is crucial to remove bound checks
 public fun List<UByte>.writeU64(value: ULong) {
-    run {
-        val dstTmp1 = this
-        val srcTmp1 = (
-            run {
-                val rawBits = value
-                ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-            }
-        )
-        for (idxTmp1 in srcTmp1.indices) dstTmp1[idxTmp1] = srcTmp1[idxTmp1]
-    }
+    run { val dstTmp1 = this; val srcTmp1 = (run { val rawBits = value; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }); for (idxTmp1 in srcTmp1.indices) dstTmp1[idxTmp1] = srcTmp1[idxTmp1] }
 }
 
 public fun List<UByte>.offsetFrom(other: List<UByte>): Int = other.size - this.size

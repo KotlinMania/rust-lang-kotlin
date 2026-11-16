@@ -422,7 +422,6 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
  */
 public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limit: Short): Pair<List<UByte>, Short>? {
     val POW10_UP_TO_9: UIntArray = uintArrayOf(1u, 10u, 100u, 1000u, 10000u, 100000u, 1000000u, 10000000u, 100000000u, 1000000000u)
-
     // we've generated all requested digits of `v`, which should be also same to corresponding
     // digits of `v - 1 ulp`. now we check if there is a unique representation shared by
     // both `v - 1 ulp` and `v + 1 ulp`; this can be either same to generated digits, or
@@ -525,7 +524,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
                     // the additional digit can only be added when `exp == limit` (edge case).
                     exp1 += 1
                     if (exp1 > limit1 && len1 < buf1.size) {
-                        buf1[len1] = MaybeUninit.new(c, PrimitiveLayouts.U8)
+                        buf1[len1] = MaybeUninit.new(c, UnresolvedTypeLayout<Option>())
                         len1 += 1
                     }
                 }

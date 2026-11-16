@@ -228,7 +228,6 @@ public sealed class FloatErrorKind {
      * Cannot parse float from empty string.
      */
     public data object Empty : FloatErrorKind()
-
     /**
      * Invalid float literal.
      */

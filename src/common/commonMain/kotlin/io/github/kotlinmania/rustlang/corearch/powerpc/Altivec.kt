@@ -894,7 +894,7 @@ public interface VectorInsert<T, Scalar> {
     public fun vecInsert(s: Scalar, idx: UInt): T
 }
 
-public fun <T> idxInVec(idx: UInt, typeLayoutT: TypeLayout<T>): UInt = idx and (16u / sizeOf<T>(typeLayoutT = typeLayoutT).toUInt())
+public fun <T> idxInVec(idx: UInt, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): UInt = idx and (16u / sizeOf<T>(typeLayoutT = typeLayoutT).toUInt())
 
 public fun TTL.vecInsert(s: Byte, idx: UInt): TTL = run { val _simdArg0 = this; val _simdArg1 = idxInVec<Byte>(idx, typeLayoutT = UnresolvedTypeLayout<Byte>()); val _simdArg2 = s; _simdArg0 }
 

@@ -61,11 +61,7 @@ public open class Float64x1T(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): Float64x1T =
-            run {
-                val _simdArg0 = value
-                _simdArg0
-            }
+        public fun splat(value: Double): Float64x1T = run { val _simdArg0 = value; _simdArg0 }
 
         public fun from(simd: Simd<Double>): Float64x1T = transmute(simd)
     }
@@ -121,11 +117,7 @@ public open class Float64x2T(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): Float64x2T =
-            run {
-                val _simdArg0 = value
-                _simdArg0
-            }
+        public fun splat(value: Double): Float64x2T = run { val _simdArg0 = value; _simdArg0 }
 
         public fun from(simd: Simd<Double>): Float64x2T = transmute(simd)
     }

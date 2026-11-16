@@ -9,6 +9,4 @@ import io.github.kotlinmania.rustlang.core.I128
 /**
  * Returns `n / d`
  */
-public fun divti3(a: I128, b: I128): I128 =
-    io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv
-        .divti3(a, b)
+public fun divti3(a: I128, b: I128): I128 = io.github.kotlinmania.rustlang.compilerbuiltins.int.sdiv.divti3(a, b)

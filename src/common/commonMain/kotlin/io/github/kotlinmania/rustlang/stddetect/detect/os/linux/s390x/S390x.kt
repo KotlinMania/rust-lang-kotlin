@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.Cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 
@@ -17,7 +16,7 @@ import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
 /**
  * Try to read the features from the auxiliary vector
  */
-public fun detectFeatures(): Initializer {
+public fun detectFeatures(): cache.Initializer {
     val optHwcap: AtHwcap? = auxv().ok()?.let(Into::into)
     val facilities = ExtendedFacilityList.new()
     return cache(optHwcap, facilities)
@@ -219,8 +218,8 @@ public open class ExtendedFacilityList(
  * [Facility Indications]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf#page=63
  * [kernel]: https://github.com/torvalds/linux/blob/b62cef9a5c673f1b8083159f5dc03c1c5daced2f/arch/s390/include/asm/elf.h#L129
  */
-public fun cache(hwcap: AtHwcap?, facilities: ExtendedFacilityList): Initializer {
-    val value = Cache.Initializer.default()
+public fun cache(hwcap: AtHwcap?, facilities: ExtendedFacilityList): cache.Initializer {
+    val value = cache.Initializer.default()
     run {
         var enableIfSet =
             { bitIndex, f ->

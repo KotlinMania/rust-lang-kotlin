@@ -185,9 +185,9 @@ public fun cleanup() {}
  */
 public fun <T : IsMinusOne> cvt(t: T): Result<T, Error> =
     if (t.isMinusOne()) {
-        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<T, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     } else {
-        Result.Ok(t)
+        Result.Ok<T, Error>(t)
     }
 
 /**
@@ -198,8 +198,8 @@ public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne {
         run {
             val matchVal = cvt(f())
             when {
-                matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                    val e = (matchVal as Result.Err<*, *>).error
+                matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                    val e = matchVal.error
                 }
                 else -> {
                     val other = matchVal
@@ -217,9 +217,9 @@ public fun <T> cvtR(f: () -> T): Result<T, Error> where T : IsMinusOne {
  */
 public fun cvtNz(error: CInt): Result<Unit, Error> =
     if (error == 0) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.fromRawOsError(error))
     }
 
 // libc.abort() will run the SIGABRT handler.  That's fine because anyone who

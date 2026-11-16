@@ -22,10 +22,9 @@ public fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toMut
  * This only copies the data if necessary (if it contains any surrogate).
  */
 public fun toStringLossy(slice: Wtf8): String {
-    val (surrogatePos, _) =
-        slice.nextSurrogate(0) ?: // SAFETY: `nextSurrogate` found no surrogate, so the well-formed WTF-8
+    val (surrogatePos, _) = slice.nextSurrogate(0) ?: // SAFETY: `nextSurrogate` found no surrogate, so the well-formed WTF-8
 // bytes are valid UTF-8.
-            return String.fromUtf8Unchecked(slice.asBytes())
+return String.fromUtf8Unchecked(slice.asBytes())
     val wtf8Bytes = slice.asBytes()
     val utf8Bytes = ArrayList(slice.len())
     utf8Bytes.addAll(((wtf8Bytes).subList(0, surrogatePos)))

@@ -123,6 +123,7 @@ import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
@@ -140,6 +141,11 @@ import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.rem
 import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.shl
 import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.shr
 import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.sub
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU128Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -151,7 +157,7 @@ import io.github.kotlinmania.rustlang.core.num.ParseIntError as Pie
  * Note that if the radix is known to the compiler, it is just the check of digits.len that
  * is done at runtime.
  */
-public fun <T> canNotOverflow(radix: UInt, isSignedTy: Boolean, digits: List<UByte>, typeLayoutT: TypeLayout<T>): Boolean {
+public fun <T> canNotOverflow(radix: UInt, isSignedTy: Boolean, digits: List<UByte>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
     // Assume that `digits` represents a whole number N in base `radix`.
     // Then in infinite precision arithmetic (on whole numbers), we have:
     //
@@ -1544,9 +1550,7 @@ public fun Byte.checkedPow(exp: UInt): Byte? {
         val k = base.unsignedAbs().ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -1564,58 +1568,46 @@ public fun Byte.checkedPow(exp: UInt): Byte? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -1668,11 +1660,7 @@ public fun Byte.checkedIsqrt(): Byte? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Byte =
-                Byte.MAX_VALUE
-                    .castUnsigned()
-                    .isqrt()
-                    .castSigned()
+            val MAX_RESULT: Byte = Byte.MAX_VALUE.castUnsigned().isqrt().castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -1774,12 +1762,11 @@ public fun Byte.saturatingAbs(): Byte =
  */
 public fun Byte.saturatingMul(rhs: Byte): Byte =
     when (val matchVal = this.checkedMul(rhs)) {
-        null ->
-            if ((this < 0.toByte()) == (rhs < 0.toByte())) {
-                Byte.MAX_VALUE
-            } else {
-                Byte.MIN_VALUE
-            }
+        null -> if ((this < 0.toByte()) == (rhs < 0.toByte())) {
+            Byte.MAX_VALUE
+        } else {
+            Byte.MIN_VALUE
+        }
         else -> {
             val x = matchVal
             x
@@ -2313,9 +2300,7 @@ public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.ca
  * }
  * ```
  */
-public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun Byte.carryingMulAdd(rhs: Byte, carry: Byte, add: Byte): Pair<UByte, Byte> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -2484,7 +2469,7 @@ public fun Byte.overflowingAbs(): Pair<Byte, Boolean> = Pair(this.wrappingAbs(),
 public fun Byte.overflowingPow(exp: UInt): Pair<Byte, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Byte = 1
+    val acc: Byte  = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -2774,9 +2759,7 @@ public fun Byte.checkedNextMultipleOf(rhs: Byte): Byte? {
     }
     val r =
         when (val matchVal = this.checkedRem(rhs)) {
-            null -> {
-                return null
-            }
+            null -> { return null }
             else -> {
                 val x = matchVal
                 x
@@ -2925,9 +2908,7 @@ public fun Byte.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Byte.checkedIlog10(): UInt? =
-    io.github.kotlinmania.rustlang.core.num.imp.intlog10
-        .Byte(this)
+public fun Byte.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Byte(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -2984,18 +2965,7 @@ public fun Byte.absDiff(other: Byte): UByte =
  * ```kotlin
  * ```
  */
-public fun Byte.signum(): Byte =
-    (
-        run {
-            val lhs = this
-            val rhs = 0
-            when {
-                lhs < rhs -> Ordering.Less
-                lhs > rhs -> Ordering.Greater
-                else -> Ordering.Equal
-            }
-        }
-    ).value
+public fun Byte.signum(): Byte = (run { val lhs = this; val rhs = 0; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }).value
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -3695,13 +3665,7 @@ public fun Short.rotateRight(n: UInt): Short = (this.toUShort()).rotateRight(n).
  * val m = n.swapBytes()
  * ```
  */
-public fun Short.swapBytes(): Short =
-    (
-        run {
-            val swapVal0 = ((this.toUShort()))
-            (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort())
-        }
-    ).toShort()
+public fun Short.swapBytes(): Short = (run { val swapVal0 = ((this.toUShort())); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }).toShort()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -4748,9 +4712,7 @@ public fun Short.checkedPow(exp: UInt): Short? {
         val k = base.unsignedAbs().ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -4768,58 +4730,46 @@ public fun Short.checkedPow(exp: UInt): Short? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -4872,11 +4822,7 @@ public fun Short.checkedIsqrt(): Short? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Short =
-                Short.MAX_VALUE
-                    .castUnsigned()
-                    .isqrt()
-                    .castSigned()
+            val MAX_RESULT: Short = Short.MAX_VALUE.castUnsigned().isqrt().castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -4978,12 +4924,11 @@ public fun Short.saturatingAbs(): Short =
  */
 public fun Short.saturatingMul(rhs: Short): Short =
     when (val matchVal = this.checkedMul(rhs)) {
-        null ->
-            if ((this < 0.toShort()) == (rhs < 0.toShort())) {
-                Short.MAX_VALUE
-            } else {
-                Short.MIN_VALUE
-            }
+        null -> if ((this < 0.toShort()) == (rhs < 0.toShort())) {
+            Short.MAX_VALUE
+        } else {
+            Short.MIN_VALUE
+        }
         else -> {
             val x = matchVal
             x
@@ -5517,9 +5462,7 @@ public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Sh
  * }
  * ```
  */
-public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun Short.carryingMulAdd(rhs: Short, carry: Short, add: Short): Pair<UShort, Short> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -5688,7 +5631,7 @@ public fun Short.overflowingAbs(): Pair<Short, Boolean> = Pair(this.wrappingAbs(
 public fun Short.overflowingPow(exp: UInt): Pair<Short, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Short = 1
+    val acc: Short  = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -5978,9 +5921,7 @@ public fun Short.checkedNextMultipleOf(rhs: Short): Short? {
     }
     val r =
         when (val matchVal = this.checkedRem(rhs)) {
-            null -> {
-                return null
-            }
+            null -> { return null }
             else -> {
                 val x = matchVal
                 x
@@ -6129,9 +6070,7 @@ public fun Short.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Short.checkedIlog10(): UInt? =
-    io.github.kotlinmania.rustlang.core.num.imp.intlog10
-        .Short(this)
+public fun Short.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Short(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -6188,18 +6127,7 @@ public fun Short.absDiff(other: Short): UShort =
  * ```kotlin
  * ```
  */
-public fun Short.signum(): Short =
-    (
-        run {
-            val lhs = this
-            val rhs = 0
-            when {
-                lhs < rhs -> Ordering.Less
-                lhs > rhs -> Ordering.Greater
-                else -> Ordering.Equal
-            }
-        }
-    ).value.toShort()
+public fun Short.signum(): Short = (run { val lhs = this; val rhs = 0; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }).value.toShort()
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -6232,11 +6160,7 @@ public fun Short.isNegative(): Boolean = this < 0.toShort()
  * ```kotlin
  * ```
  */
-public fun Short.toBeBytes(): UByteArray =
-    run {
-        val rawBits = (((((this).toInt() and 0xFF) shl 8) or (((this).toInt() ushr 8) and 0xFF)).toShort()).toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-    }
+public fun Short.toBeBytes(): UByteArray = run { val rawBits = (((((this).toInt() and 0xFF) shl 8) or (((this).toInt() ushr 8) and 0xFF)).toShort()).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -6247,11 +6171,7 @@ public fun Short.toBeBytes(): UByteArray =
  * ```kotlin
  * ```
  */
-public fun Short.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-    }
+public fun Short.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -6288,11 +6208,7 @@ public fun Short.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun Short.Companion.fromBeBytes(bytes: UByteArray): Short =
-    run {
-        val swapVal0 = (Short.fromNeBytes(bytes))
-        (((((swapVal0).toInt() and 0xFF) shl 8) or (((swapVal0).toInt() ushr 8) and 0xFF)).toShort())
-    }
+public fun Short.Companion.fromBeBytes(bytes: UByteArray): Short = run { val swapVal0 = (Short.fromNeBytes(bytes)); (((((swapVal0).toInt() and 0xFF) shl 8) or (((swapVal0).toInt() ushr 8) and 0xFF)).toShort()) }
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -6881,13 +6797,7 @@ public fun Int.rotateRight(n: UInt): Int = (this.toUInt()).rotateRight(n).toInt(
  * val m = n.swapBytes()
  * ```
  */
-public fun Int.swapBytes(): Int =
-    (
-        run {
-            val swapVal0 = ((this.toUInt()))
-            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24))
-        }
-    ).toInt()
+public fun Int.swapBytes(): Int = (run { val swapVal0 = ((this.toUInt())); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24)) }).toInt()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -7934,9 +7844,7 @@ public fun Int.checkedPow(exp: UInt): Int? {
         val k = base.unsignedAbs().ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -7954,58 +7862,46 @@ public fun Int.checkedPow(exp: UInt): Int? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -8058,11 +7954,7 @@ public fun Int.checkedIsqrt(): Int? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Int =
-                Int.MAX_VALUE
-                    .castUnsigned()
-                    .isqrt()
-                    .castSigned()
+            val MAX_RESULT: Int = Int.MAX_VALUE.castUnsigned().isqrt().castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -8164,12 +8056,11 @@ public fun Int.saturatingAbs(): Int =
  */
 public fun Int.saturatingMul(rhs: Int): Int =
     when (val matchVal = this.checkedMul(rhs)) {
-        null ->
-            if ((this < 0) == (rhs < 0)) {
-                Int.MAX_VALUE
-            } else {
-                Int.MIN_VALUE
-            }
+        null -> if ((this < 0) == (rhs < 0)) {
+            Int.MAX_VALUE
+        } else {
+            Int.MIN_VALUE
+        }
         else -> {
             val x = matchVal
             x
@@ -8703,9 +8594,7 @@ public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.carrying
  * }
  * ```
  */
-public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun Int.carryingMulAdd(rhs: Int, carry: Int, add: Int): Pair<UInt, Int> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -8874,7 +8763,7 @@ public fun Int.overflowingAbs(): Pair<Int, Boolean> = Pair(this.wrappingAbs(), t
 public fun Int.overflowingPow(exp: UInt): Pair<Int, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Int = 1
+    val acc: Int  = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -9164,9 +9053,7 @@ public fun Int.checkedNextMultipleOf(rhs: Int): Int? {
     }
     val r =
         when (val matchVal = this.checkedRem(rhs)) {
-            null -> {
-                return null
-            }
+            null -> { return null }
             else -> {
                 val x = matchVal
                 x
@@ -9315,9 +9202,7 @@ public fun Int.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Int.checkedIlog10(): UInt? =
-    io.github.kotlinmania.rustlang.core.num.imp.intlog10
-        .Int(this)
+public fun Int.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Int(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -9374,18 +9259,7 @@ public fun Int.absDiff(other: Int): UInt =
  * ```kotlin
  * ```
  */
-public fun Int.signum(): Int =
-    (
-        run {
-            val lhs = this
-            val rhs = 0
-            when {
-                lhs < rhs -> Ordering.Less
-                lhs > rhs -> Ordering.Greater
-                else -> Ordering.Equal
-            }
-        }
-    ).value.toInt()
+public fun Int.signum(): Int = (run { val lhs = this; val rhs = 0; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }).value.toInt()
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -9418,11 +9292,7 @@ public fun Int.isNegative(): Boolean = this < 0
  * ```kotlin
  * ```
  */
-public fun Int.toBeBytes(): UByteArray =
-    run {
-        val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00) shl 8) or (((this) ushr 8) and 0x0000FF00) or ((this) ushr 24)).toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-    }
+public fun Int.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00) shl 8) or (((this) ushr 8) and 0x0000FF00) or ((this) ushr 24)).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -9433,11 +9303,7 @@ public fun Int.toBeBytes(): UByteArray =
  * ```kotlin
  * ```
  */
-public fun Int.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-    }
+public fun Int.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -9474,11 +9340,7 @@ public fun Int.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun Int.Companion.fromBeBytes(bytes: UByteArray): Int =
-    run {
-        val swapVal0 = (Int.fromNeBytes(bytes))
-        ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
-    }
+public fun Int.Companion.fromBeBytes(bytes: UByteArray): Int = run { val swapVal0 = (Int.fromNeBytes(bytes)); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) }
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -10067,13 +9929,7 @@ public fun Long.rotateRight(n: UInt): Long = (this.toULong()).rotateRight(n).toL
  * val m = n.swapBytes()
  * ```
  */
-public fun Long.swapBytes(): Long =
-    (
-        run {
-            val swapVal0 = ((this.toULong()))
-            ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56))
-        }
-    ).toLong()
+public fun Long.swapBytes(): Long = (run { val swapVal0 = ((this.toULong())); ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56)) }).toLong()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -11120,9 +10976,7 @@ public fun Long.checkedPow(exp: UInt): Long? {
         val k = base.unsignedAbs().ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -11140,58 +10994,46 @@ public fun Long.checkedPow(exp: UInt): Long? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -11244,11 +11086,7 @@ public fun Long.checkedIsqrt(): Long? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: Long =
-                Long.MAX_VALUE
-                    .castUnsigned()
-                    .isqrt()
-                    .castSigned()
+            val MAX_RESULT: Long = Long.MAX_VALUE.castUnsigned().isqrt().castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -11350,12 +11188,11 @@ public fun Long.saturatingAbs(): Long =
  */
 public fun Long.saturatingMul(rhs: Long): Long =
     when (val matchVal = this.checkedMul(rhs)) {
-        null ->
-            if ((this < 0L) == (rhs < 0L)) {
-                Long.MAX_VALUE
-            } else {
-                Long.MIN_VALUE
-            }
+        null -> if ((this < 0L) == (rhs < 0L)) {
+            Long.MAX_VALUE
+        } else {
+            Long.MIN_VALUE
+        }
         else -> {
             val x = matchVal
             x
@@ -11889,9 +11726,7 @@ public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.ca
  * }
  * ```
  */
-public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun Long.carryingMulAdd(rhs: Long, carry: Long, add: Long): Pair<ULong, Long> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -12060,7 +11895,7 @@ public fun Long.overflowingAbs(): Pair<Long, Boolean> = Pair(this.wrappingAbs(),
 public fun Long.overflowingPow(exp: UInt): Pair<Long, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: Long = 1L
+    val acc: Long  = 1L
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -12350,9 +12185,7 @@ public fun Long.checkedNextMultipleOf(rhs: Long): Long? {
     }
     val r =
         when (val matchVal = this.checkedRem(rhs)) {
-            null -> {
-                return null
-            }
+            null -> { return null }
             else -> {
                 val x = matchVal
                 x
@@ -12501,9 +12334,7 @@ public fun Long.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun Long.checkedIlog10(): UInt? =
-    io.github.kotlinmania.rustlang.core.num.imp.intlog10
-        .Long(this)
+public fun Long.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.Long(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -12560,18 +12391,7 @@ public fun Long.absDiff(other: Long): ULong =
  * ```kotlin
  * ```
  */
-public fun Long.signum(): Long =
-    (
-        run {
-            val lhs = this
-            val rhs = 0
-            when {
-                lhs < rhs -> Ordering.Less
-                lhs > rhs -> Ordering.Greater
-                else -> Ordering.Equal
-            }
-        }
-    ).value.toLong()
+public fun Long.signum(): Long = (run { val lhs = this; val rhs = 0; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }).value.toLong()
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -12604,11 +12424,7 @@ public fun Long.isNegative(): Boolean = this < 0L
  * ```kotlin
  * ```
  */
-public fun Long.toBeBytes(): UByteArray =
-    run {
-        val rawBits = (((((this).toULong() shl 56)) or (((this).toULong() and 0x000000000000FF00uL) shl 40) or (((this).toULong() and 0x0000000000FF0000uL) shl 24) or (((this).toULong() and 0x00000000FF000000uL) shl 8) or ((((this).toULong() shr 8) and 0x00000000FF000000uL)) or ((((this).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((this).toULong() shr 40) and 0x000000000000FF00uL)) or ((this).toULong() shr 56)).toLong()).toULong()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-    }
+public fun Long.toBeBytes(): UByteArray = run { val rawBits = (((((this).toULong() shl 56)) or (((this).toULong() and 0x000000000000FF00uL) shl 40) or (((this).toULong() and 0x0000000000FF0000uL) shl 24) or (((this).toULong() and 0x00000000FF000000uL) shl 8) or ((((this).toULong() shr 8) and 0x00000000FF000000uL)) or ((((this).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((this).toULong() shr 40) and 0x000000000000FF00uL)) or ((this).toULong() shr 56)).toLong()).toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -12619,11 +12435,7 @@ public fun Long.toBeBytes(): UByteArray =
  * ```kotlin
  * ```
  */
-public fun Long.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toULong()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-    }
+public fun Long.toLeBytes(): UByteArray = run { val rawBits = this.toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -12660,11 +12472,7 @@ public fun Long.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun Long.Companion.fromBeBytes(bytes: UByteArray): Long =
-    run {
-        val swapVal0 = (Long.fromNeBytes(bytes))
-        (((((swapVal0).toULong() shl 56)) or (((swapVal0).toULong() and 0x000000000000FF00uL) shl 40) or (((swapVal0).toULong() and 0x0000000000FF0000uL) shl 24) or (((swapVal0).toULong() and 0x00000000FF000000uL) shl 8) or ((((swapVal0).toULong() shr 8) and 0x00000000FF000000uL)) or ((((swapVal0).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0).toULong() shr 40) and 0x000000000000FF00uL)) or ((swapVal0).toULong() shr 56)).toLong())
-    }
+public fun Long.Companion.fromBeBytes(bytes: UByteArray): Long = run { val swapVal0 = (Long.fromNeBytes(bytes)); (((((swapVal0).toULong() shl 56)) or (((swapVal0).toULong() and 0x000000000000FF00uL) shl 40) or (((swapVal0).toULong() and 0x0000000000FF0000uL) shl 24) or (((swapVal0).toULong() and 0x00000000FF000000uL) shl 8) or ((((swapVal0).toULong() shr 8) and 0x00000000FF000000uL)) or ((((swapVal0).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0).toULong() shr 40) and 0x000000000000FF00uL)) or ((swapVal0).toULong() shr 56)).toLong()) }
 
 /**
  * Creates an integer value from its representation as a byte array in
@@ -12902,13 +12710,11 @@ public fun <T : CheckedCastFromInt<Long, T>> Long.uncheckedCast(uncheckedCastFro
 public fun Long.midpoint(rhs: Long): Long {
     val t = ((this xor rhs) shr 1) + (this and rhs)
     return t +
-        (
-            if (t < 0L) {
-                1L
-            } else {
-                0L
-            } and (this xor rhs)
-        )
+        (if (t < 0L) {
+            1L
+        } else {
+            0L
+        } and (this xor rhs))
 }
 
 /**
@@ -13417,11 +13223,7 @@ public fun I128.strictAdd(rhs: I128): I128 {
  */
 public fun I128.uncheckedAdd(rhs: I128): I128 {
     Unit
-    return run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Add(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+    return run { val lhs = this; val rhs = rhs; kmU128Add(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 }
 
 /**
@@ -13537,11 +13339,7 @@ public fun I128.strictSub(rhs: I128): I128 {
  */
 public fun I128.uncheckedSub(rhs: I128): I128 {
     Unit
-    return run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+    return run { val lhs = this; val rhs = rhs; kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 }
 
 /**
@@ -13657,11 +13455,7 @@ public fun I128.strictMul(rhs: I128): I128 {
  */
 public fun I128.uncheckedMul(rhs: I128): I128 {
     Unit
-    return run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Mul(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+    return run { val lhs = this; val rhs = rhs; kmU128Mul(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 }
 
 /**
@@ -14003,11 +13797,7 @@ public fun I128.checkedNeg(): I128? {
  */
 public fun I128.uncheckedNeg(): I128 {
     Unit
-    return run {
-        val lhs = I128(0x0L, 0x0uL)
-        val rhs = this
-        kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+    return run { val lhs = I128(0x0L, 0x0uL); val rhs = this; kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 }
 
 /**
@@ -14326,9 +14116,7 @@ public fun I128.checkedPow(exp: UInt): I128? {
         val k = base.unsignedAbs().ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -14346,58 +14134,46 @@ public fun I128.checkedPow(exp: UInt): I128? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -14450,11 +14226,7 @@ public fun I128.checkedIsqrt(): I128? =
     } else {
         val result = this.castUnsigned().isqrt().castSigned()
         run {
-            val MAX_RESULT: I128 =
-                I128.MAX_VALUE
-                    .castUnsigned()
-                    .isqrt()
-                    .castSigned()
+            val MAX_RESULT: I128 = I128.MAX_VALUE.castUnsigned().isqrt().castSigned()
             assertUnchecked(result <= MAX_RESULT)
         }
         result
@@ -14469,12 +14241,7 @@ public fun I128.checkedIsqrt(): I128? =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingAdd(rhs: I128): I128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmSaturatingAddI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+public fun I128.saturatingAdd(rhs: I128): I128 = run { val lhs = this; val rhs = rhs; kmSaturatingAddI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 
 /**
  * Saturating addition with an unsigned integer. Computes `self + rhs`,
@@ -14503,12 +14270,7 @@ public fun I128.saturatingAddUnsigned(rhs: U128): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingSub(rhs: I128): I128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmSaturatingSubI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+public fun I128.saturatingSub(rhs: I128): I128 = run { val lhs = this; val rhs = rhs; kmSaturatingSubI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 
 /**
  * Saturating subtraction with an unsigned integer. Computes `self - rhs`,
@@ -14537,12 +14299,7 @@ public fun I128.saturatingSubUnsigned(rhs: U128): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.saturatingNeg(): I128 =
-    run {
-        val lhs = I128(0x0L, 0x0uL)
-        val rhs = this
-        kmSaturatingSubI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+public fun I128.saturatingNeg(): I128 = run { val lhs = I128(0x0L, 0x0uL); val rhs = this; kmSaturatingSubI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 
 /**
  * Saturating absolute value. Computes `self.abs()`, returning `MAX` if `self ==
@@ -14571,12 +14328,11 @@ public fun I128.saturatingAbs(): I128 =
  */
 public fun I128.saturatingMul(rhs: I128): I128 =
     when (val matchVal = this.checkedMul(rhs)) {
-        null ->
-            if ((this < I128(0x0L, 0x0uL)) == (rhs < I128(0x0L, 0x0uL))) {
-                I128.MAX_VALUE
-            } else {
-                I128.MIN_VALUE
-            }
+        null -> if ((this < I128(0x0L, 0x0uL)) == (rhs < I128(0x0L, 0x0uL))) {
+            I128.MAX_VALUE
+        } else {
+            I128.MIN_VALUE
+        }
         else -> {
             val x = matchVal
             x
@@ -14639,12 +14395,7 @@ public fun I128.saturatingPow(exp: UInt): I128 =
  * ```kotlin
  * ```
  */
-public fun I128.wrappingAdd(rhs: I128): I128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Add(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+public fun I128.wrappingAdd(rhs: I128): I128 = run { val lhs = this; val rhs = rhs; kmU128Add(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 
 /**
  * Wrapping (modular) addition with an unsigned integer. Computes
@@ -14666,12 +14417,7 @@ public fun I128.wrappingAddUnsigned(rhs: U128): I128 = this.wrappingAdd(rhs.toI1
  * ```kotlin
  * ```
  */
-public fun I128.wrappingSub(rhs: I128): I128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+public fun I128.wrappingSub(rhs: I128): I128 = run { val lhs = this; val rhs = rhs; kmU128Sub(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 
 /**
  * Wrapping (modular) subtraction with an unsigned integer. Computes
@@ -14694,12 +14440,7 @@ public fun I128.wrappingSubUnsigned(rhs: U128): I128 = this.wrappingSub(rhs.toI1
  * check((11 * (12.toByte())).toByte() == -124)
  * ```
  */
-public fun I128.wrappingMul(rhs: I128): I128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Mul(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) }
-    }
+public fun I128.wrappingMul(rhs: I128): I128 = run { val lhs = this; val rhs = rhs; kmU128Mul(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { I128(it.hi.toLong(), it.lo) } }
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`, wrapping around at the
@@ -14905,12 +14646,7 @@ public fun I128.wrappingPow(exp: UInt): I128 {
  * ```
  */
 public fun I128.overflowingAdd(rhs: I128): Pair<I128, Boolean> {
-    val (a, b) =
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmAddWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) }
-        }
+    val (a, b) = run { val lhs = this; val rhs = rhs; kmAddWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) } }
     return Pair(I128.fromLong(a.toLong()), b)
 }
 
@@ -14991,12 +14727,7 @@ public fun I128.overflowingAddUnsigned(rhs: U128): Pair<I128, Boolean> {
  * ```
  */
 public fun I128.overflowingSub(rhs: I128): Pair<I128, Boolean> {
-    val (a, b) =
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmSubWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) }
-        }
+    val (a, b) = run { val lhs = this; val rhs = rhs; kmSubWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) } }
     return Pair(I128.fromLong(a.toLong()), b)
 }
 
@@ -15077,12 +14808,7 @@ public fun I128.overflowingSubUnsigned(rhs: U128): Pair<I128, Boolean> {
  * ```
  */
 public fun I128.overflowingMul(rhs: I128): Pair<I128, Boolean> {
-    val (a, b) =
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmMulWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) }
-        }
+    val (a, b) = run { val lhs = this; val rhs = rhs; kmMulWithOverflowI128(lhs.low, lhs.high.toULong(), rhs.low, rhs.high.toULong()).let { Pair(I128(it.hi.toLong(), it.lo), it.overflowed) } }
     return Pair(I128.fromLong(a.toLong()), b)
 }
 
@@ -15140,9 +14866,7 @@ public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.car
  * }
  * ```
  */
-public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun I128.carryingMulAdd(rhs: I128, carry: I128, add: I128): Pair<U128, I128> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -15311,7 +15035,7 @@ public fun I128.overflowingAbs(): Pair<I128, Boolean> = Pair(this.wrappingAbs(),
 public fun I128.overflowingPow(exp: UInt): Pair<I128, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: I128 = I128(0x0L, 0x1uL)
+    val acc: I128  = I128(0x0L, 0x1uL)
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -15601,9 +15325,7 @@ public fun I128.checkedNextMultipleOf(rhs: I128): I128? {
     }
     val r =
         when (val matchVal = this.checkedRem(rhs)) {
-            null -> {
-                return null
-            }
+            null -> { return null }
             else -> {
                 val x = matchVal
                 x
@@ -15752,9 +15474,7 @@ public fun I128.checkedIlog2(): UInt? =
  * ```kotlin
  * ```
  */
-public fun I128.checkedIlog10(): UInt? =
-    io.github.kotlinmania.rustlang.core.num.imp.intlog10
-        .I128(this)
+public fun I128.checkedIlog10(): UInt? = io.github.kotlinmania.rustlang.core.num.imp.intlog10.I128(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -15811,20 +15531,7 @@ public fun I128.absDiff(other: I128): U128 =
  * ```kotlin
  * ```
  */
-public fun I128.signum(): I128 =
-    I128.fromByte(
-        (
-            run {
-                val lhs = this
-                val rhs = 0
-                when {
-                    lhs < rhs -> Ordering.Less
-                    lhs > rhs -> Ordering.Greater
-                    else -> Ordering.Equal
-                }
-            }
-        ).value,
-    )
+public fun I128.signum(): I128 = I128.fromByte((run { val lhs = this; val rhs = 0; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }).value)
 
 /**
  * Returns `true` if `self` is positive and `false` if the number is zero or
@@ -16143,13 +15850,11 @@ public fun <T : CheckedCastFromInt<I128, T>> I128.uncheckedCast(uncheckedCastFro
 public fun I128.midpoint(rhs: I128): I128 {
     val t = ((this xor rhs) shr 1) + (this and rhs)
     return t +
-        (
-            if (t < I128(0x0L, 0x0uL)) {
-                I128(0x0L, 0x1uL)
-            } else {
-                I128(0x0L, 0x0uL)
-            } and (this xor rhs)
-        )
+        (if (t < I128(0x0L, 0x0uL)) {
+            I128(0x0L, 0x1uL)
+        } else {
+            I128(0x0L, 0x0uL)
+        } and (this xor rhs))
 }
 
 /**
@@ -16628,7 +16333,7 @@ public fun UByte.isolateLowestOne(): UByte = this and this.wrappingNeg()
  * ```
  */
 public fun UByte.highestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU8Inner, UByte>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -16646,7 +16351,7 @@ public fun UByte.highestOne(): UInt? =
  * ```
  */
 public fun UByte.lowestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU8Inner, UByte>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -16871,8 +16576,7 @@ public fun UByte.funnelShr(right: UByte, n: UInt): UByte {
  */
 public fun UByte.uncheckedFunnelShl(right: UByte, n: UInt): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -16885,8 +16589,7 @@ public fun UByte.uncheckedFunnelShl(right: UByte, n: UInt): UByte {
  */
 public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -16934,9 +16637,7 @@ public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UByte.carrylessMul(rhs: UByte): UByte =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carrylessMul(this, rhs)
+public fun UByte.carrylessMul(rhs: UByte): UByte = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -17734,9 +17435,7 @@ public fun UByte.checkedIlog(base: UByte): UInt? {
         if (base.isPowerOfTwo() && base > 1u.toUByte()) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -17779,7 +17478,7 @@ public fun UByte.checkedIlog(base: UByte): UInt? {
  * ```
  */
 public fun UByte.checkedIlog2(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU8Inner, UByte>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -17798,7 +17497,7 @@ public fun UByte.checkedIlog2(): UInt? =
  * ```
  */
 public fun UByte.checkedIlog10(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU8Inner, UByte>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -18114,9 +17813,7 @@ public fun UByte.checkedPow(exp: UInt): UByte? {
         val k = base.ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -18130,58 +17827,46 @@ public fun UByte.checkedPow(exp: UInt): UByte? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -18846,9 +18531,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  * }
  * ```
  */
-public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun UByte.carryingMulAdd(rhs: UByte, carry: UByte, add: UByte): Pair<UByte, UByte> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -18994,7 +18677,7 @@ public fun UByte.overflowingShr(rhs: UInt): Pair<UByte, Boolean> = Pair(this.wra
 public fun UByte.overflowingPow(exp: UInt): Pair<UByte, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: UByte = 1u
+    val acc: UByte  = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -19057,13 +18740,9 @@ public fun UByte.pow(exp: UInt): UByte =
  * ```
  */
 public fun UByte.isqrt(): UByte {
-    val result =
-        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-            .UByte(this)
+    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UByte(this)
     run {
-        val MAX_RESULT: UByte =
-            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-                .UByte(UByte.MAX_VALUE)
+        val MAX_RESULT: UByte = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UByte(UByte.MAX_VALUE)
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u.toUByte()) {
@@ -19191,18 +18870,13 @@ public fun UByte.nextMultipleOf(rhs: UByte): UByte =
  * ```
  */
 public fun UByte.checkedNextMultipleOf(rhs: UByte): UByte? {
-    return when (
-        val matchVal1 =
-            when (val matchVal = this.checkedRem(rhs)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x = matchVal
-                    x
-                }
-            }
-    ) {
+    return when (val matchVal1 = when (val matchVal = this.checkedRem(rhs)) {
+        null -> { return null }
+        else -> {
+            val x = matchVal
+            x
+        }
+    }) {
         0 -> this
         else -> {
             val r = matchVal1
@@ -19665,9 +19339,7 @@ public fun UByte.isAscii(): Boolean = this <= 127u.toUByte()
  * If the value of this byte is within the ASCII range, returns it as an
  * [ASCII character](ascii.Char).  Otherwise, returns `None`.
  */
-public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
-    io.github.kotlinmania.rustlang.core.ascii.Char
-        .fromU8(this)
+public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(this)
 
 /**
  * Converts this byte to an [ASCII character](ascii.Char), without
@@ -19680,8 +19352,7 @@ public fun UByte.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
 public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
     Unit
     // SAFETY: the caller promised that this byte is ASCII.
-    return io.github.kotlinmania.rustlang.core.ascii.Char
-        .fromU8Unchecked(this)
+    return io.github.kotlinmania.rustlang.core.ascii.Char.fromU8Unchecked(this)
 }
 
 /**
@@ -20471,7 +20142,7 @@ public fun UShort.isolateLowestOne(): UShort = this and this.wrappingNeg()
  * ```
  */
 public fun UShort.highestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU16Inner, UShort>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -20489,7 +20160,7 @@ public fun UShort.highestOne(): UInt? =
  * ```
  */
 public fun UShort.lowestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU16Inner, UShort>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -20714,8 +20385,7 @@ public fun UShort.funnelShr(right: UShort, n: UInt): UShort {
  */
 public fun UShort.uncheckedFunnelShl(right: UShort, n: UInt): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -20728,8 +20398,7 @@ public fun UShort.uncheckedFunnelShl(right: UShort, n: UInt): UShort {
  */
 public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -20777,9 +20446,7 @@ public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UShort.carrylessMul(rhs: UShort): UShort =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carrylessMul(this, rhs)
+public fun UShort.carrylessMul(rhs: UShort): UShort = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -21577,9 +21244,7 @@ public fun UShort.checkedIlog(base: UShort): UInt? {
         if (base.isPowerOfTwo() && base > 1u.toUShort()) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -21622,7 +21287,7 @@ public fun UShort.checkedIlog(base: UShort): UInt? {
  * ```
  */
 public fun UShort.checkedIlog2(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU16Inner, UShort>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -21641,7 +21306,7 @@ public fun UShort.checkedIlog2(): UInt? =
  * ```
  */
 public fun UShort.checkedIlog10(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU16Inner, UShort>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -21957,9 +21622,7 @@ public fun UShort.checkedPow(exp: UInt): UShort? {
         val k = base.ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -21973,58 +21636,46 @@ public fun UShort.checkedPow(exp: UInt): UShort? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -22689,9 +22340,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  * }
  * ```
  */
-public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun UShort.carryingMulAdd(rhs: UShort, carry: UShort, add: UShort): Pair<UShort, UShort> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -22837,7 +22486,7 @@ public fun UShort.overflowingShr(rhs: UInt): Pair<UShort, Boolean> = Pair(this.w
 public fun UShort.overflowingPow(exp: UInt): Pair<UShort, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: UShort = 1u
+    val acc: UShort  = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -22900,15 +22549,9 @@ public fun UShort.pow(exp: UInt): UShort =
  * ```
  */
 public fun UShort.isqrt(): UShort {
-    val result =
-        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-            .UShort(this)
-            .toUShort()
+    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UShort(this).toUShort()
     run {
-        val MAX_RESULT: UShort =
-            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-                .UShort(UShort.MAX_VALUE)
-                .toUShort()
+        val MAX_RESULT: UShort = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UShort(UShort.MAX_VALUE).toUShort()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u.toUShort()) {
@@ -23036,18 +22679,13 @@ public fun UShort.nextMultipleOf(rhs: UShort): UShort =
  * ```
  */
 public fun UShort.checkedNextMultipleOf(rhs: UShort): UShort? {
-    return when (
-        val matchVal1 =
-            when (val matchVal = this.checkedRem(rhs)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x = matchVal
-                    x
-                }
-            }
-    ) {
+    return when (val matchVal1 = when (val matchVal = this.checkedRem(rhs)) {
+        null -> { return null }
+        else -> {
+            val x = matchVal
+            x
+        }
+    }) {
         0 -> this
         else -> {
             val r = matchVal1
@@ -23150,11 +22788,7 @@ public fun UShort.wrappingNextPowerOfTwo(): UShort = (this.checkedNextPowerOfTwo
  * ```kotlin
  * ```
  */
-public fun UShort.toBeBytes(): UByteArray =
-    run {
-        val rawBits = (((((this).toUInt() and 0xFFu) shl 8) or (((this).toUInt() shr 8) and 0xFFu)).toUShort()).toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-    }
+public fun UShort.toBeBytes(): UByteArray = run { val rawBits = (((((this).toUInt() and 0xFFu) shl 8) or (((this).toUInt() shr 8) and 0xFFu)).toUShort()).toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -23165,11 +22799,7 @@ public fun UShort.toBeBytes(): UByteArray =
  * ```kotlin
  * ```
  */
-public fun UShort.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this.toUInt()
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-    }
+public fun UShort.toLeBytes(): UByteArray = run { val rawBits = this.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -23206,11 +22836,7 @@ public fun UShort.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun UShort.Companion.fromBeBytes(bytes: UByteArray): UShort =
-    run {
-        val swapVal0 = (UShort.fromNeBytes(bytes))
-        (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort())
-    }
+public fun UShort.Companion.fromBeBytes(bytes: UByteArray): UShort = run { val swapVal0 = (UShort.fromNeBytes(bytes)); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }
 
 /**
  * Creates a native endian integer value from its representation
@@ -23735,7 +23361,7 @@ public fun UInt.isolateLowestOne(): UInt = this and this.wrappingNeg()
  * ```
  */
 public fun UInt.highestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU32Inner, UInt>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -23753,7 +23379,7 @@ public fun UInt.highestOne(): UInt? =
  * ```
  */
 public fun UInt.lowestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU32Inner, UInt>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -23978,8 +23604,7 @@ public fun UInt.funnelShr(right: UInt, n: UInt): UInt {
  */
 public fun UInt.uncheckedFunnelShl(right: UInt, n: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -23992,8 +23617,7 @@ public fun UInt.uncheckedFunnelShl(right: UInt, n: UInt): UInt {
  */
 public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -24041,9 +23665,7 @@ public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UInt.carrylessMul(rhs: UInt): UInt =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carrylessMul(this, rhs)
+public fun UInt.carrylessMul(rhs: UInt): UInt = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -24841,9 +24463,7 @@ public fun UInt.checkedIlog(base: UInt): UInt? {
         if (base.isPowerOfTwo() && base > 1u) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -24886,7 +24506,7 @@ public fun UInt.checkedIlog(base: UInt): UInt? {
  * ```
  */
 public fun UInt.checkedIlog2(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU32Inner, UInt>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -24905,7 +24525,7 @@ public fun UInt.checkedIlog2(): UInt? =
  * ```
  */
 public fun UInt.checkedIlog10(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU32Inner, UInt>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -25221,9 +24841,7 @@ public fun UInt.checkedPow(exp: UInt): UInt? {
         val k = base.ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -25237,58 +24855,46 @@ public fun UInt.checkedPow(exp: UInt): UInt? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -25953,9 +25559,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  * }
  * ```
  */
-public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun UInt.carryingMulAdd(rhs: UInt, carry: UInt, add: UInt): Pair<UInt, UInt> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -26101,7 +25705,7 @@ public fun UInt.overflowingShr(rhs: UInt): Pair<UInt, Boolean> = Pair(this.wrapp
 public fun UInt.overflowingPow(exp: UInt): Pair<UInt, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: UInt = 1u
+    val acc: UInt  = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -26164,15 +25768,9 @@ public fun UInt.pow(exp: UInt): UInt =
  * ```
  */
 public fun UInt.isqrt(): UInt {
-    val result =
-        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-            .UInt(this)
-            .toUInt()
+    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UInt(this).toUInt()
     run {
-        val MAX_RESULT: UInt =
-            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-                .UInt(UInt.MAX_VALUE)
-                .toUInt()
+        val MAX_RESULT: UInt = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.UInt(UInt.MAX_VALUE).toUInt()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1u) {
@@ -26300,18 +25898,13 @@ public fun UInt.nextMultipleOf(rhs: UInt): UInt =
  * ```
  */
 public fun UInt.checkedNextMultipleOf(rhs: UInt): UInt? {
-    return when (
-        val matchVal1 =
-            when (val matchVal = this.checkedRem(rhs)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x = matchVal
-                    x
-                }
-            }
-    ) {
+    return when (val matchVal1 = when (val matchVal = this.checkedRem(rhs)) {
+        null -> { return null }
+        else -> {
+            val x = matchVal
+            x
+        }
+    }) {
         0 -> this
         else -> {
             val r = matchVal1
@@ -26414,11 +26007,7 @@ public fun UInt.wrappingNextPowerOfTwo(): UInt = (this.checkedNextPowerOfTwo() ?
  * ```kotlin
  * ```
  */
-public fun UInt.toBeBytes(): UByteArray =
-    run {
-        val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00u) shl 8) or (((this) shr 8) and 0x0000FF00u) or ((this) shr 24))
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-    }
+public fun UInt.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 24)) or (((this) and 0x0000FF00u) shl 8) or (((this) shr 8) and 0x0000FF00u) or ((this) shr 24)); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -26429,11 +26018,7 @@ public fun UInt.toBeBytes(): UByteArray =
  * ```kotlin
  * ```
  */
-public fun UInt.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-    }
+public fun UInt.toLeBytes(): UByteArray = run { val rawBits = this; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -26470,11 +26055,7 @@ public fun UInt.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun UInt.Companion.fromBeBytes(bytes: UByteArray): UInt =
-    run {
-        val swapVal0 = (UInt.fromNeBytes(bytes))
-        ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24))
-    }
+public fun UInt.Companion.fromBeBytes(bytes: UByteArray): UInt = run { val swapVal0 = (UInt.fromNeBytes(bytes)); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24)) }
 
 /**
  * Creates a native endian integer value from its representation
@@ -26974,7 +26555,7 @@ public fun ULong.isolateLowestOne(): ULong = this and this.wrappingNeg()
  * ```
  */
 public fun ULong.highestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU64Inner, ULong>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -26992,7 +26573,7 @@ public fun ULong.highestOne(): UInt? =
  * ```
  */
 public fun ULong.lowestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU64Inner, ULong>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -27217,8 +26798,7 @@ public fun ULong.funnelShr(right: ULong, n: UInt): ULong {
  */
 public fun ULong.uncheckedFunnelShl(right: ULong, n: UInt): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -27231,8 +26811,7 @@ public fun ULong.uncheckedFunnelShl(right: ULong, n: UInt): ULong {
  */
 public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -27280,9 +26859,7 @@ public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
  * public fun doctestEntry() {}
  * ```
  */
-public fun ULong.carrylessMul(rhs: ULong): ULong =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carrylessMul(this, rhs)
+public fun ULong.carrylessMul(rhs: ULong): ULong = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -28080,9 +27657,7 @@ public fun ULong.checkedIlog(base: ULong): UInt? {
         if (base.isPowerOfTwo() && base > 1uL) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -28125,7 +27700,7 @@ public fun ULong.checkedIlog(base: ULong): UInt? {
  * ```
  */
 public fun ULong.checkedIlog2(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU64Inner, ULong>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -28144,7 +27719,7 @@ public fun ULong.checkedIlog2(): UInt? =
  * ```
  */
 public fun ULong.checkedIlog10(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU64Inner, ULong>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -28460,9 +28035,7 @@ public fun ULong.checkedPow(exp: UInt): ULong? {
         val k = base.ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -28476,58 +28049,46 @@ public fun ULong.checkedPow(exp: UInt): ULong? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -29192,9 +28753,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  * }
  * ```
  */
-public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun ULong.carryingMulAdd(rhs: ULong, carry: ULong, add: ULong): Pair<ULong, ULong> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -29340,7 +28899,7 @@ public fun ULong.overflowingShr(rhs: UInt): Pair<ULong, Boolean> = Pair(this.wra
 public fun ULong.overflowingPow(exp: UInt): Pair<ULong, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: ULong = 1uL
+    val acc: ULong  = 1uL
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -29403,15 +28962,9 @@ public fun ULong.pow(exp: UInt): ULong =
  * ```
  */
 public fun ULong.isqrt(): ULong {
-    val result =
-        io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-            .ULong(this)
-            .toULong()
+    val result = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.ULong(this).toULong()
     run {
-        val MAX_RESULT: ULong =
-            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-                .ULong(ULong.MAX_VALUE)
-                .toULong()
+        val MAX_RESULT: ULong = io.github.kotlinmania.rustlang.core.num.imp.intsqrt.ULong(ULong.MAX_VALUE).toULong()
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= 1uL) {
@@ -29539,18 +29092,13 @@ public fun ULong.nextMultipleOf(rhs: ULong): ULong =
  * ```
  */
 public fun ULong.checkedNextMultipleOf(rhs: ULong): ULong? {
-    return when (
-        val matchVal1 =
-            when (val matchVal = this.checkedRem(rhs)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x = matchVal
-                    x
-                }
-            }
-    ) {
+    return when (val matchVal1 = when (val matchVal = this.checkedRem(rhs)) {
+        null -> { return null }
+        else -> {
+            val x = matchVal
+            x
+        }
+    }) {
         0 -> this
         else -> {
             val r = matchVal1
@@ -29653,11 +29201,7 @@ public fun ULong.wrappingNextPowerOfTwo(): ULong = (this.checkedNextPowerOfTwo()
  * ```kotlin
  * ```
  */
-public fun ULong.toBeBytes(): UByteArray =
-    run {
-        val rawBits = ((((this) shl 56)) or (((this) and 0x000000000000FF00uL) shl 40) or (((this) and 0x0000000000FF0000uL) shl 24) or (((this) and 0x00000000FF000000uL) shl 8) or ((((this) shr 8) and 0x00000000FF000000uL)) or ((((this) shr 24) and 0x0000000000FF0000uL)) or ((((this) shr 40) and 0x000000000000FF00uL)) or ((this) shr 56))
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-    }
+public fun ULong.toBeBytes(): UByteArray = run { val rawBits = ((((this) shl 56)) or (((this) and 0x000000000000FF00uL) shl 40) or (((this) and 0x0000000000FF0000uL) shl 24) or (((this) and 0x00000000FF000000uL) shl 8) or ((((this) shr 8) and 0x00000000FF000000uL)) or ((((this) shr 24) and 0x0000000000FF0000uL)) or ((((this) shr 40) and 0x000000000000FF00uL)) or ((this) shr 56)); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -29668,11 +29212,7 @@ public fun ULong.toBeBytes(): UByteArray =
  * ```kotlin
  * ```
  */
-public fun ULong.toLeBytes(): UByteArray =
-    run {
-        val rawBits = this
-        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-    }
+public fun ULong.toLeBytes(): UByteArray = run { val rawBits = this; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -29709,11 +29249,7 @@ public fun ULong.toNeBytes(): UByteArray = transmute(this)
  * }
  * ```
  */
-public fun ULong.Companion.fromBeBytes(bytes: UByteArray): ULong =
-    run {
-        val swapVal0 = (ULong.fromNeBytes(bytes))
-        ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56))
-    }
+public fun ULong.Companion.fromBeBytes(bytes: UByteArray): ULong = run { val swapVal0 = (ULong.fromNeBytes(bytes)); ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56)) }
 
 /**
  * Creates a native endian integer value from its representation
@@ -30213,7 +29749,7 @@ public fun U128.isolateLowestOne(): U128 = this and this.wrappingNeg()
  * ```
  */
 public fun U128.highestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU128Inner, U128>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -30231,7 +29767,7 @@ public fun U128.highestOne(): UInt? =
  * ```
  */
 public fun U128.lowestOne(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU128Inner, U128>(this)) {
         null -> null
         else -> {
             val v = matchVal
@@ -30456,8 +29992,7 @@ public fun U128.funnelShr(right: U128, n: UInt): U128 {
  */
 public fun U128.uncheckedFunnelShl(right: U128, n: UInt): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -30470,8 +30005,7 @@ public fun U128.uncheckedFunnelShl(right: U128, n: UInt): U128 {
  */
 public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -30519,9 +30053,7 @@ public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
  * public fun doctestEntry() {}
  * ```
  */
-public fun U128.carrylessMul(rhs: U128): U128 =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carrylessMul(this, rhs)
+public fun U128.carrylessMul(rhs: U128): U128 = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Reverses the byte order of the integer.
@@ -30646,19 +30178,10 @@ public fun U128.toLe(): U128 = this
  * ```
  */
 public fun U128.checkedAdd(rhs: U128): U128? =
-    if (run {
-            val lhs = this
-            val rhs = rhs
-            kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
-        }.second
-    ) {
+    if (run { val lhs = this; val rhs = rhs; kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }.second) {
         null
     } else {
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-        }
+        run { val lhs = this; val rhs = rhs; kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
     }
 
 /**
@@ -30709,11 +30232,7 @@ public fun U128.strictAdd(rhs: U128): U128 {
  */
 public fun U128.uncheckedAdd(rhs: U128): U128 {
     Unit
-    return run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+    return run { val lhs = this; val rhs = rhs; kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 }
 
 /**
@@ -30779,11 +30298,7 @@ public fun U128.checkedSub(rhs: U128): U128? =
     if (this < rhs) {
         null
     } else {
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-        }
+        run { val lhs = this; val rhs = rhs; kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
     }
 
 /**
@@ -30859,11 +30374,7 @@ public fun U128.strictSub(rhs: U128): U128 {
  */
 public fun U128.uncheckedSub(rhs: U128): U128 {
     Unit
-    return run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+    return run { val lhs = this; val rhs = rhs; kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 }
 
 /**
@@ -30998,11 +30509,7 @@ public fun U128.strictMul(rhs: U128): U128 {
  */
 public fun U128.uncheckedMul(rhs: U128): U128 {
     Unit
-    return run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Mul(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+    return run { val lhs = this; val rhs = rhs; kmU128Mul(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 }
 
 /**
@@ -31344,9 +30851,7 @@ public fun U128.checkedIlog(base: U128): UInt? {
         if (base.isPowerOfTwo() && base > U128(0x0uL, 0x1uL)) {
             val k = base.ilog2()
             return when (val matchVal = this.checkedIlog2()) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -31389,7 +30894,7 @@ public fun U128.checkedIlog(base: U128): UInt? {
  * ```
  */
 public fun U128.checkedIlog2(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU128Inner, U128>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -31408,7 +30913,7 @@ public fun U128.checkedIlog2(): UInt? =
  * ```
  */
 public fun U128.checkedIlog10(): UInt? =
-    when (val matchVal = NonZero.new(this)) {
+    when (val matchVal = NonZero.new<NonZeroU128Inner, U128>(this)) {
         null -> null
         else -> {
             val x = matchVal
@@ -31724,9 +31229,7 @@ public fun U128.checkedPow(exp: UInt): U128? {
         val k = base.ilog2()
         val shift =
             when (val matchVal = k.checkedMul(exp1)) {
-                null -> {
-                    return null
-                }
+                null -> { return null }
                 else -> {
                     val x = matchVal
                     x
@@ -31740,58 +31243,46 @@ public fun U128.checkedPow(exp: UInt): U128? {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                acc =
-                    when (val matchVal1 = acc.checkedMul(base)) {
-                        null -> {
-                            return null
-                        }
-                        else -> {
-                            val x1 = matchVal1
-                            x1
-                        }
-                    }
-            }
-            exp1 /= 2u
-            base =
-                when (val matchVal2 = base.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
+                acc = when (val matchVal1 = acc.checkedMul(base)) {
+                    null -> { return null }
                     else -> {
-                        val x2 = matchVal2
-                        x2
+                        val x1 = matchVal1
+                        x1
                     }
                 }
+            }
+            exp1 /= 2u
+            base = when (val matchVal2 = base.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x2 = matchVal2
+                    x2
+                }
+            }
         }
         return acc.checkedMul(base)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            acc =
-                when (val matchVal3 = acc.checkedMul(base)) {
-                    null -> {
-                        return null
-                    }
-                    else -> {
-                        val x3 = matchVal3
-                        x3
-                    }
+            acc = when (val matchVal3 = acc.checkedMul(base)) {
+                null -> { return null }
+                else -> {
+                    val x3 = matchVal3
+                    x3
                 }
+            }
             if (exp1 == 1u) {
                 return acc
             }
         }
         exp1 /= 2u
-        base =
-            when (val matchVal4 = base.checkedMul(base)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x4 = matchVal4
-                    x4
-                }
+        base = when (val matchVal4 = base.checkedMul(base)) {
+            null -> { return null }
+            else -> {
+                val x4 = matchVal4
+                x4
             }
+        }
     }
 }
 
@@ -31833,12 +31324,7 @@ public fun U128.strictPow(exp: UInt): U128 =
  * ```kotlin
  * ```
  */
-public fun U128.saturatingAdd(rhs: U128): U128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmSaturatingAddU128(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+public fun U128.saturatingAdd(rhs: U128): U128 = run { val lhs = this; val rhs = rhs; kmSaturatingAddU128(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 
 /**
  * Saturating addition with a signed integer. Computes `self + rhs`,
@@ -31869,12 +31355,7 @@ public fun U128.saturatingAddSigned(rhs: I128): U128 {
  * ```kotlin
  * ```
  */
-public fun U128.saturatingSub(rhs: U128): U128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmSaturatingSubU128(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+public fun U128.saturatingSub(rhs: U128): U128 = run { val lhs = this; val rhs = rhs; kmSaturatingSubU128(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 
 /**
  * Saturating integer subtraction. Computes `self` - `rhs`, saturating at
@@ -31956,12 +31437,7 @@ public fun U128.saturatingPow(exp: UInt): U128 =
  * ```kotlin
  * ```
  */
-public fun U128.wrappingAdd(rhs: U128): U128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+public fun U128.wrappingAdd(rhs: U128): U128 = run { val lhs = this; val rhs = rhs; kmU128Add(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 
 /**
  * Wrapping (modular) addition with a signed integer. Computes
@@ -31983,12 +31459,7 @@ public fun U128.wrappingAddSigned(rhs: I128): U128 = this.wrappingAdd(rhs.toU128
  * ```kotlin
  * ```
  */
-public fun U128.wrappingSub(rhs: U128): U128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+public fun U128.wrappingSub(rhs: U128): U128 = run { val lhs = this; val rhs = rhs; kmU128Sub(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 
 /**
  * Wrapping (modular) subtraction with a signed integer. Computes
@@ -32014,12 +31485,7 @@ public fun U128.wrappingSubSigned(rhs: I128): U128 = this.wrappingSub(rhs.toU128
  * check(((25u.toUByte()) * (12u.toUByte())).toUByte() == 44)
  * ```
  */
-public fun U128.wrappingMul(rhs: U128): U128 =
-    run {
-        val lhs = this
-        val rhs = rhs
-        kmU128Mul(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) }
-    }
+public fun U128.wrappingMul(rhs: U128): U128 = run { val lhs = this; val rhs = rhs; kmU128Mul(lhs.low, lhs.high, rhs.low, rhs.high).let { U128(it.hi, it.lo) } }
 
 /**
  * Wrapping (modular) division. Computes `self / rhs`.
@@ -32197,12 +31663,7 @@ public fun U128.wrappingPow(exp: UInt): U128 {
  * ```
  */
 public fun U128.overflowingAdd(rhs: U128): Pair<U128, Boolean> {
-    val (a, b) =
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
-        }
+    val (a, b) = run { val lhs = this; val rhs = rhs; kmAddWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }
     return Pair(U128.fromLong(a.toLong()), b)
 }
 
@@ -32269,12 +31730,7 @@ public fun U128.overflowingAddSigned(rhs: I128): Pair<U128, Boolean> {
  * ```
  */
 public fun U128.overflowingSub(rhs: U128): Pair<U128, Boolean> {
-    val (a, b) =
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmSubWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
-        }
+    val (a, b) = run { val lhs = this; val rhs = rhs; kmSubWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }
     return Pair(U128.fromLong(a.toLong()), b)
 }
 
@@ -32361,12 +31817,7 @@ public fun U128.absDiff(other: U128): U128 =
  * ```
  */
 public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
-    val (a, b) =
-        run {
-            val lhs = this
-            val rhs = rhs
-            kmMulWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) }
-        }
+    val (a, b) = run { val lhs = this; val rhs = rhs; kmMulWithOverflowU128(lhs.low, lhs.high, rhs.low, rhs.high).let { Pair(U128(it.hi, it.lo), it.overflowed) } }
     return Pair(U128.fromLong(a.toLong()), b)
 }
 
@@ -32496,9 +31947,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  * }
  * ```
  */
-public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carryingMulAdd(this, rhs, carry, add)
+public fun U128.carryingMulAdd(rhs: U128, carry: U128, add: U128): Pair<U128, U128> = io.github.kotlinmania.rustlang.core.intrinsics.carryingMulAdd(this, rhs, carry, add)
 
 /**
  * Calculates the divisor when `self` is divided by `rhs`.
@@ -32644,7 +32093,7 @@ public fun U128.overflowingShr(rhs: UInt): Pair<U128, Boolean> = Pair(this.wrapp
 public fun U128.overflowingPow(exp: UInt): Pair<U128, Boolean> {
     var exp1 = exp
     val base = this
-    val acc: U128 = U128(0x0uL, 0x1uL)
+    val acc: U128  = U128(0x0uL, 0x1uL)
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -32707,19 +32156,9 @@ public fun U128.pow(exp: UInt): U128 =
  * ```
  */
 public fun U128.isqrt(): U128 {
-    val result =
-        U128.fromLong(
-            io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-                .U128(this)
-                .toLong(),
-        )
+    val result = U128.fromLong(io.github.kotlinmania.rustlang.core.num.imp.intsqrt.U128(this).toLong())
     run {
-        val MAX_RESULT: U128 =
-            U128.fromLong(
-                io.github.kotlinmania.rustlang.core.num.imp.intsqrt
-                    .U128(U128.MAX_VALUE)
-                    .toLong(),
-            )
+        val MAX_RESULT: U128 = U128.fromLong(io.github.kotlinmania.rustlang.core.num.imp.intsqrt.U128(U128.MAX_VALUE).toLong())
         assertUnchecked(result <= MAX_RESULT)
     }
     if (this >= U128(0x0uL, 0x1uL)) {
@@ -32847,18 +32286,13 @@ public fun U128.nextMultipleOf(rhs: U128): U128 =
  * ```
  */
 public fun U128.checkedNextMultipleOf(rhs: U128): U128? {
-    return when (
-        val matchVal1 =
-            when (val matchVal = this.checkedRem(rhs)) {
-                null -> {
-                    return null
-                }
-                else -> {
-                    val x = matchVal
-                    x
-                }
-            }
-    ) {
+    return when (val matchVal1 = when (val matchVal = this.checkedRem(rhs)) {
+        null -> { return null }
+        else -> {
+            val x = matchVal
+            x
+        }
+    }) {
         0 -> this
         else -> {
             val r = matchVal1
@@ -33474,8 +32908,7 @@ public fun Int.funnelShr(right: Int, n: UInt): Int {
  */
 public fun Int.uncheckedFunnelShl(right: Int, n: UInt): Int {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShl(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShl(this, right, n)
 }
 
 /**
@@ -33488,8 +32921,7 @@ public fun Int.uncheckedFunnelShl(right: Int, n: UInt): Int {
  */
 public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
     Unit
-    return io.github.kotlinmania.rustlang.core.intrinsics
-        .uncheckedFunnelShr(this, right, n)
+    return io.github.kotlinmania.rustlang.core.intrinsics.uncheckedFunnelShr(this, right, n)
 }
 
 /**
@@ -33537,9 +32969,7 @@ public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
  * public fun doctestEntry() {}
  * ```
  */
-public fun Int.carrylessMul(rhs: Int): Int =
-    io.github.kotlinmania.rustlang.core.intrinsics
-        .carrylessMul(this, rhs)
+public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.core.intrinsics.carrylessMul(this, rhs)
 
 /**
  * Returns an integer with the bit locations specified by `mask` packed
@@ -33892,11 +33322,7 @@ public fun Int.carryingCarrylessMul(rhs: Int, carry: Int): Pair<Int, Int> {
 /**
  * Returns an `Int` where every byte is equal to `x`.
  */
-public fun Int.Companion.repeatU8(x: UByte): Int =
-    run {
-        val bytesTmp0 = UByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt()) { x }
-        ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt())
-    }
+public fun Int.Companion.repeatU8(x: UByte): Int = run { val bytesTmp0 = UByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt()) { x }; ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) }
 
 /**
  * Returns an `Int` where every byte pair is equal to `x`.
@@ -34027,13 +33453,13 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<Int, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0 > Int.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<Int, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -34054,9 +33480,7 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
                 result = result.wrappingMul(radix.toInt())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Int, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -34072,9 +33496,7 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
                 result = result.wrappingMul(radix.toInt())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Int, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34091,37 +33513,27 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toInt())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toInt()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Int, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toInt()
+                result = when (mul) {
+                    null -> { return Result.Err<Int, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<Int, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -34130,42 +33542,32 @@ public fun Int.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt):
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toInt())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toInt()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Int, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toInt()
+                result = when (mul1) {
+                    null -> { return Result.Err<Int, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<Int, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<Int, ParseIntError>(result)
 }
 
 /**
@@ -34283,13 +33685,13 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<Byte, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0.toByte() > Byte.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<Byte, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -34310,9 +33712,7 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(radix.toByte())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -34328,9 +33728,7 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(radix.toByte())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34347,37 +33745,27 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toByte())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toByte()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toByte()
+                result = when (mul) {
+                    null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -34386,42 +33774,32 @@ public fun Byte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toByte())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toByte()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toByte()
+                result = when (mul1) {
+                    null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<Byte, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<Byte, ParseIntError>(result)
 }
 
 /**
@@ -34539,13 +33917,13 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<Short, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0.toShort() > Short.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<Short, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -34566,9 +33944,7 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 result = result.wrappingMul(radix.toShort())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Short, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -34584,9 +33960,7 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 result = result.wrappingMul(radix.toShort())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Short, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34603,37 +33977,27 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toShort())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toShort()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Short, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toShort()
+                result = when (mul) {
+                    null -> { return Result.Err<Short, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<Short, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -34642,42 +34006,32 @@ public fun Short.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toShort())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toShort()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Short, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toShort()
+                result = when (mul1) {
+                    null -> { return Result.Err<Short, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<Short, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<Short, ParseIntError>(result)
 }
 
 /**
@@ -34795,13 +34149,13 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<Long, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0L > Long.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<Long, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -34822,9 +34176,7 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(radix.toLong())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Long, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -34840,9 +34192,7 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(radix.toLong())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<Long, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -34859,37 +34209,27 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toLong())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toLong()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Long, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toLong()
+                result = when (mul) {
+                    null -> { return Result.Err<Long, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<Long, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -34898,42 +34238,32 @@ public fun Long.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toLong())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toLong()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<Long, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toLong()
+                result = when (mul1) {
+                    null -> { return Result.Err<Long, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<Long, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<Long, ParseIntError>(result)
 }
 
 /**
@@ -35051,13 +34381,13 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<I128, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = I128(0x0L, 0x0uL) > I128.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<I128, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -35078,9 +34408,7 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(I128.fromUInt(radix))
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<I128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -35096,9 +34424,7 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(I128.fromUInt(radix))
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<I128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35115,39 +34441,27 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(I128.fromUInt(radix))
                 val x2 =
-                    I128.fromLong(
-                        (
-                            when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                                null -> {
-                                    return Result.Err(Pie(kind = InvalidDigit))
-                                }
-                                else -> {
-                                    val value2 = matchVal2
-                                    value2
-                                }
-                            }
-                        ).toLong(),
-                    )
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    I128.fromLong((when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<I128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toLong())
+                result = when (mul) {
+                    null -> { return Result.Err<I128, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<I128, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -35156,44 +34470,32 @@ public fun I128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(I128.fromUInt(radix))
                 val x3 =
-                    I128.fromLong(
-                        (
-                            when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                                null -> {
-                                    return Result.Err(Pie(kind = InvalidDigit))
-                                }
-                                else -> {
-                                    val value5 = matchVal4
-                                    value5
-                                }
-                            }
-                        ).toLong(),
-                    )
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    I128.fromLong((when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<I128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toLong())
+                result = when (mul1) {
+                    null -> { return Result.Err<I128, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<I128, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<I128, ParseIntError>(result)
 }
 
 /**
@@ -35311,13 +34613,13 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<UByte, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0u.toUByte() > UByte.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<UByte, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -35338,9 +34640,7 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 result = result.wrappingMul(radix.toUByte())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -35356,9 +34656,7 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 result = result.wrappingMul(radix.toUByte())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35375,37 +34673,27 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toUByte())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toUByte()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toUByte()
+                result = when (mul) {
+                    null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -35414,42 +34702,32 @@ public fun UByte.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toUByte())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toUByte()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toUByte()
+                result = when (mul1) {
+                    null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<UByte, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<UByte, ParseIntError>(result)
 }
 
 /**
@@ -35567,13 +34845,13 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<UShort, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0u.toUShort() > UShort.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<UShort, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -35594,9 +34872,7 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
                 result = result.wrappingMul(radix.toUShort())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -35612,9 +34888,7 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
                 result = result.wrappingMul(radix.toUShort())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35631,37 +34905,27 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toUShort())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toUShort()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toUShort()
+                result = when (mul) {
+                    null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -35670,42 +34934,32 @@ public fun UShort.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UIn
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toUShort())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toUShort()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toUShort()
+                result = when (mul1) {
+                    null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<UShort, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<UShort, ParseIntError>(result)
 }
 
 /**
@@ -35823,13 +35077,13 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<UInt, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0u > UInt.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<UInt, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -35850,9 +35104,7 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul((radix).toUInt())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -35868,9 +35120,7 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul((radix).toUInt())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -35887,37 +35137,27 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix)
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toUInt()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toUInt()
+                result = when (mul) {
+                    null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -35926,42 +35166,32 @@ public fun UInt.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix)
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toUInt()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toUInt()
+                result = when (mul1) {
+                    null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<UInt, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<UInt, ParseIntError>(result)
 }
 
 /**
@@ -36079,13 +35309,13 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<ULong, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = 0uL > ULong.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<ULong, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -36106,9 +35336,7 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 result = result.wrappingMul(radix.toULong())
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -36124,9 +35352,7 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 result = result.wrappingMul(radix.toULong())
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -36143,37 +35369,27 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(radix.toULong())
                 val x2 =
-                    (
-                        when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value2 = matchVal2
-                                value2
-                            }
-                        }
-                    ).toULong()
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    (when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toULong()
+                result = when (mul) {
+                    null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -36182,42 +35398,32 @@ public fun ULong.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(radix.toULong())
                 val x3 =
-                    (
-                        when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                            null -> {
-                                return Result.Err(Pie(kind = InvalidDigit))
-                            }
-                            else -> {
-                                val value5 = matchVal4
-                                value5
-                            }
-                        }
-                    ).toULong()
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    (when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toULong()
+                result = when (mul1) {
+                    null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<ULong, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<ULong, ParseIntError>(result)
 }
 
 /**
@@ -36335,13 +35541,13 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
         fromAsciiBytesRadixPanic(radix)
     }
     if (src.isEmpty()) {
-        return Result.Err(Pie(kind = Empty))
+        return Result.Err<U128, ParseIntError>(Pie(kind = Empty))
     }
     val isSignedTy = U128(0x0uL, 0x0uL) > U128.MIN_VALUE
     var (isPositive, digits) =
         when {
             src.size == 1 && (src[0] == 43u || src[0] == 45u) -> {
-                return Result.Err(Pie(kind = InvalidDigit))
+                return Result.Err<U128, ParseIntError>(Pie(kind = InvalidDigit))
             }
             src.size >= 1 && src[0] == 43u -> {
                 val rest = src.subList(1, src.size)
@@ -36362,9 +35568,7 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(U128.fromUInt(radix))
                 val x =
                     when (val matchVal = (c.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<U128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value = matchVal
                             value
@@ -36380,9 +35584,7 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 result = result.wrappingMul(U128.fromUInt(radix))
                 val x1 =
                     when (val matchVal1 = (c1.toInt().toChar()).toDigit(radix)) {
-                        null -> {
-                            return Result.Err(Pie(kind = InvalidDigit))
-                        }
+                        null -> { return Result.Err<U128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
                             val value1 = matchVal1
                             value1
@@ -36399,39 +35601,27 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest4 = digits.subList(1, digits.size)
                 val mul = result.checkedMul(U128.fromUInt(radix))
                 val x2 =
-                    U128.fromLong(
-                        (
-                            when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
-                                null -> {
-                                    return Result.Err(Pie(kind = InvalidDigit))
-                                }
-                                else -> {
-                                    val value2 = matchVal2
-                                    value2
-                                }
-                            }
-                        ).toLong(),
-                    )
-                result =
-                    when (mul) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
+                    U128.fromLong((when (val matchVal2 = (c2.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<U128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value3 = mul
-                            value3
+                            val value2 = matchVal2
+                            value2
                         }
+                    }).toLong())
+                result = when (mul) {
+                    null -> { return Result.Err<U128, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value3 = mul
+                        value3
                     }
-                result =
-                    when (val matchVal3 = result.checkedAdd(x2)) {
-                        null -> {
-                            return Result.Err(Pie(kind = PosOverflow))
-                        }
-                        else -> {
-                            val value4 = matchVal3
-                            value4
-                        }
+                }
+                result = when (val matchVal3 = result.checkedAdd(x2)) {
+                    null -> { return Result.Err<U128, ParseIntError>(Pie(kind = PosOverflow)) }
+                    else -> {
+                        val value4 = matchVal3
+                        value4
                     }
+                }
                 digits = rest4
             }
         } else {
@@ -36440,42 +35630,30 @@ public fun U128.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt)
                 val rest5 = digits.subList(1, digits.size)
                 val mul1 = result.checkedMul(U128.fromUInt(radix))
                 val x3 =
-                    U128.fromLong(
-                        (
-                            when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
-                                null -> {
-                                    return Result.Err(Pie(kind = InvalidDigit))
-                                }
-                                else -> {
-                                    val value5 = matchVal4
-                                    value5
-                                }
-                            }
-                        ).toLong(),
-                    )
-                result =
-                    when (mul1) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
+                    U128.fromLong((when (val matchVal4 = (c3.toInt().toChar()).toDigit(radix)) {
+                        null -> { return Result.Err<U128, ParseIntError>(Pie(kind = InvalidDigit)) }
                         else -> {
-                            val value6 = mul1
-                            value6
+                            val value5 = matchVal4
+                            value5
                         }
+                    }).toLong())
+                result = when (mul1) {
+                    null -> { return Result.Err<U128, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value6 = mul1
+                        value6
                     }
-                result =
-                    when (val matchVal5 = result.checkedSub(x3)) {
-                        null -> {
-                            return Result.Err(Pie(kind = NegOverflow))
-                        }
-                        else -> {
-                            val value7 = matchVal5
-                            value7
-                        }
+                }
+                result = when (val matchVal5 = result.checkedSub(x3)) {
+                    null -> { return Result.Err<U128, ParseIntError>(Pie(kind = NegOverflow)) }
+                    else -> {
+                        val value7 = matchVal5
+                        value7
                     }
+                }
                 digits = rest5
             }
         }
     }
-    return Result.Ok(result)
+    return Result.Ok<U128, ParseIntError>(result)
 }

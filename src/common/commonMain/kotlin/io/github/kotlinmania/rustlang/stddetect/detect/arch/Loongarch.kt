@@ -93,21 +93,21 @@ public sealed class Feature {
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "32s" -> Result.Ok(Feature.v32s)
-                "f" -> Result.Ok(Feature::f)
-                "d" -> Result.Ok(Feature::d)
-                "frecipe" -> Result.Ok(Feature::frecipe)
-                "div32" -> Result.Ok(Feature::div32)
-                "lsx" -> Result.Ok(Feature::lsx)
-                "lasx" -> Result.Ok(Feature::lasx)
-                "lam-bh" -> Result.Ok(Feature::lamBh)
-                "lamcas" -> Result.Ok(Feature::lamcas)
-                "ld-seq-sa" -> Result.Ok(Feature::ldSeqSa)
-                "scq" -> Result.Ok(Feature::scq)
-                "lbt" -> Result.Ok(Feature::lbt)
-                "lvz" -> Result.Ok(Feature::lvz)
-                "ual" -> Result.Ok(Feature::ual)
-                else -> Result.Err(Unit)
+                "32s" -> Result.Ok<Feature, Unit>(Feature.v32s)
+                "f" -> Result.Ok<Feature, Unit>(Feature::f)
+                "d" -> Result.Ok<Feature, Unit>(Feature::d)
+                "frecipe" -> Result.Ok<Feature, Unit>(Feature::frecipe)
+                "div32" -> Result.Ok<Feature, Unit>(Feature::div32)
+                "lsx" -> Result.Ok<Feature, Unit>(Feature::lsx)
+                "lasx" -> Result.Ok<Feature, Unit>(Feature::lasx)
+                "lam-bh" -> Result.Ok<Feature, Unit>(Feature::lamBh)
+                "lamcas" -> Result.Ok<Feature, Unit>(Feature::lamcas)
+                "ld-seq-sa" -> Result.Ok<Feature, Unit>(Feature::ldSeqSa)
+                "scq" -> Result.Ok<Feature, Unit>(Feature::scq)
+                "lbt" -> Result.Ok<Feature, Unit>(Feature::lbt)
+                "lvz" -> Result.Ok<Feature, Unit>(Feature::lvz)
+                "ual" -> Result.Ok<Feature, Unit>(Feature::ual)
+                else -> Result.Err<Feature, Unit>(Unit)
             }
     }
 }

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.sync.condvar.pthread
 
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.time.Duration
@@ -14,12 +15,12 @@ import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
 public open class Condvar internal constructor(
     cvarCtorArg: OnceBox<pal.Condvar>,
-    mutexCtorArg: Atomic<Int>,
+    mutexCtorArg: Atomic<Int, Align8<Int>>,
 ) {
     public var cvar: OnceBox<pal.Condvar> = cvarCtorArg
         internal set
 
-    public var mutex: Atomic<Int> = mutexCtorArg
+    public var mutex: Atomic<Int, Align8<Int>> = mutexCtorArg
         internal set
 
     public open fun get(): Pin<pal.Condvar> =
@@ -37,10 +38,10 @@ public open class Condvar internal constructor(
         run {
             val matchVal = this.mutex.compareExchange(0, addr, Relaxed, Relaxed)
             when {
-                matchVal is Result.Ok<*, *> -> {}
+                matchVal is Result.Ok -> {}
                 // Stored the address
-                matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error == addr -> {
-                    val n = (matchVal as Result.Err<*, *>).error
+                matchVal is Result.Err && (matchVal as Result.Err).error == addr -> {
+                    val n = matchVal.error
                 }
                 // Lost a race to store the same address
                 else -> error("attempted to use a condition variable with two mutexes")
@@ -93,7 +94,7 @@ public open class Condvar internal constructor(
     public companion object {
         public operator fun invoke(
             cvar: OnceBox<pal.Condvar>,
-            mutex: Atomic<Int>,
+            mutex: Atomic<Int, Align8<Int>>,
         ): Condvar = Condvar(
             cvarCtorArg = cvar,
             mutexCtorArg = mutex,

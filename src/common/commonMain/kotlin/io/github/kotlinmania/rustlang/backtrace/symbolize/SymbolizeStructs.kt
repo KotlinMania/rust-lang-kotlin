@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.backtrace.symbolize
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.fmt.Debug
 import io.github.kotlinmania.rustlang.core.fmt.Display
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
@@ -11,7 +12,7 @@ import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
 import io.github.kotlinmania.rustlang.std.path.Path
 
 public fun interface FnCallback {
-    public operator fun invoke(arg0: String, arg1: StringBuilder)
+    public operator fun invoke(arg0: String, arg1: StringBuilder): Result<Unit, Error>
 }
 
 public class DebugStruct(
@@ -111,7 +112,7 @@ public open class Symbol(
      */
     public open fun filename(): Path? = this.inner.filename()
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val d = DebugStruct(f, "Symbol")
         when (val matchVal = this.name()) {
             null -> {}
@@ -141,7 +142,7 @@ public open class Symbol(
                 d.field("lineno", lineno)
             }
         }
-        d.finish()
+        return d.finish()
     }
 }
 
@@ -184,7 +185,7 @@ public open class SymbolName(
      */
     public open fun asBytes(): List<UByte> = this.bytes
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         when (val matchVal = this.demangled) {
             null -> {}
             else -> {
@@ -205,10 +206,10 @@ public open class SymbolName(
                 }
             }
         }
-        formatSymbolName(Display::fmt, this.bytes, f)
+        return formatSymbolName(Display::fmt, this.bytes, f)
     }
 
-    public open fun fmtDebug(f: StringBuilder) {
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> {
         when (val matchVal = this.demangled) {
             null -> {}
             else -> {
@@ -229,7 +230,7 @@ public open class SymbolName(
                 }
             }
         }
-        formatSymbolName(Debug::fmt, this.bytes, f)
+        return formatSymbolName(Debug::fmt, this.bytes, f)
     }
 
     public companion object {

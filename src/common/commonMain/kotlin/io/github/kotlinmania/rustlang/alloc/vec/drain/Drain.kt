@@ -2,13 +2,17 @@
 package io.github.kotlinmania.rustlang.alloc.vec.drain
 
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
+import io.github.kotlinmania.rustlang.core.ptr.read
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -61,25 +65,20 @@ public open class Drain<T, A : Allocator> internal constructor(
      */
     public var iter: ArrayDeque<T>,
     vecCtorArg: NonNull,
-) : AsRef<List<T>>,
-    TrustedLen,
-    Iterable<T> {
+) : AsRef<List<T>>, TrustedLen, Iterable<T> {
     public var vec: NonNull = vecCtorArg
         internal set
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Drain.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Drain.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
-
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "Drain").field(this.iter.toList()).finish()
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "Drain").field(this.iter.toList()).finish()
 
     /**
      * Returns the remaining items of this iterator as a slice.
@@ -123,7 +122,7 @@ public open class Drain<T, A : Allocator> internal constructor(
      * }
      * ```
      */
-    public open fun keepRest() {
+    public open fun keepRest(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // At this moment layout looks like this:
         //
         // [head] [yielded by next] [unyielded] [yielded by nextBack] [tail]
@@ -146,7 +145,7 @@ public open class Drain<T, A : Allocator> internal constructor(
             val unyieldedLen = thisRef.iter.len()
             val unyieldedPtr = thisRef.iter.asSlice().asPtr()
             // ZSTs have no identity, so we don't need to move them around.
-            if (T.IS_ZST.inv()) {
+            if ((((typeLayoutT).sizeBytes == 0L)).inv()) {
                 val startPtr = sourceVec.asMutPtr().add(start)
                 // memmove back unyielded elements
                 if (unyieldedPtr != startPtr) {
@@ -172,18 +171,14 @@ public open class Drain<T, A : Allocator> internal constructor(
         return this.iter.removeFirstOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = UnresolvedTypeLayout<Any?>()) })
     }
 
-    public open fun sizeHint(): Pair<Int, Int?> =
-        run {
-            val n = this.iter.size
-            Pair(n, n)
-        }
+    public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 
     public open fun nextBack(): T? {
         // ignore-tidy-undocumented-unchecked
         return this.iter.removeLastOrNull()?.let({ elt -> read(constPtrFromRustCast(elt), typeLayoutT = UnresolvedTypeLayout<Any?>()) })
     }
 
-    public open fun drop() {
+    public open fun drop(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         /**
          * Moves back the un-`Drain`ed elements to restore the original `List`.
          */
@@ -217,7 +212,7 @@ public open class Drain<T, A : Allocator> internal constructor(
         val iter = take(this.iter)
         val dropLen = iter.len()
         val vec = this.vec
-        if (T.IS_ZST) {
+        if (((typeLayoutT).sizeBytes == 0L)) {
             // ZSTs have no identity, so we don't need to move them around, we only need to drop the correct amount.
             // this can be achieved by manipulating the Vec length instead of moving values out from `iter`.
             // ignore-tidy-undocumented-unchecked
@@ -259,12 +254,11 @@ public open class Drain<T, A : Allocator> internal constructor(
             tailLen: Int,
             iter: ArrayDeque<T>,
             vec: NonNull,
-        ): Drain<T, A> =
-            Drain<T, A>(
-                tailStart = tailStart,
-                tailLen = tailLen,
-                iter = iter,
-                vecCtorArg = vec,
-            )
+        ): Drain<T, A> = Drain<T, A>(
+            tailStart = tailStart,
+            tailLen = tailLen,
+            iter = iter,
+            vecCtorArg = vec,
+        )
     }
 }

@@ -32,12 +32,11 @@ public open class Mmap internal constructor(
             file: File,
             ptr: MutPtr,
             len: Int,
-        ): Mmap =
-            Mmap(
-                file = file,
-                ptrCtorArg = ptr,
-                len = len,
-            )
+        ): Mmap = Mmap(
+            file = file,
+            ptrCtorArg = ptr,
+            len = len,
+        )
 
         public fun map(file: File, len: Int, offset: ULong): Mmap? {
             return run {

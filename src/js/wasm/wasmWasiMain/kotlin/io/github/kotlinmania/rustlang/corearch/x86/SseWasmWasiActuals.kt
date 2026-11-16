@@ -81,11 +81,17 @@ private external fun wasiCorearchX86SseSfence(): Unit
 public actual fun sfence(): Unit =
     wasiCorearchX86SseSfence()
 
-public actual fun stmxcsr(p: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseStmxcsr")
+public actual fun stmxcsr(p: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseStmxcsr")
+}
 
-public actual fun ldmxcsr(p: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseLdmxcsr")
+public actual fun ldmxcsr(p: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseLdmxcsr")
+}
 
-public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SsePrefetch")
+public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SsePrefetch")
+}
 
 public actual fun cmpss(a: M128, b: M128, imm8: Byte): M128 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86SseCmpss")

@@ -46,11 +46,10 @@ public open class Wsabuf internal constructor(
         public operator fun invoke(
             len: UInt,
             buf: MutPtr,
-        ): Wsabuf =
-            Wsabuf(
-                len = len,
-                bufCtorArg = buf,
-            )
+        ): Wsabuf = Wsabuf(
+            len = len,
+            bufCtorArg = buf,
+        )
     }
 }
 

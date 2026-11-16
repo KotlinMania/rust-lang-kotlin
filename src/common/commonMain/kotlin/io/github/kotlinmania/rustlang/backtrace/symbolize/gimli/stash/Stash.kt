@@ -53,11 +53,10 @@ public open class Stash internal constructor(
         public operator fun invoke(
             buffers: UnsafeCell<List<List<UByte>>>,
             mmaps: UnsafeCell<List<Mmap>>,
-        ): Stash =
-            Stash(
-                buffersCtorArg = buffers,
-                mmapsCtorArg = mmaps,
-            )
+        ): Stash = Stash(
+            buffersCtorArg = buffers,
+            mmapsCtorArg = mmaps,
+        )
 
         public fun new(): Stash = Stash(buffers = UnsafeCell.new(mutableListOf()), mmaps = UnsafeCell.new(mutableListOf()))
     }

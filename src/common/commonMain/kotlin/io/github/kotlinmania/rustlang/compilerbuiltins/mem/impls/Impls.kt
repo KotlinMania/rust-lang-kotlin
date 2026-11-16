@@ -36,10 +36,7 @@ public fun readUsizeUnaligned(x: ConstPtr): Int {
     // Do not use `core.ptr.readUnaligned` here, since it calls `copyNonoverlapping` which
     // is translated to memcpy in LLVM.
     val xRead = (PrimitiveArrayLayouts.uByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)).toInt())).readNative(((ConstPtr(x.rawAddress, x.rawMeta))).rawAddress)
-    return run {
-        val bytesTmp0 = xRead
-        ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt())
-    }
+    return run { val bytesTmp0 = xRead; ((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()) }
 }
 
 /**
@@ -47,7 +44,7 @@ public fun readUsizeUnaligned(x: ConstPtr): Int {
  * `loadSz`. The offset pointers must both be `T`-aligned. Returns the new offset, advanced by the
  * chunk size if a load happened.
  */
-public fun <T> loadChunkAligned(src: ConstPtr, dst: MutPtr, loadSz: Int, offset: Int, typeLayoutT: TypeLayout<T>): Int {
+public fun <T> loadChunkAligned(src: ConstPtr, dst: MutPtr, loadSz: Int, offset: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     val chunkSz = sizeOf<T>(typeLayoutT = typeLayoutT)
     return if ((loadSz and chunkSz) != 0) {
         (typeLayoutT).writeNative((MutPtr((MutPtr((dst).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress, (typeLayoutT).readNative((ConstPtr((ConstPtr((src).rawAddress + ((offset).toLong()))).rawAddress)).rawAddress))
@@ -127,7 +124,6 @@ public fun copyForward(dest: MutPtr, src: ConstPtr, n: Int) {
             srcUsize = MutPtr((srcUsize).rawAddress + ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
         }
     }
-
     /**
      * `n` is in units of bytes, but must be a multiple of the word size and must not be 0.
      * `src` *must not* be `Int`-aligned.
@@ -137,7 +133,7 @@ public fun copyForward(dest: MutPtr, src: ConstPtr, n: Int) {
         var srcUsize = MutPtr(src2.rawAddress, src2.rawMeta)
         val destEnd = (MutPtr((dest2).rawAddress + ((n2).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
         while (((destUsize).rawAddress.toULong() < (destEnd).rawAddress.toULong())) {
-            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned(srcUsize))
+            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned((srcUsize).asConstPtr()))
             destUsize = MutPtr((destUsize).rawAddress + ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
             srcUsize = MutPtr((srcUsize).rawAddress + ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
         }
@@ -169,7 +165,6 @@ public fun copyBackward(dest: MutPtr, src: ConstPtr, n: Int) {
     val dest1 = dest
     val src1 = src
     var n1 = n
-
     // The following backward copy helper functions uses the pointers past the end
     // as their inputs instead of pointers to the start!
     fun copyBackwardBytes(dest2: MutPtr, src2: ConstPtr, n2: Int) {
@@ -192,7 +187,6 @@ public fun copyBackward(dest: MutPtr, src: ConstPtr, n: Int) {
             (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, (PrimitiveLayouts.USIZE64).readNative((srcUsize).rawAddress))
         }
     }
-
     /**
      * `n` is in units of bytes, but must be a multiple of the word size and must not be 0.
      * `src` *must not* be `Int`-aligned.
@@ -204,7 +198,7 @@ public fun copyBackward(dest: MutPtr, src: ConstPtr, n: Int) {
         while (((destStart).rawAddress.toULong() < (destUsize).rawAddress.toULong())) {
             destUsize = MutPtr((destUsize).rawAddress - ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
             srcUsize = MutPtr((srcUsize).rawAddress - ((1).toLong() * (PrimitiveLayouts.USIZE64).strideBytes))
-            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned(srcUsize))
+            (PrimitiveLayouts.USIZE64).writeNative((destUsize).rawAddress, readUsizeUnaligned((srcUsize).asConstPtr()))
         }
     }
     var dest2 = MutPtr((dest1).rawAddress + ((n1).toLong() * (PrimitiveLayouts.U8).strideBytes))

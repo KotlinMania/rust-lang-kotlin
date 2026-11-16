@@ -13,11 +13,7 @@ public open class AllocError {
     public open fun clone(): AllocError = AllocError()
 
     // (we need this for downstream impl of trait Error)
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append("memory allocation failed")
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("memory allocation failed"); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<AllocError> =

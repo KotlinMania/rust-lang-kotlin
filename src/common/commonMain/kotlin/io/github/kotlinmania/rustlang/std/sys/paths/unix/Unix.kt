@@ -40,11 +40,11 @@ public fun getcwd(): Result<PathBuf, Error> {
                 val len = CStr.fromPtr((buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).toBytes().len()
                 buf.setLen(len)
                 buf.shrinkToFit()
-                return Result.Ok(PathBuf.from(OsString.fromVec(buf)))
+                return Result.Ok<PathBuf, Error>(PathBuf.from(OsString.fromVec(buf)))
             } else {
                 val error = io.github.kotlinmania.rustlang.std.io.Error.lastOsError()
                 if (error.rawOsError() != ERANGE) {
-                    return Result.Err(error)
+                    return Result.Err<PathBuf, Error>(error)
                 }
             }
             // Trigger the internal buffer resizing logic of `List` by requiring
@@ -57,11 +57,11 @@ public fun getcwd(): Result<PathBuf, Error> {
 }
 
 public fun chdir(p: path.Path): Result<Unit, Error> {
-    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+    val result = when (val tryResult = runPathWithCstr(p, { p1 -> Result.Ok(io.github.kotlinmania.rustlang.libc.chdir(p1.asPtr())) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return if (result == 0) {
-        Result.Ok(Unit)
+        Result.Ok<Unit, Error>(Unit)
     } else {
-        Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+        Result.Err<Unit, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
     }
 }
 
@@ -87,9 +87,7 @@ public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? {
 }
 
 public open class JoinPathsError {
-    public open fun fmt(f: StringBuilder) {
-        f.append("path segment contains separator `${Char.from(PATH_SEPARATOR)}`")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("path segment contains separator `${Char.from(PATH_SEPARATOR)}`"); Result.Ok(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<JoinPathsError> =
@@ -116,20 +114,20 @@ public fun <I> joinPaths(paths: I): Result<OsString, JoinPathsError> where I : I
             joined.add(PATH_SEPARATOR)
         }
         if (path1.contains(PATH_SEPARATOR)) {
-            return Result.Err(JoinPathsError())
+            return Result.Err<OsString, JoinPathsError>(JoinPathsError())
         }
         joined.addAll(path1)
     }
-    return Result.Ok(OsStringExt.fromVec(joined))
+    return Result.Ok<OsString, JoinPathsError>(OsStringExt.fromVec(joined))
 }
 
 public fun currentExe(): Result<PathBuf, Error> =
     run {
         val matchVal = readLink("/proc/self/exe")
         when {
-            matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.NotFound -> {
-                val e = (matchVal as Result.Err<*, *>).error
-                Result.Err(constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
+            matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.NotFound -> {
+                val e = matchVal.error
+                Result.Err<PathBuf, Error>(constError(ErrorKind.Uncategorized, "no /proc/self/exe available. Is /proc mounted?"))
             }
             else -> {
                 val other = matchVal

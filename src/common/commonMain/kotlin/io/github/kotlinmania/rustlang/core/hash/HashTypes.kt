@@ -258,36 +258,21 @@ public interface Hasher {
      * Writes a single `UShort` into this hasher.
      */
     public fun writeU16(i: UShort) {
-        this.write(
-            run {
-                val rawBits = i.toUInt()
-                ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte())
-            },
-        )
+        this.write(run { val rawBits = i.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte()) })
     }
 
     /**
      * Writes a single `UInt` into this hasher.
      */
     public fun writeU32(i: UInt) {
-        this.write(
-            run {
-                val rawBits = i
-                ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-            },
-        )
+        this.write(run { val rawBits = i; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) })
     }
 
     /**
      * Writes a single `ULong` into this hasher.
      */
     public fun writeU64(i: ULong) {
-        this.write(
-            run {
-                val rawBits = i
-                ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
-            },
-        )
+        this.write(run { val rawBits = i; ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) })
     }
 
     /**
@@ -301,12 +286,7 @@ public interface Hasher {
      * Writes a single `Int` into this hasher.
      */
     public fun writeUsize(i: Int) {
-        this.write(
-            run {
-                val rawBits = i.toUInt()
-                ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
-            },
-        )
+        this.write(run { val rawBits = i.toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) })
     }
 
     /**

@@ -10,10 +10,7 @@ import io.github.kotlinmania.rustlang.corearch.armshared.Isb
  * Full system is the required shareability domain, reads and writes are the
  * required access types
  */
-public open class SY :
-    Dmb,
-    Dsb,
-    Isb {
+public open class SY : Dmb, Dsb, Isb {
     public override fun dmb() {}
 
     public override fun dsb() {}

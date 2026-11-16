@@ -389,54 +389,50 @@ public interface BufRead<T> : Read<T> {
 public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte>): Result<Int> {
     var read = 0
     while (true) {
-        val (done1, used) =
-            run {
-                val available =
-                    run {
-                        val matchVal = r.fillBuf()
-                        when {
-                            matchVal is Result.Ok<*, *> -> {
-                                val n = (matchVal as Result.Ok<*, *>).value
-                                n
-                            }
-                            matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.isInterrupted() -> {
-                                val e = (matchVal as Result.Err<*, *>).error
-                                continue
-                            }
-                            else -> {
-                                val e1 = (matchVal as Result.Err<*, *>).error
-                                return Result.Err(e1)
-                            }
-                        }
-                    }
-                val (done, available1) =
-                    when (val matchVal1 = memchr(delim, available)) {
-                        null -> Pair(false, available)
-                        else -> {
-                            val i = matchVal1
-                            Pair(true, available[0..i])
-                        }
-                    }
+        val (done1, used) = run {
+            val available =
                 run {
-                    val count = available1.len()
-                    when (val tryResult = buf.tryReserve(count)) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
+                    val matchVal = r.fillBuf()
+                    when {
+                        matchVal is Result.Ok -> {
+                            val n = matchVal.value
+                            n
+                        }
+                        matchVal is Result.Err && (matchVal as Result.Err).error.isInterrupted() -> {
+                            val e = matchVal.error
+                            continue
+                        }
+                        else -> {
+                            val e1 = matchVal.error
+                            return Result.Err(e1)
+                        }
                     }
-                    // SAFETY:
-                    // * self and buf are non-overlapping
-                    // * buf[..len] is already initialized
-                    // * buf[len..len + count] is initialized by copyNonoverlapping
-                    // * len + count is within the capacity of buf based on the reservation completed above
-                    run {
-                        val len = buf.size
-                        val src = available1.asPtr()
-                        val dst = MutPtr((buf.asMutPtr()).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes))
-                        copyNonoverlapping(src, dst, count)
-                        buf.setLen(len + count)
+                }
+            val (done, available1) =
+                when (val matchVal1 = memchr(delim, available)) {
+                    null -> Pair(false, available)
+                    else -> {
+                        val i = matchVal1
+                        Pair(true, available[0..i])
                     }
-                }(done, available1.len())
-            }
+                }
+            run {
+                val count = available1.len()
+                when (val tryResult = buf.tryReserve(count)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                // SAFETY:
+                // * self and buf are non-overlapping
+                // * buf[..len] is already initialized
+                // * buf[len..len + count] is initialized by copyNonoverlapping
+                // * len + count is within the capacity of buf based on the reservation completed above
+                run {
+                    val len = buf.size
+                    val src = available1.asPtr()
+                    val dst = MutPtr((buf.asMutPtr()).rawAddress + ((len).toLong() * (PrimitiveLayouts.U8).strideBytes))
+                    copyNonoverlapping(src, dst, count)
+                    buf.setLen(len + count)
+                }
+            }(done, available1.len())
+        }
         r.consume(used)
         read += used
         if (done1 || used == 0) {
@@ -448,34 +444,33 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: List<UByte
 public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
     var read = 0
     while (true) {
-        val (done, used) =
-            run {
-                val available =
-                    run {
-                        val matchVal = r.fillBuf()
-                        when {
-                            matchVal is Result.Ok<*, *> -> {
-                                val n = (matchVal as Result.Ok<*, *>).value
-                                n
-                            }
-                            matchVal is Result.Err<*, *> && (matchVal as Result.Err<*, *>).error.kind() == ErrorKind.Interrupted -> {
-                                val e = (matchVal as Result.Err<*, *>).error
-                                continue
-                            }
-                            else -> {
-                                val e1 = (matchVal as Result.Err<*, *>).error
-                                return Result.Err(e1)
-                            }
+        val (done, used) = run {
+            val available =
+                run {
+                    val matchVal = r.fillBuf()
+                    when {
+                        matchVal is Result.Ok -> {
+                            val n = matchVal.value
+                            n
+                        }
+                        matchVal is Result.Err && (matchVal as Result.Err).error.kind() == ErrorKind.Interrupted -> {
+                            val e = matchVal.error
+                            continue
+                        }
+                        else -> {
+                            val e1 = matchVal.error
+                            return Result.Err(e1)
                         }
                     }
-                when (val matchVal1 = memchr(delim, available)) {
-                    null -> Pair(false, available.len())
-                    else -> {
-                        val i = matchVal1
-                        Pair(true, i + 1)
-                    }
+                }
+            when (val matchVal1 = memchr(delim, available)) {
+                null -> Pair(false, available.len())
+                else -> {
+                    val i = matchVal1
+                    Pair(true, i + 1)
                 }
             }
+        }
         r.consume(used)
         read += used
         if (done || used == 0) {

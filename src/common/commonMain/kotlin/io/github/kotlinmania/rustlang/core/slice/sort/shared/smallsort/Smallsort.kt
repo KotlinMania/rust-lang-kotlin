@@ -97,14 +97,14 @@ public interface UnstableSmallSortFreezeTypeImpl<T> : FreezeMarker {
     public fun smallSort(v: MutableList<T>, isLess: (T, T) -> Boolean)
 }
 
-public fun <T : FreezeMarker> unstableSmallSortFreezeTypeImplSmallSortThresholdT(typeLayoutT: TypeLayout<T>): Int =
+public fun <T : FreezeMarker> unstableSmallSortFreezeTypeImplSmallSortThresholdT(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int =
     if ((sizeOf<T>(typeLayoutT = typeLayoutT) * SMALL_SORT_GENERAL_SCRATCH_LEN) <= MAX_STACK_ARRAY_SIZE) {
         SMALL_SORT_GENERAL_THRESHOLD
     } else {
         SMALL_SORT_FALLBACK_THRESHOLD
     }
 
-public fun <T : FreezeMarker> unstableSmallSortFreezeTypeImplSmallSortT(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T : FreezeMarker> unstableSmallSortFreezeTypeImplSmallSortT(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     if ((sizeOf<T>(typeLayoutT = typeLayoutT) * SMALL_SORT_GENERAL_SCRATCH_LEN) <= MAX_STACK_ARRAY_SIZE) {
         smallSortGeneral(v, isLess)
     } else {
@@ -168,7 +168,7 @@ public fun <T : FreezeMarker> smallSortGeneral(v: MutableList<T>, isLess: (T, T)
     smallSortGeneralWithScratch(v, scratch, isLess)
 }
 
-public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     val len = v.size
     if (len < 2) {
         return
@@ -189,12 +189,12 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
                 8
             } else if (len >= 8) {
                 // SAFETY: scratchBase is valid and has enough space.
-                sort4Stable(vBase, scratchBase, isLess)
-                sort4Stable(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), isLess)
+                sort4Stable((vBase).asConstPtr(), scratchBase, isLess)
+                sort4Stable((MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), isLess)
                 4
             } else {
-                copyNonoverlapping(vBase, scratchBase, 1)
-                copyNonoverlapping(MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), 1)
+                copyNonoverlapping((vBase).asConstPtr(), scratchBase, 1)
+                copyNonoverlapping((MutPtr((vBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes)), 1)
                 1
             }
         for (offset in intArrayOf(0, lenDiv2)) {
@@ -209,7 +209,7 @@ public fun <T : FreezeMarker> smallSortGeneralWithScratch(v: MutableList<T>, scr
                     len - lenDiv2
                 }
             for (i in presortedLen until desiredLen) {
-                copyNonoverlapping(MutPtr((src).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1)
+                copyNonoverlapping((MutPtr((src).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), 1)
                 insertTail(dst, MutPtr((dst).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
             }
         }
@@ -318,7 +318,7 @@ public fun <T> smallSortNetwork(v: MutableList<T>, isLess: (T, T) -> Boolean) wh
     run {
         val scratchBase = mutPtrFromRustCast(stackArray.asMutPtr())
         bidirectionalMerge(linearMutSliceView(vBase, len.toInt(), UnresolvedTypeLayout<T>()), scratchBase, isLess, typeLayoutT = UnresolvedTypeLayout<T>())
-        copyNonoverlapping(scratchBase, vBase, len, typeLayoutT = UnresolvedTypeLayout<T>())
+        copyNonoverlapping((scratchBase).asConstPtr(), vBase, len, typeLayoutT = UnresolvedTypeLayout<T>())
     }
 }
 
@@ -331,7 +331,7 @@ public fun <T> smallSortNetwork(v: MutableList<T>, isLess: (T, T) -> Boolean) wh
  * not inline this function. For the same reasons that this function is very perf critical
  * it should be in the same module as the functions that use it.
  */
-public fun <T> swapIfLess(vBase: MutPtr, aPos: Int, bPos: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T> swapIfLess(vBase: MutPtr, aPos: Int, bPos: Int, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must guarantee that `aPos` and `bPos` each added to `vBase` yield valid
     // pointers into `vBase`, and are properly aligned, and part of the same allocation.
     run {
@@ -473,7 +473,7 @@ public fun <T> sort13Optimal(v: MutableList<T>, isLess: (T, T) -> Boolean) {
  * # Safety
  * begin < tail and p must be valid and initialized for all begin <= p <= tail.
  */
-public fun <T> insertTail(begin: MutPtr, tail: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T> insertTail(begin: MutPtr, tail: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: see individual comments.
     run {
         // SAFETY: in-bounds as tail > begin.
@@ -492,7 +492,7 @@ public fun <T> insertTail(begin: MutPtr, tail: MutPtr, isLess: (T, T) -> Boolean
             // SAFETY: we move sift into the gap (which is valid), and point the
             // gap guard destination at sift, ensuring that if a panic occurs the
             // gap is once again filled.
-            copyNonoverlapping(sift, gapGuard.dst, 1, typeLayoutT = typeLayoutT)
+            copyNonoverlapping((sift).asConstPtr(), gapGuard.dst, 1, typeLayoutT = typeLayoutT)
             gapGuard.dst = sift
             if (((sift).rawAddress.toULong() == (begin).rawAddress.toULong())) {
                 break
@@ -537,7 +537,7 @@ public fun <T> insertionSortShiftLeft(v: MutableList<T>, offset: Int, isLess: (T
  * SAFETY: The caller MUST guarantee that `vBase` is valid for 4 reads and
  * `dst` is valid for 4 writes. The result will be stored in `dst[0 .. 4]`.
  */
-public fun <T> sort4Stable(vBase: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T> sort4Stable(vBase: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // By limiting select to picking pointers, we are guaranteed good cmov code-gen
     // regardless of type T's size. Further this only does 5 instead of 6
     // comparisons compared to a stable transposition 4 element sorting-network,
@@ -582,11 +582,11 @@ public fun <T> sort4Stable(vBase: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boole
  * writes, `scratchBase` and `dst` MUST be valid for 8 writes. The result will
  * be stored in `dst[0 .. 8]`.
  */
-public fun <T : FreezeMarker> sort8Stable(vBase: MutPtr, dst: MutPtr, scratchBase: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T : FreezeMarker> sort8Stable(vBase: MutPtr, dst: MutPtr, scratchBase: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: these pointers are all in-bounds by the precondition of our function.
     run {
-        sort4Stable(vBase, scratchBase, isLess, typeLayoutT = typeLayoutT)
-        sort4Stable(MutPtr((vBase).rawAddress + ((4).toLong() * (typeLayoutT).strideBytes)), MutPtr((scratchBase).rawAddress + ((4).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
+        sort4Stable((vBase).asConstPtr(), scratchBase, isLess, typeLayoutT = typeLayoutT)
+        sort4Stable((MutPtr((vBase).rawAddress + ((4).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((scratchBase).rawAddress + ((4).toLong() * (typeLayoutT).strideBytes)), isLess, typeLayoutT = typeLayoutT)
     }
     // SAFETY: scratchBase[0..8] is now initialized, allowing us to merge back
     // into dst.
@@ -595,7 +595,7 @@ public fun <T : FreezeMarker> sort8Stable(vBase: MutPtr, dst: MutPtr, scratchBas
     }
 }
 
-public fun <T> mergeUp(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Triple<ConstPtr, ConstPtr, MutPtr> {
+public fun <T> mergeUp(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<ConstPtr, ConstPtr, MutPtr> {
     var leftSrc1 = leftSrc
     var rightSrc1 = rightSrc
     var dst1 = dst
@@ -628,7 +628,7 @@ public fun <T> mergeUp(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLes
     return Triple(leftSrc1, rightSrc1, dst1)
 }
 
-public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>): Triple<ConstPtr, ConstPtr, MutPtr> {
+public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<ConstPtr, ConstPtr, MutPtr> {
     var leftSrc1 = leftSrc
     var rightSrc1 = rightSrc
     var dst1 = dst
@@ -675,7 +675,7 @@ public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isL
  * Note that T must be Freeze, the comparison function is evaluated on outdated
  * temporary 'copies' that may not end up in the final array.
  */
-public fun <T : FreezeMarker> bidirectionalMerge(v: List<T>, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T : FreezeMarker> bidirectionalMerge(v: List<T>, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // It helps to visualize the merge:
     //
     // Initial:
@@ -768,7 +768,7 @@ public fun panicOnOrdViolation(): Nothing {
     error("user-provided comparison function does not correctly implement a total order")
 }
 
-public fun <T> hasEfficientInPlaceSwap(typeLayoutT: TypeLayout<T>): Boolean {
+public fun <T> hasEfficientInPlaceSwap(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
     // Heuristic that holds true on all tested 64-bit capable architectures.
     return sizeOf<T>(typeLayoutT = typeLayoutT) <= 8
     // sizeOf::<u64>()

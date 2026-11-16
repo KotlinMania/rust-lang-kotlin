@@ -66,7 +66,9 @@ public actual fun tilestored64(dst: Byte, base: MutPtr, stride: ULong) {
     }
 }
 
-public actual fun tilestored64Internal(rows: UShort, colsb: UShort, base: MutPtr, stride: ULong, src: Tile): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun tilestored64Internal(rows: UShort, colsb: UShort, base: MutPtr, stride: ULong, src: Tile) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun tilezero(dst: Byte) {
     if (x8664AmxNapiAddon != null) {

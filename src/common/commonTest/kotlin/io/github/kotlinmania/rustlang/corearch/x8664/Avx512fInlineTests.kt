@@ -11643,15 +11643,13 @@ public fun testMmStoreuEpi64() {
 public fun testMm512LoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) {
-                fieldLayout.writeNative(fieldStorage.rawAddress, value)
-            }
+            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11665,15 +11663,13 @@ public fun testMm512LoadEpi64() {
 public fun testMm256LoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) {
-                fieldLayout.writeNative(fieldStorage.rawAddress, value)
-            }
+            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11687,15 +11683,13 @@ public fun testMm256LoadEpi64() {
 public fun testMmLoadEpi64() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<LongArray>,
+        public val fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout(),
     ) {
         public var data: LongArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) {
-                fieldLayout.writeNative(fieldStorage.rawAddress, value)
-            }
+            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: LongArray, fieldLayout: TypeLayout<LongArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }
@@ -11739,15 +11733,13 @@ public fun testMmStoreEpi64() {
 public fun testMm512LoadPd() {
     open class Align(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<DoubleArray>,
+        public val fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout(),
     ) {
         public var data: DoubleArray
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
-            set(value) {
-                fieldLayout.writeNative(fieldStorage.rawAddress, value)
-            }
+            set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray>) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
+        public constructor(data: DoubleArray, fieldLayout: TypeLayout<DoubleArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(data, AlignedTypeLayout(fieldLayout, 64L)), AlignedTypeLayout(fieldLayout, 64L))
 
         public fun pointerLayout(): TypeLayout<Align> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Align(ptr, layout) }, { it.data })
     }

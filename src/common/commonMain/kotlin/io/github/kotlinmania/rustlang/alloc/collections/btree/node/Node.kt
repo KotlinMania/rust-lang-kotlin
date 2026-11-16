@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -77,14 +78,13 @@ public open class LeafNode<K, V> internal constructor(
             len: UShort,
             keys: List<MaybeUninit<K>>,
             vals: List<MaybeUninit<V>>,
-        ): LeafNode<K, V> =
-            LeafNode<K, V>(
-                parentCtorArg = parent,
-                parentIdxCtorArg = parentIdx,
-                len = len,
-                keys = keys,
-                vals = vals,
-            )
+        ): LeafNode<K, V> = LeafNode<K, V>(
+            parentCtorArg = parent,
+            parentIdxCtorArg = parentIdx,
+            len = len,
+            keys = keys,
+            vals = vals,
+        )
 
         /**
          * Initializes a new `LeafNode` in-place.
@@ -142,11 +142,10 @@ public open class InternalNode<K, V> internal constructor(
         public operator fun <K, V> invoke(
             data: LeafNode<K, V>,
             edges: List<MaybeUninit<BoxedNode<K, V>>>,
-        ): InternalNode<K, V> =
-            InternalNode<K, V>(
-                data = data,
-                edgesCtorArg = edges,
-            )
+        ): InternalNode<K, V> = InternalNode<K, V>(
+            data = data,
+            edgesCtorArg = edges,
+        )
 
         /**
          * Creates a new boxed `InternalNode`.
@@ -293,11 +292,7 @@ public open class NodeRef<BorrowType, K, V, Type> internal constructor(
         // there might be outstanding mutable references to values that we must not invalidate.
         val leafPtr: ConstPtr = NodeRef.asLeafPtr(this)
         // ignore-tidy-undocumented-unchecked
-        return ((UnresolvedTypeLayout<Any?>()).readNative((leafPtr).rawAddress))!!
-            .parent
-            .asRef()
-            .map({ parent -> Handle(node = NodeRef.fromInternal(parent, this.height + 1), idx = Int.from(((UnresolvedTypeLayout<Any?>()).readNative((leafPtr).rawAddress))!!.parentIdx.assumeInit()), marker = Unit) })
-            .okOr(this)
+        return ((UnresolvedTypeLayout<Any?>()).readNative((leafPtr).rawAddress))!!.parent.asRef().map({ parent -> Handle(node = NodeRef.fromInternal(parent, this.height + 1), idx = Int.from(((UnresolvedTypeLayout<Any?>()).readNative((leafPtr).rawAddress))!!.parentIdx.assumeInit()), marker = Unit) }).okOr(this)
     }
 
     public open fun firstEdge(): Handle<NodeRef<BorrowType, K, V, Type>, Edge> {
@@ -351,12 +346,11 @@ public open class NodeRef<BorrowType, K, V, Type> internal constructor(
             height: Int,
             node: NonNull,
             marker: Unit,
-        ): NodeRef<BorrowType, K, V, Type> =
-            NodeRef<BorrowType, K, V, Type>(
-                height = height,
-                nodeCtorArg = node,
-                marker = marker,
-            )
+        ): NodeRef<BorrowType, K, V, Type> = NodeRef<BorrowType, K, V, Type>(
+            height = height,
+            nodeCtorArg = node,
+            marker = marker,
+        )
 
         /**
          * Exposes the leaf portion of any leaf or internal node.
@@ -396,13 +390,13 @@ public fun <K, V, A : AllocatorClone> NodeRef.Companion.newInternal(child: Root<
     // ignore-tidy-undocumented-unchecked
     val newNode = InternalNode.new(alloc)
     newNode.edges[0].write(child.node)
-    return NodeRef.fromNewInternal(newNode, NonZero.new(child.height + 1).unwrap())
+    return NodeRef.fromNewInternal(newNode, NonZero.new(child.height + 1)!!)
 }
 
 /**
  * Creates a new internal (height > 0) `NodeRef` from an existing internal node
  */
-public fun <K, V, A : AllocatorClone> NodeRef.Companion.fromNewInternal(internal: InternalNode<K, V>, height: NonZero<Int>): NodeRef<Owned, K, V, Internal> {
+public fun <K, V, A : AllocatorClone> NodeRef.Companion.fromNewInternal(internal: InternalNode<K, V>, height: NonZero<Int, NonZeroUsizeInner>): NodeRef<Owned, K, V, Internal> {
     // The allocator must be dropped, not leaked.  See also `BTreeMap.alloc`.
     val (node, alloc) = Box.intoNonNullWithAllocator(internal)
     val thisRef = NodeRef(height = height.into(), node = node.cast(), marker = Unit)
@@ -460,20 +454,17 @@ public fun <K, V, Type> NodeRef<Immut, K, V, Type>.keys(): List<K> {
  * deallocates the current node in the process. This is unchecked because the
  * current node will still be accessible despite being deallocated.
  */
-public fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.deallocateAndAscend(alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): Handle<NodeRef<Dying, K, V, Internal>, Edge>? {
+public fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.deallocateAndAscend(alloc: A, typeLayoutK: TypeLayout<K> = UnresolvedTypeLayout(), typeLayoutV: TypeLayout<V> = UnresolvedTypeLayout()): Handle<NodeRef<Dying, K, V, Internal>, Edge>? {
     val height = this.height
     val node = this.node
     val ret = this.ascend().ok()
     // ignore-tidy-undocumented-unchecked
     run {
-        alloc.deallocate(
-            node.cast(),
-            if (height > 0) {
-                Layout.new<InternalNode<K, V>>(typeLayoutT = UnresolvedTypeLayout<InternalNode<K, V>>())
-            } else {
-                Layout.new<LeafNode<K, V>>(typeLayoutT = UnresolvedTypeLayout<LeafNode<K, V>>())
-            },
-        )
+        alloc.deallocate(node.cast(), if (height > 0) {
+            Layout.new<InternalNode<K, V>>(typeLayoutT = UnresolvedTypeLayout<InternalNode<K, V>>())
+        } else {
+            Layout.new<LeafNode<K, V>>(typeLayoutT = UnresolvedTypeLayout<LeafNode<K, V>>())
+        })
     }
     return ret
 }
@@ -586,11 +577,7 @@ public fun <K, V, Type, I, Output> NodeRef<Mut, K, V, Type>.keyAreaMut(index: I)
     // SAFETY: the caller will not be able to call further methods on self
     // until the key slice reference is dropped, as we have unique access
     // for the scope of the borrow.
-    return this
-        .asLeafMut()
-        .keys
-        .asMutSlice()
-        .getUncheckedMut(index)
+    return this.asLeafMut().keys.asMutSlice().getUncheckedMut(index)
 }
 
 /**
@@ -603,11 +590,7 @@ public fun <K, V, Type, I, Output> NodeRef<Mut, K, V, Type>.valAreaMut(index: I)
     // SAFETY: the caller will not be able to call further methods on self
     // until the value slice reference is dropped, as we have unique access
     // for the scope of the borrow.
-    return this
-        .asLeafMut()
-        .vals
-        .asMutSlice()
-        .getUncheckedMut(index)
+    return this.asLeafMut().vals.asMutSlice().getUncheckedMut(index)
 }
 
 /**
@@ -620,11 +603,7 @@ public fun <K, V, I, Output> NodeRef<Mut, K, V, Internal>.edgeAreaMut(index: I):
     // SAFETY: the caller will not be able to call further methods on self
     // until the edge slice reference is dropped, as we have unique access
     // for the scope of the borrow.
-    return this
-        .asInternalMut()
-        .edges
-        .asMutSlice()
-        .getUncheckedMut(index)
+    return this.asInternalMut().edges.asMutSlice().getUncheckedMut(index)
 }
 
 /**
@@ -721,7 +700,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.pushI
  *
  * Panics if there is no internal level, i.e., if the root node is a leaf.
  */
-public fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.popInternalLevel(alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>) {
+public fun <K, V, A : AllocatorClone> NodeRef<Owned, K, V, LeafOrInternal>.popInternalLevel(alloc: A, typeLayoutK: TypeLayout<K> = UnresolvedTypeLayout(), typeLayoutV: TypeLayout<V> = UnresolvedTypeLayout()) {
     check(this.height > 0)
     val top = this.node
     // SAFETY: we asserted to be internal.
@@ -767,11 +746,7 @@ public fun <K, V> NodeRef<Mut, K, V, Leaf>.pushWithHandle(key: K, value: V): Han
     val len = this.lenMut()
     val idx = Int.from((len).read())
     check(idx < CAPACITY)
-    (len).let { targetPlace ->
-        var currentValue = targetPlace.read()
-        currentValue += (1)
-        targetPlace.write(currentValue)
-    }
+    (len).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
     // ignore-tidy-undocumented-unchecked
     return run {
         this.keyAreaMut(idx).write(key)
@@ -798,11 +773,7 @@ public fun <K, V> NodeRef<Mut, K, V, Internal>.push(key: K, value: V, edge: Root
     val len = this.lenMut()
     val idx = Int.from((len).read())
     check(idx < CAPACITY)
-    (len).let { targetPlace ->
-        var currentValue = targetPlace.read()
-        currentValue += (1)
-        targetPlace.write(currentValue)
-    }
+    (len).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (1); targetPlace.write(currentValue) }
     // ignore-tidy-undocumented-unchecked
     run {
         this.keyAreaMut(idx).write(key)
@@ -952,26 +923,22 @@ public fun <BorrowType, K, V, NodeType> Handle.Companion.newEdge(node: NodeRef<B
 public fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>.leftKv(): Result<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>> =
     if (this.idx > 0) {
         // ignore-tidy-undocumented-unchecked
-        Result.Ok(Handle.newKv(this.node, this.idx - 1))
+        Result.Ok<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>>(Handle.newKv(this.node, this.idx - 1))
     } else {
-        Result.Err(this)
+        Result.Err<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>>(this)
     }
 
 public fun <BorrowType, K, V, NodeType> Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>.rightKv(): Result<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>> =
     if (this.idx < this.node.len()) {
         // ignore-tidy-undocumented-unchecked
-        Result.Ok(Handle.newKv(this.node, this.idx))
+        Result.Ok<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>>(Handle.newKv(this.node, this.idx))
     } else {
-        Result.Err(this)
+        Result.Err<Handle<NodeRef<BorrowType, K, V, NodeType>, KV>, Handle<NodeRef<BorrowType, K, V, NodeType>, Edge>>(this)
     }
 
 public sealed class LeftOrRight<T> {
-    public data class Left<T>(
-        public var value: T,
-    ) : LeftOrRight<T>()
-    public data class Right<T>(
-        public var value: T,
-    ) : LeftOrRight<T>()
+    public data class Left<T>(public var value: T) : LeftOrRight<T>()
+    public data class Right<T>(public var value: T) : LeftOrRight<T>()
 }
 
 /**
@@ -1138,33 +1105,27 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Leaf>, Edge>.ins
             }
         }
     while (true) {
-        split1 =
-            run {
-                val matchVal1 = split1.left.ascend()
-                when (matchVal1) {
-                    is Result.Ok<*, *> -> {
-                        val parent = matchVal1.value
-                        when (val matchVal2 = parent.insert(split1.kv.first, split1.kv.second, split1.right, alloc.clone())) {
-                            // SAFETY: we have finished splitting and can now re-awaken the
-                            // handle to the inserted element.
-                            null -> {
-                                return handle2.awaken()
-                            }
-                            else -> {
-                                val split2 = matchVal2
-                                split2.forgetNodeType()
-                            }
-                        }
-                    }
-                    is Result.Err<*, *> -> {
-                        val root = matchVal1.error
-                        splitRoot(split1.copy(left = root))
-                        // SAFETY: we have finished splitting and can now re-awaken the
-                        // handle to the inserted element.
-                        return handle2.awaken()
+        split1 = run {
+            val matchVal1 = split1.left.ascend()
+            when (matchVal1) { is Result.Ok -> {
+                val parent = matchVal1.value
+                when (val matchVal2 = parent.insert(split1.kv.first, split1.kv.second, split1.right, alloc.clone())) {
+                    // SAFETY: we have finished splitting and can now re-awaken the
+                    // handle to the inserted element.
+                    null -> { return handle2.awaken() }
+                    else -> {
+                        val split2 = matchVal2
+                        split2.forgetNodeType()
                     }
                 }
-            }
+            }; is Result.Err -> {
+                val root = matchVal1.error
+                splitRoot(split1.copy(left = root))
+                // SAFETY: we have finished splitting and can now re-awaken the
+                // handle to the inserted element.
+                return handle2.awaken()
+            } }
+        }
     }
 }
 
@@ -1388,7 +1349,7 @@ public open class BalancingContext<K, V> internal constructor(
     /**
      * Performs a merge and lets a closure decide what to return.
      */
-    public open fun <R, A : Allocator> doMerge(result: (NodeRef<Mut, K, V, Internal>, NodeRef<Mut, K, V, LeafOrInternal>) -> R, alloc: A, typeLayoutK: TypeLayout<K>, typeLayoutV: TypeLayout<V>): R {
+    public open fun <R, A : Allocator> doMerge(result: (NodeRef<Mut, K, V, Internal>, NodeRef<Mut, K, V, LeafOrInternal>) -> R, alloc: A, typeLayoutK: TypeLayout<K> = UnresolvedTypeLayout(), typeLayoutV: TypeLayout<V> = UnresolvedTypeLayout()): R {
         var parentNode = this.parent.node
         val parentIdx = this.parent.idx
         val marker = this.parent.marker
@@ -1452,18 +1413,16 @@ public open class BalancingContext<K, V> internal constructor(
     public open fun <A : AllocatorClone> mergeTrackingChildEdge(trackEdgeIdx: LeftOrRight<Int>, alloc: A): Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge> {
         val oldLeftLen = this.leftChild.len()
         val rightLen = this.rightChild.len()
-        check(
-            when (trackEdgeIdx) {
-                is LeftOrRight.Left -> {
-                    val (idx) = trackEdgeIdx
-                    idx <= oldLeftLen
-                }
-                is LeftOrRight.Right -> {
-                    val (idx1) = trackEdgeIdx
-                    idx1 <= rightLen
-                }
-            },
-        )
+        check(when (trackEdgeIdx) {
+            is LeftOrRight.Left -> {
+                val (idx) = trackEdgeIdx
+                idx <= oldLeftLen
+            }
+            is LeftOrRight.Right -> {
+                val (idx1) = trackEdgeIdx
+                idx1 <= rightLen
+            }
+        })
         val child = this.mergeTrackingChild(alloc)
         val newIdx =
             when (trackEdgeIdx) {
@@ -1616,12 +1575,11 @@ public open class BalancingContext<K, V> internal constructor(
             parent: Handle<NodeRef<Mut, K, V, Internal>, KV>,
             leftChild: NodeRef<Mut, K, V, LeafOrInternal>,
             rightChild: NodeRef<Mut, K, V, LeafOrInternal>,
-        ): BalancingContext<K, V> =
-            BalancingContext<K, V>(
-                parentCtorArg = parent,
-                leftChildCtorArg = leftChild,
-                rightChildCtorArg = rightChild,
-            )
+        ): BalancingContext<K, V> = BalancingContext<K, V>(
+            parentCtorArg = parent,
+            leftChildCtorArg = leftChild,
+            rightChildCtorArg = rightChild,
+        )
     }
 }
 
@@ -1653,39 +1611,30 @@ public fun <K, V> NodeRef<Mut, K, V, LeafOrInternal>.chooseParentKv(): Result<Le
     // ignore-tidy-undocumented-unchecked
     return run {
         val matchVal = read(this).ascend()
-        when (matchVal) {
-            is Result.Ok<*, *> -> {
-                val parentEdge = matchVal.value
-                run {
-                    val matchVal1 = parentEdge.leftKv()
-                    when (matchVal1) {
-                        is Result.Ok<*, *> -> {
-                            val leftParentKv = matchVal1.value
-                            Result.Ok(LeftOrRight.Left(BalancingContext(parent = read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
-                        }
-                        is Result.Err<*, *> -> {
-                            val parentEdge1 = matchVal1.error
-                            run {
-                                val matchVal2 = parentEdge1.rightKv()
-                                when (matchVal2) {
-                                    is Result.Ok<*, *> -> {
-                                        val rightParentKv = matchVal2.value
-                                        Result.Ok(LeftOrRight.Right(BalancingContext(parent = read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
-                                    }
-                                    is Result.Err<*, *> -> {
-                                        error("empty internal node")
-                                    }
-                                }
-                            }
-                        }
+        when (matchVal) { is Result.Ok -> {
+            val parentEdge = matchVal.value
+            run {
+                val matchVal1 = parentEdge.leftKv()
+                when (matchVal1) { is Result.Ok -> {
+                    val leftParentKv = matchVal1.value
+                    Result.Ok<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(LeftOrRight.Left(BalancingContext(parent = read(leftParentKv), leftChild = leftParentKv.leftEdge().descend(), rightChild = this)))
+                }; is Result.Err -> {
+                    val parentEdge1 = matchVal1.error
+                    run {
+                        val matchVal2 = parentEdge1.rightKv()
+                        when (matchVal2) { is Result.Ok -> {
+                            val rightParentKv = matchVal2.value
+                            Result.Ok<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(LeftOrRight.Right(BalancingContext(parent = read(rightParentKv), leftChild = this, rightChild = rightParentKv.rightEdge().descend())))
+                        }; is Result.Err -> {
+                            error("empty internal node")
+                        } }
                     }
-                }
+                } }
             }
-            is Result.Err<*, *> -> {
-                val root = matchVal.error
-                Result.Err(root)
-            }
-        }
+        }; is Result.Err -> {
+            val root = matchVal.error
+            Result.Err<LeftOrRight<BalancingContext<K, V>>, NodeRef<Mut, K, V, LeafOrInternal>>(root)
+        } }
     }
 }
 
@@ -1755,12 +1704,8 @@ public fun <K, V> Handle<NodeRef<Mut, K, V, LeafOrInternal>, Edge>.moveSuffix(ri
 }
 
 public sealed class ForceResult<Leaf, Internal> {
-    public data class Leaf<Leaf, Internal>(
-        public var value: Leaf,
-    ) : ForceResult<Leaf, Internal>()
-    public data class Internal<Leaf, Internal>(
-        public var value: Internal,
-    ) : ForceResult<Leaf, Internal>()
+    public data class Leaf<Leaf, Internal>(public var value: Leaf) : ForceResult<Leaf, Internal>()
+    public data class Internal<Leaf, Internal>(public var value: Internal) : ForceResult<Leaf, Internal>()
 }
 
 /**
@@ -1785,12 +1730,11 @@ public open class SplitResult<K, V, NodeType> internal constructor(
             left: NodeRef<Mut, K, V, NodeType>,
             kv: Pair<K, V>,
             right: NodeRef<Owned, K, V, NodeType>,
-        ): SplitResult<K, V, NodeType> =
-            SplitResult<K, V, NodeType>(
-                leftCtorArg = left,
-                kv = kv,
-                rightCtorArg = right,
-            )
+        ): SplitResult<K, V, NodeType> = SplitResult<K, V, NodeType>(
+            leftCtorArg = left,
+            kv = kv,
+            rightCtorArg = right,
+        )
     }
 }
 
@@ -1893,7 +1837,7 @@ public fun <T> sliceInsert(slice: MutableList<MaybeUninit<T>>, idx: Int, value: 
     // ignore-tidy-undocumented-unchecked
     run {
         if (len > idx + 1) {
-            copy(MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
+            copy((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
         }
         (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).write(value)
     }
@@ -1913,7 +1857,7 @@ public fun <T> sliceRemove(slice: MutableList<MaybeUninit<T>>, idx: Int): T {
     // ignore-tidy-undocumented-unchecked
     return run {
         val ret = (UnresolvedTypeLayout<MaybeUninit<T>>()).readNative((MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).rawAddress).assumeInitRead()
-        copy(MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
+        copy((MutPtr((slicePtr).rawAddress + ((idx + 1).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), MutPtr((slicePtr).rawAddress + ((idx).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), len - idx - 1)
         ret
     }
 }
@@ -1928,7 +1872,7 @@ public fun <T> sliceShl(slice: MutableList<MaybeUninit<T>>, distance: Int) {
     val slicePtr = slice.asMutPtr()
     // ignore-tidy-undocumented-unchecked
     run {
-        copy(MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), slicePtr, slice.size - distance)
+        copy((MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes))).asConstPtr(), slicePtr, slice.size - distance)
     }
 }
 
@@ -1942,7 +1886,7 @@ public fun <T> sliceShr(slice: MutableList<MaybeUninit<T>>, distance: Int) {
     val slicePtr = slice.asMutPtr()
     // ignore-tidy-undocumented-unchecked
     run {
-        copy(slicePtr, MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), slice.size - distance)
+        copy((slicePtr).asConstPtr(), MutPtr((slicePtr).rawAddress + ((distance).toLong() * (UnresolvedTypeLayout<MaybeUninit<T>>()).strideBytes)), slice.size - distance)
     }
 }
 

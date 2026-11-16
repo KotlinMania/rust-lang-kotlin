@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.procmacro
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.procmacro.bridge.client.Symbol
 import io.github.kotlinmania.rustlang.std.env.VarError
@@ -107,8 +108,9 @@ public sealed class EscapeErrorKind {
 
     public fun rustEquals(other: EscapeErrorKind): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder) {
-        f.append(when (this) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
+        return run {
+f.append(when (this) {
             EscapeErrorKind.ZeroChars -> "zero chars"
             EscapeErrorKind.MoreThanOneChar -> "more than one char"
             EscapeErrorKind.LoneSlash -> "lone slash"
@@ -133,6 +135,8 @@ public sealed class EscapeErrorKind {
             EscapeErrorKind.UnskippedWhitespaceWarning -> "unskipped whitespace warning"
             EscapeErrorKind.MultipleSkippedLinesWarning -> "multiple skipped lines warning"
         })
+Result.Ok(Unit)
+}
     }
 }
 
@@ -291,10 +295,10 @@ public sealed class TokenTree {
     /**
      * Prints token tree in a form convenient for debugging.
      */
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         // Each of these has the name in the struct type in the derived debug,
         // so don't bother with an extra layer of indirection
-        when (this) {
+        return when (this) {
             is TokenTree.Group -> {
                 val (tt) = this
                 tt.fmt(f)
@@ -327,26 +331,25 @@ public sealed class TokenTree {
      * `TokenTree` level, e.g. matching against `TokenTree.Ident`,
      * `TokenTree.Punct`, or `TokenTree.Literal`.
      */
-    public open fun fmtDisplay(f: StringBuilder) {
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is TokenTree.Group -> {
                 val (t) = this
-                f.append("$t")
+                run { f.append("$t"); Result.Ok(Unit) }
             }
             is TokenTree.Ident -> {
                 val (t1) = this
-                f.append("$t")
+                run { f.append("$t"); Result.Ok(Unit) }
             }
             is TokenTree.Punct -> {
                 val (t2) = this
-                f.append("$t")
+                run { f.append("$t"); Result.Ok(Unit) }
             }
             is TokenTree.Literal -> {
                 val (t3) = this
-                f.append("$t")
+                run { f.append("$t"); Result.Ok(Unit) }
             }
         }
-    }
 
     public companion object {
         public fun from(g: Group): TokenTree = TokenTree.Group(g)

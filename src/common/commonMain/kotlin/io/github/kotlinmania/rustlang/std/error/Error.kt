@@ -1,11 +1,13 @@
 // port-lint: source error.rs
 package io.github.kotlinmania.rustlang.std.error
 
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.error.requestRef
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.std.backtrace.Backtrace
 
@@ -279,18 +281,19 @@ public open class Report<E>(
     /**
      * Format the report as a single line.
      */
-    public open fun fmtSingleline(f: StringBuilder) {
+    public open fun fmtSingleline(f: StringBuilder): Result<Unit, Error> {
         f.append("${this.error}")
         val sources = this.error.source().intoIter().flatMap(Any.sources)
         for (cause in sources) {
             f.append(": $cause")
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
     /**
      * Format the report as multiple lines, with each error cause on its own line.
      */
-    public open fun fmtMultiline(f: StringBuilder) {
+    public open fun fmtMultiline(f: StringBuilder): Result<Unit, Error> {
         val error = this.error
         f.append("$error")
         when (val matchVal = error.source()) {
@@ -319,21 +322,19 @@ public open class Report<E>(
                 }
             }
         }
+        return Result.Ok<Unit, Error>(Unit)
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         if (this.pretty) {
             this.fmtMultiline(f)
         } else {
             this.fmtSingleline(f)
         }
-    }
 
     // This type intentionally outputs the same format for `Display` and `Debug`for
     // situations where you unwrap a `Report` or return it from main.
-    public open fun fmtDebug(f: StringBuilder) {
-        f.append((this).toString())
-    }
+    public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
     public companion object {
         public fun <E> typeLayout(typeLayoutE: TypeLayout<E>): TypeLayout<Report<E>> =
@@ -382,7 +383,7 @@ public open class Indented<D>(
     public var inner: D,
 )
 
-public fun <T> Indented<T>.writeStr(s: String) where T : Write {
+public fun <T> Indented<T>.writeStr(s: String): Result<Unit, Error> where T : Write {
     for ((i, line) in s.split('\n').mapIndexed { index, item -> Pair(index, item) }) {
         if (i > 0) {
             this.inner.append('\n')
@@ -390,4 +391,5 @@ public fun <T> Indented<T>.writeStr(s: String) where T : Write {
         }
         this.inner.append(line)
     }
+    return Result.Ok<Unit, Error>(Unit)
 }

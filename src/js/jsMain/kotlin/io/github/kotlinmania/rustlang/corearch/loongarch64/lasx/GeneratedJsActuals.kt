@@ -614,13 +614,21 @@ public actual fun lasxXvfrintrneS(a: V8f32): V8f32 =
 public actual fun lasxXvfrintrneD(a: V4f64): V4f64 =
     throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun lasxXvstelmB(a: V32i8, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun lasxXvstelmB(a: V32i8, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun lasxXvstelmH(a: V16i16, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun lasxXvstelmH(a: V16i16, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun lasxXvstelmW(a: V8i32, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun lasxXvstelmW(a: V8i32, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
-public actual fun lasxXvstelmD(a: V4i64, b: MutPtr, c: Int, d: UInt): Unit = throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun lasxXvstelmD(a: V4i64, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("Native FFI addon is not available")
+}
 
 public actual fun lasxXvinsve0W(a: V8i32, b: V8i32, c: UInt): V8i32 =
     throw UnsupportedOperationException("Native FFI addon is not available")

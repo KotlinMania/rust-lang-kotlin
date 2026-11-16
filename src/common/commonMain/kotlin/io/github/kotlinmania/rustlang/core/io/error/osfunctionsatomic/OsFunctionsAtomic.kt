@@ -2,12 +2,14 @@
 package io.github.kotlinmania.rustlang.core.io.error.osfunctionsatomic
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.OsFunctions
 import io.github.kotlinmania.rustlang.core.io.error.RawOsError
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 
 // OS-dependent functions
@@ -48,9 +50,9 @@ public fun setFunctions(f: OsFunctions) {
     }
 }
 
-public fun formatOsError(errno: RawOsError, fmt: StringBuilder) {
+public fun formatOsError(errno: RawOsError, fmt: StringBuilder): Result<Unit, Error> {
     val f = getOsFunctions()
-    (f.formatOsError)(errno, fmt)
+    return (f.formatOsError)(errno, fmt)
 }
 
 public fun decodeErrorKind(errno: RawOsError): ErrorKind {

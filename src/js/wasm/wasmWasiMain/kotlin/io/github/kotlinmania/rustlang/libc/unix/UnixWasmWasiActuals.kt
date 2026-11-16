@@ -116,7 +116,9 @@ private external fun wasiLibcUnixToupper(c: Int): Int
 public actual fun toupper(c: CInt): CInt =
     wasiLibcUnixToupper(c).toInt()
 
-public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixQsort")
+public actual fun qsort(base: MutPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixQsort")
+}
 
 public actual fun bsearch(key: ConstPtr, base: ConstPtr, num: SizeT, size: SizeT, compar: QsortComparCallback?): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixBsearch")
@@ -145,7 +147,9 @@ public actual fun tmpfile(): MutPtr =
 public actual fun setvbuf(stream: MutPtr, buffer: MutPtr, mode: CInt, size: SizeT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixSetvbuf")
 
-public actual fun setbuf(stream: MutPtr, buf: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixSetbuf")
+public actual fun setbuf(stream: MutPtr, buf: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixSetbuf")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixGetchar")
 private external fun wasiLibcUnixGetchar(): Int
@@ -189,7 +193,9 @@ public actual fun fseek(stream: MutPtr, offset: CLong, whence: CInt): CInt =
 public actual fun ftell(stream: MutPtr): CLong =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFtell")
 
-public actual fun rewind(stream: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixRewind")
+public actual fun rewind(stream: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixRewind")
+}
 
 public actual fun fgetpos(stream: MutPtr, ptr: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFgetpos")
@@ -203,9 +209,13 @@ public actual fun feof(stream: MutPtr): CInt =
 public actual fun ferror(stream: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFerror")
 
-public actual fun clearerr(stream: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixClearerr")
+public actual fun clearerr(stream: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixClearerr")
+}
 
-public actual fun perror(s: ConstPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixPerror")
+public actual fun perror(s: ConstPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixPerror")
+}
 
 public actual fun atof(s: ConstPtr): CDouble =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixAtof")
@@ -246,7 +256,9 @@ public actual fun malloc(size: SizeT): MutPtr =
 public actual fun realloc(p: MutPtr, size: SizeT): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixRealloc")
 
-public actual fun free(p: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFree")
+public actual fun free(p: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFree")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixAbort")
 private external fun wasiLibcUnixAbort(): Unit
@@ -498,7 +510,9 @@ public actual fun readdir(dirp: MutPtr): MutPtr =
 public actual fun closedir(dirp: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixClosedir")
 
-public actual fun rewinddir(dirp: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixRewinddir")
+public actual fun rewinddir(dirp: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixRewinddir")
+}
 
 public actual fun fchmodat(dirfd: CInt, pathname: ConstPtr, mode: ModeT, flags: CInt): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFchmodat")
@@ -1043,7 +1057,9 @@ public actual fun dlclose(handle: MutPtr): CInt =
 public actual fun getaddrinfo(node: ConstPtr, service: ConstPtr, hints: ConstPtr, res: MutPtr): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixGetaddrinfo")
 
-public actual fun freeaddrinfo(res: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFreeaddrinfo")
+public actual fun freeaddrinfo(res: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixFreeaddrinfo")
+}
 
 public actual fun hstrerror(errcode: CInt): ConstPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixHstrerror")
@@ -1255,7 +1271,9 @@ public actual fun mkdtemp(template: MutPtr): MutPtr =
 public actual fun tmpnam(ptr: MutPtr): MutPtr =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixTmpnam")
 
-public actual fun openlog(ident: ConstPtr, logopt: CInt, facility: CInt): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixOpenlog")
+public actual fun openlog(ident: ConstPtr, logopt: CInt, facility: CInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixOpenlog")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixCloselog")
 private external fun wasiLibcUnixCloselog(): Unit
@@ -1269,7 +1287,9 @@ private external fun wasiLibcUnixSetlogmask(maskpri: Int): Int
 public actual fun setlogmask(maskpri: CInt): CInt =
     wasiLibcUnixSetlogmask(maskpri).toInt()
 
-public actual fun syslog(priority: CInt, message: ConstPtr, vararg variadicArgs: Long): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixSyslog")
+public actual fun syslog(priority: CInt, message: ConstPtr, vararg variadicArgs: Long) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixSyslog")
+}
 
 @kotlin.wasm.WasmImport("kmcore", "libcUnixNice")
 private external fun wasiLibcUnixNice(incr: Int): Int
@@ -1364,7 +1384,9 @@ public actual fun openMemstream(ptr: MutPtr, sizeloc: MutPtr): MutPtr =
 public actual fun atexit(cb: AtexitCbCallback): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixAtexit")
 
-public actual fun cfmakeraw(termios: MutPtr): Unit = throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixCfmakeraw")
+public actual fun cfmakeraw(termios: MutPtr) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixCfmakeraw")
+}
 
 public actual fun cfsetspeed(termios: MutPtr, speed: SpeedT): CInt =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for libcUnixCfsetspeed")

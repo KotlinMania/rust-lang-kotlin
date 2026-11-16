@@ -12,9 +12,9 @@ public fun peerCred(socket: UnixStream): Result<UCred, Error> {
     return run {
         val ret = getpeereid(socket.asRawFd(), cred.uid, cred.gid)
         if (ret == 0) {
-            Result.Ok(cred)
+            Result.Ok<UCred, Error>(cred)
         } else {
-            Result.Err(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
+            Result.Err<UCred, Error>(io.github.kotlinmania.rustlang.std.io.Error.lastOsError())
         }
     }
 }

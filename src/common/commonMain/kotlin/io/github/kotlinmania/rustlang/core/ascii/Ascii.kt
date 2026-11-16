@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.ascii
 
 import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
 import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
+import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -58,15 +59,14 @@ public open class EscapeDefault internal constructor(
             value = v
         }
 
-    override fun iterator(): Iterator<UByte> =
-        object : AbstractIterator<UByte>() {
-            override fun computeNext() {
-                when (val v = this@EscapeDefault.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
+        override fun computeNext() {
+            when (val v = this@EscapeDefault.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun clone(): EscapeDefault = EscapeDefault(value)
 
@@ -81,29 +81,24 @@ public open class EscapeDefault internal constructor(
 
     public open fun last(): UByte? = this.value.nextBack()
 
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBy(n)
+    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBy(n)
 
     public open fun nextBack(): UByte? = this.value.nextBack()
 
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int>> = this.value.advanceBackBy(n)
+    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.value.advanceBackBy(n)
 
     public open fun len(): Int = this.value.len()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        run {
-            f.append((this.value).toString())
-            Result.Ok(Unit)
-        }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.value).toString()); Result.Ok(Unit) }
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "EscapeDefault").finishNonExhaustive()
 
     public companion object {
         public operator fun invoke(
             value: EscapeIterInner<AlwaysEscaped>,
-        ): EscapeDefault =
-            EscapeDefault(
-                valueCtorArg = value,
-            )
+        ): EscapeDefault = EscapeDefault(
+            valueCtorArg = value,
+        )
 
         public fun new(c: UByte): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c))
 

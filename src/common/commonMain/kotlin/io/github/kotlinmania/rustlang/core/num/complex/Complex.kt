@@ -82,9 +82,7 @@ public open class Complex<T>(
      * The imaginary component.
      */
     public var im: T,
-) : Neg<Complex<Output>>,
-    Add<Complex<T>, Complex<Output>>,
-    Sub<Complex<T>, Complex<Output>> {
+) : Neg<Complex<Output>>, Add<Complex<T>, Complex<Output>>, Sub<Complex<T>, Complex<Output>> {
     public open fun clone(): Complex<T> = Complex(re, im)
 
     /**

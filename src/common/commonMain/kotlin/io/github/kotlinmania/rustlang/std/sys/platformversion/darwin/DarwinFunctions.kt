@@ -111,7 +111,7 @@ public fun lookupVersion(): NonZero<OSVersion> {
     // property list (this is roughly what `_availability_version_check` does internally).
     val version = (versionFromSysctl() ?: versionFromPlist())
     // Use `NonZero` to try to make it clearer to the optimizer that this will never return 0.
-    return NonZero.new(version).expect("version cannot be 0.0.0")
+    return (NonZero.new(version) ?: error("version cannot be 0.0.0"))
 }
 
 /**
@@ -276,24 +276,24 @@ public fun stringVersionKey(cfHandle: CFHandle, plist: CFDictionaryRef, lookupKe
 public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError> {
     return when (val matchVal = version.splitOnce({ b -> b == 46u })) {
         null -> {
-            val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-            Result.Ok(packOsVersion(major, 0u, 0u))
+            val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+            Result.Ok<OSVersion, ParseIntError>(packOsVersion(major, 0u, 0u))
         }
         else -> {
             val major1 = matchVal.first
             val minor = matchVal.second
-            val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            val major2 = when (val tryResult = UShort.fromAsciiBytes(major1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
             when (val matchVal1 = minor.let { s -> val d = { b -> b == 46u }; val idx = s.indexOf(d); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + d.length)) }) {
                 null -> {
-                    val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                    Result.Ok(packOsVersion(major2, minor1, 0u))
+                    val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor1, 0u))
                 }
                 else -> {
                     val minor2 = matchVal1.first
                     val patch = matchVal1.second
-                    val minor3 = when (val tryResult = UByte.fromAsciiBytes(minor2)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                    val patch1 = when (val tryResult = UByte.fromAsciiBytes(patch)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                    Result.Ok(packOsVersion(major2, minor3, patch1))
+                    val minor3 = when (val tryResult = UByte.fromAsciiBytes(minor2)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    val patch1 = when (val tryResult = UByte.fromAsciiBytes(patch)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<OSVersion, ParseIntError>(tryResult.error) }
+                    Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor3, patch1))
                 }
             }
         }

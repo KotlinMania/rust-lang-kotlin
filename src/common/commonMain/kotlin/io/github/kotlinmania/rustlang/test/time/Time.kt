@@ -1,6 +1,8 @@
 // port-lint: source time.rs
 package io.github.kotlinmania.rustlang.test.time
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.time.Instant
@@ -73,9 +75,7 @@ public open class TestExecTime(
 
     public open fun clone(): TestExecTime = TestExecTime(value)
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("${this.value.asSecsF64()}s")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.value.asSecsF64()}s"); Result.Ok(Unit) }
 }
 
 /**
@@ -92,9 +92,7 @@ public open class TestSuiteExecTime(
 
     public open fun clone(): TestSuiteExecTime = TestSuiteExecTime(value)
 
-    public open fun fmt(f: StringBuilder) {
-        f.append("${this.value.asSecsF64()}s")
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("${this.value.asSecsF64()}s"); Result.Ok(Unit) }
 }
 
 /**

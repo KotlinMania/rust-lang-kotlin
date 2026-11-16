@@ -91,7 +91,7 @@ public open class PanicGuard<T, A : Allocator>(
  * - `sizeOf<T>() == 1 / 2 / 4 / 8`
  * - Called on aarch64 + SVE target.
  */
-public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeLayoutT: TypeLayout<T>) {
+public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     val originalLen = v.size
     val guard = PanicGuard(v = v, read = 0, write = 0, decided = 0, mask = BooleanArray(CHUNK_SIZE) { false }, originalLen = originalLen)
     while (guard.read < guard.originalLen) {
@@ -114,13 +114,13 @@ public fun <T, A : Allocator> chunkedRetain(v: List<T>, f: (T) -> Boolean, typeL
             when (sizeOf<T>(typeLayoutT = typeLayoutT)) {
                 // SAFETY: write <= read and the dispatch guarantees sizeOf::<T>() matches
                 // the kernel lane width.
-                1 -> compact8Kernel(MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes)), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
+                1 -> compact8Kernel((MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
                 // SAFETY: Same as above.
-                2 -> compact16Kernel(MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes)), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
+                2 -> compact16Kernel((MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
                 // SAFETY: Same as above.
-                4 -> compact32Kernel(MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes)), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
+                4 -> compact32Kernel((MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
                 // SAFETY: Same as above.
-                8 -> compact64Kernel(MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes)), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
+                8 -> compact64Kernel((MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.read).toLong() * (typeLayoutT).strideBytes))).asConstPtr(), MutPtr((guard.v.asMutPtr()).rawAddress + ((guard.write).toLong() * (typeLayoutT).strideBytes)), guard.mask.asPtr(), chunkLen)
                 else -> error("unreachable")
             }
         guard.write += kept

@@ -11,6 +11,6 @@ public sealed class Feature {
     public companion object {
         public val ALL: List<Feature> = listOf()
 
-        public fun fromStr(s: String): Result<Feature, Unit> = Result.Err(Unit)
+        public fun fromStr(s: String): Result<Feature, Unit> = Result.Err<Feature, Unit>(Unit)
     }
 }

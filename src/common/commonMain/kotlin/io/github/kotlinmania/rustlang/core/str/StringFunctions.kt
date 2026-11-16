@@ -202,9 +202,7 @@ public fun String.isEmpty(): Boolean = this.length == 0
  * check("💖" == sparkleHeart1)
  * ```
  */
-public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> =
-    io.github.kotlinmania.rustlang.core.str.converts
-        .fromUtf8(v)
+public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.core.str.converts.fromUtf8(v)
 
 /**
  * Converts a mutable slice of bytes to a mutable string slice.
@@ -231,9 +229,7 @@ public fun String.Companion.fromUtf8(v: List<UByte>): Result<String, Utf8Error> 
  * See the docs for [Utf8Error] for more details on the kinds of
  * errors that can be returned.
  */
-public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> =
-    io.github.kotlinmania.rustlang.core.str.converts
-        .fromUtf8Mut(v)
+public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, Utf8Error> = io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Mut(v)
 
 /**
  * Converts a slice of bytes to a string slice without checking
@@ -258,8 +254,7 @@ public fun String.Companion.fromUtf8Mut(v: MutableList<UByte>): Result<String, U
  */
 public fun String.Companion.fromUtf8Unchecked(v: List<UByte>): String {
     // SAFETY: converts.fromUtf8Unchecked has the same safety requirements as this function.
-    return io.github.kotlinmania.rustlang.core.str.converts
-        .fromUtf8Unchecked(v)
+    return io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked(v)
 }
 
 /**
@@ -282,8 +277,7 @@ public fun String.Companion.fromUtf8Unchecked(v: List<UByte>): String {
  */
 public fun String.Companion.fromUtf8UncheckedMut(v: MutableList<UByte>): String {
     // SAFETY: converts.fromUtf8UncheckedMut has the same safety requirements as this function.
-    return io.github.kotlinmania.rustlang.core.str.converts
-        .fromUtf8UncheckedMut(v)
+    return io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut(v)
 }
 
 /**
@@ -1013,14 +1007,7 @@ public fun String.charIndices(): CharIndices = CharIndices(frontOffset = 0, iter
  * check(null == bytes.next())
  * ```
  */
-public fun String.bytes(): Bytes =
-    Bytes(
-        this
-            .encodeToByteArray()
-            .map { it.toUByte() }
-            .iter()
-            .copied(),
-    )
+public fun String.bytes(): Bytes = Bytes(this.encodeToByteArray().map { it.toUByte() }.iter().copied())
 
 /**
  * Splits a string slice by whitespace.
@@ -1112,13 +1099,7 @@ public fun String.splitWhitespace(): SplitWhitespace = SplitWhitespace(inner = t
  * ```
  */
 public fun String.splitAsciiWhitespace(): SplitAsciiWhitespace {
-    val inner =
-        this
-            .encodeToByteArray()
-            .map { it.toUByte() }
-            .splitAsciiWhitespace()
-            .inner
-            .map(UnsafeBytesToStr())
+    val inner = this.encodeToByteArray().map { it.toUByte() }.splitAsciiWhitespace().inner.map(UnsafeBytesToStr())
     return SplitAsciiWhitespace(inner = inner)
 }
 
@@ -2636,11 +2617,7 @@ public fun String.copyFromStr(src: String) {
     // SAFETY: `copyFromSlice` panics unless the lengths are equal, and copying same-length
     // UTF-8 into a `String` keeps it valid UTF-8.
     val me = this.asBytesMut()
-    run {
-        val dstTmp0 = me
-        val srcTmp0 = (src.encodeToByteArray().map { it.toUByte() })
-        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
-    }
+    run { val dstTmp0 = me; val srcTmp0 = (src.encodeToByteArray().map { it.toUByte() }); for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
 }
 
 /**

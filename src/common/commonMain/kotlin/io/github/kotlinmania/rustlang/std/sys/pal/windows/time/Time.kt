@@ -79,21 +79,21 @@ public open class WaitableTimer internal constructor(
         // Convert the Duration to a format similar to FILETIME.
         // Negative values are relative times whereas positive values are absolute.
         // Therefore we negate the relative duration.
-        val time = when (val tryResult = checkedDur2intervals(duration).okOr()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.neg()
+        val time = when (val tryResult = checkedDur2intervals(duration).okOr()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Unit>(tryResult.error) }.neg()
         val result = c.SetWaitableTimer(this.handle, time, 0, null, ConstPtr(0L), c.FALSE)
         return if (result != 0) {
-            Result.Ok(Unit)
+            Result.Ok<Unit, Unit>(Unit)
         } else {
-            Result.Err(Unit)
+            Result.Err<Unit, Unit>(Unit)
         }
     }
 
     public open fun wait(): Result<Unit, Unit> {
         val result = c.WaitForSingleObject(this.handle, c.INFINITE)
         return if (result != c.WAIT_FAILED) {
-            Result.Ok(Unit)
+            Result.Ok<Unit, Unit>(Unit)
         } else {
-            Result.Err(Unit)
+            Result.Err<Unit, Unit>(Unit)
         }
     }
 
@@ -114,9 +114,9 @@ public open class WaitableTimer internal constructor(
         public fun highResolution(): Result<WaitableTimer, Unit> {
             val handle = c.CreateWaitableTimerExW(ConstPtr(0L), ConstPtr(0L), c.CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, c.TIMER_ALL_ACCESS)
             return if (!handle.isNull()) {
-                Result.Ok(WaitableTimer(handle = handle))
+                Result.Ok<WaitableTimer, Unit>(WaitableTimer(handle = handle))
             } else {
-                Result.Err(Unit)
+                Result.Err<WaitableTimer, Unit>(Unit)
             }
         }
     }

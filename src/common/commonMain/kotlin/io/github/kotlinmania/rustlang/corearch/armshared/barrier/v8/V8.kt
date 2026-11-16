@@ -9,17 +9,13 @@ import io.github.kotlinmania.rustlang.corearch.armshared.Dsb
  * Full system is the required shareability domain, reads are the required
  * access type
  */
-public open class LD :
-    Dmb,
-    Dsb {
+public open class LD : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.LD)
     }
 
     public companion object {
@@ -43,17 +39,13 @@ public open class LD :
  * Inner Shareable is the required shareability domain, reads are the required
  * access type
  */
-public open class Ishld :
-    Dmb,
-    Dsb {
+public open class Ishld : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Ishld)
     }
 
     public companion object {
@@ -77,17 +69,13 @@ public open class Ishld :
  * Non-shareable is the required shareability domain, reads are the required
  * access type
  */
-public open class Nshld :
-    Dmb,
-    Dsb {
+public open class Nshld : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Nshld)
     }
 
     public companion object {
@@ -111,17 +99,13 @@ public open class Nshld :
  * Outer Shareable is the required shareability domain, reads are the required
  * access type
  */
-public open class Oshld :
-    Dmb,
-    Dsb {
+public open class Oshld : Dmb, Dsb {
     public override fun dmb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dmb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
     }
 
     public override fun dsb() {
-        io.github.kotlinmania.rustlang.corearch.armshared.barrier
-            .dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
+        io.github.kotlinmania.rustlang.corearch.armshared.barrier.dsb(io.github.kotlinmania.rustlang.corearch.armshared.barrier.arg.Oshld)
     }
 
     public companion object {

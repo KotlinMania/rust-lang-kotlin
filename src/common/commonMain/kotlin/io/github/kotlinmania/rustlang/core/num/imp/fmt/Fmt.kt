@@ -10,23 +10,15 @@ public sealed class Part {
     /**
      * Given number of zero digits.
      */
-    public data class Zero(
-        public var value: Int,
-    ) : Part()
-
+    public data class Zero(public var value: Int) : Part()
     /**
      * A literal number up to 5 digits.
      */
-    public data class Num(
-        public var value: UShort,
-    ) : Part()
-
+    public data class Num(public var value: UShort) : Part()
     /**
      * A verbatim copy of given bytes.
      */
-    public data class Copy(
-        public var value: List<UByte>,
-    ) : Part()
+    public data class Copy(public var value: List<UByte>) : Part()
 
     public fun rustEquals(other: Part): Boolean = this == other
 
@@ -73,11 +65,7 @@ public sealed class Part {
                 }
                 is Part.Copy -> {
                     val (buf) = this
-                    run {
-                        val dstTmp0 = out
-                        val srcTmp0 = buf
-                        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
-                    }
+                    run { val dstTmp0 = out; val srcTmp0 = buf; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
                 }
             }
             len

@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.sync.once.queue
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -9,6 +10,8 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -48,9 +51,9 @@ public class DebugStruct(
 public typealias StateAndQueue = MutPtr
 
 public open class Once internal constructor(
-    stateAndQueueCtorArg: Atomic<MutPtr>,
+    stateAndQueueCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
 ) {
-    public var stateAndQueue: Atomic<MutPtr> = stateAndQueueCtorArg
+    public var stateAndQueue: Atomic<MutPtr, Align8<MutPtr>> = stateAndQueueCtorArg
         internal set
 
     public open fun isCompleted(): Boolean {
@@ -145,13 +148,11 @@ public open class Once internal constructor(
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "Once").finishNonExhaustive()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "Once").finishNonExhaustive()
 
     public companion object {
         public operator fun invoke(
-            stateAndQueue: Atomic<MutPtr>,
+            stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>,
         ): Once = Once(
             stateAndQueueCtorArg = stateAndQueue,
         )
@@ -212,10 +213,10 @@ public val QUEUE_MASK: Int = STATE_MASK.inv()
 // Ensure the two lower bits are free to use as state bits.
 public open class Waiter internal constructor(
     public var thread: Thread,
-    signaledCtorArg: Atomic<Boolean>,
+    signaledCtorArg: Atomic<Boolean, Align1<UByte>>,
     nextCtorArg: Cell<ConstPtr>,
 ) {
-    public var signaled: Atomic<Boolean> = signaledCtorArg
+    public var signaled: Atomic<Boolean, Align1<UByte>> = signaledCtorArg
         internal set
 
     public var next: Cell<ConstPtr> = nextCtorArg
@@ -224,7 +225,7 @@ public open class Waiter internal constructor(
     public companion object {
         public operator fun invoke(
             thread: Thread,
-            signaled: Atomic<Boolean>,
+            signaled: Atomic<Boolean, Align1<UByte>>,
             next: Cell<ConstPtr>,
         ): Waiter = Waiter(
             thread = thread,
@@ -238,10 +239,10 @@ public open class Waiter internal constructor(
 // Every node is a struct on the stack of a waiting thread.
 // Will wake up the waiters when it gets dropped, i.e. also on panic.
 public open class WaiterQueue internal constructor(
-    stateAndQueueCtorArg: Atomic<MutPtr>,
+    stateAndQueueCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
     setStateOnDropToCtorArg: StateAndQueue,
 ) {
-    public var stateAndQueue: Atomic<MutPtr> = stateAndQueueCtorArg
+    public var stateAndQueue: Atomic<MutPtr, Align8<MutPtr>> = stateAndQueueCtorArg
         internal set
 
     public var setStateOnDropTo: StateAndQueue = setStateOnDropToCtorArg
@@ -272,7 +273,7 @@ public open class WaiterQueue internal constructor(
 
     public companion object {
         public operator fun invoke(
-            stateAndQueue: Atomic<MutPtr>,
+            stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>,
             setStateOnDropTo: StateAndQueue,
         ): WaiterQueue = WaiterQueue(
             stateAndQueueCtorArg = stateAndQueue,
@@ -322,7 +323,7 @@ public open class PanicGuard {
     }
 }
 
-public fun wait(stateAndQueue: Atomic<MutPtr>, current: StateAndQueue, returnOnPoisoned: Boolean): StateAndQueue {
+public fun wait(stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>, current: StateAndQueue, returnOnPoisoned: Boolean): StateAndQueue {
     var current1 = current
     val node = Waiter(thread = thread.currentOrUnnamed(), signaled = AtomicBool.new(false), next = Cell.new(ConstPtr(0L)))
     while (true) {

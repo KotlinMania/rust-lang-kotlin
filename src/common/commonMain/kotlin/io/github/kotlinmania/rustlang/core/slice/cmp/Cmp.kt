@@ -38,7 +38,7 @@ public fun <T, U> List<T>.eq(other: List<U>): Boolean {
  */
 public fun <T> List<T>.cmp(other: List<T>): Ordering = SliceOrd.compare(this, other)
 
-public fun asUnderlying(x: ControlFlow<Boolean>): UByte {
+public fun asUnderlying(x: ControlFlow<Boolean, Unit>): UByte {
     // SAFETY: This will only compile if `Boolean` and `ControlFlow<Boolean>` have the same
     // size (which isn't guaranteed but this is libcore). Because they have the same
     // size, it's a niched implementation, which in one byte means there can't be
@@ -70,9 +70,9 @@ public fun <T> List<T>.gt(other: List<T>): Boolean = asUnderlying(this.chainingG
 
 public fun <T> List<T>.ge(other: List<T>): Boolean = asUnderlying(this.chainingGreater(other)) != 0u.toUByte()
 
-public fun <T> List<T>.chainingLess(other: List<T>): ControlFlow<Boolean> = SliceChain.chainingLess(this, other)
+public fun <T> List<T>.chainingLess(other: List<T>): ControlFlow<Boolean, Unit> = SliceChain.chainingLess(this, other)
 
-public fun <T> List<T>.chainingGreater(other: List<T>): ControlFlow<Boolean> = SliceChain.chainingGreater(this, other)
+public fun <T> List<T>.chainingGreater(other: List<T>): ControlFlow<Boolean, Unit> = SliceChain.chainingGreater(this, other)
 
 // intermediate trait for specialization of slice's PartialEq
 public interface SlicePartialEq<B, T> {
@@ -88,7 +88,7 @@ public interface SlicePartialEq<B, T> {
 // and preventing it encourages more useful inlining upstream,
 // such as in `<String as PartialEq>.eq`.
 // The codegen backend can still inline it later if needed.
-public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, len: Int, typeLayoutB: TypeLayout<B>): Boolean {
+public fun <A, B> slicePartialEqEqualSameLengthA(lhs: ConstPtr, rhs: ConstPtr, len: Int, typeLayoutB: TypeLayout<B> = UnresolvedTypeLayout()): Boolean {
     // Implemented as explicit indexing rather
     // than zipped iterators for performance reasons.
     // See PR https://github.com/rust-lang/rust/pull/116846
@@ -118,45 +118,40 @@ public interface SlicePartialOrd<T> {
 }
 
 public interface SliceChain<T> {
-    public fun chainingLess(left: List<T>, right: List<T>): ControlFlow<Boolean>
+    public fun chainingLess(left: List<T>, right: List<T>): ControlFlow<Boolean, Unit>
 
-    public fun chainingGreater(left: List<T>, right: List<T>): ControlFlow<Boolean>
+    public fun chainingGreater(left: List<T>, right: List<T>): ControlFlow<Boolean, Unit>
 }
 
 public typealias AlwaysBreak<B> = ControlFlow<B, Nothing>
 
 public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Ordering? {
     val elemChain =
-        { a, b ->
-            when (val matchVal = a.partialCmp(b)) {
-                Ordering.Equal -> ControlFlow.Continue()
-                else -> {
-                    val nonEq = matchVal
-                    ControlFlow.Break(nonEq)
-                }
+        { a, b -> when (val matchVal = a.partialCmp(b)) {
+            Ordering.Equal -> ControlFlow.Continue()
+            else -> {
+                val nonEq = matchVal
+                ControlFlow.Break(nonEq)
             }
-        }
+        } }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.partialCmp(a, b)) }
     val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
     val b = tupleStructVal.value
     return b
 }
 
-public fun <A> sliceChainChainingLessA(left: List<A>, right: List<A>): ControlFlow<Boolean> = chainingImpl(left, right, PartialOrd.chainingLess, Int.chainingLess)
+public fun <A> sliceChainChainingLessA(left: List<A>, right: List<A>): ControlFlow<Boolean, Unit> = chainingImpl(left, right, PartialOrd.chainingLess, Int.chainingLess)
 
-public fun <A> sliceChainChainingGreaterA(left: List<A>, right: List<A>): ControlFlow<Boolean> = chainingImpl(left, right, PartialOrd.chainingGreater, Int.chainingGreater)
+public fun <A> sliceChainChainingGreaterA(left: List<A>, right: List<A>): ControlFlow<Boolean, Unit> = chainingImpl(left, right, PartialOrd.chainingGreater, Int.chainingGreater)
 
-public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, A) -> ControlFlow<B>, lenChain: (Int, Int) -> ControlFlow<B, C>): ControlFlow<B, C> {
+public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, A) -> ControlFlow<B, Unit>, lenChain: (Int, Int) -> ControlFlow<B, C>): ControlFlow<B, C> {
     val l = minOf(left.size, right.size)
     // Slice to the loop iteration range to enable bound check
     // elimination in the compiler
     val lhs = ((left).subList(0, l))
     val rhs = ((right).subList(0, l))
     for (i in 0 until l) {
-        when (val tryResult = elemChain(lhs[i], rhs[i])) {
-            is Result.Ok<*, *> -> tryResult.value
-            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-        }
+        when (val tryResult = elemChain(lhs[i], rhs[i])) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
     }
     return lenChain(left.size, right.size)
 }
@@ -182,15 +177,13 @@ public interface SliceOrd<T> {
 
 public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
     val elemChain =
-        { a, b ->
-            when (val matchVal = a.cmp(b)) {
-                Ordering.Equal -> ControlFlow.Continue()
-                else -> {
-                    val nonEq = matchVal
-                    ControlFlow.Break(nonEq)
-                }
+        { a, b -> when (val matchVal = a.cmp(b)) {
+            Ordering.Equal -> ControlFlow.Continue()
+            else -> {
+                val nonEq = matchVal
+                ControlFlow.Break(nonEq)
             }
-        }
+        } }
     val lenChain = { a: Any?, b: Any? -> ControlFlow.Break(Int.cmp(a, b)) }
     val tupleStructVal = chainingImpl(left, right, elemChain, lenChain)
     val b = tupleStructVal.value
@@ -219,7 +212,7 @@ public interface SliceContains<T> {
 
 public fun <T> T.sliceContains(x: List<T>): Boolean = x.any({ y -> y == this })
 
-public fun <T : BytewiseEq<T>> T.sliceContains(x: List<T>, typeLayoutT: TypeLayout<T>): Boolean =
+public fun <T : BytewiseEq<T>> T.sliceContains(x: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean =
     if (sizeOf<T>(typeLayoutT = typeLayoutT) == 1) {
         // SAFETY: `BytewiseEq` guarantees that values have no padding or provenance and
         // compare like their underlying bytes. Since `T` is one byte, both the value and

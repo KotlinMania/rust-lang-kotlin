@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
+import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -141,7 +143,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     // See comment above for why this function returns.
 }
 
-public var PAGE_SIZE: Atomic<Int> = AtomicUsize.new(0)
+public var PAGE_SIZE: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
 
 // Store a pointer to the allocation for the main thread's altstack so that
 // tools like valgrind don't complain about a leaked unreachable allocation.
@@ -149,9 +151,9 @@ public var PAGE_SIZE: Atomic<Int> = AtomicUsize.new(0)
 // If the main thread exits, the process will terminate so there's no use in
 // freeing resources. It also means that the altstack is still installed
 // while TLS destructors are run on the main thread (c.f. #111272).
-public var MAIN_ALTSTACK: Atomic<MutPtr> = AtomicPtr.new(MutPtr(0L))
+public var MAIN_ALTSTACK: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(MutPtr(0L))
 
-public var NEED_ALTSTACK: Atomic<Boolean> = AtomicBool.new(false)
+public var NEED_ALTSTACK: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(false)
 
 /**
  * # Safety

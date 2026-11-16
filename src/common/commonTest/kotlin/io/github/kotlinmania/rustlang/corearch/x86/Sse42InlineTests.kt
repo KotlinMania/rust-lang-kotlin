@@ -15,11 +15,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 public fun strToM128i(s: List<UByte>): M128i {
     check(s.size <= 16)
     val array = UByteArray(16) { 0u.toUByte() }
-    run {
-        val dstTmp0 = array
-        val srcTmp0 = s
-        for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0]
-    }
+    run { val dstTmp0 = array; val srcTmp0 = s; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
     return u8x16.fromArray(array).asM128i()
 }
 

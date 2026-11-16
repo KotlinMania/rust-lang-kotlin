@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.alloc.boxed.thin
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.alloc.layout.LayoutError
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.constAllocate
 import io.github.kotlinmania.rustlang.core.intrinsics.constMakeGlobal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -69,13 +70,9 @@ public open class ThinBox<T>(
      * `ThinBox<T>` is `Sync` if `T` is `Sync` because the data is owned.
      */
 
-    public open fun fmt(f: Formatter) {
-        f.append((this.deref()).toString())
-    }
+    public open fun fmt(f: Formatter): Result<Unit, Error> = run { f.append((this.deref()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtDisplay(f: Formatter) {
-        f.append((this.deref()).toString())
-    }
+    public open fun fmtDisplay(f: Formatter): Result<Unit, Error> = run { f.append((this.deref()).toString()); Result.Ok(Unit) }
 
     public open fun deref(): T {
         val value = this.data()
@@ -178,8 +175,8 @@ public open class ThinBox<T>(
  * }
  * ```
  */
-public fun <Dyn, T> ThinBox.Companion.newUnsize(value: T): ThinBox<Dyn> =
-    if (T.IS_ZST) {
+public fun <Dyn, T> ThinBox.Companion.newUnsize(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ThinBox<Dyn> =
+    if (((typeLayoutT).sizeBytes == 0L)) {
         val ptr = WithOpaqueHeader.newUnsizeZst<Dyn, T>(value, fieldLayout = UnresolvedTypeLayout<NonNull>())
         ThinBox(ptr = ptr, marker = Unit)
     } else {
@@ -252,22 +249,20 @@ public open class WithHeader<H> internal constructor(
         public operator fun <H> invoke(
             field0: NonNull,
             field1: Unit,
-        ): WithHeader<H> =
-            WithHeader<H>(
-                field0CtorArg = field0,
-                field1 = field1,
-            )
+        ): WithHeader<H> = WithHeader<H>(
+            field0CtorArg = field0,
+            field1 = field1,
+        )
 
-        public fun <H, T> new(header: H, value: T, typeLayoutT: TypeLayout<T>): WithHeader<H> {
+        public fun <H, T> new(header: H, value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): WithHeader<H> {
             val valueLayout = Layout.new<T>(typeLayoutT = typeLayoutT)
-            val (layout, valueOffset) =
-                WithHeader.allocLayout(valueLayout) ?: // We pass an empty layout here because we do not know which layout caused the
+            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: // We pass an empty layout here because we do not know which layout caused the
 // arithmetic overflow in `Layout.extend` and `handleAllocError` takes `Layout` as
 // its argument rather than `Result<Layout, LayoutError>`, also this function has been
 // stable since 1.28 ._.
 //
 // On the other hand, look at this gorgeous turbofish!
-                    alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
+alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
             // Note: It's UB to pass a layout with a zero size to `alloc.alloc`, so
             // we use `layout.dangling()` for this case, which should have a valid
             // alignment for both `T` and `H`.
@@ -275,7 +270,7 @@ public open class WithHeader<H> internal constructor(
                 if (layout.size() == 0) {
                     // Some paranoia checking, mostly so that the ThinBox tests are
                     // more able to catch issues.
-                    check(valueOffset == 0 && T.IS_ZST && H.IS_ZST)
+                    check(valueOffset == 0 && ((typeLayoutT).sizeBytes == 0L) && ((UnresolvedTypeLayout<H>()).sizeBytes == 0L))
                     layout.danglingPtr()
                 } else {
                     // SAFETY: We check above that the layout size is nonzero.
@@ -304,9 +299,9 @@ public open class WithHeader<H> internal constructor(
          * Non-panicking version of `new`.
          * Any error is returned as `Err(core.alloc.AllocError)`.
          */
-        public fun <H, T> tryNew(header: H, value: T, typeLayoutT: TypeLayout<T>): Result<WithHeader<H>, AllocError> {
+        public fun <H, T> tryNew(header: H, value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<WithHeader<H>, AllocError> {
             val valueLayout = Layout.new<T>(typeLayoutT = typeLayoutT)
-            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: return Result.Err(alloc.AllocError)
+            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: return Result.Err<WithHeader<H>, AllocError>(alloc.AllocError)
             // Note: It's UB to pass a layout with a zero size to `alloc.alloc`, so
             // we use `layout.dangling()` for this case, which should have a valid
             // alignment for both `T` and `H`.
@@ -314,13 +309,13 @@ public open class WithHeader<H> internal constructor(
                 if (layout.size() == 0) {
                     // Some paranoia checking, mostly so that the ThinBox tests are
                     // more able to catch issues.
-                    check(valueOffset == 0 && T.IS_ZST && H.IS_ZST)
+                    check(valueOffset == 0 && ((typeLayoutT).sizeBytes == 0L) && ((UnresolvedTypeLayout<H>()).sizeBytes == 0L))
                     layout.danglingPtr()
                 } else {
                     // SAFETY: We check above that the layout size is nonzero.
                     val ptr = alloc.alloc(layout)
                     if (ptr.isNull()) {
-                        return Result.Err(alloc.AllocError)
+                        return Result.Err<WithHeader<H>, AllocError>(alloc.AllocError)
                     }
                     // SAFETY:
                     // - The size is at least `alignedHeaderSize`.
@@ -336,18 +331,18 @@ public open class WithHeader<H> internal constructor(
                 write(result.header(), header)
                 write(result.value().cast(), value)
             }
-            return Result.Ok(result)
+            return Result.Ok<WithHeader<H>, AllocError>(result)
         }
 
         // `Dyn` is `? Sized` type like `[UInt]`, and `T` is ZST type like `[UInt; 0]`.
-        public fun <H, Dyn, T> newUnsizeZst(value: T, typeLayoutT: TypeLayout<T>, typeLayoutDyn: TypeLayout<Dyn>): WithHeader<H> where Dyn : Pointee<H> {
+        public fun <H, Dyn, T> newUnsizeZst(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), typeLayoutDyn: TypeLayout<Dyn> = UnresolvedTypeLayout()): WithHeader<H> where Dyn : Pointee<H> {
             fun max(a: Int, b: Int): Int =
                 if (a > b) {
                     a
                 } else {
                     b
                 }
-            check(T.IS_ZST)
+            check(((typeLayoutT).sizeBytes == 0L))
             // Compute a pointer to the right metadata. This will point to the beginning
             // of the header, past the padding, so the assigned type makes sense.
             // It also ensures that the address at the end of the header is sufficiently
@@ -374,12 +369,12 @@ public open class WithHeader<H> internal constructor(
             val valuePtr = MutPtr((ConstPtr((ConstPtr(((constPtrFromRustCast(alloc1))).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<Metadata>()).strideBytes))).rawAddress)).rawAddress)
             check(valuePtr.isAligned())
             forget(value)
-            return WithHeader(NonNull.new(valuePtr).unwrap(), Unit)
+            return WithHeader(NonNull.new(valuePtr)!!, Unit)
         }
 
-        public fun <H> headerSize(typeLayoutH: TypeLayout<H>): Int = sizeOf<H>(typeLayoutT = typeLayoutH)
+        public fun <H> headerSize(typeLayoutH: TypeLayout<H> = UnresolvedTypeLayout()): Int = sizeOf<H>(typeLayoutT = typeLayoutH)
 
-        public fun <H> allocLayout(valueLayout: Layout, typeLayoutH: TypeLayout<H>): Result<Pair<Layout, Int>, LayoutError> = Layout.new<H>(typeLayoutT = typeLayoutH).extend(valueLayout)
+        public fun <H> allocLayout(valueLayout: Layout, typeLayoutH: TypeLayout<H> = UnresolvedTypeLayout()): Result<Pair<Layout, Int>, LayoutError> = Layout.new<H>(typeLayoutT = typeLayoutH).extend(valueLayout)
     }
 }
 
@@ -389,7 +384,7 @@ public open class WithHeader<H> internal constructor(
  */
 public open class WithOpaqueHeader internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<NonNull>,
+    public val fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout(),
 ) {
     public var field0: NonNull
         get() = value
@@ -399,29 +394,27 @@ public open class WithOpaqueHeader internal constructor(
 
     public var value: NonNull
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(value: NonNull, fieldLayout: TypeLayout<NonNull>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(value: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<WithOpaqueHeader> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WithOpaqueHeader(ptr, layout) }, { it.value })
 
     public companion object {
-        public operator fun invoke(value: NonNull, fieldLayout: TypeLayout<NonNull>): WithOpaqueHeader = WithOpaqueHeader(value, fieldLayout)
+        public operator fun invoke(value: NonNull, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): WithOpaqueHeader = WithOpaqueHeader(value, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonNull>): WithOpaqueHeader = WithOpaqueHeader(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): WithOpaqueHeader = WithOpaqueHeader(fieldStorage, fieldLayout)
 
-        public fun <H, T> new(header: H, value: T, fieldLayout: TypeLayout<NonNull>): WithOpaqueHeader {
+        public fun <H, T> new(header: H, value: T, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): WithOpaqueHeader {
             val ptr = WithHeader.new(header, value)
             return WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout)
         }
 
-        public fun <Dyn, T> newUnsizeZst(value: T, fieldLayout: TypeLayout<NonNull>): WithOpaqueHeader {
+        public fun <Dyn, T> newUnsizeZst(value: T, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): WithOpaqueHeader {
             val ptr = WithHeader.newUnsizeZst<Dyn, T>(value)
             return WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout)
         }
 
-        public fun <H, T> tryNew(header: H, value: T, fieldLayout: TypeLayout<NonNull>): Result<WithOpaqueHeader, AllocError> = WithHeader.tryNew(header, value).map({ ptr -> WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout) })
+        public fun <H, T> tryNew(header: H, value: T, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): Result<WithOpaqueHeader, AllocError> = WithHeader.tryNew(header, value).map({ ptr -> WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout) })
     }
 }

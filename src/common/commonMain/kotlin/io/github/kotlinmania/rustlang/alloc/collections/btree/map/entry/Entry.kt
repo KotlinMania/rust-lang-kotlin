@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -72,9 +73,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
     /**
      * A vacant entry.
      */
-    public class Vacant<K, V, A : AllocatorClone> internal constructor(
-        valueCtorArg: VacantEntry<K, V, A>,
-    ) : Entry<K, V, A>() {
+    public class Vacant<K, V, A : AllocatorClone> internal constructor(valueCtorArg: VacantEntry<K, V, A>) : Entry<K, V, A>() {
         public var value: VacantEntry<K, V, A> = valueCtorArg
             internal set
 
@@ -94,19 +93,15 @@ public sealed class Entry<K, V, A : AllocatorClone> {
         public companion object {
             public operator fun <K, V, A : AllocatorClone> invoke(
                 value: VacantEntry<K, V, A>,
-            ): Vacant<K, V, A> =
-                Vacant<K, V, A>(
-                    valueCtorArg = value,
-                )
+            ): Vacant<K, V, A> = Vacant<K, V, A>(
+                valueCtorArg = value,
+            )
         }
     }
-
     /**
      * An occupied entry.
      */
-    public class Occupied<K, V, A : AllocatorClone> internal constructor(
-        valueCtorArg: OccupiedEntry<K, V, A>,
-    ) : Entry<K, V, A>() {
+    public class Occupied<K, V, A : AllocatorClone> internal constructor(valueCtorArg: OccupiedEntry<K, V, A>) : Entry<K, V, A>() {
         public var value: OccupiedEntry<K, V, A> = valueCtorArg
             internal set
 
@@ -126,14 +121,13 @@ public sealed class Entry<K, V, A : AllocatorClone> {
         public companion object {
             public operator fun <K, V, A : AllocatorClone> invoke(
                 value: OccupiedEntry<K, V, A>,
-            ): Occupied<K, V, A> =
-                Occupied<K, V, A>(
-                    valueCtorArg = value,
-                )
+            ): Occupied<K, V, A> = Occupied<K, V, A>(
+                valueCtorArg = value,
+            )
         }
     }
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             is Vacant -> {
                 val (v) = this
@@ -144,7 +138,6 @@ public sealed class Entry<K, V, A : AllocatorClone> {
                 DebugTuple(f, "Entry").field(o).finish()
             }
         }
-    }
 
     /**
      * Ensures a value is in the entry by inserting the default if empty, and returns
@@ -211,18 +204,11 @@ public sealed class Entry<K, V, A : AllocatorClone> {
         return when (this) {
             is Occupied -> {
                 val (entry) = this
-                Result.Ok(entry.intoMut())
+                Result.Ok<V, E>(entry.intoMut())
             }
             is Vacant -> {
                 val (entry1) = this
-                Result.Ok(
-                    entry1.insert(
-                        when (val tryResult = default()) {
-                            is Result.Ok<*, *> -> tryResult.value
-                            is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                        },
-                    ),
-                )
+                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<V, E>(tryResult.error) }))
             }
         }
     }
@@ -272,16 +258,12 @@ public sealed class Entry<K, V, A : AllocatorClone> {
         return when (this) {
             is Occupied -> {
                 val (entry) = this
-                Result.Ok(entry.intoMut())
+                Result.Ok<V, E>(entry.intoMut())
             }
             is Vacant -> {
                 val (entry1) = this
-                val value =
-                    when (val tryResult = default(entry1.key())) {
-                        is Result.Ok<*, *> -> tryResult.value
-                        is Result.Err<*, *> -> return Result.Err(tryResult.error)
-                    }
-                Result.Ok(entry1.insert(value))
+                val value = when (val tryResult = default(entry1.key())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<V, E>(tryResult.error) }
+                Result.Ok<V, E>(entry1.insert(value))
             }
         }
     }
@@ -413,9 +395,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugTuple(f, "VacantEntry").field(this.key()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.key()).finish()
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -532,14 +512,13 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
             dormantMap: DormantMutRef<MutableMap<K, V>>,
             alloc: A,
             marker: Unit,
-        ): VacantEntry<K, V, A> =
-            VacantEntry<K, V, A>(
-                key = key,
-                handleCtorArg = handle,
-                dormantMapCtorArg = dormantMap,
-                alloc = alloc,
-                marker = marker,
-            )
+        ): VacantEntry<K, V, A> = VacantEntry<K, V, A>(
+            key = key,
+            handleCtorArg = handle,
+            dormantMapCtorArg = dormantMap,
+            alloc = alloc,
+            marker = marker,
+        )
     }
 }
 
@@ -563,9 +542,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish()
 
     /**
      * Gets a reference to the key in the entry.
@@ -578,11 +555,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
      * check(map.entry("poneyland").key() == "poneyland")
      * ```
      */
-    public open fun key(): K =
-        this.handle
-            .reborrow()
-            .intoKv()
-            .first
+    public open fun key(): K = this.handle.reborrow().intoKv().first
 
     /**
      * Converts the entry into a reference to its key.
@@ -632,11 +605,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
      * }
      * ```
      */
-    public open fun get(): V =
-        this.handle
-            .reborrow()
-            .intoKv()
-            .second
+    public open fun get(): V = this.handle.reborrow().intoKv().second
 
     /**
      * Gets a mutable reference to the value in the entry.
@@ -762,13 +731,12 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
             dormantMap: DormantMutRef<MutableMap<K, V>>,
             alloc: A,
             marker: Unit,
-        ): OccupiedEntry<K, V, A> =
-            OccupiedEntry<K, V, A>(
-                handleCtorArg = handle,
-                dormantMapCtorArg = dormantMap,
-                alloc = alloc,
-                marker = marker,
-            )
+        ): OccupiedEntry<K, V, A> = OccupiedEntry<K, V, A>(
+            handleCtorArg = handle,
+            dormantMapCtorArg = dormantMap,
+            alloc = alloc,
+            marker = marker,
+        )
     }
 }
 
@@ -794,25 +762,17 @@ public open class OccupiedError<K, V, A : AllocatorClone> internal constructor(
     public var entry: OccupiedEntry<K, V, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder) {
-        DebugStruct(f, "OccupiedError")
-            .field("key", this.entry.key())
-            .field("uninserted_key", this.key)
-            .field("old_value", this.entry.get())
-            .field("new_value", this.value)
-            .finish()
-    }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finish()
 
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(
             entry: OccupiedEntry<K, V, A>,
             key: K,
             value: V,
-        ): OccupiedError<K, V, A> =
-            OccupiedError<K, V, A>(
-                entryCtorArg = entry,
-                key = key,
-                value = value,
-            )
+        ): OccupiedError<K, V, A> = OccupiedError<K, V, A>(
+            entryCtorArg = entry,
+            key = key,
+            value = value,
+        )
     }
 }

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike
 
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmute
@@ -36,7 +37,7 @@ public fun interface FnCallback1 {
 public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
     open class CInt(
         public val fieldStorage: MutPtr,
-        public val fieldLayout: TypeLayout<CInt>,
+        public val fieldLayout: TypeLayout<CInt> = UnresolvedTypeLayout(),
     ) {
         public var field0: CInt
             get() = value
@@ -48,7 +49,7 @@ public fun register(t: MutPtr, dtor: RegisterDtorCallback) {
             get() = fieldLayout.readNative(fieldStorage.rawAddress)
             set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-        public constructor(value: CInt, fieldLayout: TypeLayout<CInt>) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+        public constructor(value: CInt, fieldLayout: TypeLayout<CInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
         public fun pointerLayout(): TypeLayout<CInt> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CInt(ptr, layout) }, { it.value })
     }

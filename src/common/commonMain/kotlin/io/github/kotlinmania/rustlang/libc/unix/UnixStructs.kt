@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.*
@@ -870,24 +871,24 @@ public open class Protoent internal constructor(
 
 public open class In6Addr internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UByteArray>,
+    public val fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout(),
 ) {
     public var s6Addr: UByteArray
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(s6Addr: UByteArray, fieldLayout: TypeLayout<UByteArray>) : this(allocateNativeCell(s6Addr, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
+    internal constructor(s6Addr: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()) : this(allocateNativeCell(s6Addr, AlignedTypeLayout(fieldLayout, 4L)), AlignedTypeLayout(fieldLayout, 4L))
 
     public fun pointerLayout(): TypeLayout<In6Addr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> In6Addr(ptr, layout) }, { it.s6Addr })
 
     public open fun clone(): In6Addr = In6Addr(s6Addr, fieldLayout)
 
     public companion object {
-        public operator fun invoke(s6Addr: UByteArray, fieldLayout: TypeLayout<UByteArray>): In6Addr = In6Addr(s6Addr, fieldLayout)
+        public operator fun invoke(s6Addr: UByteArray, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): In6Addr = In6Addr(s6Addr, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray>): In6Addr = In6Addr(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): In6Addr = In6Addr(fieldStorage, fieldLayout)
 
-        public fun default(fieldLayout: TypeLayout<UByteArray>): In6Addr = In6Addr(s6Addr = Default.default(), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
+        public fun default(fieldLayout: TypeLayout<UByteArray> = UnresolvedTypeLayout()): In6Addr = In6Addr(s6Addr = Default.default(), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
     }
 }
 

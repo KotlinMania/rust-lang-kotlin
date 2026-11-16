@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -25,11 +26,7 @@ public fun interface FnCallback {
 }
 
 public sealed class ArgumentType {
-    public class sampleValue internal constructor(
-        valueCtorArg: NonNull,
-        public var formatter: FnCallback,
-        public var lifetime: Unit,
-    ) : ArgumentType() {
+    public class sampleValue internal constructor(valueCtorArg: NonNull, public var formatter: FnCallback, public var lifetime: Unit) : ArgumentType() {
         public var value: NonNull = valueCtorArg
             internal set
 
@@ -62,17 +59,14 @@ public sealed class ArgumentType {
                 value: NonNull,
                 formatter: FnCallback,
                 lifetime: Unit,
-            ): sampleValue =
-                sampleValue(
-                    valueCtorArg = value,
-                    formatter = formatter,
-                    lifetime = lifetime,
-                )
+            ): sampleValue = sampleValue(
+                valueCtorArg = value,
+                formatter = formatter,
+                lifetime = lifetime,
+            )
         }
     }
-    public data class Count(
-        public var value: UShort,
-    ) : ArgumentType()
+    public data class Count(public var value: UShort) : ArgumentType()
 }
 
 // To ensure pointers to this struct always have their lowest bit cleared.
@@ -91,15 +85,13 @@ public sealed class ArgumentType {
  */
 public open class Argument internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<ArgumentType>,
+    public val fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(),
 ) {
     public var ty: ArgumentType
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(ty: ArgumentType, fieldLayout: TypeLayout<ArgumentType>) : this(allocateNativeCell(ty, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
+    internal constructor(ty: ArgumentType, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()) : this(allocateNativeCell(ty, AlignedTypeLayout(fieldLayout, 2L)), AlignedTypeLayout(fieldLayout, 2L))
 
     public fun pointerLayout(): TypeLayout<Argument> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Argument(ptr, layout) }, { it.ty })
 
@@ -140,161 +132,71 @@ public open class Argument internal constructor(
         }
 
     public companion object {
-        public operator fun invoke(ty: ArgumentType, fieldLayout: TypeLayout<ArgumentType>): Argument = Argument(ty, fieldLayout)
+        public operator fun invoke(ty: ArgumentType, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument = Argument(ty, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ArgumentType>): Argument = Argument(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument = Argument(fieldStorage, fieldLayout)
 
-        public fun <T> newDisplay(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newDisplay(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T> newDebug(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newDebug(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T> newDebugNoop(x: T, fieldLayout: TypeLayout<ArgumentType>): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = { Result.Ok(Unit) }
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newDebugNoop(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = { Result.Ok(Unit) }
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T> newOctal(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newOctal(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T> newLowerHex(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newLowerHex(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T> newUpperHex(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newUpperHex(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T : Pointer> newPointer(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T : Pointer> newPointer(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T> newBinary(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T> newBinary(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T : LowerExp> newLowerExp(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T : LowerExp> newLowerExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T : UpperExp> newUpperExp(x: T, fieldLayout: TypeLayout<ArgumentType>, fmtTFn: (T, Formatter) -> Result): Argument =
-            Argument(
-                ty =
-                    ArgumentType.sampleValue(
-                        value = NonNull.fromRef(x).cast(),
-                        formatter =
-                            run {
-                                val f: (T, Formatter) -> Result = fmtTFn
-                                transmute(f)
-                            },
-                        lifetime = Unit,
-                    ),
-                fieldLayout = fieldLayout,
-            )
+        public fun <T : UpperExp> newUpperExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+            Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
+                val f: (T, Formatter) -> Result = fmtTFn
+                transmute(f)
+            }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun fromUsize(x: Int, fieldLayout: TypeLayout<ArgumentType>): Argument {
+        public fun fromUsize(x: Int, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout()): Argument {
             if (x > UShort.MAX_VALUE.toInt()) {
                 error("Formatting argument out of range")
             }

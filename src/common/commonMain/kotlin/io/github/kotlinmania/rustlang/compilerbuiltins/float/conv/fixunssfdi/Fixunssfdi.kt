@@ -5,6 +5,4 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.fixunssfdi
 // Conversions from signed integers to floats.
 // Conversions from floats to unsigned integers.
 // Conversions from floats to signed integers.
-public fun fixunssfdi(f: Float): ULong =
-    io.github.kotlinmania.rustlang.compilerbuiltins.float.conv
-        .fixunssfdi(f)
+public fun fixunssfdi(f: Float): ULong = io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.fixunssfdi(f)

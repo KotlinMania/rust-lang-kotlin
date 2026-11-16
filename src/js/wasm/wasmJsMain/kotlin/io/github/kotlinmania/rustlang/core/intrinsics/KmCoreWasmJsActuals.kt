@@ -268,376 +268,252 @@ private external fun wasmKmSimdDotF32(aLo: Int, aHi: Int, bLo: Int, bHi: Int, lL
 
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCtpopU8(v)")
 private external fun wasmKmCtpopU8(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCtpopU16(v)")
 private external fun wasmKmCtpopU16(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCtpopU32(v)")
 private external fun wasmKmCtpopU32(v: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmCtpopU128(lo0, hi0, lo1, hi1)")
 private external fun wasmKmCtpopU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCtlzU8(v)")
 private external fun wasmKmCtlzU8(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCtlzU16(v)")
 private external fun wasmKmCtlzU16(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCtlzU32(v)")
 private external fun wasmKmCtlzU32(v: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmCtlzU128(lo0, hi0, lo1, hi1)")
 private external fun wasmKmCtlzU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCttzU8(v)")
 private external fun wasmKmCttzU8(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCttzU16(v)")
 private external fun wasmKmCttzU16(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmCttzU32(v)")
 private external fun wasmKmCttzU32(v: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmCttzU128(lo0, hi0, lo1, hi1)")
 private external fun wasmKmCttzU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmBswapU128(lo0, hi0, lo1, hi1)")
 private external fun wasmKmBswapU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmBitreverseU8(v)")
 private external fun wasmKmBitreverseU8(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmBitreverseU16(v)")
 private external fun wasmKmBitreverseU16(v: Int): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmBitreverseU32(v)")
 private external fun wasmKmBitreverseU32(v: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1) => globalThis.kmCoreNapiV2.kmBitreverseU128(lo0, hi0, lo1, hi1)")
 private external fun wasmKmBitreverseU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int): Int
-
 @JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateLeftU8(v, n)")
 private external fun wasmKmRotateLeftU8(v: Int, n: Int): Int
-
 @JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateLeftU16(v, n)")
 private external fun wasmKmRotateLeftU16(v: Int, n: Int): Int
-
 @JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateLeftU32(v, n)")
 private external fun wasmKmRotateLeftU32(v: Int, n: Int): Int
-
 @JsFun("(lo, hi, n) => globalThis.kmCoreNapiV2.kmRotateLeftU64(lo, hi, n)")
 private external fun wasmKmRotateLeftU64(lo: Int, hi: Int, n: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1, n) => globalThis.kmCoreNapiV2.kmRotateLeftU128(lo0, hi0, lo1, hi1, n)")
 private external fun wasmKmRotateLeftU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int, n: Int): Int
-
 @JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateRightU8(v, n)")
 private external fun wasmKmRotateRightU8(v: Int, n: Int): Int
-
 @JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateRightU16(v, n)")
 private external fun wasmKmRotateRightU16(v: Int, n: Int): Int
-
 @JsFun("(v, n) => globalThis.kmCoreNapiV2.kmRotateRightU32(v, n)")
 private external fun wasmKmRotateRightU32(v: Int, n: Int): Int
-
 @JsFun("(lo, hi, n) => globalThis.kmCoreNapiV2.kmRotateRightU64(lo, hi, n)")
 private external fun wasmKmRotateRightU64(lo: Int, hi: Int, n: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1, n) => globalThis.kmCoreNapiV2.kmRotateRightU128(lo0, hi0, lo1, hi1, n)")
 private external fun wasmKmRotateRightU128(lo0: Int, hi0: Int, lo1: Int, hi1: Int, n: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowU8(a, b)")
 private external fun wasmKmAddWithOverflowU8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowU16(a, b)")
 private external fun wasmKmAddWithOverflowU16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowU32(a, b)")
 private external fun wasmKmAddWithOverflowU32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmAddWithOverflowU64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmAddWithOverflowU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmAddWithOverflowU128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmAddWithOverflowU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowI8(a, b)")
 private external fun wasmKmAddWithOverflowI8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowI16(a, b)")
 private external fun wasmKmAddWithOverflowI16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmAddWithOverflowI32(a, b)")
 private external fun wasmKmAddWithOverflowI32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmAddWithOverflowI64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmAddWithOverflowI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmAddWithOverflowI128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmAddWithOverflowI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowU8(a, b)")
 private external fun wasmKmSubWithOverflowU8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowU16(a, b)")
 private external fun wasmKmSubWithOverflowU16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowU32(a, b)")
 private external fun wasmKmSubWithOverflowU32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSubWithOverflowU64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmSubWithOverflowU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSubWithOverflowU128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmSubWithOverflowU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowI8(a, b)")
 private external fun wasmKmSubWithOverflowI8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowI16(a, b)")
 private external fun wasmKmSubWithOverflowI16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSubWithOverflowI32(a, b)")
 private external fun wasmKmSubWithOverflowI32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSubWithOverflowI64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmSubWithOverflowI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSubWithOverflowI128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmSubWithOverflowI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowU8(a, b)")
 private external fun wasmKmMulWithOverflowU8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowU16(a, b)")
 private external fun wasmKmMulWithOverflowU16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowU32(a, b)")
 private external fun wasmKmMulWithOverflowU32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmMulWithOverflowU64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmMulWithOverflowU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmMulWithOverflowU128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmMulWithOverflowU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowI8(a, b)")
 private external fun wasmKmMulWithOverflowI8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowI16(a, b)")
 private external fun wasmKmMulWithOverflowI16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMulWithOverflowI32(a, b)")
 private external fun wasmKmMulWithOverflowI32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmMulWithOverflowI64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmMulWithOverflowI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmMulWithOverflowI128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmMulWithOverflowI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddU8(a, b)")
 private external fun wasmKmSaturatingAddU8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddU16(a, b)")
 private external fun wasmKmSaturatingAddU16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddU32(a, b)")
 private external fun wasmKmSaturatingAddU32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingAddU64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmSaturatingAddU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingAddU128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmSaturatingAddU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddI8(a, b)")
 private external fun wasmKmSaturatingAddI8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddI16(a, b)")
 private external fun wasmKmSaturatingAddI16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingAddI32(a, b)")
 private external fun wasmKmSaturatingAddI32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingAddI64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmSaturatingAddI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingAddI128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmSaturatingAddI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubU8(a, b)")
 private external fun wasmKmSaturatingSubU8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubU16(a, b)")
 private external fun wasmKmSaturatingSubU16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubU32(a, b)")
 private external fun wasmKmSaturatingSubU32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingSubU64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmSaturatingSubU64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingSubU128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmSaturatingSubU128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubI8(a, b)")
 private external fun wasmKmSaturatingSubI8(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubI16(a, b)")
 private external fun wasmKmSaturatingSubI16(a: Int, b: Int): Int
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmSaturatingSubI32(a, b)")
 private external fun wasmKmSaturatingSubI32(a: Int, b: Int): Int
-
 @JsFun("(aLo, aHi, bLo, bHi) => globalThis.kmCoreNapiV2.kmSaturatingSubI64(aLo, aHi, bLo, bHi)")
 private external fun wasmKmSaturatingSubI64(aLo: Int, aHi: Int, bLo: Int, bHi: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmSaturatingSubI128(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmSaturatingSubI128(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128Add(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmU128Add(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128Sub(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmU128Sub(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128Mul(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmU128Mul(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmU128DivRem(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmU128DivRem(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(a0, a1, a2, a3, b0, b1, b2, b3) => globalThis.kmCoreNapiV2.kmI128DivRem(a0, a1, a2, a3, b0, b1, b2, b3)")
 private external fun wasmKmI128DivRem(a0: Int, a1: Int, a2: Int, a3: Int, b0: Int, b1: Int, b2: Int, b3: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1, s) => globalThis.kmCoreNapiV2.kmU128Shl(lo0, hi0, lo1, hi1, s)")
 private external fun wasmKmU128Shl(lo0: Int, hi0: Int, lo1: Int, hi1: Int, s: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1, s) => globalThis.kmCoreNapiV2.kmU128Shr(lo0, hi0, lo1, hi1, s)")
 private external fun wasmKmU128Shr(lo0: Int, hi0: Int, lo1: Int, hi1: Int, s: Int): Int
-
 @JsFun("(lo0, hi0, lo1, hi1, s) => globalThis.kmCoreNapiV2.kmI128Shr(lo0, hi0, lo1, hi1, s)")
 private external fun wasmKmI128Shr(lo0: Int, hi0: Int, lo1: Int, hi1: Int, s: Int): Int
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmSinf32(x)")
 private external fun wasmKmSinf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmSinf64(x)")
 private external fun wasmKmSinf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmCosf32(x)")
 private external fun wasmKmCosf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmCosf64(x)")
 private external fun wasmKmCosf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmExpf32(x)")
 private external fun wasmKmExpf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmExpf64(x)")
 private external fun wasmKmExpf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmExp2f32(x)")
 private external fun wasmKmExp2f32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmExp2f64(x)")
 private external fun wasmKmExp2f64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmLogf32(x)")
 private external fun wasmKmLogf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmLogf64(x)")
 private external fun wasmKmLogf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmLog2f32(x)")
 private external fun wasmKmLog2f32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmLog2f64(x)")
 private external fun wasmKmLog2f64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmLog10f32(x)")
 private external fun wasmKmLog10f32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmLog10f64(x)")
 private external fun wasmKmLog10f64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmTruncf32(x)")
 private external fun wasmKmTruncf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmTruncf64(x)")
 private external fun wasmKmTruncf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundf32(x)")
 private external fun wasmKmRoundf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundf64(x)")
 private external fun wasmKmRoundf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundTiesEvenf32(x)")
 private external fun wasmKmRoundTiesEvenf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmRoundTiesEvenf64(x)")
 private external fun wasmKmRoundTiesEvenf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmCeilf32(x)")
 private external fun wasmKmCeilf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmCeilf64(x)")
 private external fun wasmKmCeilf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmFloorf32(x)")
 private external fun wasmKmFloorf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmFloorf64(x)")
 private external fun wasmKmFloorf64(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmFabsf32(x)")
 private external fun wasmKmFabsf32(x: Double): Double
-
 @JsFun("(x) => globalThis.kmCoreNapiV2.kmFabsf64(x)")
 private external fun wasmKmFabsf64(x: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmPowf32(a, b)")
 private external fun wasmKmPowf32(a: Double, b: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmPowf64(a, b)")
 private external fun wasmKmPowf64(a: Double, b: Double): Double
-
 @JsFun("(x, e) => globalThis.kmCoreNapiV2.kmPowif32(x, e)")
 private external fun wasmKmPowif32(x: Double, e: Int): Double
-
 @JsFun("(x, e) => globalThis.kmCoreNapiV2.kmPowif64(x, e)")
 private external fun wasmKmPowif64(x: Double, e: Int): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmCopysignf32(a, b)")
 private external fun wasmKmCopysignf32(a: Double, b: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmCopysignf64(a, b)")
 private external fun wasmKmCopysignf64(a: Double, b: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMinnumf32(a, b)")
 private external fun wasmKmMinnumf32(a: Double, b: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMinnumf64(a, b)")
 private external fun wasmKmMinnumf64(a: Double, b: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMaxnumf32(a, b)")
 private external fun wasmKmMaxnumf32(a: Double, b: Double): Double
-
 @JsFun("(a, b) => globalThis.kmCoreNapiV2.kmMaxnumf64(a, b)")
 private external fun wasmKmMaxnumf64(a: Double, b: Double): Double
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmFloatToU64Unchecked(v)")
 private external fun wasmKmFloatToU64Unchecked(v: Double): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmDoubleToU64Unchecked(v)")
 private external fun wasmKmDoubleToU64Unchecked(v: Double): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmFloatToU128Unchecked(v)")
 private external fun wasmKmFloatToU128Unchecked(v: Double): Int
-
 @JsFun("(v) => globalThis.kmCoreNapiV2.kmDoubleToU128Unchecked(v)")
 private external fun wasmKmDoubleToU128Unchecked(v: Double): Int
 

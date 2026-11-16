@@ -282,24 +282,24 @@ public fun getLastError(): WinError {
  */
 public open class WinError internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<UInt>,
+    public val fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout(),
 ) {
     public var code: UInt
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    internal constructor(code: UInt, fieldLayout: TypeLayout<UInt>) : this(allocateNativeCell(code, fieldLayout), fieldLayout)
+    internal constructor(code: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()) : this(allocateNativeCell(code, fieldLayout), fieldLayout)
 
     public fun pointerLayout(): TypeLayout<WinError> = TransparentTypeLayout(fieldLayout, { ptr, layout -> WinError(ptr, layout) }, { it.code })
 
     public open fun clone(): WinError = WinError(code, fieldLayout)
 
     public companion object {
-        public operator fun invoke(code: UInt, fieldLayout: TypeLayout<UInt>): WinError = WinError(code, fieldLayout)
+        public operator fun invoke(code: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): WinError = WinError(code, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt>): WinError = WinError(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): WinError = WinError(fieldStorage, fieldLayout)
 
-        public fun new(code: UInt, fieldLayout: TypeLayout<UInt>): WinError = WinError(code = code, fieldLayout = fieldLayout)
+        public fun new(code: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): WinError = WinError(code = code, fieldLayout = fieldLayout)
 
         // Error code constants.
         // The constant names should be the same as the winapi constants except for the leading `ERROR_`.

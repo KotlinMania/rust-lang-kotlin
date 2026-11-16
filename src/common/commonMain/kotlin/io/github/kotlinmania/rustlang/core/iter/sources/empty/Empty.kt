@@ -53,23 +53,21 @@ public fun <T> empty(): Empty<T> = Empty(Unit)
  */
 public open class Empty<T>(
     public var value: Unit,
-) : TrustedLen<Empty<T>>,
-    Iterable<T> {
+) : TrustedLen<Empty<T>>, Iterable<T> {
     public var field0: Unit
         get() = value
         set(v) {
             value = v
         }
 
-    override fun iterator(): Iterator<T> =
-        object : AbstractIterator<T>() {
-            override fun computeNext() {
-                when (val v = this@Empty.next()) {
-                    null -> done()
-                    else -> setNext(v)
-                }
+    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
+        override fun computeNext() {
+            when (val v = this@Empty.next()) {
+                null -> done()
+                else -> setNext(v)
             }
         }
+    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = DebugStruct(f, "Empty").finish()
 

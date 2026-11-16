@@ -52,11 +52,10 @@ public fun addLoadedImages(ret: List<Library>) {
 }
 
 public fun loadLibrary(me: Moduleentry32w): Library? {
-    val name =
-        run {
-            val pos = (me.szExePath.indexOfFirst({ i -> i == 0 }).takeIf { it >= 0 } ?: me.szExePath.size)
-            OsString.fromWide(((me.szExePath).sliceArray(0 until pos)))
-        }
+    val name = run {
+        val pos = (me.szExePath.indexOfFirst({ i -> i == 0 }).takeIf { it >= 0 } ?: me.szExePath.size)
+        OsString.fromWide(((me.szExePath).sliceArray(0 until pos)))
+    }
     // MinGW libraries currently don't support ASLR
     // (rust-lang/rust#16514), but DLLs can still be relocated around in
     // the address space. It appears that addresses in debug info are

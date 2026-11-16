@@ -1,10 +1,12 @@
 package io.github.kotlinmania.rustlang.getopts
 
+import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.getopts.Fail.*
 import io.github.kotlinmania.rustlang.getopts.HasArg.*
 import io.github.kotlinmania.rustlang.getopts.Name.*
 import io.github.kotlinmania.rustlang.getopts.Occur.*
 import io.github.kotlinmania.rustlang.getopts.Optval.*
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 /**
  * What parsing style to use when parsing arguments.
@@ -141,33 +143,32 @@ public sealed class Fail {
 
     public fun rustEquals(other: Fail): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder) {
+    public open fun fmt(f: StringBuilder): io.github.kotlinmania.rustlang.core.result.Result<Unit, Error> =
         when (this) {
             is ArgumentMissing -> {
                 val (nm) = this
-                f.append("Argument to option '$nm' missing")
+                run { f.append("Argument to option '$nm' missing"); RustResult.Ok(Unit) }
             }
             is UnrecognizedOption -> {
                 val (nm1) = this
-                f.append("Unrecognized option: '$nm1'")
+                run { f.append("Unrecognized option: '$nm1'"); RustResult.Ok(Unit) }
             }
             is OptionMissing -> {
                 val (nm2) = this
-                f.append("Required option '$nm2' missing")
+                run { f.append("Required option '$nm2' missing"); RustResult.Ok(Unit) }
             }
             is OptionDuplicated -> {
                 val (nm3) = this
-                f.append("Option '$nm3' given more than once")
+                run { f.append("Option '$nm3' given more than once"); RustResult.Ok(Unit) }
             }
             is UnexpectedArgument -> {
                 val (nm4) = this
-                f.append("Option '$nm4' does not take an argument")
+                run { f.append("Option '$nm4' does not take an argument"); RustResult.Ok(Unit) }
             }
         }
-    }
 }
 
 /**
  * The result of parsing a command line with a set of options.
  */
-public typealias Result = Result<Matches, Fail>
+public typealias Result = io.github.kotlinmania.rustlang.core.result.Result<Matches, Fail>

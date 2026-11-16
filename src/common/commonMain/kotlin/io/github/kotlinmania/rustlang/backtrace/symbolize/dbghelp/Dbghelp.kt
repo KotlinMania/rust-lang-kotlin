@@ -94,21 +94,20 @@ public open class Symbol internal constructor(
             filename: ConstPtr?,
             filenameCache: OsString?,
             marker: Unit,
-        ): Symbol =
-            Symbol(
-                nameCtorArg = name,
-                addrCtorArg = addr,
-                line = line,
-                filenameCtorArg = filename,
-                filenameCache = filenameCache,
-                marker = marker,
-            )
+        ): Symbol = Symbol(
+            nameCtorArg = name,
+            addrCtorArg = addr,
+            line = line,
+            filenameCtorArg = filename,
+            filenameCache = filenameCache,
+            marker = marker,
+        )
     }
 }
 
 public open class Aligned8<T>(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T>,
+    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) {
     public var field0: T
         get() = value
@@ -118,11 +117,9 @@ public open class Aligned8<T>(
 
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) {
-            fieldLayout.writeNative(fieldStorage.rawAddress, value)
-        }
+        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
 
-    public constructor(value: T, fieldLayout: TypeLayout<T>) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
+    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, AlignedTypeLayout(fieldLayout, 8L)), AlignedTypeLayout(fieldLayout, 8L))
 
     public fun pointerLayout(): TypeLayout<Aligned8<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Aligned8<T>(ptr, layout) }, { it.value })
 }
@@ -132,15 +129,12 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
     val dbghelp1 =
         run {
             val matchVal = Dbghelp.init()
-            when (matchVal) {
-                is Result.Ok<*, *> -> {
-                    val dbghelp = matchVal.value
-                    dbghelp
-                }
-                is Result.Err<*, *> -> {
-                    return
-                }
-            }
+            when (matchVal) { is Result.Ok -> {
+                val dbghelp = matchVal.value
+                dbghelp
+            }; is Result.Err -> {
+                return
+            } }
         }
     run {
         when (what) {
@@ -247,10 +241,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutabl
             filename = ptrFromRef(Slice.fromRawParts(base, len1))
         }
     }
-    cb(
-        io.github.kotlinmania.rustlang.backtrace.symbolize
-            .Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)),
-    )
+    cb(io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol(inner = Symbol(name = name, addr = mutPtrFromRustCast(info.address), line = lineno, filename = filename, filenameCache = cache(filename), marker = PhantomData)))
 }
 
 public fun cache(filename: ConstPtr?): OsString? = filename?.let({ f -> OsString.fromWide(f) })

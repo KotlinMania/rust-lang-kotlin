@@ -33,13 +33,13 @@ public fun <F : FloatExt<F>> biasedFpToFloat(x: BiasedFp, fromU64BitsFFn: (ULong
 public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
     val s1 = s
     var s2 = s1.encodeToByteArray().map { it.toUByte() }
-    val c = s2.first() ?: return Result.Err(pfeEmpty())
+    val c = s2.first() ?: return Result.Err<F, ParseFloatError>(pfeEmpty())
     val negative = c == 45u
     if (c == 45u || c == 43u) {
         s2 = ((s2).subList(1, (s2).size))
     }
     if (s2.isEmpty()) {
-        return Result.Err(pfeInvalid())
+        return Result.Err<F, ParseFloatError>(pfeInvalid())
     }
     var num =
         run {
@@ -49,12 +49,8 @@ public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
                     val r = matchVal
                     r
                 }
-                matchVal == null && parseInfNan(s2, negative) != null -> {
-                    return Result.Ok(value)
-                }
-                else -> {
-                    return Result.Err(pfeInvalid())
-                }
+                matchVal == null && parseInfNan(s2, negative) != null -> { return Result.Ok<F, ParseFloatError>(value) }
+                else -> { return Result.Err<F, ParseFloatError>(pfeInvalid()) }
             }
         }
     num.negative = negative
@@ -63,7 +59,7 @@ public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
             null -> {}
             else -> {
                 val value = matchVal1
-                return Result.Ok(value)
+                return Result.Ok<F, ParseFloatError>(value)
             }
         }
     }
@@ -84,7 +80,7 @@ public fun <F : Lemire<F>> dec2flt(s: String): Result<F, ParseFloatError> {
     if (num.negative) {
         float = -float
     }
-    return Result.Ok(float)
+    return Result.Ok<F, ParseFloatError>(float)
 }
 
 public fun lemirePow10FastPathF16(exponent: Int): F16 {

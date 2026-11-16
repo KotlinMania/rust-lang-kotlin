@@ -52,10 +52,9 @@ public open class SipHasher13 internal constructor(
     public companion object {
         public operator fun invoke(
             hasher: Hasher<Sip13Rounds>,
-        ): SipHasher13 =
-            SipHasher13(
-                hasherCtorArg = hasher,
-            )
+        ): SipHasher13 = SipHasher13(
+            hasherCtorArg = hasher,
+        )
 
         /**
          * Creates a new `SipHasher13` with the two initial keys set to 0.
@@ -85,10 +84,9 @@ public open class SipHasher24 internal constructor(
     public companion object {
         public operator fun invoke(
             hasher: Hasher<Sip24Rounds>,
-        ): SipHasher24 =
-            SipHasher24(
-                hasherCtorArg = hasher,
-            )
+        ): SipHasher24 = SipHasher24(
+            hasherCtorArg = hasher,
+        )
     }
 }
 
@@ -317,37 +315,28 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
     if (i + 3 < len) {
         // SAFETY: `i` cannot be greater than `len`, and the caller must guarantee
         // that the index start..start+len is in bounds.
-        out =
-            (
-                run {
-                    if (false) {
-                        check(start + i + sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= buf.size)
-                    }
-                    val localStorageL1C0 = AddressableLocal(0.toUInt(), PrimitiveLayouts.U32)
-                    val data by localStorageL1C0
-                    copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
-                    data
-                }
-            ).toULong()
+        out = (run {
+            if (false) {
+                check(start + i + sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32) <= buf.size)
+            }
+            val localStorageL1C0 = AddressableLocal(0.toUInt(), PrimitiveLayouts.U32)
+            val data by localStorageL1C0
+            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32))
+            data
+        }).toULong()
         i += 4
     }
     if (i + 1 < len) {
         // SAFETY: same as above.
-        out = out or (
-            (
-                (
-                    run {
-                        if (false) {
-                            check(start + i + sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16) <= buf.size)
-                        }
-                        val localStorageL1C0 = AddressableLocal(0.toUShort(), PrimitiveLayouts.U16)
-                        val data1 by localStorageL1C0
-                        copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
-                        data1
-                    }
-                ).toULong()
-            ) shl (i * 8).toInt()
-        )
+        out = out or (((run {
+            if (false) {
+                check(start + i + sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16) <= buf.size)
+            }
+            val localStorageL1C0 = AddressableLocal(0.toUShort(), PrimitiveLayouts.U16)
+            val data1 by localStorageL1C0
+            copyNonoverlapping(ConstPtr((buf.asPtr()).rawAddress + ((start + i).toLong() * (PrimitiveLayouts.U8).strideBytes)), (MutPtr(localStorageL1C0.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
+            data1
+        }).toULong()) shl (i * 8).toInt())
         i += 2
     }
     if (i < len) {

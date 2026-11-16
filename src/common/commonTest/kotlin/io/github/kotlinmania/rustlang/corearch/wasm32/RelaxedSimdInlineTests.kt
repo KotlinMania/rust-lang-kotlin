@@ -8,10 +8,9 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 public fun compareBytes(a: V128, b: List<V128>) {
     val a1: UByteArray = transmute(a)
     if (b.any({ b1 ->
-            val b2: UByteArray = transmute(b1)
-            a1.contentEquals(b2)
-        })
-    ) {
+        val b2: UByteArray = transmute(b1)
+        a1.contentEquals(b2)
+    })) {
         return
     }
     println("input vector $a")
