@@ -162,10 +162,9 @@ public interface AsRef<T> {
  * into a byte slice (`[UByte]`) or a byte vector (`List<UByte>`), respectively.
  *
  * ```kotlin
- * open class Document(public var info: String, public var content: List<UByte>) : AsMut<T> {
- *     public override fun asMut(): T {
- *         return this.content.asMut()
- *     }
+ * open class Document(public var info: String, public var content: List<UByte>)
+ * fun <T> Document.asMut(): T {
+ *     return this.content.asMut()
  * }
  * fun <T : AsMut<List<UByte>>> caesar(data: T, key: UByte) {
  *     for (byte in data.asMut()) {

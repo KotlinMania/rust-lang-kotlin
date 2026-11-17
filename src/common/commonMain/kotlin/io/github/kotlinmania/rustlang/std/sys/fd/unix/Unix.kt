@@ -8,6 +8,9 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -50,12 +53,12 @@ public open class FileDesc(
     public open fun tryClone(): Result<FileDesc, Error> = this.duplicate()
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(Read(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(Read(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
     public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(readv(this.asRawFd(), ((bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(readv(this.asRawFd(), ((bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
@@ -70,7 +73,7 @@ public open class FileDesc(
 
     public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, Error> {
         // SAFETY: `cursor.asMut()` starts with `cursor.capacity()` writable bytes
-        val ret = when (val tryResult = cvt(Read(this.asRawFd(), cursor.asMut().asMutPtr().cast(), minOf(cursor.capacity(), READ_LIMIT)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(Read(this.asRawFd(), cursor.asMut().asMutPtr().cast(), minOf(cursor.capacity(), READ_LIMIT)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         // SAFETY: `ret` bytes were written to the initialized portion of the buffer
         run {
             cursor.advance(ret.toInt())
@@ -80,7 +83,7 @@ public open class FileDesc(
 
     public open fun readBufAt(cursor: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
         // SAFETY: `cursor.asMut()` starts with `cursor.capacity()` writable bytes
-        val ret = when (val tryResult = cvt(pread64(this.asRawFd(), cursor.asMut().asMutPtr().cast(), minOf(cursor.capacity(), READ_LIMIT), offset.toLong()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(pread64(this.asRawFd(), cursor.asMut().asMutPtr().cast(), minOf(cursor.capacity(), READ_LIMIT), offset.toLong()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         // SAFETY: `ret` bytes were written to the initialized portion of the buffer
         run {
             cursor.advance(ret.toInt())
@@ -89,17 +92,17 @@ public open class FileDesc(
     }
 
     public open fun readVectoredAt(bufs: MutableList<IoSliceMut>, offset: ULong): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(preadv(this.asRawFd(), ((bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt(), offset))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(preadv(this.asRawFd(), ((bufs.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt(), offset))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
     public open fun write(buf: List<UByte>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.write(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.write(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
     public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(writev(this.asRawFd(), (bufs.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(writev(this.asRawFd(), (bufs.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
@@ -108,26 +111,26 @@ public open class FileDesc(
     public open fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error> = cvt(pwrite64(this.asRawFd(), (buf.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT), offset.toLong())).map({ n -> n.toInt() })
 
     public open fun writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(pwritev(this.asRawFd(), (bufs.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt(), offset))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(pwritev(this.asRawFd(), (bufs.asPtr()).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(bufs.size, maxIov()).toInt(), offset))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
     public open fun setCloexec(): Result<Unit, Error> {
         return run {
-            when (val tryResult = cvt(Ioctl(this.asRawFd(), FIOCLEX))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = cvt(Ioctl(this.asRawFd(), FIOCLEX))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             Result.Ok<Unit, Error>(Unit)
         }
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
         return run {
-            when (val tryResult = cvt(Ioctl(this.asRawFd(), FIONBIO, v))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = cvt(Ioctl(this.asRawFd(), FIONBIO, v))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             Result.Ok<Unit, Error>(Unit)
         }
     }
 
     public open fun duplicate(): Result<FileDesc, Error> {
-        return Result.Ok<FileDesc, Error>(FileDesc(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<FileDesc, Error>(tryResult.error) }))
+        return Result.Ok<FileDesc, Error>(FileDesc(when (val tryResult = this.value.tryClone()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<FileDesc, Error>(tryResult.errValue()) }))
     }
 
     public override fun asInner(): OwnedFd = this.value

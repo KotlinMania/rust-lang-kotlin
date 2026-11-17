@@ -376,7 +376,7 @@ public fun <IntoIter, ExtendT, I, T> defaultExtend(collection: ExtendT, iter: I)
         }
         iter1.forEach(extender(this))
     }
-    fun <ExtendT, I, T> ExtendT.extendI(iter1: I) where ExtendT : Extend<T>, I : TrustedLen {
+    fun <ExtendT, I, T> ExtendT.extendI(iter1: I) where ExtendT : Extend<T>, I : TrustedLen<T> {
         val (lowerBound, upperBound) = iter1.sizeHint()
         if (lowerBound > 0) {
             this.extendReserve(lowerBound)
@@ -398,19 +398,19 @@ public fun <IntoIter, A, B, ExA, ExB, Iter : IntoIterator<Pair<A, B>, IntoIter>>
 }
 
 public fun <A, B, ExA, ExB> Pair<ExA, ExB>.extendOne(item: Pair<A, B>) where ExA : Extend<A>, ExB : Extend<B> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
+    this.first.extendOne(item.first)
+    this.second.extendOne(item.second)
 }
 
 public fun <A, B, ExA, ExB> Pair<ExA, ExB>.extendReserve(additional: Int) where ExA : Extend<A>, ExB : Extend<B> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
+    this.first.extendReserve(additional)
+    this.second.extendReserve(additional)
 }
 
 public fun <A, B, ExA, ExB> Pair<ExA, ExB>.extendOneUnchecked(item: Pair<A, B>) where ExA : Extend<A>, ExB : Extend<B> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
+        this.first.extendOneUnchecked(item.first)
+        this.second.extendOneUnchecked(item.second)
     }
 }
 
@@ -425,22 +425,22 @@ public fun <IntoIter, A, B, C, ExA, ExB, ExC, Iter : IntoIterator<Triple<A, B, C
 }
 
 public fun <A, B, C, ExA, ExB, ExC> Triple<ExA, ExB, ExC>.extendOne(item: Triple<A, B, C>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
-    this.value.extendOne(item.first)
-    this.field1.extendOne(item.second)
-    this.field2.extendOne(item.third)
+    this.first.extendOne(item.first)
+    this.second.extendOne(item.second)
+    this.third.extendOne(item.third)
 }
 
 public fun <A, B, C, ExA, ExB, ExC> Triple<ExA, ExB, ExC>.extendReserve(additional: Int) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
-    this.value.extendReserve(additional)
-    this.field1.extendReserve(additional)
-    this.field2.extendReserve(additional)
+    this.first.extendReserve(additional)
+    this.second.extendReserve(additional)
+    this.third.extendReserve(additional)
 }
 
 public fun <A, B, C, ExA, ExB, ExC> Triple<ExA, ExB, ExC>.extendOneUnchecked(item: Triple<A, B, C>) where ExA : Extend<A>, ExB : Extend<B>, ExC : Extend<C> {
     run {
-        this.value.extendOneUnchecked(item.first)
-        this.field1.extendOneUnchecked(item.second)
-        this.field2.extendOneUnchecked(item.third)
+        this.first.extendOneUnchecked(item.first)
+        this.second.extendOneUnchecked(item.second)
+        this.third.extendOneUnchecked(item.third)
     }
 }
 

@@ -35,6 +35,8 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -51,6 +53,10 @@ import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -276,7 +282,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                         while (true) {
                             val matchVal2 = inEdge.rightKv()
                             if (matchVal2 !is Result.Ok<*, *>) break
-                            val kv = (matchVal2 as Result.Ok<*, *>).value
+                            val kv = (matchVal2 as Result.Ok<*, *>).okValue()
                             val (k, v) = kv.intoKv()
                             inEdge = kv.rightEdge()
                             outNode.push(k.clone(), v.clone())
@@ -295,7 +301,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                         while (true) {
                             val matchVal3 = inEdge1.rightKv()
                             if (matchVal3 !is Result.Ok<*, *>) break
-                            val kv1 = (matchVal3 as Result.Ok<*, *>).value
+                            val kv1 = (matchVal3 as Result.Ok<*, *>).okValue()
                             val (k1, v1) = kv1.intoKv()
                             inEdge1 = kv1.rightEdge()
                             val k2 = k1.clone()
@@ -1656,7 +1662,7 @@ public fun <K, A : AllocatorClone, Q> BTreeMap<K, SetValZST, A>.getOrInsertWith(
 public open class Iter<K, V> internal constructor(
     rangeCtorArg: LazyLeafRange<Immut, K, V>,
     public var length: Int,
-) : TrustedLen, Iterable<Pair<K, V>> {
+) : TrustedLen<Any>, Iterable<Pair<K, V>> {
     public var range: LazyLeafRange<Immut, K, V> = rangeCtorArg
         internal set
 
@@ -1737,7 +1743,7 @@ public open class IterMut<K, V> internal constructor(
     public var length: Int,
     // Be invariant in `K` and `V`
     public var marker: Unit,
-) : TrustedLen, Iterable<Pair<K, V>> {
+) : TrustedLen<Any>, Iterable<Pair<K, V>> {
     public var range: LazyLeafRange<ValMut, K, V> = rangeCtorArg
         internal set
 
@@ -1828,7 +1834,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
      */
     public var alloc: A,
-) : TrustedLen, Iterable<Pair<K, V>> {
+) : TrustedLen<Any>, Iterable<Pair<K, V>> {
     public var range: LazyLeafRange<Dying, K, V> = rangeCtorArg
         internal set
 
@@ -1958,7 +1964,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
  */
 public open class Keys<K, V>(
     public var inner: Iter<K, V>,
-) : TrustedLen, Iterable<K> {
+) : TrustedLen<Any>, Iterable<K> {
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@Keys.next()) {
@@ -2011,7 +2017,7 @@ public open class Keys<K, V>(
  */
 public open class Values<K, V>(
     public var inner: Iter<K, V>,
-) : TrustedLen, Iterable<V> {
+) : TrustedLen<Any>, Iterable<V> {
     override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@Values.next()) {
@@ -2060,7 +2066,7 @@ public open class Values<K, V>(
  */
 public open class ValuesMut<K, V>(
     public var inner: IterMut<K, V>,
-) : TrustedLen, Iterable<V> {
+) : TrustedLen<Any>, Iterable<V> {
     override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@ValuesMut.next()) {
@@ -2107,7 +2113,7 @@ public open class ValuesMut<K, V>(
  */
 public open class IntoKeys<K, V, A : AllocatorClone> internal constructor(
     innerCtorArg: IntoIter<K, V, A>,
-) : TrustedLen, Iterable<K> {
+) : TrustedLen<Any>, Iterable<K> {
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
@@ -2167,7 +2173,7 @@ public open class IntoKeys<K, V, A : AllocatorClone> internal constructor(
  */
 public open class IntoValues<K, V, A : AllocatorClone> internal constructor(
     innerCtorArg: IntoIter<K, V, A>,
-) : TrustedLen, Iterable<V> {
+) : TrustedLen<Any>, Iterable<V> {
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
@@ -2415,7 +2421,7 @@ public open class ExtractIfInner<K, V, R> internal constructor(
         while (true) {
             val matchVal = (this.curLeafEdge.also { this.curLeafEdge = null } ?: return null).nextKv()
             if (matchVal !is Result.Ok<*, *>) break
-            val kv = (matchVal as Result.Ok<*, *>).value
+            val kv = (matchVal as Result.Ok<*, *>).okValue()
             val (k, v) = kv.kvMut()
             // On creation, we navigated directly to the left bound, so we need only check the
             // right bound here to decide whether to stop.
@@ -2572,12 +2578,12 @@ public open class Cursor<K, V> internal constructor(
         return run {
             val matchVal = current.nextKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 val result = kv.intoKv()
                 this.current = kv.nextLeafEdge()
                 result
             }; is Result.Err<*, *> -> {
-                val root = matchVal.error
+                val root = matchVal.errValue()
                 this.current = root.lastLeafEdge()
                 null
             } }
@@ -2596,12 +2602,12 @@ public open class Cursor<K, V> internal constructor(
         return run {
             val matchVal = current.nextBackKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 val result = kv.intoKv()
                 this.current = kv.nextBackLeafEdge()
                 result
             }; is Result.Err<*, *> -> {
-                val root = matchVal.error
+                val root = matchVal.errValue()
                 this.current = root.firstLeafEdge()
                 null
             } }
@@ -2862,7 +2868,7 @@ public open class CursorMutKey<K, V, A> internal constructor(
         return run {
             val matchVal = current.nextKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 // SAFETY: The key/value pointers remain valid even after the
                 // cursor is moved forward. The scopes then prevent any
                 // further access to the cursor.
@@ -2872,7 +2878,7 @@ public open class CursorMutKey<K, V, A> internal constructor(
                 // ignore-tidy-undocumented-unchecked
                 Pair(RustMutableReference(MutPtr((k1).rawAddress), UnresolvedTypeLayout<Any?>()), RustMutableReference(MutPtr((v1).rawAddress), UnresolvedTypeLayout<Any?>()))
             }; is Result.Err<*, *> -> {
-                val root = matchVal.error
+                val root = matchVal.errValue()
                 this.current = root.lastLeafEdge()
                 null
             } }
@@ -2891,7 +2897,7 @@ public open class CursorMutKey<K, V, A> internal constructor(
         return run {
             val matchVal = current.nextBackKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 // SAFETY: The key/value pointers remain valid even after the
                 // cursor is moved forward. The scopes then prevent any
                 // further access to the cursor.
@@ -2901,7 +2907,7 @@ public open class CursorMutKey<K, V, A> internal constructor(
                 // ignore-tidy-undocumented-unchecked
                 Pair(RustMutableReference(MutPtr((k1).rawAddress), UnresolvedTypeLayout<Any?>()), RustMutableReference(MutPtr((v1).rawAddress), UnresolvedTypeLayout<Any?>()))
             }; is Result.Err<*, *> -> {
-                val root = matchVal.error
+                val root = matchVal.errValue()
                 this.current = root.firstLeafEdge()
                 null
             } }

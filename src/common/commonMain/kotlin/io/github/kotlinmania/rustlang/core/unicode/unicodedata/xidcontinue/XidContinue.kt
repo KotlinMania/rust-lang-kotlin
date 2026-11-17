@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.xidcontinue
 
-import io.github.kotlinmania.rustlang.core.char.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.ShortOffsetRunHeader
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 

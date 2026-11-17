@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.libc.pthreadMutexDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadMutexInit
 import io.github.kotlinmania.rustlang.libc.pthreadMutexLock

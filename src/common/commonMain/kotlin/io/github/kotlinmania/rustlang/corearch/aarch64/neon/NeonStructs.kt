@@ -1,9 +1,9 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.*
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -12,8 +12,8 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 /**
  * ARM-specific 64-bit wide vector of one packed `Double`.
@@ -37,9 +37,9 @@ public open class Float64x1T(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): DoubleArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.doubleArray((1).toInt()))
+    public open fun asMutArray(): DoubleArray = (PrimitiveArrayLayouts.doubleArray((1).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "float64x1_t", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("float64x1_t"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<Float64x1T> =
@@ -65,7 +65,7 @@ public open class Float64x1T(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): Float64x1T = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Double): Float64x1T = run { val simdArg0 = value; Float64x1T() }
 
         public fun from(simd: Simd<Double>): Float64x1T = transmuteWithLayouts<Simd<Double>, Float64x1T>(simd, UnresolvedTypeLayout<Simd<Double>>(), Float64x1T.typeLayout())
     }
@@ -93,9 +93,9 @@ public open class Float64x2T(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): DoubleArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.doubleArray((2).toInt()))
+    public open fun asMutArray(): DoubleArray = (PrimitiveArrayLayouts.doubleArray((2).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "float64x2_t", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("float64x2_t"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<Float64x2T> =
@@ -121,7 +121,7 @@ public open class Float64x2T(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): Float64x2T = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Double): Float64x2T = run { val simdArg0 = value; Float64x2T() }
 
         public fun from(simd: Simd<Double>): Float64x2T = transmuteWithLayouts<Simd<Double>, Float64x2T>(simd, UnresolvedTypeLayout<Simd<Double>>(), Float64x2T.typeLayout())
     }

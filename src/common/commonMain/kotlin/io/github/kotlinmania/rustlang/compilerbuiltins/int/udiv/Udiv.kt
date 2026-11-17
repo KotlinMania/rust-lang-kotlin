@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 
 public fun udivsi3(n: UInt, d: UInt): UInt {
     fun udivsi3(n1: UInt, d1: UInt): UInt = 0u

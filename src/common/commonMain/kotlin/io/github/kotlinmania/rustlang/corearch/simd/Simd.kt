@@ -4,6 +4,10 @@ package io.github.kotlinmania.rustlang.corearch.simd
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -12,17 +16,18 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // Internal `@repr(simd)` types
 
 public fun <T> simdImax(a: T, b: T): T {
-    val mask: T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-    return run { val _simdArg0 = mask; val _simdArg1 = a; val _simdArg2 = b; _simdArg1 }
+    val mask: T = run { val simdArg0 = a; val simdArg1 = b; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); val res = (UnresolvedTypeLayout<T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); res } }
+    return run { val simdArg0 = mask; val simdArg1 = a; val simdArg2 = b; simdArg1 }
 }
 
 public fun <T> simdImin(a: T, b: T): T {
-    val mask: T = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
-    return run { val _simdArg0 = mask; val _simdArg1 = a; val _simdArg2 = b; _simdArg1 }
+    val mask: T = run { val simdArg0 = a; val simdArg1 = b; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); val res = (UnresolvedTypeLayout<T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); res } }
+    return run { val simdArg0 = mask; val simdArg1 = a; val simdArg2 = b; simdArg1 }
 }
 
 /**
@@ -48,7 +53,7 @@ public open class Simd<T>(
     public open fun extractDyn(index: Int): T {
         check(index < N)
         // SAFETY: self is a vector, T its element type.
-        return run { val _simdArg0 = this; val _simdArg1 = index.toUInt(); _simdArg0 }
+        return run { val simdArg0 = this; val simdArg1 = index.toUInt(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); val res = (UnresolvedTypeLayout<T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); res } }
     }
 
     public open fun asArray(): List<T> {
@@ -65,7 +70,7 @@ public open class Simd<T>(
 
     public open fun eq(other: Simd<T>): Boolean = this.asArray() == other.asArray()
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "Simd", this.asArray(), n)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = debugSimdFinish(f, "Simd", this.asArray(), n)
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>, n: Int = 0): TypeLayout<Simd<T>> =
@@ -95,7 +100,7 @@ public open class Simd<T>(
 
         public fun <T> fromArray(elements: List<T>, n: Int): Simd<T> = Simd(elements)
 
-        public fun <T> splat(value: T, n: Int): Simd<T> = run { val _simdArg0 = value; _simdArg0 }
+        public fun <T> splat(value: T, n: Int): Simd<T> = run { val simdArg0 = value; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
     }
 }
 
@@ -144,7 +149,7 @@ public open class SimdM<T>(
 
     public open fun eq(other: SimdM<T>): Boolean = this.asArray() == other.asArray()
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "SimdM", this.asArray(), n)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = debugSimdFinish(f, "SimdM", this.asArray(), n)
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>, n: Int = 0): TypeLayout<SimdM<T>> =
@@ -194,7 +199,7 @@ public open class SimdM<T>(
             return SimdM(internal)
         }
 
-        public fun <T> splat(value: Boolean, n: Int): SimdM<T> = run { val _simdArg0 = SimdM.boolToInternal(value, n); _simdArg0 }
+        public fun <T> splat(value: Boolean, n: Int): SimdM<T> = run { val simdArg0 = SimdM.boolToInternal(value, n); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<SimdM<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SimdM<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<SimdM<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<SimdM<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<SimdM<T>>()).alignBytes)); res } }
     }
 }
 
@@ -337,4 +342,4 @@ public typealias I32x32 = Simd<Int>
  * Used to continue `Debug`ging SIMD types as `MySimd(1, 2, 3, 4)`, as they
  * were before moving to array-based simd.
  */
-public fun <T> debugSimdFinish(formatter: Formatter, typeName: String, array: List<T>, n: Int): Result = Formatter.debugStructFieldsFinish(formatter, typeName, fromFn<Any>({ i -> array[i] }, n))
+public fun <T> debugSimdFinish(formatter: StringBuilder, typeName: String, array: List<T>, n: Int): Result<Unit, Error> = Formatter.debugStructFieldsFinish(formatter, typeName, fromFn<Any>({ i -> array[i] }, n))

@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -199,8 +201,8 @@ public fun getenv(k: OsStr): OsString? {
 public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
     // SAFETY: We ensure that k and v are null-terminated wide strings.
     return run {
-        val k1 = when (val tryResult = toU16s(k)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
-        val v1 = when (val tryResult = toU16s(v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        val k1 = when (val tryResult = toU16s(k)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+        val v1 = when (val tryResult = toU16s(v)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         cvt(setEnvironmentVariableW(k1.asPtr(), v1.asPtr())).map({ drop(it) })
     }
 }
@@ -208,7 +210,7 @@ public fun setenv(k: OsStr, v: OsStr): Result<Unit, io.github.kotlinmania.rustla
 public fun unsetenv(n: OsStr): Result<Unit, io.github.kotlinmania.rustlang.core.io.error.Error> {
     // SAFETY: We ensure that v is a null-terminated wide strings.
     return run {
-        val v = when (val tryResult = toU16s(n)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        val v = when (val tryResult = toU16s(n)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         cvt(setEnvironmentVariableW(v.asPtr(), ConstPtr(0L))).map({ drop(it) })
     }
 }

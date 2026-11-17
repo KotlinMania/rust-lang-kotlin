@@ -429,10 +429,10 @@ public open class Wtf8Buf(
             val string = Wtf8Buf.withCapacity(v.size)
             for (item in Char.decodeUtf16(v.iter().cloned())) {
                 when (item) { is Result.Ok<*, *> -> {
-                    val ch = item.value
+                    val ch = item.okValue()
                     string.pushChar(ch)
                 }; is Result.Err<*, *> -> {
-                    val surrogate = item.error
+                    val surrogate = item.errValue()
                     val surrogate1 = surrogate.unpairedSurrogate()
                     // SAFETY: Surrogates are known to be in the code point range.
                     val codePoint = CodePoint.fromU32Unchecked(surrogate1.toUInt())

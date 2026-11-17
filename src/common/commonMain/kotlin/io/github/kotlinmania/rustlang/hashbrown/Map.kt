@@ -1227,10 +1227,10 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
         return run {
             val matchVal = this.table.findOrFindInsertIndex(hash, equivalent, hasher)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val bucket = matchVal.value
+                val bucket = matchVal.okValue()
                 replace(bucket.asMut().second, v)
             }; is Result.Err<*, *> -> {
-                val index = matchVal.error
+                val index = matchVal.errValue()
                 run {
                     this.table.insertAtIndex(hash, index, Pair(k, v))
                 }

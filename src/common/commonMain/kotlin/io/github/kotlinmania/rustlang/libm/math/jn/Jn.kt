@@ -35,7 +35,7 @@ public fun jn(n: Int, x: Double): Double {
     sign = (ix shr 31) != 0u
     ix = ix and 0x7fffffffu
     // -lx == !lx + 1
-    if (ix or ((lx or (!lx).wrappingAdd(1)) shr 31) > 0x7ff00000u) {
+    if (ix or ((lx or ((lx.inv()) + 1u)) shr 31) > 0x7ff00000u) {
         // nan
         return x1
     }
@@ -249,7 +249,7 @@ public fun yn(n: Int, x: Double): Double {
     sign = (ix shr 31) != 0u
     ix = ix and 0x7fffffffu
     // -lx == !lx + 1
-    if (ix or ((lx or (!lx).wrappingAdd(1)) shr 31) > 0x7ff00000u) {
+    if (ix or ((lx or ((lx.inv()) + 1u)) shr 31) > 0x7ff00000u) {
         // nan
         return x
     }

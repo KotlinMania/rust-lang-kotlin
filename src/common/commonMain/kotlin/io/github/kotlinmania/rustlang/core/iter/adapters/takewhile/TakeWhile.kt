@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/take_while.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.takewhile
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference

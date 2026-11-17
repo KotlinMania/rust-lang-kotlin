@@ -1,12 +1,14 @@
 // port-lint: source term/win.rs
 package io.github.kotlinmania.rustlang.test.term.win
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.test.term.color.BLACK
@@ -268,14 +270,14 @@ public fun colorToBits(color: Color): UShort {
 public fun bitsToColor(bits: UShort): Color {
     val color =
         when (bits and 0x7u.toUShort()) {
-            0 -> BLACK
-            0x1 -> BLUE
-            0x2 -> GREEN
-            0x4 -> RED
-            0x6 -> YELLOW
-            0x5 -> MAGENTA
-            0x3 -> CYAN
-            0x7 -> WHITE
+            0u.toUShort() -> BLACK
+            0x1u.toUShort() -> BLUE
+            0x2u.toUShort() -> GREEN
+            0x4u.toUShort() -> RED
+            0x6u.toUShort() -> YELLOW
+            0x5u.toUShort() -> MAGENTA
+            0x3u.toUShort() -> CYAN
+            0x7u.toUShort() -> WHITE
             else -> error("unreachable")
         }
     return color or (UInt.from(bits) and 0x8u)

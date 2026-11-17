@@ -39,8 +39,8 @@ public open class Condvar internal constructor(
             when {
                 matchVal is Result.Ok<*, *> -> {}
                 // Stored the address
-                matchVal is Result.Err<*, *> && matchVal.error == addr -> {
-                    val n = matchVal.error
+                matchVal is Result.Err<*, *> && matchVal.errValue() == addr -> {
+                    val n = matchVal.errValue()
                 }
                 // Lost a race to store the same address
                 else -> error("attempted to use a condition variable with two mutexes")

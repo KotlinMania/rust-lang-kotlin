@@ -55,11 +55,11 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
     var opts =
         when (val matchVal = parseOpts(args)) {
             is Result.Ok<*, *> -> {
-                val o = (matchVal as Result.Ok<*, *>).value
+                val o = (matchVal as Result.Ok<*, *>).okValue()
                 o
             }
             is Result.Err<*, *> -> {
-                val msg = (matchVal as Result.Err<*, *>).error
+                val msg = (matchVal as Result.Err<*, *>).errValue()
                 println("error: $msg")
                 return ERROR_EXIT_CODE.into()
             }
@@ -72,7 +72,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
     if (opts.list) {
         when (val matchVal1 = listTestsConsole(opts, tests)) {
             is Result.Err<*, *> -> {
-                val e = matchVal1.error
+                val e = matchVal1.errValue()
                 println("error: io error when listing tests: $e")
                 return ERROR_EXIT_CODE.into()
             }
@@ -96,7 +96,7 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
                                 val captured = matchVal2
                                 when (val matchVal3 = captured.lock()) {
                                     is Result.Ok<*, *> -> {
-                                        val data = matchVal3.value
+                                        val data = matchVal3.okValue()
                                         stdout.writeAll(data)
                                         stdout.flush()
                                     }
@@ -123,15 +123,15 @@ public fun testMainInner(args: List<String>, tests: TestList, options: Options?)
         // Prevent Valgrind from reporting reachable blocks in users' unit tests.
         (panic.takeHook()).let { }
         when {
-            res is Result.Ok<*, *> && res.value == true -> {
-                val valueVal = res.value
+            res is Result.Ok<*, *> && res.okValue() == true -> {
+                val okValueVal = res.okValue()
             }
-            res is Result.Ok<*, *> && res.value == false -> {
-                val valueVal1 = res.value
+            res is Result.Ok<*, *> && res.okValue() == false -> {
+                val okValueVal1 = res.okValue()
                 return ExitCode.from(ERROR_EXIT_CODE)
             }
             else -> {
-                val e1 = (res as Result.Err<*, *>).error
+                val e1 = (res as Result.Err<*, *>).errValue()
                 println("error: io error when listing tests: $e")
                 return ExitCode.from(ERROR_EXIT_CODE)
             }
@@ -171,7 +171,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
     // will then exit the process.
     when (val matchVal = Env.variable(SECONDARY_TEST_INVOKER_VAR)) {
         is Result.Ok<*, *> -> {
-            val name = matchVal.value
+            val name = matchVal.okValue()
             // SAFETY: Technically, this is a racy access that we probably shouldn't do?
             // In practice, this is completely fine as long as the test harness is made of Rust,
             // as std will synchronize the racy accesses that occur when they happen through std.env.
@@ -226,11 +226,11 @@ public fun printMergedDoctestsTimes(args: List<String>, totalTime: Double, compi
     val opts =
         when (val matchVal = parseOpts(args)) {
             is Result.Ok<*, *> -> {
-                val o = (matchVal as Result.Ok<*, *>).value
+                val o = (matchVal as Result.Ok<*, *>).okValue()
                 o
             }
             is Result.Err<*, *> -> {
-                val msg = (matchVal as Result.Err<*, *>).error
+                val msg = (matchVal as Result.Err<*, *>).errValue()
                 println("error: $msg")
                 exit(ERROR_EXIT_CODE.into())
             }
@@ -330,10 +330,10 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
     }
     val filteredOut = allTestsLen - filtered.totalLen()
     val event = TestEvent.TeFilteredOut(filteredOut)
-    when (val tryResult = notifyAboutTestEvent(event)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = notifyAboutTestEvent(event)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     val shuffleSeed = getShuffleSeed(opts)
     val event1 = TestEvent.TeFiltered(filtered.totalLen(), shuffleSeed)
-    when (val tryResult = notifyAboutTestEvent(event1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = notifyAboutTestEvent(event1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     val concurrency = opts.testThreads.unwrapOrElse(getConcurrency)
     val remaining = filtered.tests
     if (shuffleSeed != null) {
@@ -357,7 +357,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         while (!remaining1.isEmpty()) {
             val (id, test1) = remaining1.removeFirstOrNull()!!
             val event2 = TestEvent.TeWait(test1.desc.clone())
-            when (val tryResult = notifyAboutTestEvent(event2)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event2)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             val joinHandle = runTest(opts, !opts.runTests, id, test1, runStrategy, tx.clone())
             // Wait for the test to complete.
             val completedTest = rx.recv().unwrap()
@@ -372,7 +372,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                     TrTimedFail -> opts.failFast
                 }
             val event3 = TestEvent.TeResult(completedTest)
-            when (val tryResult = notifyAboutTestEvent(event3)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event3)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             if (failFast) {
                 return RustResult.Ok(Unit)
             }
@@ -384,7 +384,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                 val timeout = getDefaultTestTimeout()
                 val desc1 = test2.desc.clone()
                 val event4 = TestEvent.TeWait(desc1.clone())
-                when (val tryResult = notifyAboutTestEvent(event4)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = notifyAboutTestEvent(event4)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 // here no pad
                 val joinHandle1 = runTest(opts, !opts.runTests, id1, test2, runStrategy, tx.clone())
                 runningTests.insert(id1, RunningTest(joinHandle = joinHandle1))
@@ -403,11 +403,11 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                         res = rx.recvTimeout(timeout1)
                         for (test3 in getTimedOutTests(runningTests, timeoutQueue)) {
                             val event5 = TestEvent.TeTimeout(test3)
-                            when (val tryResult = notifyAboutTestEvent(event5)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                            when (val tryResult = notifyAboutTestEvent(event5)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                         }
                         when {
-                            res is RustResult.Err<*, *> && res.error == RecvTimeoutError.Timeout -> {
-                                val errorVal = res.error
+                            res is RustResult.Err<*, *> && res.errValue() == RecvTimeoutError.Timeout -> {
+                                val errValueVal = res.errValue()
                             }
                             else -> {
                                 // We've got a result, stop the loop.
@@ -430,7 +430,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
                     TrTimedFail -> opts.failFast
                 }
             val event6 = TestEvent.TeResult(completedTest1)
-            when (val tryResult = notifyAboutTestEvent(event6)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event6)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             pending -= 1
             if (failFast1) {
                 // Prevent remaining test threads from panicking
@@ -443,13 +443,13 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         // All benchmarks run at the end, in serial.
         for ((id2, b) in filtered.benches) {
             val event7 = TestEvent.TeWait(b.desc.clone())
-            when (val tryResult = notifyAboutTestEvent(event7)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event7)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             val joinHandle2 = runTest(opts, false, id2, b, runStrategy, tx.clone())
             // Wait for the test to complete.
             val completedTest2 = rx.recv().unwrap()
             RunningTest(joinHandle = joinHandle2).join(completedTest2)
             val event8 = TestEvent.TeResult(completedTest2)
-            when (val tryResult = notifyAboutTestEvent(event8)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = notifyAboutTestEvent(event8)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         }
     }
     return RustResult.Ok(Unit)
@@ -599,18 +599,18 @@ public fun runTest(opts: TestOpts, forceIgnore: Boolean, id: TestId, test: TestD
                     val matchVal1 = cfg.spawn({ runtest2.lock().unwrap().take()!!() })
                     when {
                         matchVal1 is RustResult.Ok<*, *> -> {
-                            val handle = matchVal1.value
+                            val handle = matchVal1.okValue()
                             handle
                         }
-                        matchVal1 is RustResult.Err<*, *> && matchVal1.error.kind() == ErrorKind.WouldBlock -> {
-                            val e = matchVal1.error
+                        matchVal1 is RustResult.Err<*, *> && matchVal1.errValue().kind() == ErrorKind.WouldBlock -> {
+                            val e = matchVal1.errValue()
                             // `ErrorKind.WouldBlock` means hitting the thread limit on some
                             // platforms, so run the test synchronously here instead.
                             Arc.getMut(runtest1).unwrap().getMut()!!.take()!!()
                             null
                         }
                         else -> {
-                            val e1 = (matchVal1 as RustResult.Err<*, *>).error
+                            val e1 = (matchVal1 as RustResult.Err<*, *>).errValue()
                             error("failed to spawn thread to run test: $e")
                         }
                     }
@@ -663,18 +663,18 @@ public fun runTestInProcess(id: TestId, desc: TestDesc, nocapture: Boolean, repo
 
 public fun <T, E> foldErr(result: RustResult<RustResult<T, E>, RustAny>): RustResult<T, RustAny> =
     when {
-        result is RustResult.Ok<*, *> && result.value is RustResult.Err<*, *> -> {
-            val valueVal = result.value
-            val e = (valueVal as RustResult.Err<*, *>).error
+        result is RustResult.Ok<*, *> && result.okValue() is RustResult.Err<*, *> -> {
+            val okValueVal = result.okValue()
+            val e = (okValueVal as RustResult.Err<*, *>).errValue()
             RustResult.Err<T, RustAny>(e)
         }
-        result is RustResult.Ok<*, *> && result.value is RustResult.Ok<*, *> -> {
-            val valueVal1 = result.value
-            val v = (valueVal1 as RustResult.Ok<*, *>).value
+        result is RustResult.Ok<*, *> && result.okValue() is RustResult.Ok<*, *> -> {
+            val okValueVal1 = result.okValue()
+            val v = (okValueVal1 as RustResult.Ok<*, *>).okValue()
             RustResult.Ok<T, RustAny>(v)
         }
         else -> {
-            val e1 = (result as RustResult.Err<*, *>).error
+            val e1 = (result as RustResult.Err<*, *>).errValue()
             RustResult.Err<T, RustAny>(e1)
         }
     }
@@ -698,10 +698,10 @@ public fun spawnTestSubprocess(id: TestId, desc: TestDesc, nocapture: Boolean, r
                 run {
                     val matchVal = command.output()
                     when (matchVal) { is RustResult.Ok<*, *> -> {
-                        val out = matchVal.value
+                        val out = matchVal.okValue()
                         out
                     }; is RustResult.Err<*, *> -> {
-                        val e = matchVal.error
+                        val e = matchVal.errValue()
                         val err = "Failed to spawn ${args[0]} as child for test: $e"
                         return@closure Triple(TrFailed, err.intoBytes(), null)
                     } }
@@ -749,7 +749,7 @@ public fun runTestInSpawnedSubprocess(desc: TestDesc, runnableTest: RunnableTest
     panic.setHook({ info -> recordResult2(info) })
     when (val matchVal = runnableTest.run()) {
         is RustResult.Err<*, *> -> {
-            val message = matchVal.error
+            val message = matchVal.errValue()
             error("$message")
         }
         else -> {}

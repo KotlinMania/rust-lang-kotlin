@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZeroU16
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.alignOffset
 import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMask
 import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
 
@@ -73,7 +74,7 @@ public open class Group(
     /**
      * Returns a `BitMask` indicating all tags in the group which are full.
      */
-    public open fun matchFull(): BitMask = BitMask(!this.matchEmptyOrDeleted().value)
+    public open fun matchFull(): BitMask = BitMask((this.matchEmptyOrDeleted().value).inv())
 
     /**
      * Performs the following transformation on all tags in the group:

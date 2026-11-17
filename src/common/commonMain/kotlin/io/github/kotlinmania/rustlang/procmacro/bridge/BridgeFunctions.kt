@@ -83,19 +83,19 @@ public fun <Unmarked, T> T?.unmark(): Unmarked? =
 
 public fun <Unmarked, T, E> markResultTE(unmarked: Result<Unmarked, Unmarked>): Result<T, E> =
     when (unmarked) { is Result.Ok<*, *> -> {
-        val t = unmarked.value
+        val t = unmarked.okValue()
         Result.Ok<T, E>(Mark.Mark(t))
     }; is Result.Err<*, *> -> {
-        val e = unmarked.error
+        val e = unmarked.errValue()
         Result.Err<T, E>(Mark.Mark(e))
     } }
 
 public fun <Unmarked, T, E> Result<T, E>.unmark(): Result<Unmarked, Unmarked> =
     when (this) { is Result.Ok<*, *> -> {
-        val t = this.value
+        val t = this.okValue()
         Result.Ok<Unmarked, Unmarked>(t.unmark())
     }; is Result.Err<*, *> -> {
-        val e = this.error
+        val e = this.errValue()
         Result.Err<Unmarked, Unmarked>(e.unmark())
     } }
 

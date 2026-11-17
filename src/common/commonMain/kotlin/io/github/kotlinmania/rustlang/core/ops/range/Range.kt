@@ -1,6 +1,8 @@
 // port-lint: source ops/range.rs
 package io.github.kotlinmania.rustlang.core.ops.range
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
@@ -47,16 +49,10 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * check(arr[1..3] == listOf(1, 2, 3))
  * ```
  */
-public open class RangeFull : RangeBounds<T>, IntoBounds<T> {
+public open class RangeFull {
     public open fun clone(): RangeFull = RangeFull()
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = fmt.writeFmt("..")
-
-    public override fun startBound(): Bound<T> = Unbounded
-
-    public override fun endBound(): Bound<T> = Unbounded
-
-    public override fun intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded, Unbounded)
 
     public companion object {
         public fun typeLayout(): TypeLayout<RangeFull> =
@@ -121,9 +117,9 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -241,8 +237,8 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -333,8 +329,8 @@ public open class RangeTo<Idx>(
     public open fun clone(): RangeTo<Idx> = RangeTo(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -493,11 +489,11 @@ public open class RangeInclusive<Idx>(
     public open fun intoInner(): Pair<Idx, Idx> = Pair(this.start, this.end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         if (this.exhausted) {
-            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+            when (val tryResult = fmt.writeFmt(" (exhausted)")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         }
         return Result.Ok<Unit, Unit>(Unit)
     }
@@ -681,8 +677,8 @@ public open class RangeToInclusive<Idx>(
     public open fun clone(): RangeToInclusive<Idx> = RangeToInclusive(end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = fmt.writeFmt("..=")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -1226,6 +1222,12 @@ public interface IntoBounds<T> : RangeBounds<T> {
     }
 }
 
+public fun <T> RangeFull.startBound(): Bound<T> = Unbounded
+
+public fun <T> RangeFull.endBound(): Bound<T> = Unbounded
+
+public fun <T> RangeFull.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded, Unbounded)
+
 public fun <T> RangeFrom<T>.startBound(): Bound<T> = Included(this.start)
 
 public fun <T> RangeFrom<T>.endBound(): Bound<T> = Unbounded
@@ -1297,9 +1299,9 @@ public fun <T> Pair<Bound<T>, Bound<T>>.endBound(): Bound<T> =
 
 public fun <T> Pair<Bound<T>, Bound<T>>.intoBounds(): Pair<Bound<T>, Bound<T>> = this
 
-public fun <T> Pair<Bound<T>, Bound<T>>.startBoundT(): Bound<T> = this.value
+public fun <T> Pair<Bound<T>, Bound<T>>.startBoundT(): Bound<T> = this.first
 
-public fun <T> Pair<Bound<T>, Bound<T>>.endBoundT(): Bound<T> = this.field1
+public fun <T> Pair<Bound<T>, Bound<T>>.endBoundT(): Bound<T> = this.second
 
 // This impl intentionally does not have `T: ? Sized`;
 // see https://github.com/rust-lang/rust/pull/61584 for discussion of why.

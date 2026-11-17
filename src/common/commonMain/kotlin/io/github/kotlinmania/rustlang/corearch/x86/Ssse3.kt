@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
@@ -11,6 +13,9 @@ import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I16x8
 import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I8x16
+import io.github.kotlinmania.rustlang.corearch.simd.M16x8
+import io.github.kotlinmania.rustlang.corearch.simd.M32x4
+import io.github.kotlinmania.rustlang.corearch.simd.M8x16
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 
@@ -26,7 +31,7 @@ public fun mmAbsEpi8(a: M128i): M128i =
     run {
         val a1 = a.asI8x16()
         val zero = Simd<Byte>(List(16) { 0.toByte() })
-        val r = run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }
+        val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<M8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M8x16>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
         transmute(r)
     }
 
@@ -41,7 +46,7 @@ public fun mmAbsEpi16(a: M128i): M128i =
     run {
         val a1 = a.asI16x8()
         val zero = Simd<Short>(List(8) { 0.toShort() })
-        val r = run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }
+        val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<M16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M16x8>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
         transmute(r)
     }
 
@@ -56,7 +61,7 @@ public fun mmAbsEpi32(a: M128i): M128i =
     run {
         val a1 = a.asI32x4()
         val zero = Simd<Int>(List(4) { 0 })
-        val r = run { val _simdArg0 = run { val _simdArg0 = a1; val _simdArg1 = zero; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a1; _simdArg0 }; val _simdArg2 = a1; _simdArg1 }
+        val r = run { val simdArg0 = run { val simdArg0 = a1; val simdArg1 = zero; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<M32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<M32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<M32x4>()).alignBytes)); res } }; val simdArg1 = run { val simdArg0 = a1; simdArg0 }; val simdArg2 = a1; simdArg1 }
         transmute(r)
     }
 
@@ -127,7 +132,7 @@ public fun mmAlignrEpi8(a: M128i, b: M128i, imm8: Int): M128i {
             Pair(a, b)
         }
     return run {
-        val r: I8x16 = run { val _simdArg0 = b1.asI8x16(); val _simdArg1 = a1.asI8x16(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u))); _simdArg0 }
+        val r: I8x16 = run { val simdArg0 = b1.asI8x16(); val simdArg1 = a1.asI8x16(); val simdArg2 = SimdShuffleIdx(uintArrayOf(mask(imm8.toUInt(), 0u), mask(imm8.toUInt(), 1u), mask(imm8.toUInt(), 2u), mask(imm8.toUInt(), 3u), mask(imm8.toUInt(), 4u), mask(imm8.toUInt(), 5u), mask(imm8.toUInt(), 6u), mask(imm8.toUInt(), 7u), mask(imm8.toUInt(), 8u), mask(imm8.toUInt(), 9u), mask(imm8.toUInt(), 10u), mask(imm8.toUInt(), 11u), mask(imm8.toUInt(), 12u), mask(imm8.toUInt(), 13u), mask(imm8.toUInt(), 14u), mask(imm8.toUInt(), 15u))); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x16>()).alignBytes)); val res = (UnresolvedTypeLayout<I8x16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I8x16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I8x16>()).alignBytes)); res } }
         transmuteWithLayouts<I8x16, M128i>(r, UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
     }
 }
@@ -142,9 +147,9 @@ public fun mmHaddEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
-        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
+        val even: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        val odd: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        run { val simdArg0 = even; val simdArg1 = odd; simdArg0 }.asM128i()
     }
 }
 
@@ -159,9 +164,9 @@ public fun mmHaddsEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
-        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
+        val even: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        val odd: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        run { val simdArg0 = even; val simdArg1 = odd; simdArg0 }.asM128i()
     }
 }
 
@@ -175,9 +180,9 @@ public fun mmHaddEpi32(a: M128i, b: M128i): M128i {
     val a1 = a.asI32x4()
     val b1 = b.asI32x4()
     return run {
-        val even: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); _simdArg0 }
-        val odd: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); _simdArg0 }
-        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
+        val even: I32x4 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
+        val odd: I32x4 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
+        run { val simdArg0 = even; val simdArg1 = odd; simdArg0 }.asM128i()
     }
 }
 
@@ -191,9 +196,9 @@ public fun mmHsubEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
-        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
+        val even: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        val odd: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        run { val simdArg0 = even; val simdArg1 = odd; simdArg0 }.asM128i()
     }
 }
 
@@ -209,9 +214,9 @@ public fun mmHsubsEpi16(a: M128i, b: M128i): M128i {
     val a1 = a.asI16x8()
     val b1 = b.asI16x8()
     return run {
-        val even: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); _simdArg0 }
-        val odd: I16x8 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); _simdArg0 }
-        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
+        val even: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u, 8u, 10u, 12u, 14u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        val odd: I16x8 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u, 9u, 11u, 13u, 15u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); val res = (UnresolvedTypeLayout<I16x8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I16x8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I16x8>()).alignBytes)); res } }
+        run { val simdArg0 = even; val simdArg1 = odd; simdArg0 }.asM128i()
     }
 }
 
@@ -225,9 +230,9 @@ public fun mmHsubEpi32(a: M128i, b: M128i): M128i {
     val a1 = a.asI32x4()
     val b1 = b.asI32x4()
     return run {
-        val even: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); _simdArg0 }
-        val odd: I32x4 = run { val _simdArg0 = a1; val _simdArg1 = b1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); _simdArg0 }
-        run { val _simdArg0 = even; val _simdArg1 = odd; _simdArg0 }.asM128i()
+        val even: I32x4 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 2u, 4u, 6u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
+        val odd: I32x4 = run { val simdArg0 = a1; val simdArg1 = b1; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 3u, 5u, 7u)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
+        run { val simdArg0 = even; val simdArg1 = odd; simdArg0 }.asM128i()
     }
 }
 

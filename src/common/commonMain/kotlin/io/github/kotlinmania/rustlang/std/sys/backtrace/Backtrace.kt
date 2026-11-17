@@ -94,7 +94,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt): Result<Unit, io.git
         }
     fmt.appendLine("stack backtrace:")
     val btFmt = BacktraceFmt.new(fmt, printFmt, printPath)
-    when (val tryResult = btFmt.addContext()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.error) }
+    when (val tryResult = btFmt.addContext()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.errValue()) }
     var idx = 0
     var res = Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
     var omittedCount: Int = 0
@@ -159,8 +159,8 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt): Result<Unit, io.git
         idx += 1
         res.isOk()
     })
-    when (val tryResult = res) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.error) }
-    when (val tryResult = btFmt.finish()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.error) }
+    when (val tryResult = res) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.errValue()) }
+    when (val tryResult = btFmt.finish()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(tryResult.errValue()) }
     if (printFmt == PrintFmt.Short) {
         fmt.appendLine("note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.")
     }
@@ -211,7 +211,7 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
             val cwd1 = cwd
             when (val matchVal = file.stripPrefix(cwd1)) {
                 is Result.Ok<*, *> -> {
-                    val stripped = matchVal.value
+                    val stripped = matchVal.okValue()
                     when (val matchVal1 = stripped.toStr()) {
                         null -> {}
                         else -> {

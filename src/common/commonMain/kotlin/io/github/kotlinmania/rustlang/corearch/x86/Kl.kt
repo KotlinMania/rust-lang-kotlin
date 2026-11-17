@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
+import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 
 // AES Key Locker Intrinsics
 //

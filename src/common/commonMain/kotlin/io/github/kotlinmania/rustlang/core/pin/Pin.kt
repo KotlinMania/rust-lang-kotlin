@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.pin
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -9,6 +10,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -1037,26 +1040,6 @@ public open class Pin<Ptr>(
 
     public open fun clone(): Pin<Ptr> = Pin<Ptr>(pointer, fieldLayout)
 
-    // The following implementations aren't derived in order to avoid soundness
-    // issues. `self.pointer` should not be accessible to untrusted trait
-    // implementations.
-    //
-    // See <https://internals.rust-lang.org/t/unsoundness-in-pin/11311/73> and the
-    // `PinSafePointer` trait for more details.
-    public open fun eq(other: Pin<Q>): Boolean = Ptr.Target.eq(this, other)
-
-    public open fun ne(other: Pin<Q>): Boolean = Ptr.Target.ne(this, other)
-
-    public open fun partialCmp(other: Pin<Q>): cmp.Ordering? = Ptr.Target.partialCmp(this, other)
-
-    public open fun lt(other: Pin<Q>): Boolean = Ptr.Target.lt(this, other)
-
-    public open fun le(other: Pin<Q>): Boolean = Ptr.Target.le(this, other)
-
-    public open fun gt(other: Pin<Q>): Boolean = Ptr.Target.gt(this, other)
-
-    public open fun ge(other: Pin<Q>): Boolean = Ptr.Target.ge(this, other)
-
     public open fun cmp(other: Pin<Ptr>): cmp.Ordering = Ptr.Target.cmp(this, other)
 
     public override fun hashCode(): Int {
@@ -1414,6 +1397,26 @@ public open class Pin<Ptr>(
         public fun <Ptr> intoInnerUnchecked(pin: Pin<Ptr>): Ptr = pin.pointer
     }
 }
+
+// The following implementations aren't derived in order to avoid soundness
+// issues. `self.pointer` should not be accessible to untrusted trait
+// implementations.
+//
+// See <https://internals.rust-lang.org/t/unsoundness-in-pin/11311/73> and the
+// `PinSafePointer` trait for more details.
+public fun <Ptr, Q> Pin<Ptr>.eq(other: Pin<Q>): Boolean = Ptr.Target.eq(this, other)
+
+public fun <Ptr, Q> Pin<Ptr>.ne(other: Pin<Q>): Boolean = Ptr.Target.ne(this, other)
+
+public fun <Ptr, Q> Pin<Ptr>.partialCmp(other: Pin<Q>): cmp.Ordering? = Ptr.Target.partialCmp(this, other)
+
+public fun <Ptr, Q> Pin<Ptr>.lt(other: Pin<Q>): Boolean = Ptr.Target.lt(this, other)
+
+public fun <Ptr, Q> Pin<Ptr>.le(other: Pin<Q>): Boolean = Ptr.Target.le(this, other)
+
+public fun <Ptr, Q> Pin<Ptr>.gt(other: Pin<Q>): Boolean = Ptr.Target.gt(this, other)
+
+public fun <Ptr, Q> Pin<Ptr>.ge(other: Pin<Q>): Boolean = Ptr.Target.ge(this, other)
 
 /**
  * Constructs a new pin by mapping the interior value.

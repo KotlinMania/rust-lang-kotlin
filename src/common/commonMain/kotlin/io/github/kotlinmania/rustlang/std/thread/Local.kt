@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.cell.RefCell
 import io.github.kotlinmania.rustlang.core.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -180,10 +182,10 @@ public open class LocalKey<T>(
         run {
             val matchVal = this.tryWith(f)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val r = matchVal.value
+                val r = matchVal.okValue()
                 r
             }; is Result.Err<*, *> -> {
-                val err = matchVal.error
+                val err = matchVal.errValue()
                 panicAccessError(err)
             } }
         }
@@ -208,7 +210,7 @@ public open class LocalKey<T>(
      * ```
      */
     public open fun <R> tryWith(f: (T) -> R): Result<R, AccessError> {
-        val threadLocal = when (val tryResult = (this.inner)(null).asRef().okOr(AccessError())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<R, AccessError>(tryResult.error) }
+        val threadLocal = when (val tryResult = (this.inner)(null).asRef().okOr(AccessError())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<R, AccessError>(tryResult.errValue()) }
         return Result.Ok<R, AccessError>(f(threadLocal))
     }
 

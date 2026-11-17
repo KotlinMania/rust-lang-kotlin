@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.sync.oncebox
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
@@ -71,7 +73,7 @@ public open class OnceBox<T> internal constructor(
             when (matchVal) { is Result.Ok<*, *> -> {
                 Pin.newUnchecked(newPtr)
             }; is Result.Err<*, *> -> {
-                val ptr = matchVal.error
+                val ptr = matchVal.errValue()
                 // Lost the race to another thread.
                 // Drop the value we created, and use the one from the other thread instead.
                 (Box.fromRaw(newPtr)).let { }

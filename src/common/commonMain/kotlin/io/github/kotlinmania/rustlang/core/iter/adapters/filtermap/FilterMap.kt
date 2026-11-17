@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.filtermap
 
 import io.github.kotlinmania.rustlang.core.array.Guard
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -19,6 +20,9 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteAdd
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -154,10 +158,12 @@ public fun <B, I> FilterMap<I, F>.nextChunk(n: Int): Result<List<B>, IntoIter<B>
     val guard1 = guard
     return when (result) {
         is ControlFlow.Break<*, *> -> {
+            val cfBreakValueVal = result.cfBreakValue()
             // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
             Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array, n))
         }
         is ControlFlow.Continue<*, *> -> {
+            val cfContinueValueVal = result.cfContinueValue()
             val initialized = guard1.initialized
             // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
             Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized, n))

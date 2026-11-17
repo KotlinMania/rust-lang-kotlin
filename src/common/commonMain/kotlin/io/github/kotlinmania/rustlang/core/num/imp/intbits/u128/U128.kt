@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.num.wrappingAdd
 public val STAGES: Int = 128u.ilog2().toInt()
 
 public fun prepare(sparse: U128): List<U128> {
-    var zeros = !sparse
+    var zeros = sparse.inv()
     val masks = MutableList(STAGES) { 0 }
     var stage = 0
     while (stage < STAGES) {

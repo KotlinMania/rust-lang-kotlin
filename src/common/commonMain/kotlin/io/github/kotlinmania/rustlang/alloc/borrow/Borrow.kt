@@ -277,8 +277,6 @@ public sealed class Cow<B, Owned> : Borrow<B> {
 
     public open fun cmp(other: Cow<B, Owned>): Ordering = Ord.cmp(this, other)
 
-    public open fun eq(other: Cow<C>): Boolean = PartialEq.eq(this, other)
-
     public open fun partialCmp(other: Cow<B>): Ordering? = PartialOrd.partialCmp(this, other)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
@@ -373,6 +371,8 @@ public sealed class Cow<B, Owned> : Borrow<B> {
 // For now, we restrict `DerefPure for Cow<T>` to `T: Sized` (`T as Borrow<T>` is trusted),
 // `String` (`String as Borrow<String>` is trusted) and `[T]` (`List<T> as Borrow<[T]>` is trusted).
 // In the future, a `BorrowPure<T>` trait analogous to `DerefPure` might generalize this.
+
+public fun <Owned, B, C> Cow<B>.eq(other: Cow<C>): Boolean where B : ToOwned<Owned>, C : ToOwned<Owned> = PartialEq.eq(this, other)
 
 // Note(inference): const bounds removed due to inference regressions found by crater;
 // see https://github.com/rust-lang/rust/issues/147964

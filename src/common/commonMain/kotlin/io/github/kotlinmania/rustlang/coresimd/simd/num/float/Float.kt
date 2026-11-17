@@ -2,6 +2,10 @@
 package io.github.kotlinmania.rustlang.coresimd.simd.num.float
 
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.coresimd.Mask
@@ -232,9 +236,9 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
     public fun reduceMin(): Scalar
 }
 
-public fun <Mask, T : SimdCast<Mask>> Simd<F16>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, T : SimdCast<Mask>> Simd<F16>.cast(n: Int): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
 
-public fun <Mask, I : SimdCast<Mask>> Simd<F16>.toIntUnchecked(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, I : SimdCast<Mask>> Simd<F16>.toIntUnchecked(n: Int): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
 
 public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
@@ -246,7 +250,7 @@ public fun simdFloatFromBitsSimdF16N(bits: Simd<UShort>, n: Int): Simd<F16> {
     return transmuteCopy(bits)
 }
 
-public fun Simd<F16>.abs(n: Int): Simd<F16> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<F16>.abs(n: Int): Simd<F16> = run { val simdArg0 = this; simdArg0 }
 
 public fun Simd<F16>.recip(n: Int): Simd<F16> = Simd.splat(1.0, n) / this
 
@@ -282,9 +286,9 @@ public fun Simd<F16>.copysign(sign: Simd<F16>, n: Int): Simd<F16> {
     return Simd.fromBits(signBit or magnitude, n)
 }
 
-public fun Simd<F16>.simdMin(other: Simd<F16>, n: Int): Simd<F16> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }
+public fun Simd<F16>.simdMin(other: Simd<F16>, n: Int): Simd<F16> = run { val simdArg0 = this; val simdArg1 = other; simdArg0 }
 
-public fun Simd<F16>.simdMax(other: Simd<F16>, n: Int): Simd<F16> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }
+public fun Simd<F16>.simdMax(other: Simd<F16>, n: Int): Simd<F16> = run { val simdArg0 = this; val simdArg1 = other; simdArg0 }
 
 public fun Simd<F16>.simdClamp(min: Simd<F16>, max: Simd<F16>, n: Int): Simd<F16> {
     check(min.simdLe(max).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
@@ -298,14 +302,14 @@ public fun Simd<F16>.reduceSum(n: Int): F16 =
     if (false) {
         this.asArray().iter().sum()
     } else {
-        run { val _simdArg0 = this; val _simdArg1 = -F16.fromFloat(0.0f); _simdArg1 }
+        run { val simdArg0 = this; val simdArg1 = -F16.fromFloat(0.0f); simdArg1 }
     }
 
 public fun Simd<F16>.reduceProduct(n: Int): F16 =
     if (false) {
         this.asArray().iter().product()
     } else {
-        run { val _simdArg0 = this; val _simdArg1 = F16.fromFloat(1.0f); _simdArg1 }
+        run { val simdArg0 = this; val simdArg1 = F16.fromFloat(1.0f); simdArg1 }
     }
 
 public fun Simd<F16>.reduceMax(n: Int): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::max)

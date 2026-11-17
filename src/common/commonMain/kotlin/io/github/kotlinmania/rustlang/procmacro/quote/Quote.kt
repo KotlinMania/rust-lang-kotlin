@@ -1,6 +1,7 @@
 // port-lint: source quote.rs
 package io.github.kotlinmania.rustlang.procmacro.quote
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes

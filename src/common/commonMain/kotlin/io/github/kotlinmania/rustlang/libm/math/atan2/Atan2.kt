@@ -37,9 +37,9 @@ public fun atan2(y: Double, x: Double): Double {
     // when y = 0
     if ((iy or ly) == 0u) {
         return when (m) {
-            0, 1 -> y
+            0u, 1u -> y
             // atan(+-0,+anything)=+-0
-            2 -> PI
+            2u -> PI
             // atan(+0,-anything) = PI
             else -> -PI
         }
@@ -56,21 +56,21 @@ public fun atan2(y: Double, x: Double): Double {
     if (ix == 0x7ff00000u) {
         if (iy == 0x7ff00000u) {
             return when (m) {
-                0 -> PI / 4.0
+                0u -> PI / 4.0
                 // atan(+INF,+INF)
-                1 -> -PI / 4.0
+                1u -> -PI / 4.0
                 // atan(-INF,+INF)
-                2 -> 3.0 * PI / 4.0
+                2u -> 3.0 * PI / 4.0
                 // atan(+INF,-INF)
                 else -> -3.0 * PI / 4.0
             }
         } else {
             return when (m) {
-                0 -> 0.0
+                0u -> 0.0
                 // atan(+...,+INF)
-                1 -> -0.0
+                1u -> -0.0
                 // atan(-...,+INF)
-                2 -> PI
+                2u -> PI
                 // atan(+...,-INF)
                 else -> -PI
             }
@@ -93,11 +93,11 @@ public fun atan2(y: Double, x: Double): Double {
             atan(fabs(y / x))
         }
     return when (m) {
-        0 -> z
+        0u -> z
         // atan(+,+)
-        1 -> -z
+        1u -> -z
         // atan(-,+)
-        2 -> PI - (z - PI_LO)
+        2u -> PI - (z - PI_LO)
         // atan(+,-)
         else -> (z - PI_LO) - PI
     }

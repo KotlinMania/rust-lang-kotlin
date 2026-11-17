@@ -6,24 +6,25 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ascii.EscapeDefault
 import io.github.kotlinmania.rustlang.core.ascii.escapeDefault
-import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
-import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
-import io.github.kotlinmania.rustlang.core.char.isAsciiControl
-import io.github.kotlinmania.rustlang.core.char.isAsciiDigit
-import io.github.kotlinmania.rustlang.core.char.isAsciiGraphic
-import io.github.kotlinmania.rustlang.core.char.isAsciiHexdigit
-import io.github.kotlinmania.rustlang.core.char.isAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.isAsciiPunctuation
-import io.github.kotlinmania.rustlang.core.char.isAsciiUppercase
-import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphanumeric
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiControl
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiDigit
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiGraphic
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiHexdigit
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiPunctuation
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.methods.toDigit
-import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.cmp.clamp
 import io.github.kotlinmania.rustlang.core.convert.num.BoundedCastFromInt
 import io.github.kotlinmania.rustlang.core.convert.num.CheckedCastFromInt
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
@@ -276,7 +277,7 @@ public fun Byte.countOnes(): UInt = (this.toUByte()).countOnes()
  * ```kotlin
  * ```
  */
-public fun Byte.countZeros(): UInt = (!this).countOnes()
+public fun Byte.countZeros(): UInt = ((this.toInt().inv()).toByte()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -2467,8 +2468,8 @@ public fun Byte.overflowingAbs(): Pair<Byte, Boolean> = Pair(this.wrappingAbs(),
  */
 public fun Byte.overflowingPow(exp: UInt): Pair<Byte, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: Byte  = 1
+    var base = this
+    var acc: Byte = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -2488,27 +2489,27 @@ public fun Byte.overflowingPow(exp: UInt): Pair<Byte, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -3154,7 +3155,7 @@ public fun Byte.Companion.maxValue(): Byte = Byte.MAX_VALUE
 public fun Byte.clampMagnitude(limit: UByte): Byte =
     when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
-            val limit1 = matchVal.value
+            val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
         }
         else -> {
@@ -3438,7 +3439,7 @@ public fun Short.countOnes(): UInt = (this.toUShort()).countOnes()
  * ```kotlin
  * ```
  */
-public fun Short.countZeros(): UInt = (!this).countOnes()
+public fun Short.countZeros(): UInt = ((this.toInt().inv()).toShort()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -5629,8 +5630,8 @@ public fun Short.overflowingAbs(): Pair<Short, Boolean> = Pair(this.wrappingAbs(
  */
 public fun Short.overflowingPow(exp: UInt): Pair<Short, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: Short  = 1
+    var base = this
+    var acc: Short = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -5650,27 +5651,27 @@ public fun Short.overflowingPow(exp: UInt): Pair<Short, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -6286,7 +6287,7 @@ public fun Short.Companion.maxValue(): Short = Short.MAX_VALUE
 public fun Short.clampMagnitude(limit: UShort): Short =
     when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
-            val limit1 = matchVal.value
+            val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
         }
         else -> {
@@ -6570,7 +6571,7 @@ public fun Int.countOnes(): UInt = (this.toUInt()).countOnes()
  * ```kotlin
  * ```
  */
-public fun Int.countZeros(): UInt = (!this).countOnes()
+public fun Int.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -8761,8 +8762,8 @@ public fun Int.overflowingAbs(): Pair<Int, Boolean> = Pair(this.wrappingAbs(), t
  */
 public fun Int.overflowingPow(exp: UInt): Pair<Int, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: Int  = 1
+    var base = this
+    var acc: Int = 1
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -8782,27 +8783,27 @@ public fun Int.overflowingPow(exp: UInt): Pair<Int, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -9418,7 +9419,7 @@ public fun Int.Companion.maxValue(): Int = Int.MAX_VALUE
 public fun Int.clampMagnitude(limit: UInt): Int =
     when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
-            val limit1 = matchVal.value
+            val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
         }
         else -> {
@@ -9702,7 +9703,7 @@ public fun Long.countOnes(): UInt = (this.toULong()).countOnes()
  * ```kotlin
  * ```
  */
-public fun Long.countZeros(): UInt = (!this).countOnes()
+public fun Long.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -11893,8 +11894,8 @@ public fun Long.overflowingAbs(): Pair<Long, Boolean> = Pair(this.wrappingAbs(),
  */
 public fun Long.overflowingPow(exp: UInt): Pair<Long, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: Long  = 1L
+    var base = this
+    var acc: Long = 1L
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -11914,27 +11915,27 @@ public fun Long.overflowingPow(exp: UInt): Pair<Long, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -12550,7 +12551,7 @@ public fun Long.Companion.maxValue(): Long = Long.MAX_VALUE
 public fun Long.clampMagnitude(limit: ULong): Long =
     when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
-            val limit1 = matchVal.value
+            val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
         }
         else -> {
@@ -12842,7 +12843,7 @@ public fun I128.countOnes(): UInt = (this.toU128()).countOnes()
  * ```kotlin
  * ```
  */
-public fun I128.countZeros(): UInt = (!this).countOnes()
+public fun I128.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -15033,8 +15034,8 @@ public fun I128.overflowingAbs(): Pair<I128, Boolean> = Pair(this.wrappingAbs(),
  */
 public fun I128.overflowingPow(exp: UInt): Pair<I128, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: I128  = I128(0x0L, 0x1uL)
+    var base = this
+    var acc: I128 = I128(0x0L, 0x1uL)
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.unsignedAbs().isPowerOfTwo()) {
@@ -15054,27 +15055,27 @@ public fun I128.overflowingPow(exp: UInt): Pair<I128, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -15690,7 +15691,7 @@ public fun I128.Companion.maxValue(): I128 = I128.MAX_VALUE
 public fun I128.clampMagnitude(limit: U128): I128 =
     when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
-            val limit1 = matchVal.value
+            val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
         }
         else -> {
@@ -16092,7 +16093,7 @@ public fun Int.overflowingSubUnsigned(rhs: Int): Pair<Int, Boolean> {
 public fun Int.clampMagnitude(limit: Int): Int =
     when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
-            val limit1 = matchVal.value
+            val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
         }
         else -> {
@@ -16230,7 +16231,7 @@ public fun UByte.countOnes(): UInt = kmCtpopU8(this)
  * val small = 1
  * ```
  */
-public fun UByte.countZeros(): UInt = (!this).countOnes()
+public fun UByte.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -16269,7 +16270,7 @@ public fun UByte.trailingZeros(): UInt = kmCttzU8(this)
  * check(zero.leadingOnes() == 0)
  * ```
  */
-public fun UByte.leadingOnes(): UInt = (!this).leadingZeros()
+public fun UByte.leadingOnes(): UInt = (this.inv()).leadingZeros()
 
 /**
  * Returns the number of trailing ones in the binary representation
@@ -16282,7 +16283,7 @@ public fun UByte.leadingOnes(): UInt = (!this).leadingZeros()
  * check(zero.trailingOnes() == 0)
  * ```
  */
-public fun UByte.trailingOnes(): UInt = (!this).trailingZeros()
+public fun UByte.trailingOnes(): UInt = (this.inv()).trailingZeros()
 
 /**
  * Returns the minimum number of bits required to represent `self`.
@@ -18435,7 +18436,7 @@ public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
  * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
- *         Pair(d, carry) = d.carryingMul(multiplicand, carry)
+ *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
  *         littleEndianDigits.push(carry)
@@ -18518,7 +18519,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  *         for (j in 0 until n) {
  *             var carry = 0
  *             for (i in 0 until (n - j)) {
- *                 Pair(out[j + i], carry) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry)
+ *                 run { val (destructVal0, destructVal1) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry); out[j + i] = destructVal0; carry = destructVal1 }
  *             }
  *         }
  *         return out
@@ -18627,7 +18628,7 @@ public fun UByte.overflowingRemEuclid(rhs: UByte): Pair<UByte, Boolean> = Pair(t
  * ```kotlin
  * ```
  */
-public fun UByte.overflowingNeg(): Pair<UByte, Boolean> = Pair((!this).wrappingAdd(1), this != 0u.toUByte())
+public fun UByte.overflowingNeg(): Pair<UByte, Boolean> = Pair(((this.inv()) + (1u.toUByte())).toUByte(), this != 0u.toUByte())
 
 /**
  * Shifts self left by `rhs` bits.
@@ -18675,8 +18676,8 @@ public fun UByte.overflowingShr(rhs: UInt): Pair<UByte, Boolean> = Pair(this.wra
  */
 public fun UByte.overflowingPow(exp: UInt): Pair<UByte, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: UByte  = 1u
+    var base = this
+    var acc: UByte = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -18690,27 +18691,27 @@ public fun UByte.overflowingPow(exp: UInt): Pair<UByte, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -18851,7 +18852,7 @@ public fun UByte.divCeil(rhs: UByte): UByte {
  */
 public fun UByte.nextMultipleOf(rhs: UByte): UByte =
     when (val matchVal = this % rhs) {
-        0 -> this
+        0u.toUByte() -> this
         else -> {
             val r = matchVal
             this + (rhs - r)
@@ -18898,7 +18899,7 @@ public fun UByte.checkedNextMultipleOf(rhs: UByte): UByte? {
  */
 public fun UByte.isMultipleOf(rhs: UByte): Boolean =
     when (rhs) {
-        0 -> this == 0u.toUByte()
+        0u.toUByte() -> this == 0u.toUByte()
         else -> this % rhs == 0u.toUByte()
     }
 
@@ -20041,7 +20042,7 @@ public fun UShort.countOnes(): UInt = kmCtpopU16(this)
  * val small = 1
  * ```
  */
-public fun UShort.countZeros(): UInt = (!this).countOnes()
+public fun UShort.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -20080,7 +20081,7 @@ public fun UShort.trailingZeros(): UInt = kmCttzU16(this)
  * check(zero.leadingOnes() == 0)
  * ```
  */
-public fun UShort.leadingOnes(): UInt = (!this).leadingZeros()
+public fun UShort.leadingOnes(): UInt = (this.inv()).leadingZeros()
 
 /**
  * Returns the number of trailing ones in the binary representation
@@ -20093,7 +20094,7 @@ public fun UShort.leadingOnes(): UInt = (!this).leadingZeros()
  * check(zero.trailingOnes() == 0)
  * ```
  */
-public fun UShort.trailingOnes(): UInt = (!this).trailingZeros()
+public fun UShort.trailingOnes(): UInt = (this.inv()).trailingZeros()
 
 /**
  * Returns the minimum number of bits required to represent `self`.
@@ -22246,7 +22247,7 @@ public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
  * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
- *         Pair(d, carry) = d.carryingMul(multiplicand, carry)
+ *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
  *         littleEndianDigits.push(carry)
@@ -22329,7 +22330,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  *         for (j in 0 until n) {
  *             var carry = 0
  *             for (i in 0 until (n - j)) {
- *                 Pair(out[j + i], carry) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry)
+ *                 run { val (destructVal0, destructVal1) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry); out[j + i] = destructVal0; carry = destructVal1 }
  *             }
  *         }
  *         return out
@@ -22438,7 +22439,7 @@ public fun UShort.overflowingRemEuclid(rhs: UShort): Pair<UShort, Boolean> = Pai
  * ```kotlin
  * ```
  */
-public fun UShort.overflowingNeg(): Pair<UShort, Boolean> = Pair((!this).wrappingAdd(1), this != 0u.toUShort())
+public fun UShort.overflowingNeg(): Pair<UShort, Boolean> = Pair(((this.inv()) + (1u.toUShort())).toUShort(), this != 0u.toUShort())
 
 /**
  * Shifts self left by `rhs` bits.
@@ -22486,8 +22487,8 @@ public fun UShort.overflowingShr(rhs: UInt): Pair<UShort, Boolean> = Pair(this.w
  */
 public fun UShort.overflowingPow(exp: UInt): Pair<UShort, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: UShort  = 1u
+    var base = this
+    var acc: UShort = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -22501,27 +22502,27 @@ public fun UShort.overflowingPow(exp: UInt): Pair<UShort, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -22662,7 +22663,7 @@ public fun UShort.divCeil(rhs: UShort): UShort {
  */
 public fun UShort.nextMultipleOf(rhs: UShort): UShort =
     when (val matchVal = this % rhs) {
-        0 -> this
+        0u.toUShort() -> this
         else -> {
             val r = matchVal
             this + (rhs - r)
@@ -22709,7 +22710,7 @@ public fun UShort.checkedNextMultipleOf(rhs: UShort): UShort? {
  */
 public fun UShort.isMultipleOf(rhs: UShort): Boolean =
     when (rhs) {
-        0 -> this == 0u.toUShort()
+        0u.toUShort() -> this == 0u.toUShort()
         else -> this % rhs == 0u.toUShort()
     }
 
@@ -23126,7 +23127,7 @@ public fun UShort.carryingCarrylessMul(rhs: UShort, carry: UShort): Pair<UShort,
  */
 public fun UShort.isUtf16Surrogate(): Boolean =
     when (this) {
-        in 0xD800..0xDFFF -> true
+        in 0xD800u.toUShort()..0xDFFFu.toUShort() -> true
         else -> false
     }
 
@@ -23260,7 +23261,7 @@ public fun UInt.countOnes(): UInt = kmCtpopU32(this)
  * val small = 1
  * ```
  */
-public fun UInt.countZeros(): UInt = (!this).countOnes()
+public fun UInt.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -23299,7 +23300,7 @@ public fun UInt.trailingZeros(): UInt = kmCttzU32(this)
  * check(zero.leadingOnes() == 0)
  * ```
  */
-public fun UInt.leadingOnes(): UInt = (!this).leadingZeros()
+public fun UInt.leadingOnes(): UInt = (this.inv()).leadingZeros()
 
 /**
  * Returns the number of trailing ones in the binary representation
@@ -23312,7 +23313,7 @@ public fun UInt.leadingOnes(): UInt = (!this).leadingZeros()
  * check(zero.trailingOnes() == 0)
  * ```
  */
-public fun UInt.trailingOnes(): UInt = (!this).trailingZeros()
+public fun UInt.trailingOnes(): UInt = (this.inv()).trailingZeros()
 
 /**
  * Returns the minimum number of bits required to represent `self`.
@@ -25465,7 +25466,7 @@ public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
  * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
- *         Pair(d, carry) = d.carryingMul(multiplicand, carry)
+ *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
  *         littleEndianDigits.push(carry)
@@ -25548,7 +25549,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  *         for (j in 0 until n) {
  *             var carry = 0
  *             for (i in 0 until (n - j)) {
- *                 Pair(out[j + i], carry) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry)
+ *                 run { val (destructVal0, destructVal1) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry); out[j + i] = destructVal0; carry = destructVal1 }
  *             }
  *         }
  *         return out
@@ -25657,7 +25658,7 @@ public fun UInt.overflowingRemEuclid(rhs: UInt): Pair<UInt, Boolean> = Pair(this
  * ```kotlin
  * ```
  */
-public fun UInt.overflowingNeg(): Pair<UInt, Boolean> = Pair((!this).wrappingAdd(1), this != 0u)
+public fun UInt.overflowingNeg(): Pair<UInt, Boolean> = Pair(((this.inv()) + 1u), this != 0u)
 
 /**
  * Shifts self left by `rhs` bits.
@@ -25705,8 +25706,8 @@ public fun UInt.overflowingShr(rhs: UInt): Pair<UInt, Boolean> = Pair(this.wrapp
  */
 public fun UInt.overflowingPow(exp: UInt): Pair<UInt, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: UInt  = 1u
+    var base = this
+    var acc: UInt = 1u
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -25720,27 +25721,27 @@ public fun UInt.overflowingPow(exp: UInt): Pair<UInt, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -25881,7 +25882,7 @@ public fun UInt.divCeil(rhs: UInt): UInt {
  */
 public fun UInt.nextMultipleOf(rhs: UInt): UInt =
     when (val matchVal = this % rhs) {
-        0 -> this
+        0u -> this
         else -> {
             val r = matchVal
             this + (rhs - r)
@@ -25928,7 +25929,7 @@ public fun UInt.checkedNextMultipleOf(rhs: UInt): UInt? {
  */
 public fun UInt.isMultipleOf(rhs: UInt): Boolean =
     when (rhs) {
-        0 -> this == 0u
+        0u -> this == 0u
         else -> this % rhs == 0u
     }
 
@@ -26454,7 +26455,7 @@ public fun ULong.countOnes(): UInt = kmCtpopU64(this)
  * val small = 1
  * ```
  */
-public fun ULong.countZeros(): UInt = (!this).countOnes()
+public fun ULong.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -26493,7 +26494,7 @@ public fun ULong.trailingZeros(): UInt = kmCttzU64(this)
  * check(zero.leadingOnes() == 0)
  * ```
  */
-public fun ULong.leadingOnes(): UInt = (!this).leadingZeros()
+public fun ULong.leadingOnes(): UInt = (this.inv()).leadingZeros()
 
 /**
  * Returns the number of trailing ones in the binary representation
@@ -26506,7 +26507,7 @@ public fun ULong.leadingOnes(): UInt = (!this).leadingZeros()
  * check(zero.trailingOnes() == 0)
  * ```
  */
-public fun ULong.trailingOnes(): UInt = (!this).trailingZeros()
+public fun ULong.trailingOnes(): UInt = (this.inv()).trailingZeros()
 
 /**
  * Returns the minimum number of bits required to represent `self`.
@@ -28659,7 +28660,7 @@ public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
  * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
- *         Pair(d, carry) = d.carryingMul(multiplicand, carry)
+ *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
  *         littleEndianDigits.push(carry)
@@ -28742,7 +28743,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  *         for (j in 0 until n) {
  *             var carry = 0
  *             for (i in 0 until (n - j)) {
- *                 Pair(out[j + i], carry) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry)
+ *                 run { val (destructVal0, destructVal1) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry); out[j + i] = destructVal0; carry = destructVal1 }
  *             }
  *         }
  *         return out
@@ -28851,7 +28852,7 @@ public fun ULong.overflowingRemEuclid(rhs: ULong): Pair<ULong, Boolean> = Pair(t
  * ```kotlin
  * ```
  */
-public fun ULong.overflowingNeg(): Pair<ULong, Boolean> = Pair((!this).wrappingAdd(1), this != 0uL)
+public fun ULong.overflowingNeg(): Pair<ULong, Boolean> = Pair(((this.inv()) + 1uL), this != 0uL)
 
 /**
  * Shifts self left by `rhs` bits.
@@ -28899,8 +28900,8 @@ public fun ULong.overflowingShr(rhs: UInt): Pair<ULong, Boolean> = Pair(this.wra
  */
 public fun ULong.overflowingPow(exp: UInt): Pair<ULong, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: ULong  = 1uL
+    var base = this
+    var acc: ULong = 1uL
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -28914,27 +28915,27 @@ public fun ULong.overflowingPow(exp: UInt): Pair<ULong, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -29075,7 +29076,7 @@ public fun ULong.divCeil(rhs: ULong): ULong {
  */
 public fun ULong.nextMultipleOf(rhs: ULong): ULong =
     when (val matchVal = this % rhs) {
-        0 -> this
+        0uL -> this
         else -> {
             val r = matchVal
             this + (rhs - r)
@@ -29122,7 +29123,7 @@ public fun ULong.checkedNextMultipleOf(rhs: ULong): ULong? {
  */
 public fun ULong.isMultipleOf(rhs: ULong): Boolean =
     when (rhs) {
-        0 -> this == 0uL
+        0uL -> this == 0uL
         else -> this % rhs == 0uL
     }
 
@@ -29648,7 +29649,7 @@ public fun U128.countOnes(): UInt = (this).let { v -> kmCtpopU128(v.low, v.high)
  * val small = 1
  * ```
  */
-public fun U128.countZeros(): UInt = (!this).countOnes()
+public fun U128.countZeros(): UInt = (this.inv()).countOnes()
 
 /**
  * Returns the number of leading zeros in the binary representation of `self`.
@@ -29687,7 +29688,7 @@ public fun U128.trailingZeros(): UInt = (this).let { v -> kmCttzU128(v.low, v.hi
  * check(zero.leadingOnes() == 0)
  * ```
  */
-public fun U128.leadingOnes(): UInt = (!this).leadingZeros()
+public fun U128.leadingOnes(): UInt = (this.inv()).leadingZeros()
 
 /**
  * Returns the number of trailing ones in the binary representation
@@ -29700,7 +29701,7 @@ public fun U128.leadingOnes(): UInt = (!this).leadingZeros()
  * check(zero.trailingOnes() == 0)
  * ```
  */
-public fun U128.trailingOnes(): UInt = (!this).trailingZeros()
+public fun U128.trailingOnes(): UInt = (this.inv()).trailingZeros()
 
 /**
  * Returns the minimum number of bits required to represent `self`.
@@ -31853,7 +31854,7 @@ public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
  * fun scalarMulEq(littleEndianDigits: List<UShort>, multiplicand: UShort) {
  *     var carry = 0
  *     for (d in littleEndianDigits) {
- *         Pair(d, carry) = d.carryingMul(multiplicand, carry)
+ *         run { val (destructVal0, destructVal1) = d.carryingMul(multiplicand, carry); d = destructVal0; carry = destructVal1 }
  *     }
  *     if (carry != 0) {
  *         littleEndianDigits.push(carry)
@@ -31936,7 +31937,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  *         for (j in 0 until n) {
  *             var carry = 0
  *             for (i in 0 until (n - j)) {
- *                 Pair(out[j + i], carry) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry)
+ *                 run { val (destructVal0, destructVal1) = UByte.carryingMulAdd(a[i], b[j], out[j + i], carry); out[j + i] = destructVal0; carry = destructVal1 }
  *             }
  *         }
  *         return out
@@ -32045,7 +32046,7 @@ public fun U128.overflowingRemEuclid(rhs: U128): Pair<U128, Boolean> = Pair(this
  * ```kotlin
  * ```
  */
-public fun U128.overflowingNeg(): Pair<U128, Boolean> = Pair((!this).wrappingAdd(1), this != U128(0x0uL, 0x0uL))
+public fun U128.overflowingNeg(): Pair<U128, Boolean> = Pair((this.inv()).wrappingAdd(U128(0x0uL, 0x1uL)), this != U128(0x0uL, 0x0uL))
 
 /**
  * Shifts self left by `rhs` bits.
@@ -32093,8 +32094,8 @@ public fun U128.overflowingShr(rhs: UInt): Pair<U128, Boolean> = Pair(this.wrapp
  */
 public fun U128.overflowingPow(exp: UInt): Pair<U128, Boolean> {
     var exp1 = exp
-    val base = this
-    val acc: U128  = U128(0x0uL, 0x1uL)
+    var base = this
+    var acc: U128 = U128(0x0uL, 0x1uL)
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -32108,27 +32109,27 @@ public fun U128.overflowingPow(exp: UInt): Pair<U128, Boolean> {
     if (false) {
         while (exp1 > 1u) {
             if ((exp1 and 1u) == 1u) {
-                Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+                run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
                 overflow = overflow or tmpOverflow
             }
             exp1 /= 2u
-            Pair(base, tmpOverflow) = base.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
         }
-        Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
         return Pair(acc, overflow)
     }
     while (true) {
         if ((exp1 and 1u) == 1u) {
-            Pair(acc, tmpOverflow) = acc.overflowingMul(base)
+            run { val (destructVal0, destructVal1) = acc.overflowingMul(base); acc = destructVal0; tmpOverflow = destructVal1 }
             overflow = overflow or tmpOverflow
             if (exp1 == 1u) {
                 return Pair(acc, overflow)
             }
         }
         exp1 /= 2u
-        Pair(base, tmpOverflow) = base.overflowingMul(base)
+        run { val (destructVal0, destructVal1) = base.overflowingMul(base); base = destructVal0; tmpOverflow = destructVal1 }
         overflow = overflow or tmpOverflow
     }
 }
@@ -32269,7 +32270,7 @@ public fun U128.divCeil(rhs: U128): U128 {
  */
 public fun U128.nextMultipleOf(rhs: U128): U128 =
     when (val matchVal = this % rhs) {
-        0 -> this
+        U128(0x0uL, 0x0uL) -> this
         else -> {
             val r = matchVal
             this + (rhs - r)
@@ -32316,7 +32317,7 @@ public fun U128.checkedNextMultipleOf(rhs: U128): U128? {
  */
 public fun U128.isMultipleOf(rhs: U128): Boolean =
     when (rhs) {
-        0 -> this == U128(0x0uL, 0x0uL)
+        U128(0x0uL, 0x0uL) -> this == U128(0x0uL, 0x0uL)
         else -> this % rhs == U128(0x0uL, 0x0uL)
     }
 

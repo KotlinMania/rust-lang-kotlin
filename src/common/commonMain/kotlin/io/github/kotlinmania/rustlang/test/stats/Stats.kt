@@ -1,12 +1,15 @@
 // port-lint: source stats.rs
 package io.github.kotlinmania.rustlang.test.stats
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFloorf64
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.swap
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 
 public fun localSort(v: MutableList<Double>) {
     v.sortBy({ x: Double, y: Double -> x.totalCmp(y) })

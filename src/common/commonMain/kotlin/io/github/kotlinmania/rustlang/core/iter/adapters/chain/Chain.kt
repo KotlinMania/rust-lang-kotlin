@@ -47,7 +47,7 @@ public open class Chain<A, B>(
     public open fun clone(): Chain<A, B> = Chain(a, b)
 
     public open fun next(): Item? {
-        return (andThenOrClear(this.a, Iterator::next) ?: closure@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.next() }())
+        return (andThenOrClear(this.a, Iterator::next) ?: closure@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }.next() }())
     }
 
     public open fun count(): Int {
@@ -76,7 +76,7 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val a = matchVal
-                acc1 = when (val tryResult = a.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = a.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 this.a = null
             }
         }
@@ -84,7 +84,7 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val b = matchVal1
-                acc1 = when (val tryResult = b.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = b.tryFold(acc1, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 // we don't fuse the second iterator
             }
         }
@@ -121,7 +121,7 @@ public open class Chain<A, B>(
                     when (matchVal1) { is Result.Ok<*, *> -> {
                         return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
                     }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
+                        val k = matchVal1.errValue()
                         k.get()
                     } }
                 }
@@ -156,7 +156,7 @@ public open class Chain<A, B>(
                             }
                         }
                     }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
+                        val k = matchVal1.errValue()
                         k.get()
                     } }
                 }
@@ -167,7 +167,7 @@ public open class Chain<A, B>(
     }
 
     public open fun find(predicate: (Item) -> Boolean): Item? {
-        return (andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }) ?: closure1@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.indexOf(predicate).takeIf { it >= 0 } }())
+        return (andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }) ?: closure1@{ when (val tryResult = this.b) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }.indexOf(predicate).takeIf { it >= 0 } }())
     }
 
     public open fun last(): Item? {
@@ -211,7 +211,7 @@ public open class Chain<A, B>(
         }
 
     public open fun nextBack(): Item? {
-        return (andThenOrClear(this.b, { b -> b.nextBack() }) ?: closure2@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.nextBack() }())
+        return (andThenOrClear(this.b, { b -> b.nextBack() }) ?: closure2@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }.nextBack() }())
     }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
@@ -225,7 +225,7 @@ public open class Chain<A, B>(
                     when (matchVal1) { is Result.Ok<*, *> -> {
                         return Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
                     }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
+                        val k = matchVal1.errValue()
                         k.get()
                     } }
                 }
@@ -260,7 +260,7 @@ public open class Chain<A, B>(
                             }
                         }
                     }; is Result.Err<*, *> -> {
-                        val k = matchVal1.error
+                        val k = matchVal1.errValue()
                         k.get()
                     } }
                 }
@@ -271,7 +271,7 @@ public open class Chain<A, B>(
     }
 
     public open fun rfind(predicate: (Item) -> Boolean): Item? {
-        return (andThenOrClear(this.b, { b -> b.rfind(predicate) }) ?: closure3@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }.rfind(predicate) }())
+        return (andThenOrClear(this.b, { b -> b.rfind(predicate) }) ?: closure3@{ when (val tryResult = this.a) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }.rfind(predicate) }())
     }
 
     public open fun <Residual, Acc, R> tryRfold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
@@ -280,7 +280,7 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val b = matchVal
-                acc1 = when (val tryResult = b.tryRfold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = b.tryRfold(acc1, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 this.b = null
             }
         }
@@ -288,7 +288,7 @@ public open class Chain<A, B>(
             null -> {}
             else -> {
                 val a = matchVal1
-                acc1 = when (val tryResult = a.tryRfold(acc1, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                acc1 = when (val tryResult = a.tryRfold(acc1, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 // we don't fuse the second iterator
             }
         }

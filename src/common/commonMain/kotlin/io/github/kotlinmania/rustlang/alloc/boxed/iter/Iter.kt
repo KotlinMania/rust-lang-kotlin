@@ -59,9 +59,9 @@ public fun <I, A : Allocator> I.len(): Int = this.len()
 
 public fun <I, A : Allocator> I.isEmpty(): Boolean = this.isEmpty()
 
-public fun <S : AsyncIterator> S.pollNext(cx: Context): Poll<Item?> = Pin.new(this).pollNext(cx)
+public fun <Item, S : AsyncIterator<Item>> S.pollNext(cx: Context): Poll<Item?> = Pin.new(this).pollNext(cx)
 
-public fun <S : AsyncIterator> S.sizeHint(): Pair<Int, Int?> = this.sizeHint()
+public fun <Item, S : AsyncIterator<Item>> S.sizeHint(): Pair<Int, Int?> = this.sizeHint()
 
 /**
  * This implementation is required to make sure that the `Holder<[T]>: IntoIterator`

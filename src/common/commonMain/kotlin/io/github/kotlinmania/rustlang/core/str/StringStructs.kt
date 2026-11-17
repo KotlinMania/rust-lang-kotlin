@@ -1,7 +1,7 @@
 package io.github.kotlinmania.rustlang.core.str
 
-import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.function.Fn
 import io.github.kotlinmania.rustlang.core.ops.function.FnMut

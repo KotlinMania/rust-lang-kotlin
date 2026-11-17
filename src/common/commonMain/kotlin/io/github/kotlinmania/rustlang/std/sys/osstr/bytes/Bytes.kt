@@ -3,10 +3,11 @@ package io.github.kotlinmania.rustlang.std.sys.osstr.bytes
 
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -18,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.std.rc.Rc
@@ -202,8 +204,8 @@ public open class Slice internal constructor(
                 val matchVal = String.fromUtf8(after1)
                 when {
                     matchVal is Result.Ok<*, *> -> { return Unit }
-                    matchVal is Result.Err<*, *> && matchVal.error.validUpTo() != 0 -> {
-                        val err = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().validUpTo() != 0 -> {
+                        val err = matchVal.errValue()
                         return Unit
                     }
                     else -> Unit

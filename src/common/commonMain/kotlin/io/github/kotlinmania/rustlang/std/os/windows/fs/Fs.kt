@@ -108,17 +108,17 @@ public interface FileExt {
             run {
                 val matchVal = this.seekRead(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        val valueVal = matchVal.value
+                    matchVal is Result.Ok<*, *> && matchVal.okValue() == 0 -> {
+                        val okValueVal = matchVal.okValue()
                         break
                     }
                     matchVal is Result.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         buf1 = buf1.subList(n, buf1.size)
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                        val e = (matchVal as Result.Err<*, *>).errValue()
                         return Result.Err<Unit, Error>(e)
                     }
                 }
@@ -208,7 +208,7 @@ public interface FileExt {
             run {
                 val matchVal = this.seekReadBuf(buf.reborrow(), offset1)
                 when (matchVal) { is Result.Ok<*, *> -> {}; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     return Result.Err<Unit, Error>(e)
                 } }
             }
@@ -298,17 +298,17 @@ public interface FileExt {
             run {
                 val matchVal = this.seekWrite(buf1, offset1)
                 when {
-                    matchVal is Result.Ok<*, *> && matchVal.value == 0 -> {
-                        val valueVal = matchVal.value
+                    matchVal is Result.Ok<*, *> && matchVal.okValue() == 0 -> {
+                        val okValueVal = matchVal.okValue()
                         return Result.Err<Unit, Error>(Error.WRITE_ALL_EOF)
                     }
                     matchVal is Result.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         buf1 = ((buf1).subList(n, (buf1).size))
                         offset1 += n.toULong()
                     }
                     else -> {
-                        val e = (matchVal as Result.Err<*, *>).error
+                        val e = (matchVal as Result.Err<*, *>).errValue()
                         return Result.Err<Unit, Error>(e)
                     }
                 }

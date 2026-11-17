@@ -24,13 +24,13 @@ public var STRINGNAMES: List<String> = listOf("cbt", "_", "cr", "csr", "tbc", "c
 
 public fun readLeU16(r: Read): Result<UShort> {
     val b = MutableList(2) { 0 }
-    when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<UShort, Error>(tryResult.error) }
+    when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UShort, Error>(tryResult.errValue()) }
     return RustResult.Ok((b[0].toUShort()) or (((b[1].toUShort()).toUInt() shl 8).toUShort()))
 }
 
 public fun readLeU32(r: Read): Result<UInt> {
     val b = MutableList(4) { 0 }
-    when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<UInt, Error>(tryResult.error) }
+    when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UInt, Error>(tryResult.errValue()) }
     return RustResult.Ok((b[0].toUInt()) or ((b[1].toUInt()) shl 8) or ((b[2].toUInt()) shl 16) or ((b[3].toUInt()) shl 24))
 }
 
@@ -61,10 +61,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         run {
             val matchVal = readLeU16(file)
             when (matchVal) { is RustResult.Ok<*, *> -> {
-                val e = matchVal.value
+                val e = matchVal.okValue()
                 e
             }; is RustResult.Err<*, *> -> {
-                val e1 = matchVal.error
+                val e1 = matchVal.errValue()
                 return RustResult.Err<TermInfo, String>(e1.toString())
             } }
         }
@@ -78,10 +78,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         val matchVal2 = (run {
         val matchVal1 = readLeU16(file)
         when (matchVal1) { is RustResult.Ok<*, *> -> {
-            val e2 = matchVal1.value
+            val e2 = matchVal1.okValue()
             e2
         }; is RustResult.Err<*, *> -> {
-            val e3 = matchVal1.error
+            val e3 = matchVal1.errValue()
             return RustResult.Err<TermInfo, String>(e3.toString())
         } }
     }).toShort()
@@ -90,7 +90,7 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 val n = matchVal2
                 n.toInt()
             }
-            matchVal2 == -1 -> 0
+            matchVal2 == -1.toShort() -> 0
             else -> { return RustResult.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
@@ -98,10 +98,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         val matchVal4 = (run {
         val matchVal3 = readLeU16(file)
         when (matchVal3) { is RustResult.Ok<*, *> -> {
-            val e4 = matchVal3.value
+            val e4 = matchVal3.okValue()
             e4
         }; is RustResult.Err<*, *> -> {
-            val e5 = matchVal3.error
+            val e5 = matchVal3.errValue()
             return RustResult.Err<TermInfo, String>(e5.toString())
         } }
     }).toShort()
@@ -110,7 +110,7 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 val n1 = matchVal4
                 n1.toInt()
             }
-            matchVal4 == -1 -> 0
+            matchVal4 == -1.toShort() -> 0
             else -> { return RustResult.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
@@ -118,10 +118,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         val matchVal6 = (run {
         val matchVal5 = readLeU16(file)
         when (matchVal5) { is RustResult.Ok<*, *> -> {
-            val e6 = matchVal5.value
+            val e6 = matchVal5.okValue()
             e6
         }; is RustResult.Err<*, *> -> {
-            val e7 = matchVal5.error
+            val e7 = matchVal5.errValue()
             return RustResult.Err<TermInfo, String>(e7.toString())
         } }
     }).toShort()
@@ -130,7 +130,7 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 val n2 = matchVal6
                 n2.toInt()
             }
-            matchVal6 == -1 -> 0
+            matchVal6 == -1.toShort() -> 0
             else -> { return RustResult.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
@@ -138,10 +138,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         val matchVal8 = (run {
         val matchVal7 = readLeU16(file)
         when (matchVal7) { is RustResult.Ok<*, *> -> {
-            val e8 = matchVal7.value
+            val e8 = matchVal7.okValue()
             e8
         }; is RustResult.Err<*, *> -> {
-            val e9 = matchVal7.error
+            val e9 = matchVal7.errValue()
             return RustResult.Err<TermInfo, String>(e9.toString())
         } }
     }).toShort()
@@ -150,7 +150,7 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 val n3 = matchVal8
                 n3.toInt()
             }
-            matchVal8 == -1 -> 0
+            matchVal8 == -1.toShort() -> 0
             else -> { return RustResult.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
@@ -158,10 +158,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         val matchVal10 = (run {
         val matchVal9 = readLeU16(file)
         when (matchVal9) { is RustResult.Ok<*, *> -> {
-            val e10 = matchVal9.value
+            val e10 = matchVal9.okValue()
             e10
         }; is RustResult.Err<*, *> -> {
-            val e11 = matchVal9.error
+            val e11 = matchVal9.errValue()
             return RustResult.Err<TermInfo, String>(e11.toString())
         } }
     }).toShort()
@@ -170,7 +170,7 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 val n4 = matchVal10
                 n4.toInt()
             }
-            matchVal10 == -1 -> 0
+            matchVal10 == -1.toShort() -> 0
             else -> { return RustResult.Err<TermInfo, String>("incompatible file: length fields must be  >= -1".toString()) }
         }
     }
@@ -191,10 +191,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
     run {
         val matchVal11 = file.take((namesBytes - 1).toULong()).readToEnd(bytes)
         when (matchVal11) { is RustResult.Ok<*, *> -> {
-            val e12 = matchVal11.value
+            val e12 = matchVal11.okValue()
             e12
         }; is RustResult.Err<*, *> -> {
-            val e13 = matchVal11.error
+            val e13 = matchVal11.errValue()
             return RustResult.Err<TermInfo, String>(e13.toString())
         } }
     }
@@ -202,7 +202,7 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         run {
             val matchVal12 = String.fromUtf8(bytes)
             when (matchVal12) { is RustResult.Ok<*, *> -> {
-                val s = matchVal12.value
+                val s = matchVal12.okValue()
                 s
             }; is RustResult.Err<*, *> -> {
                 return RustResult.Err<TermInfo, String>("input not utf-8".toString())
@@ -213,10 +213,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
     if (run {
         val matchVal13 = readByte(file)
         when (matchVal13) { is RustResult.Ok<*, *> -> {
-            val e14 = matchVal13.value
+            val e14 = matchVal13.okValue()
             e14
         }; is RustResult.Err<*, *> -> {
-            val e15 = matchVal13.error
+            val e15 = matchVal13.errValue()
             return RustResult.Err<TermInfo, String>(e15.toString())
         } }
     } != 0u) {
@@ -228,21 +228,21 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
             val matchVal14 = readByte(file)
             when {
                 matchVal14 is RustResult.Err<*, *> -> {
-                    val e16 = matchVal14.error
+                    val e16 = matchVal14.errValue()
                     RustResult.Err(e16)
                 }
-                matchVal14 is RustResult.Ok<*, *> && matchVal14.value == 1 -> {
-                    val valueVal = matchVal14.value
+                matchVal14 is RustResult.Ok<*, *> && matchVal14.okValue() == 1 -> {
+                    val okValueVal = matchVal14.okValue()
                     RustResult.Ok(Pair(bnames[i].toString(), true))
                 }
                 else -> null
             }
         } }).toMap(LinkedHashMap())
             when (matchVal14) { is RustResult.Ok<*, *> -> {
-                val e16 = matchVal14.value
+                val e16 = matchVal14.okValue()
                 e16
             }; is RustResult.Err<*, *> -> {
-                val e17 = matchVal14.error
+                val e17 = matchVal14.errValue()
                 return RustResult.Err<TermInfo, String>(e17.toString())
             } }
         }
@@ -250,10 +250,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
         run {
             val matchVal15 = readByte(file)
             when (matchVal15) { is RustResult.Ok<*, *> -> {
-                val e18 = matchVal15.value
+                val e18 = matchVal15.okValue()
                 e18
             }; is RustResult.Err<*, *> -> {
-                val e19 = matchVal15.error
+                val e19 = matchVal15.errValue()
                 return RustResult.Err<TermInfo, String>(e19.toString())
             } }
         }
@@ -269,25 +269,25 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                     readLeU16(file).map(Into::into)
                 }
             when {
-                number is RustResult.Ok<*, *> && number.value == 0xFFFF -> {
-                    val valueVal = number.value
+                number is RustResult.Ok<*, *> && number.okValue() == 0xFFFF -> {
+                    val okValueVal = number.okValue()
                     null
                 }
                 number is RustResult.Ok<*, *> -> {
-                    val n5 = number.value
+                    val n5 = number.okValue()
                     RustResult.Ok(Pair(nnames[i].toString(), n5))
                 }
                 else -> {
-                    val e20 = (number as RustResult.Err<*, *>).error
+                    val e20 = (number as RustResult.Err<*, *>).errValue()
                     RustResult.Err(e20)
                 }
             }
         }).toMap(LinkedHashMap())
             when (matchVal16) { is RustResult.Ok<*, *> -> {
-                val e20 = matchVal16.value
+                val e20 = matchVal16.okValue()
                 e20
             }; is RustResult.Err<*, *> -> {
-                val e21 = matchVal16.error
+                val e21 = matchVal16.errValue()
                 return RustResult.Err<TermInfo, String>(e21.toString())
             } }
         }
@@ -297,10 +297,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 run {
                     val matchVal17 = (0 until stringOffsetsCount).map({ readLeU16(file) }).toMutableList()
                     when (matchVal17) { is RustResult.Ok<*, *> -> {
-                        val e22 = matchVal17.value
+                        val e22 = matchVal17.okValue()
                         e22
                     }; is RustResult.Err<*, *> -> {
-                        val e23 = matchVal17.error
+                        val e23 = matchVal17.errValue()
                         return RustResult.Err<TermInfo, String>(e23.toString())
                     } }
                 }
@@ -308,10 +308,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
             run {
                 val matchVal18 = file.take(stringTableBytes.toULong()).readToEnd(stringTable)
                 when (matchVal18) { is RustResult.Ok<*, *> -> {
-                    val e24 = matchVal18.value
+                    val e24 = matchVal18.okValue()
                     e24
                 }; is RustResult.Err<*, *> -> {
-                    val e25 = matchVal18.error
+                    val e25 = matchVal18.errValue()
                     return RustResult.Err<TermInfo, String>(e25.toString())
                 } }
             }
@@ -343,10 +343,10 @@ public fun parse(file: Read, longnames: Boolean): RustResult<TermInfo, String> {
                 }
             })).toMap(LinkedHashMap())
                 when (matchVal19) { is RustResult.Ok<*, *> -> {
-                    val e26 = matchVal19.value
+                    val e26 = matchVal19.okValue()
                     e26
                 }; is RustResult.Err<*, *> -> {
-                    val e27 = matchVal19.error
+                    val e27 = matchVal19.errValue()
                     return RustResult.Err<TermInfo, String>(e27.toString())
                 } }
             }

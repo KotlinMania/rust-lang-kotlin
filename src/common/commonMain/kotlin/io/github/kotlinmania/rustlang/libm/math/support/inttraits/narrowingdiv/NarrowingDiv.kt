@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.support.inttraits.narrowingdiv
 
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.libm.math.support.big.U256
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
@@ -122,7 +123,7 @@ public fun <D, OtherSign, Unsigned, H, U> divThreeDigitsByTwo(a0: U, a: D, n: D)
             r = U.D.fromLoHi(a0, r1)
             // Subtract the contribution of the divisor low bits with the estimated quotient
             val d = q.widenMul(n0)
-            Pair(r, wrap) = r.overflowingSub(d)
+            run { val (destructVal0, destructVal1) = r.overflowingSub(d); r = destructVal0; wrap = destructVal1 }
             // Since `q` is the quotient of dividing with a slightly smaller divisor,
             // it may be an overapproximation, but is never too small, and similarly,
             // `r` is now either the correct remainder ...
@@ -134,13 +135,13 @@ public fun <D, OtherSign, Unsigned, H, U> divThreeDigitsByTwo(a0: U, a: D, n: D)
             q -= U.ONE
         }
     }
-    Pair(r, wrap) = r.overflowingAdd(n)
+    run { val (destructVal0, destructVal1) = r.overflowingAdd(n); r = destructVal0; wrap = destructVal1 }
     if (wrap) {
         return Pair(q, r)
     }
     // If the remainder still didn't wrap, we need another step.
     q -= U.ONE
-    Pair(r, wrap) = r.overflowingAdd(n)
+    run { val (destructVal0, destructVal1) = r.overflowingAdd(n); r = destructVal0; wrap = destructVal1 }
     // Since `n >= RR / 2`, at least one of the two `r += n` must have wrapped.
     check(wrap) { "estimated quotient should be off by at most two" }
     return Pair(q, r)

@@ -24,10 +24,41 @@ import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteAdd
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffsetFrom
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffsetFromUnsigned
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteSub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castInit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyTo
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyToNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAlignedTo
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.mask
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFrom
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.toRawParts
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.withMetadataOf
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteOffset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteSub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingOffset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.readVolatile
@@ -728,7 +759,7 @@ public fun ConstPtr.byteOffsetFromUnsigned(origin: ConstPtr): Int {
  */
 public fun ConstPtr.guaranteedEq(other: ConstPtr): Boolean? =
     when (val matchVal = ptrGuaranteedCmp(this, other)) {
-        2 -> null
+        2u.toUByte() -> null
         else -> {
             val other1 = matchVal
             other1 == 1u.toUByte()

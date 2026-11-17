@@ -80,10 +80,10 @@ public open class ArrayChunks<I, Item> internal constructor(
             run {
                 val matchVal = this.iter.nextChunk()
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val chunk = matchVal.value
-                    acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                    val chunk = matchVal.okValue()
+                    acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
                 }; is Result.Err<*, *> -> {
-                    val remainder = matchVal.error
+                    val remainder = matchVal.errValue()
                     // Make sure to not overwrite `self.remainder` with an empty array
                     // when `next` is called after `ArrayChunks` exhaustion.
                     this.remainder.getOrInsert(remainder)
@@ -107,8 +107,8 @@ public open class ArrayChunks<I, Item> internal constructor(
         while (true) {
             val matchVal = this.iter.nextChunkBack()
             if (matchVal !is Result.Ok<*, *>) break
-            val chunk = (matchVal as Result.Ok<*, *>).value
-            acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+            val chunk = (matchVal as Result.Ok<*, *>).okValue()
+            acc = when (val tryResult = f(acc, chunk)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         }
         return acc
     }

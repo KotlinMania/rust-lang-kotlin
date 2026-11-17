@@ -51,17 +51,17 @@ public open class PrettyFormatter<T>(
             is OutputLocation.Pretty<*> -> {
                 val (term) = matchVal
                 if (this.useColor) {
-                    when (val tryResult = term.fg(color)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = term.fg(color)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 }
-                when (val tryResult = term.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = term.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 if (this.useColor) {
-                    when (val tryResult = term.reset()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = term.reset()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 }
                 term.flush()
             }
             is OutputLocation.Raw<*> -> {
                 val (stdout) = matchVal
-                when (val tryResult = stdout.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = stdout.writeAll(word.encodeToByteArray().map { it.toUByte() })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 stdout.flush()
             }
         }
@@ -69,7 +69,7 @@ public open class PrettyFormatter<T>(
 
     public open fun writePlain(s: String): Result<Unit> {
         val s1 = s
-        when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.out.writeAll(s1.encodeToByteArray().map { it.toUByte() })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         return this.out.flush()
     }
 
@@ -91,10 +91,10 @@ public open class PrettyFormatter<T>(
                     null
                 }
             when (color) {
-                null -> when (val tryResult = this.writePlain(timeStr)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                null -> when (val tryResult = this.writePlain(timeStr)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 else -> {
                     val color1 = color
-                    when (val tryResult = this.writePretty(timeStr, color1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = this.writePretty(timeStr, color1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
                 }
             }
         }
@@ -103,7 +103,7 @@ public open class PrettyFormatter<T>(
 
     public open fun writeResults(inputs: List<Pair<TestDesc, List<UByte>>>, resultsType: String): Result<Unit> {
         val resultsOutStr = "\n$resultsType:\n"
-        when (val tryResult = this.writePlain(resultsOutStr)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.writePlain(resultsOutStr)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         val results = mutableListOf()
         var stdouts = ""
         for ((f, stdout) in inputs) {
@@ -116,13 +116,13 @@ public open class PrettyFormatter<T>(
             }
         }
         if (!stdouts.isEmpty()) {
-            when (val tryResult = this.writePlain("\n")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-            when (val tryResult = this.writePlain(stdouts)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.writePlain("\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = this.writePlain(stdouts)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         }
-        when (val tryResult = this.writePlain(resultsOutStr)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.writePlain(resultsOutStr)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         results.sort()
         for (name in results) {
-            when (val tryResult = this.writePlain("    $name\n")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.writePlain("    $name\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         }
         return RustResult.Ok(Unit)
     }
@@ -137,11 +137,11 @@ public open class PrettyFormatter<T>(
         val name = desc.paddedName(this.maxNameLen, desc.name.padding())
         when (val matchVal = desc.testMode()) {
             null -> {
-                when (val tryResult = this.writePlain("test $name ... ")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.writePlain("test $name ... ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             }
             else -> {
                 val testMode = matchVal
-                when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             }
         }
         return RustResult.Ok(Unit)
@@ -166,7 +166,7 @@ public fun <T : Write> PrettyFormatter<T>.writeDiscoveryFinish(state: ConsoleTes
             }
         }
     if (state.tests != 0 || state.benchmarks != 0) {
-        when (val tryResult = this.writePlain("\n")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.writePlain("\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     }
     return this.writePlain((plural(state.tests, "test")).toString() + ", " + (plural(state.benchmarks, "benchmark")).toString() + "\n")
 }
@@ -193,28 +193,28 @@ public fun <T : Write> PrettyFormatter<T>.writeTestStart(desc: TestDesc): Result
     // When running the tests serially, we print the name here so
     // that the user can see which test hangs.
     if (!this.isMultithreaded) {
-        when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     }
     return RustResult.Ok(Unit)
 }
 
 public fun <T : Write> PrettyFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
     if (this.isMultithreaded) {
-        when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     }
     when (result) {
-        TestResult.TrOk -> when (val tryResult = this.writeOk()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-        TestResult.TrFailed -> when (val tryResult = this.writeFailed()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-        is TestResult.TrFailedMsg -> when (val tryResult = this.writeFailed()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-        TestResult.TrIgnored -> when (val tryResult = this.writeIgnored(desc.ignoreMessage)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        TestResult.TrOk -> when (val tryResult = this.writeOk()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        TestResult.TrFailed -> when (val tryResult = this.writeFailed()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        is TestResult.TrFailedMsg -> when (val tryResult = this.writeFailed()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+        TestResult.TrIgnored -> when (val tryResult = this.writeIgnored(desc.ignoreMessage)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         is TestResult.TrBench -> {
             val (bs) = result
-            when (val tryResult = this.writeBench()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-            when (val tryResult = this.writePlain(": ${fmtBenchSamples(bs)}")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+            when (val tryResult = this.writeBench()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = this.writePlain(": ${fmtBenchSamples(bs)}")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         }
-        TestResult.TrTimedFail -> when (val tryResult = this.writeTimeFailed()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        TestResult.TrTimedFail -> when (val tryResult = this.writeTimeFailed()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     }
-    when (val tryResult = this.writeTime(desc, execTime)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.writeTime(desc, execTime)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     return this.writePlain("\n")
 }
 
@@ -222,35 +222,35 @@ public fun <T : Write> PrettyFormatter<T>.writeTimeout(desc: TestDesc): Result<U
 
 public fun <T : Write> PrettyFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
     if (state.options.displayOutput) {
-        when (val tryResult = this.writeSuccesses(state)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writeSuccesses(state)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     }
     val success = state.failed == 0
     if (!success) {
         if (!state.failures.isEmpty()) {
-            when (val tryResult = this.writeFailures(state)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+            when (val tryResult = this.writeFailures(state)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
         }
         if (!state.timeFailures.isEmpty()) {
-            when (val tryResult = this.writeTimeFailures(state)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+            when (val tryResult = this.writeTimeFailures(state)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
         }
     }
-    when (val tryResult = this.writePlain("\ntest result: ")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = this.writePlain("\ntest result: ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     if (success) {
         // There's no parallelism at this point so it's safe to use color
-        when (val tryResult = this.writePretty("ok", GREEN)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writePretty("ok", GREEN)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     } else {
-        when (val tryResult = this.writePretty("FAILED", RED)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writePretty("FAILED", RED)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     }
     val s = ". ${state.passed} passed; ${state.failed} failed; ${state.ignored} ignored; ${state.measured} measured; ${state.filteredOut} filtered out"
-    when (val tryResult = this.writePlain(s)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = this.writePlain(s)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     when (val matchVal = state.execTime) {
         null -> {}
         else -> {
             val execTime = matchVal
             val timeStr = "; finished in $execTime"
-            when (val tryResult = this.writePlain(timeStr)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+            when (val tryResult = this.writePlain(timeStr)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
         }
     }
-    when (val tryResult = this.writePlain("\n\n")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = this.writePlain("\n\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     return RustResult.Ok(success)
 }
 

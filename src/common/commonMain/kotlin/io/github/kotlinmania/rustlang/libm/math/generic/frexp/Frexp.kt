@@ -5,14 +5,14 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> frexp(x: F, normalizeFFn: (Int) -> Pair<Int, Int>, fromBitsFFn: (Int) -> F): Pair<F, Int> {
     var ix = x.toBits()
-    val ee = x.ex().toInt()
+    var ee = x.ex().toInt()
     if (ee == 0) {
         if (x == F.ZERO) {
             return Pair(x, 0)
         }
         // Subnormals, needs to be normalized first
         ix = ix and F.SIG_MASK
-        Pair(ee, ix) = normalizeFFn(ix)
+        run { val (destructVal0, destructVal1) = normalizeFFn(ix); ee = destructVal0; ix = destructVal1 }
         ix = ix or (x.toBits() and F.SIGN_MASK)
     } else if (ee == F.EXP_SAT.toInt()) {
         // inf or  NaN

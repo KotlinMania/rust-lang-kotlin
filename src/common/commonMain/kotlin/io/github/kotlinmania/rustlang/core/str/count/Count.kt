@@ -110,7 +110,7 @@ public fun doCountChars(s: String): Int {
 // true)
 public fun containsNonContinuationByte(w: Int): Int {
     val LSB: Int = Int.repeatU8(0x01u)
-    return ((!w shr 7) or (w shr 6)) and LSB
+    return ((w.inv() shr 7) or (w shr 6)) and LSB
 }
 
 // Morally equivalent to `values.toNeBytes().intoIter().sum<Int>()`, but

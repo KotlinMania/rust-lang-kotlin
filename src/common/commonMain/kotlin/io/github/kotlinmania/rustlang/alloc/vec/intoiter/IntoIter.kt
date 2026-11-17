@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.InPlaceIterable
@@ -24,6 +25,11 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dangling
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -82,7 +88,7 @@ public open class IntoIter<T, A : Allocator>(
      * For non-ZSTs the pointer is treated as `NonNull<T>`
      */
     public var end: ConstPtr,
-) : AsRef<List<T>>, TrustedFused, TrustedLen, InPlaceIterable, SourceIter, Iterable<T> {
+) : AsRef<List<T>>, TrustedFused, TrustedLen<Any>, InPlaceIterable, SourceIter, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {
@@ -385,7 +391,7 @@ public open class IntoIter<T, A : Allocator>(
                 val tmp = this.ptr.read()
                 // See `next` for why we subtract from `end` here.
                 this.end = ConstPtr((this.end).rawAddress - ((1).toLong()))
-                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                accum1 = when (val tryResult = f(accum1, tmp)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         } else {
             // SAFETY: `self.end` can only be null if `T` is a ZST.
@@ -395,7 +401,7 @@ public open class IntoIter<T, A : Allocator>(
                 // SAFETY: the maximum this can be is `self.end`.
                 // Increment `self.ptr` first to avoid double dropping in the event of a panic.
                 this.ptr = this.ptr.add(1)
-                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                accum1 = when (val tryResult = f(accum1, tmp1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
         return fromOutputRFn(accum1)

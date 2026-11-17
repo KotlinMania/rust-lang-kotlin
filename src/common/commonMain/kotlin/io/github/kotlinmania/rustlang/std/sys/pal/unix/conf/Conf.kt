@@ -1,6 +1,7 @@
 // port-lint: source sys/pal/unix/conf.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.conf
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -66,7 +67,7 @@ public fun glibcVersion(): Pair<Int, Int>? {
     val versionCstr = CStr.fromPtr(gnuGetLibcVersion())
     return when (val matchVal = versionCstr.toStr()) {
         is Result.Ok<*, *> -> {
-            val versionStr = matchVal.value
+            val versionStr = matchVal.okValue()
             parseGlibcVersion(versionStr)
         }
         else -> {
@@ -85,8 +86,8 @@ public fun parseGlibcVersion(version: String): Pair<Int, Int>? {
         val matchVal = Pair(parsedInts.next(), parsedInts.next())
         when {
             matchVal.first != null && matchVal.first is Result.Ok<*, *> && matchVal.second != null && matchVal.second is Result.Ok<*, *> -> {
-                val major = (matchVal.first as Result.Ok<*, *>).value
-                val minor = (matchVal.second as Result.Ok<*, *>).value
+                val major = (matchVal.first as Result.Ok<*, *>).okValue()
+                val minor = (matchVal.second as Result.Ok<*, *>).okValue()
                 Pair(major, minor)
             }
             else -> null

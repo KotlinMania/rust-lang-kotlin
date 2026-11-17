@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
@@ -99,18 +100,18 @@ public open class ByteStr internal constructor(
     public open fun derefMut(): MutableList<UByte> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         for (chunk in this.utf8Chunks()) {
             for (c in chunk.valid().chars()) {
                 when (c) {
-                    '\u0000' -> { when (val tryResult = f.writeFmt("\\0")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) } }
-                    in '\u0001'..'\u007f' -> when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-                    else -> when (val tryResult = f.writeFmt("${c.escapeDebug()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+                    '\u0000' -> { when (val tryResult = f.writeFmt("\\0")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) } }
+                    in '\u0001'..'\u007f' -> when (val tryResult = f.writeFmt("${(c.toUByte()).escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+                    else -> when (val tryResult = f.writeFmt("${c.escapeDebug()}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
                 }
             }
-            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+            when (val tryResult = f.writeFmt("${chunk.invalid().escapeAscii()}")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         }
-        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        when (val tryResult = f.writeFmt("\"")) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -148,7 +149,7 @@ public open class ByteStr internal constructor(
     // of space, so print the entire string.
     break
                             val chars = chunk.valid().charIndices()
-                            val remaining = when (val tryResult = chars.advanceBy(remainingWidth)) { is Result.Err<*, *> -> tryResult.error; is Result.Ok<*, *> -> // We've counted off `precision` characters, so truncate
+                            val remaining = when (val tryResult = chars.advanceBy(remainingWidth)) { is Result.Err<*, *> -> tryResult.errValue(); is Result.Ok<*, *> -> // We've counted off `precision` characters, so truncate
     // the string at the current offset.
     break }
                             offset += chunk.valid().len()
@@ -185,8 +186,8 @@ public open class ByteStr internal constructor(
             }
         // The width is originally stored as a 16-bit number, so this cannot fail.
         val padding = UShort.tryFrom(requestedWidth.saturatingSub(actualWidth1)).unwrap()
-        val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
-        when (val tryResult = emit(truncated, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }
+        val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        when (val tryResult = emit(truncated, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return postPadding.write(f)
     }
 

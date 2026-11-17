@@ -27,7 +27,7 @@ public fun mm512Permutex2varEpi8(a: M512i, idx: M512i, b: M512i): M512i = transm
 public fun mm512MaskPermutex2varEpi8(a: M512i, k: Mmask64, idx: M512i, b: M512i): M512i =
     run {
         val permute = mm512Permutex2varEpi8(a, idx, b).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = a.asI8x64(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = a.asI8x64(); simdArg1 })
     }
 
 // should be vpermi2b
@@ -40,7 +40,7 @@ public fun mm512MaskPermutex2varEpi8(a: M512i, k: Mmask64, idx: M512i, b: M512i)
 public fun mm512MaskzPermutex2varEpi8(k: Mmask64, a: M512i, idx: M512i, b: M512i): M512i =
     run {
         val permute = mm512Permutex2varEpi8(a, idx, b).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -51,7 +51,7 @@ public fun mm512MaskzPermutex2varEpi8(k: Mmask64, a: M512i, idx: M512i, b: M512i
 public fun mm512Mask2Permutex2varEpi8(a: M512i, idx: M512i, k: Mmask64, b: M512i): M512i =
     run {
         val permute = mm512Permutex2varEpi8(a, idx, b).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = idx.asI8x64(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = idx.asI8x64(); simdArg1 })
     }
 
 // should be vpermi2b
@@ -71,7 +71,7 @@ public fun mm256Permutex2varEpi8(a: M256i, idx: M256i, b: M256i): M256i = transm
 public fun mm256MaskPermutex2varEpi8(a: M256i, k: Mmask32, idx: M256i, b: M256i): M256i =
     run {
         val permute = mm256Permutex2varEpi8(a, idx, b).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = a.asI8x32(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = a.asI8x32(); simdArg1 })
     }
 
 // should be vpermi2b
@@ -84,7 +84,7 @@ public fun mm256MaskPermutex2varEpi8(a: M256i, k: Mmask32, idx: M256i, b: M256i)
 public fun mm256MaskzPermutex2varEpi8(k: Mmask32, a: M256i, idx: M256i, b: M256i): M256i =
     run {
         val permute = mm256Permutex2varEpi8(a, idx, b).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -95,7 +95,7 @@ public fun mm256MaskzPermutex2varEpi8(k: Mmask32, a: M256i, idx: M256i, b: M256i
 public fun mm256Mask2Permutex2varEpi8(a: M256i, idx: M256i, k: Mmask32, b: M256i): M256i =
     run {
         val permute = mm256Permutex2varEpi8(a, idx, b).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = idx.asI8x32(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = idx.asI8x32(); simdArg1 })
     }
 
 // should be vpermi2b
@@ -115,7 +115,7 @@ public fun mmPermutex2varEpi8(a: M128i, idx: M128i, b: M128i): M128i = transmute
 public fun mmMaskPermutex2varEpi8(a: M128i, k: Mmask16, idx: M128i, b: M128i): M128i =
     run {
         val permute = mmPermutex2varEpi8(a, idx, b).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = a.asI8x16(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = a.asI8x16(); simdArg1 })
     }
 
 // should be vpermi2b
@@ -128,7 +128,7 @@ public fun mmMaskPermutex2varEpi8(a: M128i, k: Mmask16, idx: M128i, b: M128i): M
 public fun mmMaskzPermutex2varEpi8(k: Mmask16, a: M128i, idx: M128i, b: M128i): M128i =
     run {
         val permute = mmPermutex2varEpi8(a, idx, b).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -139,7 +139,7 @@ public fun mmMaskzPermutex2varEpi8(k: Mmask16, a: M128i, idx: M128i, b: M128i): 
 public fun mmMask2Permutex2varEpi8(a: M128i, idx: M128i, k: Mmask16, b: M128i): M128i =
     run {
         val permute = mmPermutex2varEpi8(a, idx, b).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = idx.asI8x16(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = idx.asI8x16(); simdArg1 })
     }
 
 /**
@@ -157,7 +157,7 @@ public fun mm512PermutexvarEpi8(idx: M512i, a: M512i): M512i = transmuteWithLayo
 public fun mm512MaskPermutexvarEpi8(src: M512i, k: Mmask64, idx: M512i, a: M512i): M512i =
     run {
         val permute = mm512PermutexvarEpi8(idx, a).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = src.asI8x64(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = src.asI8x64(); simdArg1 })
     }
 
 /**
@@ -168,7 +168,7 @@ public fun mm512MaskPermutexvarEpi8(src: M512i, k: Mmask64, idx: M512i, a: M512i
 public fun mm512MaskzPermutexvarEpi8(k: Mmask64, idx: M512i, a: M512i): M512i =
     run {
         val permute = mm512PermutexvarEpi8(idx, a).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -186,7 +186,7 @@ public fun mm256PermutexvarEpi8(idx: M256i, a: M256i): M256i = transmuteWithLayo
 public fun mm256MaskPermutexvarEpi8(src: M256i, k: Mmask32, idx: M256i, a: M256i): M256i =
     run {
         val permute = mm256PermutexvarEpi8(idx, a).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = src.asI8x32(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = src.asI8x32(); simdArg1 })
     }
 
 /**
@@ -197,7 +197,7 @@ public fun mm256MaskPermutexvarEpi8(src: M256i, k: Mmask32, idx: M256i, a: M256i
 public fun mm256MaskzPermutexvarEpi8(k: Mmask32, idx: M256i, a: M256i): M256i =
     run {
         val permute = mm256PermutexvarEpi8(idx, a).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -215,7 +215,7 @@ public fun mmPermutexvarEpi8(idx: M128i, a: M128i): M128i = transmuteWithLayouts
 public fun mmMaskPermutexvarEpi8(src: M128i, k: Mmask16, idx: M128i, a: M128i): M128i =
     run {
         val permute = mmPermutexvarEpi8(idx, a).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = src.asI8x16(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = src.asI8x16(); simdArg1 })
     }
 
 /**
@@ -226,7 +226,7 @@ public fun mmMaskPermutexvarEpi8(src: M128i, k: Mmask16, idx: M128i, a: M128i): 
 public fun mmMaskzPermutexvarEpi8(k: Mmask16, idx: M128i, a: M128i): M128i =
     run {
         val permute = mmPermutexvarEpi8(idx, a).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = permute; val _simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = permute; val simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -244,7 +244,7 @@ public fun mm512MultishiftEpi64Epi8(a: M512i, b: M512i): M512i = transmuteWithLa
 public fun mm512MaskMultishiftEpi64Epi8(src: M512i, k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val multishift = mm512MultishiftEpi64Epi8(a, b).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = multishift; val _simdArg2 = src.asI8x64(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = multishift; val simdArg2 = src.asI8x64(); simdArg1 })
     }
 
 /**
@@ -255,7 +255,7 @@ public fun mm512MaskMultishiftEpi64Epi8(src: M512i, k: Mmask64, a: M512i, b: M51
 public fun mm512MaskzMultishiftEpi64Epi8(k: Mmask64, a: M512i, b: M512i): M512i =
     run {
         val multishift = mm512MultishiftEpi64Epi8(a, b).asI8x64()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = multishift; val _simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = multishift; val simdArg2 = Simd<Byte>(List(64) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -273,7 +273,7 @@ public fun mm256MultishiftEpi64Epi8(a: M256i, b: M256i): M256i = transmuteWithLa
 public fun mm256MaskMultishiftEpi64Epi8(src: M256i, k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val multishift = mm256MultishiftEpi64Epi8(a, b).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = multishift; val _simdArg2 = src.asI8x32(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = multishift; val simdArg2 = src.asI8x32(); simdArg1 })
     }
 
 /**
@@ -284,7 +284,7 @@ public fun mm256MaskMultishiftEpi64Epi8(src: M256i, k: Mmask32, a: M256i, b: M25
 public fun mm256MaskzMultishiftEpi64Epi8(k: Mmask32, a: M256i, b: M256i): M256i =
     run {
         val multishift = mm256MultishiftEpi64Epi8(a, b).asI8x32()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = multishift; val _simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = multishift; val simdArg2 = Simd<Byte>(List(32) { 0.toByte() }); simdArg1 })
     }
 
 /**
@@ -302,7 +302,7 @@ public fun mmMultishiftEpi64Epi8(a: M128i, b: M128i): M128i = transmuteWithLayou
 public fun mmMaskMultishiftEpi64Epi8(src: M128i, k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val multishift = mmMultishiftEpi64Epi8(a, b).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = multishift; val _simdArg2 = src.asI8x16(); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = multishift; val simdArg2 = src.asI8x16(); simdArg1 })
     }
 
 /**
@@ -313,7 +313,7 @@ public fun mmMaskMultishiftEpi64Epi8(src: M128i, k: Mmask16, a: M128i, b: M128i)
 public fun mmMaskzMultishiftEpi64Epi8(k: Mmask16, a: M128i, b: M128i): M128i =
     run {
         val multishift = mmMultishiftEpi64Epi8(a, b).asI8x16()
-        transmute(run { val _simdArg0 = k; val _simdArg1 = multishift; val _simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = multishift; val simdArg2 = Simd<Byte>(List(16) { 0.toByte() }); simdArg1 })
     }
 
 public expect fun vpermi2b(a: I8x64, idx: I8x64, b: I8x64): I8x64

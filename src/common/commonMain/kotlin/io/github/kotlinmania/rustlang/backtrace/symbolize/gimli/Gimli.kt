@@ -18,7 +18,10 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
@@ -45,7 +48,7 @@ public open class Mapping(
          */
         public fun mk(data: Mmap, mk: (List<UByte>, Stash) -> Context?): Mapping? {
             return Mapping.mkOrOther(data, closure@{ data1, stash ->
-                val cx = when (val tryResult = mk(data1, stash)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                val cx = when (val tryResult = mk(data1, stash)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
                 Either.B(cx)
             })
         }
@@ -388,12 +391,12 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
             var anyFrames = false
             when (val matchVal2 = cx1.findFrames(stash1, addr1.toULong())) {
                 is Result.Ok<*, *> -> {
-                    val frames = matchVal2.value
+                    val frames = matchVal2.okValue()
                     while (true) {
                         val matchVal3 = frames.next()
-                        if (!(matchVal3 is Result.Ok<*, *> && matchVal3.value != null)) break
-                        val valueVal = (matchVal3 as Result.Ok<*, *>).value
-                        val frame = valueVal
+                        if (!(matchVal3 is Result.Ok<*, *> && matchVal3.okValue() != null)) break
+                        val okValueVal = (matchVal3 as Result.Ok<*, *>).okValue()
+                        val frame = okValueVal
                         anyFrames = true
                         val name =
                             when (val matchVal4 = frame.function) {
@@ -416,12 +419,12 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                         val objectAddr = matchVal5.second
                         when (val matchVal6 = objectCx.findFrames(stash1, objectAddr)) {
                             is Result.Ok<*, *> -> {
-                                val frames1 = matchVal6.value
+                                val frames1 = matchVal6.okValue()
                                 while (true) {
                                     val matchVal7 = frames1.next()
-                                    if (!(matchVal7 is Result.Ok<*, *> && matchVal7.value != null)) break
-                                    val valueVal1 = (matchVal7 as Result.Ok<*, *>).value
-                                    val frame1 = valueVal1
+                                    if (!(matchVal7 is Result.Ok<*, *> && matchVal7.okValue() != null)) break
+                                    val okValueVal1 = (matchVal7 as Result.Ok<*, *>).okValue()
+                                    val frame1 = okValueVal1
                                     anyFrames = true
                                     call(Symbol.Frame(addr = mutPtrFromRustCast(addr1), location = frame1.location, name = frame1.function.map({ f1 -> f1.name.slice() })))
                                 }

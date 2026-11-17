@@ -109,44 +109,9 @@ public fun <Source, I, U, F> FlatMap<I, U, F, Item, IntoIter>.asInner(): Source 
  */
 public open class Flatten<I, Item> internal constructor(
     innerCtorArg: FlattenCompat<I, IntoIter>,
-) : TrustedLen, Iterable<U.Item> {
+) : TrustedLen<Item, Any> {
     public var inner: FlattenCompat<I, IntoIter> = innerCtorArg
         internal set
-
-    override fun iterator(): Iterator<U.Item> = object : AbstractIterator<U.Item>() {
-        override fun computeNext() {
-            when (val v = this@Flatten.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Flatten").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
-
-    public open fun clone(): Flatten<I, Item> = Flatten(inner = this.inner.clone())
-
-    public open fun next(): Item? = this.inner.next()
-
-    public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
-
-    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
-
-    public open fun <Acc> fold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.inner.fold(init, fold)
-
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
-
-    public open fun count(): Int = this.inner.count()
-
-    public open fun last(): Item? = this.inner.last()
-
-    public open fun nextBack(): Item? = this.inner.nextBack()
-
-    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
-
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.inner.rfold(init, fold)
-
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
 
     public companion object {
         public operator fun <I, Item> invoke(
@@ -172,6 +137,32 @@ public open class Flatten<I, Item> internal constructor(
         public fun <I> default(defaultIFn: () -> I): Flatten<I, Item> = Flatten.new(defaultIFn())
     }
 }
+
+public fun <I, U> Flatten<I, Item>.fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Flatten").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
+
+public fun <I, U> Flatten<I, Item>.clone(): Flatten<I, Item> = Flatten(inner = this.inner.clone())
+
+public fun <I, U> Flatten<I, Item>.next(): Item? = this.inner.next()
+
+public fun <I, U> Flatten<I, Item>.sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
+
+public fun <Residual, I, U, Acc, R> Flatten<I, Item>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
+
+public fun <I, U, Acc> Flatten<I, Item>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.fold(init, fold)
+
+public fun <I, U> Flatten<I, Item>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
+
+public fun <I, U> Flatten<I, Item>.count(): Int = this.inner.count()
+
+public fun <I, U> Flatten<I, Item>.last(): Item? = this.inner.last()
+
+public fun <I, U> Flatten<I, Item>.nextBack(): Item? = this.inner.nextBack()
+
+public fun <Residual, I, U, Acc, R> Flatten<I, Item>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
+
+public fun <I, U, Acc> Flatten<I, Item>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.rfold(init, fold)
+
+public fun <I, U> Flatten<I, Item>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
 
 public fun <Source, I> Flatten<I, Item>.asInner(): Source where I : SourceIter<Source>, I : TrustedFused {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
@@ -239,17 +230,17 @@ public open class FlattenCompat<I, U>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = fold(acc1, iter)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                acc1 = when (val tryResult = fold(acc1, iter)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
         this.frontiter = null
-        acc1 = when (val tryResult = this.iter.tryFold(acc1, flatten(this.frontiter, fold))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        acc1 = when (val tryResult = this.iter.tryFold(acc1, flatten(this.frontiter, fold))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
         this.frontiter = null
         when (val matchVal1 = this.backiter) {
             null -> {}
             else -> {
                 val iter1 = matchVal1
-                acc1 = when (val tryResult = fold(acc1, iter1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                acc1 = when (val tryResult = fold(acc1, iter1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
         this.backiter = null
@@ -297,17 +288,17 @@ public open class FlattenCompat<I, U>(
             null -> {}
             else -> {
                 val iter = matchVal
-                acc1 = when (val tryResult = fold(acc1, iter)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                acc1 = when (val tryResult = fold(acc1, iter)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
         this.backiter = null
-        acc1 = when (val tryResult = this.iter.tryRfold(acc1, flatten(this.backiter, fold))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        acc1 = when (val tryResult = this.iter.tryRfold(acc1, flatten(this.backiter, fold))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
         this.backiter = null
         when (val matchVal1 = this.frontiter) {
             null -> {}
             else -> {
                 val iter1 = matchVal1
-                acc1 = when (val tryResult = fold(acc1, iter1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                acc1 = when (val tryResult = fold(acc1, iter1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
         this.frontiter = null
@@ -341,7 +332,7 @@ public open class FlattenCompat<I, U>(
                 val fixedSize = matchVal
                 val (lower, upper) = this.iter.sizeHint()
                 val lower1 = lower.saturatingMul(fixedSize).saturatingAdd(lo)
-                val upper1 = when (val tryResult = when (val tryResult = when (val tryResult = fhi) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.checkedAdd(when (val tryResult = bhi) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.checkedAdd(when (val tryResult = fixedSize.checkedMul(when (val tryResult = upper) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val upper1 = when (val tryResult = when (val tryResult = when (val tryResult = fhi) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }.checkedAdd(when (val tryResult = bhi) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }.checkedAdd(when (val tryResult = fixedSize.checkedMul(when (val tryResult = upper) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 return Pair(lower1, upper1)
             }
         }
@@ -375,13 +366,13 @@ public open class FlattenCompat<I, U>(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     ControlFlow.Break(Unit)
                 }; is Result.Err<*, *> -> {
-                    val remaining = matchVal.error
+                    val remaining = matchVal.errValue()
                     ControlFlow.Continue(remaining.get())
                 } }
             }
         return when (val matchVal = this.iterTryFold(n, ::advance)) {
             is ControlFlow.Continue<*, *> -> {
-                val (remaining) = matchVal
+                val remaining = matchVal.cfContinueValue()
                 ((NonZero.new<NonZeroUsizeInner, Int>(remaining))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
             }
             else -> Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
@@ -432,13 +423,13 @@ public open class FlattenCompat<I, U>(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     ControlFlow.Break(Unit)
                 }; is Result.Err<*, *> -> {
-                    val remaining = matchVal.error
+                    val remaining = matchVal.errValue()
                     ControlFlow.Continue(remaining.get())
                 } }
             }
         return when (val matchVal = this.iterTryRfold(n, ::advance)) {
             is ControlFlow.Continue<*, *> -> {
-                val (remaining) = matchVal
+                val remaining = matchVal.cfContinueValue()
                 ((NonZero.new<NonZeroUsizeInner, Int>(remaining))?.let({ Result.Err(it) }) ?: Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit))
             }
             else -> Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)

@@ -118,7 +118,7 @@ public open class MergeIterInner<I, Item> internal constructor(
  * Benchmarks faster than wrapping both iterators in a Peekable,
  * probably because we can afford to impose a FusedIterator bound.
  */
-public sealed class Peeked<I, Item> {
-    public data class A<I, Item>(public var value: Item) : Peeked<I, Item>()
-    public data class B<I, Item>(public var value: Item) : Peeked<I, Item>()
+public sealed class Peeked<I : Iterator<Item>, Item> {
+    public data class A<I : Iterator<Item>, Item>(public var value: Item) : Peeked<I, Item>()
+    public data class B<I : Iterator<Item>, Item>(public var value: Item) : Peeked<I, Item>()
 }

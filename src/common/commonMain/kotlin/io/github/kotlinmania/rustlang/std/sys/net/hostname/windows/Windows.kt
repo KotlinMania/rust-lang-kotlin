@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.net.hostname.windows
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -19,7 +20,7 @@ public fun hostname(): Result<OsString> {
     // always enough.
     val buffer = MutableList(256) { MaybeUninit.uninit(PrimitiveLayouts.U16) }
     // SAFETY: these parameters specify a valid, writable region of memory.
-    when (val tryResult = cvt(getHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+    when (val tryResult = cvt(getHostNameW(buffer.asMutPtr().cast(), buffer.size))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
     // Use `lstrlenW` here as it does not require the bytes after the nul
     // terminator to be initialized.
     // SAFETY: if `GetHostNameW` returns successfully, the name is nul-terminated.

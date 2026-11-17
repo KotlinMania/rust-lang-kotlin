@@ -43,7 +43,7 @@ public class DebugTuple(
 public open class IterMut<T>(
     public var i1: ArrayDeque<T>,
     public var i2: ArrayDeque<T>,
-) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<T> {
+) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
@@ -173,7 +173,7 @@ public open class IterMut<T>(
             when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
             }; is Result.Err<*, *> -> {
-                val remaining = matchVal.error
+                val remaining = matchVal.errValue()
                 swap(this.i1, this.i2)
                 this.i1.advanceBy(remaining.get())
             } }
@@ -190,7 +190,7 @@ public open class IterMut<T>(
     }
 
     public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B, Residual> {
-        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
         return this.i2.tryFold(acc, f)
     }
 
@@ -232,7 +232,7 @@ public open class IterMut<T>(
             when (matchVal) { is Result.Ok<*, *> -> {
                 Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit)
             }; is Result.Err<*, *> -> {
-                val remaining = matchVal.error
+                val remaining = matchVal.errValue()
                 swap(this.i1, this.i2)
                 this.i2.advanceBackBy(remaining.get())
             } }
@@ -244,7 +244,7 @@ public open class IterMut<T>(
     }
 
     public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B, Residual> {
-        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+        val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
         return this.i1.tryRfold(acc, f)
     }
 

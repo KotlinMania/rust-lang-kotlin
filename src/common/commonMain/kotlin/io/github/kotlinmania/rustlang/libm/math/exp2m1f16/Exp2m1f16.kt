@@ -15,7 +15,7 @@ public fun exp2m1f16(x: F16): F16 = crExp2m1f16(x)
 
 public fun crExp2m1f16(x: F16): F16 {
     val u = x.toBits()
-    val au = u and (F16.SIGN_MASK.inv()).toUShort()
+    val au = u and F16.SIGN_MASK.inv()
     // |x| < 0x1p-5
     if (au < 0x2800u.toUShort()) {
         // Exceptional cases.

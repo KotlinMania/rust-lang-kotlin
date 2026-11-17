@@ -3,8 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch64.lasx
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -13,8 +13,8 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 /**
  * 256-bit wide integer vector type, LoongArch-specific
@@ -65,9 +65,9 @@ public open class M256i(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): LongArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.longArray((4).toInt()))
+    public open fun asMutArray(): LongArray = (PrimitiveArrayLayouts.longArray((4).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "m256i", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("m256i"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256i> =
@@ -93,7 +93,7 @@ public open class M256i(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): M256i = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Long): M256i = run { val simdArg0 = value; M256i() }
 
         public fun from(simd: Simd<Long>): M256i = transmuteWithLayouts<Simd<Long>, M256i>(simd, UnresolvedTypeLayout<Simd<Long>>(), M256i.typeLayout())
     }
@@ -141,9 +141,9 @@ public open class M256(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): FloatArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.floatArray((8).toInt()))
+    public open fun asMutArray(): FloatArray = (PrimitiveArrayLayouts.floatArray((8).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "m256", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("m256"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256> =
@@ -169,7 +169,7 @@ public open class M256(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): M256 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Float): M256 = run { val simdArg0 = value; M256() }
 
         public fun from(simd: Simd<Float>): M256 = transmuteWithLayouts<Simd<Float>, M256>(simd, UnresolvedTypeLayout<Simd<Float>>(), M256.typeLayout())
     }
@@ -217,9 +217,9 @@ public open class M256d(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): DoubleArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.doubleArray((4).toInt()))
+    public open fun asMutArray(): DoubleArray = (PrimitiveArrayLayouts.doubleArray((4).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "m256d", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("m256d"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<M256d> =
@@ -245,7 +245,7 @@ public open class M256d(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): M256d = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Double): M256d = run { val simdArg0 = value; M256d() }
 
         public fun from(simd: Simd<Double>): M256d = transmuteWithLayouts<Simd<Double>, M256d>(simd, UnresolvedTypeLayout<Simd<Double>>(), M256d.typeLayout())
     }

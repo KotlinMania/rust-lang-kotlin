@@ -13,6 +13,8 @@ import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -1159,7 +1161,7 @@ public open class Iter<T> internal constructor(
     tailCtorArg: NonNull?,
     public var len: Int,
     public var marker: Unit,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var head: NonNull? = headCtorArg
         internal set
 
@@ -1254,7 +1256,7 @@ public open class IterMut<T> internal constructor(
     tailCtorArg: NonNull?,
     public var len: Int,
     public var marker: Unit,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var head: NonNull? = headCtorArg
         internal set
 
@@ -1335,7 +1337,7 @@ public open class IterMut<T> internal constructor(
  */
 public open class IntoIter<T, A : Allocator> internal constructor(
     listCtorArg: LinkedList<T, A>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 

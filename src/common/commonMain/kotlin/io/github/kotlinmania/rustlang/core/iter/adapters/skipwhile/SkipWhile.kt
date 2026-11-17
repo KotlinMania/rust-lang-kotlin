@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/skip_while.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.skipwhile
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -123,7 +124,7 @@ public fun <Residual, I, Acc, R> SkipWhile<I, P>.tryFold(init: Acc, fold: (Acc, 
             null -> { return init1 }
             else -> {
                 val v = matchVal
-                init1 = when (val tryResult = fold(init1, v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                init1 = when (val tryResult = fold(init1, v)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
             }
         }
     }

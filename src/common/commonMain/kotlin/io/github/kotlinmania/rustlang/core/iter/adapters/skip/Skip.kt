@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/skip.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.skip
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.unlikely
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
@@ -150,7 +151,7 @@ public open class Skip<I>(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     0
                 }; is Result.Err<*, *> -> {
-                    val n2 = matchVal.error
+                    val n2 = matchVal.errValue()
                     n2.get()
                 } }
             }
@@ -164,7 +165,7 @@ public open class Skip<I>(
                 when (matchVal1) { is Result.Ok<*, *> -> {
                     0
                 }; is Result.Err<*, *> -> {
-                    val n3 = matchVal1.error
+                    val n3 = matchVal1.errValue()
                     n3.get()
                 } }
             }

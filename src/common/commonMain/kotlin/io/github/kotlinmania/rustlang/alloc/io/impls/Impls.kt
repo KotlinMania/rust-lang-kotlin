@@ -81,7 +81,7 @@ public fun List<UByte>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
 public fun List<UByte>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     var nread = 0
     for (buf in bufs) {
-        nread += when (val tryResult = this.read(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        nread += when (val tryResult = this.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
         if (this.isEmpty()) {
             break
         }
@@ -128,19 +128,19 @@ public fun List<UByte>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit>
 
 public fun List<UByte>.readToEnd(buf: List<UByte>): Result<Int> {
     val len = this.size
-    when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     run {
-        when (val tryResult = buf.tryExtendFromSliceOfBytes(this)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = buf.tryExtendFromSliceOfBytes(this)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     } * this = ((this).subList(len, (this).size))
     return RustResult.Ok(len)
 }
 
 public fun List<UByte>.readToString(buf: String): Result<Int> {
-    val content = when (val tryResult = String.fromUtf8(this).mapErr({ Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    val content = when (val tryResult = String.fromUtf8(this).mapErr({ Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     val len = this.size
-    when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     run {
-        when (val tryResult = buf.tryPushStr(content)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = buf.tryPushStr(content)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     } * this = ((this).subList(len, (this).size))
     return RustResult.Ok(len)
 }
@@ -157,15 +157,15 @@ public fun List<UByte>.consume(amt: Int) {
  * The vector will grow as needed.
  */
 public fun <A : Allocator> List<UByte>.write(buf: List<UByte>): Result<Int> {
-    when (val tryResult = List.writeAll(this, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    when (val tryResult = List.writeAll(this, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     return RustResult.Ok(buf.size)
 }
 
 public fun <A : Allocator> List<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
     val len = bufs.map({ b -> b.len() }).sum()
-    when (val tryResult = this.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    when (val tryResult = this.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     for (buf in bufs) {
-        when (val tryResult = List.writeAll(this, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = List.writeAll(this, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     }
     return RustResult.Ok(len)
 }
@@ -173,12 +173,12 @@ public fun <A : Allocator> List<UByte>.writeVectored(bufs: List<IoSlice>): Resul
 public fun <A : Allocator> List<UByte>.isWriteVectored(): Boolean = true
 
 public fun <A : Allocator> List<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
-    when (val tryResult = this.tryExtendFromSliceOfBytes(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.tryExtendFromSliceOfBytes(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     return RustResult.Ok(Unit)
 }
 
 public fun <A : Allocator> List<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
-    when (val tryResult = this.writeVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.writeVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     return RustResult.Ok(Unit)
 }
 
@@ -194,7 +194,7 @@ public fun <A : Allocator> List<UByte>.flush(): Result<Unit> = RustResult.Ok(Uni
  */
 public fun <A : Allocator> VecDeque<UByte, A>.read(buf: MutableList<UByte>): Result<Int> {
     var (front, _) = this.asSlices()
-    val n = when (val tryResult = front.read(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    val n = when (val tryResult = front.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     this.drain(0 until n)
     return RustResult.Ok(n)
 }
@@ -228,7 +228,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.readExact(buf: MutableList<UByte>)
 public fun <A : Allocator> VecDeque<UByte, A>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
     var (front, _) = this.asSlices()
     val n = minOf(cursor.capacity(), front.len())
-    when (val tryResult = front.readBuf(cursor)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = front.readBuf(cursor)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     this.drain(0 until n)
     return RustResult.Ok(Unit)
 }
@@ -263,7 +263,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.readBufExact(cursor: BorrowedCurso
 public fun <A : Allocator> VecDeque<UByte, A>.readToEnd(buf: List<UByte>): Result<Int> {
     // The total len is known upfront so we can reserve it in a single call.
     val len = this.len()
-    when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     val (front, back) = this.asSlices()
     buf.extendFromSlice(front)
     buf.extendFromSlice(back)
@@ -318,7 +318,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.writeAll(buf: List<UByte>): Result
 }
 
 public fun <A : Allocator> VecDeque<UByte, A>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
-    when (val tryResult = this.writeVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.writeVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     return RustResult.Ok(Unit)
 }
 

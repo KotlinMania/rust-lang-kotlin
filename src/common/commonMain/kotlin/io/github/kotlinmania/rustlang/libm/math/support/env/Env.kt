@@ -1,6 +1,7 @@
 // port-lint: source math/support/env.rs
 package io.github.kotlinmania.rustlang.libm.math.support.env
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

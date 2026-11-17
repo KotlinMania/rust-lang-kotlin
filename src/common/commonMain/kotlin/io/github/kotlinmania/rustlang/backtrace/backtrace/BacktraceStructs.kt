@@ -2,6 +2,7 @@ package io.github.kotlinmania.rustlang.backtrace.backtrace
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.backtrace.backtrace.libunwind.Frame as FrameImp
 

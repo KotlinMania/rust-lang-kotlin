@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.windows
 
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -8,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -160,8 +162,8 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
                 (run {
                     val matchVal = f1(MutPtr((buf.asMutPtr()).rawAddress), n.toUInt())
                     when {
-                        matchVal == 0 && getLastError().code == 0 -> 0
-                        matchVal == 0 -> { return Result.Err<T, Error>(Error.lastOsError()) }
+                        matchVal == 0u && getLastError().code == 0 -> 0
+                        matchVal == 0u -> { return Result.Err<T, Error>(Error.lastOsError()) }
                         else -> {
                             val n1 = matchVal
                             n1

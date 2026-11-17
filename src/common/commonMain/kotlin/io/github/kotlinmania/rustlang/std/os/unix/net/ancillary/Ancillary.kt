@@ -18,6 +18,11 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -61,7 +66,7 @@ public fun recvVectoredWithAncillaryFrom(socket: Socket, bufs: MutableList<IoSli
         if (msg.msgControllen > 0) {
             msg.msgControl = ancillary.buffer.asMutPtr()
         }
-        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(tryResult.error) }
+        val count = when (val tryResult = socket.recvMsg(RustMutableReference(localStorageL42C8.asMutPtr(), localStorageL42C8.layout))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Triple<Int, Boolean, Result<SocketAddr, Error>>, Error>(tryResult.errValue()) }
         ancillary.length = msg.msgControllen.toInt()
         ancillary.truncated = (msg.msgFlags and MSG_CTRUNC == MSG_CTRUNC).toUByte()
         val truncated = msg.msgFlags and MSG_TRUNC == MSG_TRUNC
@@ -75,7 +80,7 @@ public fun sendVectoredWithAncillaryTo(socket: Socket, path: Path?, bufs: List<I
         var (msgName, msgNamelen) =
             if (path != null) {
                 val path1 = path
-                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }
+                when (val tryResult = io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn(path1)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
             } else {
                 Pair(MaybeUninit.zeroed(UnresolvedTypeLayout<Result<Int, Error>>()).assumeInit(), 0)
             }
@@ -103,7 +108,7 @@ public fun <T> addToAncillaryData(buffer: MutableList<UByte>, length: RustMutabl
             val sourceLen = cmsgSize
             when (val matchVal = UInt.tryFrom(sourceLen)) {
                 is Result.Ok<*, *> -> {
-                    val sourceLen1 = matchVal.value
+                    val sourceLen1 = matchVal.okValue()
                     sourceLen1
                 }
                 else -> {
@@ -427,7 +432,7 @@ public open class Messages(
                         CMSG_NXTHDR(msg, current)
                     }
                 }
-            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<AncillaryData, AncillaryError, Error>(tryResult.error) }
+            val cmsg1 = when (val tryResult = cmsg.asRef()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<AncillaryData, AncillaryError, Error>(tryResult.errValue()) }
             // Most operating systems, but not Linux or emscripten, return the previous pointer
             // when its length is zero. Therefore, check if the previous pointer is the same as
             // the current one.

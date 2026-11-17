@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.sca
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.num.complex.Complex
 
 /**

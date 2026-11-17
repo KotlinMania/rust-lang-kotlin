@@ -8,6 +8,8 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
@@ -54,6 +56,8 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public fun assertIsDynCompatible(arg0: Iterator<Unit>) {}
@@ -2102,7 +2106,7 @@ public interface Iterator<SelfType, Item> {
             val matchVal = this.next()
             if (matchVal == null) break
             val x = matchVal
-            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+            accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
         }
         return accum
     }
@@ -3118,11 +3122,11 @@ public interface Iterator<SelfType, Item> {
             } }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(cmp))) {
             is ControlFlow.Continue<*, *> -> {
-                val (ord) = matchVal
+                val ord = matchVal.cfContinueValue()
                 ord
             }
             is ControlFlow.Break<*, *> -> {
-                val (ord1) = matchVal
+                val ord1 = matchVal.cfBreakValue()
                 ord1
             }
         }
@@ -3193,11 +3197,11 @@ public interface Iterator<SelfType, Item> {
             } }
         return when (val matchVal = iterCompare(this, other.iterator(), compare(partialCmp))) {
             is ControlFlow.Continue<*, *> -> {
-                val (ord) = matchVal
+                val ord = matchVal.cfContinueValue()
                 ord
             }
             is ControlFlow.Break<*, *> -> {
-                val (ord1) = matchVal
+                val ord1 = matchVal.cfBreakValue()
                 ord1
             }
         }
@@ -3419,7 +3423,7 @@ public interface SpecIterEq<B : Iterator<B, Item>, Item, T, Item> : Iterator<T, 
 
 public fun <Item, A : Iterator<A, Item>, B : Iterator<B, Item>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean = iterEq(this, b, f)
 
-public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Item>, A : TrustedLen, B : Iterator<B, Item>, B : TrustedLen {
+public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Item>, A : TrustedLen<Item>, B : Iterator<B, Item>, B : TrustedLen<Item> {
     // we *can't* short-circuit if:
     run {
         val matchVal = Pair(this.sizeHint(), b.sizeHint())
@@ -3460,12 +3464,15 @@ public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> Contro
             }
         } }
     return when (val matchVal = a.tryForEach(compare(b, f))) {
-        is ControlFlow.Continue<*, *> -> ControlFlow.Continue(when (val matchVal1 = b.next()) {
-            null -> Ordering.Equal
-            else -> Ordering.Less
-        })
+        is ControlFlow.Continue<*, *> -> {
+            val cfContinueValueVal = matchVal.cfContinueValue()
+            ControlFlow.Continue(when (val matchVal1 = b.next()) {
+                null -> Ordering.Equal
+                else -> Ordering.Less
+            })
+        }
         is ControlFlow.Break<*, *> -> {
-            val (x) = matchVal
+            val x = matchVal.cfBreakValue()
             x
         }
     }
@@ -3499,7 +3506,7 @@ public fun <Item, Residual, I : Iterator<I, Item>, B, R> I.specTryFold(init: B, 
         val matchVal = this.next()
         if (matchVal == null) break
         val x = matchVal
-        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+        accum = when (val tryResult = f(accum, x)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
     }
     return accum
 }

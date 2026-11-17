@@ -11,6 +11,8 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
+import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.corearch.SimdShuffleIdx
 import io.github.kotlinmania.rustlang.corearch.simd.I16x16
 import io.github.kotlinmania.rustlang.corearch.simd.I16x32
@@ -304,7 +306,7 @@ public fun mm512CastphSi512(a: M512h): M512i = transmuteWithLayouts<M512h, M512i
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castph256_ph128)
  */
-public fun mm256Castph256Ph128(a: M256h): M128h = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
+public fun mm256Castph256Ph128(a: M256h): M128h = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); M128h() }
 
 /**
  * Cast vector of type `__m512h` to type `__m128h`. This intrinsic is only used for compilation and
@@ -312,7 +314,7 @@ public fun mm256Castph256Ph128(a: M256h): M128h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph512_ph128)
  */
-public fun mm512Castph512Ph128(a: M512h): M128h = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
+public fun mm512Castph512Ph128(a: M512h): M128h = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); M128h() }
 
 /**
  * Cast vector of type `__m512h` to type `__m256h`. This intrinsic is only used for compilation and
@@ -320,7 +322,7 @@ public fun mm512Castph512Ph128(a: M512h): M128h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph512_ph256)
  */
-public fun mm512Castph512Ph256(a: M512h): M256h = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
+public fun mm512Castph512Ph256(a: M512h): M256h = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); M256h() }
 
 /**
  * Cast vector of type `__m128h` to type `__m256h`. The upper 8 elements of the result are undefined.
@@ -329,7 +331,7 @@ public fun mm512Castph512Ph256(a: M512h): M256h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_castph128_ph256)
  */
-public fun mm256Castph128Ph256(a: M128h): M256h = run { val _simdArg0 = a; val _simdArg1 = mmUndefinedPh(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); _simdArg0 }
+public fun mm256Castph128Ph256(a: M128h): M256h = run { val simdArg0 = a; val simdArg1 = mmUndefinedPh(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); M256h() }
 
 /**
  * Cast vector of type `__m128h` to type `__m512h`. The upper 24 elements of the result are undefined.
@@ -338,7 +340,7 @@ public fun mm256Castph128Ph256(a: M128h): M256h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph128_ph512)
  */
-public fun mm512Castph128Ph512(a: M128h): M512h = run { val _simdArg0 = a; val _simdArg1 = mmUndefinedPh(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); _simdArg0 }
+public fun mm512Castph128Ph512(a: M128h): M512h = run { val simdArg0 = a; val simdArg1 = mmUndefinedPh(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); M512h() }
 
 /**
  * Cast vector of type `__m256h` to type `__m512h`. The upper 16 elements of the result are undefined.
@@ -347,7 +349,7 @@ public fun mm512Castph128Ph512(a: M128h): M512h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_castph256_ph512)
  */
-public fun mm512Castph256Ph512(a: M256h): M512h = run { val _simdArg0 = a; val _simdArg1 = mm256UndefinedPh(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u)); _simdArg0 }
+public fun mm512Castph256Ph512(a: M256h): M512h = run { val simdArg0 = a; val simdArg1 = mm256UndefinedPh(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u)); M512h() }
 
 /**
  * Cast vector of type `__m256h` to type `__m128h`. The upper 8 elements of the result are zeroed.
@@ -356,7 +358,7 @@ public fun mm512Castph256Ph512(a: M256h): M512h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_zextph128_ph256)
  */
-public fun mm256Zextph128Ph256(a: M128h): M256h = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPh(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); _simdArg0 }
+public fun mm256Zextph128Ph256(a: M128h): M256h = run { val simdArg0 = a; val simdArg1 = mmSetzeroPh(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); M256h() }
 
 /**
  * Cast vector of type `__m256h` to type `__m512h`. The upper 16 elements of the result are zeroed.
@@ -365,7 +367,7 @@ public fun mm256Zextph128Ph256(a: M128h): M256h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_zextph256_ph512)
  */
-public fun mm512Zextph256Ph512(a: M256h): M512h = run { val _simdArg0 = a; val _simdArg1 = mm256SetzeroPh(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u)); _simdArg0 }
+public fun mm512Zextph256Ph512(a: M256h): M512h = run { val simdArg0 = a; val simdArg1 = mm256SetzeroPh(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u, 16u)); M512h() }
 
 /**
  * Cast vector of type `__m128h` to type `__m512h`. The upper 24 elements of the result are zeroed.
@@ -374,7 +376,7 @@ public fun mm512Zextph256Ph512(a: M256h): M512h = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_zextph128_ph512)
  */
-public fun mm512Zextph128Ph512(a: M128h): M512h = run { val _simdArg0 = a; val _simdArg1 = mmSetzeroPh(); val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); _simdArg0 }
+public fun mm512Zextph128Ph512(a: M128h): M512h = run { val simdArg0 = a; val simdArg1 = mmSetzeroPh(); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); M512h() }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b based on the comparison
@@ -746,11 +748,11 @@ public fun mm512LoaduPh(memAddr: ConstPtr): M512h = readUnaligned(memAddr, typeL
  */
 public fun mmMaskMoveSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
-        var mov: F16 = run { val _simdArg0 = src; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var mov: F16 = run { val simdArg0 = src; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if ((k and 1u.toUByte()) != 0u.toUByte()) {
-            mov = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            mov = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mov; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mov; simdArg0 }
     }
 
 /**
@@ -764,9 +766,9 @@ public fun mmMaskzMoveSh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         var mov: F16 = F16.fromFloat(0.0f)
         if ((k and 1u.toUByte()) != 0u.toUByte()) {
-            mov = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            mov = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mov; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mov; simdArg0 }
     }
 
 /**
@@ -777,8 +779,8 @@ public fun mmMaskzMoveSh(k: Mmask8, a: M128h, b: M128h): M128h =
  */
 public fun mmMoveSh(a: M128h, b: M128h): M128h =
     run {
-        val mov: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mov; _simdArg0 }
+        val mov: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mov; simdArg0 }
     }
 
 /**
@@ -818,7 +820,7 @@ public fun mm512StorePh(memAddr: MutPtr, a: M512h) {
  */
 public fun mmStoreSh(memAddr: MutPtr, a: M128h) {
     val memAddr1 = memAddr
-    (PrimitiveLayouts.F16_LAYOUT).writeNative((memAddr1).rawAddress, run { val _simdArg0 = a; val _simdArg1 = 0; _simdArg0 })
+    (PrimitiveLayouts.F16_LAYOUT).writeNative((memAddr1).rawAddress, run { val simdArg0 = a; val simdArg1 = 0; simdArg0 })
 }
 
 /**
@@ -865,7 +867,7 @@ public fun mm512StoreuPh(memAddr: MutPtr, a: M512h) {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_add_ph)
  */
-public fun mmAddPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmAddPh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Add packed half-precision (16-bit) floating-point elements in a and b, and store the results in dst using
@@ -876,7 +878,7 @@ public fun mmAddPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
 public fun mmMaskAddPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmAddPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -888,7 +890,7 @@ public fun mmMaskAddPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
 public fun mmMaskzAddPh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmAddPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mmSetzeroPh(); simdArg1 }
     }
 
 /**
@@ -896,7 +898,7 @@ public fun mmMaskzAddPh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_add_ph)
  */
-public fun mm256AddPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm256AddPh(a: M256h, b: M256h): M256h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Add packed half-precision (16-bit) floating-point elements in a and b, and store the results in dst using
@@ -907,7 +909,7 @@ public fun mm256AddPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val 
 public fun mm256MaskAddPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256AddPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -919,7 +921,7 @@ public fun mm256MaskAddPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
 public fun mm256MaskzAddPh(k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256AddPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm256SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -927,7 +929,7 @@ public fun mm256MaskzAddPh(k: Mmask16, a: M256h, b: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_add_ph)
  */
-public fun mm512AddPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm512AddPh(a: M512h, b: M512h): M512h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Add packed half-precision (16-bit) floating-point elements in a and b, and store the results in dst using
@@ -938,7 +940,7 @@ public fun mm512AddPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val 
 public fun mm512MaskAddPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512AddPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -950,7 +952,7 @@ public fun mm512MaskAddPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
 public fun mm512MaskzAddPh(k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512AddPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -992,7 +994,7 @@ public fun mm512MaskAddRoundPh(src: M512h, k: Mmask32, a: M512h, b: M512h, round
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512AddRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1013,7 +1015,7 @@ public fun mm512MaskzAddRoundPh(k: Mmask32, a: M512h, b: M512h, rounding: Int): 
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512AddRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1085,7 +1087,7 @@ public fun mmMaskzAddRoundSh(k: Mmask8, a: M128h, b: M128h, rounding: Int): M128
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_add_sh)
  */
-public fun mmAddSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtshH(a) + mmCvtshH(b); _simdArg0 }
+public fun mmAddSh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtshH(a) + mmCvtshH(b); simdArg0 }
 
 /**
  * Add the lower half-precision (16-bit) floating-point elements in a and b, store the result in the
@@ -1096,14 +1098,14 @@ public fun mmAddSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
  */
 public fun mmMaskAddSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
-        val extractsrc: F16 = run { val _simdArg0 = src; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractsrc: F16 = run { val simdArg0 = src; val simdArg1 = F16.fromFloat(0.0f); F16() }
         var add: F16 = extractsrc
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta + extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1117,11 +1119,11 @@ public fun mmMaskzAddSh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         var add: F16 = F16.fromFloat(0.0f)
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta + extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1129,7 +1131,7 @@ public fun mmMaskzAddSh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_sub_ph)
  */
-public fun mmSubPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmSubPh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Subtract packed half-precision (16-bit) floating-point elements in b from a, and store the results in dst using
@@ -1140,7 +1142,7 @@ public fun mmSubPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
 public fun mmMaskSubPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmSubPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1152,7 +1154,7 @@ public fun mmMaskSubPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
 public fun mmMaskzSubPh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmSubPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mmSetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1160,7 +1162,7 @@ public fun mmMaskzSubPh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_sub_ph)
  */
-public fun mm256SubPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm256SubPh(a: M256h, b: M256h): M256h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Subtract packed half-precision (16-bit) floating-point elements in b from a, and store the results in dst using
@@ -1171,7 +1173,7 @@ public fun mm256SubPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val 
 public fun mm256MaskSubPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256SubPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1183,7 +1185,7 @@ public fun mm256MaskSubPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
 public fun mm256MaskzSubPh(k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256SubPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm256SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1191,7 +1193,7 @@ public fun mm256MaskzSubPh(k: Mmask16, a: M256h, b: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_sub_ph)
  */
-public fun mm512SubPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm512SubPh(a: M512h, b: M512h): M512h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Subtract packed half-precision (16-bit) floating-point elements in b from a, and store the results in dst using
@@ -1202,7 +1204,7 @@ public fun mm512SubPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val 
 public fun mm512MaskSubPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512SubPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1214,7 +1216,7 @@ public fun mm512MaskSubPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
 public fun mm512MaskzSubPh(k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512SubPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1256,7 +1258,7 @@ public fun mm512MaskSubRoundPh(src: M512h, k: Mmask32, a: M512h, b: M512h, round
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512SubRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1278,7 +1280,7 @@ public fun mm512MaskzSubRoundPh(k: Mmask32, a: M512h, b: M512h, rounding: Int): 
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512SubRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1350,7 +1352,7 @@ public fun mmMaskzSubRoundSh(k: Mmask8, a: M128h, b: M128h, rounding: Int): M128
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_sub_sh)
  */
-public fun mmSubSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtshH(a) - mmCvtshH(b); _simdArg0 }
+public fun mmSubSh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtshH(a) - mmCvtshH(b); simdArg0 }
 
 /**
  * Subtract the lower half-precision (16-bit) floating-point elements in b from a, store the result in the
@@ -1361,14 +1363,14 @@ public fun mmSubSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
  */
 public fun mmMaskSubSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
-        val extractsrc: F16 = run { val _simdArg0 = src; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractsrc: F16 = run { val simdArg0 = src; val simdArg1 = F16.fromFloat(0.0f); F16() }
         var add: F16 = extractsrc
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta - extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1382,11 +1384,11 @@ public fun mmMaskzSubSh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         var add: F16 = F16.fromFloat(0.0f)
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta - extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1394,7 +1396,7 @@ public fun mmMaskzSubSh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mul_ph)
  */
-public fun mmMulPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmMulPh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, and store the results in dst using
@@ -1405,7 +1407,7 @@ public fun mmMulPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
 public fun mmMaskMulPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmMulPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1417,7 +1419,7 @@ public fun mmMaskMulPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
 public fun mmMaskzMulPh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmMulPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mmSetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1425,7 +1427,7 @@ public fun mmMaskzMulPh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mul_ph)
  */
-public fun mm256MulPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm256MulPh(a: M256h, b: M256h): M256h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, and store the results in dst using
@@ -1436,7 +1438,7 @@ public fun mm256MulPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val 
 public fun mm256MaskMulPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256MulPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1448,7 +1450,7 @@ public fun mm256MaskMulPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
 public fun mm256MaskzMulPh(k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256MulPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm256SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1456,7 +1458,7 @@ public fun mm256MaskzMulPh(k: Mmask16, a: M256h, b: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mul_ph)
  */
-public fun mm512MulPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm512MulPh(a: M512h, b: M512h): M512h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, and store the results in dst using
@@ -1467,7 +1469,7 @@ public fun mm512MulPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val 
 public fun mm512MaskMulPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512MulPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1479,7 +1481,7 @@ public fun mm512MaskMulPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
 public fun mm512MaskzMulPh(k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512MulPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1521,7 +1523,7 @@ public fun mm512MaskMulRoundPh(src: M512h, k: Mmask32, a: M512h, b: M512h, round
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512MulRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1543,7 +1545,7 @@ public fun mm512MaskzMulRoundPh(k: Mmask32, a: M512h, b: M512h, rounding: Int): 
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512MulRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1615,7 +1617,7 @@ public fun mmMaskzMulRoundSh(k: Mmask8, a: M128h, b: M128h, rounding: Int): M128
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mul_sh)
  */
-public fun mmMulSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtshH(a) * mmCvtshH(b); _simdArg0 }
+public fun mmMulSh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtshH(a) * mmCvtshH(b); simdArg0 }
 
 /**
  * Multiply the lower half-precision (16-bit) floating-point elements in a and b, store the result in the
@@ -1626,14 +1628,14 @@ public fun mmMulSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
  */
 public fun mmMaskMulSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
-        val extractsrc: F16 = run { val _simdArg0 = src; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractsrc: F16 = run { val simdArg0 = src; val simdArg1 = F16.fromFloat(0.0f); F16() }
         var add: F16 = extractsrc
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta * extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1647,11 +1649,11 @@ public fun mmMaskzMulSh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         var add: F16 = F16.fromFloat(0.0f)
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta * extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1659,7 +1661,7 @@ public fun mmMaskzMulSh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_div_ph)
  */
-public fun mmDivPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmDivPh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Divide packed half-precision (16-bit) floating-point elements in a by b, and store the results in dst using
@@ -1670,7 +1672,7 @@ public fun mmDivPh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
 public fun mmMaskDivPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmDivPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1682,7 +1684,7 @@ public fun mmMaskDivPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
 public fun mmMaskzDivPh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         val r = mmDivPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mmSetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1690,7 +1692,7 @@ public fun mmMaskzDivPh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_div_ph)
  */
-public fun mm256DivPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm256DivPh(a: M256h, b: M256h): M256h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Divide packed half-precision (16-bit) floating-point elements in a by b, and store the results in dst using
@@ -1701,7 +1703,7 @@ public fun mm256DivPh(a: M256h, b: M256h): M256h = run { val _simdArg0 = a; val 
 public fun mm256MaskDivPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256DivPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1713,7 +1715,7 @@ public fun mm256MaskDivPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h =
 public fun mm256MaskzDivPh(k: Mmask16, a: M256h, b: M256h): M256h =
     run {
         val r = mm256DivPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm256SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1721,7 +1723,7 @@ public fun mm256MaskzDivPh(k: Mmask16, a: M256h, b: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_div_ph)
  */
-public fun mm512DivPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mm512DivPh(a: M512h, b: M512h): M512h = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Divide packed half-precision (16-bit) floating-point elements in a by b, and store the results in dst using
@@ -1732,7 +1734,7 @@ public fun mm512DivPh(a: M512h, b: M512h): M512h = run { val _simdArg0 = a; val 
 public fun mm512MaskDivPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512DivPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1744,7 +1746,7 @@ public fun mm512MaskDivPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h =
 public fun mm512MaskzDivPh(k: Mmask32, a: M512h, b: M512h): M512h =
     run {
         val r = mm512DivPh(a, b)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1786,7 +1788,7 @@ public fun mm512MaskDivRoundPh(src: M512h, k: Mmask32, a: M512h, b: M512h, round
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512DivRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -1808,7 +1810,7 @@ public fun mm512MaskzDivRoundPh(k: Mmask32, a: M512h, b: M512h, rounding: Int): 
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val r = mm512DivRoundPh(a, b, rounding)
-        run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -1880,7 +1882,7 @@ public fun mmMaskzDivRoundSh(k: Mmask8, a: M128h, b: M128h, rounding: Int): M128
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_div_sh)
  */
-public fun mmDivSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtshH(a) / mmCvtshH(b); _simdArg0 }
+public fun mmDivSh(a: M128h, b: M128h): M128h = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtshH(a) / mmCvtshH(b); simdArg0 }
 
 /**
  * Divide the lower half-precision (16-bit) floating-point elements in a by b, store the result in the
@@ -1891,14 +1893,14 @@ public fun mmDivSh(a: M128h, b: M128h): M128h = run { val _simdArg0 = a; val _si
  */
 public fun mmMaskDivSh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h =
     run {
-        val extractsrc: F16 = run { val _simdArg0 = src; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractsrc: F16 = run { val simdArg0 = src; val simdArg1 = F16.fromFloat(0.0f); F16() }
         var add: F16 = extractsrc
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta / extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -1912,11 +1914,11 @@ public fun mmMaskzDivSh(k: Mmask8, a: M128h, b: M128h): M128h =
     run {
         var add: F16 = F16.fromFloat(0.0f)
         if ((k and 0x1u.toUByte()) != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             add = extracta / extractb
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = add; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = add; simdArg0 }
     }
 
 /**
@@ -2960,7 +2962,7 @@ public fun mmConjPch(a: M128h): M128h = transmuteWithLayouts<M128i, M128h>(mmXor
 public fun mmMaskConjPch(src: M128h, k: Mmask8, a: M128h): M128h =
     run {
         val r: M128 = transmuteWithLayouts<M128h, M128>(mmConjPch(a), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 })
     }
 
 /**
@@ -2993,7 +2995,7 @@ public fun mm256ConjPch(a: M256h): M256h = transmuteWithLayouts<M256i, M256h>(mm
 public fun mm256MaskConjPch(src: M256h, k: Mmask8, a: M256h): M256h =
     run {
         val r: M256 = transmuteWithLayouts<M256h, M256>(mm256ConjPch(a), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 })
     }
 
 /**
@@ -3026,7 +3028,7 @@ public fun mm512ConjPch(a: M512h): M512h = transmuteWithLayouts<M512i, M512h>(mm
 public fun mm512MaskConjPch(src: M512h, k: Mmask16, a: M512h): M512h =
     run {
         val r: M512 = transmuteWithLayouts<M512h, M512>(mm512ConjPch(a), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = src; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = src; simdArg1 })
     }
 
 /**
@@ -3060,7 +3062,7 @@ public fun mmMaskFmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
         val r: M128 = transmuteWithLayouts<M128h, M128>(mmMask3FmaddPch(a, b, c, k), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = a; simdArg1 })
     }
 
 /**
@@ -3104,7 +3106,7 @@ public fun mm256MaskFmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
     run {
         val r: M256 = transmuteWithLayouts<M256h, M256>(mm256Mask3FmaddPch(a, b, c, k), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = a; simdArg1 })
     }
 
 /**
@@ -3211,7 +3213,7 @@ public fun mm512MaskFmaddRoundPch(a: M512h, k: Mmask16, b: M512h, c: M512h, roun
         }
         val r: M512 = transmuteWithLayouts<M512h, M512>(mm512Mask3FmaddRoundPch(a, b, c, k, rounding), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
         // using `0xffff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = a; simdArg1 })
     }
 
 /**
@@ -3431,7 +3433,7 @@ public fun mmMaskFcmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
         val r: M128 = transmuteWithLayouts<M128h, M128>(mmMask3FcmaddPch(a, b, c, k), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = a; simdArg1 })
     }
 
 /**
@@ -3479,7 +3481,7 @@ public fun mm256MaskFcmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
     run {
         val r: M256 = transmuteWithLayouts<M256h, M256>(mm256Mask3FcmaddPch(a, b, c, k), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = a; simdArg1 })
     }
 
 /**
@@ -3594,7 +3596,7 @@ public fun mm512MaskFcmaddRoundPch(a: M512h, k: Mmask16, b: M512h, c: M512h, rou
         }
         val r: M512 = transmuteWithLayouts<M512h, M512>(mm512Mask3FcmaddRoundPch(a, b, c, k, rounding), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
         // using `0xffff` would have been fine here, but this is what CLang does
-        transmute(run { val _simdArg0 = k; val _simdArg1 = r; val _simdArg2 = a; _simdArg1 })
+        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = a; simdArg1 })
     }
 
 /**
@@ -3807,7 +3809,7 @@ public fun mmMaskzFcmaddRoundSch(k: Mmask8, a: M128h, b: M128h, c: M128h, roundi
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fmadd_ph)
  */
-public fun mmFmaddPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+public fun mmFmaddPh(a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = c; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3816,7 +3818,7 @@ public fun mmFmaddPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fmadd_ph)
  */
-public fun mmMaskFmaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskFmaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3825,7 +3827,7 @@ public fun mmMaskFmaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fmadd_ph)
  */
-public fun mmMask3FmaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mmMask3FmaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val simdArg0 = k; val simdArg1 = mmFmaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3834,7 +3836,7 @@ public fun mmMask3FmaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fmadd_ph)
  */
-public fun mmMaskzFmaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmaddPh(a, b, c); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzFmaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmaddPh(a, b, c); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3842,7 +3844,7 @@ public fun mmMaskzFmaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fmadd_ph)
  */
-public fun mm256FmaddPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+public fun mm256FmaddPh(a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = c; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3851,7 +3853,7 @@ public fun mm256FmaddPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdAr
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_fmadd_ph)
  */
-public fun mm256MaskFmaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskFmaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3860,7 +3862,7 @@ public fun mm256MaskFmaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fmadd_ph)
  */
-public fun mm256Mask3FmaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm256Mask3FmaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3869,7 +3871,7 @@ public fun mm256Mask3FmaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fmadd_ph)
  */
-public fun mm256MaskzFmaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmaddPh(a, b, c); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzFmaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmaddPh(a, b, c); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3877,7 +3879,7 @@ public fun mm256MaskzFmaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fmadd_ph)
  */
-public fun mm512FmaddPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+public fun mm512FmaddPh(a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = c; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3886,7 +3888,7 @@ public fun mm512FmaddPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdAr
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fmadd_ph)
  */
-public fun mm512MaskFmaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskFmaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3895,7 +3897,7 @@ public fun mm512MaskFmaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fmadd_ph)
  */
-public fun mm512Mask3FmaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm512Mask3FmaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3904,7 +3906,7 @@ public fun mm512Mask3FmaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fmadd_ph)
  */
-public fun mm512MaskzFmaddPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmaddPh(a, b, c); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzFmaddPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmaddPh(a, b, c); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, add the intermediate
@@ -3948,7 +3950,7 @@ public fun mm512MaskFmaddRoundPh(a: M512h, k: Mmask32, b: M512h, c: M512h, round
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmaddRoundPh(a, b, c, rounding); val _simdArg2 = a; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmaddRoundPh(a, b, c, rounding); val simdArg2 = a; simdArg1 }
     }
 
 /**
@@ -3971,7 +3973,7 @@ public fun mm512Mask3FmaddRoundPh(a: M512h, b: M512h, c: M512h, k: Mmask32, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmaddRoundPh(a, b, c, rounding); val _simdArg2 = c; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmaddRoundPh(a, b, c, rounding); val simdArg2 = c; simdArg1 }
     }
 
 /**
@@ -3994,7 +3996,7 @@ public fun mm512MaskzFmaddRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmaddRoundPh(a, b, c, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmaddRoundPh(a, b, c, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -4006,11 +4008,11 @@ public fun mm512MaskzFmaddRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, roun
  */
 public fun mmFmaddSh(a: M128h, b: M128h, c: M128h): M128h =
     run {
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = fma(extracta, extractb, extractc)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -4023,13 +4025,13 @@ public fun mmFmaddSh(a: M128h, b: M128h, c: M128h): M128h =
  */
 public fun mmMaskFmaddSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
-        var fmadd: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmadd: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmadd = fma(fmadd, extractb, extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmadd; simdArg0 }
     }
 
 /**
@@ -4042,13 +4044,13 @@ public fun mmMaskFmaddSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
  */
 public fun mmMask3FmaddSh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h =
     run {
-        var fmadd: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmadd: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmadd = fma(extracta, extractb, fmadd)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fmadd; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fmadd; simdArg0 }
     }
 
 /**
@@ -4063,12 +4065,12 @@ public fun mmMaskzFmaddSh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h =
     run {
         var fmadd: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmadd = fma(extracta, extractb, extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmadd; simdArg0 }
     }
 
 /**
@@ -4091,11 +4093,11 @@ public fun mmFmaddRoundSh(a: M128h, b: M128h, c: M128h, rounding: Int): M128h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = vfmaddsh(extracta, extractb, extractc, rounding)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -4119,13 +4121,13 @@ public fun mmMaskFmaddRoundSh(a: M128h, k: Mmask8, b: M128h, c: M128h, rounding:
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fmadd: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmadd: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmadd = vfmaddsh(fmadd, extractb, extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmadd; simdArg0 }
     }
 
 /**
@@ -4149,13 +4151,13 @@ public fun mmMask3FmaddRoundSh(a: M128h, b: M128h, c: M128h, k: Mmask8, rounding
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fmadd: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmadd: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmadd = vfmaddsh(extracta, extractb, fmadd, rounding)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fmadd; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fmadd; simdArg0 }
     }
 
 /**
@@ -4181,12 +4183,12 @@ public fun mmMaskzFmaddRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, rounding
         }
         var fmadd: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmadd = vfmaddsh(extracta, extractb, extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmadd; simdArg0 }
     }
 
 /**
@@ -4196,7 +4198,7 @@ public fun mmMaskzFmaddRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, rounding
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fmsub_ph)
  */
-public fun mmFmsubPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+public fun mmFmsubPh(a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4205,7 +4207,7 @@ public fun mmFmsubPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fmsub_ph)
  */
-public fun mmMaskFmsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskFmsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4214,7 +4216,7 @@ public fun mmMaskFmsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fmsub_ph)
  */
-public fun mmMask3FmsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mmMask3FmsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val simdArg0 = k; val simdArg1 = mmFmsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4223,7 +4225,7 @@ public fun mmMask3FmsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fmsub_ph)
  */
-public fun mmMaskzFmsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmsubPh(a, b, c); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzFmsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmsubPh(a, b, c); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4231,7 +4233,7 @@ public fun mmMaskzFmsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fmsub_ph)
  */
-public fun mm256FmsubPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+public fun mm256FmsubPh(a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4240,7 +4242,7 @@ public fun mm256FmsubPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdAr
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_fmsub_ph)
  */
-public fun mm256MaskFmsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskFmsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4249,7 +4251,7 @@ public fun mm256MaskFmsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fmsub_ph)
  */
-public fun mm256Mask3FmsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm256Mask3FmsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4258,7 +4260,7 @@ public fun mm256Mask3FmsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fmsub_ph)
  */
-public fun mm256MaskzFmsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmsubPh(a, b, c); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzFmsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmsubPh(a, b, c); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4266,7 +4268,7 @@ public fun mm256MaskzFmsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fmsub_ph)
  */
-public fun mm512FmsubPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+public fun mm512FmsubPh(a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4275,7 +4277,7 @@ public fun mm512FmsubPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdAr
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fmsub_ph)
  */
-public fun mm512MaskFmsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskFmsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4284,7 +4286,7 @@ public fun mm512MaskFmsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fmsub_ph)
  */
-public fun mm512Mask3FmsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm512Mask3FmsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4293,7 +4295,7 @@ public fun mm512Mask3FmsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fmsub_ph)
  */
-public fun mm512MaskzFmsubPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmsubPh(a, b, c); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzFmsubPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmsubPh(a, b, c); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4314,7 +4316,7 @@ public fun mm512FmsubRoundPh(a: M512h, b: M512h, c: M512h, rounding: Int): M512h
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        vfmaddph512(a, b, run { val _simdArg0 = c; _simdArg0 }, rounding)
+        vfmaddph512(a, b, run { val simdArg0 = c; simdArg0 }, rounding)
     }
 
 /**
@@ -4337,7 +4339,7 @@ public fun mm512MaskFmsubRoundPh(a: M512h, k: Mmask32, b: M512h, c: M512h, round
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmsubRoundPh(a, b, c, rounding); val _simdArg2 = a; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmsubRoundPh(a, b, c, rounding); val simdArg2 = a; simdArg1 }
     }
 
 /**
@@ -4360,7 +4362,7 @@ public fun mm512Mask3FmsubRoundPh(a: M512h, b: M512h, c: M512h, k: Mmask32, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmsubRoundPh(a, b, c, rounding); val _simdArg2 = c; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmsubRoundPh(a, b, c, rounding); val simdArg2 = c; simdArg1 }
     }
 
 /**
@@ -4383,7 +4385,7 @@ public fun mm512MaskzFmsubRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmsubRoundPh(a, b, c, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmsubRoundPh(a, b, c, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -4395,11 +4397,11 @@ public fun mm512MaskzFmsubRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, roun
  */
 public fun mmFmsubSh(a: M128h, b: M128h, c: M128h): M128h =
     run {
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = fma(extracta, extractb, -extractc)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -4412,13 +4414,13 @@ public fun mmFmsubSh(a: M128h, b: M128h, c: M128h): M128h =
  */
 public fun mmMaskFmsubSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
-        var fmsub: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmsub: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmsub = fma(fmsub, extractb, -extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmsub; simdArg0 }
     }
 
 /**
@@ -4431,13 +4433,13 @@ public fun mmMaskFmsubSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
  */
 public fun mmMask3FmsubSh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h =
     run {
-        var fmsub: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmsub: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmsub = fma(extracta, extractb, -fmsub)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fmsub; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fmsub; simdArg0 }
     }
 
 /**
@@ -4452,12 +4454,12 @@ public fun mmMaskzFmsubSh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h =
     run {
         var fmsub: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmsub = fma(extracta, extractb, -extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmsub; simdArg0 }
     }
 
 /**
@@ -4480,11 +4482,11 @@ public fun mmFmsubRoundSh(a: M128h, b: M128h, c: M128h, rounding: Int): M128h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = vfmaddsh(extracta, extractb, -extractc, rounding)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -4508,13 +4510,13 @@ public fun mmMaskFmsubRoundSh(a: M128h, k: Mmask8, b: M128h, c: M128h, rounding:
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fmsub: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmsub: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmsub = vfmaddsh(fmsub, extractb, -extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmsub; simdArg0 }
     }
 
 /**
@@ -4538,13 +4540,13 @@ public fun mmMask3FmsubRoundSh(a: M128h, b: M128h, c: M128h, k: Mmask8, rounding
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fmsub: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fmsub: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmsub = vfmaddsh(extracta, extractb, -fmsub, rounding)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fmsub; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fmsub; simdArg0 }
     }
 
 /**
@@ -4562,12 +4564,12 @@ public fun mmMaskzFmsubRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, rounding
         }
         var fmsub: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fmsub = vfmaddsh(extracta, extractb, -extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fmsub; simdArg0 }
     }
 
 /**
@@ -4576,7 +4578,7 @@ public fun mmMaskzFmsubRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, rounding
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fnmadd_ph)
  */
-public fun mmFnmaddPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+public fun mmFnmaddPh(a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = run { val simdArg0 = a; simdArg0 }; val simdArg1 = b; val simdArg2 = c; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4585,7 +4587,7 @@ public fun mmFnmaddPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fnmadd_ph)
  */
-public fun mmMaskFnmaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFnmaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskFnmaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFnmaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4594,7 +4596,7 @@ public fun mmMaskFnmaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fnmadd_ph)
  */
-public fun mmMask3FnmaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFnmaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mmMask3FnmaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val simdArg0 = k; val simdArg1 = mmFnmaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4603,7 +4605,7 @@ public fun mmMask3FnmaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fnmadd_ph)
  */
-public fun mmMaskzFnmaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFnmaddPh(a, b, c); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzFnmaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFnmaddPh(a, b, c); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4611,7 +4613,7 @@ public fun mmMaskzFnmaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fnmadd_ph)
  */
-public fun mm256FnmaddPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+public fun mm256FnmaddPh(a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = run { val simdArg0 = a; simdArg0 }; val simdArg1 = b; val simdArg2 = c; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4620,7 +4622,7 @@ public fun mm256FnmaddPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdA
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_fnmadd_ph)
  */
-public fun mm256MaskFnmaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FnmaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskFnmaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FnmaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4629,7 +4631,7 @@ public fun mm256MaskFnmaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fnmadd_ph)
  */
-public fun mm256Mask3FnmaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FnmaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm256Mask3FnmaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val simdArg0 = k; val simdArg1 = mm256FnmaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4638,7 +4640,7 @@ public fun mm256Mask3FnmaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fnmadd_ph)
  */
-public fun mm256MaskzFnmaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FnmaddPh(a, b, c); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzFnmaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FnmaddPh(a, b, c); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4646,7 +4648,7 @@ public fun mm256MaskzFnmaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fnmadd_ph)
  */
-public fun mm512FnmaddPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+public fun mm512FnmaddPh(a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = run { val simdArg0 = a; simdArg0 }; val simdArg1 = b; val simdArg2 = c; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4655,7 +4657,7 @@ public fun mm512FnmaddPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdA
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fnmadd_ph)
  */
-public fun mm512MaskFnmaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FnmaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskFnmaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FnmaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4664,7 +4666,7 @@ public fun mm512MaskFnmaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fnmadd_ph)
  */
-public fun mm512Mask3FnmaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FnmaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm512Mask3FnmaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val simdArg0 = k; val simdArg1 = mm512FnmaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4673,7 +4675,7 @@ public fun mm512Mask3FnmaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fnmadd_ph)
  */
-public fun mm512MaskzFnmaddPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FnmaddPh(a, b, c); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzFnmaddPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FnmaddPh(a, b, c); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract the intermediate
@@ -4694,7 +4696,7 @@ public fun mm512FnmaddRoundPh(a: M512h, b: M512h, c: M512h, rounding: Int): M512
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        vfmaddph512(run { val _simdArg0 = a; _simdArg0 }, b, c, rounding)
+        vfmaddph512(run { val simdArg0 = a; simdArg0 }, b, c, rounding)
     }
 
 /**
@@ -4717,7 +4719,7 @@ public fun mm512MaskFnmaddRoundPh(a: M512h, k: Mmask32, b: M512h, c: M512h, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FnmaddRoundPh(a, b, c, rounding); val _simdArg2 = a; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FnmaddRoundPh(a, b, c, rounding); val simdArg2 = a; simdArg1 }
     }
 
 /**
@@ -4740,7 +4742,7 @@ public fun mm512Mask3FnmaddRoundPh(a: M512h, b: M512h, c: M512h, k: Mmask32, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FnmaddRoundPh(a, b, c, rounding); val _simdArg2 = c; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FnmaddRoundPh(a, b, c, rounding); val simdArg2 = c; simdArg1 }
     }
 
 /**
@@ -4763,7 +4765,7 @@ public fun mm512MaskzFnmaddRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FnmaddRoundPh(a, b, c, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FnmaddRoundPh(a, b, c, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -4775,11 +4777,11 @@ public fun mm512MaskzFnmaddRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, rou
  */
 public fun mmFnmaddSh(a: M128h, b: M128h, c: M128h): M128h =
     run {
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = fma(-extracta, extractb, extractc)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -4792,13 +4794,13 @@ public fun mmFnmaddSh(a: M128h, b: M128h, c: M128h): M128h =
  */
 public fun mmMaskFnmaddSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
-        var fnmadd: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmadd: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmadd = fma(-fnmadd, extractb, extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmadd; simdArg0 }
     }
 
 /**
@@ -4811,13 +4813,13 @@ public fun mmMaskFnmaddSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
  */
 public fun mmMask3FnmaddSh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h =
     run {
-        var fnmadd: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmadd: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmadd = fma(-extracta, extractb, fnmadd)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fnmadd; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fnmadd; simdArg0 }
     }
 
 /**
@@ -4832,12 +4834,12 @@ public fun mmMaskzFnmaddSh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h =
     run {
         var fnmadd: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmadd = fma(-extracta, extractb, extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmadd; simdArg0 }
     }
 
 /**
@@ -4860,11 +4862,11 @@ public fun mmFnmaddRoundSh(a: M128h, b: M128h, c: M128h, rounding: Int): M128h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = vfmaddsh(-extracta, extractb, extractc, rounding)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -4888,13 +4890,13 @@ public fun mmMaskFnmaddRoundSh(a: M128h, k: Mmask8, b: M128h, c: M128h, rounding
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fnmadd: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmadd: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmadd = vfmaddsh(-fnmadd, extractb, extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmadd; simdArg0 }
     }
 
 /**
@@ -4918,13 +4920,13 @@ public fun mmMask3FnmaddRoundSh(a: M128h, b: M128h, c: M128h, k: Mmask8, roundin
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fnmadd: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmadd: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmadd = vfmaddsh(-extracta, extractb, fnmadd, rounding)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fnmadd; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fnmadd; simdArg0 }
     }
 
 /**
@@ -4950,12 +4952,12 @@ public fun mmMaskzFnmaddRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, roundin
         }
         var fnmadd: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmadd = vfmaddsh(-extracta, extractb, extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmadd; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmadd; simdArg0 }
     }
 
 /**
@@ -4964,7 +4966,7 @@ public fun mmMaskzFnmaddRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, roundin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fnmsub_ph)
  */
-public fun mmFnmsubPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+public fun mmFnmsubPh(a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = run { val simdArg0 = a; simdArg0 }; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4973,7 +4975,7 @@ public fun mmFnmsubPh(a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fnmsub_ph)
  */
-public fun mmMaskFnmsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFnmsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskFnmsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFnmsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4982,7 +4984,7 @@ public fun mmMaskFnmsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fnmsub_ph)
  */
-public fun mmMask3FnmsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFnmsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mmMask3FnmsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val simdArg0 = k; val simdArg1 = mmFnmsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4991,7 +4993,7 @@ public fun mmMask3FnmsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fnmsub_ph)
  */
-public fun mmMaskzFnmsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFnmsubPh(a, b, c); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzFnmsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFnmsubPh(a, b, c); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -4999,7 +5001,7 @@ public fun mmMaskzFnmsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fnmsub_ph)
  */
-public fun mm256FnmsubPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+public fun mm256FnmsubPh(a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = run { val simdArg0 = a; simdArg0 }; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5008,7 +5010,7 @@ public fun mm256FnmsubPh(a: M256h, b: M256h, c: M256h): M256h = run { val _simdA
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_fnmsub_ph)
  */
-public fun mm256MaskFnmsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FnmsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskFnmsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FnmsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5017,7 +5019,7 @@ public fun mm256MaskFnmsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fnmsub_ph)
  */
-public fun mm256Mask3FnmsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FnmsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm256Mask3FnmsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val simdArg0 = k; val simdArg1 = mm256FnmsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5026,7 +5028,7 @@ public fun mm256Mask3FnmsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fnmsub_ph)
  */
-public fun mm256MaskzFnmsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FnmsubPh(a, b, c); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzFnmsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FnmsubPh(a, b, c); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5034,7 +5036,7 @@ public fun mm256MaskzFnmsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fnmsub_ph)
  */
-public fun mm512FnmsubPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+public fun mm512FnmsubPh(a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = run { val simdArg0 = a; simdArg0 }; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5043,7 +5045,7 @@ public fun mm512FnmsubPh(a: M512h, b: M512h, c: M512h): M512h = run { val _simdA
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fnmsub_ph)
  */
-public fun mm512MaskFnmsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FnmsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskFnmsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FnmsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5052,7 +5054,7 @@ public fun mm512MaskFnmsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fnmsub_ph)
  */
-public fun mm512Mask3FnmsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FnmsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm512Mask3FnmsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val simdArg0 = k; val simdArg1 = mm512FnmsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5061,7 +5063,7 @@ public fun mm512Mask3FnmsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fnmsub_ph)
  */
-public fun mm512MaskzFnmsubPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FnmsubPh(a, b, c); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzFnmsubPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FnmsubPh(a, b, c); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, subtract packed elements
@@ -5082,7 +5084,7 @@ public fun mm512FnmsubRoundPh(a: M512h, b: M512h, c: M512h, rounding: Int): M512
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        vfmaddph512(run { val _simdArg0 = a; _simdArg0 }, b, run { val _simdArg0 = c; _simdArg0 }, rounding)
+        vfmaddph512(run { val simdArg0 = a; simdArg0 }, b, run { val simdArg0 = c; simdArg0 }, rounding)
     }
 
 /**
@@ -5105,7 +5107,7 @@ public fun mm512MaskFnmsubRoundPh(a: M512h, k: Mmask32, b: M512h, c: M512h, roun
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FnmsubRoundPh(a, b, c, rounding); val _simdArg2 = a; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FnmsubRoundPh(a, b, c, rounding); val simdArg2 = a; simdArg1 }
     }
 
 /**
@@ -5128,7 +5130,7 @@ public fun mm512Mask3FnmsubRoundPh(a: M512h, b: M512h, c: M512h, k: Mmask32, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FnmsubRoundPh(a, b, c, rounding); val _simdArg2 = c; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FnmsubRoundPh(a, b, c, rounding); val simdArg2 = c; simdArg1 }
     }
 
 /**
@@ -5151,7 +5153,7 @@ public fun mm512MaskzFnmsubRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, rou
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FnmsubRoundPh(a, b, c, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FnmsubRoundPh(a, b, c, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -5163,11 +5165,11 @@ public fun mm512MaskzFnmsubRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, rou
  */
 public fun mmFnmsubSh(a: M128h, b: M128h, c: M128h): M128h =
     run {
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = fma(-extracta, extractb, -extractc)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -5180,13 +5182,13 @@ public fun mmFnmsubSh(a: M128h, b: M128h, c: M128h): M128h =
  */
 public fun mmMaskFnmsubSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
-        var fnmsub: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmsub: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmsub = fma(-fnmsub, extractb, -extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmsub; simdArg0 }
     }
 
 /**
@@ -5199,13 +5201,13 @@ public fun mmMaskFnmsubSh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
  */
 public fun mmMask3FnmsubSh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h =
     run {
-        var fnmsub: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmsub: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmsub = fma(-extracta, extractb, -fnmsub)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fnmsub; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fnmsub; simdArg0 }
     }
 
 /**
@@ -5220,12 +5222,12 @@ public fun mmMaskzFnmsubSh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h =
     run {
         var fnmsub: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmsub = fma(-extracta, extractb, -extractc)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmsub; simdArg0 }
     }
 
 /**
@@ -5248,11 +5250,11 @@ public fun mmFnmsubRoundSh(a: M128h, b: M128h, c: M128h, rounding: Int): M128h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-        val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+        val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         val r = vfmaddsh(-extracta, extractb, -extractc, rounding)
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = r; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = r; simdArg0 }
     }
 
 /**
@@ -5276,13 +5278,13 @@ public fun mmMaskFnmsubRoundSh(a: M128h, k: Mmask8, b: M128h, c: M128h, rounding
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fnmsub: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmsub: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmsub = vfmaddsh(-fnmsub, extractb, -extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmsub; simdArg0 }
     }
 
 /**
@@ -5306,13 +5308,13 @@ public fun mmMask3FnmsubRoundSh(a: M128h, b: M128h, c: M128h, k: Mmask8, roundin
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        var fnmsub: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+        var fnmsub: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmsub = vfmaddsh(-extracta, extractb, -fnmsub, rounding)
         }
-        run { val _simdArg0 = c; val _simdArg1 = 0; val _simdArg2 = fnmsub; _simdArg0 }
+        run { val simdArg0 = c; val simdArg1 = 0; val simdArg2 = fnmsub; simdArg0 }
     }
 
 /**
@@ -5338,12 +5340,12 @@ public fun mmMaskzFnmsubRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, roundin
         }
         var fnmsub: F16 = F16.fromFloat(0.0f)
         if (k and 1u.toUByte() != 0u.toUByte()) {
-            val extracta: F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractb: F16 = run { val _simdArg0 = b; val _simdArg1 = F16.fromFloat(0.0f); F16() }
-            val extractc: F16 = run { val _simdArg0 = c; val _simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extracta: F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractb: F16 = run { val simdArg0 = b; val simdArg1 = F16.fromFloat(0.0f); F16() }
+            val extractc: F16 = run { val simdArg0 = c; val simdArg1 = F16.fromFloat(0.0f); F16() }
             fnmsub = vfmaddsh(-extracta, extractb, -extractc, rounding)
         }
-        run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = fnmsub; _simdArg0 }
+        run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = fnmsub; simdArg0 }
     }
 
 /**
@@ -5354,9 +5356,9 @@ public fun mmMaskzFnmsubRoundSh(k: Mmask8, a: M128h, b: M128h, c: M128h, roundin
  */
 public fun mmFmaddsubPh(a: M128h, b: M128h, c: M128h): M128h =
     run {
-        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
-        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = sub; val _simdArg1 = add; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 9u, 2u, 11u, 4u, 13u, 6u, 15u)); _simdArg0 }
+        val add = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = c; simdArg0 }
+        val sub = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
+        run { val simdArg0 = sub; val simdArg1 = add; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 9u, 2u, 11u, 4u, 13u, 6u, 15u)); M128h() }
     }
 
 /**
@@ -5366,7 +5368,7 @@ public fun mmFmaddsubPh(a: M128h, b: M128h, c: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fmaddsub_ph)
  */
-public fun mmMaskFmaddsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmaddsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskFmaddsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmaddsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5375,7 +5377,7 @@ public fun mmMaskFmaddsubPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = ru
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fmaddsub_ph)
  */
-public fun mmMask3FmaddsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmaddsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mmMask3FmaddsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val simdArg0 = k; val simdArg1 = mmFmaddsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5384,7 +5386,7 @@ public fun mmMask3FmaddsubPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fmaddsub_ph)
  */
-public fun mmMaskzFmaddsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmaddsubPh(a, b, c); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzFmaddsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmaddsubPh(a, b, c); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5394,9 +5396,9 @@ public fun mmMaskzFmaddsubPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = r
  */
 public fun mm256FmaddsubPh(a: M256h, b: M256h, c: M256h): M256h =
     run {
-        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
-        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = sub; val _simdArg1 = add; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 17u, 2u, 19u, 4u, 21u, 6u, 23u, 8u, 25u, 10u, 27u, 12u, 29u, 14u, 31u)); _simdArg0 }
+        val add = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = c; simdArg0 }
+        val sub = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
+        run { val simdArg0 = sub; val simdArg1 = add; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 17u, 2u, 19u, 4u, 21u, 6u, 23u, 8u, 25u, 10u, 27u, 12u, 29u, 14u, 31u)); M256h() }
     }
 
 /**
@@ -5406,7 +5408,7 @@ public fun mm256FmaddsubPh(a: M256h, b: M256h, c: M256h): M256h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_fmaddsub_ph)
  */
-public fun mm256MaskFmaddsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmaddsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskFmaddsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmaddsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5415,7 +5417,7 @@ public fun mm256MaskFmaddsubPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fmaddsub_ph)
  */
-public fun mm256Mask3FmaddsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmaddsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm256Mask3FmaddsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmaddsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5424,7 +5426,7 @@ public fun mm256Mask3FmaddsubPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fmaddsub_ph)
  */
-public fun mm256MaskzFmaddsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmaddsubPh(a, b, c); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzFmaddsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmaddsubPh(a, b, c); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5434,9 +5436,9 @@ public fun mm256MaskzFmaddsubPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h
  */
 public fun mm512FmaddsubPh(a: M512h, b: M512h, c: M512h): M512h =
     run {
-        val add = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
-        val sub = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
-        run { val _simdArg0 = sub; val _simdArg1 = add; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 33u, 2u, 35u, 4u, 37u, 6u, 39u, 8u, 41u, 10u, 43u, 12u, 45u, 14u, 47u, 16u, 49u, 18u, 51u, 20u, 53u, 22u, 55u, 24u, 57u, 26u, 59u, 28u, 61u, 30u, 63u)); _simdArg0 }
+        val add = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = c; simdArg0 }
+        val sub = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = run { val simdArg0 = c; simdArg0 }; simdArg0 }
+        run { val simdArg0 = sub; val simdArg1 = add; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 33u, 2u, 35u, 4u, 37u, 6u, 39u, 8u, 41u, 10u, 43u, 12u, 45u, 14u, 47u, 16u, 49u, 18u, 51u, 20u, 53u, 22u, 55u, 24u, 57u, 26u, 59u, 28u, 61u, 30u, 63u)); M512h() }
     }
 
 /**
@@ -5446,7 +5448,7 @@ public fun mm512FmaddsubPh(a: M512h, b: M512h, c: M512h): M512h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fmaddsub_ph)
  */
-public fun mm512MaskFmaddsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmaddsubPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskFmaddsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmaddsubPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5455,7 +5457,7 @@ public fun mm512MaskFmaddsubPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fmaddsub_ph)
  */
-public fun mm512Mask3FmaddsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmaddsubPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm512Mask3FmaddsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmaddsubPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5464,7 +5466,7 @@ public fun mm512Mask3FmaddsubPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fmaddsub_ph)
  */
-public fun mm512MaskzFmaddsubPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmaddsubPh(a, b, c); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzFmaddsubPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmaddsubPh(a, b, c); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively add and
@@ -5508,7 +5510,7 @@ public fun mm512MaskFmaddsubRoundPh(a: M512h, k: Mmask32, b: M512h, c: M512h, ro
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmaddsubRoundPh(a, b, c, rounding); val _simdArg2 = a; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmaddsubRoundPh(a, b, c, rounding); val simdArg2 = a; simdArg1 }
     }
 
 /**
@@ -5531,7 +5533,7 @@ public fun mm512Mask3FmaddsubRoundPh(a: M512h, b: M512h, c: M512h, k: Mmask32, r
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmaddsubRoundPh(a, b, c, rounding); val _simdArg2 = c; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmaddsubRoundPh(a, b, c, rounding); val simdArg2 = c; simdArg1 }
     }
 
 /**
@@ -5554,7 +5556,7 @@ public fun mm512MaskzFmaddsubRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, r
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmaddsubRoundPh(a, b, c, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmaddsubRoundPh(a, b, c, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -5563,7 +5565,7 @@ public fun mm512MaskzFmaddsubRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fmsubadd_ph)
  */
-public fun mmFmsubaddPh(a: M128h, b: M128h, c: M128h): M128h = mmFmaddsubPh(a, b, run { val _simdArg0 = c; _simdArg0 })
+public fun mmFmsubaddPh(a: M128h, b: M128h, c: M128h): M128h = mmFmaddsubPh(a, b, run { val simdArg0 = c; simdArg0 })
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5572,7 +5574,7 @@ public fun mmFmsubaddPh(a: M128h, b: M128h, c: M128h): M128h = mmFmaddsubPh(a, b
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_fmsubadd_ph)
  */
-public fun mmMaskFmsubaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmsubaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mmMaskFmsubaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmsubaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5581,7 +5583,7 @@ public fun mmMaskFmsubaddPh(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h = ru
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask3_fmsubadd_ph)
  */
-public fun mmMask3FmsubaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmsubaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mmMask3FmsubaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = run { val simdArg0 = k; val simdArg1 = mmFmsubaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5590,7 +5592,7 @@ public fun mmMask3FmsubaddPh(a: M128h, b: M128h, c: M128h, k: Mmask8): M128h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_fmsubadd_ph)
  */
-public fun mmMaskzFmsubaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmFmsubaddPh(a, b, c); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzFmsubaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmFmsubaddPh(a, b, c); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5598,7 +5600,7 @@ public fun mmMaskzFmsubaddPh(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fmsubadd_ph)
  */
-public fun mm256FmsubaddPh(a: M256h, b: M256h, c: M256h): M256h = mm256FmaddsubPh(a, b, run { val _simdArg0 = c; _simdArg0 })
+public fun mm256FmsubaddPh(a: M256h, b: M256h, c: M256h): M256h = mm256FmaddsubPh(a, b, run { val simdArg0 = c; simdArg0 })
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5607,7 +5609,7 @@ public fun mm256FmsubaddPh(a: M256h, b: M256h, c: M256h): M256h = mm256FmaddsubP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_fmsubadd_ph)
  */
-public fun mm256MaskFmsubaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmsubaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskFmsubaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmsubaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5616,7 +5618,7 @@ public fun mm256MaskFmsubaddPh(a: M256h, k: Mmask16, b: M256h, c: M256h): M256h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask3_fmsubadd_ph)
  */
-public fun mm256Mask3FmsubaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmsubaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm256Mask3FmsubaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmsubaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5625,7 +5627,7 @@ public fun mm256Mask3FmsubaddPh(a: M256h, b: M256h, c: M256h, k: Mmask16): M256h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_fmsubadd_ph)
  */
-public fun mm256MaskzFmsubaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256FmsubaddPh(a, b, c); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzFmsubaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256FmsubaddPh(a, b, c); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5633,7 +5635,7 @@ public fun mm256MaskzFmsubaddPh(k: Mmask16, a: M256h, b: M256h, c: M256h): M256h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_fmsubadd_ph)
  */
-public fun mm512FmsubaddPh(a: M512h, b: M512h, c: M512h): M512h = mm512FmaddsubPh(a, b, run { val _simdArg0 = c; _simdArg0 })
+public fun mm512FmsubaddPh(a: M512h, b: M512h, c: M512h): M512h = mm512FmaddsubPh(a, b, run { val simdArg0 = c; simdArg0 })
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5642,7 +5644,7 @@ public fun mm512FmsubaddPh(a: M512h, b: M512h, c: M512h): M512h = mm512FmaddsubP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_fmsubadd_ph)
  */
-public fun mm512MaskFmsubaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmsubaddPh(a, b, c); val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskFmsubaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmsubaddPh(a, b, c); val simdArg2 = a; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5651,7 +5653,7 @@ public fun mm512MaskFmsubaddPh(a: M512h, k: Mmask32, b: M512h, c: M512h): M512h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask3_fmsubadd_ph)
  */
-public fun mm512Mask3FmsubaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmsubaddPh(a, b, c); val _simdArg2 = c; _simdArg1 }
+public fun mm512Mask3FmsubaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmsubaddPh(a, b, c); val simdArg2 = c; simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5660,7 +5662,7 @@ public fun mm512Mask3FmsubaddPh(a: M512h, b: M512h, c: M512h, k: Mmask32): M512h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_fmsubadd_ph)
  */
-public fun mm512MaskzFmsubaddPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512FmsubaddPh(a, b, c); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzFmsubaddPh(k: Mmask32, a: M512h, b: M512h, c: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512FmsubaddPh(a, b, c); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Multiply packed half-precision (16-bit) floating-point elements in a and b, alternatively subtract
@@ -5681,7 +5683,7 @@ public fun mm512FmsubaddRoundPh(a: M512h, b: M512h, c: M512h, rounding: Int): M5
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        vfmaddsubph512(a, b, run { val _simdArg0 = c; _simdArg0 }, rounding)
+        vfmaddsubph512(a, b, run { val simdArg0 = c; simdArg0 }, rounding)
     }
 
 /**
@@ -5704,7 +5706,7 @@ public fun mm512MaskFmsubaddRoundPh(a: M512h, k: Mmask32, b: M512h, c: M512h, ro
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmsubaddRoundPh(a, b, c, rounding); val _simdArg2 = a; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmsubaddRoundPh(a, b, c, rounding); val simdArg2 = a; simdArg1 }
     }
 
 /**
@@ -5727,7 +5729,7 @@ public fun mm512Mask3FmsubaddRoundPh(a: M512h, b: M512h, c: M512h, k: Mmask32, r
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmsubaddRoundPh(a, b, c, rounding); val _simdArg2 = c; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmsubaddRoundPh(a, b, c, rounding); val simdArg2 = c; simdArg1 }
     }
 
 /**
@@ -5750,7 +5752,7 @@ public fun mm512MaskzFmsubaddRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, r
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512FmsubaddRoundPh(a, b, c, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512FmsubaddRoundPh(a, b, c, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -5984,7 +5986,7 @@ public fun mmMaskzRsqrtSh(k: Mmask8, a: M128h, b: M128h): M128h = mmMaskRsqrtSh(
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_sqrt_ph)
  */
-public fun mmSqrtPh(a: M128h): M128h = run { val _simdArg0 = a; _simdArg0 }
+public fun mmSqrtPh(a: M128h): M128h = run { val simdArg0 = a; simdArg0 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -5992,7 +5994,7 @@ public fun mmSqrtPh(a: M128h): M128h = run { val _simdArg0 = a; _simdArg0 }
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_sqrt_ph)
  */
-public fun mmMaskSqrtPh(src: M128h, k: Mmask8, a: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmSqrtPh(a); val _simdArg2 = src; _simdArg1 }
+public fun mmMaskSqrtPh(src: M128h, k: Mmask8, a: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmSqrtPh(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6000,7 +6002,7 @@ public fun mmMaskSqrtPh(src: M128h, k: Mmask8, a: M128h): M128h = run { val _sim
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_sqrt_ph)
  */
-public fun mmMaskzSqrtPh(k: Mmask8, a: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmSqrtPh(a); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzSqrtPh(k: Mmask8, a: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmSqrtPh(a); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6008,7 +6010,7 @@ public fun mmMaskzSqrtPh(k: Mmask8, a: M128h): M128h = run { val _simdArg0 = k; 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_sqrt_ph)
  */
-public fun mm256SqrtPh(a: M256h): M256h = run { val _simdArg0 = a; _simdArg0 }
+public fun mm256SqrtPh(a: M256h): M256h = run { val simdArg0 = a; simdArg0 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6016,7 +6018,7 @@ public fun mm256SqrtPh(a: M256h): M256h = run { val _simdArg0 = a; _simdArg0 }
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_sqrt_ph)
  */
-public fun mm256MaskSqrtPh(src: M256h, k: Mmask16, a: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256SqrtPh(a); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskSqrtPh(src: M256h, k: Mmask16, a: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256SqrtPh(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6024,7 +6026,7 @@ public fun mm256MaskSqrtPh(src: M256h, k: Mmask16, a: M256h): M256h = run { val 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_sqrt_ph)
  */
-public fun mm256MaskzSqrtPh(k: Mmask16, a: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256SqrtPh(a); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzSqrtPh(k: Mmask16, a: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256SqrtPh(a); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6032,7 +6034,7 @@ public fun mm256MaskzSqrtPh(k: Mmask16, a: M256h): M256h = run { val _simdArg0 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_sqrt_ph)
  */
-public fun mm512SqrtPh(a: M512h): M512h = run { val _simdArg0 = a; _simdArg0 }
+public fun mm512SqrtPh(a: M512h): M512h = run { val simdArg0 = a; simdArg0 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6040,7 +6042,7 @@ public fun mm512SqrtPh(a: M512h): M512h = run { val _simdArg0 = a; _simdArg0 }
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_sqrt_ph)
  */
-public fun mm512MaskSqrtPh(src: M512h, k: Mmask32, a: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512SqrtPh(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskSqrtPh(src: M512h, k: Mmask32, a: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512SqrtPh(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6048,7 +6050,7 @@ public fun mm512MaskSqrtPh(src: M512h, k: Mmask32, a: M512h): M512h = run { val 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_sqrt_ph)
  */
-public fun mm512MaskzSqrtPh(k: Mmask32, a: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512SqrtPh(a); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzSqrtPh(k: Mmask32, a: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512SqrtPh(a); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Compute the square root of packed half-precision (16-bit) floating-point elements in a, and store the
@@ -6089,7 +6091,7 @@ public fun mm512MaskSqrtRoundPh(src: M512h, k: Mmask32, a: M512h, rounding: Int)
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512SqrtRoundPh(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512SqrtRoundPh(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -6110,7 +6112,7 @@ public fun mm512MaskzSqrtRoundPh(k: Mmask32, a: M512h, rounding: Int): M512h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512SqrtRoundPh(a, rounding); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512SqrtRoundPh(a, rounding); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -6221,7 +6223,7 @@ public fun mmMaxPh(a: M128h, b: M128h): M128h = vmaxph128(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_max_ph)
  */
-public fun mmMaskMaxPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmMaxPh(a, b); val _simdArg2 = src; _simdArg1 }
+public fun mmMaskMaxPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmMaxPh(a, b); val simdArg2 = src; simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6231,7 +6233,7 @@ public fun mmMaskMaxPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = run {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_max_ph)
  */
-public fun mmMaskzMaxPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmMaxPh(a, b); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzMaxPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmMaxPh(a, b); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6250,7 +6252,7 @@ public fun mm256MaxPh(a: M256h, b: M256h): M256h = vmaxph256(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_max_ph)
  */
-public fun mm256MaskMaxPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256MaxPh(a, b); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskMaxPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256MaxPh(a, b); val simdArg2 = src; simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6260,7 +6262,7 @@ public fun mm256MaskMaxPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_max_ph)
  */
-public fun mm256MaskzMaxPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256MaxPh(a, b); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzMaxPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256MaxPh(a, b); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6279,7 +6281,7 @@ public fun mm512MaxPh(a: M512h, b: M512h): M512h = mm512MaxRoundPh<MmFroundCurDi
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_max_ph)
  */
-public fun mm512MaskMaxPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512MaxPh(a, b); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskMaxPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512MaxPh(a, b); val simdArg2 = src; simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6289,7 +6291,7 @@ public fun mm512MaskMaxPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_max_ph)
  */
-public fun mm512MaskzMaxPh(k: Mmask32, a: M512h, b: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512MaxPh(a, b); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzMaxPh(k: Mmask32, a: M512h, b: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512MaxPh(a, b); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed maximum
@@ -6320,7 +6322,7 @@ public fun mm512MaskMaxRoundPh(src: M512h, k: Mmask32, a: M512h, b: M512h, sae: 
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512MaxRoundPh(a, b, sae); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512MaxRoundPh(a, b, sae); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -6336,7 +6338,7 @@ public fun mm512MaskzMaxRoundPh(k: Mmask32, a: M512h, b: M512h, sae: Int): M512h
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512MaxRoundPh(a, b, sae); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512MaxRoundPh(a, b, sae); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -6434,7 +6436,7 @@ public fun mmMinPh(a: M128h, b: M128h): M128h = vminph128(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_min_ph)
  */
-public fun mmMaskMinPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmMinPh(a, b); val _simdArg2 = src; _simdArg1 }
+public fun mmMaskMinPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmMinPh(a, b); val simdArg2 = src; simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6444,7 +6446,7 @@ public fun mmMaskMinPh(src: M128h, k: Mmask8, a: M128h, b: M128h): M128h = run {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_maskz_min_ph)
  */
-public fun mmMaskzMinPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = mmMinPh(a, b); val _simdArg2 = mmSetzeroPh(); _simdArg1 }
+public fun mmMaskzMinPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val simdArg0 = k; val simdArg1 = mmMinPh(a, b); val simdArg2 = mmSetzeroPh(); simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6463,7 +6465,7 @@ public fun mm256MinPh(a: M256h, b: M256h): M256h = vminph256(a, b)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_min_ph)
  */
-public fun mm256MaskMinPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256MinPh(a, b); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskMinPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256MinPh(a, b); val simdArg2 = src; simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6473,7 +6475,7 @@ public fun mm256MaskMinPh(src: M256h, k: Mmask16, a: M256h, b: M256h): M256h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_maskz_min_ph)
  */
-public fun mm256MaskzMinPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256MinPh(a, b); val _simdArg2 = mm256SetzeroPh(); _simdArg1 }
+public fun mm256MaskzMinPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val simdArg0 = k; val simdArg1 = mm256MinPh(a, b); val simdArg2 = mm256SetzeroPh(); simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6492,7 +6494,7 @@ public fun mm512MinPh(a: M512h, b: M512h): M512h = mm512MinRoundPh<MmFroundCurDi
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_min_ph)
  */
-public fun mm512MaskMinPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512MinPh(a, b); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskMinPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512MinPh(a, b); val simdArg2 = src; simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6502,7 +6504,7 @@ public fun mm512MaskMinPh(src: M512h, k: Mmask32, a: M512h, b: M512h): M512h = r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_maskz_min_ph)
  */
-public fun mm512MaskzMinPh(k: Mmask32, a: M512h, b: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512MinPh(a, b); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+public fun mm512MaskzMinPh(k: Mmask32, a: M512h, b: M512h): M512h = run { val simdArg0 = k; val simdArg1 = mm512MinPh(a, b); val simdArg2 = mm512SetzeroPh(); simdArg1 }
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b, and store packed minimum
@@ -6532,7 +6534,7 @@ public fun mm512MaskMinRoundPh(src: M512h, k: Mmask32, a: M512h, b: M512h, sae: 
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512MinRoundPh(a, b, sae); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512MinRoundPh(a, b, sae); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -6548,7 +6550,7 @@ public fun mm512MaskzMinRoundPh(k: Mmask32, a: M512h, b: M512h, sae: Int): M512h
         run {
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512MinRoundPh(a, b, sae); val _simdArg2 = mm512SetzeroPh(); _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512MinRoundPh(a, b, sae); val simdArg2 = mm512SetzeroPh(); simdArg1 }
     }
 
 /**
@@ -8529,11 +8531,11 @@ public fun mmMaskzReduceRoundSh(k: Mmask8, a: M128h, b: M128h, imm8: Int, sae: I
  */
 public fun mmReduceAddPh(a: M128h): F16 =
     run {
-        val b = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); _simdArg0 }
+        val b = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); F16() }
         val a1 = mmAddPh(a, b)
-        val b1 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); _simdArg0 }
+        val b1 = run { val simdArg0 = a1; val simdArg1 = a1; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); F16() }
         val a2 = mmAddPh(a1, b1)
-        run { val _simdArg0 = a2; val _simdArg1 = F16.fromFloat(0.0f); F16() } + run { val _simdArg0 = a2; val _simdArg1 = F16.fromFloat(1.0f); F16() }
+        run { val simdArg0 = a2; val simdArg1 = F16.fromFloat(0.0f); F16() } + run { val simdArg0 = a2; val simdArg1 = F16.fromFloat(1.0f); F16() }
     }
 
 /**
@@ -8544,8 +8546,8 @@ public fun mmReduceAddPh(a: M128h): F16 =
  */
 public fun mm256ReduceAddPh(a: M256h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
         mmReduceAddPh(mmAddPh(p, q))
     }
 
@@ -8557,8 +8559,8 @@ public fun mm256ReduceAddPh(a: M256h): F16 =
  */
 public fun mm512ReduceAddPh(a: M512h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); F16() }
         mm256ReduceAddPh(mm256AddPh(p, q))
     }
 
@@ -8570,11 +8572,11 @@ public fun mm512ReduceAddPh(a: M512h): F16 =
  */
 public fun mmReduceMulPh(a: M128h): F16 =
     run {
-        val b = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); _simdArg0 }
+        val b = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); F16() }
         val a1 = mmMulPh(a, b)
-        val b1 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); _simdArg0 }
+        val b1 = run { val simdArg0 = a1; val simdArg1 = a1; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); F16() }
         val a2 = mmMulPh(a1, b1)
-        run { val _simdArg0 = a2; val _simdArg1 = F16.fromFloat(0.0f); F16() } * run { val _simdArg0 = a2; val _simdArg1 = F16.fromFloat(1.0f); F16() }
+        run { val simdArg0 = a2; val simdArg1 = F16.fromFloat(0.0f); F16() } * run { val simdArg0 = a2; val simdArg1 = F16.fromFloat(1.0f); F16() }
     }
 
 /**
@@ -8585,8 +8587,8 @@ public fun mmReduceMulPh(a: M128h): F16 =
  */
 public fun mm256ReduceMulPh(a: M256h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
         mmReduceMulPh(mmMulPh(p, q))
     }
 
@@ -8598,8 +8600,8 @@ public fun mm256ReduceMulPh(a: M256h): F16 =
  */
 public fun mm512ReduceMulPh(a: M512h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); F16() }
         mm256ReduceMulPh(mm256MulPh(p, q))
     }
 
@@ -8611,12 +8613,12 @@ public fun mm512ReduceMulPh(a: M512h): F16 =
  */
 public fun mmReduceMinPh(a: M128h): F16 =
     run {
-        val b = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); _simdArg0 }
+        val b = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); F16() }
         val a1 = mmMinPh(a, b)
-        val b1 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); _simdArg0 }
+        val b1 = run { val simdArg0 = a1; val simdArg1 = a1; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); F16() }
         val a2 = mmMinPh(a1, b1)
-        val b2 = run { val _simdArg0 = a2; val _simdArg1 = a2; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        run { val _simdArg0 = mmMinSh(a2, b2); val _simdArg1 = F16.fromFloat(0.0f); _simdArg0 }
+        val b2 = run { val simdArg0 = a2; val simdArg1 = a2; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 2u, 3u, 4u, 5u, 6u, 7u)); F16() }
+        run { val simdArg0 = mmMinSh(a2, b2); val simdArg1 = F16.fromFloat(0.0f); F16() }
     }
 
 /**
@@ -8627,8 +8629,8 @@ public fun mmReduceMinPh(a: M128h): F16 =
  */
 public fun mm256ReduceMinPh(a: M256h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
         mmReduceMinPh(mmMinPh(p, q))
     }
 
@@ -8640,8 +8642,8 @@ public fun mm256ReduceMinPh(a: M256h): F16 =
  */
 public fun mm512ReduceMinPh(a: M512h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); F16() }
         mm256ReduceMinPh(mm256MinPh(p, q))
     }
 
@@ -8653,12 +8655,12 @@ public fun mm512ReduceMinPh(a: M512h): F16 =
  */
 public fun mmReduceMaxPh(a: M128h): F16 =
     run {
-        val b = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); _simdArg0 }
+        val b = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 5u, 6u, 7u, 0u, 1u, 2u, 3u)); F16() }
         val a1 = mmMaxPh(a, b)
-        val b1 = run { val _simdArg0 = a1; val _simdArg1 = a1; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); _simdArg0 }
+        val b1 = run { val simdArg0 = a1; val simdArg1 = a1; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 3u, 0u, 1u, 4u, 5u, 6u, 7u)); F16() }
         val a2 = mmMaxPh(a1, b1)
-        val b2 = run { val _simdArg0 = a2; val _simdArg1 = a2; val _simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        run { val _simdArg0 = mmMaxSh(a2, b2); val _simdArg1 = F16.fromFloat(0.0f); _simdArg0 }
+        val b2 = run { val simdArg0 = a2; val simdArg1 = a2; val simdArg2 = SimdShuffleIdx(uintArrayOf(1u, 0u, 2u, 3u, 4u, 5u, 6u, 7u)); F16() }
+        run { val simdArg0 = mmMaxSh(a2, b2); val simdArg1 = F16.fromFloat(0.0f); F16() }
     }
 
 /**
@@ -8669,8 +8671,8 @@ public fun mmReduceMaxPh(a: M128h): F16 =
  */
 public fun mm256ReduceMaxPh(a: M256h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
         mmReduceMaxPh(mmMaxPh(p, q))
     }
 
@@ -8682,8 +8684,8 @@ public fun mm256ReduceMaxPh(a: M256h): F16 =
  */
 public fun mm512ReduceMaxPh(a: M512h): F16 =
     run {
-        val p = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); _simdArg0 }
-        val q = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); _simdArg0 }
+        val p = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)); F16() }
+        val q = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(16u, 17u, 18u, 19u, 20u, 21u, 22u, 23u, 24u, 25u, 26u, 27u, 28u, 29u, 30u, 31u)); F16() }
         mm256ReduceMaxPh(mm256MaxPh(p, q))
     }
 
@@ -8865,7 +8867,7 @@ public fun mmMaskFpclassShMask(k1: Mmask8, a: M128h, imm8: Int): Mmask8 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_blend_ph)
  */
-public fun mmMaskBlendPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val _simdArg0 = k; val _simdArg1 = b; val _simdArg2 = a; _simdArg1 }
+public fun mmMaskBlendPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val simdArg0 = k; val simdArg1 = b; val simdArg2 = a; simdArg1 }
 
 /**
  * Blend packed half-precision (16-bit) floating-point elements from a and b using control mask k,
@@ -8873,7 +8875,7 @@ public fun mmMaskBlendPh(k: Mmask8, a: M128h, b: M128h): M128h = run { val _simd
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_blend_ph)
  */
-public fun mm256MaskBlendPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val _simdArg0 = k; val _simdArg1 = b; val _simdArg2 = a; _simdArg1 }
+public fun mm256MaskBlendPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val simdArg0 = k; val simdArg1 = b; val simdArg2 = a; simdArg1 }
 
 /**
  * Blend packed half-precision (16-bit) floating-point elements from a and b using control mask k,
@@ -8881,7 +8883,7 @@ public fun mm256MaskBlendPh(k: Mmask16, a: M256h, b: M256h): M256h = run { val _
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_blend_ph)
  */
-public fun mm512MaskBlendPh(k: Mmask32, a: M512h, b: M512h): M512h = run { val _simdArg0 = k; val _simdArg1 = b; val _simdArg2 = a; _simdArg1 }
+public fun mm512MaskBlendPh(k: Mmask32, a: M512h, b: M512h): M512h = run { val simdArg0 = k; val simdArg1 = b; val simdArg2 = a; simdArg1 }
 
 /**
  * Shuffle half-precision (16-bit) floating-point elements in a and b using the corresponding selector
@@ -8946,7 +8948,7 @@ public fun mmCvtepi16Ph(a: M128i): M128h = vcvtw2ph128(a.asI16x8(), MM_FROUND_CU
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtepi16_ph)
  */
-public fun mmMaskCvtepi16Ph(src: M128h, k: Mmask8, a: M128i): M128h = run { val _simdArg0 = k; val _simdArg1 = mmCvtepi16Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mmMaskCvtepi16Ph(src: M128h, k: Mmask8, a: M128i): M128h = run { val simdArg0 = k; val simdArg1 = mmCvtepi16Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed signed 16-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -8971,7 +8973,7 @@ public fun mm256Cvtepi16Ph(a: M256i): M256h = vcvtw2ph256(a.asI16x16(), MM_FROUN
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtepi16_ph)
  */
-public fun mm256MaskCvtepi16Ph(src: M256h, k: Mmask16, a: M256i): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtepi16Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskCvtepi16Ph(src: M256h, k: Mmask16, a: M256i): M256h = run { val simdArg0 = k; val simdArg1 = mm256Cvtepi16Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed signed 16-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -8996,7 +8998,7 @@ public fun mm512Cvtepi16Ph(a: M512i): M512h = vcvtw2ph512(a.asI16x32(), MM_FROUN
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtepi16_ph)
  */
-public fun mm512MaskCvtepi16Ph(src: M512h, k: Mmask32, a: M512i): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtepi16Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskCvtepi16Ph(src: M512h, k: Mmask32, a: M512i): M512h = run { val simdArg0 = k; val simdArg1 = mm512Cvtepi16Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed signed 16-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9048,7 +9050,7 @@ public fun mm512MaskCvtRoundepi16Ph(src: M512h, k: Mmask32, a: M512i, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512CvtRoundepi16Ph(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512CvtRoundepi16Ph(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -9087,7 +9089,7 @@ public fun mmCvtepu16Ph(a: M128i): M128h = vcvtuw2ph128(a.asU16x8(), MM_FROUND_C
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mask_cvtepu16_ph)
  */
-public fun mmMaskCvtepu16Ph(src: M128h, k: Mmask8, a: M128i): M128h = run { val _simdArg0 = k; val _simdArg1 = mmCvtepu16Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mmMaskCvtepu16Ph(src: M128h, k: Mmask8, a: M128i): M128h = run { val simdArg0 = k; val simdArg1 = mmCvtepu16Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9112,7 +9114,7 @@ public fun mm256Cvtepu16Ph(a: M256i): M256h = vcvtuw2ph256(a.asU16x16(), MM_FROU
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtepu16_ph)
  */
-public fun mm256MaskCvtepu16Ph(src: M256h, k: Mmask16, a: M256i): M256h = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtepu16Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskCvtepu16Ph(src: M256h, k: Mmask16, a: M256i): M256h = run { val simdArg0 = k; val simdArg1 = mm256Cvtepu16Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9137,7 +9139,7 @@ public fun mm512Cvtepu16Ph(a: M512i): M512h = vcvtuw2ph512(a.asU16x32(), MM_FROU
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtepu16_ph)
  */
-public fun mm512MaskCvtepu16Ph(src: M512h, k: Mmask32, a: M512i): M512h = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtepu16Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskCvtepu16Ph(src: M512h, k: Mmask32, a: M512i): M512h = run { val simdArg0 = k; val simdArg1 = mm512Cvtepu16Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9189,7 +9191,7 @@ public fun mm512MaskCvtRoundepu16Ph(src: M512h, k: Mmask32, a: M512i, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512CvtRoundepu16Ph(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512CvtRoundepu16Ph(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -9254,7 +9256,7 @@ public fun mm256Cvtepi32Ph(a: M256i): M128h = vcvtdq2ph256(a.asI32x8(), MM_FROUN
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtepi32_ph)
  */
-public fun mm256MaskCvtepi32Ph(src: M128h, k: Mmask8, a: M256i): M128h = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtepi32Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskCvtepi32Ph(src: M128h, k: Mmask8, a: M256i): M128h = run { val simdArg0 = k; val simdArg1 = mm256Cvtepi32Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed signed 32-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9279,7 +9281,7 @@ public fun mm512Cvtepi32Ph(a: M512i): M256h = vcvtdq2ph512(a.asI32x16(), MM_FROU
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtepi32_ph)
  */
-public fun mm512MaskCvtepi32Ph(src: M256h, k: Mmask16, a: M512i): M256h = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtepi32Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskCvtepi32Ph(src: M256h, k: Mmask16, a: M512i): M256h = run { val simdArg0 = k; val simdArg1 = mm512Cvtepi32Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed signed 32-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9331,7 +9333,7 @@ public fun mm512MaskCvtRoundepi32Ph(src: M256h, k: Mmask16, a: M512i, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512CvtRoundepi32Ph(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512CvtRoundepi32Ph(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -9428,7 +9430,7 @@ public fun mm256Cvtepu32Ph(a: M256i): M128h = vcvtudq2ph256(a.asU32x8(), MM_FROU
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mask_cvtepu32_ph)
  */
-public fun mm256MaskCvtepu32Ph(src: M128h, k: Mmask8, a: M256i): M128h = run { val _simdArg0 = k; val _simdArg1 = mm256Cvtepu32Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm256MaskCvtepu32Ph(src: M128h, k: Mmask8, a: M256i): M128h = run { val simdArg0 = k; val simdArg1 = mm256Cvtepu32Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9453,7 +9455,7 @@ public fun mm512Cvtepu32Ph(a: M512i): M256h = vcvtudq2ph512(a.asU32x16(), MM_FRO
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtepu32_ph)
  */
-public fun mm512MaskCvtepu32Ph(src: M256h, k: Mmask16, a: M512i): M256h = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtepu32Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskCvtepu32Ph(src: M256h, k: Mmask16, a: M512i): M256h = run { val simdArg0 = k; val simdArg1 = mm512Cvtepu32Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9505,7 +9507,7 @@ public fun mm512MaskCvtRoundepu32Ph(src: M256h, k: Mmask16, a: M512i, rounding: 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512CvtRoundepu32Ph(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512CvtRoundepu32Ph(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -9628,7 +9630,7 @@ public fun mm512Cvtepi64Ph(a: M512i): M128h = vcvtqq2ph512(a.asI64x8(), MM_FROUN
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtepi64_ph)
  */
-public fun mm512MaskCvtepi64Ph(src: M128h, k: Mmask8, a: M512i): M128h = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtepi64Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskCvtepi64Ph(src: M128h, k: Mmask8, a: M512i): M128h = run { val simdArg0 = k; val simdArg1 = mm512Cvtepi64Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed signed 64-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9680,7 +9682,7 @@ public fun mm512MaskCvtRoundepi64Ph(src: M128h, k: Mmask8, a: M512i, rounding: I
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512CvtRoundepi64Ph(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512CvtRoundepi64Ph(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -9771,7 +9773,7 @@ public fun mm512Cvtepu64Ph(a: M512i): M128h = vcvtuqq2ph512(a.asU64x8(), MM_FROU
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mask_cvtepu64_ph)
  */
-public fun mm512MaskCvtepu64Ph(src: M128h, k: Mmask8, a: M512i): M128h = run { val _simdArg0 = k; val _simdArg1 = mm512Cvtepu64Ph(a); val _simdArg2 = src; _simdArg1 }
+public fun mm512MaskCvtepu64Ph(src: M128h, k: Mmask8, a: M512i): M128h = run { val simdArg0 = k; val simdArg1 = mm512Cvtepu64Ph(a); val simdArg2 = src; simdArg1 }
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9823,7 +9825,7 @@ public fun mm512MaskCvtRoundepu64Ph(src: M128h, k: Mmask8, a: M512i, rounding: I
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        run { val _simdArg0 = k; val _simdArg1 = mm512CvtRoundepu64Ph(a, rounding); val _simdArg2 = src; _simdArg1 }
+        run { val simdArg0 = k; val simdArg1 = mm512CvtRoundepu64Ph(a, rounding); val simdArg2 = src; simdArg1 }
     }
 
 /**
@@ -12378,35 +12380,35 @@ public fun mmMaskzCvtRoundshSd(k: Mmask8, a: M128d, b: M128h, sae: Int): M128d {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsh_h)
  */
-public fun mmCvtshH(a: M128h): F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); _simdArg0 }
+public fun mmCvtshH(a: M128h): F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
 
 /**
  * Copy the lower half-precision (16-bit) floating-point element from `a` to `dst`.
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtsh_h)
  */
-public fun mm256CvtshH(a: M256h): F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); _simdArg0 }
+public fun mm256CvtshH(a: M256h): F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
 
 /**
  * Copy the lower half-precision (16-bit) floating-point element from `a` to `dst`.
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtsh_h)
  */
-public fun mm512CvtshH(a: M512h): F16 = run { val _simdArg0 = a; val _simdArg1 = F16.fromFloat(0.0f); _simdArg0 }
+public fun mm512CvtshH(a: M512h): F16 = run { val simdArg0 = a; val simdArg1 = F16.fromFloat(0.0f); F16() }
 
 /**
  * Copy the lower 16-bit integer in a to dst.
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsi128_si16)
  */
-public fun mmCvtsi128Si16(a: M128i): Short = run { val _simdArg0 = a.asI16x8(); val _simdArg1 = 0; _simdArg0 }
+public fun mmCvtsi128Si16(a: M128i): Short = run { val simdArg0 = a.asI16x8(); val simdArg1 = 0; 0 }
 
 /**
  * Copy 16-bit integer a to the lower elements of dst, and zero the upper elements of dst.
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsi16_si128)
  */
-public fun mmCvtsi16Si128(a: Short): M128i = transmute(run { val _simdArg0 = Simd<Short>(List(8) { 0.toShort() }); val _simdArg1 = 0; val _simdArg2 = a; _simdArg0 })
+public fun mmCvtsi16Si128(a: Short): M128i = transmute(run { val simdArg0 = Simd<Short>(List(8) { 0.toShort() }); val simdArg1 = 0; val simdArg2 = a; simdArg0 })
 
 public expect fun vcmpph128(a: M128h, b: M128h, imm5: Int, mask: Mmask8): Mmask8
 

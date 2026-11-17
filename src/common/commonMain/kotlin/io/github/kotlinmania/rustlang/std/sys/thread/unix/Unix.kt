@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.std.sys.thread.unix
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -19,6 +21,7 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
@@ -340,7 +343,7 @@ public fun quota(): Int {
         run {
             val buf = ArrayList(128)
             // find our place in the cgroup hierarchy
-            when (val tryResult = when (val tryResult = File.open("/proc/self/cgroup").ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }.readToEnd(buf).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+            when (val tryResult = when (val tryResult = File.open("/proc/self/cgroup").ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }.readToEnd(buf).ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
             val (cgroupPath, version) =
                 when (val tryResult = buf.split({ c -> c == 10u }).fold(null, closure@{ previous, line ->
                     var fields = line.splitn(3, { c -> c == 58u })
@@ -361,10 +364,10 @@ public fun quota(): Int {
                     if (previous != null && version == Cgroup.V2) {
                         return@closure previous
                     }
-                    val path = when (val tryResult = fields.last()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
+                    val path = when (val tryResult = fields.last()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
                     // skip leading slash
                     Pair(path[1 until path.size].toOwned(), version)
-                })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
             val cgroupPath1 = PathBuf.from(OsString.fromVec(cgroupPath))
             quota = when (version) {
                 Cgroup.v1 -> quotaV1(cgroupPath1)
@@ -388,8 +391,8 @@ public fun quotaV2(groupPath: PathBuf): Int {
         val matchVal = exists(path)
         when {
             matchVal is Result.Err<*, *> -> true
-            matchVal is Result.Ok<*, *> && matchVal.value == false -> {
-                val valueVal = matchVal.value
+            matchVal is Result.Ok<*, *> && matchVal.okValue() == false -> {
+                val okValueVal = matchVal.okValue()
                 true
             }
             else -> false
@@ -403,16 +406,16 @@ public fun quotaV2(groupPath: PathBuf): Int {
             path.push("cpu.max")
             readBuf = ""
             if (File.open(path).andThen({ f -> f.readToString(readBuf) }).isOk()) {
-                val rawQuota = when (val tryResult = readBuf.lines().next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val rawQuota = when (val tryResult = readBuf.lines().next()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 val rawQuota1 = rawQuota.split(' ')
-                val limit = when (val tryResult = rawQuota1.next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
-                val period = when (val tryResult = rawQuota1.next()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error) }
+                val limit = when (val tryResult = rawQuota1.next()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
+                val period = when (val tryResult = rawQuota1.next()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
                 run {
                     val matchVal1 = Pair((limit.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")), (period.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")))
                     when {
                         matchVal1.first is Result.Ok<*, *> && matchVal1.second is Result.Ok<*, *> && period > 0 -> {
-                            val limit1 = (matchVal1.first as Result.Ok<*, *>).value
-                            val period1 = (matchVal1.second as Result.Ok<*, *>).value
+                            val limit1 = (matchVal1.first as Result.Ok<*, *>).okValue()
+                            val period1 = (matchVal1.second as Result.Ok<*, *>).okValue()
                             quota = quota.min(limit1 / period1)
                         }
                         else -> {}
@@ -444,8 +447,8 @@ public fun quotaV1(groupPath: PathBuf): Int {
             val matchVal = exists(path)
             when {
                 matchVal is Result.Err<*, *> -> true
-                matchVal is Result.Ok<*, *> && matchVal.value == false -> {
-                    val valueVal = matchVal.value
+                matchVal is Result.Ok<*, *> && matchVal.okValue() == false -> {
+                    val okValueVal = matchVal.okValue()
                     true
                 }
                 else -> false
@@ -461,8 +464,8 @@ public fun quotaV1(groupPath: PathBuf): Int {
                     val f = File.open(path)
                     path.pop()
                     // restore buffer before any early returns
-                    when (val tryResult = when (val tryResult = f.ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }.readToString(readBuf).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
-                    val parsed = when (val tryResult = (readBuf.trim().toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")).ok()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.error) }
+                    when (val tryResult = when (val tryResult = f.ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.errValue()) }.readToString(readBuf).ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.errValue()) }
+                    val parsed = when (val tryResult = (readBuf.trim().toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")).ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure1 Result.Err(tryResult.errValue()) }
                     parsed
                 }
             val limit = parseFile("cpu.cfs_quota_us")
@@ -512,7 +515,7 @@ public fun findMountpoint(groupPath: Path): Pair<String, Path>? {
             continue
         }
         val subPath1 = (Path.new(subPath).takeIf { it.startsWith("/") }?.removePrefix("/").ok() ?: return null)
-        if (!groupPath.startsWith(subPath1)) {
+        if (groupPath.startsWith(subPath1).inv()) {
             // this is a bind-mount and the bound subdirectory
             // does not contain the cgroup this process belongs to
             continue

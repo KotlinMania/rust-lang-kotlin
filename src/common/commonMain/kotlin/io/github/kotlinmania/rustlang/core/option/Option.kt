@@ -33,6 +33,8 @@ import io.github.kotlinmania.rustlang.core.panicking.panicDisplay
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Optional values.
@@ -1723,7 +1725,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
     public open fun <Residual, R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Residual> {
         var selfMut = this
         if (selfMut == null) {
-            selfMut = Some(when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
+            selfMut = Some(when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
         }
         // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
         // variant in the code above.
@@ -2193,11 +2195,11 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
     when {
         this is Some<*> && (this as Some<T>).value is Result.Ok<*, *> -> {
-            val x = ((this as Some<T>).value as Result.Ok<*, *>).value
+            val x = ((this as Some<T>).value as Result.Ok<*, *>).okValue()
             Result.Ok<Option<T>, E>(Some(x))
         }
         this is Some<*> && (this as Some<T>).value is Result.Err<*, *> -> {
-            val e = ((this as Some<T>).value as Result.Err<*, *>).error
+            val e = ((this as Some<T>).value as Result.Err<*, *>).errValue()
             Result.Err<Option<T>, E>(e)
         }
         else -> Result.Ok<Option<T>, E>(None)
@@ -2235,7 +2237,7 @@ public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 // ////////////////////////////////////////////////////////////////////////
 public open class Item<A>(
     public var opt: Option<A>,
-) : TrustedLen, Iterable<A> {
+) : TrustedLen<Any>, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Item.next()) {
@@ -2268,7 +2270,7 @@ public open class Item<A>(
  */
 public open class Iter<A>(
     public var inner: Item<A>,
-) : TrustedLen, Iterable<A> {
+) : TrustedLen<Any>, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@Iter.next()) {
@@ -2296,7 +2298,7 @@ public open class Iter<A>(
  */
 public open class IterMut<A>(
     public var inner: Item<A>,
-) : TrustedLen, Iterable<A> {
+) : TrustedLen<Any>, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IterMut.next()) {
@@ -2322,7 +2324,7 @@ public open class IterMut<A>(
  */
 public open class IntoIter<A>(
     public var inner: Item<A>,
-) : TrustedLen, Iterable<A> {
+) : TrustedLen<Any>, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@IntoIter.next()) {

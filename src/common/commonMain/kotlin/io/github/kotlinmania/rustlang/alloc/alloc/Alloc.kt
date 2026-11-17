@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -96,7 +97,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
                         if (zeroed) {
                             kmWriteBytes((MutPtr((rawPtr).rawAddress + ((oldSize).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, (0).toUByte(), (newSize - oldSize).toLong() * (PrimitiveLayouts.U8).sizeBytes)
                         }
@@ -111,7 +112,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                 else -> {
                     val oldSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
                         copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), oldSize1, typeLayoutT = PrimitiveLayouts.U8)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
@@ -140,7 +141,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = reallocNonnull(ptr, oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
                         Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }
@@ -152,7 +153,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                 else -> {
                     val newSize1 = matchVal
                     run {
-                        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
                         copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), newSize1, typeLayoutT = PrimitiveLayouts.U8)
                         this.deallocate(ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
@@ -182,7 +183,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
 
     // even without panics, this helps for Miri backtraces
     public open fun growShrinkImplConst(ptr: NonNull, oldLayout: Layout, newLayout: Layout, zeroed: Boolean): Result<NonNull, AllocError> {
-        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+        val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
         // SAFETY: both pointers are valid and this operations is in bounds.
         run {
             copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), minOf(oldLayout.size(), newLayout.size()), typeLayoutT = PrimitiveLayouts.U8)
@@ -253,7 +254,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                             } else {
                                 alloc(layout)
                             }
-                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
                         Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                     }
                 }
@@ -284,7 +285,7 @@ public open class Global : AllocatorClone, StaticAllocator, Allocator, Allocator
                     val size = matchVal
                     run {
                         val rawPtr = constAllocate(layout.size(), layout.align())
-                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
                         if (zeroed) {
                             // SAFETY: the pointer returned by `constAllocate` is valid to write to.
                             ptr.writeBytes(0, size)

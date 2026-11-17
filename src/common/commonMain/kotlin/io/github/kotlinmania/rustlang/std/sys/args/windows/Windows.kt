@@ -3,13 +3,14 @@
 
 package io.github.kotlinmania.rustlang.std.sys.args.windows
 
-import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.isAsciiAlphanumeric
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphanumeric
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -209,7 +210,7 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
     // If an argument has 0 characters then we need to quote it to ensure
     // that it actually gets passed through on the command line or otherwise
     // it will be dropped entirely when parsed on the other end.
-    when (val tryResult = ensureNoNuls(arg3)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = ensureNoNuls(arg3)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     val argBytes = arg3.asEncodedBytes()
     val (quote1, escape) =
         when (quote) {
@@ -247,7 +248,7 @@ public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<
 
 public fun appendBatArg(cmd: List<UShort>, arg: OsStr, quote: Boolean): Result<Unit, Error> {
     var quote1 = quote
-    when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = ensureNoNuls(arg)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     // If an argument has 0 characters then we need to quote it to ensure
     // that it actually gets passed through on the command line or otherwise
     // it will be dropped entirely when parsed on the other end.
@@ -351,12 +352,12 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
                 if (argBytes.iter().any({ c -> DISALLOWED.contains(c) })) {
                     return Result.Err<List<UShort>, Error>(INVALID_ARGUMENT_ERROR)
                 }
-                when (val tryResult = appendBatArg(cmd, argOs, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+                when (val tryResult = appendBatArg(cmd, argOs, forceQuotes)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
             }
             else -> {
                 // Raw arguments are passed on as-is.
                 // It's the user's responsibility to properly handle arguments in this case.
-                when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) }
+                when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
             }
         }
     }
@@ -371,7 +372,7 @@ public fun makeBatCommandLine(script: List<UShort>, args: List<Arg>, forceQuotes
  * This is necessary because cmd.exe does not support verbatim paths.
  */
 public fun toUserPath(path: Path): Result<List<UShort>, Error> {
-    return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.error) })
+    return fromWideToUserPath(when (val tryResult = toU16s(path)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) })
 }
 
 public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {

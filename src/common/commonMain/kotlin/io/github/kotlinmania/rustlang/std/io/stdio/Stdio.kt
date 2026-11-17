@@ -220,8 +220,8 @@ public fun stderrRaw(): StderrRaw = StderrRaw(io.github.kotlinmania.rustlang.std
 
 public fun <T> handleEbadf(r: Result<T, Error>, default: () -> Result<T, Error>): Result<T, Error> =
     when {
-        r is Result.Err<*, *> && isEbadf(r.error) -> {
-            val e = r.error
+        r is Result.Err<*, *> && isEbadf(r.errValue()) -> {
+            val e = r.errValue()
             default()
         }
         else -> {
@@ -994,7 +994,7 @@ public fun <T> printTo(args: Arguments, globalS: () -> T, label: String) where T
     }
     when (val matchVal = globalS().writeFmt(args)) {
         is Result.Err<*, *> -> {
-            val e = matchVal.error
+            val e = matchVal.errValue()
             error("failed printing to $label: $e")
         }
         else -> {}

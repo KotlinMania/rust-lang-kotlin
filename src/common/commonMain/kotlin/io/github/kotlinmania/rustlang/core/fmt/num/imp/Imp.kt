@@ -1,9 +1,11 @@
 // port-lint: source fmt/num.rs
 package io.github.kotlinmania.rustlang.core.fmt.num.imp
 
-import io.github.kotlinmania.rustlang.core.char.isAsciiAlphabetic
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiAlphabetic
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.num.DECIMAL_PAIRS
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedPow

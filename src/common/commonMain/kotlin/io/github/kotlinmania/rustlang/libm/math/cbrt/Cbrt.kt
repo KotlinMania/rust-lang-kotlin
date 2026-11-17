@@ -60,7 +60,7 @@ public fun cbrtRound(x: Double, round: Round): FpResult<Double> {
     var e: UInt = (hx shr Double.SIG_BITS.toInt()).toUInt() and Double.EXP_SAT.toUInt()
     if (((e + 1u) and Double.EXP_SAT.toUInt()) < 2u) {
         coldPath()
-        val ix: ULong = hx and (Double.SIGN_MASK.inv()).toULong()
+        val ix: ULong = hx and Double.SIGN_MASK.inv()
         // 0, inf, nan: we return x + x instead of simply x,
         // to that for x a signaling NaN, it correctly triggers
         // the invalid exception.

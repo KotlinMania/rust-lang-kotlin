@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.eq
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.panicunwind.rustDropPanic
 import io.github.kotlinmania.rustlang.panicunwind.rustForeignException
 import io.github.kotlinmania.rustlang.unwind.types.UnwindException

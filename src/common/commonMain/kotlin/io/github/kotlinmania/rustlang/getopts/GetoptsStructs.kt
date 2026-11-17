@@ -224,7 +224,7 @@ public open class Options(
         val args1 =
             when (val tryResult = args.iterator().map({ i ->
                 i.asRef().toStr().okOrElse({ Fail.UnrecognizedOption("${i.asRef()}") }).map({ s -> s.toOwned() })
-            }).collect<kotlin.Result<Vec>>()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Matches, Fail>(tryResult.error) }
+            }).collect<kotlin.Result<Vec>>()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Matches, Fail>(tryResult.errValue()) }
         val args2 = args1.intoIter().peekable()
         var argPos = 0
         while (true) {
@@ -819,7 +819,7 @@ public open class Matches(
         return when (val matchVal = this.optVal(name)) {
             is Val -> {
                 val (s) = matchVal as Val
-                RustResult.Ok<T?, Err>(when (val tryResult = s.parse()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<T?, Err>(tryResult.error) })
+                RustResult.Ok<T?, Err>(when (val tryResult = s.parse()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<T?, Err>(tryResult.errValue()) })
             }
             Given -> RustResult.Ok<T?, Err>(null)
             null -> RustResult.Ok<T?, Err>(null)

@@ -1,6 +1,11 @@
 // port-lint: source simd/num/uint.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.num.uint
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.coresimd.Simd
 import io.github.kotlinmania.rustlang.coresimd.SimdCast
 
@@ -156,13 +161,13 @@ public interface SimdUint<SelfType, out Scalar, out Cast> {
     public fun trailingOnes(): SelfType
 }
 
-public fun <Mask, T : SimdCast<Mask>> Simd<UByte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, T : SimdCast<Mask>> Simd<UByte>.cast(n: Int): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
 
 public fun Simd<UByte>.wrappingNeg(n: Int): Simd<UByte> = (-this.cast<Byte>(n)).cast(n)
 
-public fun Simd<UByte>.saturatingAdd(second: Simd<UByte>, n: Int): Simd<UByte> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
+public fun Simd<UByte>.saturatingAdd(second: Simd<UByte>, n: Int): Simd<UByte> = run { val simdArg0 = this; val simdArg1 = second; simdArg0 }
 
-public fun Simd<UByte>.saturatingSub(second: Simd<UByte>, n: Int): Simd<UByte> = run { val _simdArg0 = this; val _simdArg1 = second; _simdArg0 }
+public fun Simd<UByte>.saturatingSub(second: Simd<UByte>, n: Int): Simd<UByte> = run { val simdArg0 = this; val simdArg1 = second; simdArg0 }
 
 public fun Simd<UByte>.absDiff(second: Simd<UByte>, n: Int): Simd<UByte> {
     val max = this.simdMax(second)
@@ -170,31 +175,31 @@ public fun Simd<UByte>.absDiff(second: Simd<UByte>, n: Int): Simd<UByte> {
     return max - min
 }
 
-public fun Simd<UByte>.reduceSum(n: Int): UByte = run { val _simdArg0 = this; val _simdArg1 = 0u; _simdArg1 }
+public fun Simd<UByte>.reduceSum(n: Int): UByte = run { val simdArg0 = this; val simdArg1 = 0u; simdArg1 }
 
-public fun Simd<UByte>.reduceProduct(n: Int): UByte = run { val _simdArg0 = this; val _simdArg1 = 1u; _simdArg1 }
+public fun Simd<UByte>.reduceProduct(n: Int): UByte = run { val simdArg0 = this; val simdArg1 = 1u; simdArg1 }
 
-public fun Simd<UByte>.reduceMax(n: Int): UByte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.reduceMax(n: Int): UByte = run { val simdArg0 = this; 0u }
 
-public fun Simd<UByte>.reduceMin(n: Int): UByte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.reduceMin(n: Int): UByte = run { val simdArg0 = this; 0u }
 
-public fun Simd<UByte>.reduceAnd(n: Int): UByte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.reduceAnd(n: Int): UByte = run { val simdArg0 = this; 0u }
 
-public fun Simd<UByte>.reduceOr(n: Int): UByte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.reduceOr(n: Int): UByte = run { val simdArg0 = this; 0u }
 
-public fun Simd<UByte>.reduceXor(n: Int): UByte = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.reduceXor(n: Int): UByte = run { val simdArg0 = this; 0u }
 
-public fun Simd<UByte>.swapBytes(n: Int): Simd<UByte> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.swapBytes(n: Int): Simd<UByte> = run { val simdArg0 = this; simdArg0 }
 
-public fun Simd<UByte>.reverseBits(n: Int): Simd<UByte> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.reverseBits(n: Int): Simd<UByte> = run { val simdArg0 = this; simdArg0 }
 
-public fun Simd<UByte>.countOnes(n: Int): Simd<UByte> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.countOnes(n: Int): Simd<UByte> = run { val simdArg0 = this; simdArg0 }
 
 public fun Simd<UByte>.countZeros(n: Int): Simd<UByte> = (!this).countOnes()
 
-public fun Simd<UByte>.leadingZeros(n: Int): Simd<UByte> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.leadingZeros(n: Int): Simd<UByte> = run { val simdArg0 = this; simdArg0 }
 
-public fun Simd<UByte>.trailingZeros(n: Int): Simd<UByte> = run { val _simdArg0 = this; _simdArg0 }
+public fun Simd<UByte>.trailingZeros(n: Int): Simd<UByte> = run { val simdArg0 = this; simdArg0 }
 
 public fun Simd<UByte>.leadingOnes(n: Int): Simd<UByte> = (!this).leadingZeros()
 

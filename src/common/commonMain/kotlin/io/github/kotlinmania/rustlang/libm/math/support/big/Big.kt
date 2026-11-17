@@ -46,9 +46,9 @@ public open class U256(
         return this
     }
 
-    public open fun not(): U256 {
-        this.lo = !this.lo
-        this.hi = !this.hi
+    public open operator fun not(): U256 {
+        this.lo = this.lo.inv()
+        this.hi = this.hi.inv()
         return this
     }
 
@@ -177,9 +177,9 @@ public open class I256(
         return this
     }
 
-    public open fun not(): I256 {
-        this.lo = !this.lo
-        this.hi = !this.hi
+    public open operator fun not(): I256 {
+        this.lo = this.lo.inv()
+        this.hi = this.hi.inv()
         return this
     }
 

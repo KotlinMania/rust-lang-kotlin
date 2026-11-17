@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
@@ -4705,7 +4706,7 @@ public fun testMm512MaskCmpltPsMask() {
 public fun testMm512CmpnltPsMask() {
     val a = mm512SetPs(0.0f, 1.0f, -1.0f, Float.MAX_VALUE, Float.NaN, (-Float.MAX_VALUE), 100.0f, -100.0f, 0.0f, 1.0f, -1.0f, Float.MAX_VALUE, Float.NaN, (-Float.MAX_VALUE), 100.0f, -100.0f)
     val b = mm512Set1Ps(-1.0f)
-    check(mm512CmpnltPsMask(a, b) == !mm512CmpltPsMask(a, b))
+    check(mm512CmpnltPsMask(a, b) == mm512CmpltPsMask(a, b).inv())
 }
 
 public fun testMm512MaskCmpnltPsMask() {
@@ -5020,7 +5021,7 @@ public fun testMmMaskCmpgtEpu32Mask() {
 public fun testMm512CmpleEpu32Mask() {
     val a = mm512SetEpi32(0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm512Set1Epi32(-1)
-    check(mm512CmpleEpu32Mask(a, b) == !mm512CmpgtEpu32Mask(a, b))
+    check(mm512CmpleEpu32Mask(a, b) == mm512CmpgtEpu32Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpleEpu32Mask() {
@@ -5063,7 +5064,7 @@ public fun testMmMaskCmpleEpu32Mask() {
 public fun testMm512CmpgeEpu32Mask() {
     val a = mm512SetEpi32(0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm512Set1Epi32(-1)
-    check(mm512CmpgeEpu32Mask(a, b) == !mm512CmpltEpu32Mask(a, b))
+    check(mm512CmpgeEpu32Mask(a, b) == mm512CmpltEpu32Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpgeEpu32Mask() {
@@ -5152,7 +5153,7 @@ public fun testMm512CmpneqEpu32Mask() {
     val a = mm512SetEpi32(0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm512SetEpi32(0, 1, 13, 42, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, 13, 42, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val m = mm512CmpneqEpu32Mask(b, a)
-    check(m == !mm512CmpeqEpu32Mask(b, a))
+    check(m == mm512CmpeqEpu32Mask(b, a).inv())
 }
 
 public fun testMm512MaskCmpneqEpu32Mask() {
@@ -5331,7 +5332,7 @@ public fun testMmMaskCmpgtEpi32Mask() {
 public fun testMm512CmpleEpi32Mask() {
     val a = mm512SetEpi32(0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm512Set1Epi32(-1)
-    check(mm512CmpleEpi32Mask(a, b) == !mm512CmpgtEpi32Mask(a, b))
+    check(mm512CmpleEpi32Mask(a, b) == mm512CmpgtEpi32Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpleEpi32Mask() {
@@ -5374,7 +5375,7 @@ public fun testMmMaskCmpleEpi32Mask() {
 public fun testMm512CmpgeEpi32Mask() {
     val a = mm512SetEpi32(0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, -1, UInt.MAX_VALUE.toInt(), Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm512Set1Epi32(-1)
-    check(mm512CmpgeEpi32Mask(a, b) == !mm512CmpltEpi32Mask(a, b))
+    check(mm512CmpgeEpi32Mask(a, b) == mm512CmpltEpi32Mask(a, b).inv())
 }
 
 public fun testMm512MaskCmpgeEpi32Mask() {
@@ -5463,7 +5464,7 @@ public fun testMm512CmpneqEpi32Mask() {
     val a = mm512SetEpi32(0, 1, -1, 13, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, -1, 13, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm512SetEpi32(0, 1, 13, 42, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100, 0, 1, 13, 42, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val m = mm512CmpneqEpi32Mask(b, a)
-    check(m == !mm512CmpeqEpi32Mask(b, a))
+    check(m == mm512CmpeqEpi32Mask(b, a).inv())
 }
 
 public fun testMm512MaskCmpneqEpi32Mask() {
@@ -5478,7 +5479,7 @@ public fun testMm256CmpneqEpi32Mask() {
     val a = mm256SetEpi32(0, 1, -1, 13, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val b = mm256SetEpi32(0, 1, 13, 42, Int.MAX_VALUE, Int.MIN_VALUE, 100, -100)
     val m = mm256CmpneqEpi32Mask(b, a)
-    check(m == !mm256CmpeqEpi32Mask(b, a))
+    check(m == mm256CmpeqEpi32Mask(b, a).inv())
 }
 
 public fun testMm256MaskCmpneqEpi32Mask() {

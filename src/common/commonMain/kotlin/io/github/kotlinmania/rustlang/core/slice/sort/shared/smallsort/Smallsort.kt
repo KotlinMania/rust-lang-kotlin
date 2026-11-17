@@ -1,6 +1,8 @@
 // port-lint: source slice/sort/shared/smallsort.rs
 package io.github.kotlinmania.rustlang.core.slice.sort.shared.smallsort
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
@@ -16,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -719,13 +722,13 @@ public fun <T : FreezeMarker> bidirectionalMerge(v: List<T>, dst: MutPtr, isLess
     run {
         var left = src
         var right = ConstPtr((src).rawAddress + ((lenDiv2).toLong() * (typeLayoutT).strideBytes))
-        val dst1 = dst
-        val leftRev = ConstPtr((src).rawAddress + ((lenDiv2 - 1).toLong() * (typeLayoutT).strideBytes))
-        val rightRev = ConstPtr((src).rawAddress + ((len - 1).toLong() * (typeLayoutT).strideBytes))
-        val dstRev = dst1.add(len - 1)
+        var dst1 = dst
+        var leftRev = ConstPtr((src).rawAddress + ((lenDiv2 - 1).toLong() * (typeLayoutT).strideBytes))
+        var rightRev = ConstPtr((src).rawAddress + ((len - 1).toLong() * (typeLayoutT).strideBytes))
+        var dstRev = dst1.add(len - 1)
         for (unused in 0 until lenDiv2) {
-            Triple(left, right, dst1) = mergeUp(left, right, dst1, isLess, typeLayoutT = typeLayoutT)
-            Triple(leftRev, rightRev, dstRev) = mergeDown(leftRev, rightRev, dstRev, isLess, typeLayoutT = typeLayoutT)
+            run { val (destructVal0, destructVal1, destructVal2) = mergeUp(left, right, dst1, isLess, typeLayoutT = typeLayoutT); left = destructVal0; right = destructVal1; dst1 = destructVal2 }
+            run { val (destructVal0, destructVal1, destructVal2) = mergeDown(leftRev, rightRev, dstRev, isLess, typeLayoutT = typeLayoutT); leftRev = destructVal0; rightRev = destructVal1; dstRev = destructVal2 }
         }
         val leftEnd = ConstPtr((leftRev).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
         val rightEnd = ConstPtr((rightRev).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))

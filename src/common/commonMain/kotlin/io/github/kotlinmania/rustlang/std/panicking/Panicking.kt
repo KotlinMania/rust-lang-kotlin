@@ -11,6 +11,10 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -320,9 +324,9 @@ public fun defaultHook(info: PanicHookInfo) {
         }
     run {
         val matchVal1 = trySetOutputCapture(null)
-        if (matchVal1 is Result.Ok<*, *> && matchVal1.value != null) {
-            val valueVal = matchVal1.value
-            val local = valueVal
+        if (matchVal1 is Result.Ok<*, *> && matchVal1.okValue() != null) {
+            val okValueVal = matchVal1.okValue()
+            val local = okValueVal
             write(local.lock().unwrapOrElse({ e -> e.intoInner() }))
             trySetOutputCapture(local).ok()
         } else {
@@ -345,7 +349,7 @@ public fun <R> catchUnwind(f: () -> R): Result<R, RustAny> = Result.Ok<R, RustAn
 /**
  * Determines whether the current thread is unwinding because of panic.
  */
-public fun panicking(): Boolean = (!countIsZero()).toUByte()
+public fun panicking(): Boolean = countIsZero().inv()
 
 /**
  * Entry point of panics from the core crate (`panicImpl` lang item).
@@ -548,7 +552,7 @@ public fun panicWithHook(payload: PanicPayload, location: Location, canUnwind: B
     // it is fine if there is a panic while executing destructors, as long as it
     // it contained within a `catchUnwind`.
     finishedPanicHook()
-    if (!canUnwind) {
+    if (canUnwind.inv()) {
         when (val matchVal1 = panicOutput()) {
             null -> {}
             else -> {

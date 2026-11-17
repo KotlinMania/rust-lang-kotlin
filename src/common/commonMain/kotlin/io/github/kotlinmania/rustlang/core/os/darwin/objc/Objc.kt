@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.os.darwin.objc
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Defines types and macros for Objective-C interoperability.

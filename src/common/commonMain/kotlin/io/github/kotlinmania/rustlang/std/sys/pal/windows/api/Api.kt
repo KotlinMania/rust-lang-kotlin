@@ -90,7 +90,7 @@ public fun utf16Len(s: String): Int {
         // leading ones, except in the case of ASCII.
         val utf8Len =
             when (val matchVal = s1[i].leadingOnes()) {
-                0 -> 1
+                0u -> 1
                 else -> {
                     val n = matchVal
                     n.toInt()
@@ -123,25 +123,25 @@ public fun toUtf16(s: String, utf16Len: Int): UShortArray {
         when (s1[i].leadingOnes()) {
             // Decode UTF-8 based on its length.
             // See https://en.wikipedia.org/wiki/UTF-8
-            0 -> {
+            0u -> {
                 // ASCII is the same in both encodings
                 output[pos] = s1[i].toUShort()
                 i += 1
                 pos += 1
             }
-            2 -> {
+            2u -> {
                 // Bits: 110xxxxx 10xxxxxx
                 output[pos] = (((s1[i].toUShort() and 0x1Fu.toUShort()).toUInt() shl 6).toUShort()) or (s1[i + 1].toUShort() and 0x3Fu.toUShort())
                 i += 2
                 pos += 1
             }
-            3 -> {
+            3u -> {
                 // Bits: 1110xxxx 10xxxxxx 10xxxxxx
                 output[pos] = (((s1[i].toUShort() and 0xFu.toUShort()).toUInt() shl 12).toUShort()) or (((s1[i + 1].toUShort() and 0x3Fu.toUShort()).toUInt() shl 6).toUShort()) or (s1[i + 2].toUShort() and 0x3Fu.toUShort())
                 i += 3
                 pos += 1
             }
-            4 -> {
+            4u -> {
                 // Bits: 11110Note 10xxxxxx 10xxxxxx 10xxxxxx
                 var c = ((s1[i].toUInt() and 0x7u) shl 18) or ((s1[i + 1].toUInt() and 0x3Fu) shl 12) or ((s1[i + 2].toUInt() and 0x3Fu) shl 6) or (s1[i + 3].toUInt() and 0x3Fu)
                 // re-encode as UTF-16 (see https://en.wikipedia.org/wiki/UTF-16)

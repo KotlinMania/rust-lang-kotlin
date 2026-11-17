@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.wasip1
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -10,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -70,23 +72,23 @@ public open class Clockid internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "REALTIME"
-            1 -> "MONOTONIC"
-            2 -> "PROCESS_CPUTIME_ID"
-            3 -> "THREAD_CPUTIME_ID"
+            0u -> "REALTIME"
+            1u -> "MONOTONIC"
+            2u -> "PROCESS_CPUTIME_ID"
+            3u -> "THREAD_CPUTIME_ID"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> {
+            0u -> {
                 "The clock measuring real time. Time value zero corresponds with\n1970-01-01T00:00:00Z."
             }
-            1 -> {
+            1u -> {
                 "The store-wide monotonic clock, which is defined as a clock measuring\nreal time, whose value cannot be adjusted and which cannot have negative\nclock jumps. The epoch of this clock is undefined. The absolute time\nvalue of this clock therefore has no meaning."
             }
-            2 -> "The CPU-time clock associated with the current process."
-            3 -> "The CPU-time clock associated with the current thread."
+            2u -> "The CPU-time clock associated with the current process."
+            3u -> "The CPU-time clock associated with the current thread."
             else -> unreachableUnchecked()
         }
 
@@ -146,165 +148,165 @@ public open class Errno internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "SUCCESS"
-            1 -> "2BIG"
-            2 -> "ACCES"
-            3 -> "ADDRINUSE"
-            4 -> "ADDRNOTAVAIL"
-            5 -> "AFNOSUPPORT"
-            6 -> "AGAIN"
-            7 -> "ALREADY"
-            8 -> "BADF"
-            9 -> "BADMSG"
-            10 -> "BUSY"
-            11 -> "CANCELED"
-            12 -> "CHILD"
-            13 -> "CONNABORTED"
-            14 -> "CONNREFUSED"
-            15 -> "CONNRESET"
-            16 -> "DEADLK"
-            17 -> "DESTADDRREQ"
-            18 -> "DOM"
-            19 -> "DQUOT"
-            20 -> "EXIST"
-            21 -> "FAULT"
-            22 -> "FBIG"
-            23 -> "HOSTUNREACH"
-            24 -> "IDRM"
-            25 -> "ILSEQ"
-            26 -> "INPROGRESS"
-            27 -> "INTR"
-            28 -> "INVAL"
-            29 -> "IO"
-            30 -> "ISCONN"
-            31 -> "ISDIR"
-            32 -> "LOOP"
-            33 -> "MFILE"
-            34 -> "MLINK"
-            35 -> "MSGSIZE"
-            36 -> "MULTIHOP"
-            37 -> "NAMETOOLONG"
-            38 -> "NETDOWN"
-            39 -> "NETRESET"
-            40 -> "NETUNREACH"
-            41 -> "NFILE"
-            42 -> "NOBUFS"
-            43 -> "NODEV"
-            44 -> "NOENT"
-            45 -> "NOEXEC"
-            46 -> "NOLCK"
-            47 -> "NOLINK"
-            48 -> "NOMEM"
-            49 -> "NOMSG"
-            50 -> "NOPROTOOPT"
-            51 -> "NOSPC"
-            52 -> "NOSYS"
-            53 -> "NOTCONN"
-            54 -> "NOTDIR"
-            55 -> "NOTEMPTY"
-            56 -> "NOTRECOVERABLE"
-            57 -> "NOTSOCK"
-            58 -> "NOTSUP"
-            59 -> "NOTTY"
-            60 -> "NXIO"
-            61 -> "OVERFLOW"
-            62 -> "OWNERDEAD"
-            63 -> "PERM"
-            64 -> "PIPE"
-            65 -> "PROTO"
-            66 -> "PROTONOSUPPORT"
-            67 -> "PROTOTYPE"
-            68 -> "RANGE"
-            69 -> "ROFS"
-            70 -> "SPIPE"
-            71 -> "SRCH"
-            72 -> "STALE"
-            73 -> "TIMEDOUT"
-            74 -> "TXTBSY"
-            75 -> "XDEV"
-            76 -> "NOTCAPABLE"
+            0u.toUShort() -> "SUCCESS"
+            1u.toUShort() -> "2BIG"
+            2u.toUShort() -> "ACCES"
+            3u.toUShort() -> "ADDRINUSE"
+            4u.toUShort() -> "ADDRNOTAVAIL"
+            5u.toUShort() -> "AFNOSUPPORT"
+            6u.toUShort() -> "AGAIN"
+            7u.toUShort() -> "ALREADY"
+            8u.toUShort() -> "BADF"
+            9u.toUShort() -> "BADMSG"
+            10u.toUShort() -> "BUSY"
+            11u.toUShort() -> "CANCELED"
+            12u.toUShort() -> "CHILD"
+            13u.toUShort() -> "CONNABORTED"
+            14u.toUShort() -> "CONNREFUSED"
+            15u.toUShort() -> "CONNRESET"
+            16u.toUShort() -> "DEADLK"
+            17u.toUShort() -> "DESTADDRREQ"
+            18u.toUShort() -> "DOM"
+            19u.toUShort() -> "DQUOT"
+            20u.toUShort() -> "EXIST"
+            21u.toUShort() -> "FAULT"
+            22u.toUShort() -> "FBIG"
+            23u.toUShort() -> "HOSTUNREACH"
+            24u.toUShort() -> "IDRM"
+            25u.toUShort() -> "ILSEQ"
+            26u.toUShort() -> "INPROGRESS"
+            27u.toUShort() -> "INTR"
+            28u.toUShort() -> "INVAL"
+            29u.toUShort() -> "IO"
+            30u.toUShort() -> "ISCONN"
+            31u.toUShort() -> "ISDIR"
+            32u.toUShort() -> "LOOP"
+            33u.toUShort() -> "MFILE"
+            34u.toUShort() -> "MLINK"
+            35u.toUShort() -> "MSGSIZE"
+            36u.toUShort() -> "MULTIHOP"
+            37u.toUShort() -> "NAMETOOLONG"
+            38u.toUShort() -> "NETDOWN"
+            39u.toUShort() -> "NETRESET"
+            40u.toUShort() -> "NETUNREACH"
+            41u.toUShort() -> "NFILE"
+            42u.toUShort() -> "NOBUFS"
+            43u.toUShort() -> "NODEV"
+            44u.toUShort() -> "NOENT"
+            45u.toUShort() -> "NOEXEC"
+            46u.toUShort() -> "NOLCK"
+            47u.toUShort() -> "NOLINK"
+            48u.toUShort() -> "NOMEM"
+            49u.toUShort() -> "NOMSG"
+            50u.toUShort() -> "NOPROTOOPT"
+            51u.toUShort() -> "NOSPC"
+            52u.toUShort() -> "NOSYS"
+            53u.toUShort() -> "NOTCONN"
+            54u.toUShort() -> "NOTDIR"
+            55u.toUShort() -> "NOTEMPTY"
+            56u.toUShort() -> "NOTRECOVERABLE"
+            57u.toUShort() -> "NOTSOCK"
+            58u.toUShort() -> "NOTSUP"
+            59u.toUShort() -> "NOTTY"
+            60u.toUShort() -> "NXIO"
+            61u.toUShort() -> "OVERFLOW"
+            62u.toUShort() -> "OWNERDEAD"
+            63u.toUShort() -> "PERM"
+            64u.toUShort() -> "PIPE"
+            65u.toUShort() -> "PROTO"
+            66u.toUShort() -> "PROTONOSUPPORT"
+            67u.toUShort() -> "PROTOTYPE"
+            68u.toUShort() -> "RANGE"
+            69u.toUShort() -> "ROFS"
+            70u.toUShort() -> "SPIPE"
+            71u.toUShort() -> "SRCH"
+            72u.toUShort() -> "STALE"
+            73u.toUShort() -> "TIMEDOUT"
+            74u.toUShort() -> "TXTBSY"
+            75u.toUShort() -> "XDEV"
+            76u.toUShort() -> "NOTCAPABLE"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> "No error occurred. System call completed successfully."
-            1 -> "Argument list too long."
-            2 -> "Permission denied."
-            3 -> "Address in use."
-            4 -> "Address not available."
-            5 -> "Address family not supported."
-            6 -> "Resource unavailable, or operation would block."
-            7 -> "Connection already in progress."
-            8 -> "Bad file descriptor."
-            9 -> "Bad message."
-            10 -> "Device or resource busy."
-            11 -> "Operation canceled."
-            12 -> "No child processes."
-            13 -> "Connection aborted."
-            14 -> "Connection refused."
-            15 -> "Connection reset."
-            16 -> "Resource deadlock would occur."
-            17 -> "Destination address required."
-            18 -> "Mathematics argument out of domain of function."
-            19 -> "Reserved."
-            20 -> "File exists."
-            21 -> "Bad address."
-            22 -> "File too large."
-            23 -> "Host is unreachable."
-            24 -> "Identifier removed."
-            25 -> "Illegal byte sequence."
-            26 -> "Operation in progress."
-            27 -> "Interrupted function."
-            28 -> "Invalid argument."
-            29 -> "I/O error."
-            30 -> "Socket is connected."
-            31 -> "Is a directory."
-            32 -> "Too many levels of symbolic links."
-            33 -> "File descriptor value too large."
-            34 -> "Too many links."
-            35 -> "Message too large."
-            36 -> "Reserved."
-            37 -> "Filename too long."
-            38 -> "Network is down."
-            39 -> "Connection aborted by network."
-            40 -> "Network unreachable."
-            41 -> "Too many files open in system."
-            42 -> "No buffer space available."
-            43 -> "No such device."
-            44 -> "No such file or directory."
-            45 -> "Executable file format error."
-            46 -> "No locks available."
-            47 -> "Reserved."
-            48 -> "Not enough space."
-            49 -> "No message of the desired type."
-            50 -> "Protocol not available."
-            51 -> "No space left on device."
-            52 -> "Function not supported."
-            53 -> "The socket is not connected."
-            54 -> "Not a directory or a symbolic link to a directory."
-            55 -> "Directory not empty."
-            56 -> "State not recoverable."
-            57 -> "Not a socket."
-            58 -> "Not supported, or operation not supported on socket."
-            59 -> "Inappropriate I/O control operation."
-            60 -> "No such device or address."
-            61 -> "Value too large to be stored in data type."
-            62 -> "Previous owner died."
-            63 -> "Operation not permitted."
-            64 -> "Broken pipe."
-            65 -> "Protocol error."
-            66 -> "Protocol not supported."
-            67 -> "Protocol wrong type for socket."
-            68 -> "Result too large."
-            69 -> "Read-only file system."
-            70 -> "Invalid seek."
-            71 -> "No such process."
-            72 -> "Reserved."
-            73 -> "Connection timed out."
-            74 -> "Text file busy."
-            75 -> "Cross-device link."
-            76 -> "Extension: Capabilities insufficient."
+            0u.toUShort() -> "No error occurred. System call completed successfully."
+            1u.toUShort() -> "Argument list too long."
+            2u.toUShort() -> "Permission denied."
+            3u.toUShort() -> "Address in use."
+            4u.toUShort() -> "Address not available."
+            5u.toUShort() -> "Address family not supported."
+            6u.toUShort() -> "Resource unavailable, or operation would block."
+            7u.toUShort() -> "Connection already in progress."
+            8u.toUShort() -> "Bad file descriptor."
+            9u.toUShort() -> "Bad message."
+            10u.toUShort() -> "Device or resource busy."
+            11u.toUShort() -> "Operation canceled."
+            12u.toUShort() -> "No child processes."
+            13u.toUShort() -> "Connection aborted."
+            14u.toUShort() -> "Connection refused."
+            15u.toUShort() -> "Connection reset."
+            16u.toUShort() -> "Resource deadlock would occur."
+            17u.toUShort() -> "Destination address required."
+            18u.toUShort() -> "Mathematics argument out of domain of function."
+            19u.toUShort() -> "Reserved."
+            20u.toUShort() -> "File exists."
+            21u.toUShort() -> "Bad address."
+            22u.toUShort() -> "File too large."
+            23u.toUShort() -> "Host is unreachable."
+            24u.toUShort() -> "Identifier removed."
+            25u.toUShort() -> "Illegal byte sequence."
+            26u.toUShort() -> "Operation in progress."
+            27u.toUShort() -> "Interrupted function."
+            28u.toUShort() -> "Invalid argument."
+            29u.toUShort() -> "I/O error."
+            30u.toUShort() -> "Socket is connected."
+            31u.toUShort() -> "Is a directory."
+            32u.toUShort() -> "Too many levels of symbolic links."
+            33u.toUShort() -> "File descriptor value too large."
+            34u.toUShort() -> "Too many links."
+            35u.toUShort() -> "Message too large."
+            36u.toUShort() -> "Reserved."
+            37u.toUShort() -> "Filename too long."
+            38u.toUShort() -> "Network is down."
+            39u.toUShort() -> "Connection aborted by network."
+            40u.toUShort() -> "Network unreachable."
+            41u.toUShort() -> "Too many files open in system."
+            42u.toUShort() -> "No buffer space available."
+            43u.toUShort() -> "No such device."
+            44u.toUShort() -> "No such file or directory."
+            45u.toUShort() -> "Executable file format error."
+            46u.toUShort() -> "No locks available."
+            47u.toUShort() -> "Reserved."
+            48u.toUShort() -> "Not enough space."
+            49u.toUShort() -> "No message of the desired type."
+            50u.toUShort() -> "Protocol not available."
+            51u.toUShort() -> "No space left on device."
+            52u.toUShort() -> "Function not supported."
+            53u.toUShort() -> "The socket is not connected."
+            54u.toUShort() -> "Not a directory or a symbolic link to a directory."
+            55u.toUShort() -> "Directory not empty."
+            56u.toUShort() -> "State not recoverable."
+            57u.toUShort() -> "Not a socket."
+            58u.toUShort() -> "Not supported, or operation not supported on socket."
+            59u.toUShort() -> "Inappropriate I/O control operation."
+            60u.toUShort() -> "No such device or address."
+            61u.toUShort() -> "Value too large to be stored in data type."
+            62u.toUShort() -> "Previous owner died."
+            63u.toUShort() -> "Operation not permitted."
+            64u.toUShort() -> "Broken pipe."
+            65u.toUShort() -> "Protocol error."
+            66u.toUShort() -> "Protocol not supported."
+            67u.toUShort() -> "Protocol wrong type for socket."
+            68u.toUShort() -> "Result too large."
+            69u.toUShort() -> "Read-only file system."
+            70u.toUShort() -> "Invalid seek."
+            71u.toUShort() -> "No such process."
+            72u.toUShort() -> "Reserved."
+            73u.toUShort() -> "Connection timed out."
+            74u.toUShort() -> "Text file busy."
+            75u.toUShort() -> "Cross-device link."
+            76u.toUShort() -> "Extension: Capabilities insufficient."
             else -> unreachableUnchecked()
         }
 
@@ -1007,17 +1009,17 @@ public open class Whence internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "SET"
-            1 -> "CUR"
-            2 -> "END"
+            0u.toUByte() -> "SET"
+            1u.toUByte() -> "CUR"
+            2u.toUByte() -> "END"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> "Seek relative to start-of-file."
-            1 -> "Seek relative to current position."
-            2 -> "Seek relative to end-of-file."
+            0u.toUByte() -> "Seek relative to start-of-file."
+            1u.toUByte() -> "Seek relative to current position."
+            2u.toUByte() -> "Seek relative to end-of-file."
             else -> unreachableUnchecked()
         }
 
@@ -1075,27 +1077,27 @@ public open class Filetype internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "UNKNOWN"
-            1 -> "BLOCK_DEVICE"
-            2 -> "CHARACTER_DEVICE"
-            3 -> "DIRECTORY"
-            4 -> "REGULAR_FILE"
-            5 -> "SOCKET_DGRAM"
-            6 -> "SOCKET_STREAM"
-            7 -> "SYMBOLIC_LINK"
+            0u.toUByte() -> "UNKNOWN"
+            1u.toUByte() -> "BLOCK_DEVICE"
+            2u.toUByte() -> "CHARACTER_DEVICE"
+            3u.toUByte() -> "DIRECTORY"
+            4u.toUByte() -> "REGULAR_FILE"
+            5u.toUByte() -> "SOCKET_DGRAM"
+            6u.toUByte() -> "SOCKET_STREAM"
+            7u.toUByte() -> "SYMBOLIC_LINK"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> "The type of the file descriptor or file is unknown or is different from any of the other types specified."
-            1 -> "The file descriptor or file refers to a block device inode."
-            2 -> "The file descriptor or file refers to a character device inode."
-            3 -> "The file descriptor or file refers to a directory inode."
-            4 -> "The file descriptor or file refers to a regular file inode."
-            5 -> "The file descriptor or file refers to a datagram socket."
-            6 -> "The file descriptor or file refers to a byte-stream socket."
-            7 -> "The file refers to a symbolic link inode."
+            0u.toUByte() -> "The type of the file descriptor or file is unknown or is different from any of the other types specified."
+            1u.toUByte() -> "The file descriptor or file refers to a block device inode."
+            2u.toUByte() -> "The file descriptor or file refers to a character device inode."
+            3u.toUByte() -> "The file descriptor or file refers to a directory inode."
+            4u.toUByte() -> "The file descriptor or file refers to a regular file inode."
+            5u.toUByte() -> "The file descriptor or file refers to a datagram socket."
+            6u.toUByte() -> "The file descriptor or file refers to a byte-stream socket."
+            7u.toUByte() -> "The file refers to a symbolic link inode."
             else -> unreachableUnchecked()
         }
 
@@ -1193,23 +1195,23 @@ public open class Advice internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "NORMAL"
-            1 -> "SEQUENTIAL"
-            2 -> "RANDOM"
-            3 -> "WILLNEED"
-            4 -> "DONTNEED"
-            5 -> "NOREUSE"
+            0u.toUByte() -> "NORMAL"
+            1u.toUByte() -> "SEQUENTIAL"
+            2u.toUByte() -> "RANDOM"
+            3u.toUByte() -> "WILLNEED"
+            4u.toUByte() -> "DONTNEED"
+            5u.toUByte() -> "NOREUSE"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> "The application has no advice to give on its behavior with respect to the specified data."
-            1 -> "The application expects to access the specified data sequentially from lower offsets to higher offsets."
-            2 -> "The application expects to access the specified data in a random order."
-            3 -> "The application expects to access the specified data in the near future."
-            4 -> "The application expects that it will not access the specified data in the near future."
-            5 -> "The application expects to access the specified data once and then not reuse it thereafter."
+            0u.toUByte() -> "The application has no advice to give on its behavior with respect to the specified data."
+            1u.toUByte() -> "The application expects to access the specified data sequentially from lower offsets to higher offsets."
+            2u.toUByte() -> "The application expects to access the specified data in a random order."
+            3u.toUByte() -> "The application expects to access the specified data in the near future."
+            4u.toUByte() -> "The application expects that it will not access the specified data in the near future."
+            5u.toUByte() -> "The application expects to access the specified data once and then not reuse it thereafter."
             else -> unreachableUnchecked()
         }
 
@@ -1419,21 +1421,21 @@ public open class Eventtype internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "CLOCK"
-            1 -> "FD_READ"
-            2 -> "FD_WRITE"
+            0u.toUByte() -> "CLOCK"
+            1u.toUByte() -> "FD_READ"
+            2u.toUByte() -> "FD_WRITE"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> {
+            0u.toUByte() -> {
                 "The time value of clock `subscription_clock::id` has\nreached timestamp `subscription_clock::timeout`."
             }
-            1 -> {
+            1u.toUByte() -> {
                 "File descriptor `subscription_fd_readwrite::file_descriptor` has data\navailable for reading. This event always triggers for regular files."
             }
-            2 -> {
+            2u.toUByte() -> {
                 "File descriptor `subscription_fd_readwrite::file_descriptor` has capacity\navailable for writing. This event always triggers for regular files."
             }
             else -> unreachableUnchecked()
@@ -1644,133 +1646,133 @@ public open class Signal internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "NONE"
-            1 -> "HUP"
-            2 -> "INT"
-            3 -> "QUIT"
-            4 -> "ILL"
-            5 -> "TRAP"
-            6 -> "ABRT"
-            7 -> "BUS"
-            8 -> "FPE"
-            9 -> "KILL"
-            10 -> "USR1"
-            11 -> "SEGV"
-            12 -> "USR2"
-            13 -> "PIPE"
-            14 -> "ALRM"
-            15 -> "TERM"
-            16 -> "CHLD"
-            17 -> "CONT"
-            18 -> "STOP"
-            19 -> "TSTP"
-            20 -> "TTIN"
-            21 -> "TTOU"
-            22 -> "URG"
-            23 -> "XCPU"
-            24 -> "XFSZ"
-            25 -> "VTALRM"
-            26 -> "PROF"
-            27 -> "WINCH"
-            28 -> "POLL"
-            29 -> "PWR"
-            30 -> "SYS"
+            0u.toUByte() -> "NONE"
+            1u.toUByte() -> "HUP"
+            2u.toUByte() -> "INT"
+            3u.toUByte() -> "QUIT"
+            4u.toUByte() -> "ILL"
+            5u.toUByte() -> "TRAP"
+            6u.toUByte() -> "ABRT"
+            7u.toUByte() -> "BUS"
+            8u.toUByte() -> "FPE"
+            9u.toUByte() -> "KILL"
+            10u.toUByte() -> "USR1"
+            11u.toUByte() -> "SEGV"
+            12u.toUByte() -> "USR2"
+            13u.toUByte() -> "PIPE"
+            14u.toUByte() -> "ALRM"
+            15u.toUByte() -> "TERM"
+            16u.toUByte() -> "CHLD"
+            17u.toUByte() -> "CONT"
+            18u.toUByte() -> "STOP"
+            19u.toUByte() -> "TSTP"
+            20u.toUByte() -> "TTIN"
+            21u.toUByte() -> "TTOU"
+            22u.toUByte() -> "URG"
+            23u.toUByte() -> "XCPU"
+            24u.toUByte() -> "XFSZ"
+            25u.toUByte() -> "VTALRM"
+            26u.toUByte() -> "PROF"
+            27u.toUByte() -> "WINCH"
+            28u.toUByte() -> "POLL"
+            29u.toUByte() -> "PWR"
+            30u.toUByte() -> "SYS"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> {
+            0u.toUByte() -> {
                 "No signal. Note that POSIX has special semantics for `kill(pid, 0)`,\nso this value is reserved."
             }
-            1 -> {
+            1u.toUByte() -> {
                 "Hangup.\nAction: Terminates the process."
             }
-            2 -> {
+            2u.toUByte() -> {
                 "Terminate interrupt signal.\nAction: Terminates the process."
             }
-            3 -> {
+            3u.toUByte() -> {
                 "Terminal quit signal.\nAction: Terminates the process."
             }
-            4 -> {
+            4u.toUByte() -> {
                 "Illegal instruction.\nAction: Terminates the process."
             }
-            5 -> {
+            5u.toUByte() -> {
                 "Trace/breakpoint trap.\nAction: Terminates the process."
             }
-            6 -> {
+            6u.toUByte() -> {
                 "Process abort signal.\nAction: Terminates the process."
             }
-            7 -> {
+            7u.toUByte() -> {
                 "Access to an undefined portion of a memory object.\nAction: Terminates the process."
             }
-            8 -> {
+            8u.toUByte() -> {
                 "Erroneous arithmetic operation.\nAction: Terminates the process."
             }
-            9 -> {
+            9u.toUByte() -> {
                 "Kill.\nAction: Terminates the process."
             }
-            10 -> {
+            10u.toUByte() -> {
                 "User-defined signal 1.\nAction: Terminates the process."
             }
-            11 -> {
+            11u.toUByte() -> {
                 "Invalid memory reference.\nAction: Terminates the process."
             }
-            12 -> {
+            12u.toUByte() -> {
                 "User-defined signal 2.\nAction: Terminates the process."
             }
-            13 -> {
+            13u.toUByte() -> {
                 "Write on a pipe with no one to read it.\nAction: Ignored."
             }
-            14 -> {
+            14u.toUByte() -> {
                 "Alarm clock.\nAction: Terminates the process."
             }
-            15 -> {
+            15u.toUByte() -> {
                 "Termination signal.\nAction: Terminates the process."
             }
-            16 -> {
+            16u.toUByte() -> {
                 "Child process terminated, stopped, or continued.\nAction: Ignored."
             }
-            17 -> {
+            17u.toUByte() -> {
                 "Continue executing, if stopped.\nAction: Continues executing, if stopped."
             }
-            18 -> {
+            18u.toUByte() -> {
                 "Stop executing.\nAction: Stops executing."
             }
-            19 -> {
+            19u.toUByte() -> {
                 "Terminal stop signal.\nAction: Stops executing."
             }
-            20 -> {
+            20u.toUByte() -> {
                 "Background process attempting read.\nAction: Stops executing."
             }
-            21 -> {
+            21u.toUByte() -> {
                 "Background process attempting write.\nAction: Stops executing."
             }
-            22 -> {
+            22u.toUByte() -> {
                 "High bandwidth data is available at a socket.\nAction: Ignored."
             }
-            23 -> {
+            23u.toUByte() -> {
                 "CPU time limit exceeded.\nAction: Terminates the process."
             }
-            24 -> {
+            24u.toUByte() -> {
                 "File size limit exceeded.\nAction: Terminates the process."
             }
-            25 -> {
+            25u.toUByte() -> {
                 "Virtual timer expired.\nAction: Terminates the process."
             }
-            26 -> {
+            26u.toUByte() -> {
                 "Profiling timer expired.\nAction: Terminates the process."
             }
-            27 -> {
+            27u.toUByte() -> {
                 "Window changed.\nAction: Ignored."
             }
-            28 -> {
+            28u.toUByte() -> {
                 "I/O possible.\nAction: Terminates the process."
             }
-            29 -> {
+            29u.toUByte() -> {
                 "Power failure.\nAction: Terminates the process."
             }
-            30 -> {
+            30u.toUByte() -> {
                 "Bad system call.\nAction: Terminates the process."
             }
             else -> unreachableUnchecked()
@@ -2031,13 +2033,13 @@ public open class Preopentype internal constructor(
 
     public open fun name(): String =
         when (this.value) {
-            0 -> "DIR"
+            0u.toUByte() -> "DIR"
             else -> unreachableUnchecked()
         }
 
     public open fun message(): String =
         when (this.value) {
-            0 -> "A pre-opened directory."
+            0u.toUByte() -> "A pre-opened directory."
             else -> unreachableUnchecked()
         }
 

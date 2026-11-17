@@ -6,6 +6,9 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.clamp
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU8
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU8
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU8
@@ -1197,10 +1200,10 @@ public fun NonZero.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UI
         run {
             val matchVal = UByte.fromAsciiBytesRadixImpl(src, radix)
             when (matchVal) { is Result.Ok<*, *> -> {
-                val n = matchVal.value
+                val n = matchVal.okValue()
                 n
             }; is Result.Err<*, *> -> {
-                val err = matchVal.error
+                val err = matchVal.errValue()
                 return Result.Err<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(err)
             } }
         }

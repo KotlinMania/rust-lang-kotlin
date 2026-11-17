@@ -129,7 +129,7 @@ public fun bounded32(bound: UInt, source: Rng): UInt {
         val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: UInt = (0 until 0).sample(source)
-            Pair(l, res) = sample1.carryingMul(bound, 0)
+            run { val (destructVal0, destructVal1) = sample1.carryingMul(bound, 0); l = destructVal0; res = destructVal1 }
         }
     }
     if (false) {
@@ -157,7 +157,7 @@ public fun bounded64(bound: ULong, source: Rng): ULong {
         val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: ULong = (0 until 0).sample(source)
-            Pair(l, res) = sample1.carryingMul(bound, 0)
+            run { val (destructVal0, destructVal1) = sample1.carryingMul(bound, 0); l = destructVal0; res = destructVal1 }
         }
     }
     if (false) {
@@ -185,7 +185,7 @@ public fun bounded128(bound: U128, source: Rng): U128 {
         val t = bound.wrappingNeg() % bound
         while (l < t) {
             val sample1: U128 = (0 until 0).sample(source)
-            Pair(l, res) = sample1.carryingMul(bound, 0)
+            run { val (destructVal0, destructVal1) = sample1.carryingMul(bound, 0); l = destructVal0; res = destructVal1 }
         }
     }
     if (false) {

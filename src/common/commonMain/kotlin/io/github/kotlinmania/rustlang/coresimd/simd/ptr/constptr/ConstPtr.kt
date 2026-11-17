@@ -1,11 +1,20 @@
 // port-lint: source simd/ptr/const_ptr.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.ptr.constptr
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingOffset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.coresimd.Simd
 
 public typealias Usize = Simd<Int, N>
@@ -93,12 +102,12 @@ public fun Simd<ConstPtr>.cast(n: Int): Simd<ConstPtr> {
     check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
     check(sizeOf<Metadata>(typeLayoutT = UnresolvedTypeLayout<Metadata>()) == 0)
     // Safety: pointers can be cast
-    return run { val _simdArg0 = this; _simdArg0 }
+    return run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<ConstPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<ConstPtr>>()).alignBytes)); res } }
 }
 
 public fun Simd<ConstPtr>.castMut(n: Int): Simd<MutPtr> {
     // Safety: pointers can be cast
-    return run { val _simdArg0 = this; _simdArg0 }
+    return run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<MutPtr>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<MutPtr>>()).alignBytes)); res } }
 }
 
 public fun Simd<ConstPtr>.addr(n: Int): Simd<Int> {
@@ -119,12 +128,12 @@ public fun Simd<ConstPtr>.withAddr(addr: Simd<Int>, n: Int): Simd<ConstPtr> {
 
 public fun Simd<ConstPtr>.exposeProvenance(n: Int): Simd<Int> {
     // Safety: `self` is a pointer vector
-    return run { val _simdArg0 = this; _simdArg0 }
+    return run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Int>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Int>>()).alignBytes)); res } }
 }
 
 public fun Simd<ConstPtr>.wrappingOffset(count: Simd<Int>, n: Int): Simd<ConstPtr> {
     // Safety: simdArithOffset takes a vector of pointers and a vector of offsets
-    return run { val _simdArg0 = this; val _simdArg1 = count; _simdArg0 }
+    return run { val simdArg0 = this; val simdArg1 = count; simdArg0 }
 }
 
 public fun Simd<ConstPtr>.wrappingAdd(count: Simd<Int>, n: Int): Simd<ConstPtr> = this.wrappingOffset(count.cast(n), n)

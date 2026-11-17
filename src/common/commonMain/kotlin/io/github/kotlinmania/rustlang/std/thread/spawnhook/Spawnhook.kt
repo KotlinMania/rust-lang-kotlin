@@ -115,7 +115,7 @@ public fun runSpawnHooks(thread: Thread): ChildSpawnHooks {
         snapshot
     })) {
         is Result.Ok<*, *> -> {
-            val hooks = matchVal.value
+            val hooks = matchVal.okValue()
             // Iterate over the hooks, run them, and collect the results in a vector.
             val toRun: Vec = Iter.successors(hooks.first.asDeref(), { hook -> hook.next.asDeref() }).map({ hook -> (hook.hook)(thread) }).collect()
             // Pass on the snapshot of the hooks and the results to the new thread,

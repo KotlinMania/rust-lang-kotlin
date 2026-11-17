@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.offsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // This module contains the logic for pivot selection.

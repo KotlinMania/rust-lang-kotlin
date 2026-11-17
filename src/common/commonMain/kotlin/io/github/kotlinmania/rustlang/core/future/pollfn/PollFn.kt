@@ -1,6 +1,7 @@
 // port-lint: source future/poll_fn.rs
 package io.github.kotlinmania.rustlang.core.future.pollfn
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes

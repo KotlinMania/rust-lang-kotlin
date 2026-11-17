@@ -282,7 +282,7 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
     return run {
         val matchVal = this.searchTreeForBifurcation(range)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val okVal = matchVal.value
+            val okVal = matchVal.okValue()
             val node = okVal[0]
             val lowerEdgeIdx = okVal[1]
             val upperEdgeIdx = okVal[2]
@@ -304,8 +304,8 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
                         matchVal1.first is Internal<*, *, *> && matchVal1.second is Internal<*, *, *> -> {
                             val (f1) = matchVal1.first as Internal<BorrowType, K, V>
                             val (b1) = matchVal1.second as Internal<BorrowType, K, V>
-                            Pair(lowerEdge, lowerChildBound) = f1.descend().findLowerBoundEdge(lowerChildBound)
-                            Pair(upperEdge, upperChildBound) = b1.descend().findUpperBoundEdge(upperChildBound)
+                            run { val (destructVal0, destructVal1) = f1.descend().findLowerBoundEdge(lowerChildBound); lowerEdge = destructVal0; lowerChildBound = destructVal1 }
+                            run { val (destructVal0, destructVal1) = b1.descend().findUpperBoundEdge(upperChildBound); upperEdge = destructVal0; upperChildBound = destructVal1 }
                         }
                         else -> error("BTreeMap has different depths")
                     }
@@ -346,17 +346,17 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
         edge = run {
             val matchVal = edge.rightKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 return Result.Ok<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(kv)
             }; is Result.Err<*, *> -> {
-                val lastEdge = matchVal.error
+                val lastEdge = matchVal.errValue()
                 run {
                     val matchVal1 = lastEdge.intoNode().ascend()
                     when (matchVal1) { is Result.Ok<*, *> -> {
-                        val parentEdge = matchVal1.value
+                        val parentEdge = matchVal1.okValue()
                         parentEdge.forgetNodeType()
                     }; is Result.Err<*, *> -> {
-                        val root = matchVal1.error
+                        val root = matchVal1.errValue()
                         return Result.Err<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(root)
                     } }
                 }
@@ -376,17 +376,17 @@ public fun <BorrowType : io.github.kotlinmania.rustlang.alloc.collections.btree.
         edge = run {
             val matchVal = edge.leftKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 return Result.Ok<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(kv)
             }; is Result.Err<*, *> -> {
-                val lastEdge = matchVal.error
+                val lastEdge = matchVal.errValue()
                 run {
                     val matchVal1 = lastEdge.intoNode().ascend()
                     when (matchVal1) { is Result.Ok<*, *> -> {
-                        val parentEdge = matchVal1.value
+                        val parentEdge = matchVal1.okValue()
                         parentEdge.forgetNodeType()
                     }; is Result.Err<*, *> -> {
-                        val root = matchVal1.error
+                        val root = matchVal1.errValue()
                         return Result.Err<Handle<NodeRef<BorrowType, K, V, LeafOrInternal>, KV>, NodeRef<BorrowType, K, V, LeafOrInternal>>(root)
                     } }
                 }
@@ -416,10 +416,10 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Dying, K, V, Leaf>, Edge>.d
         edge = run {
             val matchVal = edge.rightKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 return Pair(read(kv).nextLeafEdge(), kv)
             }; is Result.Err<*, *> -> {
-                val lastEdge = matchVal.error
+                val lastEdge = matchVal.errValue()
                 // ignore-tidy-undocumented-unchecked
                 when (val matchVal1 = lastEdge.intoNode().deallocateAndAscend(alloc.clone())) {
                     null -> { return null }
@@ -454,10 +454,10 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Dying, K, V, Leaf>, Edge>.d
         edge = run {
             val matchVal = edge.leftKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 return Pair(read(kv).nextBackLeafEdge(), kv)
             }; is Result.Err<*, *> -> {
-                val lastEdge = matchVal.error
+                val lastEdge = matchVal.errValue()
                 // ignore-tidy-undocumented-unchecked
                 when (val matchVal1 = lastEdge.intoNode().deallocateAndAscend(alloc.clone())) {
                     null -> { return null }
@@ -727,7 +727,7 @@ public fun <K, V> NodeRef<Immut, K, V, LeafOrInternal>.visitNodesInOrder(visit: 
                         run {
                             val matchVal2 = edge.nextKv()
                             when (matchVal2) { is Result.Ok<*, *> -> {
-                                val kv = matchVal2.value
+                                val kv = matchVal2.okValue()
                                 visit(Position.InternalKV)
                                 kv.rightEdge()
                             }; is Result.Err<*, *> -> {
@@ -864,10 +864,10 @@ public fun <K, V, A : AllocatorClone> NodeRef<Dying, K, V, LeafOrInternal>.dropT
         return run {
             val matchVal = parent.rightKv()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val kv = matchVal.value
+                val kv = matchVal.okValue()
                 kv.rightEdge().descend().firstLeafEdge().intoNode().forgetType()
             }; is Result.Err<*, *> -> {
-                val lastEdge = matchVal.error
+                val lastEdge = matchVal.errValue()
                 lastEdge.intoNode().forgetType()
             } }
         }

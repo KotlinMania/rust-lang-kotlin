@@ -27,16 +27,16 @@ public class DirsInlineTests {
                 val matchVal = MediaDirs.xdg()
                 when {
                     matchVal is Result.Ok<*, *> -> {
-                        val dirs = matchVal.value
+                        val dirs = matchVal.okValue()
                         dirs
                     }
-                    matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.NotFound -> {
-                        val e = matchVal.error
+                    matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
+                        val e = matchVal.errValue()
                         // xdg-user-dirs not initialized on this system, skip the test
                         return
                     }
                     else -> {
-                        val e1 = (matchVal as Result.Err<*, *>).error
+                        val e1 = (matchVal as Result.Err<*, *>).errValue()
                         error("failed to fetch xdg user dirs: $e")
                     }
                 }

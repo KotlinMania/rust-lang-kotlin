@@ -366,7 +366,7 @@ public open class XdgDirs(
 
 public fun homeDirsExtXdgHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()
-    val userHome = when (val tryResult = userHome()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.error) }
+    val userHome = when (val tryResult = userHome()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
     dirs.setCacheHome(dirOrElse({ userHome.join(".cache") }, "XDG_CACHE_HOME"))
     dirs.setConfigHome(dirOrElse({ userHome.join(".config") }, "XDG_CONFIG_HOME"))
     dirs.setDataHome(dirOrElse({ userHome.join(".local/share") }, "XDG_DATA_HOME"))
@@ -412,22 +412,22 @@ public fun HomeDirs.setDataDirs(paths: OsString): HomeDirs {
 }
 
 public fun mediaDirsExtXdgMediaDirs(): Result<MediaDirs, Error> {
-    val userHome = when (val tryResult = userHome()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.error) }
+    val userHome = when (val tryResult = userHome()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<MediaDirs, Error>(tryResult.errValue()) }
     val configHome = dirOrElse({ userHome.join(".config") }, "XDG_CONFIG_HOME")
     val spec1 =
         run {
             val matchVal = read(configHome.join("user-dirs.dirs"))
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val spec = matchVal.value
+                    val spec = matchVal.okValue()
                     spec
                 }
-                matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.NotFound -> {
-                    val e = matchVal.error
+                matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
+                    val e = matchVal.errValue()
                     return Result.Err<MediaDirs, Error>(constError(ErrorKind.NotFound, "missing `\$XDG_CONFIG_HOME/user-dirs.dirs`"))
                 }
                 else -> {
-                    val e1 = (matchVal as Result.Err<*, *>).error
+                    val e1 = (matchVal as Result.Err<*, *>).errValue()
                     return Result.Err<MediaDirs, Error>(e1)
                 }
             }
@@ -457,15 +457,14 @@ public fun dirOrElse(fallback: () -> PathBuf, env: String): PathBuf = (dir(env) 
 public fun dirs(env: String): OsString? {
     open class DerefAsRef<T>(
         public var value: T,
-    ) : AsRef<U> {
+    ) {
         public var field0: T
             get() = value
             set(v) {
                 value = v
             }
-
-        public open fun asRef(): U = this.value.asRef()
     }
+    fun <T, U> DerefAsRef<T>.asRef(): U = this.value.asRef()
     val dirs = (varOs(env).filter({ s -> !s.isEmpty() }) ?: return null)
     if (splitPathsRef(dirs).all({ p -> p.isAbsolute() })) {
         return dirs
@@ -534,7 +533,7 @@ public fun unquote(bytes: List<UByte>, userHome: Path): PathBuf? {
     // expand leading $HOME
     if (rest1.startsWith("\$HOME/".encodeToByteArray())) {
         s.addAll(userHome.asOsStr().encodeToByteArray().map { it.toUByte() })
-        if (!userHome.hasTrailingSep()) {
+        if (userHome.hasTrailingSep().inv()) {
             s.add(47u)
         }
         rest1 = rest1[6 until rest1.size]

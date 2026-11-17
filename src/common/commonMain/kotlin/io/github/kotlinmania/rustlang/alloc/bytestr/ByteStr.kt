@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
@@ -88,7 +89,7 @@ public open class ByteString internal constructor(
         // Avoid allocating a copy of the contents for invalid UTF-8
         when (val matchVal = String.fromUtf8(this.value)) {
             is Result.Err<*, *> -> {
-                val e = matchVal.error
+                val e = matchVal.errValue()
                 return Result.Err<String, Utf8Error>(e)
             }
             else -> {}
@@ -419,7 +420,7 @@ public fun List<UByte>.partialCmp(other: ByteStr): Ordering? {
 }
 
 public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
-    return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, Utf8Error>(tryResult.error) }.into())
+    return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Utf8Error>(tryResult.errValue()) }.into())
 }
 
 /**
@@ -436,7 +437,7 @@ public fun ByteStr.toString(): Result<String, Utf8Error> {
     // Avoid allocating a copy of the contents for invalid UTF-8
     when (val matchVal = String.fromUtf8(this.value)) {
         is Result.Err<*, *> -> {
-            val e = matchVal.error
+            val e = matchVal.errValue()
             return Result.Err<String, Utf8Error>(e)
         }
         else -> {}

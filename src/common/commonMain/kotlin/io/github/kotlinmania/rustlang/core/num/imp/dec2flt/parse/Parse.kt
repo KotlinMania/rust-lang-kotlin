@@ -1,13 +1,17 @@
 // port-lint: source num/imp/dec2flt/parse.rs
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.parse
 
-import io.github.kotlinmania.rustlang.core.char.isAsciiDigit
+import io.github.kotlinmania.rustlang.core.char.methods.isAsciiDigit
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.is8digits
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimal.Decimal
 import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFrom
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 
 // Functions to parse floating-point numbers.

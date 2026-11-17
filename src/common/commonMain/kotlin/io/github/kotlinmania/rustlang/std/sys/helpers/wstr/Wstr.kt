@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.helpers.wstr
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 // This module contains constructs to work with 16-bit characters (UCS-2 or UTF-16)
@@ -46,7 +47,7 @@ public open class WStrUnits internal constructor(
             val matchVal = this.peek()
             if (matchVal == null) break
             val w = matchVal
-            if (!predicate(w)) {
+            if (predicate(w).inv()) {
                 break
             }
             counter += 1

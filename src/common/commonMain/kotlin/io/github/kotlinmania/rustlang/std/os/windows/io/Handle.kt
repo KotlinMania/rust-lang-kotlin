@@ -11,6 +11,9 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.Rc
@@ -133,7 +136,7 @@ public open class BorrowedHandle internal constructor(
         when (val tryResult = cvt(run {
             val curProc = C.GetCurrentProcess()
             C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
-        })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<OwnedHandle, Error>(tryResult.error) }
+        })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedHandle, Error>(tryResult.errValue()) }
         return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(ret, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
     }
 
@@ -318,8 +321,6 @@ public open class OwnedHandle internal constructor(
          * Takes ownership of a [`ChildStderr`](process.ChildStderr)'s file handle.
          */
         public fun from(childStderr: ChildStderr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStderr.intoRawHandle(), fieldLayout = fieldLayout)
-
-        public fun <T> from(joinHandle: JoinHandle<T>): OwnedHandle = joinHandle.intoInner().intoHandle().intoInner()
 
         public fun from(pipe: PipeReader): OwnedHandle = pipe.intoInner().intoInner()
 
@@ -615,6 +616,8 @@ public fun ChildStdout.asHandle(): BorrowedHandle = BorrowedHandle.borrowRaw(thi
 public fun ChildStderr.asHandle(): BorrowedHandle = BorrowedHandle.borrowRaw(this.asRawHandle())
 
 public fun <T> JoinHandle<T>.asHandle(): BorrowedHandle = BorrowedHandle.borrowRaw(this.asRawHandle())
+
+public fun <T> fromOwnedHandle(joinHandle: JoinHandle<T>): OwnedHandle = joinHandle.intoInner().intoHandle().intoInner()
 
 public fun PipeReader.asHandle(): BorrowedHandle = this.value.asHandle()
 

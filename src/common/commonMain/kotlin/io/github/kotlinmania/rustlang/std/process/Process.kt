@@ -398,7 +398,7 @@ public open class Child(
      * ```
      */
     public open fun tryWait(): Result<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error> {
-        return Result.Ok<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(when (val tryResult = this.handle.tryWait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }.map({ ExitStatus(it) }))
+        return Result.Ok<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(when (val tryResult = this.handle.tryWait()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ExitStatus?, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }.map({ ExitStatus(it) }))
     }
 
     /**
@@ -452,7 +452,7 @@ public open class Child(
                 }
             }
         }
-        val status = when (val tryResult = this.wait()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        val status = when (val tryResult = this.wait()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return Result.Ok<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(Output(status = status, stdout = stdout, stderr = stderr))
     }
 
@@ -1087,7 +1087,7 @@ public open class Command(
      * ```
      */
     public open fun output(): Result<Output, io.github.kotlinmania.rustlang.core.io.error.Error> {
-        val (status, stdout, stderr) = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.process.output(this.inner)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.error) }
+        val (status, stdout, stderr) = when (val tryResult = io.github.kotlinmania.rustlang.std.sys.process.output(this.inner)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         return Result.Ok<Output, io.github.kotlinmania.rustlang.core.io.error.Error>(Output(status = ExitStatus(status), stdout = stdout, stderr = stderr))
     }
 
@@ -1497,7 +1497,7 @@ public open class Output(
      * ```
      */
     public open fun exitOk(): Result<Output, ExitStatusError> {
-        when (val tryResult = this.status.exitOk()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Output, ExitStatusError>(tryResult.error) }
+        when (val tryResult = this.status.exitOk()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Output, ExitStatusError>(tryResult.errValue()) }
         return Result.Ok<Output, ExitStatusError>(this)
     }
 
@@ -1507,7 +1507,7 @@ public open class Output(
         val stdoutUtf8 = String.fromUtf8(this.stdout)
         val stdoutDebug: Any =
             when (stdoutUtf8) { is Result.Ok<*, *> -> {
-                val s = stdoutUtf8.value
+                val s = stdoutUtf8.okValue()
                 s
             }; is Result.Err<*, *> -> {
                 this.stdout
@@ -1515,7 +1515,7 @@ public open class Output(
         val stderrUtf8 = String.fromUtf8(this.stderr)
         val stderrDebug: Any =
             when (stderrUtf8) { is Result.Ok<*, *> -> {
-                val s1 = stderrUtf8.value
+                val s1 = stderrUtf8.okValue()
                 s1
             }; is Result.Err<*, *> -> {
                 this.stderr
@@ -2350,10 +2350,10 @@ public fun Nothing.report(): ExitCode = this
 
 public fun <T : Termination, E> Result<T, E>.report(): ExitCode =
     when (this) { is Result.Ok<*, *> -> {
-        val value = this.value
+        val value = this.okValue()
         value.report()
     }; is Result.Err<*, *> -> {
-        val err = this.error
+        val err = this.errValue()
         attemptPrintToStderr(formatArgsNl("Error: {err:?}"))
         ExitCode.FAILURE
     } }

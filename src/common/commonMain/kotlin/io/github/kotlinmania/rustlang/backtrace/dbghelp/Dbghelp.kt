@@ -27,6 +27,8 @@ import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -503,7 +505,7 @@ public fun init(): Result<Init, Unit> {
         var index = name.size - 1
         while (id > 0u) {
             name[index - 1] = when (val matchVal = (id and 0xFu).toUByte()) {
-                in 0..9 -> {
+                in 0u.toUByte()..9u.toUByte() -> {
                     val h = matchVal
                     48u + h
                 }
@@ -563,7 +565,7 @@ public fun init(): Result<Init, Unit> {
             }
             when (val matchVal = LOCK.compareExchange(MutPtr(0L), lock, SeqCst, SeqCst)) {
                 is Result.Err<*, *> -> {
-                    val other = matchVal.error
+                    val other = matchVal.errValue()
                     check(!other.isNull())
                     CloseHandle(lock)
                     lock = other
@@ -588,7 +590,7 @@ public fun init(): Result<Init, Unit> {
         // once, though, so we've got a global boolean indicating whether we're
         // done yet or not.
         // Note: https://github.com/rust-lang/backtrace-rs/issues/678
-        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Init, Unit>(tryResult.error) }
+        when (val tryResult = DBGHELP.ensureOpen()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Init, Unit>(tryResult.errValue()) }
         if (INITIALIZED.inv()) {
             setOptionalOptions(ret.dbghelp())
             INITIALIZED = true

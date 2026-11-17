@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV4
 import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -120,7 +121,7 @@ public fun <T> setsockopt(sock: Socket, level: CInt, optionName: CInt, optionVal
     // bytes
     // * the value of `optionValue` has a valid type for the given socket option
     // (guaranteed by caller).
-    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.setsockopt(sock.asRaw(), level, optionName, (addrOf(optionValue)), optionLen))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
     return Result.Ok<Unit, Error>(Unit)
 }
 
@@ -137,7 +138,7 @@ public fun <T> getsockopt(sock: Socket, level: CInt, optionName: CInt, typeLayou
     // * `sock` is opened for the duration of this call, as `sock` owns the socket.
     // * the pointer to `optionValue` is writable and the stack allocation has
     // space for `sizeOf<T>` bytes.
-    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), RustMutableReference(localStorageL298C4.asMutPtr(), localStorageL298C4.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<T, Error>(tryResult.error) }
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.getsockopt(sock.asRaw(), level, optionName, optionValue.asMutPtr().cast(), RustMutableReference(localStorageL298C4.asMutPtr(), localStorageL298C4.layout)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<T, Error>(tryResult.errValue()) }
     // SAFETY: the `getsockopt` call succeeded and the caller guarantees that
     // `T` is the type of this option, thus `optionValue` must have
     // been initialized by the system.
@@ -157,7 +158,7 @@ public fun sockname(f: (MutPtr, MutPtr) -> CInt): Result<SocketAddr, Error> {
     val storage = MaybeUninit.zeroed(UnresolvedTypeLayout<SockaddrStorage>())
     val localStorageL332C4 = AddressableLocal(sizeOf<SockaddrStorage>(typeLayoutT = UnresolvedTypeLayout<SockaddrStorage>()).toInt(), UnresolvedTypeLayout<SocklenT>())
     val len by localStorageL332C4
-    when (val tryResult = cvt(f(storage.asMutPtr().cast(), RustMutableReference(localStorageL332C4.asMutPtr(), localStorageL332C4.layout)))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<SocketAddr, Error>(tryResult.error) }
+    when (val tryResult = cvt(f(storage.asMutPtr().cast(), RustMutableReference(localStorageL332C4.asMutPtr(), localStorageL332C4.layout)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<SocketAddr, Error>(tryResult.errValue()) }
     // SAFETY:
     // The caller guarantees that the storage has been successfully initialized
     // and its size written to `len` if `f` returns a success.

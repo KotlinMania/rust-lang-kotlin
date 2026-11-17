@@ -3,10 +3,11 @@ package io.github.kotlinmania.rustlang.std.ffi.osstr
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
-import io.github.kotlinmania.rustlang.core.char.isAscii
-import io.github.kotlinmania.rustlang.core.char.toAsciiLowercase
-import io.github.kotlinmania.rustlang.core.char.toAsciiUppercase
+import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
+import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -19,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
@@ -646,19 +649,6 @@ public open class OsString(
         public fun from(s: String): OsString = OsString(inner = Buf.fromString(s))
 
         /**
-         * Copies any value implementing <code>[AsRef]&lt;[OsStr]&gt;</code>
-         * into a newly allocated [OsString].
-         */
-        public fun from(s: OsStr): OsString {
-            interface SpecToOsString {
-                public fun specToOsString(): OsString
-            }
-            fun OsStr.specToOsString(): OsString = this.asRef().toOsString()
-            fun String.specToOsString(): OsString = OsString.from(this)
-            return s.specToOsString()
-        }
-
-        /**
          * Constructs an empty `OsString`.
          */
         public fun default(): OsString = OsString.new()
@@ -667,7 +657,7 @@ public open class OsString(
          * Converts a <code>[Holder]<[OsStr]></code> into an [OsString] without copying or
          * allocating.
          */
-        public fun fromBoxOsStr(boxed: OsStr): OsString = boxed.intoOsString()
+        public fun from(boxed: OsStr): OsString = boxed.intoOsString()
 
         /**
          * Converts a `Cow<OsStr>` into an [OsString],
@@ -1168,8 +1158,6 @@ public open class OsStr internal constructor(
      */
     public open fun asOsStr(): OsStr = this
 
-    public open fun clone(): OsStr = Box.cloneFromRefIn(OsStr(this.inner), OsStr.allocator(this).clone())
-
     public open fun cloneToUninit(dst: MutPtr) {
         // SAFETY: we're just a transparent wrapper around a platform-specific Slice
         this.inner.cloneToUninit(dst)
@@ -1332,9 +1320,24 @@ public open class OsStr internal constructor(
     }
 }
 
+/**
+ * Copies any value implementing <code>[AsRef]&lt;[OsStr]&gt;</code>
+ * into a newly allocated [OsString].
+ */
+public fun fromOsString(s: OsStr): OsString {
+    interface SpecToOsString {
+        public fun specToOsString(): OsString
+    }
+    fun OsStr.specToOsString(): OsString = this.asRef().toOsString()
+    fun String.specToOsString(): OsString = OsString.from(this)
+    return s.specToOsString()
+}
+
 public fun String.eq(other: OsString): Boolean = (other == this).toUByte()
 
 public fun String.eqOsString(other: OsString): Boolean = (other == this).toUByte()
+
+public fun <A : Allocator> OsStr.clone(): OsStr = Box.cloneFromRefIn(OsStr(this.inner), OsStr.allocator(this).clone())
 
 /**
  * Converts an [OsString] into an <code>[Arc]<[OsStr]></code> by moving the [OsString]

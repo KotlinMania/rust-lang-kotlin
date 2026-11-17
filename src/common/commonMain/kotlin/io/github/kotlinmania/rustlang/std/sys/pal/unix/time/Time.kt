@@ -61,10 +61,10 @@ public open class Timespec(
             run {
                 val matchVal = other.subTimespec(this)
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val d = matchVal.value
+                    val d = matchVal.okValue()
                     Result.Err<Duration, Duration>(d)
                 }; is Result.Err<*, *> -> {
-                    val d1 = matchVal.error
+                    val d1 = matchVal.errValue()
                     Result.Ok<Duration, Duration>(d1)
                 } }
             }

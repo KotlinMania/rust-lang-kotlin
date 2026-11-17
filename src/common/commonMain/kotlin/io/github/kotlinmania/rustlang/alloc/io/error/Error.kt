@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.alloc.boxed.Box
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.NulError
 import io.github.kotlinmania.rustlang.alloc.io.constError
+import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.io.error.Custom
 import io.github.kotlinmania.rustlang.core.io.error.CustomOwner
 import io.github.kotlinmania.rustlang.core.io.error.Error

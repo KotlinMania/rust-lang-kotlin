@@ -3,6 +3,10 @@
 
 package io.github.kotlinmania.rustlang.coresimd
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+
 /**
  * Creates a vector from the elements of another vector.
  */
@@ -19,7 +23,7 @@ public interface Swizzle {
      */
     public fun <Mask, T> swizzle(vector: Simd<T>, m: Int): Simd<T> {
         // Safety: `vector` is a vector, and the index is a const vector of u32.
-        return run { val _simdArg0 = vector; val _simdArg1 = vector; val _simdArg2 = run {
+        return run { val simdArg0 = vector; val simdArg1 = vector; val simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
                 public var value: UIntArray = UIntArray(0),
@@ -40,7 +44,7 @@ public interface Swizzle {
                 i += 1
             }
             SimdShuffleIdx(output)
-        }; _simdArg0 }
+        }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
     }
 
     /**
@@ -51,7 +55,7 @@ public interface Swizzle {
      */
     public fun <Mask, T> concatSwizzle(first: Simd<T>, second: Simd<T>, m: Int): Simd<T> {
         // Safety: `first` and `second` are vectors, and the index is a const vector of u32.
-        return run { val _simdArg0 = first; val _simdArg1 = second; val _simdArg2 = run {
+        return run { val simdArg0 = first; val simdArg1 = second; val simdArg2 = run {
             // The index list needs to be returned as a vector.
             open class SimdShuffleIdx(
                 public var value: UIntArray = UIntArray(0),
@@ -72,7 +76,7 @@ public interface Swizzle {
                 i += 1
             }
             SimdShuffleIdx(output)
-        }; _simdArg0 }
+        }; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
     }
 
     /**

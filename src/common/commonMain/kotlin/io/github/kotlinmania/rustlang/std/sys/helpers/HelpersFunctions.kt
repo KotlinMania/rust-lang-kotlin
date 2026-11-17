@@ -23,13 +23,13 @@ public fun mulDivU64(value: ULong, numerator: ULong, denom: ULong): ULong {
 // Not used on all platforms.
 public fun <T> ignoreNotfound(result: Result<T, Error>): Result<Unit, Error> =
     when {
-        result is Result.Err<*, *> && result.error.kind() == ErrorKind.NotFound -> {
-            val err = result.error
+        result is Result.Err<*, *> && result.errValue().kind() == ErrorKind.NotFound -> {
+            val err = result.errValue()
             Result.Ok<Unit, Error>(Unit)
         }
         result is Result.Ok<*, *> -> Result.Ok<Unit, Error>(Unit)
         else -> {
-            val err1 = (result as Result.Err<*, *>).error
+            val err1 = (result as Result.Err<*, *>).errValue()
             Result.Err<Unit, Error>(err1)
         }
     }

@@ -6,6 +6,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.num.rotateLeft
 import io.github.kotlinmania.rustlang.core.num.rotateRight
+import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 
 public fun testMmSha1msg1Epu32() {
     val a = mmSetEpi64x(0xe9b5dba5b5c0fbcfuL.toLong(), 0x71374491428a2f98L)

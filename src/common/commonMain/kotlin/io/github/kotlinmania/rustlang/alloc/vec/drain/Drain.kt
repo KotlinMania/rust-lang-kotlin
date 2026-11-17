@@ -10,6 +10,11 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -65,7 +70,7 @@ public open class Drain<T, A : Allocator> internal constructor(
      */
     public var iter: ArrayDeque<T>,
     vecCtorArg: NonNull,
-) : AsRef<List<T>>, TrustedLen, Iterable<T> {
+) : AsRef<List<T>>, TrustedLen<Any>, Iterable<T> {
     public var vec: NonNull = vecCtorArg
         internal set
 

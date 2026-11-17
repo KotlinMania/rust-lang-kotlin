@@ -114,7 +114,7 @@ public open class Peekable<I, Item>(
                 null -> { return init }
                 else -> {
                     val v = matchVal
-                    when (val tryResult = f(init, v)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }
+                    when (val tryResult = f(init, v)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }
                 }
                 null -> init
             }
@@ -151,11 +151,11 @@ public open class Peekable<I, Item>(
                 val v = matchVal
                 when (val matchVal1 = this.iter.tryRfold(init, f).branch()) {
                     is ControlFlow.Continue<*, *> -> {
-                        val (acc) = matchVal1
+                        val acc = matchVal1.cfContinueValue()
                         f(acc, v)
                     }
                     is ControlFlow.Break<*, *> -> {
-                        val (r) = matchVal1
+                        val r = matchVal1.cfBreakValue()
                         this.peeked = v
                         fromResidualRFn(r)
                     }
@@ -416,10 +416,10 @@ public open class Peekable<I, Item>(
                     run {
                         val matchVal1 = f(item)
                         when (matchVal1) { is Result.Ok<*, *> -> {
-                            val result = matchVal1.value
+                            val result = matchVal1.okValue()
                             return result
                         }; is Result.Err<*, *> -> {
-                            val item1 = matchVal1.error
+                            val item1 = matchVal1.errValue()
                             item1
                         } }
                     }

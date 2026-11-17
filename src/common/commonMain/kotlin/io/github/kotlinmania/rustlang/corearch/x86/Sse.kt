@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -27,7 +29,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.Simd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_add_ss)
  */
-public fun mmAddSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtssF32(a) + mmCvtssF32(b); _simdArg0 }
+public fun mmAddSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtssF32(a) + mmCvtssF32(b); simdArg0 }
 
 /**
  * Adds packed single-precision (32-bit) floating-point elements in `a` and
@@ -35,7 +37,7 @@ public fun mmAddSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_add_ps)
  */
-public fun mmAddPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmAddPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Subtracts the first component of `b` from `a`, the other components are
@@ -43,7 +45,7 @@ public fun mmAddPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sub_ss)
  */
-public fun mmSubSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtssF32(a) - mmCvtssF32(b); _simdArg0 }
+public fun mmSubSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtssF32(a) - mmCvtssF32(b); simdArg0 }
 
 /**
  * Subtracts packed single-precision (32-bit) floating-point elements in `a` and
@@ -51,7 +53,7 @@ public fun mmSubSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sub_ps)
  */
-public fun mmSubPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmSubPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Multiplies the first component of `a` and `b`, the other components are
@@ -59,7 +61,7 @@ public fun mmSubPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mul_ss)
  */
-public fun mmMulSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtssF32(a) * mmCvtssF32(b); _simdArg0 }
+public fun mmMulSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtssF32(a) * mmCvtssF32(b); simdArg0 }
 
 /**
  * Multiplies packed single-precision (32-bit) floating-point elements in `a` and
@@ -67,7 +69,7 @@ public fun mmMulSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mul_ps)
  */
-public fun mmMulPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmMulPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Divides the first component of `b` by `a`, the other components are
@@ -75,7 +77,7 @@ public fun mmMulPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_div_ss)
  */
-public fun mmDivSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = mmCvtssF32(a) / mmCvtssF32(b); _simdArg0 }
+public fun mmDivSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = mmCvtssF32(a) / mmCvtssF32(b); simdArg0 }
 
 /**
  * Divides packed single-precision (32-bit) floating-point elements in `a` and
@@ -83,7 +85,7 @@ public fun mmDivSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_div_ps)
  */
-public fun mmDivPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }
+public fun mmDivPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; simdArg0 }
 
 /**
  * Returns the square root of the first single-precision (32-bit)
@@ -91,7 +93,7 @@ public fun mmDivPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdA
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sqrt_ss)
  */
-public fun mmSqrtSs(a: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = sqrt(mmCvtssF32(a)); _simdArg0 }
+public fun mmSqrtSs(a: M128): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = sqrt(mmCvtssF32(a)); simdArg0 }
 
 /**
  * Returns the square root of packed single-precision (32-bit) floating-point
@@ -99,7 +101,7 @@ public fun mmSqrtSs(a: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = 0;
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_sqrt_ps)
  */
-public fun mmSqrtPs(a: M128): M128 = run { val _simdArg0 = a; _simdArg0 }
+public fun mmSqrtPs(a: M128): M128 = run { val simdArg0 = a; simdArg0 }
 
 /**
  * Returns the approximate reciprocal of the first single-precision
@@ -184,7 +186,7 @@ public fun mmAndPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
+        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
     }
 
 // i586 only seems to generate plain `not` and `and` instructions, so ignore
@@ -203,7 +205,7 @@ public fun mmAndnotPs(a: M128, b: M128): M128 =
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val mask: M128i = transmute(Simd<Int>(List(4) { -1 }))
-        transmute(run { val _simdArg0 = run { val _simdArg0 = mask; val _simdArg1 = a1; _simdArg0 }; val _simdArg1 = b1; _simdArg0 })
+        transmute(run { val simdArg0 = run { val simdArg0 = mask; val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 })
     }
 
 // i586 only seems to generate plain `or` instructions, so we ignore it.
@@ -217,7 +219,7 @@ public fun mmOrPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
+        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
     }
 
 // i586 only seems to generate plain `xor` instructions, so we ignore it.
@@ -232,7 +234,7 @@ public fun mmXorPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
+        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
     }
 
 /**
@@ -272,7 +274,7 @@ public fun mmCmpleSs(a: M128, b: M128): M128 = cmpss(a, b, 2)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpgt_ss)
  */
-public fun mmCmpgtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 1); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
+public fun mmCmpgtSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = cmpss(b, a, 1); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); M128() }
 
 /**
  * Compares the lowest `Float` of both inputs for greater than or equal. The
@@ -282,7 +284,7 @@ public fun mmCmpgtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _sim
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpge_ss)
  */
-public fun mmCmpgeSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 2); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
+public fun mmCmpgeSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = cmpss(b, a, 2); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); M128() }
 
 /**
  * Compares the lowest `Float` of both inputs for inequality. The lowest 32 bits
@@ -322,7 +324,7 @@ public fun mmCmpnleSs(a: M128, b: M128): M128 = cmpss(a, b, 6)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpngt_ss)
  */
-public fun mmCmpngtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 5); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
+public fun mmCmpngtSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = cmpss(b, a, 5); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); M128() }
 
 /**
  * Compares the lowest `Float` of both inputs for not-greater-than-or-equal. The
@@ -332,7 +334,7 @@ public fun mmCmpngtSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _si
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cmpnge_ss)
  */
-public fun mmCmpngeSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = cmpss(b, a, 6); val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
+public fun mmCmpngeSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = cmpss(b, a, 6); val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); M128() }
 
 /**
  * Checks if the lowest `Float` of both inputs are ordered. The lowest 32 bits of
@@ -629,7 +631,7 @@ public fun mmCvttSs2si(a: M128): Int = mmCvttssSi32(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtss_f32)
  */
-public fun mmCvtssF32(a: M128): Float = run { val _simdArg0 = a; val _simdArg1 = 0.0f; _simdArg0 }
+public fun mmCvtssF32(a: M128): Float = run { val simdArg0 = a; val simdArg1 = 0.0f; 0.0f }
 
 /**
  * Converts a 32 bit integer to a 32 bit float. The result vector is the input
@@ -640,7 +642,7 @@ public fun mmCvtssF32(a: M128): Float = run { val _simdArg0 = a; val _simdArg1 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsi32_ss)
  */
-public fun mmCvtsi32Ss(a: M128, b: Int): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b.toFloat(); _simdArg0 }
+public fun mmCvtsi32Ss(a: M128, b: Int): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b.toFloat(); simdArg0 }
 
 /**
  * Alias for [`mmCvtsi32Ss`](fn._mm_cvtsi32_ss.html).
@@ -744,7 +746,7 @@ public fun mmShufflePs(a: M128, b: M128, mask: Int): M128 {
     run {
         check(0 <= mask && mask < (1 shl 8)) { "MASK doesn't fit in 8 bits (unsigned)" }
     }
-    return run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(mask.toUInt() and 0x3u, (mask.toUInt() shr 2) and 0x3u, ((mask.toUInt() shr 4) and 0x3u) + 4u, ((mask.toUInt() shr 6) and 0x3u) + 4u)); _simdArg0 }
+    return run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(mask.toUInt() and 0x3u, (mask.toUInt() shr 2) and 0x3u, ((mask.toUInt() shr 4) and 0x3u) + 4u, ((mask.toUInt() shr 6) and 0x3u) + 4u)); M128() }
 }
 
 /**
@@ -753,7 +755,7 @@ public fun mmShufflePs(a: M128, b: M128, mask: Int): M128 {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpackhi_ps)
  */
-public fun mmUnpackhiPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); _simdArg0 }
+public fun mmUnpackhiPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(2u, 6u, 3u, 7u)); M128() }
 
 /**
  * Unpacks and interleave single-precision (32-bit) floating-point elements
@@ -761,7 +763,7 @@ public fun mmUnpackhiPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_unpacklo_ps)
  */
-public fun mmUnpackloPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); _simdArg0 }
+public fun mmUnpackloPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 4u, 1u, 5u)); M128() }
 
 /**
  * Combine higher half of `a` and `b`. The higher half of `b` occupies the
@@ -771,7 +773,7 @@ public fun mmUnpackloPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _
  */
 public fun mmMovehlPs(a: M128, b: M128): M128 {
     // Note; figure why this is a different instruction on msvc?
-    return run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(6u, 7u, 2u, 3u)); _simdArg0 }
+    return run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(6u, 7u, 2u, 3u)); M128() }
 }
 
 /**
@@ -780,7 +782,7 @@ public fun mmMovehlPs(a: M128, b: M128): M128 {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_movelh_ps)
  */
-public fun mmMovelhPs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 4u, 5u)); _simdArg0 }
+public fun mmMovelhPs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 4u, 5u)); M128() }
 
 /**
  * Returns a mask of the most significant bit of each element in `a`.
@@ -794,8 +796,8 @@ public fun mmMovemaskPs(a: M128): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I32x4 = run { val _simdArg0 = transmuteWithLayouts<M128, I32x4>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val _simdArg1 = Simd<Int>(List(4) { 0 }); _simdArg0 }
-        (run { val _simdArg0 = mask; 0u }).toInt()
+        val mask: I32x4 = run { val simdArg0 = transmuteWithLayouts<M128, I32x4>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<I32x4>()); val simdArg1 = Simd<Int>(List(4) { 0 }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
+        (run { val simdArg0 = mask; 0u }).toInt()
     }
 }
 
@@ -891,7 +893,7 @@ public fun mmLoaduPs(p: ConstPtr): M128 {
  */
 public fun mmLoadrPs(p: ConstPtr): M128 {
     val a = mmLoadPs(p)
-    return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); _simdArg0 }
+    return run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); M128() }
 }
 
 /**
@@ -903,7 +905,7 @@ public fun mmLoadrPs(p: ConstPtr): M128 {
  */
 public fun mmStoreSs(p: MutPtr, a: M128) {
     val p1 = p
-    (PrimitiveLayouts.F32).writeNative((p1).rawAddress, run { val _simdArg0 = a; val _simdArg1 = 0; _simdArg0 })
+    (PrimitiveLayouts.F32).writeNative((p1).rawAddress, run { val simdArg0 = a; val simdArg1 = 0; simdArg0 })
 }
 
 /**
@@ -927,7 +929,7 @@ public fun mmStoreSs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_store1_ps)
  */
 public fun mmStore1Ps(p: MutPtr, a: M128) {
-    val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u)); M128() }
+    val b: M128 = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 0u, 0u, 0u)); M128() }
     (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
 }
 
@@ -989,7 +991,7 @@ public fun mmStoreuPs(p: MutPtr, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_storer_ps)
  */
 public fun mmStorerPs(p: MutPtr, a: M128) {
-    val b: M128 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); M128() }
+    val b: M128 = run { val simdArg0 = a; val simdArg1 = a; val simdArg2 = SimdShuffleIdx(uintArrayOf(3u, 2u, 1u, 0u)); M128() }
     (UnresolvedTypeLayout<M128>()).writeNative(((MutPtr(p.rawAddress, p.rawMeta))).rawAddress, b)
 }
 
@@ -1004,7 +1006,7 @@ public fun mmStorerPs(p: MutPtr, a: M128) {
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_move_ss)
  */
-public fun mmMoveSs(a: M128, b: M128): M128 = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); _simdArg0 }
+public fun mmMoveSs(a: M128, b: M128): M128 = run { val simdArg0 = a; val simdArg1 = b; val simdArg2 = SimdShuffleIdx(uintArrayOf(4u, 1u, 2u, 3u)); M128() }
 
 //
 // The following is not a doc comment since it's not clear whether we want to put this into the

@@ -48,4 +48,4 @@ public fun mmCvttssSi64(a: M128): Long = cvttss2si64(a)
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsi64_ss)
  */
-public fun mmCvtsi64Ss(a: M128, b: Long): M128 = run { val _simdArg0 = a; val _simdArg1 = 0; val _simdArg2 = b.toFloat(); _simdArg0 }
+public fun mmCvtsi64Ss(a: M128, b: Long): M128 = run { val simdArg0 = a; val simdArg1 = 0; val simdArg2 = b.toFloat(); simdArg0 }

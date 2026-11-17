@@ -49,20 +49,20 @@ public class DebugStruct(
 public val NOT_FILE_ERROR: Error = constError(ErrorKind.InvalidInput, "the source path is neither a regular file nor a symlink to a regular file")
 
 public fun copy(from: Path, to: Path): Result<ULong, Error> {
-    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.error) }
-    val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.error) }
+    val reader = when (val tryResult = File.open(from)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.errValue()) }
+    val metadata = when (val tryResult = reader.metadata()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.errValue()) }
     if (!metadata.isFile()) {
         return Result.Err<ULong, Error>(NOT_FILE_ERROR)
     }
-    val writer = when (val tryResult = File.create(to)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.error) }
+    val writer = when (val tryResult = File.create(to)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.errValue()) }
     val perm = metadata.permissions()
-    val ret = when (val tryResult = io.github.kotlinmania.rustlang.alloc.io.copy.copy(reader, writer)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.error) }
-    when (val tryResult = writer.setPermissions(perm)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.error) }
+    val ret = when (val tryResult = io.github.kotlinmania.rustlang.alloc.io.copy.copy(reader, writer)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.errValue()) }
+    when (val tryResult = writer.setPermissions(perm)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<ULong, Error>(tryResult.errValue()) }
     return Result.Ok<ULong, Error>(ret)
 }
 
 public fun removeDirAll(path: Path): Result<Unit, Error> {
-    val filetype = when (val tryResult = symlinkMetadata(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }.fileType()
+    val filetype = when (val tryResult = symlinkMetadata(path)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }.fileType()
     return if (filetype.isSymlink()) {
         removeFile(path)
     } else {
@@ -71,14 +71,14 @@ public fun removeDirAll(path: Path): Result<Unit, Error> {
 }
 
 public fun removeDirAllRecursive(path: Path): Result<Unit, Error> {
-    for (child in when (val tryResult = readDir(path)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }) {
+    for (child in when (val tryResult = readDir(path)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }) {
         val result: Result<Unit, Error> =
             run {
-                val child1 = when (val tryResult = child) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
-                if (when (val tryResult = child1.fileType()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }.isDir()) {
-                    when (val tryResult = removeDirAllRecursive(child1.path())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                val child1 = when (val tryResult = child) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+                if (when (val tryResult = child1.fileType()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }.isDir()) {
+                    when (val tryResult = removeDirAllRecursive(child1.path())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                 } else {
-                    when (val tryResult = removeFile(child1.path())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                    when (val tryResult = removeFile(child1.path())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                 }
             }
         // ignore internal NotFound errors to prevent race conditions
@@ -94,12 +94,12 @@ public fun exists(path: Path): Result<Boolean, Error> =
         val matchVal = metadata(path)
         when {
             matchVal is Result.Ok<*, *> -> Result.Ok<Boolean, Error>(true)
-            matchVal is Result.Err<*, *> && matchVal.error.kind() == ErrorKind.NotFound -> {
-                val error = matchVal.error
+            matchVal is Result.Err<*, *> && matchVal.errValue().kind() == ErrorKind.NotFound -> {
+                val error = matchVal.errValue()
                 Result.Ok<Boolean, Error>(false)
             }
             else -> {
-                val error1 = (matchVal as Result.Err<*, *>).error
+                val error1 = (matchVal as Result.Err<*, *>).errValue()
                 Result.Err<Boolean, Error>(error1)
             }
         }

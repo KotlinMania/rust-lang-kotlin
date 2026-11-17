@@ -1,6 +1,8 @@
 // port-lint: source formatters/json.rs
 package io.github.kotlinmania.rustlang.test.formatters.json
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.error.Result
@@ -167,7 +169,7 @@ public fun <T : Write> JsonFormatter<T>.writeRunFinish(state: ConsoleTestState):
             }
         }
     val newline = "\n"
-    when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     return RustResult.Ok(state.failed == 0)
 }
 

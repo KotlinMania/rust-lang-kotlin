@@ -70,8 +70,8 @@ public fun <T : Write> JunitFormatter<T>.writeResult(desc: TestDesc, result: Tes
 }
 
 public fun <T : Write> JunitFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
-    when (val tryResult = this.writeMessage("<testsuites>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-    when (val tryResult = this.writeMessage("<testsuite name=\"test\" package=\"test\" id=\"0\" errors=\"0\" failures=\"${state.failed}\" tests=\"${state.total}\" skipped=\"${state.ignored}\" >")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = this.writeMessage("<testsuites>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = this.writeMessage("<testsuite name=\"test\" package=\"test\" id=\"0\" errors=\"0\" failures=\"${state.failed}\" tests=\"${state.total}\" skipped=\"${state.ignored}\" >")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     for ((desc, result, duration, stdout) in take(this.results)) {
         val (className, testName) = parseClassName(desc)
         when (result) {
@@ -79,59 +79,59 @@ public fun <T : Write> JunitFormatter<T>.writeRunFinish(state: ConsoleTestState)
                 // no-op
             }
             TestResult.TrFailed -> {
-                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                when (val tryResult = this.writeMessage("<failure type=\"assert\"/>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                when (val tryResult = this.writeMessage("<failure type=\"assert\"/>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 if (!stdout.isEmpty()) {
-                    when (val tryResult = this.writeMessage("<system-out>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage("</system-out>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<system-out>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage("</system-out>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 }
-                when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
             }
             is TestResult.TrFailedMsg -> {
                 val (m) = result
-                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                when (val tryResult = this.writeMessage("<failure message=\"$m\" type=\"assert\"/>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                when (val tryResult = this.writeMessage("<failure message=\"$m\" type=\"assert\"/>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 if (!stdout.isEmpty()) {
-                    when (val tryResult = this.writeMessage("<system-out>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage("</system-out>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<system-out>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage("</system-out>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 }
-                when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
             }
             TestResult.TrTimedFail -> {
-                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                when (val tryResult = this.writeMessage("<failure type=\"timeout\"/>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                when (val tryResult = this.writeMessage("<failure type=\"timeout\"/>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
             }
             is TestResult.TrBench -> {
                 val (b) = result
-                when (val tryResult = this.writeMessage("<testcase classname=\"benchmark::$className\" name=\"$testName\" time=\"${b.nsIterSumm.sum}\" />")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("<testcase classname=\"benchmark::$className\" name=\"$testName\" time=\"${b.nsIterSumm.sum}\" />")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
             }
             TestResult.TrOk -> {
-                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\"")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\"")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 if (stdout.isEmpty() || !state.options.displayOutput) {
-                    when (val tryResult = this.writeMessage("/>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("/>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 } else {
-                    when (val tryResult = this.writeMessage("><system-out>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage("</system-out>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-                    when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("><system-out>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage("</system-out>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+                    when (val tryResult = this.writeMessage("</testcase>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
                 }
             }
         }
     }
-    when (val tryResult = this.writeMessage("<system-out/>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-    when (val tryResult = this.writeMessage("<system-err/>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-    when (val tryResult = this.writeMessage("</testsuite>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-    when (val tryResult = this.writeMessage("</testsuites>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
-    when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.error) }
+    when (val tryResult = this.writeMessage("<system-out/>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = this.writeMessage("<system-err/>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = this.writeMessage("</testsuite>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = this.writeMessage("</testsuites>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
+    when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, Error>(tryResult.errValue()) }
     return RustResult.Ok(state.failed == 0)
 }
 
 public fun <T : Write> JunitFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {
-    when (val tryResult = this.writeMessage("<report total_time=\"$totalTime\" compilation_time=\"$compilationTime\"></report>")) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
-    when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.writeMessage("<report total_time=\"$totalTime\" compilation_time=\"$compilationTime\"></report>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
+    when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     return RustResult.Ok(Unit)
 }
 

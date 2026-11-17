@@ -2151,9 +2151,9 @@ public fun Boolean.cmp(other: Boolean): Ordering {
     // more optimal assembly.
     // See <https://github.com/rust-lang/rust/issues/66780> for more info.
     return when ((this.toByte()) - (other.toByte())) {
-        -1 -> Less
-        0 -> Equal
-        1 -> Greater
+        -1.toByte() -> Less
+        0.toByte() -> Equal
+        1.toByte() -> Greater
         // SAFETY: bool as i8 returns 0 or 1, so the difference can't be anything else
         else -> unreachableUnchecked()
     }

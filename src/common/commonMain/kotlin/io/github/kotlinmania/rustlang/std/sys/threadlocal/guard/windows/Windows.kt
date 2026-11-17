@@ -7,6 +7,9 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -237,7 +240,7 @@ public fun enable() {
                         }
                         newKey
                     }; is Result.Err<*, *> -> {
-                        val otherKey = matchVal.error
+                        val otherKey = matchVal.errValue()
                         flsFree(newKey)
                         otherKey
                     } }
@@ -289,7 +292,7 @@ public fun freeFlsKeyAtExit() {
     // However, this hook will also be called during normal process exit, while other Rust threads are still running,
     // so we must be careful to avoid races with `enable`.
     val shouldFreeKey = EnableGuard.startExit()
-    if (!shouldFreeKey) {
+    if (shouldFreeKey.inv()) {
         return
     }
     val currentKey = KEY.swap(FLS_OUT_OF_INDEXES, Ordering.AcqRel)

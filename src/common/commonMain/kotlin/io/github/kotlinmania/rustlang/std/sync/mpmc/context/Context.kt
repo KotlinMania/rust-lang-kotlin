@@ -81,7 +81,7 @@ public open class Context(
                         when (matchVal) { is Result.Ok<*, *> -> {
                             Selected.Aborted
                         }; is Result.Err<*, *> -> {
-                            val s = matchVal.error
+                            val s = matchVal.errValue()
                             s
                         } }
                     }

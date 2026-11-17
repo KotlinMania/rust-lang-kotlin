@@ -1,6 +1,7 @@
 // port-lint: source iter/adapters/rev.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.rev
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner

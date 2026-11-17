@@ -21,7 +21,7 @@ public fun <T> vecPerm(a: T, b: T, c: VectorUnsignedChar): T where T : VectorPer
     //
     // Xor the mask and flip the arguments
     val d = transmute(Simd<UByte>(listOf(255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte())))
-    val c1 = run { val _simdArg0 = c; val _simdArg1 = d; _simdArg0 }
+    val c1 = run { val simdArg0 = c; val simdArg1 = d; simdArg0 }
     return b.vecVperm(a, c1)
 }
 

@@ -38,7 +38,7 @@ public fun detectFeatures(): cache.Initializer {
     }
     when (val matchVal = auxv()) {
         is Result.Ok<*, *> -> {
-            val auxv = matchVal.value
+            val auxv = matchVal.okValue()
             val hwcap: AtHwcap = auxv.into()
             return hwcap.cache(isExynos9810)
         }

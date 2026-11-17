@@ -3,6 +3,9 @@ package io.github.kotlinmania.rustlang.core.cmp.clamp
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.core.cmp.clamp
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmMaxnumf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmMinnumf32

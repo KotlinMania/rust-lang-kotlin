@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CLOCK_UPTIME_RAW
@@ -69,7 +70,7 @@ public open class SystemTime(
         public val MIN: SystemTime = SystemTime(t = Timespec.MIN)
 
         public fun new(tvSec: Long, tvNsec: Long): Result<SystemTime, Error> {
-            return Result.Ok<SystemTime, Error>(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<SystemTime, Error>(tryResult.error) }))
+            return Result.Ok<SystemTime, Error>(SystemTime(t = when (val tryResult = Timespec.new(tvSec, tvNsec)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<SystemTime, Error>(tryResult.errValue()) }))
         }
 
         public fun now(): SystemTime = SystemTime(t = Timespec.now(CLOCK_REALTIME))

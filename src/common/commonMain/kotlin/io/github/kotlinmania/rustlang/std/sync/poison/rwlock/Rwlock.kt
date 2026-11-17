@@ -6,6 +6,12 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -159,7 +165,7 @@ public open class RwLock<T>(
         run {
             val matchVal = this.read()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val guard = matchVal.value
+                val guard = matchVal.okValue()
                 Result.Ok<T, PoisonError<Unit>>(guard.clone())
             }; is Result.Err<*, *> -> {
                 Result.Err<T, PoisonError<Unit>>(PoisonError.new(Unit))
@@ -198,7 +204,7 @@ public open class RwLock<T>(
             run {
                 val matchVal = this.write()
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val guard = matchVal.value
+                    val guard = matchVal.okValue()
                     guard = value
                     Result.Ok<Unit, PoisonError<T>>(Unit)
                 }; is Result.Err<*, *> -> {
@@ -233,7 +239,7 @@ public open class RwLock<T>(
         run {
             val matchVal = this.write()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val guard = matchVal.value
+                val guard = matchVal.okValue()
                 Result.Ok(replace(guard, value))
             }; is Result.Err<*, *> -> {
                 Result.Err(PoisonError.new(value))
@@ -333,7 +339,7 @@ public open class RwLock<T>(
      */
     public open fun tryRead(): TryLockResult<RwLockReadGuard<T>> {
         return if (this.inner.tryRead()) {
-            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
+            Result.Ok(when (val tryResult = RwLockReadGuard.new(this)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -417,7 +423,7 @@ public open class RwLock<T>(
      */
     public open fun tryWrite(): TryLockResult<RwLockWriteGuard<T>> {
         return if (this.inner.tryWrite()) {
-            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") })
+            Result.Ok(when (val tryResult = RwLockWriteGuard.new(this)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
         } else {
             Result.Err(TryLockError.WouldBlock)
         }
@@ -557,16 +563,16 @@ public open class RwLock<T>(
             val matchVal = this.tryRead()
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val guard = matchVal.value
+                    val guard = matchVal.okValue()
                     d.field("data", guard)
                 }
-                matchVal is Result.Err<*, *> && matchVal.error is TryLockError.Poisoned<*> -> {
-                    val errorVal = matchVal.error
-                    val (err) = errorVal as TryLockError.Poisoned<*>
+                matchVal is Result.Err<*, *> && matchVal.errValue() is TryLockError.Poisoned<*> -> {
+                    val errValueVal = matchVal.errValue()
+                    val (err) = errValueVal as TryLockError.Poisoned<*>
                     d.field("data", err.getRef())
                 }
                 else -> {
-                    val errorVal1 = (matchVal as Result.Err<*, *>).error
+                    val errValueVal1 = (matchVal as Result.Err<*, *>).errValue()
                     d.field("data", "<locked>")
                 }
             }

@@ -53,7 +53,7 @@ public fun <T> empty(): Empty<T> = Empty(Unit)
  */
 public open class Empty<T>(
     public var value: Unit,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     public var field0: Unit
         get() = value
         set(v) {

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.pal.wasi.cabirealloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.abortInternal
 

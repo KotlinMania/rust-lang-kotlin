@@ -1,10 +1,12 @@
 // port-lint: source sys/pal/windows/time.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.time
 
+import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -90,7 +92,7 @@ public open class WaitableTimer internal constructor(
         // Convert the Duration to a format similar to FILETIME.
         // Negative values are relative times whereas positive values are absolute.
         // Therefore we negate the relative duration.
-        val time = when (val tryResult = (checkedDur2intervals(duration)?.let { Result.Ok<Long, Unit>(it) } ?: Result.Err<Long, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.error) }.neg()
+        val time = when (val tryResult = (checkedDur2intervals(duration)?.let { Result.Ok<Long, Unit>(it) } ?: Result.Err<Long, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }.neg()
         val result = setWaitableTimer(this.handle, time, 0, null, ConstPtr(0L), FALSE)
         return if (result != 0) {
             Result.Ok<Unit, Unit>(Unit)

@@ -7,7 +7,11 @@ import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.mask
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
@@ -435,7 +439,7 @@ public open class RwLock internal constructor(
     public open fun tryRead(): Boolean = this.state.tryUpdate(Acquire, Relaxed, ::readLock).isOk()
 
     public open fun read() {
-        if (!this.tryRead()) {
+        if (this.tryRead().inv()) {
             this.lockContended(false)
         }
     }
@@ -449,7 +453,7 @@ public open class RwLock internal constructor(
     }
 
     public open fun write() {
-        if (!this.tryWrite()) {
+        if (this.tryWrite().inv()) {
             this.lockContended(true)
         }
     }
@@ -487,7 +491,7 @@ public open class RwLock internal constructor(
                         when (matchVal1) { is Result.Ok<*, *> -> {
                             return
                         }; is Result.Err<*, *> -> {
-                            val new = matchVal1.error
+                            val new = matchVal1.errValue()
                             state = new
                         } }
                     }
@@ -523,7 +527,7 @@ public open class RwLock internal constructor(
             // thread.
             when (val matchVal2 = this.state.compareExchangeWeak(state, next1, AcqRel, Relaxed)) {
                 is Result.Err<*, *> -> {
-                    val new1 = matchVal2.error
+                    val new1 = matchVal2.errValue()
                     // The state has changed, just try again.
                     state = new1
                     continue
@@ -576,7 +580,7 @@ public open class RwLock internal constructor(
             }
         })
             when (matchVal) { is Result.Ok<*, *> -> {}; is Result.Err<*, *> -> {
-                val state = matchVal.error
+                val state = matchVal.errValue()
                 this.readUnlockContended(state)
             } }
         }
@@ -615,7 +619,7 @@ public open class RwLock internal constructor(
     public open fun writeUnlock() {
         when (val matchVal = this.state.compareExchange(withoutProvenanceMut(LOCKED), UNLOCKED, Release, Relaxed)) {
             is Result.Err<*, *> -> {
-                val state = matchVal.error
+                val state = matchVal.errValue()
                 // SAFETY: Since other threads cannot acquire the lock, the state can only have changed
                 // because there are threads queued on the lock.
                 this.unlockContended(state)
@@ -646,7 +650,7 @@ public open class RwLock internal constructor(
                     when (matchVal) { is Result.Ok<*, *> -> {
                         return
                     }; is Result.Err<*, *> -> {
-                        val new = matchVal.error
+                        val new = matchVal.errValue()
                         current = new
                         continue
                     } }
@@ -662,7 +666,7 @@ public open class RwLock internal constructor(
                     this.unlockQueue(next1)
                     return
                 }; is Result.Err<*, *> -> {
-                    val new1 = matchVal1.error
+                    val new1 = matchVal1.errValue()
                     current = new1
                 } }
             }
@@ -679,7 +683,7 @@ public open class RwLock internal constructor(
         // read-locked with a single reader and no waiters.
         when (val matchVal = this.state.compareExchange(withoutProvenanceMut(LOCKED), withoutProvenanceMut(SINGLE or LOCKED), Release, Relaxed)) {
             is Result.Err<*, *> -> {
-                val state = matchVal.error
+                val state = matchVal.errValue()
                 // SAFETY: The only way the state can have changed is if there are threads queued.
                 // Wake all of them up.
                 this.downgradeSlow(state)
@@ -721,7 +725,7 @@ public open class RwLock internal constructor(
                     when (matchVal) { is Result.Ok<*, *> -> {
                         return
                     }; is Result.Err<*, *> -> {
-                        val new = matchVal.error
+                        val new = matchVal.errValue()
                         state1 = new
                     } }
                 }
@@ -730,7 +734,7 @@ public open class RwLock internal constructor(
                 val next1 = ptr.withoutProvenanceMut(SINGLE or LOCKED)
                 when (val matchVal1 = this.state.compareExchangeWeak(state1, next1, AcqRel, Relaxed)) {
                     is Result.Err<*, *> -> {
-                        val new1 = matchVal1.error
+                        val new1 = matchVal1.errValue()
                         state1 = new1
                         continue
                     }
@@ -771,7 +775,7 @@ public open class RwLock internal constructor(
                     when (matchVal) { is Result.Ok<*, *> -> {
                         return
                     }; is Result.Err<*, *> -> {
-                        val new = matchVal.error
+                        val new = matchVal.errValue()
                         state1 = new
                         continue
                     } }
@@ -782,7 +786,7 @@ public open class RwLock internal constructor(
             // modifications.
             val downgrade = state1.addr() and DOWNGRADED != 0
             val isWriter = tail.asRef().write
-            if (!downgrade && isWriter && tail.asRef().prev.get() != null) {
+            if (downgrade.inv() && isWriter && tail.asRef().prev.get() != null) {
                 // If we are not downgrading and the next thread is a writer, only wake up that
                 // writing thread.
                 // Split off `tail`.
@@ -798,7 +802,7 @@ public open class RwLock internal constructor(
                 val next = state1.mask(QUEUE_LOCKED.inv())
                 when (val matchVal1 = this.state.compareExchangeWeak(state1, next, Release, Acquire)) {
                     is Result.Err<*, *> -> {
-                        val new1 = matchVal1.error
+                        val new1 = matchVal1.errValue()
                         // Undo the tail modification above, so that we can find the tail again above.
                         // As mentioned above, we have exclusive control over the queue, so no other
                         // thread could have noticed the change.
@@ -826,7 +830,7 @@ public open class RwLock internal constructor(
                     }
                 when (val matchVal2 = this.state.compareExchangeWeak(state1, next1, Release, Acquire)) {
                     is Result.Err<*, *> -> {
-                        val new2 = matchVal2.error
+                        val new2 = matchVal2.errValue()
                         state1 = new2
                         continue
                     }

@@ -1,6 +1,7 @@
 // port-lint: source math/generic/scalbn.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.scalbn
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
 

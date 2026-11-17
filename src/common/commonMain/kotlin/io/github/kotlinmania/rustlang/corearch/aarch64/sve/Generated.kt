@@ -4818,181 +4818,181 @@ public fun svcompactU64(pg: SvboolT, op: Svuint64T): Svuint64T = svcompactS64(pg
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_f32])
  */
-public fun svcreate2F32(x0: Svfloat32T, x1: Svfloat32T): Svfloat32x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2F32(x0: Svfloat32T, x1: Svfloat32T): Svfloat32x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_f64])
  */
-public fun svcreate2F64(x0: Svfloat64T, x1: Svfloat64T): Svfloat64x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2F64(x0: Svfloat64T, x1: Svfloat64T): Svfloat64x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_s8])
  */
-public fun svcreate2S8(x0: Svint8T, x1: Svint8T): Svint8x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2S8(x0: Svint8T, x1: Svint8T): Svint8x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_s16])
  */
-public fun svcreate2S16(x0: Svint16T, x1: Svint16T): Svint16x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2S16(x0: Svint16T, x1: Svint16T): Svint16x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_s32])
  */
-public fun svcreate2S32(x0: Svint32T, x1: Svint32T): Svint32x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2S32(x0: Svint32T, x1: Svint32T): Svint32x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_s64])
  */
-public fun svcreate2S64(x0: Svint64T, x1: Svint64T): Svint64x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2S64(x0: Svint64T, x1: Svint64T): Svint64x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_u8])
  */
-public fun svcreate2U8(x0: Svuint8T, x1: Svuint8T): Svuint8x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2U8(x0: Svuint8T, x1: Svuint8T): Svuint8x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_u16])
  */
-public fun svcreate2U16(x0: Svuint16T, x1: Svuint16T): Svuint16x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2U16(x0: Svuint16T, x1: Svuint16T): Svuint16x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_u32])
  */
-public fun svcreate2U32(x0: Svuint32T, x1: Svuint32T): Svuint32x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2U32(x0: Svuint32T, x1: Svuint32T): Svuint32x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of two vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate2[_u64])
  */
-public fun svcreate2U64(x0: Svuint64T, x1: Svuint64T): Svuint64x2T = simd.sveTupleCreate2(x0, x1)
+public fun svcreate2U64(x0: Svuint64T, x1: Svuint64T): Svuint64x2T = run { val simdArg0 = x0; val simdArg1 = x1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_f32])
  */
-public fun svcreate3F32(x0: Svfloat32T, x1: Svfloat32T, x2: Svfloat32T): Svfloat32x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3F32(x0: Svfloat32T, x1: Svfloat32T, x2: Svfloat32T): Svfloat32x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_f64])
  */
-public fun svcreate3F64(x0: Svfloat64T, x1: Svfloat64T, x2: Svfloat64T): Svfloat64x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3F64(x0: Svfloat64T, x1: Svfloat64T, x2: Svfloat64T): Svfloat64x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_s8])
  */
-public fun svcreate3S8(x0: Svint8T, x1: Svint8T, x2: Svint8T): Svint8x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3S8(x0: Svint8T, x1: Svint8T, x2: Svint8T): Svint8x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_s16])
  */
-public fun svcreate3S16(x0: Svint16T, x1: Svint16T, x2: Svint16T): Svint16x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3S16(x0: Svint16T, x1: Svint16T, x2: Svint16T): Svint16x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_s32])
  */
-public fun svcreate3S32(x0: Svint32T, x1: Svint32T, x2: Svint32T): Svint32x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3S32(x0: Svint32T, x1: Svint32T, x2: Svint32T): Svint32x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_s64])
  */
-public fun svcreate3S64(x0: Svint64T, x1: Svint64T, x2: Svint64T): Svint64x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3S64(x0: Svint64T, x1: Svint64T, x2: Svint64T): Svint64x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_u8])
  */
-public fun svcreate3U8(x0: Svuint8T, x1: Svuint8T, x2: Svuint8T): Svuint8x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3U8(x0: Svuint8T, x1: Svuint8T, x2: Svuint8T): Svuint8x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_u16])
  */
-public fun svcreate3U16(x0: Svuint16T, x1: Svuint16T, x2: Svuint16T): Svuint16x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3U16(x0: Svuint16T, x1: Svuint16T, x2: Svuint16T): Svuint16x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_u32])
  */
-public fun svcreate3U32(x0: Svuint32T, x1: Svuint32T, x2: Svuint32T): Svuint32x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3U32(x0: Svuint32T, x1: Svuint32T, x2: Svuint32T): Svuint32x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of three vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate3[_u64])
  */
-public fun svcreate3U64(x0: Svuint64T, x1: Svuint64T, x2: Svuint64T): Svuint64x3T = simd.sveTupleCreate3(x0, x1, x2)
+public fun svcreate3U64(x0: Svuint64T, x1: Svuint64T, x2: Svuint64T): Svuint64x3T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_f32])
  */
-public fun svcreate4F32(x0: Svfloat32T, x1: Svfloat32T, x2: Svfloat32T, x3: Svfloat32T): Svfloat32x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4F32(x0: Svfloat32T, x1: Svfloat32T, x2: Svfloat32T, x3: Svfloat32T): Svfloat32x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_f64])
  */
-public fun svcreate4F64(x0: Svfloat64T, x1: Svfloat64T, x2: Svfloat64T, x3: Svfloat64T): Svfloat64x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4F64(x0: Svfloat64T, x1: Svfloat64T, x2: Svfloat64T, x3: Svfloat64T): Svfloat64x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_s8])
  */
-public fun svcreate4S8(x0: Svint8T, x1: Svint8T, x2: Svint8T, x3: Svint8T): Svint8x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4S8(x0: Svint8T, x1: Svint8T, x2: Svint8T, x3: Svint8T): Svint8x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_s16])
  */
-public fun svcreate4S16(x0: Svint16T, x1: Svint16T, x2: Svint16T, x3: Svint16T): Svint16x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4S16(x0: Svint16T, x1: Svint16T, x2: Svint16T, x3: Svint16T): Svint16x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_s32])
  */
-public fun svcreate4S32(x0: Svint32T, x1: Svint32T, x2: Svint32T, x3: Svint32T): Svint32x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4S32(x0: Svint32T, x1: Svint32T, x2: Svint32T, x3: Svint32T): Svint32x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_s64])
  */
-public fun svcreate4S64(x0: Svint64T, x1: Svint64T, x2: Svint64T, x3: Svint64T): Svint64x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4S64(x0: Svint64T, x1: Svint64T, x2: Svint64T, x3: Svint64T): Svint64x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_u8])
  */
-public fun svcreate4U8(x0: Svuint8T, x1: Svuint8T, x2: Svuint8T, x3: Svuint8T): Svuint8x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4U8(x0: Svuint8T, x1: Svuint8T, x2: Svuint8T, x3: Svuint8T): Svuint8x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_u16])
  */
-public fun svcreate4U16(x0: Svuint16T, x1: Svuint16T, x2: Svuint16T, x3: Svuint16T): Svuint16x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4U16(x0: Svuint16T, x1: Svuint16T, x2: Svuint16T, x3: Svuint16T): Svuint16x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_u32])
  */
-public fun svcreate4U32(x0: Svuint32T, x1: Svuint32T, x2: Svuint32T, x3: Svuint32T): Svuint32x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4U32(x0: Svuint32T, x1: Svuint32T, x2: Svuint32T, x3: Svuint32T): Svuint32x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).alignBytes)); res } }
 
 /**
  * Create a tuple of four vectors
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcreate4[_u64])
  */
-public fun svcreate4U64(x0: Svuint64T, x1: Svuint64T, x2: Svuint64T, x3: Svuint64T): Svuint64x4T = simd.sveTupleCreate4(x0, x1, x2, x3)
+public fun svcreate4U64(x0: Svuint64T, x1: Svuint64T, x2: Svuint64T, x3: Svuint64T): Svuint64x4T = run { val simdArg0 = x0; val simdArg1 = x1; val simdArg2 = x2; val simdArg3 = x3; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).alignBytes)); res } }
 
 /**
  * Floating-point convert
@@ -7293,7 +7293,7 @@ public fun svget2F32(tuple: Svfloat32x2T, immIndex: Int): Svfloat32T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7304,7 +7304,7 @@ public fun svget2F64(tuple: Svfloat64x2T, immIndex: Int): Svfloat64T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7315,7 +7315,7 @@ public fun svget2S8(tuple: Svint8x2T, immIndex: Int): Svint8T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res } }
 }
 
 /**
@@ -7326,7 +7326,7 @@ public fun svget2S16(tuple: Svint16x2T, immIndex: Int): Svint16T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -7337,7 +7337,7 @@ public fun svget2S32(tuple: Svint32x2T, immIndex: Int): Svint32T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7348,7 +7348,7 @@ public fun svget2S64(tuple: Svint64x2T, immIndex: Int): Svint64T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7359,7 +7359,7 @@ public fun svget2U8(tuple: Svuint8x2T, immIndex: Int): Svuint8T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).alignBytes)); res } }
 }
 
 /**
@@ -7370,7 +7370,7 @@ public fun svget2U16(tuple: Svuint16x2T, immIndex: Int): Svuint16T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -7381,7 +7381,7 @@ public fun svget2U32(tuple: Svuint32x2T, immIndex: Int): Svuint32T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7392,7 +7392,7 @@ public fun svget2U64(tuple: Svuint64x2T, immIndex: Int): Svuint64T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7403,7 +7403,7 @@ public fun svget3F32(tuple: Svfloat32x3T, immIndex: Int): Svfloat32T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7414,7 +7414,7 @@ public fun svget3F64(tuple: Svfloat64x3T, immIndex: Int): Svfloat64T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7425,7 +7425,7 @@ public fun svget3S8(tuple: Svint8x3T, immIndex: Int): Svint8T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res } }
 }
 
 /**
@@ -7436,7 +7436,7 @@ public fun svget3S16(tuple: Svint16x3T, immIndex: Int): Svint16T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -7447,7 +7447,7 @@ public fun svget3S32(tuple: Svint32x3T, immIndex: Int): Svint32T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7458,7 +7458,7 @@ public fun svget3S64(tuple: Svint64x3T, immIndex: Int): Svint64T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7469,7 +7469,7 @@ public fun svget3U8(tuple: Svuint8x3T, immIndex: Int): Svuint8T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).alignBytes)); res } }
 }
 
 /**
@@ -7480,7 +7480,7 @@ public fun svget3U16(tuple: Svuint16x3T, immIndex: Int): Svuint16T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -7491,7 +7491,7 @@ public fun svget3U32(tuple: Svuint32x3T, immIndex: Int): Svuint32T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7502,7 +7502,7 @@ public fun svget3U64(tuple: Svuint64x3T, immIndex: Int): Svuint64T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7513,7 +7513,7 @@ public fun svget4F32(tuple: Svfloat32x4T, immIndex: Int): Svfloat32T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7524,7 +7524,7 @@ public fun svget4F64(tuple: Svfloat64x4T, immIndex: Int): Svfloat64T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7535,7 +7535,7 @@ public fun svget4S8(tuple: Svint8x4T, immIndex: Int): Svint8T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res } }
 }
 
 /**
@@ -7546,7 +7546,7 @@ public fun svget4S16(tuple: Svint16x4T, immIndex: Int): Svint16T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -7557,7 +7557,7 @@ public fun svget4S32(tuple: Svint32x4T, immIndex: Int): Svint32T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7568,7 +7568,7 @@ public fun svget4S64(tuple: Svint64x4T, immIndex: Int): Svint64T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -7579,7 +7579,7 @@ public fun svget4U8(tuple: Svuint8x4T, immIndex: Int): Svuint8T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8T>()).alignBytes)); res } }
 }
 
 /**
@@ -7590,7 +7590,7 @@ public fun svget4U16(tuple: Svuint16x4T, immIndex: Int): Svuint16T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -7601,7 +7601,7 @@ public fun svget4U32(tuple: Svuint32x4T, immIndex: Int): Svuint32T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -7612,7 +7612,7 @@ public fun svget4U64(tuple: Svuint64x4T, immIndex: Int): Svuint64T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleGet(tuple, immIndex)
+    return run { val simdArg0 = tuple; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -8776,7 +8776,7 @@ public fun svld1rqU64(pg: SvboolT, base: ConstPtr): Svuint64T = svld1rqS64(pg, b
  */
 public fun svld1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
     fun svld1sbGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svld1sbGatherS32offsetS32(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -8788,7 +8788,7 @@ public fun svld1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1shGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
     fun svld1shGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherS32offsetS32(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -8818,7 +8818,7 @@ public fun svld1shGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
     fun svld1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svld1sbGatherS64offsetS64(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -8830,7 +8830,7 @@ public fun svld1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
     fun svld1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherS64offsetS64(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -8842,7 +8842,7 @@ public fun svld1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1swGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
     fun svld1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1swGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svld1swGatherS64offsetS64(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -8881,7 +8881,7 @@ public fun svld1swGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
     fun svld1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
+    return run { val simdArg0 = svld1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -8893,7 +8893,7 @@ public fun svld1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  */
 public fun svld1shGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
     fun svld1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -8978,7 +8978,7 @@ public fun svld1swGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svuin
  */
 public fun svld1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
     fun svld1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svld1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -8991,7 +8991,7 @@ public fun svld1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svld1shGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
     fun svld1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9024,7 +9024,7 @@ public fun svld1shGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svld1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
     fun svld1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svld1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9037,7 +9037,7 @@ public fun svld1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svld1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
     fun svld1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9050,7 +9050,7 @@ public fun svld1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svld1swGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
     fun svld1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svld1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9192,7 +9192,7 @@ public fun svld1swGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = s
  */
 public fun svld1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
     fun svld1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbS16(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svld1sbS16(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -9204,7 +9204,7 @@ public fun svld1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
  */
 public fun svld1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svld1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbS32(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svld1sbS32(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9216,7 +9216,7 @@ public fun svld1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svld1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svld1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shS32(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svld1shS32(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9228,7 +9228,7 @@ public fun svld1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svld1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svld1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1sbS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svld1sbS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9240,7 +9240,7 @@ public fun svld1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svld1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svld1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svld1shS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9252,7 +9252,7 @@ public fun svld1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svld1swS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svld1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1swS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svld1swS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9426,7 +9426,7 @@ public fun svld1swVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = 
  */
 public fun svld1shGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svint32T {
     fun svld1shGatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherS32indexS32(pg.sveInto(), base, indices); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherS32indexS32(pg.sveInto(), base, indices); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9447,7 +9447,7 @@ public fun svld1shGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint3
  */
 public fun svld1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
     fun svld1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherS64indexS64(pg.sveInto(), base, indices); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9459,7 +9459,7 @@ public fun svld1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint6
  */
 public fun svld1swGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
     fun svld1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1swGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
+    return run { val simdArg0 = svld1swGatherS64indexS64(pg.sveInto(), base, indices); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9489,7 +9489,7 @@ public fun svld1swGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint6
  */
 public fun svld1shGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svint32T {
     fun svld1shGatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()); _simdArg0 }
+    return run { val simdArg0 = svld1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9624,7 +9624,7 @@ public fun svld1uhGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
     fun svld1ubGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9636,7 +9636,7 @@ public fun svld1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1uhGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
     fun svld1uhGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9675,7 +9675,7 @@ public fun svld1uwGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
     fun svld1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9687,7 +9687,7 @@ public fun svld1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
     fun svld1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9699,7 +9699,7 @@ public fun svld1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint
  */
 public fun svld1uwGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
     fun svld1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9729,7 +9729,7 @@ public fun svld1uhGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  */
 public fun svld1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
     fun svld1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9741,7 +9741,7 @@ public fun svld1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuin
  */
 public fun svld1uhGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
     fun svld1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9828,7 +9828,7 @@ public fun svld1uhGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svld1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
     fun svld1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9841,7 +9841,7 @@ public fun svld1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svld1uhGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
     fun svld1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -9884,7 +9884,7 @@ public fun svld1uwGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svld1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
     fun svld1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9897,7 +9897,7 @@ public fun svld1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svld1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
     fun svld1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -9910,7 +9910,7 @@ public fun svld1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svld1uwGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
     fun svld1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -10022,7 +10022,7 @@ public fun svld1uwGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = s
  */
 public fun svld1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
     fun svld1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -10034,7 +10034,7 @@ public fun svld1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
  */
 public fun svld1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svld1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -10046,7 +10046,7 @@ public fun svld1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svld1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svld1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -10058,7 +10058,7 @@ public fun svld1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svld1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svld1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -10070,7 +10070,7 @@ public fun svld1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svld1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svld1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -10082,7 +10082,7 @@ public fun svld1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svld1uwS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svld1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -10265,7 +10265,7 @@ public fun svld1uhGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint3
  */
 public fun svld1uhGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svuint32T {
     fun svld1uhGatherS32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -10295,7 +10295,7 @@ public fun svld1uwGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint6
  */
 public fun svld1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
     fun svld1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -10307,7 +10307,7 @@ public fun svld1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint6
  */
 public fun svld1uwGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
     fun svld1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -10328,7 +10328,7 @@ public fun svld1uhGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint
  */
 public fun svld1uhGatherU32indexU32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svuint32T {
     fun svld1uhGatherU32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svld1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svld1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -11735,7 +11735,7 @@ public fun svldff1VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = 
  */
 public fun svldff1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
     fun svldff1sbGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svldff1sbGatherS32offsetS32(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -11748,7 +11748,7 @@ public fun svldff1sbGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1shGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svint32T {
     fun svldff1shGatherS32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherS32offsetS32(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherS32offsetS32(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -11781,7 +11781,7 @@ public fun svldff1shGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
     fun svldff1sbGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svldff1sbGatherS64offsetS64(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -11794,7 +11794,7 @@ public fun svldff1sbGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
     fun svldff1shGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherS64offsetS64(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -11807,7 +11807,7 @@ public fun svldff1shGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1swGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svint64T {
     fun svldff1swGatherS64offsetS64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1swGatherS64offsetS64(pg.sveInto(), base, offsets); _simdArg0 }
+    return run { val simdArg0 = svldff1swGatherS64offsetS64(pg.sveInto(), base, offsets); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -11850,7 +11850,7 @@ public fun svldff1swGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
     fun svldff1sbGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
+    return run { val simdArg0 = svldff1sbGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -11863,7 +11863,7 @@ public fun svldff1sbGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svu
  */
 public fun svldff1shGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svint32T {
     fun svldff1shGatherU32offsetS32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherU32offsetS32(pg.sveInto(), base, offsets.asSigned()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -11957,7 +11957,7 @@ public fun svldff1swGatherU64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svu
  */
 public fun svldff1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
     fun svldff1sbGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svldff1sbGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -11971,7 +11971,7 @@ public fun svldff1sbGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  */
 public fun svldff1shGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long): Svint32T {
     fun svldff1shGatherU32baseOffsetS32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherU32baseOffsetS32(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12007,7 +12007,7 @@ public fun svldff1shGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  */
 public fun svldff1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
     fun svldff1sbGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svldff1sbGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12021,7 +12021,7 @@ public fun svldff1sbGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svldff1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
     fun svldff1shGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12035,7 +12035,7 @@ public fun svldff1shGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svldff1swGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long): Svint64T {
     fun svldff1swGatherU64baseOffsetS64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); _simdArg0 }
+    return run { val simdArg0 = svldff1swGatherU64baseOffsetS64(pg.sveInto(), bases.asSigned(), offset); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12191,7 +12191,7 @@ public fun svldff1swGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T =
  */
 public fun svldff1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
     fun svldff1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbS16(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldff1sbS16(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -12204,7 +12204,7 @@ public fun svldff1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
  */
 public fun svldff1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldff1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbS32(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldff1sbS32(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12217,7 +12217,7 @@ public fun svldff1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldff1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldff1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shS32(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldff1shS32(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12230,7 +12230,7 @@ public fun svldff1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldff1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldff1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1sbS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldff1sbS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12243,7 +12243,7 @@ public fun svldff1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldff1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldff1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldff1shS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12256,7 +12256,7 @@ public fun svldff1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldff1swS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldff1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1swS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldff1swS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12449,7 +12449,7 @@ public fun svldff1swVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T 
  */
 public fun svldff1shGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svint32T {
     fun svldff1shGatherS32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherS32indexS32(pg.sveInto(), base, indices); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherS32indexS32(pg.sveInto(), base, indices); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12472,7 +12472,7 @@ public fun svldff1shGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svin
  */
 public fun svldff1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
     fun svldff1shGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherS64indexS64(pg.sveInto(), base, indices); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12485,7 +12485,7 @@ public fun svldff1shGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svin
  */
 public fun svldff1swGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svint64T {
     fun svldff1swGatherS64indexS64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1swGatherS64indexS64(pg.sveInto(), base, indices); _simdArg0 }
+    return run { val simdArg0 = svldff1swGatherS64indexS64(pg.sveInto(), base, indices); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12518,7 +12518,7 @@ public fun svldff1swGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svin
  */
 public fun svldff1shGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svint32T {
     fun svldff1shGatherU32indexS32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()); _simdArg0 }
+    return run { val simdArg0 = svldff1shGatherU32indexS32(pg.sveInto(), base, indices.asSigned()); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12667,7 +12667,7 @@ public fun svldff1uhGatherS32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
     fun svldff1ubGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12680,7 +12680,7 @@ public fun svldff1ubGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1uhGatherS32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svint32T): Svuint32T {
     fun svldff1uhGatherS32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherS32offsetU32(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12723,7 +12723,7 @@ public fun svldff1uwGatherS64offsetS64(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
     fun svldff1ubGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12736,7 +12736,7 @@ public fun svldff1ubGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
     fun svldff1uhGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12749,7 +12749,7 @@ public fun svldff1uhGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svi
  */
 public fun svldff1uwGatherS64offsetU64(pg: SvboolT, base: ConstPtr, offsets: Svint64T): Svuint64T {
     fun svldff1uwGatherS64offsetU64(pg1: Svbool2T, base1: ConstPtr, offsets1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uwGatherS64offsetU64(pg.sveInto(), base.asSigned(), offsets).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12782,7 +12782,7 @@ public fun svldff1uhGatherU32offsetS32(pg: SvboolT, base: ConstPtr, offsets: Svu
  */
 public fun svldff1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
     fun svldff1ubGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12795,7 +12795,7 @@ public fun svldff1ubGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svu
  */
 public fun svldff1uhGatherU32offsetU32(pg: SvboolT, base: ConstPtr, offsets: Svuint32T): Svuint32T {
     fun svldff1uhGatherU32offsetU32(pg1: Svbool4T, base1: ConstPtr, offsets1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherU32offsetU32(pg.sveInto(), base.asSigned(), offsets.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12891,7 +12891,7 @@ public fun svldff1uhGatherU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset
  */
 public fun svldff1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
     fun svldff1ubGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12905,7 +12905,7 @@ public fun svldff1ubGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset
  */
 public fun svldff1uhGatherU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: Long): Svuint32T {
     fun svldff1uhGatherU32baseOffsetU32(pg1: Svbool4T, bases1: Svint32T, offset1: Long): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherU32baseOffsetU32(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -12952,7 +12952,7 @@ public fun svldff1uwGatherU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svldff1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
     fun svldff1ubGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12966,7 +12966,7 @@ public fun svldff1ubGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svldff1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
     fun svldff1uhGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -12980,7 +12980,7 @@ public fun svldff1uhGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset
  */
 public fun svldff1uwGatherU64baseOffsetU64(pg: SvboolT, bases: Svuint64T, offset: Long): Svuint64T {
     fun svldff1uwGatherU64baseOffsetU64(pg1: Svbool2T, bases1: Svint64T, offset1: Long): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uwGatherU64baseOffsetU64(pg.sveInto(), bases.asSigned(), offset).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13103,7 +13103,7 @@ public fun svldff1uwGatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T =
  */
 public fun svldff1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
     fun svldff1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -13116,7 +13116,7 @@ public fun svldff1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
  */
 public fun svldff1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldff1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -13129,7 +13129,7 @@ public fun svldff1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldff1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldff1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -13142,7 +13142,7 @@ public fun svldff1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldff1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldff1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13155,7 +13155,7 @@ public fun svldff1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldff1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldff1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13168,7 +13168,7 @@ public fun svldff1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldff1uwS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldff1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13371,7 +13371,7 @@ public fun svldff1uhGatherS32indexS32(pg: SvboolT, base: ConstPtr, indices: Svin
  */
 public fun svldff1uhGatherS32indexU32(pg: SvboolT, base: ConstPtr, indices: Svint32T): Svuint32T {
     fun svldff1uhGatherS32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherS32indexU32(pg.sveInto(), base.asSigned(), indices).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -13404,7 +13404,7 @@ public fun svldff1uwGatherS64indexS64(pg: SvboolT, base: ConstPtr, indices: Svin
  */
 public fun svldff1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
     fun svldff1uhGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13417,7 +13417,7 @@ public fun svldff1uhGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svin
  */
 public fun svldff1uwGatherS64indexU64(pg: SvboolT, base: ConstPtr, indices: Svint64T): Svuint64T {
     fun svldff1uwGatherS64indexU64(pg1: Svbool2T, base1: ConstPtr, indices1: Svint64T): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uwGatherS64indexU64(pg.sveInto(), base.asSigned(), indices).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13440,7 +13440,7 @@ public fun svldff1uhGatherU32indexS32(pg: SvboolT, base: ConstPtr, indices: Svui
  */
 public fun svldff1uhGatherU32indexU32(pg: SvboolT, base: ConstPtr, indices: Svuint32T): Svuint32T {
     fun svldff1uhGatherU32indexU32(pg1: Svbool4T, base1: ConstPtr, indices1: Svint32T): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldff1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldff1uhGatherU32indexU32(pg.sveInto(), base.asSigned(), indices.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -13777,7 +13777,7 @@ public fun svldnf1VnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T = 
  */
 public fun svldnf1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
     fun svldnf1sbS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1sbS16(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldnf1sbS16(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -13790,7 +13790,7 @@ public fun svldnf1sbS16(pg: SvboolT, base: ConstPtr): Svint16T {
  */
 public fun svldnf1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldnf1sbS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1sbS32(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldnf1sbS32(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -13803,7 +13803,7 @@ public fun svldnf1sbS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldnf1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldnf1shS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1shS32(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldnf1shS32(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -13816,7 +13816,7 @@ public fun svldnf1shS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldnf1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldnf1sbS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1sbS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldnf1sbS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13829,7 +13829,7 @@ public fun svldnf1sbS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldnf1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldnf1shS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1shS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldnf1shS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -13842,7 +13842,7 @@ public fun svldnf1shS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldnf1swS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldnf1swS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1swS64(pg.sveInto(), base); _simdArg0 }
+    return run { val simdArg0 = svldnf1swS64(pg.sveInto(), base); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -14035,7 +14035,7 @@ public fun svldnf1swVnumU64(pg: SvboolT, base: ConstPtr, vnum: Long): Svuint64T 
  */
 public fun svldnf1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
     fun svldnf1ubS16(pg1: Svbool8T, base1: ConstPtr): Nxv8i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv8i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv8i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldnf1ubS16(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res } }
 }
 
 /**
@@ -14048,7 +14048,7 @@ public fun svldnf1ubS16(pg: SvboolT, base: ConstPtr): Svint16T {
  */
 public fun svldnf1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldnf1ubS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldnf1ubS32(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -14061,7 +14061,7 @@ public fun svldnf1ubS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldnf1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
     fun svldnf1uhS32(pg1: Svbool4T, base1: ConstPtr): Nxv4i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv4i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv4i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldnf1uhS32(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res } }
 }
 
 /**
@@ -14074,7 +14074,7 @@ public fun svldnf1uhS32(pg: SvboolT, base: ConstPtr): Svint32T {
  */
 public fun svldnf1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldnf1ubS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i8 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i8>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i8>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldnf1ubS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -14087,7 +14087,7 @@ public fun svldnf1ubS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldnf1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldnf1uhS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i16 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i16>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i16>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldnf1uhS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -14100,7 +14100,7 @@ public fun svldnf1uhS64(pg: SvboolT, base: ConstPtr): Svint64T {
  */
 public fun svldnf1uwS64(pg: SvboolT, base: ConstPtr): Svint64T {
     fun svldnf1uwS64(pg1: Svbool2T, base1: ConstPtr): Nxv2i32 = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); val res = (UnresolvedTypeLayout<Nxv2i32>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nxv2i32>()).alignBytes)); res }
-    return run { val _simdArg0 = svldnf1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); _simdArg0 }
+    return run { val simdArg0 = svldnf1uwS64(pg.sveInto(), base.asSigned()).asUnsigned(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res } }
 }
 
 /**
@@ -23500,67 +23500,67 @@ public fun svscaleNF64Z(pg: SvboolT, op1: Svfloat64T, op2: Long): Svfloat64T = s
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_b])
  */
-public fun svselB(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT = run { val _simdArg0 = pg; val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselB(pg: SvboolT, op1: SvboolT, op2: SvboolT): SvboolT = run { val simdArg0 = pg; val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_f32])
  */
-public fun svselF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselF32(pg: SvboolT, op1: Svfloat32T, op2: Svfloat32T): Svfloat32T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_f64])
  */
-public fun svselF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselF64(pg: SvboolT, op1: Svfloat64T, op2: Svfloat64T): Svfloat64T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s8])
  */
-public fun svselS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = run { val _simdArg0 = pg; val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselS8(pg: SvboolT, op1: Svint8T, op2: Svint8T): Svint8T = run { val simdArg0 = pg; val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s16])
  */
-public fun svselS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselS16(pg: SvboolT, op1: Svint16T, op2: Svint16T): Svint16T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s32])
  */
-public fun svselS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselS32(pg: SvboolT, op1: Svint32T, op2: Svint32T): Svint32T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_s64])
  */
-public fun svselS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselS64(pg: SvboolT, op1: Svint64T, op2: Svint64T): Svint64T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u8])
  */
-public fun svselU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = run { val _simdArg0 = pg; val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselU8(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = run { val simdArg0 = pg; val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u16])
  */
-public fun svselU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselU16(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u32])
  */
-public fun svselU32(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselU32(pg: SvboolT, op1: Svuint32T, op2: Svuint32T): Svuint32T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Conditionally select elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsel[_u64])
  */
-public fun svselU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = run { val _simdArg0 = pg.sveInto(); val _simdArg1 = op1; val _simdArg2 = op2; _simdArg1 }
+public fun svselU64(pg: SvboolT, op1: Svuint64T, op2: Svuint64T): Svuint64T = run { val simdArg0 = pg.sveInto(); val simdArg1 = op1; val simdArg2 = op2; simdArg1 }
 
 /**
  * Change one vector in a tuple of two vectors
@@ -23570,7 +23570,7 @@ public fun svset2F32(tuple: Svfloat32x2T, x: Svfloat32T, immIndex: Int): Svfloat
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23581,7 +23581,7 @@ public fun svset2F64(tuple: Svfloat64x2T, x: Svfloat64T, immIndex: Int): Svfloat
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23592,7 +23592,7 @@ public fun svset2S8(tuple: Svint8x2T, x: Svint8T, immIndex: Int): Svint8x2T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23603,7 +23603,7 @@ public fun svset2S16(tuple: Svint16x2T, x: Svint16T, immIndex: Int): Svint16x2T 
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23614,7 +23614,7 @@ public fun svset2S32(tuple: Svint32x2T, x: Svint32T, immIndex: Int): Svint32x2T 
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23625,7 +23625,7 @@ public fun svset2S64(tuple: Svint64x2T, x: Svint64T, immIndex: Int): Svint64x2T 
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23636,7 +23636,7 @@ public fun svset2U8(tuple: Svuint8x2T, x: Svuint8T, immIndex: Int): Svuint8x2T {
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23647,7 +23647,7 @@ public fun svset2U16(tuple: Svuint16x2T, x: Svuint16T, immIndex: Int): Svuint16x
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23658,7 +23658,7 @@ public fun svset2U32(tuple: Svuint32x2T, x: Svuint32T, immIndex: Int): Svuint32x
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23669,7 +23669,7 @@ public fun svset2U64(tuple: Svuint64x2T, x: Svuint64T, immIndex: Int): Svuint64x
     run {
         check(0 <= immIndex && immIndex <= 1) { "IMM_INDEX is not in range 0-1" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x2T>()).alignBytes)); res } }
 }
 
 /**
@@ -23680,7 +23680,7 @@ public fun svset3F32(tuple: Svfloat32x3T, x: Svfloat32T, immIndex: Int): Svfloat
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23691,7 +23691,7 @@ public fun svset3F64(tuple: Svfloat64x3T, x: Svfloat64T, immIndex: Int): Svfloat
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23702,7 +23702,7 @@ public fun svset3S8(tuple: Svint8x3T, x: Svint8T, immIndex: Int): Svint8x3T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23713,7 +23713,7 @@ public fun svset3S16(tuple: Svint16x3T, x: Svint16T, immIndex: Int): Svint16x3T 
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23724,7 +23724,7 @@ public fun svset3S32(tuple: Svint32x3T, x: Svint32T, immIndex: Int): Svint32x3T 
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23735,7 +23735,7 @@ public fun svset3S64(tuple: Svint64x3T, x: Svint64T, immIndex: Int): Svint64x3T 
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23746,7 +23746,7 @@ public fun svset3U8(tuple: Svuint8x3T, x: Svuint8T, immIndex: Int): Svuint8x3T {
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23757,7 +23757,7 @@ public fun svset3U16(tuple: Svuint16x3T, x: Svuint16T, immIndex: Int): Svuint16x
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23768,7 +23768,7 @@ public fun svset3U32(tuple: Svuint32x3T, x: Svuint32T, immIndex: Int): Svuint32x
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23779,7 +23779,7 @@ public fun svset3U64(tuple: Svuint64x3T, x: Svuint64T, immIndex: Int): Svuint64x
     run {
         check(0 <= immIndex && immIndex <= 2) { "IMM_INDEX is not in range 0-2" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x3T>()).alignBytes)); res } }
 }
 
 /**
@@ -23790,7 +23790,7 @@ public fun svset4F32(tuple: Svfloat32x4T, x: Svfloat32T, immIndex: Int): Svfloat
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23801,7 +23801,7 @@ public fun svset4F64(tuple: Svfloat64x4T, x: Svfloat64T, immIndex: Int): Svfloat
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23812,7 +23812,7 @@ public fun svset4S8(tuple: Svint8x4T, x: Svint8T, immIndex: Int): Svint8x4T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23823,7 +23823,7 @@ public fun svset4S16(tuple: Svint16x4T, x: Svint16T, immIndex: Int): Svint16x4T 
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23834,7 +23834,7 @@ public fun svset4S32(tuple: Svint32x4T, x: Svint32T, immIndex: Int): Svint32x4T 
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23845,7 +23845,7 @@ public fun svset4S64(tuple: Svint64x4T, x: Svint64T, immIndex: Int): Svint64x4T 
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23856,7 +23856,7 @@ public fun svset4U8(tuple: Svuint8x4T, x: Svuint8T, immIndex: Int): Svuint8x4T {
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint8x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint8x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23867,7 +23867,7 @@ public fun svset4U16(tuple: Svuint16x4T, x: Svuint16T, immIndex: Int): Svuint16x
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint16x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23878,7 +23878,7 @@ public fun svset4U32(tuple: Svuint32x4T, x: Svuint32T, immIndex: Int): Svuint32x
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint32x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint32x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -23889,7 +23889,7 @@ public fun svset4U64(tuple: Svuint64x4T, x: Svuint64T, immIndex: Int): Svuint64x
     run {
         check(0 <= immIndex && immIndex <= 3) { "IMM_INDEX is not in range 0-3" }
     }
-    return simd.sveTupleSet(tuple, x, immIndex)
+    return run { val simdArg0 = tuple; val simdArg1 = x; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svuint64x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svuint64x4T>()).alignBytes)); res } }
 }
 
 /**
@@ -24752,7 +24752,7 @@ public fun svst1VnumU64(pg: SvboolT, base: MutPtr, vnum: Long, data: Svuint64T) 
  */
 public fun svst1bS16(pg: SvboolT, base: MutPtr, data: Svint16T) {
     fun svst1bS16(data1: Nxv8i8, pg1: Svbool8T, ptr: MutPtr) {}
-    svst1bS16(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
+    svst1bS16(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24764,7 +24764,7 @@ public fun svst1bS16(pg: SvboolT, base: MutPtr, data: Svint16T) {
  */
 public fun svst1bS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
     fun svst1bS32(data1: Nxv4i8, pg1: Svbool4T, ptr: MutPtr) {}
-    svst1bS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
+    svst1bS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24776,7 +24776,7 @@ public fun svst1bS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
  */
 public fun svst1hS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
     fun svst1hS32(data1: Nxv4i16, pg1: Svbool4T, ptr: MutPtr) {}
-    svst1hS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
+    svst1hS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24788,7 +24788,7 @@ public fun svst1hS32(pg: SvboolT, base: MutPtr, data: Svint32T) {
  */
 public fun svst1bS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
     fun svst1bS64(data1: Nxv2i8, pg1: Svbool2T, ptr: MutPtr) {}
-    svst1bS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
+    svst1bS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24800,7 +24800,7 @@ public fun svst1bS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
  */
 public fun svst1hS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
     fun svst1hS64(data1: Nxv2i16, pg1: Svbool2T, ptr: MutPtr) {}
-    svst1hS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
+    svst1hS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24812,7 +24812,7 @@ public fun svst1hS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
  */
 public fun svst1wS64(pg: SvboolT, base: MutPtr, data: Svint64T) {
     fun svst1wS64(data1: Nxv2i32, pg1: Svbool2T, ptr: MutPtr) {}
-    svst1wS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base)
+    svst1wS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base)
 }
 
 /**
@@ -24890,7 +24890,7 @@ public fun svst1wU64(pg: SvboolT, base: MutPtr, data: Svuint64T) {
  */
 public fun svst1bScatterS32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svint32T, data: Svint32T) {
     fun svst1bScatterS32offsetS32(data1: Nxv4i8, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1bScatterS32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
+    svst1bScatterS32offsetS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24902,7 +24902,7 @@ public fun svst1bScatterS32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svint32
  */
 public fun svst1hScatterS32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svint32T, data: Svint32T) {
     fun svst1hScatterS32offsetS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1hScatterS32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
+    svst1hScatterS32offsetS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24936,7 +24936,7 @@ public fun svst1hScatterS32offsetU32(pg: SvboolT, base: MutPtr, offsets: Svint32
  */
 public fun svst1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svst1bScatterS64offsetS64(data1: Nxv2i8, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svst1bScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
+    svst1bScatterS64offsetS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24948,7 +24948,7 @@ public fun svst1bScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64
  */
 public fun svst1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svst1hScatterS64offsetS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svst1hScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
+    svst1hScatterS64offsetS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -24960,7 +24960,7 @@ public fun svst1hScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64
  */
 public fun svst1wScatterS64offsetS64(pg: SvboolT, base: MutPtr, offsets: Svint64T, data: Svint64T) {
     fun svst1wScatterS64offsetS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, offsets1: Svint64T) {}
-    svst1wScatterS64offsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets)
+    svst1wScatterS64offsetS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets)
 }
 
 /**
@@ -25005,7 +25005,7 @@ public fun svst1wScatterS64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svint64
  */
 public fun svst1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
     fun svst1bScatterU32offsetS32(data1: Nxv4i8, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1bScatterU32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets.asSigned())
+    svst1bScatterU32offsetS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets.asSigned())
 }
 
 /**
@@ -25017,7 +25017,7 @@ public fun svst1bScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint3
  */
 public fun svst1hScatterU32offsetS32(pg: SvboolT, base: MutPtr, offsets: Svuint32T, data: Svint32T) {
     fun svst1hScatterU32offsetS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, offsets1: Svint32T) {}
-    svst1hScatterU32offsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, offsets.asSigned())
+    svst1hScatterU32offsetS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, offsets.asSigned())
 }
 
 /**
@@ -25118,7 +25118,7 @@ public fun svst1wScatterU64offsetU64(pg: SvboolT, base: MutPtr, offsets: Svuint6
  */
 public fun svst1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
     fun svst1bScatterU32baseOffsetS32(data1: Nxv4i8, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
-    svst1bScatterU32baseOffsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
+    svst1bScatterU32baseOffsetS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25131,7 +25131,7 @@ public fun svst1bScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svst1hScatterU32baseOffsetS32(pg: SvboolT, bases: Svuint32T, offset: Long, data: Svint32T) {
     fun svst1hScatterU32baseOffsetS32(data1: Nxv4i16, pg1: Svbool4T, bases1: Svint32T, offset1: Long) {}
-    svst1hScatterU32baseOffsetS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
+    svst1hScatterU32baseOffsetS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25168,7 +25168,7 @@ public fun svst1hScatterU32baseOffsetU32(pg: SvboolT, bases: Svuint32T, offset: 
  */
 public fun svst1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svst1bScatterU64baseOffsetS64(data1: Nxv2i8, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svst1bScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
+    svst1bScatterU64baseOffsetS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25181,7 +25181,7 @@ public fun svst1bScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svst1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svst1hScatterU64baseOffsetS64(data1: Nxv2i16, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svst1hScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
+    svst1hScatterU64baseOffsetS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25194,7 +25194,7 @@ public fun svst1hScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: 
  */
 public fun svst1wScatterU64baseOffsetS64(pg: SvboolT, bases: Svuint64T, offset: Long, data: Svint64T) {
     fun svst1wScatterU64baseOffsetS64(data1: Nxv2i32, pg1: Svbool2T, bases1: Svint64T, offset1: Long) {}
-    svst1wScatterU64baseOffsetS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
+    svst1wScatterU64baseOffsetS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), bases.asSigned(), offset)
 }
 
 /**
@@ -25494,7 +25494,7 @@ public fun svst1wVnumU64(pg: SvboolT, base: MutPtr, vnum: Long, data: Svuint64T)
  */
 public fun svst1hScatterS32indexS32(pg: SvboolT, base: MutPtr, indices: Svint32T, data: Svint32T) {
     fun svst1hScatterS32indexS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, indices1: Svint32T) {}
-    svst1hScatterS32indexS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
+    svst1hScatterS32indexS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -25517,7 +25517,7 @@ public fun svst1hScatterS32indexU32(pg: SvboolT, base: MutPtr, indices: Svint32T
  */
 public fun svst1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
     fun svst1hScatterS64indexS64(data1: Nxv2i16, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
-    svst1hScatterS64indexS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
+    svst1hScatterS64indexS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -25529,7 +25529,7 @@ public fun svst1hScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T
  */
 public fun svst1wScatterS64indexS64(pg: SvboolT, base: MutPtr, indices: Svint64T, data: Svint64T) {
     fun svst1wScatterS64indexS64(data1: Nxv2i32, pg1: Svbool2T, base1: MutPtr, indices1: Svint64T) {}
-    svst1wScatterS64indexS64(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices)
+    svst1wScatterS64indexS64(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, indices)
 }
 
 /**
@@ -25563,7 +25563,7 @@ public fun svst1wScatterS64indexU64(pg: SvboolT, base: MutPtr, indices: Svint64T
  */
 public fun svst1hScatterU32indexS32(pg: SvboolT, base: MutPtr, indices: Svuint32T, data: Svint32T) {
     fun svst1hScatterU32indexS32(data1: Nxv4i16, pg1: Svbool4T, base1: MutPtr, indices1: Svint32T) {}
-    svst1hScatterU32indexS32(run { val _simdArg0 = data; _simdArg0 }, pg.sveInto(), base, indices.asSigned())
+    svst1hScatterU32indexS32(run { val simdArg0 = data; simdArg0 }, pg.sveInto(), base, indices.asSigned())
 }
 
 /**

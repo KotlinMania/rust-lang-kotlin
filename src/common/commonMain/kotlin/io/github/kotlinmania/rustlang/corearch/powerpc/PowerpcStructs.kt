@@ -2,6 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -9,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // Note(ppcf128) improve the docs.
 
@@ -35,9 +37,9 @@ public open class Ppcf128 internal constructor(
 
     public open fun clone(): Ppcf128 = Ppcf128(value, fieldLayout)
 
-    public open fun fmt(f: Formatter): Result {
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val (hi, lo) = this.toComponents()
-        return f.append("ppcf128($hi, $lo)")
+        return run { f.append("ppcf128($hi, $lo)"); Result.Ok<Unit, Error>(Unit) }
     }
 
     /**

@@ -5,6 +5,12 @@ import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
@@ -429,11 +435,11 @@ public open class RwLock<T>(
             val matchVal = this.tryRead()
             when {
                 matchVal is Result.Ok<*, *> -> {
-                    val guard = matchVal.value
+                    val guard = matchVal.okValue()
                     d.field("data", guard)
                 }
                 else -> {
-                    val WouldBlock = (matchVal as Result.Err<*, *>).error
+                    val WouldBlock = (matchVal as Result.Err<*, *>).errValue()
                     d.field("data", "<locked>")
                 }
             }

@@ -150,7 +150,7 @@ public open class UdpSocket(
      * [Issue #34202]: https://github.com/rust-lang/rust/issues/34202
      */
     public open fun <Iter, A : ToSocketAddrs<Iter>> sendTo(buf: List<UByte>, addr: A): Result<Int, Error> {
-        return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.error) }.next()) {
+        return when (val matchVal = when (val tryResult = addr.toSocketAddrs()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }.next()) {
             null -> Result.Err<Int, Error>(constError(ErrorKind.InvalidInput, "no addresses to send data to"))
             else -> {
                 val addr1 = matchVal

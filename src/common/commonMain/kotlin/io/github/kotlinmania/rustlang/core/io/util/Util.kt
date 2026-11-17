@@ -1,6 +1,7 @@
 // port-lint: source io/util.rs
 package io.github.kotlinmania.rustlang.core.io.util
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -604,7 +605,7 @@ public fun <T : Seek> Take<T>.seek(pos: SeekFrom): Result<ULong> {
             null -> {}
             else -> {
                 val offset = matchVal
-                when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+                when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
                 this.limit = (this.limit - (offset.toULong()))
                 break
             }
@@ -615,7 +616,7 @@ public fun <T : Seek> Take<T>.seek(pos: SeekFrom): Result<ULong> {
             } else {
                 Long.MIN_VALUE
             }
-        when (val tryResult = this.inner.seekRelative(offset1)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.error) }
+        when (val tryResult = this.inner.seekRelative(offset1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, Error>(tryResult.errValue()) }
         this.limit = (this.limit - (offset1.toULong()))
     }
     return RustResult.Ok(newPosition1)
@@ -629,7 +630,7 @@ public fun <T : Seek> Take<T>.seekRelative(offset: Long): Result<Unit> {
     if (!this.position().checkedAddSigned(offset).isSomeAnd({ p -> p <= this.len })) {
         return RustResult.Err(ErrorKind.InvalidInput.into())
     }
-    when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
     this.limit = (this.limit - (offset.toULong()))
     return RustResult.Ok(Unit)
 }

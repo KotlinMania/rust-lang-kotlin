@@ -208,7 +208,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
             }
             is Vacant<*, *, *> -> {
                 val (entry1) = this as Vacant<K, V, A>
-                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.error) }))
+                Result.Ok<V, E>(entry1.insert(when (val tryResult = default()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.errValue()) }))
             }
         }
     }
@@ -262,7 +262,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
             }
             is Vacant<*, *, *> -> {
                 val (entry1) = this as Vacant<K, V, A>
-                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.error) }
+                val value = when (val tryResult = default(entry1.key())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<V, E>(tryResult.errValue()) }
                 Result.Ok<V, E>(entry1.insert(value))
             }
         }

@@ -60,7 +60,7 @@ public fun <T> once(value: T): Once<T> = Once(inner = value.intoIter())
  */
 public open class Once<T>(
     public var inner: IntoIter<T>,
-) : TrustedLen, Iterable<T> {
+) : TrustedLen<Any>, Iterable<T> {
     override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
         override fun computeNext() {
             when (val v = this@Once.next()) {

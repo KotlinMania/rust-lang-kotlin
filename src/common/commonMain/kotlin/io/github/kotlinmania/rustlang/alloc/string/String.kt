@@ -31,10 +31,17 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8UncheckedMut
 import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
 import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
@@ -904,7 +911,7 @@ public open class RustAllocString(
             var front = 0
             val rejections: Vec =
                 fromFn(closure@{
-                    val (start, end) = when (val tryResult = searcher.nextMatch()) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error) }
+                    val (start, end) = when (val tryResult = searcher.nextMatch()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()) }
                     val prevFront = front
                     front = end
                     Pair(prevFront, start)
@@ -1509,10 +1516,6 @@ public open class RustAllocString(
         this.pushStr(s)
     }
 
-    public open fun <I : Iterable<String>> extendBoxStringA(iter: I) {
-        iter.iterator().forEach({ s -> this.pushStr(s) })
-    }
-
     public open fun <I : Iterable<String>> extendString(iter: I) {
         iter.iterator().forEach({ s -> this.pushStr(s) })
     }
@@ -1634,10 +1637,6 @@ public open class RustAllocString(
     public open fun addAssign(other: String) {
         this.pushStr(other)
     }
-
-    public open fun index(index: I): Output = index.index(this.asStr())
-
-    public open fun indexMut(index: I): Output = index.indexMut(this.asMutStr())
 
     public open fun deref(): String = this.asStr()
 
@@ -1809,7 +1808,7 @@ public open class RustAllocString(
          * or if the memory allocator reports failure.
          */
         public fun tryWithCapacity(capacity: Int): Result<String, TryReserveError> {
-            return Result.Ok<String, TryReserveError>(String(vec = when (val tryResult = Vec.tryWithCapacity(capacity)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, TryReserveError>(tryResult.error) }))
+            return Result.Ok<String, TryReserveError>(String(vec = when (val tryResult = Vec.tryWithCapacity(capacity)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, TryReserveError>(tryResult.errValue()) }))
         }
 
         /**
@@ -1872,7 +1871,7 @@ public open class RustAllocString(
                 when (matchVal) { is Result.Ok<*, *> -> {
                     Result.Ok<String, FromUtf8Error>(String(vec = vec))
                 }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     Result.Err<String, FromUtf8Error>(FromUtf8Error(bytes = vec, error = e))
                 } }
             }
@@ -2019,7 +2018,7 @@ public open class RustAllocString(
         public fun fromUtf16Units(units: Any, capacity: Int): Result<String, FromUtf16Error> {
             var ret = String.withCapacity(capacity)
             for (c in Char.decodeUtf16(units)) {
-                val c1 = when (val tryResult = c) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.LoneSurrogate)) }
+                val c1 = when (val tryResult = c) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, FromUtf16Error>(FromUtf16Error(kind = FromUtf16ErrorKind.LoneSurrogate)) }
                 ret += c1
             }
             return Result.Ok<String, FromUtf16Error>(ret)
@@ -2301,12 +2300,6 @@ public open class RustAllocString(
                     buf
                 }
             }
-        }
-
-        public fun <I : Iterable<String>, A : Allocator> fromIterBoxStringA(iter: I): String {
-            val buf = String.new()
-            buf.extend(iter)
-            return buf
         }
 
         public fun <I : Iterable<String>> fromIterCowString(iter: I): String {
@@ -2617,6 +2610,12 @@ public fun str.EscapeDefault.toStringSpec(): String {
     return this.toString()
 }
 
+public fun <A : Allocator, I : Iterable<String>> fromIteratorFromIterString(iter: I): String {
+    val buf = String.new()
+    buf.extend(iter)
+    return buf
+}
+
 public interface SpecExtendChars {
     public fun specExtendInto(s: String)
 }
@@ -2644,6 +2643,10 @@ public fun List<String>.specExtendIntoFromStringArrayn(target: String, n: Int) {
     target.pushStrSlice(this)
 }
 
+public fun <A : Allocator, I : Iterable<String>> String.extend(iter: I) {
+    iter.iterator().forEach({ s -> this += s })
+}
+
 public fun String.eq(other: String): Boolean = PartialEq.eq(this, other)
 
 public fun String.ne(other: String): Boolean = PartialEq.ne(this, other)
@@ -2655,6 +2658,10 @@ public fun String.neString(other: String): Boolean = PartialEq.ne(this, other)
 public fun String.eqCowString(other: String): Boolean = PartialEq.eq(this, other)
 
 public fun String.neCowString(other: String): Boolean = PartialEq.ne(this, other)
+
+public fun <Output, I> String.index(index: I): Output where I : SliceIndex<String, Output> = index.index(this)
+
+public fun <Output, I> String.indexMut(index: I): Output where I : SliceIndex<String, Output> = index.indexMut(this.asMutStr())
 
 /**
  * A type alias for [!].

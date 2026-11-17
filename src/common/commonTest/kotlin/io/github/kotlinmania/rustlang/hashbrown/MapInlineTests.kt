@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.hashbrown
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -16,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
@@ -1229,19 +1231,19 @@ public class MapTestMapInlineTests {
         val emptyBytes: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
         run {
             val matchVal = emptyBytes.tryReserve(Int.MAX_VALUE)
-            if (matchVal is Result.Err<*, *> && matchVal.error == CapacityOverflow) {} else {
+            if (matchVal is Result.Err<*, *> && matchVal.errValue() == CapacityOverflow) {} else {
                 error("usize::MAX should trigger an overflow!")
             }
         }
         run {
             val matchVal1 = emptyBytes.tryReserve(MAX_ISIZE)
-            if (matchVal1 is Result.Err<*, *> && matchVal1.error == CapacityOverflow) {} else {
+            if (matchVal1 is Result.Err<*, *> && matchVal1.errValue() == CapacityOverflow) {} else {
                 error("isize::MAX should trigger an overflow!")
             }
         }
         run {
             val matchVal3 = emptyBytes.tryReserve(MAX_ISIZE / 5)
-            if (matchVal3 is Result.Err<*, *> && matchVal3.error is AllocError) {} else {
+            if (matchVal3 is Result.Err<*, *> && matchVal3.errValue() is AllocError) {} else {
                 // This may succeed if there is enough free memory. Attempt to
                 // allocate a few more hashmaps to ensure the allocation will fail.
                 val emptyBytes2: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
@@ -1251,7 +1253,7 @@ public class MapTestMapInlineTests {
                 val emptyBytes4: HashMap<UByte, UByte, DefaultHashBuilder, Global>  = HashMap.new()
                 run {
                     val matchVal2 = emptyBytes4.tryReserve(MAX_ISIZE / 5)
-                    if (matchVal2 is Result.Err<*, *> && matchVal2.error is AllocError) {} else {
+                    if (matchVal2 is Result.Err<*, *> && matchVal2.errValue() is AllocError) {} else {
                         error("isize::MAX / 5 should trigger an OOM!")
                     }
                 }
@@ -1383,10 +1385,10 @@ public class MapTestMapInlineTests {
                     run {
                         val matchVal = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
                         when (matchVal) { is Result.Ok<*, *> -> {
-                            val map = matchVal.value
+                            val map = matchVal.okValue()
                             map
                         }; is Result.Err<*, *> -> {
-                            val msg = matchVal.error
+                            val msg = matchVal.errValue()
                             error("$msg")
                         } }
                     }
@@ -1409,10 +1411,10 @@ public class MapTestMapInlineTests {
                     run {
                         val matchVal = getTestMap((DISARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> n }, MyAlloc.new(dropped.clone()))
                         when (matchVal) { is Result.Ok<*, *> -> {
-                            val map = matchVal.value
+                            val map = matchVal.okValue()
                             map
                         }; is Result.Err<*, *> -> {
-                            val msg = matchVal.error
+                            val msg = matchVal.errValue()
                             error("$msg")
                         } }
                     }
@@ -1420,10 +1422,10 @@ public class MapTestMapInlineTests {
                     run {
                         val matchVal1 = getTestMap((DISARMED_FLAGS.zip(ARMED_FLAGS)), { n -> n }, MyAlloc.new(dropped.clone()))
                         when (matchVal1) { is Result.Ok<*, *> -> {
-                            val map2 = matchVal1.value
+                            val map2 = matchVal1.okValue()
                             map2
                         }; is Result.Err<*, *> -> {
-                            val msg1 = matchVal1.error
+                            val msg1 = matchVal1.errValue()
                             error("$msg")
                         } }
                     }
@@ -1449,10 +1451,10 @@ public class MapTestMapInlineTests {
                 run {
                     val matchVal = getTestMap((DISARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
                     when (matchVal) { is Result.Ok<*, *> -> {
-                        val map = matchVal.value
+                        val map = matchVal.okValue()
                         map
                     }; is Result.Err<*, *> -> {
-                        val msg = matchVal.error
+                        val msg = matchVal.errValue()
                         error("$msg")
                     } }
                 }
@@ -1463,10 +1465,10 @@ public class MapTestMapInlineTests {
                             run {
                                 val matchVal1 = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n * 2) }, MyAlloc.new(dropped.clone()))
                                 when (matchVal1) { is Result.Ok<*, *> -> {
-                                    val map2 = matchVal1.value
+                                    val map2 = matchVal1.okValue()
                                     map2
                                 }; is Result.Err<*, *> -> {
-                                    val msg1 = matchVal1.error
+                                    val msg1 = matchVal1.errValue()
                                     return@closure msg1
                                 } }
                             }
@@ -1515,10 +1517,10 @@ public class MapTestMapInlineTests {
                 run {
                     val matchVal = getTestMap((booleanArrayOf(DISARMED).zip(booleanArrayOf(DISARMED))), { n -> mutableListOf(n) }, MyAlloc.new(dropped.clone()))
                     when (matchVal) { is Result.Ok<*, *> -> {
-                        val map = matchVal.value
+                        val map = matchVal.okValue()
                         map
                     }; is Result.Err<*, *> -> {
-                        val msg = matchVal.error
+                        val msg = matchVal.errValue()
                         error("$msg")
                     } }
                 }
@@ -1529,10 +1531,10 @@ public class MapTestMapInlineTests {
                             run {
                                 val matchVal1 = getTestMap((ARMED_FLAGS.zip(DISARMED_FLAGS)), { n -> mutableListOf(n * 2) }, MyAlloc.new(dropped.clone()))
                                 when (matchVal1) { is Result.Ok<*, *> -> {
-                                    val map2 = matchVal1.value
+                                    val map2 = matchVal1.okValue()
                                     map2
                                 }; is Result.Err<*, *> -> {
-                                    val msg1 = matchVal1.error
+                                    val msg1 = matchVal1.errValue()
                                     return@closure1 msg1
                                 } }
                             }
@@ -1610,7 +1612,7 @@ public open class MmapAllocator(
             return Result.Err<NonNull, AllocError>(AllocError())
         }
         val nullVal = MutPtr(0L)
-        val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.error) }).toULong()
+        val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }).toULong()
         val prot = PROT_READ or PROT_WRITE
         val flags = MAP_PRIVATE or MAP_ANON
         val addr = mmap(nullVal, len, prot, flags, -1, 0)

@@ -588,7 +588,7 @@ public interface Read<SelfType> {
     public fun readArray(n: Int): Result<UByteArray> {
         val buf = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Result<UByteArray>>()) }
         val borrowedBuf = BorrowedBuf.from(buf.asMutSlice())
-        when (val tryResult = this.readBufExact(borrowedBuf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        when (val tryResult = this.readBufExact(borrowedBuf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         // Guard against incorrect `readBufExact` implementations.
         check(borrowedBuf.len() == n)
         // SAFETY: Buffer was initialised above.
@@ -720,7 +720,7 @@ public interface Read<SelfType> {
  */
 public fun <R : Read<R>> readToString(reader: R): Result<String> {
     val buf = ""
-    when (val tryResult = reader.readToString(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+    when (val tryResult = reader.readToString(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
     return RustResult.Ok(buf)
 }
 
@@ -790,23 +790,23 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
         while (true) {
             // Without global OOM handling we must proactively allocate the buffer
             // to avoid failing after already reading data.
-            when (val tryResult = buf1.tryReserve(PROBE_SIZE)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = buf1.tryReserve(PROBE_SIZE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
             run {
                 val matchVal = r1.read(probe)
                 when {
                     matchVal is RustResult.Ok<*, *> -> {
-                        val n = matchVal.value
+                        val n = matchVal.okValue()
                         // there is no way to recover from allocation failure here
                         // because the data has already been read.
-                        when (val tryResult = buf1.tryExtendFromSliceOfBytes(((probe).sliceArray(0 until n)))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+                        when (val tryResult = buf1.tryExtendFromSliceOfBytes(((probe).sliceArray(0 until n)))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
                         return RustResult.Ok(n)
                     }
-                    matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                        val e = matchVal.error
+                    matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                        val e = matchVal.errValue()
                         continue
                     }
                     else -> {
-                        val e1 = (matchVal as RustResult.Err<*, *>).error
+                        val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                         return RustResult.Err(e1)
                     }
                 }
@@ -817,12 +817,12 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
     val startCap = buf.capacity()
     // Optionally limit the maximum bytes read on each iteration.
     // This adds an arbitrary fiddle factor to allow for more data than we expect.
-    var maxReadSize = (sizeHint?.let(closure@{ s -> when (val tryResult = s.checkedAdd(1024)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return@closure RustResult.Err(tryResult.error) }.checkedNextMultipleOf(DEFAULT_BUF_SIZE) }) ?: DEFAULT_BUF_SIZE)
+    var maxReadSize = (sizeHint?.let(closure@{ s -> when (val tryResult = s.checkedAdd(1024)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err(tryResult.errValue()) }.checkedNextMultipleOf(DEFAULT_BUF_SIZE) }) ?: DEFAULT_BUF_SIZE)
     // Tracks how many bytes are initialized in the buffer
     var initUntil = buf.size
     // avoid inflating empty/small vecs before we have determined that there's anything to read
     if ((sizeHint == null || sizeHint == 0) && buf.capacity() - buf.size < PROBE_SIZE) {
-        val read = when (val tryResult = smallProbeRead(r, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        val read = when (val tryResult = smallProbeRead(r, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         if (read == 0) {
             return RustResult.Ok(0)
         }
@@ -833,7 +833,7 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
             // and see if it returns `Ok(0)`. If so, we've avoided an
             // unnecessary doubling of the capacity. But if not, append the
             // probe buffer to the primary buffer and let its capacity grow.
-            val read1 = when (val tryResult = smallProbeRead(r, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            val read1 = when (val tryResult = smallProbeRead(r, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
             if (read1 == 0) {
                 return RustResult.Ok(buf.size - startLen)
             }
@@ -846,7 +846,7 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
         // And assert that PROBE_SIZE is always at least large enough to fit any UTF-8 encoded code point.
         check(PROBE_SIZE >= Char.MAX_LEN_UTF8)
         if (buf.spareCapacityMut().len() < PROBE_SIZE) {
-            when (val tryResult = buf.tryReserve(PROBE_SIZE)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+            when (val tryResult = buf.tryReserve(PROBE_SIZE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
             // When reallocation occurs, we have to update initUntil accordingly
             // to re-calibrate how many bytes are actually initialized in the buffer
             initUntil = buf.size
@@ -874,8 +874,8 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
                 run {
                     val matchVal = r.readBuf(cursor.reborrow())
                     when {
-                        matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                            val e = matchVal.error
+                        matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                            val e = matchVal.errValue()
                             continue
                         }
                         // Do not stop now in case of error: we might have received both data
@@ -898,7 +898,7 @@ public fun <R : Read<R>> defaultReadToEnd(r: R, buf: List<UByte>, sizeHint: Int?
             buf.setLen(newLen)
         }
         // Now that all data is pushed to the vector, we can fail without data loss
-        when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+        when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
         if (bytesRead == 0) {
             return RustResult.Ok(buf.size - startLen)
         }
@@ -944,19 +944,19 @@ public fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): 
         run {
             val matchVal = thisRef.read(buf1)
             when {
-                matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
-                    val valueVal = matchVal.value
+                matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
+                    val okValueVal = matchVal.okValue()
                     break
                 }
                 matchVal is RustResult.Ok<*, *> -> {
-                    val n = matchVal.value
+                    val n = matchVal.okValue()
                     buf1 = buf1.subList(n, buf1.size)
                 }
-                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                    val e = matchVal.error
+                matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                    val e = matchVal.errValue()
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -970,7 +970,7 @@ public fun <R : Read<R>> defaultReadExact(thisRef: R, buf: MutableList<UByte>): 
 }
 
 public fun defaultReadBuf(read: (MutableList<UByte>) -> Result<Int>, cursor: BorrowedCursor<UByte>): Result<Unit> {
-    val n = when (val tryResult = read(cursor.ensureInit())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }
+    val n = when (val tryResult = read(cursor.ensureInit())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }
     cursor.advanceChecked(n)
     return RustResult.Ok(Unit)
 }
@@ -982,14 +982,14 @@ public fun <R : Read<R>> defaultReadBufExact(thisRef: R, cursor: BorrowedCursor<
             val matchVal = thisRef.readBuf(cursor.reborrow())
             when {
                 matchVal is RustResult.Ok<*, *> -> {
-                    val valueVal = matchVal.value
+                    val okValueVal = matchVal.okValue()
                 }
-                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                    val e = matchVal.error
+                matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                    val e = matchVal.errValue()
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                     return RustResult.Err(e1)
                 }
             }
@@ -1014,113 +1014,113 @@ public interface FromEndianBytes<T> {
 }
 
 public fun fromEndianBytesReadLeFromUByte(r: Read): Result<UByte> {
-    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) })[0])
+    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) })[0])
 }
 
 public fun fromEndianBytesReadBeFromUByte(r: Read): Result<UByte> {
-    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) })[0])
+    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) })[0])
 }
 
 public fun fromEndianBytesReadLeFromUShort(r: Read): Result<UShort> {
-    return RustResult.Ok(run { val bytesTmp1 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
+    return RustResult.Ok(run { val bytesTmp1 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
 }
 
 public fun fromEndianBytesReadBeFromUShort(r: Read): Result<UShort> {
-    return RustResult.Ok(run { val bytesTmp2 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp2[0].toInt() shl 8) or bytesTmp2[1].toInt()).toUShort() })
+    return RustResult.Ok(run { val bytesTmp2 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp2[0].toInt() shl 8) or bytesTmp2[1].toInt()).toUShort() })
 }
 
 public fun fromEndianBytesReadLeFromUInt(r: Read): Result<UInt> {
-    return RustResult.Ok(run { val bytesTmp3 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp3[3].toUInt() shl 24) or (bytesTmp3[2].toUInt() shl 16) or (bytesTmp3[1].toUInt() shl 8) or bytesTmp3[0].toUInt()) })
+    return RustResult.Ok(run { val bytesTmp3 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp3[3].toUInt() shl 24) or (bytesTmp3[2].toUInt() shl 16) or (bytesTmp3[1].toUInt() shl 8) or bytesTmp3[0].toUInt()) })
 }
 
 public fun fromEndianBytesReadBeFromUInt(r: Read): Result<UInt> {
-    return RustResult.Ok(run { val bytesTmp4 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp4[0].toUInt() shl 24) or (bytesTmp4[1].toUInt() shl 16) or (bytesTmp4[2].toUInt() shl 8) or bytesTmp4[3].toUInt()) })
+    return RustResult.Ok(run { val bytesTmp4 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp4[0].toUInt() shl 24) or (bytesTmp4[1].toUInt() shl 16) or (bytesTmp4[2].toUInt() shl 8) or bytesTmp4[3].toUInt()) })
 }
 
 public fun fromEndianBytesReadLeFromULong(r: Read): Result<ULong> {
-    return RustResult.Ok(run { val bytesTmp5 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp5[7].toULong() shl 56) or (bytesTmp5[6].toULong() shl 48) or (bytesTmp5[5].toULong() shl 40) or (bytesTmp5[4].toULong() shl 32) or (bytesTmp5[3].toULong() shl 24) or (bytesTmp5[2].toULong() shl 16) or (bytesTmp5[1].toULong() shl 8) or bytesTmp5[0].toULong()) })
+    return RustResult.Ok(run { val bytesTmp5 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp5[7].toULong() shl 56) or (bytesTmp5[6].toULong() shl 48) or (bytesTmp5[5].toULong() shl 40) or (bytesTmp5[4].toULong() shl 32) or (bytesTmp5[3].toULong() shl 24) or (bytesTmp5[2].toULong() shl 16) or (bytesTmp5[1].toULong() shl 8) or bytesTmp5[0].toULong()) })
 }
 
 public fun fromEndianBytesReadBeFromULong(r: Read): Result<ULong> {
-    return RustResult.Ok(run { val bytesTmp6 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp6[0].toULong() shl 56) or (bytesTmp6[1].toULong() shl 48) or (bytesTmp6[2].toULong() shl 40) or (bytesTmp6[3].toULong() shl 32) or (bytesTmp6[4].toULong() shl 24) or (bytesTmp6[5].toULong() shl 16) or (bytesTmp6[6].toULong() shl 8) or bytesTmp6[7].toULong()) })
+    return RustResult.Ok(run { val bytesTmp6 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp6[0].toULong() shl 56) or (bytesTmp6[1].toULong() shl 48) or (bytesTmp6[2].toULong() shl 40) or (bytesTmp6[3].toULong() shl 32) or (bytesTmp6[4].toULong() shl 24) or (bytesTmp6[5].toULong() shl 16) or (bytesTmp6[6].toULong() shl 8) or bytesTmp6[7].toULong()) })
 }
 
 public fun fromEndianBytesReadLeFromU128(r: Read): Result<U128> {
-    return RustResult.Ok(U128.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(U128.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadBeFromU128(r: Read): Result<U128> {
-    return RustResult.Ok(U128.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(U128.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadLeFromInt(r: Read): Result<Int> {
-    return RustResult.Ok(run { val bytesTmp7 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp7[3].toInt() shl 24) or (bytesTmp7[2].toInt() shl 16) or (bytesTmp7[1].toInt() shl 8) or bytesTmp7[0].toInt()) })
+    return RustResult.Ok(run { val bytesTmp7 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp7[3].toInt() shl 24) or (bytesTmp7[2].toInt() shl 16) or (bytesTmp7[1].toInt() shl 8) or bytesTmp7[0].toInt()) })
 }
 
 public fun fromEndianBytesReadBeFromInt(r: Read): Result<Int> {
-    return RustResult.Ok(run { val bytesTmp8 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; val offTmp8 = bytesTmp8.size - 4; ((bytesTmp8[offTmp8].toInt() shl 24) or (bytesTmp8[offTmp8 + 1].toInt() shl 16) or (bytesTmp8[offTmp8 + 2].toInt() shl 8) or bytesTmp8[offTmp8 + 3].toInt()) })
+    return RustResult.Ok(run { val bytesTmp8 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; val offTmp8 = bytesTmp8.size - 4; ((bytesTmp8[offTmp8].toInt() shl 24) or (bytesTmp8[offTmp8 + 1].toInt() shl 16) or (bytesTmp8[offTmp8 + 2].toInt() shl 8) or bytesTmp8[offTmp8 + 3].toInt()) })
 }
 
 public fun fromEndianBytesReadLeFromByte(r: Read): Result<Byte> {
-    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) })[0].toByte())
+    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) })[0].toByte())
 }
 
 public fun fromEndianBytesReadBeFromByte(r: Read): Result<Byte> {
-    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) })[0].toByte())
+    return RustResult.Ok((when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) })[0].toByte())
 }
 
 public fun fromEndianBytesReadLeFromShort(r: Read): Result<Short> {
-    return RustResult.Ok(run { val bytesTmp9 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp9[1].toInt() shl 8) or bytesTmp9[0].toInt()).toShort() })
+    return RustResult.Ok(run { val bytesTmp9 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp9[1].toInt() shl 8) or bytesTmp9[0].toInt()).toShort() })
 }
 
 public fun fromEndianBytesReadBeFromShort(r: Read): Result<Short> {
-    return RustResult.Ok(run { val bytesTmp10 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp10[0].toInt() shl 8) or bytesTmp10[1].toInt()).toShort() })
+    return RustResult.Ok(run { val bytesTmp10 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp10[0].toInt() shl 8) or bytesTmp10[1].toInt()).toShort() })
 }
 
 public fun fromEndianBytesReadLeFromLong(r: Read): Result<Long> {
-    return RustResult.Ok(run { val bytesTmp11 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp11[7].toLong() shl 56) or (bytesTmp11[6].toLong() shl 48) or (bytesTmp11[5].toLong() shl 40) or (bytesTmp11[4].toLong() shl 32) or (bytesTmp11[3].toLong() shl 24) or (bytesTmp11[2].toLong() shl 16) or (bytesTmp11[1].toLong() shl 8) or bytesTmp11[0].toLong()) })
+    return RustResult.Ok(run { val bytesTmp11 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp11[7].toLong() shl 56) or (bytesTmp11[6].toLong() shl 48) or (bytesTmp11[5].toLong() shl 40) or (bytesTmp11[4].toLong() shl 32) or (bytesTmp11[3].toLong() shl 24) or (bytesTmp11[2].toLong() shl 16) or (bytesTmp11[1].toLong() shl 8) or bytesTmp11[0].toLong()) })
 }
 
 public fun fromEndianBytesReadBeFromLong(r: Read): Result<Long> {
-    return RustResult.Ok(run { val bytesTmp12 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; ((bytesTmp12[0].toLong() shl 56) or (bytesTmp12[1].toLong() shl 48) or (bytesTmp12[2].toLong() shl 40) or (bytesTmp12[3].toLong() shl 32) or (bytesTmp12[4].toLong() shl 24) or (bytesTmp12[5].toLong() shl 16) or (bytesTmp12[6].toLong() shl 8) or bytesTmp12[7].toLong()) })
+    return RustResult.Ok(run { val bytesTmp12 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; ((bytesTmp12[0].toLong() shl 56) or (bytesTmp12[1].toLong() shl 48) or (bytesTmp12[2].toLong() shl 40) or (bytesTmp12[3].toLong() shl 32) or (bytesTmp12[4].toLong() shl 24) or (bytesTmp12[5].toLong() shl 16) or (bytesTmp12[6].toLong() shl 8) or bytesTmp12[7].toLong()) })
 }
 
 public fun fromEndianBytesReadLeFromI128(r: Read): Result<I128> {
-    return RustResult.Ok(I128.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(I128.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadBeFromI128(r: Read): Result<I128> {
-    return RustResult.Ok(I128.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(I128.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadLeFromF16(r: Read): Result<F16> {
-    return RustResult.Ok(F16.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(F16.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadBeFromF16(r: Read): Result<F16> {
-    return RustResult.Ok(F16.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(F16.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadLeFromFloat(r: Read): Result<Float> {
-    return RustResult.Ok(run { val bytesTmp13 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; Float.fromBits(((bytesTmp13[3].toInt() shl 24) or (bytesTmp13[2].toInt() shl 16) or (bytesTmp13[1].toInt() shl 8) or bytesTmp13[0].toInt())) })
+    return RustResult.Ok(run { val bytesTmp13 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; Float.fromBits(((bytesTmp13[3].toInt() shl 24) or (bytesTmp13[2].toInt() shl 16) or (bytesTmp13[1].toInt() shl 8) or bytesTmp13[0].toInt())) })
 }
 
 public fun fromEndianBytesReadBeFromFloat(r: Read): Result<Float> {
-    return RustResult.Ok(run { val bytesTmp14 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; Float.fromBits(((bytesTmp14[0].toInt() shl 24) or (bytesTmp14[1].toInt() shl 16) or (bytesTmp14[2].toInt() shl 8) or bytesTmp14[3].toInt())) })
+    return RustResult.Ok(run { val bytesTmp14 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; Float.fromBits(((bytesTmp14[0].toInt() shl 24) or (bytesTmp14[1].toInt() shl 16) or (bytesTmp14[2].toInt() shl 8) or bytesTmp14[3].toInt())) })
 }
 
 public fun fromEndianBytesReadLeFromDouble(r: Read): Result<Double> {
-    return RustResult.Ok(run { val bytesTmp15 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; Double.fromBits((bytesTmp15[7].toLong() shl 56) or (bytesTmp15[6].toLong() shl 48) or (bytesTmp15[5].toLong() shl 40) or (bytesTmp15[4].toLong() shl 32) or (bytesTmp15[3].toLong() shl 24) or (bytesTmp15[2].toLong() shl 16) or (bytesTmp15[1].toLong() shl 8) or bytesTmp15[0].toLong()) })
+    return RustResult.Ok(run { val bytesTmp15 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; Double.fromBits((bytesTmp15[7].toLong() shl 56) or (bytesTmp15[6].toLong() shl 48) or (bytesTmp15[5].toLong() shl 40) or (bytesTmp15[4].toLong() shl 32) or (bytesTmp15[3].toLong() shl 24) or (bytesTmp15[2].toLong() shl 16) or (bytesTmp15[1].toLong() shl 8) or bytesTmp15[0].toLong()) })
 }
 
 public fun fromEndianBytesReadBeFromDouble(r: Read): Result<Double> {
-    return RustResult.Ok(run { val bytesTmp16 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }; Double.fromBits((bytesTmp16[0].toLong() shl 56) or (bytesTmp16[1].toLong() shl 48) or (bytesTmp16[2].toLong() shl 40) or (bytesTmp16[3].toLong() shl 32) or (bytesTmp16[4].toLong() shl 24) or (bytesTmp16[5].toLong() shl 16) or (bytesTmp16[6].toLong() shl 8) or bytesTmp16[7].toLong()) })
+    return RustResult.Ok(run { val bytesTmp16 = when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }; Double.fromBits((bytesTmp16[0].toLong() shl 56) or (bytesTmp16[1].toLong() shl 48) or (bytesTmp16[2].toLong() shl 40) or (bytesTmp16[3].toLong() shl 32) or (bytesTmp16[4].toLong() shl 24) or (bytesTmp16[5].toLong() shl 16) or (bytesTmp16[6].toLong() shl 8) or bytesTmp16[7].toLong()) })
 }
 
 public fun fromEndianBytesReadLeFromF128(r: Read): Result<F128> {
-    return RustResult.Ok(F128.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(F128.fromLeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }
 
 public fun fromEndianBytesReadBeFromF128(r: Read): Result<F128> {
-    return RustResult.Ok(F128.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err(tryResult.error) }))
+    return RustResult.Ok(F128.fromBeBytes(when (val tryResult = r.readArray()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err(tryResult.errValue()) }))
 }

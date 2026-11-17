@@ -29,9 +29,9 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
         run {
             val matchVal = this.chooseParentKv()
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value is Left<*> -> {
-                    val valueVal = matchVal.value
-                    val (leftParentKv) = valueVal as Left<*>
+                matchVal is Result.Ok<*, *> && matchVal.okValue() is Left<*> -> {
+                    val okValueVal = matchVal.okValue()
+                    val (leftParentKv) = okValueVal as Left<*>
                     if (leftParentKv.canMerge()) {
                         val parent = leftParentKv.mergeTrackingParent(alloc)
                         Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent)
@@ -40,9 +40,9 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                         Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
-                matchVal is Result.Ok<*, *> && matchVal.value is Right<*> -> {
-                    val valueVal1 = matchVal.value
-                    val (rightParentKv) = valueVal1 as Right<*>
+                matchVal is Result.Ok<*, *> && matchVal.okValue() is Right<*> -> {
+                    val okValueVal1 = matchVal.okValue()
+                    val (rightParentKv) = okValueVal1 as Right<*>
                     if (rightParentKv.canMerge()) {
                         val parent1 = rightParentKv.mergeTrackingParent(alloc)
                         Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent1)
@@ -52,7 +52,7 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                     }
                 }
                 else -> {
-                    val root = (matchVal as Result.Err<*, *>).error
+                    val root = (matchVal as Result.Err<*, *>).errValue()
                     if (len > 0) {
                         Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     } else {
@@ -79,13 +79,13 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
         run {
             val matchVal = selfMut.fixNodeThroughParent(alloc.clone())
             when {
-                matchVal is Result.Ok<*, *> && matchVal.value != null -> {
-                    val valueVal = matchVal.value
-                    val parent = valueVal
+                matchVal is Result.Ok<*, *> && matchVal.okValue() != null -> {
+                    val okValueVal = matchVal.okValue()
+                    val parent = okValueVal
                     selfMut = parent.forgetType()
                 }
-                matchVal is Result.Ok<*, *> && matchVal.value == null -> {
-                    val None = matchVal.value
+                matchVal is Result.Ok<*, *> && matchVal.okValue() == null -> {
+                    val None = matchVal.okValue()
                     return true
                 }
                 else -> { return false }

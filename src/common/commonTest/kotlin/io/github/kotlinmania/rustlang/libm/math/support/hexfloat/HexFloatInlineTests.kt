@@ -16,10 +16,10 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 // Utilities for working with hex float formats.
 
 public fun roundingProperties(s: String): Result<Unit, HexFloatParseError> {
-    val (xd, s0) = when (val tryResult = parseAny(s, 16u, 10u, Round.Negative)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.error) }
-    val (xu, s1) = when (val tryResult = parseAny(s, 16u, 10u, Round.Positive)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.error) }
-    val (xz, s2) = when (val tryResult = parseAny(s, 16u, 10u, Round.Zero)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.error) }
-    val (xn, s3) = when (val tryResult = parseAny(s, 16u, 10u, Round.Nearest)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.error) }
+    val (xd, s0) = when (val tryResult = parseAny(s, 16u, 10u, Round.Negative)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.errValue()) }
+    val (xu, s1) = when (val tryResult = parseAny(s, 16u, 10u, Round.Positive)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.errValue()) }
+    val (xz, s2) = when (val tryResult = parseAny(s, 16u, 10u, Round.Zero)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.errValue()) }
+    val (xn, s3) = when (val tryResult = parseAny(s, 16u, 10u, Round.Nearest)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, HexFloatParseError>(tryResult.errValue()) }
     // Note: A value between the least normal and largest subnormal
     // could have underflow status depend on rounding mode.
     if (s0 == Status.ok) {
@@ -100,7 +100,7 @@ public class HexFloatParseTestsInlineTests {
                 when (matchVal) { is Result.Ok<*, *> -> {
                     Unit
                 }; is Result.Err<*, *> -> {
-                    val e = matchVal.error
+                    val e = matchVal.errValue()
                     error("failed rounding properties for `$s`: $e")
                 } }
             }
@@ -183,7 +183,7 @@ public class HexFloatParseTestsInlineTests {
     public fun longTail() {
         for (k in 1 until 1000) {
             val s = "0x1." + ("0".repeat(k)).toString() + "p0"
-            val bits = when (val tryResult = parseHexExact(s, 32u, 23u)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> error("parsing $s failed") }
+            val bits = when (val tryResult = parseHexExact(s, 32u, 23u)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> error("parsing $s failed") }
             check(kotlin.Float.fromBits((bits.toUInt()).toInt()) == 1.0f.toFloat())
             val s1 = "0x1." + ("0".repeat(k)).toString() + "1p0"
             val (bits1, status) = parseAny(s1, 32u, 23u, Round.Nearest) ?: error("unreachable")

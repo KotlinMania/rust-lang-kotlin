@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
@@ -180,7 +181,7 @@ public fun formatError(errnum: Int, f: StringBuilder): Result<Unit, Error> {
         run {
             val matchVal = String.fromUtf16(((buf).sliceArray(0 until res)))
             when (matchVal) { is Result.Ok<*, *> -> {
-                val msg = matchVal.value
+                val msg = matchVal.okValue()
                 // Trim trailing CRLF inserted by FormatMessageW
                 f.append(msg.trimAsciiEnd())
             }; is Result.Err<*, *> -> {

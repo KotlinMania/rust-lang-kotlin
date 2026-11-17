@@ -16,7 +16,7 @@ public typealias Pe = ImageNtHeaders64
 public fun Mapping.Companion.new(path: Path): Mapping? {
     val map = (mmap(path) ?: return null)
     return Mapping.mk(map, closure@{ data, stash ->
-        Context.new(stash, when (val tryResult = Object.parse(data)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return@closure Result.Err(tryResult.error); else -> error("Unexpected Result variant: $tryResult") }, null, null)
+        Context.new(stash, when (val tryResult = Object.parse(data)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") }, null, null)
     })
 }
 
@@ -42,10 +42,10 @@ public open class Object(
             run {
                 val matchVal = this.symbols.binarySearchByKey(addr1, { p -> p.first })
                 when (matchVal) { is Result.Ok<*, *> -> {
-                    val i = matchVal.value
+                    val i = matchVal.okValue()
                     i
                 }; is Result.Err<*, *> -> {
-                    val i1 = matchVal.error
+                    val i1 = matchVal.errValue()
                     (i1.checkedSub(1) ?: return null)
                 } }
             }

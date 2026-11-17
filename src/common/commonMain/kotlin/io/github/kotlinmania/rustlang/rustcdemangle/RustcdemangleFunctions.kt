@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.rustcdemangle
 
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -47,7 +48,7 @@ public fun demangle(s: String): Demangle {
         run {
             val matchVal1 = io.github.kotlinmania.rustlang.rustcdemangle.legacy.demangle(s1)
             when (matchVal1) { is Result.Ok<*, *> -> {
-                val okVal = matchVal1.value
+                val okVal = matchVal1.okValue()
                 val d = okVal.first
                 val s2 = okVal.second
                 suffix = s2
@@ -57,9 +58,9 @@ public fun demangle(s: String): Demangle {
                     val matchVal2 = io.github.kotlinmania.rustlang.rustcdemangle.v0.demangle(s1)
                     when {
                         matchVal2 is Result.Ok<*, *> -> {
-                            val valueVal = matchVal2.value
-                            val d1 = valueVal.first
-                            val s3 = valueVal.second
+                            val okValueVal = matchVal2.okValue()
+                            val d1 = okValueVal.first
+                            val s3 = okValueVal.second
                             suffix = s3
                             DemangleStyle.v0(d1)
                         }
@@ -68,12 +69,12 @@ public fun demangle(s: String): Demangle {
                         // v0-mangled, and have the error show up in the demangling?
                         // (that error already gets past this initial check, and therefore
                         // will show up in the demangling, if hidden behind a backref)
-                        matchVal2 is Result.Err<*, *> && matchVal2.error == ParseError.Invalid -> {
-                            val errorVal = matchVal2.error
+                        matchVal2 is Result.Err<*, *> && matchVal2.errValue() == ParseError.Invalid -> {
+                            val errValueVal = matchVal2.errValue()
                             null
                         }
                         else -> {
-                            val errorVal1 = (matchVal2 as Result.Err<*, *>).error
+                            val errValueVal1 = (matchVal2 as Result.Err<*, *>).errValue()
                             null
                         }
                     }
@@ -121,7 +122,7 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
                     }
                 }
             }
-        when (val tryResult = output.writeAll(line.substring(head until nextHead).encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = output.writeAll(line.substring(head until nextHead).encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         head = nextHead
         // Find the non-matching character.
         //
@@ -132,7 +133,7 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
         head = head + mangled.length
         when (val matchVal1 = tryDemangle(mangled)) {
             is Result.Ok<*, *> -> {
-                val demangled = matchVal1.value
+                val demangled = matchVal1.okValue()
                 if (includeHash) {
                     output.append("$demangled")
                 } else {
@@ -140,7 +141,7 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
                 }
             }
             else -> {
-                when (val tryResult = output.writeAll(mangled.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+                when (val tryResult = output.writeAll(mangled.encodeToByteArray().map { it.toUByte() })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
             }
         }
     }
@@ -162,8 +163,8 @@ public fun <R : BufRead, W : Write> demangleStream(input: R, output: W, includeH
     // demangleLine is also more efficient with relatively small buffers as it will copy around
     // trailing data during demangling. In the future we might directly stream to the output but at
     // least right now that seems to be less efficient.
-    while (when (val tryResult = input.readLine(buf)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) } > 0) {
-        when (val tryResult = demangleLine(buf, output, includeHash)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.error) }
+    while (when (val tryResult = input.readLine(buf)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) } > 0) {
+        when (val tryResult = demangleLine(buf, output, includeHash)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         buf = ""
     }
     return Result.Ok<Unit, Error>(Unit)

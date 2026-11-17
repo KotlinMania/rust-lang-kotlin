@@ -143,10 +143,11 @@ public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutput
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<Output>()) }
     return when (val matchVal = tryFromFnErased(array, cb)) {
         is ControlFlow.Break<*, *> -> {
-            val (r) = matchVal
+            val r = matchVal.cfBreakValue()
             FromResidual.fromResidual(r)
         }
         is ControlFlow.Continue<*, *> -> {
+            val cfContinueValueVal = matchVal.cfContinueValue()
             // SAFETY: All elements of the array were populated.
             MaybeUninit.arrayAssumeInit(array, n)
         }
@@ -187,7 +188,7 @@ public fun <T> fromMut(s: T): List<T> {
 public fun <Output, Residual, R : Try<R, Output, Residual>> tryFromFnErased(buffer: MutableList<MaybeUninit<Output>>, generator: (Int) -> R): ControlFlow<Residual, Unit> {
     val guard = Guard(arrayMut = buffer, initialized = 0)
     while (guard.initialized < guard.arrayMut.size) {
-        val item = when (val tryResult = generator(guard.initialized).branch()) { is ControlFlow.Continue<*, *> -> tryResult.value; is ControlFlow.Break<*, *> -> return ControlFlow.Break<Residual, Unit>(tryResult.value) }
+        val item = when (val tryResult = generator(guard.initialized).branch()) { is ControlFlow.Continue<*, *> -> tryResult.cfContinueValue(); is ControlFlow.Break<*, *> -> return ControlFlow.Break<Residual, Unit>(tryResult.cfBreakValue()) }
         // SAFETY: The loop condition ensures we have space to push the item
         guard.pushUnchecked(item)
     }
@@ -828,13 +829,13 @@ public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIte
         // SAFETY: All elements of `array` were populated.
         Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
     }; is Result.Err<*, *> -> {
-        val initialized = r.error
+        val initialized = r.errValue()
         // SAFETY: Only the first `initialized` elements were populated
         Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until initialized, n))
     } }
 }
 
-public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen {
+public fun <Item, I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where I : Iterator<T>, I : TrustedLen<Item> {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
@@ -857,13 +858,13 @@ public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
         // SAFETY: All elements of `array` were populated.
         Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
     }; is Result.Err<*, *> -> {
-        val initialized = r.error
+        val initialized = r.errValue()
         // SAFETY: Only the last `initialized` elements were populated
         Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - initialized until n, n))
     } }
 }
 
-public fun <I : TrustedLen, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
+public fun <Item, I : TrustedLen<Item>, T> I.specNextChunkBackTN(n: Int): Result<List<T>, IntoIter<T>> {
     val len = this.sizeHint().first
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {

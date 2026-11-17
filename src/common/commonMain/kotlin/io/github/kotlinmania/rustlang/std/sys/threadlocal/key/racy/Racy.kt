@@ -76,7 +76,7 @@ public open class LazyKey internal constructor(
                 }
                 key2
             }
-        if ((if (!key) 1 else 0) != KEY_SENTVAL) {
+        if ((if (key.inv()) 1 else 0) != KEY_SENTVAL) {
             run {
                 when (val matchVal = panicOutput()) {
                     null -> {}
@@ -96,7 +96,7 @@ public open class LazyKey internal constructor(
             when (matchVal1) { is Result.Ok<*, *> -> {
                 key.toInt()
             }; is Result.Err<*, *> -> {
-                val n = matchVal1.error
+                val n = matchVal1.errValue()
                 run {
                     destroy(key)
                     n

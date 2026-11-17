@@ -3,9 +3,9 @@
 
 package io.github.kotlinmania.rustlang.corearch.mips.msa
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
@@ -14,8 +14,8 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
-import io.github.kotlinmania.rustlang.corearch.simd.debugSimdFinish
 
 // MIPS SIMD Architecture intrinsics
 //
@@ -46,9 +46,9 @@ public open class V16i8(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): ByteArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.byteArray((16).toInt()))
+    public open fun asMutArray(): ByteArray = (PrimitiveArrayLayouts.byteArray((16).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v16i8", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v16i8"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V16i8> =
@@ -74,7 +74,7 @@ public open class V16i8(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Byte): V16i8 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Byte): V16i8 = run { val simdArg0 = value; V16i8() }
 
         public fun from(simd: Simd<Byte>): V16i8 = transmuteWithLayouts<Simd<Byte>, V16i8>(simd, UnresolvedTypeLayout<Simd<Byte>>(), V16i8.typeLayout())
     }
@@ -104,9 +104,9 @@ public open class V8i16(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): ShortArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.shortArray((8).toInt()))
+    public open fun asMutArray(): ShortArray = (PrimitiveArrayLayouts.shortArray((8).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v8i16", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v8i16"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V8i16> =
@@ -132,7 +132,7 @@ public open class V8i16(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Short): V8i16 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Short): V8i16 = run { val simdArg0 = value; V8i16() }
 
         public fun from(simd: Simd<Short>): V8i16 = transmuteWithLayouts<Simd<Short>, V8i16>(simd, UnresolvedTypeLayout<Simd<Short>>(), V8i16.typeLayout())
     }
@@ -162,9 +162,9 @@ public open class V4i32(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): IntArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.intArray((4).toInt()))
+    public open fun asMutArray(): IntArray = (PrimitiveArrayLayouts.intArray((4).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v4i32", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v4i32"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V4i32> =
@@ -190,7 +190,7 @@ public open class V4i32(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Int): V4i32 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Int): V4i32 = run { val simdArg0 = value; V4i32() }
 
         public fun from(simd: Simd<Int>): V4i32 = transmuteWithLayouts<Simd<Int>, V4i32>(simd, UnresolvedTypeLayout<Simd<Int>>(), V4i32.typeLayout())
     }
@@ -220,9 +220,9 @@ public open class V2i64(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): LongArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.longArray((2).toInt()))
+    public open fun asMutArray(): LongArray = (PrimitiveArrayLayouts.longArray((2).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v2i64", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v2i64"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V2i64> =
@@ -248,7 +248,7 @@ public open class V2i64(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Long): V2i64 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Long): V2i64 = run { val simdArg0 = value; V2i64() }
 
         public fun from(simd: Simd<Long>): V2i64 = transmuteWithLayouts<Simd<Long>, V2i64>(simd, UnresolvedTypeLayout<Simd<Long>>(), V2i64.typeLayout())
     }
@@ -278,9 +278,9 @@ public open class V16u8(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): UByteArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.uByteArray((16).toInt()))
+    public open fun asMutArray(): UByteArray = (PrimitiveArrayLayouts.uByteArray((16).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v16u8", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v16u8"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V16u8> =
@@ -306,7 +306,7 @@ public open class V16u8(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UByte): V16u8 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: UByte): V16u8 = run { val simdArg0 = value; V16u8() }
 
         public fun from(simd: Simd<UByte>): V16u8 = transmuteWithLayouts<Simd<UByte>, V16u8>(simd, UnresolvedTypeLayout<Simd<UByte>>(), V16u8.typeLayout())
     }
@@ -336,9 +336,9 @@ public open class V8u16(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): UShortArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.uShortArray((8).toInt()))
+    public open fun asMutArray(): UShortArray = (PrimitiveArrayLayouts.uShortArray((8).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v8u16", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v8u16"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V8u16> =
@@ -364,7 +364,7 @@ public open class V8u16(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UShort): V8u16 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: UShort): V8u16 = run { val simdArg0 = value; V8u16() }
 
         public fun from(simd: Simd<UShort>): V8u16 = transmuteWithLayouts<Simd<UShort>, V8u16>(simd, UnresolvedTypeLayout<Simd<UShort>>(), V8u16.typeLayout())
     }
@@ -394,9 +394,9 @@ public open class V4u32(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): UIntArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.uIntArray((4).toInt()))
+    public open fun asMutArray(): UIntArray = (PrimitiveArrayLayouts.uIntArray((4).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v4u32", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v4u32"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V4u32> =
@@ -422,7 +422,7 @@ public open class V4u32(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: UInt): V4u32 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: UInt): V4u32 = run { val simdArg0 = value; V4u32() }
 
         public fun from(simd: Simd<UInt>): V4u32 = transmuteWithLayouts<Simd<UInt>, V4u32>(simd, UnresolvedTypeLayout<Simd<UInt>>(), V4u32.typeLayout())
     }
@@ -452,9 +452,9 @@ public open class V2u64(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): ULongArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.uLongArray((2).toInt()))
+    public open fun asMutArray(): ULongArray = (PrimitiveArrayLayouts.uLongArray((2).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v2u64", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v2u64"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V2u64> =
@@ -480,7 +480,7 @@ public open class V2u64(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: ULong): V2u64 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: ULong): V2u64 = run { val simdArg0 = value; V2u64() }
 
         public fun from(simd: Simd<ULong>): V2u64 = transmuteWithLayouts<Simd<ULong>, V2u64>(simd, UnresolvedTypeLayout<Simd<ULong>>(), V2u64.typeLayout())
     }
@@ -507,9 +507,9 @@ public open class V4f32(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): FloatArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.floatArray((4).toInt()))
+    public open fun asMutArray(): FloatArray = (PrimitiveArrayLayouts.floatArray((4).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v4f32", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v4f32"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V4f32> =
@@ -535,7 +535,7 @@ public open class V4f32(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Float): V4f32 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Float): V4f32 = run { val simdArg0 = value; V4f32() }
 
         public fun from(simd: Simd<Float>): V4f32 = transmuteWithLayouts<Simd<Float>, V4f32>(simd, UnresolvedTypeLayout<Simd<Float>>(), V4f32.typeLayout())
     }
@@ -565,9 +565,9 @@ public open class V2f64(
     /**
      * Returns a mutable array reference containing the entire SIMD vector.
      */
-    public open fun asMutArray(): DoubleArray = RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), PrimitiveArrayLayouts.doubleArray((2).toInt()))
+    public open fun asMutArray(): DoubleArray = (PrimitiveArrayLayouts.doubleArray((2).toInt())).readNative((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 
-    public open fun fmt(f: Formatter): Result = debugSimdFinish(f, "v2f64", this.asArray())
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { val simdDbgArr = this.asArray(); (f).append("v2f64"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<V2f64> =
@@ -593,7 +593,7 @@ public open class V2f64(
         /**
          * Put the same value in every lane.
          */
-        public fun splat(value: Double): V2f64 = run { val _simdArg0 = value; _simdArg0 }
+        public fun splat(value: Double): V2f64 = run { val simdArg0 = value; V2f64() }
 
         public fun from(simd: Simd<Double>): V2f64 = transmuteWithLayouts<Simd<Double>, V2f64>(simd, UnresolvedTypeLayout<Simd<Double>>(), V2f64.typeLayout())
     }

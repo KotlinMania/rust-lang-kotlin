@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.io.util
 
 import io.github.kotlinmania.rustlang.alloc.io.bufread.BufRead
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.alloc.io.read.read
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -20,6 +20,8 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
@@ -98,7 +100,7 @@ public fun Repeat.readToString(arg0: String): Result<Int> = RustResult.Err(Error
 public fun Repeat.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     var nwritten = 0
     for (buf in bufs) {
-        nwritten += when (val tryResult = this.read(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        nwritten += when (val tryResult = this.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     }
     return RustResult.Ok(nwritten)
 }
@@ -108,7 +110,7 @@ public fun Repeat.isReadVectored(): Boolean = true
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.read(buf: MutableList<UByte>): Result<Int> {
     if (!this.doneFirst) {
         run {
-            val matchVal = when (val tryResult = this.first.read(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+            val matchVal = when (val tryResult = this.first.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
             when {
                 matchVal == 0 && !buf.isEmpty() -> this.doneFirst = true
                 else -> {
@@ -124,7 +126,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.read(buf: MutableList<UByte>):
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
     if (!this.doneFirst) {
         run {
-            val matchVal = when (val tryResult = this.first.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+            val matchVal = when (val tryResult = this.first.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
             when {
                 matchVal == 0 && bufs.any({ b -> !b.isEmpty() }) -> this.doneFirst = true
                 else -> {
@@ -142,10 +144,10 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.isReadVectored(): Boolean = th
 public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readToEnd(buf: List<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
-        read += when (val tryResult = this.first.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        read += when (val tryResult = this.first.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
         this.doneFirst = true
     }
-    read += when (val tryResult = this.second.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    read += when (val tryResult = this.second.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     return RustResult.Ok(read)
 }
 
@@ -157,7 +159,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readBuf(buf: BorrowedCursor<UB
     }
     if (!this.doneFirst) {
         val oldLen = buf.written()
-        when (val tryResult = this.first.readBuf(buf.reborrow())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.first.readBuf(buf.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
         if (buf.written() != oldLen) {
             return RustResult.Ok(Unit)
         } else {
@@ -170,7 +172,7 @@ public fun <T : Read<T>, U : Read<U>> Chain<T, U>.readBuf(buf: BorrowedCursor<UB
 public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.fillBuf(): Result<List<UByte>> {
     if (!this.doneFirst) {
         run {
-            val matchVal = when (val tryResult = this.first.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.error) }
+            val matchVal = when (val tryResult = this.first.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
             when {
                 matchVal.isEmpty() -> {
                     val buf = matchVal
@@ -197,7 +199,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.consume(amt: Int) {
 public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, buf: List<UByte>): Result<Int> {
     var read = 0
     if (!this.doneFirst) {
-        val n = when (val tryResult = this.first.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        val n = when (val tryResult = this.first.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
         read += n
         run {
             val matchVal = buf.last()
@@ -210,7 +212,7 @@ public fun <T : BufRead<T>, U : BufRead<U>> Chain<T, U>.readUntil(byte: UByte, b
             }
         }
     }
-    read += when (val tryResult = this.second.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    read += when (val tryResult = this.second.readUntil(byte, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     return RustResult.Ok(read)
 }
 
@@ -220,7 +222,7 @@ public fun <T : Read<T>> Take<T>.read(buf: MutableList<UByte>): Result<Int> {
         return RustResult.Ok(0)
     }
     val max = minOf(buf.size.toULong(), this.limit).toInt()
-    val n = when (val tryResult = this.inner.read(buf.subList(0, max))) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+    val n = when (val tryResult = this.inner.read(buf.subList(0, max))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
     check(n.toULong() <= this.limit) { "number of read bytes exceeds limit" }
     this.limit -= n.toULong()
     return RustResult.Ok(n)
@@ -275,7 +277,7 @@ public fun <T : BufRead<T>> Take<T>.fillBuf(): Result<List<UByte>> {
     if (this.limit == 0) {
         return RustResult.Ok(listOf())
     }
-    val buf = when (val tryResult = this.inner.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.error) }
+    val buf = when (val tryResult = this.inner.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
     val cap = minOf(buf.len().toULong(), this.limit).toInt()
     return RustResult.Ok(buf[0 until cap])
 }
@@ -347,17 +349,17 @@ public fun <R : Read<R>> inlinedSlowReadByte(reader: R): Result<UByte>? {
         return run {
             val matchVal = reader.read(RustMutableReference(localStorageL377C4.asMutPtr(), localStorageL377C4.layout))
             when {
-                matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
-                    val valueVal = matchVal.value
+                matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
+                    val okValueVal = matchVal.okValue()
                     null
                 }
                 matchVal is RustResult.Ok<*, *> -> RustResult.Ok(byte)
-                matchVal is RustResult.Err<*, *> && matchVal.error.isInterrupted() -> {
-                    val e = matchVal.error
+                matchVal is RustResult.Err<*, *> && matchVal.errValue().isInterrupted() -> {
+                    val e = matchVal.errValue()
                     continue
                 }
                 else -> {
-                    val e1 = (matchVal as RustResult.Err<*, *>).error
+                    val e1 = (matchVal as RustResult.Err<*, *>).errValue()
                     RustResult.Err(e1)
                 }
             }
@@ -417,8 +419,8 @@ public fun <B : BufRead<B>> Split<B>.next(): Result<List<UByte>>? {
     return run {
         val matchVal = this.buf.readUntil(this.delim, buf)
         when {
-            matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
-                val valueVal = matchVal.value
+            matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
+                val okValueVal = matchVal.okValue()
                 null
             }
             matchVal is RustResult.Ok<*, *> -> {
@@ -428,7 +430,7 @@ public fun <B : BufRead<B>> Split<B>.next(): Result<List<UByte>>? {
                 RustResult.Ok(buf)
             }
             else -> {
-                val e = (matchVal as RustResult.Err<*, *>).error
+                val e = (matchVal as RustResult.Err<*, *>).errValue()
                 RustResult.Err(e)
             }
         }
@@ -476,8 +478,8 @@ public fun <B : BufRead<B>> Lines<B>.next(): Result<String>? {
     return run {
         val matchVal = this.buf.readLine(buf)
         when {
-            matchVal is RustResult.Ok<*, *> && matchVal.value == 0 -> {
-                val valueVal = matchVal.value
+            matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
+                val okValueVal = matchVal.okValue()
                 null
             }
             matchVal is RustResult.Ok<*, *> -> {
@@ -490,7 +492,7 @@ public fun <B : BufRead<B>> Lines<B>.next(): Result<String>? {
                 RustResult.Ok(buf)
             }
             else -> {
-                val e = (matchVal as RustResult.Err<*, *>).error
+                val e = (matchVal as RustResult.Err<*, *>).errValue()
                 RustResult.Err(e)
             }
         }

@@ -31,6 +31,8 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.std.path.Path
@@ -129,7 +131,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
         run {
             val matchVal = dbghelp.init()
             when (matchVal) { is Result.Ok<*, *> -> {
-                val dbghelp = matchVal.value
+                val dbghelp = matchVal.okValue()
                 dbghelp
             }; is Result.Err<*, *> -> {
                 return

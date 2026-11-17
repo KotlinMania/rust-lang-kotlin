@@ -31,7 +31,7 @@ public fun ok(sym: String, expected: String): Boolean =
     run {
         val matchVal = tryDemangle(sym)
         when (matchVal) { is Result.Ok<*, *> -> {
-            val s = matchVal.value
+            val s = matchVal.okValue()
             if (s.toString() == expected) {
                 true
             } else {

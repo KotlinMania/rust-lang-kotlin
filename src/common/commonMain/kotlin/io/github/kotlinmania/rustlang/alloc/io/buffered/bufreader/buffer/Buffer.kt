@@ -96,7 +96,7 @@ public open class Buffer internal constructor(
             // no part will become uninitialized.
             buf.setInit()
         }
-        when (val tryResult = reader.readBuf(buf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.error) }
+        when (val tryResult = reader.readBuf(buf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, Error>(tryResult.errValue()) }
         this.filled += buf.len()
         this.initialized = buf.isInit()
         return RustResult.Ok(buf.len())
@@ -129,7 +129,7 @@ public open class Buffer internal constructor(
             this.pos = 0
             this.filled = buf.len()
             this.initialized = buf.isInit()
-            when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.value; is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.error) }
+            when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, Error>(tryResult.errValue()) }
         }
         return RustResult.Ok(this.buffer())
     }
@@ -156,7 +156,7 @@ public open class Buffer internal constructor(
             run {
                 val matchVal = Box.tryNewUninitSlice(capacity)
                 when (matchVal) { is RustResult.Ok<*, *> -> {
-                    val buf = matchVal.value
+                    val buf = matchVal.okValue()
                     RustResult.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
                 }; is RustResult.Err<*, *> -> {
                     RustResult.Err(constError(ErrorKind.OutOfMemory, "failed to allocate read buffer"))

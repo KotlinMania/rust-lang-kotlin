@@ -1,6 +1,8 @@
 // port-lint: source bench.rs
 package io.github.kotlinmania.rustlang.test.bench
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.num.pow
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -176,18 +178,18 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
     val testResult =
         when {
             // bs.bench(f) (
-            result is Result.Ok<*, *> && result.value is Result.Ok<*, *> && (result.value as Result.Ok<*, *>).value != null -> {
-                val valueVal = result.value
-                val valueVal1 = (valueVal as Result.Ok<*, *>).value
-                val nsIterSumm = valueVal1
+            result is Result.Ok<*, *> && result.okValue() is Result.Ok<*, *> && (result.okValue() as Result.Ok<*, *>).okValue() != null -> {
+                val okValueVal = result.okValue()
+                val okValueVal1 = (okValueVal as Result.Ok<*, *>).okValue()
+                val nsIterSumm = okValueVal1
                 val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter
                 val bs1 = BenchSamples(nsIterSumm = nsIterSumm, mbS = mbS.toInt())
                 TestResult.TrBench(bs1)
             }
-            result is Result.Ok<*, *> && result.value is Result.Ok<*, *> && (result.value as Result.Ok<*, *>).value == null -> {
-                val valueVal2 = result.value
-                val None = (valueVal2 as Result.Ok<*, *>).value
+            result is Result.Ok<*, *> && result.okValue() is Result.Ok<*, *> && (result.okValue() as Result.Ok<*, *>).okValue() == null -> {
+                val okValueVal2 = result.okValue()
+                val None = (okValueVal2 as Result.Ok<*, *>).okValue()
                 // iter not called, so no data.
                 // Note: error in this case?
                 val samples: MutableList<Double> = MutableList(1) { 0.0 }
@@ -196,7 +198,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
             }
             result is Result.Err<*, *> -> TestResult.TrFailed
             else -> {
-                val valueVal3 = (result as Result.Ok<*, *>).value
+                val okValueVal3 = (result as Result.Ok<*, *>).okValue()
                 TestResult.TrFailed
             }
         }

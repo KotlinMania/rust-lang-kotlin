@@ -254,7 +254,7 @@ public fun varsOs(): VarsOs = VarsOs(inner = envimp.env())
  */
 public fun variable(key: OsStr): Result<String, VarError> {
     fun inner(key1: OsStr): Result<String, VarError> {
-        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*, *> -> tryResult.value; is Result.Err<*, *> -> return Result.Err<String, VarError>(tryResult.error) }.intoString().mapErr({ VarError.NotUnicode(it) })
+        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, VarError>(tryResult.errValue()) }.intoString().mapErr({ VarError.NotUnicode(it) })
     }
     return inner(key)
 }

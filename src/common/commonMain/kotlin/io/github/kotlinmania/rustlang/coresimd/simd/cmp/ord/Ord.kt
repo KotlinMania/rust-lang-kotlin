@@ -1,6 +1,11 @@
 // port-lint: source simd/cmp/ord.rs
 package io.github.kotlinmania.rustlang.coresimd.simd.cmp.ord
 
+import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.coresimd.Mask
 import io.github.kotlinmania.rustlang.coresimd.Simd
 import io.github.kotlinmania.rustlang.coresimd.simd.cmp.eq.SimdPartialEq
@@ -57,13 +62,13 @@ public interface SimdOrd<T, out Mask> : SimdPartialOrd<T, Mask> {
     public fun simdClamp(min: T, max: T): T
 }
 
-public fun Simd<UByte>.simdLt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }, n)
+public fun Simd<UByte>.simdLt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdLe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }, n)
+public fun Simd<UByte>.simdLe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdGt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }, n)
+public fun Simd<UByte>.simdGt(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
-public fun Simd<UByte>.simdGe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }, n)
+public fun Simd<UByte>.simdGe(other: Simd<UByte>, n: Int): Mask = Mask.fromSimdUnchecked(run { val simdArg0 = this; val simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); val res = (UnresolvedTypeLayout<Mask>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Mask>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Mask>()).alignBytes)); res } }, n)
 
 public fun Simd<UByte>.simdMax(other: Simd<UByte>, n: Int): Simd<UByte> = this.simdLt(other, n).select(other, this)
 

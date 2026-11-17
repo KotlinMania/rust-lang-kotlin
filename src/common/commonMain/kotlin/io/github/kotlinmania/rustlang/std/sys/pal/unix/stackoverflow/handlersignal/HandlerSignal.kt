@@ -1,6 +1,7 @@
 // port-lint: source sys/pal/unix/stack_overflow/handler_signal.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
+import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -8,6 +9,8 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
@@ -235,7 +238,7 @@ public fun makeHandler(mainThread: Boolean): Handler {
     if (false || !NEED_ALTSTACK.load(Ordering.Acquire)) {
         return ConstPtr(0L)
     }
-    if (!mainThread) {
+    if (mainThread.inv()) {
         when (val matchVal = currentGuard()) {
             null -> {}
             else -> {
