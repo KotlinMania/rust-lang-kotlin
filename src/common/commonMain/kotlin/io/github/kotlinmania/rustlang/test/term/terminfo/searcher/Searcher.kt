@@ -24,7 +24,7 @@ public fun getDbpathForTerm(term: String): PathBuf? {
         }
     }
     when (val matchVal2 = Env.variable("TERMINFO_DIRS")) {
-        is Ok -> {
+        is Result.Ok -> {
             val dirs = matchVal2.value
             for (i in dirs.split(':')) {
                 if (i.isEmpty()) {

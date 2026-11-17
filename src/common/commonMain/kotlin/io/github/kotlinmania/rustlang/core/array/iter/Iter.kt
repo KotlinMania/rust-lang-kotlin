@@ -212,7 +212,7 @@ public fun <T> IntoIter<T>.asSlice(n: Int): List<T> = this.unsize().asSlice()
  */
 public fun <T> IntoIter<T>.asMutSlice(n: Int): MutableList<T> = this.unsizeMut().asMutSlice()
 
-public fun <T> defaultIntoIterTN(n: Int): IntoIter<T> = IntoIter.empty()
+public fun <T> defaultIntoIterTN(n: Int): IntoIter<T> = IntoIter.empty(n)
 
 public fun <T> IntoIter<T>.next(n: Int): T? = this.unsizeMut().next()
 

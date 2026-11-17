@@ -42,6 +42,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -50,7 +51,6 @@ import io.github.kotlinmania.rustlang.core.mem.swap
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 
@@ -764,7 +764,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
      * ```
      */
     public open fun retain(f: (K, V) -> Boolean) {
-        this.extractIf(0 until 0, { k, v -> !f(k, v) }).forEach(drop)
+        this.extractIf(0 until 0, { k, v -> !f(k, v) }).forEach({ drop(it) })
     }
 
     /**

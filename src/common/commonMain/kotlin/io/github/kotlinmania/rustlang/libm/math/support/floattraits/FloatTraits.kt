@@ -27,10 +27,10 @@ import io.github.kotlinmania.rustlang.core.ops.arith.MulAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
 import io.github.kotlinmania.rustlang.core.ops.arith.Rem
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.fma.fmaf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf128
 import io.github.kotlinmania.rustlang.libm.math.floor.floorf16
-import io.github.kotlinmania.rustlang.libm.math.fma.fmaf
 import io.github.kotlinmania.rustlang.libm.math.fma.fmaf128
 import io.github.kotlinmania.rustlang.libm.math.fmaf16.fmaf16
 import io.github.kotlinmania.rustlang.libm.math.generic.fabs
@@ -667,17 +667,17 @@ public fun Double.copysignFloat(other: Double): Double {
 
 public fun Double.fma(y: Double, z: Double): Double {
     kmFmaf64(this, y, z)
-    return io.github.kotlinmania.rustlang.libm.math.fma.fma(this, y, z)
+    return fma(this, y, z)
 }
 
 public fun Double.floor(): Double {
     kmFloorf64(this)
-    return io.github.kotlinmania.rustlang.libm.math.floor.floor(this)
+    return floor(this)
 }
 
 public fun Double.roundeven(): Double {
     kmRoundTiesEvenf64(this)
-    return io.github.kotlinmania.rustlang.libm.math.roundeven.roundeven(this)
+    return roundeven(this)
 }
 
 public fun floatNormalizeDouble(significand: ULong): Pair<Int, ULong> {

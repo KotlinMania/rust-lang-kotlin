@@ -3077,7 +3077,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: UByte): UByte = value
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: UByte): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3109,7 +3109,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: UByte): UShort = valu
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: UByte): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3141,7 +3141,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: UByte): UInt = value.to
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: UByte): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3173,7 +3173,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: UByte): ULong = value.
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: UByte): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3205,7 +3205,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: UByte): U128 = U128.fro
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: UByte): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3237,7 +3237,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: UByte): Int = value.toIn
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: UByte): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3269,7 +3269,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: UByte): Byte = value.to
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: UByte): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3301,7 +3301,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: UByte): Short = value.
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: UByte): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3333,7 +3333,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: UByte): Long = value.to
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: UByte): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3365,7 +3365,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: UByte): I128 = I128.fro
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: UByte): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3397,7 +3397,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: UShort): UByte = value
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: UShort): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3429,7 +3429,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: UShort): UShort = val
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: UShort): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3461,7 +3461,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: UShort): UInt = value.t
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: UShort): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3493,7 +3493,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: UShort): ULong = value
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: UShort): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3525,7 +3525,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: UShort): U128 = U128.fr
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: UShort): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3557,7 +3557,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: UShort): Int = value.toI
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: UShort): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3589,7 +3589,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: UShort): Byte = value.t
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: UShort): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3621,7 +3621,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: UShort): Short = value
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: UShort): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3653,7 +3653,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: UShort): Long = value.t
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: UShort): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3685,7 +3685,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: UShort): I128 = I128.fr
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: UShort): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3717,7 +3717,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: UInt): UByte = value.t
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: UInt): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3749,7 +3749,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: UInt): UShort = value
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: UInt): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3781,7 +3781,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: UInt): UInt = value
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: UInt): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3813,7 +3813,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: UInt): ULong = value.t
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: UInt): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3845,7 +3845,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: UInt): U128 = U128.from
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: UInt): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3877,7 +3877,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: UInt): Int = value.toInt
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: UInt): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3909,7 +3909,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: UInt): Byte = value.toB
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: UInt): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3941,7 +3941,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: UInt): Short = value.t
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: UInt): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -3973,7 +3973,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: UInt): Long = value.toL
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: UInt): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4005,7 +4005,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: UInt): I128 = I128.from
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: UInt): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4037,7 +4037,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: ULong): UByte = value.
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: ULong): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4069,7 +4069,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: ULong): UShort = valu
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: ULong): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4101,7 +4101,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: ULong): UInt = value.to
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: ULong): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4133,7 +4133,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: ULong): ULong = value
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: ULong): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4165,7 +4165,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: ULong): U128 = U128.fro
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: ULong): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4197,7 +4197,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: ULong): Int = value.toIn
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: ULong): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4229,7 +4229,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: ULong): Byte = value.to
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: ULong): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4261,7 +4261,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: ULong): Short = value.
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: ULong): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4293,7 +4293,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: ULong): Long = value.to
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: ULong): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4325,7 +4325,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: ULong): I128 = I128.fro
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: ULong): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4357,7 +4357,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: U128): UByte = value.t
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: U128): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4389,7 +4389,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: U128): UShort = value
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: U128): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4421,7 +4421,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: U128): UInt = value.toU
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: U128): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4453,7 +4453,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: U128): ULong = value.t
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: U128): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4485,7 +4485,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: U128): U128 = value
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: U128): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4517,7 +4517,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: U128): Int = value.toInt
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: U128): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4549,7 +4549,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: U128): Byte = value.toB
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: U128): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4581,7 +4581,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: U128): Short = value.t
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: U128): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4613,7 +4613,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: U128): Long = value.toL
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: U128): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4645,7 +4645,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: U128): I128 = value.toI
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: U128): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4677,7 +4677,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: Int): UByte = value.to
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: Int): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4709,7 +4709,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: Int): UShort = value.
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: Int): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4741,7 +4741,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: Int): UInt = value.toUI
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: Int): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4773,7 +4773,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: Int): ULong = value.to
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: Int): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4805,7 +4805,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: Int): U128 = U128.fromI
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: Int): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4837,7 +4837,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: Int): Int = value
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: Int): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4869,7 +4869,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: Int): Byte = value.toBy
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: Int): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4901,7 +4901,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: Int): Short = value.to
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: Int): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4933,7 +4933,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: Int): Long = value.toLo
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: Int): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4965,7 +4965,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: Int): I128 = I128.fromI
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: Int): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -4997,7 +4997,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: Byte): UByte = value.t
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: Byte): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5029,7 +5029,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: Byte): UShort = value
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: Byte): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5061,7 +5061,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: Byte): UInt = value.toU
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: Byte): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5093,7 +5093,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: Byte): ULong = value.t
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: Byte): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5125,7 +5125,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: Byte): U128 = U128.from
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: Byte): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5157,7 +5157,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: Byte): Int = value.toInt
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: Byte): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5189,7 +5189,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: Byte): Byte = value
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: Byte): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5221,7 +5221,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: Byte): Short = value.t
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: Byte): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5253,7 +5253,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: Byte): Long = value.toL
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: Byte): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5285,7 +5285,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: Byte): I128 = I128.from
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: Byte): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5317,7 +5317,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: Short): UByte = value.
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: Short): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5349,7 +5349,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: Short): UShort = valu
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: Short): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5381,7 +5381,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: Short): UInt = value.to
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: Short): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5413,7 +5413,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: Short): ULong = value.
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: Short): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5445,7 +5445,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: Short): U128 = U128.fro
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: Short): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5477,7 +5477,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: Short): Int = value.toIn
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: Short): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5509,7 +5509,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: Short): Byte = value.to
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: Short): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5541,7 +5541,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: Short): Short = value
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: Short): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5573,7 +5573,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: Short): Long = value.to
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: Short): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5605,7 +5605,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: Short): I128 = I128.fro
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: Short): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5637,7 +5637,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: Long): UByte = value.t
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: Long): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5669,7 +5669,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: Long): UShort = value
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: Long): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5701,7 +5701,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: Long): UInt = value.toU
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: Long): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5733,7 +5733,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: Long): ULong = value.t
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: Long): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5765,7 +5765,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: Long): U128 = U128.from
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: Long): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5797,7 +5797,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: Long): Int = value.toInt
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: Long): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5829,7 +5829,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: Long): Byte = value.toB
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: Long): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5861,7 +5861,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: Long): Short = value.t
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: Long): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5893,7 +5893,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: Long): Long = value
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: Long): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5925,7 +5925,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: Long): I128 = I128.from
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: Long): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5957,7 +5957,7 @@ public fun boundedCastFromIntWrappingCastFromUByte(value: I128): UByte = value.t
 
 public fun boundedCastFromIntSaturatingCastFromUByte(value: I128): UByte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -5989,7 +5989,7 @@ public fun boundedCastFromIntWrappingCastFromUShort(value: I128): UShort = value
 
 public fun boundedCastFromIntSaturatingCastFromUShort(value: I128): UShort {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6021,7 +6021,7 @@ public fun boundedCastFromIntWrappingCastFromUInt(value: I128): UInt = value.toU
 
 public fun boundedCastFromIntSaturatingCastFromUInt(value: I128): UInt {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6053,7 +6053,7 @@ public fun boundedCastFromIntWrappingCastFromULong(value: I128): ULong = value.t
 
 public fun boundedCastFromIntSaturatingCastFromULong(value: I128): ULong {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6085,7 +6085,7 @@ public fun boundedCastFromIntWrappingCastFromU128(value: I128): U128 = value.toU
 
 public fun boundedCastFromIntSaturatingCastFromU128(value: I128): U128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6117,7 +6117,7 @@ public fun boundedCastFromIntWrappingCastFromInt(value: I128): Int = value.toInt
 
 public fun boundedCastFromIntSaturatingCastFromInt(value: I128): Int {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6149,7 +6149,7 @@ public fun boundedCastFromIntWrappingCastFromByte(value: I128): Byte = value.toB
 
 public fun boundedCastFromIntSaturatingCastFromByte(value: I128): Byte {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6181,7 +6181,7 @@ public fun boundedCastFromIntWrappingCastFromShort(value: I128): Short = value.t
 
 public fun boundedCastFromIntSaturatingCastFromShort(value: I128): Short {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6213,7 +6213,7 @@ public fun boundedCastFromIntWrappingCastFromLong(value: I128): Long = value.toL
 
 public fun boundedCastFromIntSaturatingCastFromLong(value: I128): Long {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }
@@ -6245,7 +6245,7 @@ public fun boundedCastFromIntWrappingCastFromI128(value: I128): I128 = value
 
 public fun boundedCastFromIntSaturatingCastFromI128(value: I128): I128 {
     when (val matchVal = value.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val x = matchVal.value
             return x
         }

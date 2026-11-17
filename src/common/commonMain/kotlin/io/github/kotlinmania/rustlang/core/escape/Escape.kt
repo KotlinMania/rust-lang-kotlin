@@ -60,18 +60,18 @@ public fun verbatim(a: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): 
 public fun escapeAscii(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 4)
     return when (byte) {
-        9u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallT)
-        13u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallR)
-        10u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallN)
-        92u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.ReverseSolidus)
-        39u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.Apostrophe)
-        34u -> { backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark) }
-        in 0x00..0x1F, 0x7F -> hexEscape(byte)
+        9u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallT, n)
+        13u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallR, n)
+        10u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.SmallN, n)
+        92u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.ReverseSolidus, n)
+        39u -> backslash(io.github.kotlinmania.rustlang.core.ascii.Char.Apostrophe, n)
+        34u -> { backslash(io.github.kotlinmania.rustlang.core.ascii.Char.QuotationMark, n) }
+        in 0x00..0x1F, 0x7F -> hexEscape(byte, n)
         else -> when (val matchVal = io.github.kotlinmania.rustlang.core.ascii.Char.fromU8(byte)) {
-            null -> hexEscape(byte)
+            null -> hexEscape(byte, n)
             else -> {
                 val a = matchVal
-                verbatim(a)
+                verbatim(a, n)
             }
         }
     }
@@ -207,26 +207,26 @@ public fun <Escaping> EscapeIterInner.Companion.new(data: MaybeEscapedCharacter,
 }
 
 public fun <Escaping> EscapeIterInner.Companion.backslash(c: io.github.kotlinmania.rustlang.core.ascii.Char, n: Int): EscapeIterInner<Escaping> {
-    val (escapeSeq, alive) = backslash(c)
+    val (escapeSeq, alive) = backslash(c, n)
     // SAFETY: `escapeSeq` contains an escape sequence in the range given by `alive`.
-    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive)
+    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive, n)
 }
 
 public fun <Escaping> EscapeIterInner.Companion.ascii(c: UByte, n: Int): EscapeIterInner<Escaping> {
-    val (escapeSeq, alive) = escapeAscii(c)
+    val (escapeSeq, alive) = escapeAscii(c, n)
     // SAFETY: `escapeSeq` contains an escape sequence in the range given by `alive`.
-    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive)
+    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive, n)
 }
 
 public fun <Escaping> EscapeIterInner.Companion.unicode(c: Char, n: Int): EscapeIterInner<Escaping> {
-    val (escapeSeq, alive) = escapeUnicode(c)
+    val (escapeSeq, alive) = escapeUnicode(c, n)
     // SAFETY: `escapeSeq` contains an escape sequence in the range given by `alive`.
-    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive)
+    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = escapeSeq), alive, n)
 }
 
 public fun <Escaping> EscapeIterInner.Companion.empty(n: Int): EscapeIterInner<Escaping> {
     // SAFETY: `0 .. 0` ensures an empty escape sequence.
-    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = List(n) { io.github.kotlinmania.rustlang.core.ascii.Char.Null }), 0 until 0)
+    return EscapeIterInner.new(MaybeEscapedCharacter(escapeSeq = List(n) { io.github.kotlinmania.rustlang.core.ascii.Char.Null }), 0 until 0, n)
 }
 
 public fun <Escaping> EscapeIterInner<Escaping>.len(n: Int): Int = Int.from(this.alive.end - this.alive.start)

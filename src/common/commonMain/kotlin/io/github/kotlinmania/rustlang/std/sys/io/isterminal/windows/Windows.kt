@@ -12,7 +12,13 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.sys.api.utf16
-import io.github.kotlinmania.rustlang.std.sys.c
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_CONSOLE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.FILE_DEVICE_NAMED_PIPE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FILE_NAME_INFO
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileFsDeviceInformation
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.IoStatusBlock
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFileInformationByHandleEx
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.ntQueryVolumeInformationFile
 
 public fun isTerminal(h: AsHandle): Boolean = handleIsConsole(h.asHandle())
 
@@ -26,16 +32,16 @@ public fun handleIsConsole(handle: BorrowedHandle): Boolean {
         // `NtQueryVolumeInformationFile` lets us test the handle directly.
         // The required `FILE_DEVICE_CONSOLE` type was introduced in Windows 8.
         // Fun fact: `GetFileType` uses `NtQueryVolumeInformationFile` internally.
-        val ioStatus = MaybeUninit.uninit(UnresolvedTypeLayout<c.IoStatusBlock>())
-        val deviceInfo = MaybeUninit.uninit(UnresolvedTypeLayout<c.FileFsDeviceInformation>())
-        val status = c.NtQueryVolumeInformationFile(handle.asRawHandle(), ioStatus.asMutPtr(), deviceInfo.asMutPtr().cast(), sizeOfVal(deviceInfo).toUInt(), c.FileFsDeviceInformation)
+        val ioStatus = MaybeUninit.uninit(UnresolvedTypeLayout<IoStatusBlock>())
+        val deviceInfo = MaybeUninit.uninit(UnresolvedTypeLayout<FileFsDeviceInformation>())
+        val status = ntQueryVolumeInformationFile(handle.asRawHandle(), ioStatus.asMutPtr(), deviceInfo.asMutPtr().cast(), sizeOfVal(deviceInfo).toUInt(), FileFsDeviceInformation)
         if (status < 0) {
             return false
         }
         when (deviceInfo.assumeInitRef().deviceType) {
-            c.fileDeviceConsole -> { return true }
+            FILE_DEVICE_CONSOLE -> { return true }
             // If it's a named pipe, it may be an msys PTY.
-            c.fileDeviceNamedPipe -> {}
+            FILE_DEVICE_NAMED_PIPE -> {}
             // aka FILE_TYPE_PIPE
             else -> { return false }
         }
@@ -58,7 +64,7 @@ public fun msysTtyOn(handle: BorrowedHandle): Boolean {
     val localStorageL73C4 = AddressableLocal(FileNameInfo(fileNameLength = 0u, fileName = List(_) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<FileNameInfo>())
     val nameInfo by localStorageL73C4
     // Safety: buffer length is fixed.
-    val res = c.GetFileInformationByHandleEx(handle.asRawHandle(), c.FileNameInfo, ((localStorageL73C4.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<FileNameInfo>(typeLayoutT = UnresolvedTypeLayout<FileNameInfo>()).toUInt())
+    val res = getFileInformationByHandleEx(handle.asRawHandle(), FILE_NAME_INFO, ((localStorageL73C4.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<FileNameInfo>(typeLayoutT = UnresolvedTypeLayout<FileNameInfo>()).toUInt())
     if (res == 0) {
         return false
     }

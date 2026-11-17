@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorNightly
 import io.github.kotlinmania.rustlang.core.alloc.StaticAllocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
-import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.clone.CloneToUninit
 import io.github.kotlinmania.rustlang.core.clone.Share
@@ -48,7 +47,6 @@ import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.eq
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
@@ -2453,7 +2451,7 @@ public fun <T> fromRcT(t: T): Rc<T, Global> = Rc.new(t)
  * check(listOf(1, 2, 3) == shared)
  * ```
  */
-public fun <T> fromRcTSlice(v: List<T>, n: Int): Rc<List<T>, Global> = Rc.from(v)
+public fun <T> fromRcTSlice(v: List<T>, n: Int): Rc<List<T>, Global> = Rc.from(v, n)
 
 /**
  * Allocates a reference-counted slice and fills it by cloning `v`s items.

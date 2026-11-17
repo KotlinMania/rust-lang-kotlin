@@ -52,8 +52,8 @@ public open class JunitFormatter<T>(
     }
 
     public override fun writeRunFinish(state: ConsoleTestState): Result<Boolean> {
-        when (val tryResult = this.writeMessage("<testsuites>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.writeMessage("<testsuite name=\"test\" package=\"test\" id=\"0\" errors=\"0\" failures=\"${state.failed}\" tests=\"${state.total}\" skipped=\"${state.ignored}\" >")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writeMessage("<testsuites>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writeMessage("<testsuite name=\"test\" package=\"test\" id=\"0\" errors=\"0\" failures=\"${state.failed}\" tests=\"${state.total}\" skipped=\"${state.ignored}\" >")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         for ((desc, result, duration, stdout) in take(this.results)) {
             val (className, testName) = parseClassName(desc)
             when (result) {
@@ -61,59 +61,59 @@ public open class JunitFormatter<T>(
                     // no-op
                 }
                 TestResult.TrFailed -> {
-                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                    when (val tryResult = this.writeMessage("<failure type=\"assert\"/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<failure type=\"assert\"/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     if (!stdout.isEmpty()) {
-                        when (val tryResult = this.writeMessage("<system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage("</system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                        when (val tryResult = this.writeMessage("<system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage("</system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     }
-                    when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                 }
                 is TestResult.TrFailedMsg -> {
                     val (m) = result
-                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                    when (val tryResult = this.writeMessage("<failure message=\"$m\" type=\"assert\"/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<failure message=\"$m\" type=\"assert\"/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     if (!stdout.isEmpty()) {
-                        when (val tryResult = this.writeMessage("<system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage("</system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                        when (val tryResult = this.writeMessage("<system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage("</system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     }
-                    when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                 }
                 TestResult.TrTimedFail -> {
-                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                    when (val tryResult = this.writeMessage("<failure type=\"timeout\"/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                    when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\">")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<failure type=\"timeout\"/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                    when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                 }
                 is TestResult.TrBench -> {
                     val (b) = result
-                    when (val tryResult = this.writeMessage("<testcase classname=\"benchmark::$className\" name=\"$testName\" time=\"${b.nsIterSumm.sum}\" />")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<testcase classname=\"benchmark::$className\" name=\"$testName\" time=\"${b.nsIterSumm.sum}\" />")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                 }
                 TestResult.TrOk -> {
-                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\"")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                    when (val tryResult = this.writeMessage("<testcase classname=\"$className\" name=\"$testName\" time=\"${duration.asSecsF64()}\"")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     if (stdout.isEmpty() || !state.options.displayOutput) {
-                        when (val tryResult = this.writeMessage("/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                        when (val tryResult = this.writeMessage("/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     } else {
-                        when (val tryResult = this.writeMessage("><system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage("</system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-                        when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+                        when (val tryResult = this.writeMessage("><system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage(strToCdata(String.fromUtf8Lossy(stdout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage("</system-out>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+                        when (val tryResult = this.writeMessage("</testcase>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
                     }
                 }
             }
         }
-        when (val tryResult = this.writeMessage("<system-out/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.writeMessage("<system-err/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.writeMessage("</testsuite>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.writeMessage("</testsuites>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writeMessage("<system-out/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writeMessage("<system-err/>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writeMessage("</testsuite>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.writeMessage("</testsuites>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         return Result.Ok(state.failed == 0)
     }
 
     public override fun writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {
-        when (val tryResult = this.writeMessage("<report total_time=\"$totalTime\" compilation_time=\"$compilationTime\"></report>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
-        when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
+        when (val tryResult = this.writeMessage("<report total_time=\"$totalTime\" compilation_time=\"$compilationTime\"></report>")) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         return Result.Ok(Unit)
     }
 

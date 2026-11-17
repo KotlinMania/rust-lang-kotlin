@@ -73,5 +73,5 @@ public expect fun exit(status: CInt): Nothing
 public fun exit(code: Int): Nothing =
     run {
         uniqueThreadExit()
-        io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.exit(code)
+        io.github.kotlinmania.rustlang.libc.exit(code)
     }

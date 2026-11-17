@@ -173,7 +173,7 @@ public open class Cache(
 
 public fun disableFeatures(disable: List<UByte>, value: Initializer) {
     when (val matchVal = String.fromUtf8(disable)) {
-        is Ok -> {
+        is Result.Ok -> {
             val disable1 = matchVal.value
             for (v in disable1.split(" ")) {
                 Feature.fromStr(v).map({ v1 -> value.unset(v1.toUInt()) })

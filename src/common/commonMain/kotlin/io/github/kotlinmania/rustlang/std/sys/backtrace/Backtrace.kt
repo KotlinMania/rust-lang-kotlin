@@ -7,9 +7,10 @@ import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
+import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
-import io.github.kotlinmania.rustlang.std.os.windows.ffi.fromWide
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
@@ -199,18 +200,18 @@ public fun outputFilename(fmt: StringBuilder, bows: BytesOrWideString, printFmt:
         when (bows) {
             is BytesOrWideString.Bytes -> {
                 val (bytes) = bows
-                Path.new(fromBytes(bytes)).into()
+                Path.new(OsStr.fromBytes(bytes)).into()
             }
             is BytesOrWideString.Wide -> {
                 val (wide) = bows
-                fromWide(wide).into()
+                OsString.fromWide(wide).into()
             }
         }
     if (printFmt == PrintFmt.Short && file.isAbsolute()) {
         if (cwd != null) {
             val cwd1 = cwd
             when (val matchVal = file.stripPrefix(cwd1)) {
-                is Ok -> {
+                is Result.Ok -> {
                     val stripped = matchVal.value
                     when (val matchVal1 = stripped.toStr()) {
                         null -> {}

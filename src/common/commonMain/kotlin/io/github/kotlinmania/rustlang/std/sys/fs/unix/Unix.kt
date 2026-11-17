@@ -20,6 +20,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -287,7 +288,7 @@ public open class File(
 
     public open fun truncate(size: ULong): Result<Unit, Error> {
         val size1: Off64T = when (val tryResult = size.tryInto().mapErr({ e -> io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidInput, e) })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        return cvtR({ ftruncate64(this.asRawFd(), size1) }).map({ Unit })
+        return cvtR({ ftruncate64(this.asRawFd(), size1) }).map({ drop(it) })
     }
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> = this.value.read(buf)
@@ -481,7 +482,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): Result<Fi
     val localStorageL172C8 = AddressableLocal(Statx(), UnresolvedTypeLayout<Statx>())
     val buf by localStorageL172C8
     when (val matchVal = cvt(statx(fd, path, flags, mask, RustMutableReference(localStorageL172C8.asMutPtr(), localStorageL172C8.layout)))) {
-        is Err -> {
+        is Result.Err -> {
             val err = matchVal.error
             if (STATX_SAVED_STATE.load(Ordering.Relaxed) == StatxState.Present.value.toUByte()) {
                 return Result.Err(err)
@@ -1479,7 +1480,7 @@ public fun readlink(cPath: CStr): Result<PathBuf, Error> {
 public fun symlink(original: CStr, link: CStr): Result<Unit, Error> = cvt(io.github.kotlinmania.rustlang.libc.symlink(original.asPtr(), link.asPtr())).map({ Unit })
 
 public fun link(original: CStr, link: CStr): Result<Unit, Error> {
-    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.powerpc64.link(original.asPtr(), link.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+    when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.link(original.asPtr(), link.asPtr()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
     return Result.Ok<Unit, Error>(Unit)
 }
 
@@ -1674,7 +1675,7 @@ public fun removeDirAllRecursive(parentFd: RawFd?, path: CStr): Result<Unit, Err
                         // unlink...
                         else -> {
                             val parentFd1 = parentFd
-                            cvt(unlinkat(parentFd1, path.asPtr(), 0)).map({ Unit })
+                            cvt(unlinkat(parentFd1, path.asPtr(), 0)).map({ drop(it) })
                         }
                     }
                 }

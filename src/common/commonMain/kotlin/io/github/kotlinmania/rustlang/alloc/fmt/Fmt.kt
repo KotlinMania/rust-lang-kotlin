@@ -1,7 +1,6 @@
 // port-lint: source fmt.rs
 package io.github.kotlinmania.rustlang.alloc.fmt
 
-import io.github.kotlinmania.rustlang.alloc.wtf8.toOwned
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 
 // Utilities for formatting and printing `String`s.
@@ -622,5 +621,5 @@ public fun format(args: Arguments): String {
         output.writeFmt(args1).expect("a formatting trait implementation returned an error when the underlying stream did not")
         return output
     }
-    return args.asStr().mapOrElse({ formatInner(args) }, toOwned)
+    return args.asStr().mapOrElse({ formatInner(args) }, { it.toOwned() })
 }

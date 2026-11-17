@@ -3,10 +3,10 @@ package io.github.kotlinmania.rustlang.libm.math.roundeven
 
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
-import io.github.kotlinmania.rustlang.libm.math.rint.rint
-import io.github.kotlinmania.rustlang.libm.math.rint.rintf
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rint
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rintf
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rintf16
 import io.github.kotlinmania.rustlang.libm.math.rint.rintf128
-import io.github.kotlinmania.rustlang.libm.math.rint.rintf16
 
 // Note that we can use `rint` for these implementations since Rust expects the rounding
 // mode is always ties-to-even. `roundeven` also does not raise `FE_INEXACT`.

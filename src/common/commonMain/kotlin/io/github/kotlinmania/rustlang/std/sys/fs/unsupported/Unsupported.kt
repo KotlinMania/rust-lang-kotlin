@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.fs.common.Dir
 import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
-import io.github.kotlinmania.rustlang.std.sys.time.unix.SystemTime
+import io.github.kotlinmania.rustlang.std.sys.time.unsupported.SystemTime
 
 public open class File(
     public var value: Nothing,

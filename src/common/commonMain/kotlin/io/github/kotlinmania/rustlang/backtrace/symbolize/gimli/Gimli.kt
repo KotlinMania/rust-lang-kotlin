@@ -385,11 +385,11 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                 }
             var anyFrames = false
             when (val matchVal2 = cx1.findFrames(stash1, addr1.toULong())) {
-                is Ok -> {
+                is Result.Ok -> {
                     val frames = matchVal2.value
                     while (true) {
                         val matchVal3 = frames.next()
-                        if (matchVal3 !is Result.Ok) break
+                        if (!(matchVal3 is Result.Ok && matchVal3.value != null)) break
                         val valueVal = (matchVal3 as Result.Ok).value
                         val frame = valueVal
                         anyFrames = true
@@ -413,11 +413,11 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
                         val objectCx = matchVal5.first
                         val objectAddr = matchVal5.second
                         when (val matchVal6 = objectCx.findFrames(stash1, objectAddr)) {
-                            is Ok -> {
+                            is Result.Ok -> {
                                 val frames1 = matchVal6.value
                                 while (true) {
                                     val matchVal7 = frames1.next()
-                                    if (matchVal7 !is Result.Ok) break
+                                    if (!(matchVal7 is Result.Ok && matchVal7.value != null)) break
                                     val valueVal1 = (matchVal7 as Result.Ok).value
                                     val frame1 = valueVal1
                                     anyFrames = true

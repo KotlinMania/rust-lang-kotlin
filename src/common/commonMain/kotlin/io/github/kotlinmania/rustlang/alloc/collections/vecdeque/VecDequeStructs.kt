@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.Sp
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice.Splice
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
@@ -31,8 +30,8 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -241,7 +240,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         check(src + len <= this.capacity()) { "cpy dst=$dst src=$src len=$len cap=${this.capacity()}" }
         // SAFETY: Upheld by caller.
         run {
-            io.github.kotlinmania.rustlang.core.mem.copy(this.ptr().add(src.asIndex()), this.ptr().add(dst.asIndex()), len)
+            io.github.kotlinmania.rustlang.core.ptr.copy(this.ptr().add(src.asIndex()), this.ptr().add(dst.asIndex()), len)
         }
     }
 
@@ -710,7 +709,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         val ri = this.toWrappedIndex(i)
         val rj = this.toWrappedIndex(j)
         // ignore-tidy-undocumented-unchecked
-        io.github.kotlinmania.rustlang.core.mem.swap(this.ptr().add(ri.asIndex()), this.ptr().add(rj.asIndex()))
+        io.github.kotlinmania.rustlang.core.ptr.swap(this.ptr().add(ri.asIndex()), this.ptr().add(rj.asIndex()))
     }
 
     /**

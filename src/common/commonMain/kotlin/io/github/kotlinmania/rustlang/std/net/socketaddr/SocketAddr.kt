@@ -166,7 +166,7 @@ public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeq
     val (host, port) = this
     // Try to parse the host as a regular IP address first
     when (val matchVal = host.parse<IpAddr>()) {
-        is Ok -> {
+        is Result.Ok -> {
             val addr = matchVal.value
             val addr1 = SocketAddr.new(addr, port)
             return Result.Ok<ArrayDeque<SocketAddr>, Error>(mutableListOf(addr1).intoIter())
@@ -181,7 +181,7 @@ public fun Pair<String, UShort>.toSocketAddrsFromStringUShort(): Result<ArrayDeq
 public fun String.toSocketAddrs(): Result<ArrayDeque<SocketAddr>, Error> {
     // Try to parse as a regular SocketAddr first
     when (val matchVal = this.parse()) {
-        is Ok -> {
+        is Result.Ok -> {
             val addr = matchVal.value
             return Result.Ok<ArrayDeque<SocketAddr>, Error>(mutableListOf(addr).intoIter())
         }

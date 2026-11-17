@@ -37,10 +37,6 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_PATH_NOT_FOUND
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_SHARING_VIOLATION
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_SUCCESS
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_TIMEOUT
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GetLastError
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GetLogicalDrives
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.QueryDosDeviceW
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SetFileInformationByHandle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileAllocationInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileBasicInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileDispositionInfo
@@ -49,6 +45,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileEndOf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FileIoPriorityHintInfo
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Handle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.UnicodeString
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.queryDosDeviceW
 
 // # Safe(r) wrappers around Windows API functions.
 //
@@ -257,7 +254,7 @@ public val CLASS6: Int = FileIoPriorityHintInfo
 public fun <T : SetFileInformation> setFileInformationByHandle(handle: Handle, info: T): Result<Unit, WinError> {
     fun setInfo(handle1: Handle, cls: Int, info1: ConstPtr, size: UInt): Result<Unit, WinError> =
         run {
-            val result = SetFileInformationByHandle(handle1, cls, info1, size)
+            val result = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.setFileInformationByHandle(handle1, cls, info1, size)
             (result != 0).thenSome().okOrElse(::getLastError)
         }
     // SAFETY: The `SetFileInformation` trait ensures that this is safe.
@@ -271,7 +268,7 @@ public fun <T : SetFileInformation> setFileInformationByHandle(handle: Handle, i
  */
 public fun getLastError(): WinError {
     // SAFETY: This just returns a thread-local u32 and has no other effects.
-    return WinError(code = GetLastError(), fieldLayout = PrimitiveLayouts.U32)
+    return WinError(code = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getLastError(), fieldLayout = PrimitiveLayouts.U32)
 }
 
 /**
@@ -411,7 +408,7 @@ public var EMPTY_STRING_NULL_TERMINATED: List<UShort> = listOf(0u.toUShort())
  */
 public fun getLogicalDrives(): Any {
     // SAFETY: `GetLogicalDrives` only returns information.
-    val drives = GetLogicalDrives()
+    val drives = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getLogicalDrives()
     return (65u..90u).filter({ letter -> (drives.toUInt() shr ((letter - 65u).toInt())).toUByte() and 1 == 1 })
 }
 
@@ -431,7 +428,7 @@ public fun queryDosDevice(deviceName: List<UShort>, buffer: MutableList<UShort>)
     val bufferLen = (buffer.size.tryInto().ok() ?: return null)
     // SAFETY: `devicePtr` points to a null-terminated u16 string.
     // `bufferPtr` is writeable up to bufferLen u16s.
-    val result = (QueryDosDeviceW(devicePtr, bufferPtr, bufferLen)).toInt()
+    val result = (queryDosDeviceW(devicePtr, bufferPtr, bufferLen)).toInt()
     return if (result > 0) {
         // QueryDosDeviceW returns a list of null-terminated strings where the list itself is also null-terminated
         // In the case where you pass a device name (which we always) it only returns one string.

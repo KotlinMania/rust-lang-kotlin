@@ -16,8 +16,8 @@ import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
-import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
 
 public class DebugStruct(

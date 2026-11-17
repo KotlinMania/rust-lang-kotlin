@@ -116,82 +116,82 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun v32s(): Boolean = checkFor(v32s)
+public fun v32s(): Boolean = checkFor(Feature.v32s)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f(): Boolean = checkFor(::f)
+public fun f(): Boolean = checkFor(Feature::f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun d(): Boolean = checkFor(::d)
+public fun d(): Boolean = checkFor(Feature::d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun frecipe(): Boolean = checkFor(::frecipe)
+public fun frecipe(): Boolean = checkFor(Feature::frecipe)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun div32(): Boolean = checkFor(::div32)
+public fun div32(): Boolean = checkFor(Feature::div32)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lsx(): Boolean = checkFor(::lsx)
+public fun lsx(): Boolean = checkFor(Feature::lsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lasx(): Boolean = checkFor(::lasx)
+public fun lasx(): Boolean = checkFor(Feature::lasx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lamBh(): Boolean = checkFor(::lamBh)
+public fun lamBh(): Boolean = checkFor(Feature::lamBh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lamcas(): Boolean = checkFor(::lamcas)
+public fun lamcas(): Boolean = checkFor(Feature::lamcas)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ldSeqSa(): Boolean = checkFor(::ldSeqSa)
+public fun ldSeqSa(): Boolean = checkFor(Feature::ldSeqSa)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun scq(): Boolean = checkFor(::scq)
+public fun scq(): Boolean = checkFor(Feature::scq)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lbt(): Boolean = checkFor(::lbt)
+public fun lbt(): Boolean = checkFor(Feature::lbt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun lvz(): Boolean = checkFor(::lvz)
+public fun lvz(): Boolean = checkFor(Feature::lvz)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ual(): Boolean = checkFor(::ual)
+public fun ual(): Boolean = checkFor(Feature::ual)

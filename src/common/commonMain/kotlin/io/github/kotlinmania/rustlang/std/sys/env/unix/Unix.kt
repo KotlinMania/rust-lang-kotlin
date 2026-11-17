@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.env.unix
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -114,12 +115,12 @@ public fun setenv(k: OsStr, v: OsStr): Result<Unit, Error> =
     runWithCstr(k.asBytes(), { k1 ->
         runWithCstr(v.asBytes(), { v1 ->
             val guard = ENV_LOCK.write()
-            cvt(io.github.kotlinmania.rustlang.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ Unit })
+            cvt(io.github.kotlinmania.rustlang.libc.setenv(k1.asPtr(), v1.asPtr(), 1)).map({ drop(it) })
         })
     })
 
 public fun unsetenv(n: OsStr): Result<Unit, Error> =
     runWithCstr(n.asBytes(), { nbuf ->
         val guard = ENV_LOCK.write()
-        cvt(io.github.kotlinmania.rustlang.libc.unsetenv(nbuf.asPtr())).map({ Unit })
+        cvt(io.github.kotlinmania.rustlang.libc.unsetenv(nbuf.asPtr())).map({ drop(it) })
     })

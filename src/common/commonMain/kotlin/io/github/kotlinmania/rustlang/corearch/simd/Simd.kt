@@ -78,7 +78,7 @@ public open class Simd<T>(
 /**
  * A value of this type where all elements are zeroed out.
  */
-public val ZERO: Simd<T> = Simd.splat(T.ZERO)
+public val ZERO: Simd<T> = Simd.splat(T.ZERO, n)
 
 public fun <T> Simd.Companion.fromArray(elements: List<T>, n: Int): Simd<T> = Simd(elements)
 
@@ -108,7 +108,7 @@ public fun <T> Simd<T>.clone(n: Int): Simd<T> = Simd(this.value)
 
 public fun <T> Simd<T>.eq(other: Simd<T>, n: Int): Boolean = this.asArray() == other.asArray()
 
-public fun <T> Simd<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray())
+public fun <T> Simd<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "Simd", this.asArray(), n)
 
 public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
@@ -173,13 +173,13 @@ public fun <T> SimdM.Companion.fromArray(elements: BooleanArray, n: Int): SimdM<
     val internal = MutableList(n) { T.ZERO }
     var i = 0
     while (i < n) {
-        internal[i] = SimdM.boolToInternal(elements[i])
+        internal[i] = SimdM.boolToInternal(elements[i], n)
         i += 1
     }
     return SimdM(internal)
 }
 
-public fun <T> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T> = run { val _simdArg0 = SimdM.boolToInternal(value); _simdArg0 }
+public fun <T> SimdM.Companion.splat(value: Boolean, n: Int): SimdM<T> = run { val _simdArg0 = SimdM.boolToInternal(value, n); _simdArg0 }
 
 public fun <T> SimdM<T>.asArray(n: Int): List<T> {
     val simdPtr: ConstPtr = this
@@ -195,7 +195,7 @@ public fun <T> SimdM<T>.clone(n: Int): SimdM<T> = SimdM(this.value)
 
 public fun <T> SimdM<T>.eq(other: SimdM<T>, n: Int): Boolean = this.asArray() == other.asArray()
 
-public fun <T> SimdM<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "SimdM", this.asArray())
+public fun <T> SimdM<T>.fmt(f: Formatter, n: Int): Result = debugSimdFinish(f, "SimdM", this.asArray(), n)
 
 // 16-bit wide types:
 public typealias U8x2 = Simd<UByte>

@@ -248,38 +248,38 @@ public fun simdFloatFromBitsSimdF16N(bits: Simd<UShort>, n: Int): Simd<F16> {
 
 public fun Simd<F16>.abs(n: Int): Simd<F16> = run { val _simdArg0 = this; _simdArg0 }
 
-public fun Simd<F16>.recip(n: Int): Simd<F16> = Simd.splat(1.0) / this
+public fun Simd<F16>.recip(n: Int): Simd<F16> = Simd.splat(1.0, n) / this
 
-public fun Simd<F16>.toDegrees(n: Int): Simd<F16> = this * Simd.splat(Simd.Scalar.toDegrees(1.0))
+public fun Simd<F16>.toDegrees(n: Int): Simd<F16> = this * Simd.splat(Simd.Scalar.toDegrees(1.0), n)
 
-public fun Simd<F16>.toRadians(n: Int): Simd<F16> = this * Simd.splat(Simd.Scalar.toRadians(1.0))
+public fun Simd<F16>.toRadians(n: Int): Simd<F16> = this * Simd.splat(Simd.Scalar.toRadians(1.0), n)
 
-public fun Simd<F16>.isSignPositive(n: Int): Mask<Mask> = !this.isSignNegative()
+public fun Simd<F16>.isSignPositive(n: Int): Mask<Mask> = !this.isSignNegative(n)
 
 public fun Simd<F16>.isSignNegative(n: Int): Mask<Mask> {
-    val signBits = this.toBits() and Simd.splat((0.inv() shr 1) + 1)
-    return signBits.simdGt(Simd.splat(0))
+    val signBits = this.toBits(n) and Simd.splat((0.inv() shr 1) + 1, n)
+    return signBits.simdGt(Simd.splat(0, n))
 }
 
 public fun Simd<F16>.isNan(n: Int): Mask<Mask> = this.simdNe(this)
 
-public fun Simd<F16>.isInfinite(n: Int): Mask<Mask> = this.abs().simdEq(Simd.splat(Simd.Scalar.INFINITY))
+public fun Simd<F16>.isInfinite(n: Int): Mask<Mask> = this.abs(n).simdEq(Simd.splat(Simd.Scalar.INFINITY, n))
 
-public fun Simd<F16>.isFinite(n: Int): Mask<Mask> = this.abs().simdLt(Simd.splat(Simd.Scalar.INFINITY))
+public fun Simd<F16>.isFinite(n: Int): Mask<Mask> = this.abs(n).simdLt(Simd.splat(Simd.Scalar.INFINITY, n))
 
 public fun Simd<F16>.isSubnormal(n: Int): Mask<Mask> {
-    val notZero = this.abs().toBits().simdNe(Simd.splat(0.0).toBits())
-    return notZero and (this.toBits() and Simd.splat(Simd.Scalar.INFINITY).toBits()).simdEq(Simd.splat(0))
+    val notZero = this.abs(n).toBits(n).simdNe(Simd.splat(0.0, n).toBits())
+    return notZero and (this.toBits(n) and Simd.splat(Simd.Scalar.INFINITY, n).toBits()).simdEq(Simd.splat(0, n))
 }
 
-public fun Simd<F16>.isNormal(n: Int): Mask<Mask> = (this.abs().simdEq(Simd.splat(0.0)) or this.isNan() or this.isSubnormal() or this.isInfinite()).inv()
+public fun Simd<F16>.isNormal(n: Int): Mask<Mask> = (this.abs(n).simdEq(Simd.splat(0.0, n)) or this.isNan(n) or this.isSubnormal(n) or this.isInfinite(n)).inv()
 
-public fun Simd<F16>.signum(n: Int): Simd<F16> = this.isNan().select(Simd.splat(Simd.Scalar.NAN), Simd.splat(1.0).copysign(this))
+public fun Simd<F16>.signum(n: Int): Simd<F16> = this.isNan(n).select(Simd.splat(Simd.Scalar.NAN, n), Simd.splat(1.0, n).copysign(this))
 
 public fun Simd<F16>.copysign(sign: Simd<F16>, n: Int): Simd<F16> {
-    val signBit = sign.toBits() and Simd.splat(-0.0).toBits()
-    val magnitude = this.toBits() and Simd.splat(-0.0).toBits().inv()
-    return Simd.fromBits(signBit or magnitude)
+    val signBit = sign.toBits(n) and Simd.splat(-0.0, n).toBits()
+    val magnitude = this.toBits(n) and Simd.splat(-0.0, n).toBits().inv()
+    return Simd.fromBits(signBit or magnitude, n)
 }
 
 public fun Simd<F16>.simdMin(other: Simd<F16>, n: Int): Simd<F16> = run { val _simdArg0 = this; val _simdArg1 = other; _simdArg0 }

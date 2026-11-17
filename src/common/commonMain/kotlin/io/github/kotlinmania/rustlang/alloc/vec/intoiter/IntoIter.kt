@@ -23,7 +23,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -446,7 +445,7 @@ public open class IntoIter<T, A : Allocator>(
             }
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong()))
             // SAFETY: ditto
-            return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry))
+            return Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry, n))
         }
         if (len < n) {
             // SAFETY: `len` indicates that this many elements are available
@@ -462,7 +461,7 @@ public open class IntoIter<T, A : Allocator>(
         return run {
             copyNonoverlapping((this.ptr.add(len - n).asPtr()).asConstPtr(), mutPtrFromRustCast(rawAry.asMutPtr()), n)
             this.end = ConstPtr((this.end).rawAddress - ((n).toLong() * (typeLayoutT).strideBytes))
-            Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry))
+            Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(rawAry, n))
         }
     }
 

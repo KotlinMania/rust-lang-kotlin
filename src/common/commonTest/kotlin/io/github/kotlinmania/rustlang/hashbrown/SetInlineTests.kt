@@ -3,8 +3,9 @@ package io.github.kotlinmania.rustlang.hashbrown
 
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 
@@ -376,7 +377,7 @@ public class SetTestSetInlineTests {
         }
         run {
             val set1: HashSet<Int, DefaultHashBuilder, Global>  = (0 until 8).toMutableSet()
-            set1.extractIf({ k -> k % 2 == 0 }).forEach(drop)
+            set1.extractIf({ k -> k % 2 == 0 }).forEach({ drop(it) })
             check(set1.len() == 4)
         }
     }

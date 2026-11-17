@@ -153,7 +153,7 @@ public fun <T, A : Allocator> boxedSliceAsArrayUnchecked(boxedSlice: List<T>, n:
 public fun <T, A : Allocator> tryFromBoxTArraynA(boxedSlice: List<T>, n: Int): Result<List<T>, List<T>> =
     if (boxedSlice.size == n) {
         // SAFETY: Checked length.
-        Result.Ok<List<T>, List<T>>(boxedSliceAsArrayUnchecked(boxedSlice))
+        Result.Ok<List<T>, List<T>>(boxedSliceAsArrayUnchecked(boxedSlice, n))
     } else {
         Result.Err<List<T>, List<T>>(boxedSlice)
     }

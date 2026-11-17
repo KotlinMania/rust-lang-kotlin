@@ -13,10 +13,10 @@ import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.ChildPipe
+import io.github.kotlinmania.rustlang.std.sys.process.unix.common.Stdio
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.getppid
 import io.github.kotlinmania.rustlang.std.sys.process.unix.unix.Process
-import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
-import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
 
 // Unix-specific extensions to primitives in the [std.process] module.
 

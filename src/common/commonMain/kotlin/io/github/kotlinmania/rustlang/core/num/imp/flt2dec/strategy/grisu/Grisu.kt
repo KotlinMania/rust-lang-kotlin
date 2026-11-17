@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -16,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.strategy.grisu.formatShortest as fallback
@@ -252,7 +252,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = Eq
+                    val kind = AssertKind.Eq
                     assertFailed(kind, leftVal, rightVal, Option.None)
                 }
             }
@@ -264,7 +264,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
                 val leftVal1 = matchVal1.first
                 val rightVal1 = matchVal1.second
                 if (!(leftVal1 == rightVal1)) {
-                    val kind1 = Eq
+                    val kind1 = AssertKind.Eq
                     assertFailed(kind1, leftVal1, rightVal1, Option.None)
                 }
             }
@@ -352,7 +352,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
                         val leftVal2 = matchVal2.first
                         val rightVal2 = matchVal2.second
                         if (!(leftVal2 == rightVal2)) {
-                            val kind2 = Eq
+                            val kind2 = AssertKind.Eq
                             assertFailed(kind2, leftVal2, rightVal2, Option.None)
                         }
                     }
@@ -637,7 +637,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
                         val leftVal = matchVal.first
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
-                            val kind = Eq
+                            val kind = AssertKind.Eq
                             assertFailed(kind, leftVal, rightVal, Option.None)
                         }
                     }
@@ -649,7 +649,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
                         val leftVal1 = matchVal1.first
                         val rightVal1 = matchVal1.second
                         if (!(leftVal1 == rightVal1)) {
-                            val kind1 = Eq
+                            val kind1 = AssertKind.Eq
                             assertFailed(kind1, leftVal1, rightVal1, Option.None)
                         }
                     }

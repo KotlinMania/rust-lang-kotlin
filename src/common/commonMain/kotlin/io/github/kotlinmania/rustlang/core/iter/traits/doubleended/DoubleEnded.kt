@@ -140,7 +140,7 @@ public interface DoubleEndedIterator {
      * }
      * ```
      */
-    public fun nextChunkBack(n: Int): Result<List<Item>, IntoIter<Item>> = iterNextChunkBack(this)
+    public fun nextChunkBack(n: Int): Result<List<Item>, IntoIter<Item>> = iterNextChunkBack(this, n)
 
     /**
      * Advances the iterator from the back by `n` elements.

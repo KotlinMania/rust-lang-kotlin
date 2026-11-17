@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.hashbrown.Drain
 import io.github.kotlinmania.rustlang.hashbrown.IntoIter
 import io.github.kotlinmania.rustlang.hashbrown.Iter
 import io.github.kotlinmania.rustlang.hashbrown.IterMut
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.makeHash
 import io.github.kotlinmania.rustlang.hashbrown.makeHasher
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket

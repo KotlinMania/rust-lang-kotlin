@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.powerpc
 
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
+import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection for PowerPC on Linux.
 //
@@ -37,7 +37,7 @@ public fun detectFeatures(): cache.Initializer {
             }
         }
     when (val matchVal = auxv()) {
-        is Ok -> {
+        is Result.Ok -> {
             val auxv = matchVal.value
             // note: the PowerPC values are the mask to do the test (instead of the
             // index of the bit to test like in ARM and Aarch64)

@@ -127,8 +127,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
-import io.github.kotlinmania.rustlang.core.num.imp.intbits.depositImpl
-import io.github.kotlinmania.rustlang.core.num.imp.intbits.extractImpl
+import io.github.kotlinmania.rustlang.core.num.imp.intbits.u8.depositImpl
+import io.github.kotlinmania.rustlang.core.num.imp.intbits.u8.extractImpl
 import io.github.kotlinmania.rustlang.core.num.imp.intlog10.panicForNonpositiveArgument
 import io.github.kotlinmania.rustlang.core.num.imp.intsqrt.panicForNegativeArgument
 import io.github.kotlinmania.rustlang.core.num.imp.overflowpanic.add
@@ -3153,7 +3153,7 @@ public fun Byte.Companion.maxValue(): Byte = Byte.MAX_VALUE
  */
 public fun Byte.clampMagnitude(limit: UByte): Byte =
     when (val matchVal = limit.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -6285,7 +6285,7 @@ public fun Short.Companion.maxValue(): Short = Short.MAX_VALUE
  */
 public fun Short.clampMagnitude(limit: UShort): Short =
     when (val matchVal = limit.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -9417,7 +9417,7 @@ public fun Int.Companion.maxValue(): Int = Int.MAX_VALUE
  */
 public fun Int.clampMagnitude(limit: UInt): Int =
     when (val matchVal = limit.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -12549,7 +12549,7 @@ public fun Long.Companion.maxValue(): Long = Long.MAX_VALUE
  */
 public fun Long.clampMagnitude(limit: ULong): Long =
     when (val matchVal = limit.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -15689,7 +15689,7 @@ public fun I128.Companion.maxValue(): I128 = I128.MAX_VALUE
  */
 public fun I128.clampMagnitude(limit: U128): I128 =
     when (val matchVal = limit.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -16091,7 +16091,7 @@ public fun Int.overflowingSubUnsigned(rhs: Int): Pair<Int, Boolean> {
  */
 public fun Int.clampMagnitude(limit: Int): Int =
     when (val matchVal = limit.tryInto()) {
-        is Ok -> {
+        is Result.Ok -> {
             val limit1 = matchVal.value
             this.clamp(-limit1, limit1)
         }
@@ -20471,7 +20471,7 @@ public fun UShort.swapBytes(): UShort = kmBswapU16(this)
  * }
  * ```
  */
-public fun UShort.extractBits(mask: UShort): UShort = extractImpl(this, mask).toUShort()
+public fun UShort.extractBits(mask: UShort): UShort = io.github.kotlinmania.rustlang.core.num.imp.intbits.u16.extractImpl(this, mask).toUShort()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -20484,7 +20484,7 @@ public fun UShort.extractBits(mask: UShort): UShort = extractImpl(this, mask).to
  * }
  * ```
  */
-public fun UShort.depositBits(mask: UShort): UShort = depositImpl(this, mask).toUShort()
+public fun UShort.depositBits(mask: UShort): UShort = io.github.kotlinmania.rustlang.core.num.imp.intbits.u16.depositImpl(this, mask).toUShort()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -23690,7 +23690,7 @@ public fun UInt.swapBytes(): UInt = kmBswapU32(this)
  * }
  * ```
  */
-public fun UInt.extractBits(mask: UInt): UInt = extractImpl(this, mask).toUInt()
+public fun UInt.extractBits(mask: UInt): UInt = io.github.kotlinmania.rustlang.core.num.imp.intbits.u32.extractImpl(this, mask).toUInt()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -23703,7 +23703,7 @@ public fun UInt.extractBits(mask: UInt): UInt = extractImpl(this, mask).toUInt()
  * }
  * ```
  */
-public fun UInt.depositBits(mask: UInt): UInt = depositImpl(this, mask).toUInt()
+public fun UInt.depositBits(mask: UInt): UInt = io.github.kotlinmania.rustlang.core.num.imp.intbits.u32.depositImpl(this, mask).toUInt()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -26884,7 +26884,7 @@ public fun ULong.swapBytes(): ULong = kmBswapU64(this)
  * }
  * ```
  */
-public fun ULong.extractBits(mask: ULong): ULong = extractImpl(this, mask).toULong()
+public fun ULong.extractBits(mask: ULong): ULong = io.github.kotlinmania.rustlang.core.num.imp.intbits.u64.extractImpl(this, mask).toULong()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -26897,7 +26897,7 @@ public fun ULong.extractBits(mask: ULong): ULong = extractImpl(this, mask).toULo
  * }
  * ```
  */
-public fun ULong.depositBits(mask: ULong): ULong = depositImpl(this, mask).toULong()
+public fun ULong.depositBits(mask: ULong): ULong = io.github.kotlinmania.rustlang.core.num.imp.intbits.u64.depositImpl(this, mask).toULong()
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -30078,7 +30078,7 @@ public fun U128.swapBytes(): U128 = (this).let { v -> kmBswapU128(v.low, v.high)
  * }
  * ```
  */
-public fun U128.extractBits(mask: U128): U128 = U128.fromLong(extractImpl(this, mask).toLong())
+public fun U128.extractBits(mask: U128): U128 = U128.fromLong(io.github.kotlinmania.rustlang.core.num.imp.intbits.u128.extractImpl(this, mask).toLong())
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -30091,7 +30091,7 @@ public fun U128.extractBits(mask: U128): U128 = U128.fromLong(extractImpl(this, 
  * }
  * ```
  */
-public fun U128.depositBits(mask: U128): U128 = U128.fromLong(depositImpl(this, mask).toLong())
+public fun U128.depositBits(mask: U128): U128 = U128.fromLong(io.github.kotlinmania.rustlang.core.num.imp.intbits.u128.depositImpl(this, mask).toLong())
 
 /**
  * Reverses the order of bits in the integer. The least significant bit becomes the most significant bit,
@@ -32983,7 +32983,7 @@ public fun Int.carrylessMul(rhs: Int): Int = io.github.kotlinmania.rustlang.core
  * }
  * ```
  */
-public fun Int.extractBits(mask: Int): Int = extractImpl(this.toULong(), mask.toULong()).toInt()
+public fun Int.extractBits(mask: Int): Int = io.github.kotlinmania.rustlang.core.num.imp.intbits.u64.extractImpl(this.toULong(), mask.toULong()).toInt()
 
 /**
  * Returns an integer with the least significant bits of `self`
@@ -32996,7 +32996,7 @@ public fun Int.extractBits(mask: Int): Int = extractImpl(this.toULong(), mask.to
  * }
  * ```
  */
-public fun Int.depositBits(mask: Int): Int = depositImpl(this.toULong(), mask.toULong()).toInt()
+public fun Int.depositBits(mask: Int): Int = io.github.kotlinmania.rustlang.core.num.imp.intbits.u64.depositImpl(this.toULong(), mask.toULong()).toInt()
 
 /**
  * Checked addition with a signed integer. Computes `self + rhs`,

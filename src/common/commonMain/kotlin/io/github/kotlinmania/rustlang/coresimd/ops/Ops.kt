@@ -53,17 +53,17 @@ public fun <Mask> Simd<Byte>.bitxor(rhs: Simd<Byte>, n: Int): Simd<Byte> = run {
 public fun <Mask> Simd<Short>.bitxorSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val _simdArg0 = this; val _simdArg1 = rhs; _simdArg0 }
 
 public fun <Mask> Simd<Byte>.div(rhs: Simd<Byte>, n: Int): Simd<Byte> =
-    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Byte>))).any()) {
+    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Byte>), n)).any()) {
         error("attempt to divide by zero")
     } else {
         val rhs1 =
             if (Byte.MIN_VALUE != 0.toByte()) {
-                (this.simdEq(Simd.splat(Byte.MIN_VALUE)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Byte>)))).select(Simd.splat(((1 as Any?) as Simd<Byte>)), rhs)
+                (this.simdEq(Simd.splat(Byte.MIN_VALUE, n)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Byte>), n))).select(Simd.splat(((1 as Any?) as Simd<Byte>), n), rhs)
             } else {
                 rhs
             }
         run {
-            val out = Simd.splat(((0 as Any?) as Simd<Byte>))
+            val out = Simd.splat(((0 as Any?) as Simd<Byte>), n)
             for (i in 0 until Simd.LEN) {
                 out[i] = this[i] / rhs1[i]
             }
@@ -72,17 +72,17 @@ public fun <Mask> Simd<Byte>.div(rhs: Simd<Byte>, n: Int): Simd<Byte> =
     }
 
 public fun <Mask> Simd<Short>.divSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
-    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Short>))).any()) {
+    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Short>), n)).any()) {
         error("attempt to divide by zero")
     } else {
         val rhs1 =
             if (Short.MIN_VALUE != 0.toShort()) {
-                (this.simdEq(Simd.splat(Short.MIN_VALUE)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Short>)))).select(Simd.splat(((1 as Any?) as Simd<Short>)), rhs)
+                (this.simdEq(Simd.splat(Short.MIN_VALUE, n)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Short>), n))).select(Simd.splat(((1 as Any?) as Simd<Short>), n), rhs)
             } else {
                 rhs
             }
         run {
-            val out = Simd.splat(((0 as Any?) as Simd<Short>))
+            val out = Simd.splat(((0 as Any?) as Simd<Short>), n)
             for (i in 0 until Simd.LEN) {
                 out[i] = this[i] / rhs1[i]
             }
@@ -91,17 +91,17 @@ public fun <Mask> Simd<Short>.divSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
     }
 
 public fun <Mask> Simd<Byte>.rem(rhs: Simd<Byte>, n: Int): Simd<Byte> =
-    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Byte>))).any()) {
+    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Byte>), n)).any()) {
         error("attempt to calculate the remainder with a divisor of zero")
     } else {
         val rhs1 =
             if (Byte.MIN_VALUE != 0.toByte()) {
-                (this.simdEq(Simd.splat(Byte.MIN_VALUE)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Byte>)))).select(Simd.splat(((1 as Any?) as Simd<Byte>)), rhs)
+                (this.simdEq(Simd.splat(Byte.MIN_VALUE, n)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Byte>), n))).select(Simd.splat(((1 as Any?) as Simd<Byte>), n), rhs)
             } else {
                 rhs
             }
         run {
-            val out = Simd.splat(((0 as Any?) as Simd<Byte>))
+            val out = Simd.splat(((0 as Any?) as Simd<Byte>), n)
             for (i in 0 until Simd.LEN) {
                 out[i] = this[i] % rhs1[i]
             }
@@ -110,17 +110,17 @@ public fun <Mask> Simd<Byte>.rem(rhs: Simd<Byte>, n: Int): Simd<Byte> =
     }
 
 public fun <Mask> Simd<Short>.remSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
-    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Short>))).any()) {
+    if (rhs.simdEq(Simd.splat(((0 as Any?) as Simd<Short>), n)).any()) {
         error("attempt to calculate the remainder with a divisor of zero")
     } else {
         val rhs1 =
             if (Short.MIN_VALUE != 0.toShort()) {
-                (this.simdEq(Simd.splat(Short.MIN_VALUE)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Short>)))).select(Simd.splat(((1 as Any?) as Simd<Short>)), rhs)
+                (this.simdEq(Simd.splat(Short.MIN_VALUE, n)) and rhs.simdEq(Simd.splat(((-1L as Any?) as Simd<Short>), n))).select(Simd.splat(((1 as Any?) as Simd<Short>), n), rhs)
             } else {
                 rhs
             }
         run {
-            val out = Simd.splat(((0 as Any?) as Simd<Short>))
+            val out = Simd.splat(((0 as Any?) as Simd<Short>), n)
             for (i in 0 until Simd.LEN) {
                 out[i] = this[i] % rhs1[i]
             }
@@ -128,10 +128,10 @@ public fun <Mask> Simd<Short>.remSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
         }
     }
 
-public fun <Mask> Simd<Byte>.shl(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1)); _simdArg0 }
+public fun <Mask> Simd<Byte>.shl(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1, n), n); _simdArg0 }
 
-public fun <Mask> Simd<Short>.shlSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1)); _simdArg0 }
+public fun <Mask> Simd<Short>.shlSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1, n), n); _simdArg0 }
 
-public fun <Mask> Simd<Byte>.shr(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1)); _simdArg0 }
+public fun <Mask> Simd<Byte>.shr(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1, n), n); _simdArg0 }
 
-public fun <Mask> Simd<Short>.shrSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1)); _simdArg0 }
+public fun <Mask> Simd<Short>.shrSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val _simdArg0 = this; val _simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1, n), n); _simdArg0 }

@@ -117,12 +117,12 @@ public open class FilterMap<I, F>(
         return when (result) {
             is ControlFlow.Break -> {
                 // SAFETY: The loop above is only explicitly broken when the array has been fully initialized
-                Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array))
+                Result.Ok<List<B>, IntoIter<B>>(MaybeUninit.arrayAssumeInit(array, n))
             }
             is ControlFlow.Continue -> {
                 val initialized = guard1.initialized
                 // SAFETY: The range is in bounds since the loop breaks when reaching N elements.
-                Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized))
+                Result.Err<List<B>, IntoIter<B>>(IntoIter.newUnchecked(array, 0 until initialized, n))
             }
         }
     }

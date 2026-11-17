@@ -11,6 +11,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ops.arith.AddAssign
@@ -22,8 +23,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Occupied
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Vacant
 import io.github.kotlinmania.rustlang.hashbrown.TryReserveError.CapacityOverflow
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.raw.prevPow2
 import io.github.kotlinmania.rustlang.libc.mmap
@@ -36,8 +37,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
-import io.github.kotlinmania.rustlang.std.thread.lifecycle.scope
-import io.github.kotlinmania.rustlang.std.thread.scoped.ScopedJoinHandle
 
 public typealias HM = HashMap<Int, Int, DefaultHashBuilder, Global>
 
@@ -1215,7 +1214,7 @@ public class MapTestMapInlineTests {
         }
         run {
             val map1: HashMap<Int, Int, DefaultHashBuilder, Global>  = (0 until 8).map({ x -> Pair(x, x * 10) }).toMap(LinkedHashMap())
-            map1.extractIf({ k -> k % 2 == 0 }).forEach(drop)
+            map1.extractIf({ k -> k % 2 == 0 }).forEach({ drop(it) })
             check(map1.len() == 4)
         }
     }
@@ -1454,7 +1453,7 @@ public class MapTestMapInlineTests {
                         error("$msg")
                     } }
                 }
-            scope({ s ->
+            Thread.scope({ s ->
                 val result: ScopedJoinHandle<String> =
                     s.spawn(closure@{
                         val scopeMap =
@@ -1475,7 +1474,7 @@ public class MapTestMapInlineTests {
                         "We must fail the cloning!!!".toOwned()
                     })
                 when (val matchVal1 = result.join()) {
-                    is Ok -> {
+                    is Result.Ok -> {
                         error("$msg")
                     }
                     else -> {}
@@ -1520,7 +1519,7 @@ public class MapTestMapInlineTests {
                         error("$msg")
                     } }
                 }
-            scope({ s ->
+            Thread.scope({ s ->
                 val result: ScopedJoinHandle<String> =
                     s.spawn(closure1@{
                         val scopeMap =
@@ -1541,7 +1540,7 @@ public class MapTestMapInlineTests {
                         "We must fail the cloning!!!".toOwned()
                     })
                 when (val matchVal1 = result.join()) {
-                    is Ok -> {
+                    is Result.Ok -> {
                         error("$msg")
                     }
                     else -> {}

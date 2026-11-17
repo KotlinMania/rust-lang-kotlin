@@ -86,52 +86,52 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun altivec(): Boolean = checkFor(::altivec)
+public fun altivec(): Boolean = checkFor(Feature::altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun vsx(): Boolean = checkFor(::vsx)
+public fun vsx(): Boolean = checkFor(Feature::vsx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8(): Boolean = checkFor(::power8)
+public fun power8(): Boolean = checkFor(Feature::power8)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Altivec(): Boolean = checkFor(::power8Altivec)
+public fun power8Altivec(): Boolean = checkFor(Feature::power8Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Vector(): Boolean = checkFor(::power8Vector)
+public fun power8Vector(): Boolean = checkFor(Feature::power8Vector)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power8Crypto(): Boolean = checkFor(::power8Crypto)
+public fun power8Crypto(): Boolean = checkFor(Feature::power8Crypto)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9(): Boolean = checkFor(::power9)
+public fun power9(): Boolean = checkFor(Feature::power9)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Altivec(): Boolean = checkFor(::power9Altivec)
+public fun power9Altivec(): Boolean = checkFor(Feature::power9Altivec)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun power9Vector(): Boolean = checkFor(::power9Vector)
+public fun power9Vector(): Boolean = checkFor(Feature::power9Vector)

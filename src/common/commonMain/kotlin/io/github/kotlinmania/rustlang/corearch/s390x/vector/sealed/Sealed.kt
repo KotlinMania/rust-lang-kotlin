@@ -32,51 +32,23 @@ import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedChar
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedInt
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedLongLong
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.VectorUnsignedShort
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.maxnumV2f64
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.maxnumV4f32
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.minnumV2f64
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.minnumV4f32
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.nearbyintV2f64
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.nearbyintV4f32
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.roundevenV2f64
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.roundevenV4f32
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.validateBlockBoundary
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecMax
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmab
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmaf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmah
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVgfmh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVistrbs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVistrfs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVistrhs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaeb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaef
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaeh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmahb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmahf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmahh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalIb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalIf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalIh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalUb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalUf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalUh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaleb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalef
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaleh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalhb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalhf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalhh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalob
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmalof
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaloh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaob
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaof
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmaoh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmhb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmhf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmhh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmlhb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmlhf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVmlhh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumgf
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumgh
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vecVsumh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavgb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavgf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavgg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavgh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavglb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavglf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavglg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vavglh
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimf
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.verimg
@@ -105,18 +77,63 @@ import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezf
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezfs
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezh
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfenezhs
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmadb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmasb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmsdb
-import io.github.kotlinmania.rustlang.corearch.s390x.vector.vfmssb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vftcidb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vftcisb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vgfmab
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vgfmaf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vgfmah
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vgfmb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vgfmf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vgfmh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vistrb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vistrbs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vistrf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vistrfs
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vistrh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vistrhs
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vlbb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vll
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaeb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaef
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaeh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmahb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmahf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmahh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaleb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmalef
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaleh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmalhb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmalhf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmalhh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmalob
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmalof
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaloh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaob
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaof
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmaoh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmhb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmhf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmhh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmlhb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmlhf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vmlhh
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vperm
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsf
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsg
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpklsh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksg
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vpksh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vscbib
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vscbif
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vscbig
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vscbih
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vslb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsra
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsrab
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsrl
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsrlb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstl
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrcbs
@@ -136,6 +153,10 @@ import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrsh
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszb
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszf
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vstrszh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumb
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumgf
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumgh
+import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumh
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumqf
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vsumqg
 import io.github.kotlinmania.rustlang.corearch.s390x.vector.vtm
@@ -149,7 +170,10 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x2
 import io.github.kotlinmania.rustlang.corearch.simd.I8x8
 import io.github.kotlinmania.rustlang.corearch.simd.U16x4
+import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U32x2
+import io.github.kotlinmania.rustlang.corearch.simd.U32x4
+import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
 
@@ -157,6 +181,18 @@ public interface VectorNeg<T> {
     public fun vecNeg(): T
 }
 
+// Z vector intrinsic      C23 math.h  LLVM IR         ISO/IEC 60559 operation        inexact  vfidb parameters
+//
+// vecRint                rint        llvm.rint       roundToIntegralExact           yes      0, 0
+// vecRoundc              nearbyint   llvm.nearbyint  n/a                            no       4, 0
+// vecFloor / vecRoundm  floor       llvm.floor      roundToIntegralTowardNegative  no       4, 7
+// vecCeil / vecRoundp   ceil        llvm.ceil       roundToIntegralTowardPositive  no       4, 6
+// vecTrunc / vecRoundz  trunc       llvm.trunc      roundToIntegralTowardZero      no       4, 5
+// vecRound               roundeven   llvm.roundeven  roundToIntegralTiesToEven      no       4, 4
+// n/a                     round       llvm.round      roundToIntegralTiesAway        no       4, 1
+// `simdRoundTiesEven` is implemented as `llvm.rint`.
+// Note(llvm): https://github.com/llvm/llvm-project/issues/153655
+// Other targets can use a min/max for the saturation + a truncation.
 // NOTE: `vuplh` is used for "unpack logical high", hence `vuplhw`.
 public fun VectorSignedChar.vecNeg(): VectorSignedChar = run { val _simdArg0 = this; _simdArg0 }
 
@@ -468,6 +504,14 @@ public fun vecVmxslg(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): Vect
 
 public fun VectorUnsignedLongLong.vecMax(other: VectorUnsignedLongLong): VectorUnsignedLongLong = vecVmxslg(this, other)
 
+public fun vecVfmaxsb(a: VectorFloat, b: VectorFloat): VectorFloat = maxnumV4f32(a, b)
+
+public fun vecVfmaxdb(a: VectorDouble, b: VectorDouble): VectorDouble = maxnumV2f64(a, b)
+
+public fun VectorFloat.vecMax(b: VectorFloat): VectorFloat = vecVfmaxsb(this, b)
+
+public fun VectorDouble.vecMax(b: VectorDouble): VectorDouble = vecVfmaxdb(this, b)
+
 public interface VectorMin<Other, out Result> {
     public fun vecMin(b: Other): Result
 }
@@ -504,17 +548,41 @@ public fun vecVmnslg(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): Vect
 
 public fun VectorUnsignedLongLong.vecMin(other: VectorUnsignedLongLong): VectorUnsignedLongLong = vecVmnslg(this, other)
 
+public fun vecVfminsb(a: VectorFloat, b: VectorFloat): VectorFloat = minnumV4f32(a, b)
+
+public fun vecVfmindb(a: VectorDouble, b: VectorDouble): VectorDouble = minnumV2f64(a, b)
+
+public fun VectorFloat.vecMin(b: VectorFloat): VectorFloat = vecVfminsb(this, b)
+
+public fun VectorDouble.vecMin(b: VectorDouble): VectorDouble = vecVfmindb(this, b)
+
 public interface VectorAbs<T> {
     public fun vecAbs(): T
 }
 
-public fun vecAbsI8(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
+public fun vecAbsI8(v: VectorSignedChar): VectorSignedChar = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
 
-public fun vecAbsI16(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
+public fun VectorSignedChar.vecAbs(): VectorSignedChar = vecAbsI8(this)
 
-public fun vecAbsI32(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
+public fun vecAbsI16(v: VectorSignedShort): VectorSignedShort = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
 
-public fun vecAbsI64(v: STL): STL = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
+public fun VectorSignedShort.vecAbs(): VectorSignedShort = vecAbsI16(this)
+
+public fun vecAbsI32(v: VectorSignedInt): VectorSignedInt = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
+
+public fun VectorSignedInt.vecAbs(): VectorSignedInt = vecAbsI32(this)
+
+public fun vecAbsI64(v: VectorSignedLongLong): VectorSignedLongLong = v.vecMax(run { val _simdArg0 = v; _simdArg0 })
+
+public fun VectorSignedLongLong.vecAbs(): VectorSignedLongLong = vecAbsI64(this)
+
+public fun vecAbsF32(v: VectorFloat): VectorFloat = run { val _simdArg0 = v; _simdArg0 }
+
+public fun vecAbsF64(v: VectorDouble): VectorDouble = run { val _simdArg0 = v; _simdArg0 }
+
+public fun VectorFloat.vecAbs(): VectorFloat = vecAbsF32(this)
+
+public fun VectorDouble.vecAbs(): VectorDouble = vecAbsF64(this)
 
 public interface VectorNabs<T> {
     public fun vecNabs(): T
@@ -523,6 +591,10 @@ public interface VectorNabs<T> {
 public fun vecNabsF32(a: VectorFloat): VectorFloat = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; _simdArg0 }
 
 public fun vecNabsF64(a: VectorDouble): VectorDouble = run { val _simdArg0 = run { val _simdArg0 = a; _simdArg0 }; _simdArg0 }
+
+public fun VectorFloat.vecNabs(): VectorFloat = vecNabsF32(this)
+
+public fun VectorDouble.vecNabs(): VectorDouble = vecNabsF64(this)
 
 public interface VectorNmsub<T> {
     public fun vecNmsub(b: T, c: T): T
@@ -612,45 +684,45 @@ public interface VectorSplats<Output, Result> {
     public fun vecSplats(): Output
 }
 
-public fun vecSplatsU8(v: UByte): STL = transmute(u8x16.splat(v))
+public fun vecSplatsU8(v: UByte): VectorUnsignedChar = transmute(u8x16.splat(v))
 
-public fun UByte.vecSplats(): STL = vecSplatsU8(this)
+public fun UByte.vecSplats(): VectorUnsignedChar = vecSplatsU8(this)
 
-public fun vecSplatsI8(v: Byte): STL = transmute(i8x16.splat(v))
+public fun vecSplatsI8(v: Byte): VectorSignedChar = transmute(i8x16.splat(v))
 
-public fun Byte.vecSplats(): STL = vecSplatsI8(this)
+public fun Byte.vecSplats(): VectorSignedChar = vecSplatsI8(this)
 
-public fun vecSplatsU16(v: UShort): STL = transmute(u16x8.splat(v))
+public fun vecSplatsU16(v: UShort): VectorUnsignedShort = transmute(u16x8.splat(v))
 
-public fun UShort.vecSplats(): STL = vecSplatsU16(this)
+public fun UShort.vecSplats(): VectorUnsignedShort = vecSplatsU16(this)
 
-public fun vecSplatsI16(v: Short): STL = transmute(i16x8.splat(v))
+public fun vecSplatsI16(v: Short): VectorSignedShort = transmute(i16x8.splat(v))
 
-public fun Short.vecSplats(): STL = vecSplatsI16(this)
+public fun Short.vecSplats(): VectorSignedShort = vecSplatsI16(this)
 
-public fun vecSplatsU32(v: UInt): STL = transmute(u32x4.splat(v))
+public fun vecSplatsU32(v: UInt): VectorUnsignedInt = transmute(u32x4.splat(v))
 
-public fun UInt.vecSplats(): STL = vecSplatsU32(this)
+public fun UInt.vecSplats(): VectorUnsignedInt = vecSplatsU32(this)
 
-public fun vecSplatsI32(v: Int): STL = transmute(i32x4.splat(v))
+public fun vecSplatsI32(v: Int): VectorSignedInt = transmute(i32x4.splat(v))
 
-public fun Int.vecSplats(): STL = vecSplatsI32(this)
+public fun Int.vecSplats(): VectorSignedInt = vecSplatsI32(this)
 
-public fun vecSplatsU64(v: ULong): STL = transmute(u64x2.splat(v))
+public fun vecSplatsU64(v: ULong): VectorUnsignedLongLong = transmute(u64x2.splat(v))
 
-public fun ULong.vecSplats(): STL = vecSplatsU64(this)
+public fun ULong.vecSplats(): VectorUnsignedLongLong = vecSplatsU64(this)
 
-public fun vecSplatsI64(v: Long): STL = transmute(i64x2.splat(v))
+public fun vecSplatsI64(v: Long): VectorSignedLongLong = transmute(i64x2.splat(v))
 
-public fun Long.vecSplats(): STL = vecSplatsI64(this)
+public fun Long.vecSplats(): VectorSignedLongLong = vecSplatsI64(this)
 
-public fun vecSplatsF32(v: Float): STL = transmute(f32x4.splat(v))
+public fun vecSplatsF32(v: Float): VectorFloat = transmute(f32x4.splat(v))
 
-public fun Float.vecSplats(): STL = vecSplatsF32(this)
+public fun Float.vecSplats(): VectorFloat = vecSplatsF32(this)
 
-public fun vecSplatsF64(v: Double): STL = transmute(f64x2.splat(v))
+public fun vecSplatsF64(v: Double): VectorDouble = transmute(f64x2.splat(v))
 
-public fun Double.vecSplats(): STL = vecSplatsF64(this)
+public fun Double.vecSplats(): VectorDouble = vecSplatsF64(this)
 
 public fun UByte.vecSplatsVectorBoolChar(): VectorBoolChar = transmute(u8x16.splat(this))
 
@@ -676,65 +748,257 @@ public interface CountBits<out Result> {
     public fun vecPopcnt(): Result
 }
 
-public fun VectorSignedChar.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedChar.vecCntlz(): VectorUnsignedChar = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedChar.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedChar.vecCnttz(): VectorUnsignedChar = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedChar.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedChar.vecPopcnt(): VectorUnsignedChar = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedChar.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedChar.vecCntlz(): VectorUnsignedChar = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedChar.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedChar.vecCnttz(): VectorUnsignedChar = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedChar.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedChar.vecPopcnt(): VectorUnsignedChar = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedShort.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedShort.vecCntlz(): VectorUnsignedShort = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedShort.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedShort.vecCnttz(): VectorUnsignedShort = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedShort.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedShort.vecPopcnt(): VectorUnsignedShort = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedShort.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedShort.vecCntlz(): VectorUnsignedShort = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedShort.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedShort.vecCnttz(): VectorUnsignedShort = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedShort.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedShort.vecPopcnt(): VectorUnsignedShort = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedInt.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedInt.vecCntlz(): VectorUnsignedInt = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedInt.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedInt.vecCnttz(): VectorUnsignedInt = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedInt.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedInt.vecPopcnt(): VectorUnsignedInt = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedInt.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedInt.vecCntlz(): VectorUnsignedInt = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedInt.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedInt.vecCnttz(): VectorUnsignedInt = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedInt.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedInt.vecPopcnt(): VectorUnsignedInt = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedLongLong.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedLongLong.vecCntlz(): VectorUnsignedLongLong = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedLongLong.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedLongLong.vecCnttz(): VectorUnsignedLongLong = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorSignedLongLong.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorSignedLongLong.vecPopcnt(): VectorUnsignedLongLong = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedLongLong.vecCntlz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedLongLong.vecCntlz(): VectorUnsignedLongLong = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedLongLong.vecCnttz(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedLongLong.vecCnttz(): VectorUnsignedLongLong = transmute(run { val _simdArg0 = this; _simdArg0 })
 
-public fun VectorUnsignedLongLong.vecPopcnt(): TU = transmute(run { val _simdArg0 = this; _simdArg0 })
+public fun VectorUnsignedLongLong.vecPopcnt(): VectorUnsignedLongLong = transmute(run { val _simdArg0 = this; _simdArg0 })
+
+public fun vecClzbSigned(a: VectorSignedChar): VectorUnsignedChar = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzhSigned(a: VectorSignedShort): VectorUnsignedShort = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzfSigned(a: VectorSignedInt): VectorUnsignedInt = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzgSigned(a: VectorSignedLongLong): VectorUnsignedLongLong = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzbUnsigned(a: VectorUnsignedChar): VectorUnsignedChar = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzhUnsigned(a: VectorUnsignedShort): VectorUnsignedShort = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzfUnsigned(a: VectorUnsignedInt): VectorUnsignedInt = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecClzgUnsigned(a: VectorUnsignedLongLong): VectorUnsignedLongLong = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzbSigned(a: VectorSignedChar): VectorUnsignedChar = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzhSigned(a: VectorSignedShort): VectorUnsignedShort = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzfSigned(a: VectorSignedInt): VectorUnsignedInt = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzgSigned(a: VectorSignedLongLong): VectorUnsignedLongLong = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzbUnsigned(a: VectorUnsignedChar): VectorUnsignedChar = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzhUnsigned(a: VectorUnsignedShort): VectorUnsignedShort = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzfUnsigned(a: VectorUnsignedInt): VectorUnsignedInt = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecCtzgUnsigned(a: VectorUnsignedLongLong): VectorUnsignedLongLong = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopctbSigned(a: VectorSignedChar): VectorSignedChar = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopcthSigned(a: VectorSignedShort): VectorSignedShort = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopctfSigned(a: VectorSignedInt): VectorSignedInt = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopctgSigned(a: VectorSignedLongLong): VectorSignedLongLong = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopctbUnsigned(a: VectorUnsignedChar): VectorUnsignedChar = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopcthUnsigned(a: VectorUnsignedShort): VectorUnsignedShort = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopctfUnsigned(a: VectorUnsignedInt): VectorUnsignedInt = transmute(run { val _simdArg0 = a; _simdArg0 })
+
+public fun vecVpopctgUnsigned(a: VectorUnsignedLongLong): VectorUnsignedLongLong = transmute(run { val _simdArg0 = a; _simdArg0 })
 
 public interface VectorAnd<Other, out Result> {
     public fun vecAnd(b: Other): Result
 }
 
+public fun VectorUnsignedChar.vecAnd(b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedChar.vecAnd(b: VectorBoolChar): VectorUnsignedChar = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); _simdArg0 }
+
+public fun VectorBoolChar.vecAnd(b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedChar.vecAnd(b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedChar.vecAnd(b: VectorBoolChar): VectorSignedChar = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()); _simdArg0 }
+
+public fun VectorBoolChar.vecAnd(b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedShort.vecAnd(b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedShort.vecAnd(b: VectorBoolShort): VectorUnsignedShort = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); _simdArg0 }
+
+public fun VectorBoolShort.vecAnd(b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedShort.vecAnd(b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedShort.vecAnd(b: VectorBoolShort): VectorSignedShort = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()); _simdArg0 }
+
+public fun VectorBoolShort.vecAnd(b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedInt.vecAnd(b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedInt.vecAnd(b: VectorBoolInt): VectorUnsignedInt = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); _simdArg0 }
+
+public fun VectorBoolInt.vecAnd(b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedInt.vecAnd(b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedInt.vecAnd(b: VectorBoolInt): VectorSignedInt = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()); _simdArg0 }
+
+public fun VectorBoolInt.vecAnd(b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedLongLong.vecAnd(b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedLongLong.vecAnd(b: VectorBoolLongLong): VectorUnsignedLongLong = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); _simdArg0 }
+
+public fun VectorBoolLongLong.vecAnd(b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedLongLong.vecAnd(b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedLongLong.vecAnd(b: VectorBoolLongLong): VectorSignedLongLong = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()); _simdArg0 }
+
+public fun VectorBoolLongLong.vecAnd(b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorSignedLongLong>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()); val _simdArg1 = b; _simdArg0 }
+
 public interface VectorOr<Other, out Result> {
     public fun vecOr(b: Other): Result
 }
 
+public fun VectorUnsignedChar.vecOr(b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedChar.vecOr(b: VectorBoolChar): VectorUnsignedChar = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); _simdArg0 }
+
+public fun VectorBoolChar.vecOr(b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedChar.vecOr(b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedChar.vecOr(b: VectorBoolChar): VectorSignedChar = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()); _simdArg0 }
+
+public fun VectorBoolChar.vecOr(b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedShort.vecOr(b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedShort.vecOr(b: VectorBoolShort): VectorUnsignedShort = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); _simdArg0 }
+
+public fun VectorBoolShort.vecOr(b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedShort.vecOr(b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedShort.vecOr(b: VectorBoolShort): VectorSignedShort = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()); _simdArg0 }
+
+public fun VectorBoolShort.vecOr(b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedInt.vecOr(b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedInt.vecOr(b: VectorBoolInt): VectorUnsignedInt = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); _simdArg0 }
+
+public fun VectorBoolInt.vecOr(b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedInt.vecOr(b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedInt.vecOr(b: VectorBoolInt): VectorSignedInt = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()); _simdArg0 }
+
+public fun VectorBoolInt.vecOr(b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedLongLong.vecOr(b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedLongLong.vecOr(b: VectorBoolLongLong): VectorUnsignedLongLong = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); _simdArg0 }
+
+public fun VectorBoolLongLong.vecOr(b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedLongLong.vecOr(b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedLongLong.vecOr(b: VectorBoolLongLong): VectorSignedLongLong = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()); _simdArg0 }
+
+public fun VectorBoolLongLong.vecOr(b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorSignedLongLong>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()); val _simdArg1 = b; _simdArg0 }
+
 public interface VectorXor<Other, out Result> {
     public fun vecXor(b: Other): Result
 }
+
+public fun VectorUnsignedChar.vecXor(b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedChar.vecXor(b: VectorBoolChar): VectorUnsignedChar = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); _simdArg0 }
+
+public fun VectorBoolChar.vecXor(b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedChar.vecXor(b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedChar.vecXor(b: VectorBoolChar): VectorSignedChar = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()); _simdArg0 }
+
+public fun VectorBoolChar.vecXor(b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorSignedChar>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorSignedChar>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedShort.vecXor(b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedShort.vecXor(b: VectorBoolShort): VectorUnsignedShort = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); _simdArg0 }
+
+public fun VectorBoolShort.vecXor(b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedShort.vecXor(b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedShort.vecXor(b: VectorBoolShort): VectorSignedShort = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()); _simdArg0 }
+
+public fun VectorBoolShort.vecXor(b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorSignedShort>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorSignedShort>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedInt.vecXor(b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedInt.vecXor(b: VectorBoolInt): VectorUnsignedInt = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); _simdArg0 }
+
+public fun VectorBoolInt.vecXor(b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedInt.vecXor(b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedInt.vecXor(b: VectorBoolInt): VectorSignedInt = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()); _simdArg0 }
+
+public fun VectorBoolInt.vecXor(b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorSignedInt>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorSignedInt>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedLongLong.vecXor(b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorUnsignedLongLong.vecXor(b: VectorBoolLongLong): VectorUnsignedLongLong = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); _simdArg0 }
+
+public fun VectorBoolLongLong.vecXor(b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedLongLong.vecXor(b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = this; val _simdArg1 = b; _simdArg0 }
+
+public fun VectorSignedLongLong.vecXor(b: VectorBoolLongLong): VectorSignedLongLong = run { val _simdArg0 = this; val _simdArg1 = transmuteWithLayouts<VectorBoolLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()); _simdArg0 }
+
+public fun VectorBoolLongLong.vecXor(b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorSignedLongLong>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()); val _simdArg1 = b; _simdArg0 }
 
 public fun nor(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
@@ -746,6 +1010,32 @@ public interface VectorNor<Other, out Result> {
     public fun vecNor(b: Other): Result
 }
 
+public fun VectorBoolChar.vecNor(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorUnsignedChar.vecNor(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecNor(b: VectorSignedChar): VectorSignedChar = nor(this, b)
+
+public fun VectorBoolShort.vecNor(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedChar, VectorBoolShort>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorUnsignedShort.vecNor(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecNor(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorBoolInt.vecNor(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedChar, VectorBoolInt>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorUnsignedInt.vecNor(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecNor(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecNor(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecNor(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecNor(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecNor(b: VectorDouble): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(nor(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
 public fun nand(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
     val b1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
@@ -755,6 +1045,32 @@ public fun nand(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
 public interface VectorNand<Other, out Result> {
     public fun vecNand(b: Other): Result
 }
+
+public fun VectorBoolChar.vecNand(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorUnsignedChar.vecNand(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecNand(b: VectorSignedChar): VectorSignedChar = nand(this, b)
+
+public fun VectorBoolShort.vecNand(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedChar, VectorBoolShort>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorUnsignedShort.vecNand(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecNand(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorBoolInt.vecNand(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedChar, VectorBoolInt>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorUnsignedInt.vecNand(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecNand(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecNand(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecNand(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecNand(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecNand(b: VectorDouble): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(nand(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
 
 public fun eqv(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1: U8x16 = transmuteWithLayouts<VectorSignedChar, U8x16>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<U8x16>())
@@ -766,6 +1082,32 @@ public interface VectorEqv<Other, out Result> {
     public fun vecEqv(b: Other): Result
 }
 
+public fun VectorBoolChar.vecEqv(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorUnsignedChar.vecEqv(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecEqv(b: VectorSignedChar): VectorSignedChar = eqv(this, b)
+
+public fun VectorBoolShort.vecEqv(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedChar, VectorBoolShort>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorUnsignedShort.vecEqv(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecEqv(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorBoolInt.vecEqv(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedChar, VectorBoolInt>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorUnsignedInt.vecEqv(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecEqv(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecEqv(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecEqv(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecEqv(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecEqv(b: VectorDouble): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(eqv(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
 public fun andc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
     val b1 = b
@@ -776,6 +1118,32 @@ public interface VectorAndc<Other, out Result> {
     public fun vecAndc(b: Other): Result
 }
 
+public fun VectorBoolChar.vecAndc(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorUnsignedChar.vecAndc(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecAndc(b: VectorSignedChar): VectorSignedChar = andc(this, b)
+
+public fun VectorBoolShort.vecAndc(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedChar, VectorBoolShort>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorUnsignedShort.vecAndc(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecAndc(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorBoolInt.vecAndc(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedChar, VectorBoolInt>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorUnsignedInt.vecAndc(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecAndc(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecAndc(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecAndc(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecAndc(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecAndc(b: VectorDouble): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(andc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
 public fun orc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
     val b1 = b
@@ -785,6 +1153,44 @@ public fun orc(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
 public interface VectorOrc<Other, out Result> {
     public fun vecOrc(b: Other): Result
 }
+
+public fun VectorBoolChar.vecOrc(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorUnsignedChar.vecOrc(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecOrc(b: VectorSignedChar): VectorSignedChar = orc(this, b)
+
+public fun VectorBoolShort.vecOrc(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedChar, VectorBoolShort>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorUnsignedShort.vecOrc(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecOrc(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorBoolInt.vecOrc(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedChar, VectorBoolInt>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorUnsignedInt.vecOrc(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecOrc(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecOrc(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecOrc(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecOrc(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecOrc(b: VectorDouble): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(orc(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
+public fun vecRintF32(a: VectorFloat): VectorFloat = run { val _simdArg0 = a; _simdArg0 }
+
+public fun vecRintF64(a: VectorDouble): VectorDouble = run { val _simdArg0 = a; _simdArg0 }
+
+public fun vecRoundcF32(a: VectorFloat): VectorFloat = nearbyintV4f32(a)
+
+public fun vecRoundcF64(a: VectorDouble): VectorDouble = nearbyintV2f64(a)
+
+public fun vecRoundF32(a: VectorFloat): VectorFloat = roundevenV4f32(a)
+
+public fun vecRoundF64(a: VectorDouble): VectorDouble = roundevenV2f64(a)
 
 public interface VectorRoundc<T> {
     public fun vecRoundc(): T
@@ -798,6 +1204,18 @@ public interface VectorRint<T> {
     public fun vecRint(): T
 }
 
+public fun VectorFloat.vecRoundc(): VectorFloat = vecRoundcF32(this)
+
+public fun VectorDouble.vecRoundc(): VectorDouble = vecRoundcF64(this)
+
+public fun VectorFloat.vecRound(): VectorFloat = vecRoundF32(this)
+
+public fun VectorDouble.vecRound(): VectorDouble = vecRoundF64(this)
+
+public fun VectorFloat.vecRint(): VectorFloat = run { val _simdArg0 = this; _simdArg0 }
+
+public fun VectorDouble.vecRint(): VectorDouble = run { val _simdArg0 = this; _simdArg0 }
+
 public interface VectorTrunc<T> {
     public fun vecTrunc(): T
 }
@@ -810,147 +1228,391 @@ public interface VectorFloor<T> {
     public fun vecFloor(): T
 }
 
+public fun VectorFloat.vecTrunc(): VectorFloat = run { val _simdArg0 = this; _simdArg0 }
+
+public fun VectorDouble.vecTrunc(): VectorDouble = run { val _simdArg0 = this; _simdArg0 }
+
+public fun VectorFloat.vecCeil(): VectorFloat = run { val _simdArg0 = this; _simdArg0 }
+
+public fun VectorDouble.vecCeil(): VectorDouble = run { val _simdArg0 = this; _simdArg0 }
+
+public fun VectorFloat.vecFloor(): VectorFloat = run { val _simdArg0 = this; _simdArg0 }
+
+public fun VectorDouble.vecFloor(): VectorDouble = run { val _simdArg0 = this; _simdArg0 }
+
 public interface VectorSl<Other, out Result> {
     public fun vecSl(b: Other): Result
 }
 
-public fun veslvb(a: TTL, b: TTL): TTL {
+public fun veslvb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(8u.toUByte()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U8x16.splat(8u.toUByte()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun veslvh(a: TTL, b: TTL): TTL {
+public fun veslvh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(16u.toUShort()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U16x8.splat(16u.toUShort()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun veslvf(a: TTL, b: TTL): TTL {
+public fun veslvf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(32u); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U32x4.splat(32u); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun veslvg(a: TTL, b: TTL): TTL {
+public fun veslvg(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedLongLong {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(64u.toULong()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U64x2.splat(64u.toULong()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
+
+public fun VectorUnsignedChar.vecSl(b: VectorUnsignedChar): VectorUnsignedChar = veslvb(this, b)
+
+public fun VectorSignedChar.vecSl(b: VectorUnsignedChar): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(veslvb(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
+
+public fun VectorUnsignedShort.vecSl(b: VectorUnsignedShort): VectorUnsignedShort = veslvh(this, b)
+
+public fun VectorSignedShort.vecSl(b: VectorUnsignedShort): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(veslvh(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSl(b: VectorUnsignedInt): VectorUnsignedInt = veslvf(this, b)
+
+public fun VectorSignedInt.vecSl(b: VectorUnsignedInt): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(veslvf(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSl(b: VectorUnsignedLongLong): VectorUnsignedLongLong = veslvg(this, b)
+
+public fun VectorSignedLongLong.vecSl(b: VectorUnsignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(veslvg(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
 
 public interface VectorSr<Other, out Result> {
     public fun vecSr(b: Other): Result
 }
 
-public fun vesrlvb(a: TTL, b: TTL): TTL {
+public fun vesrlvb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(8u.toUByte()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U8x16.splat(8u.toUByte()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun vesrlvh(a: TTL, b: TTL): TTL {
+public fun vesrlvh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(16u.toUShort()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U16x8.splat(16u.toUShort()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun vesrlvf(a: TTL, b: TTL): TTL {
+public fun vesrlvf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(32u); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U32x4.splat(32u); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun vesrlvg(a: TTL, b: TTL): TTL {
+public fun vesrlvg(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedLongLong {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(64u.toULong()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = U64x2.splat(64u.toULong()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
+
+public fun VectorUnsignedChar.vecSr(b: VectorUnsignedChar): VectorUnsignedChar = vesrlvb(this, b)
+
+public fun VectorSignedChar.vecSr(b: VectorUnsignedChar): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(vesrlvb(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
+
+public fun VectorUnsignedShort.vecSr(b: VectorUnsignedShort): VectorUnsignedShort = vesrlvh(this, b)
+
+public fun VectorSignedShort.vecSr(b: VectorUnsignedShort): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(vesrlvh(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSr(b: VectorUnsignedInt): VectorUnsignedInt = vesrlvf(this, b)
+
+public fun VectorSignedInt.vecSr(b: VectorUnsignedInt): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(vesrlvf(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSr(b: VectorUnsignedLongLong): VectorUnsignedLongLong = vesrlvg(this, b)
+
+public fun VectorSignedLongLong.vecSr(b: VectorUnsignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(vesrlvg(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
 
 public interface VectorSra<Other, out Result> {
     public fun vecSra(b: Other): Result
 }
 
-public fun vesravb(a: TTL, b: TTL): TTL {
+public fun vesravb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(8u.toByte()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = I8x16.splat(8u.toByte()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun vesravh(a: TTL, b: TTL): TTL {
+public fun vesravh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(16u.toShort()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = I16x8.splat(16u.toShort()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun vesravf(a: TTL, b: TTL): TTL {
+public fun vesravf(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(32u.toInt()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = I32x4.splat(32u.toInt()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun vesravg(a: TTL, b: TTL): TTL {
+public fun vesravg(a: VectorSignedLongLong, b: VectorSignedLongLong): VectorSignedLongLong {
     val a1 = a
-    val b1 = run { val _simdArg0 = b; val _simdArg1 = TTS.splat(64u.toLong()); _simdArg0 }
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = I64x2.splat(64u.toLong()); _simdArg0 }
     return transmute(run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 })
 }
+
+public fun VectorUnsignedChar.vecSra(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vesravb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSra(b: VectorUnsignedChar): VectorSignedChar = vesravb(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSra(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(vesravh(this, b), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSra(b: VectorUnsignedShort): VectorSignedShort = vesravh(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()))
+
+public fun VectorUnsignedInt.vecSra(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(vesravf(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSra(b: VectorUnsignedInt): VectorSignedInt = vesravf(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()))
+
+public fun VectorUnsignedLongLong.vecSra(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(vesravg(this, b), UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSra(b: VectorUnsignedLongLong): VectorSignedLongLong = vesravg(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()))
 
 public interface VectorSlb<Other, out Result> {
     public fun vecSlb(b: Other): Result
 }
 
+public fun VectorUnsignedChar.vecSlb(b: VectorSignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vslb(this, transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorUnsignedChar.vecSlb(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSlb(b: VectorSignedChar): VectorSignedChar = vslb(this, b)
+
+public fun VectorSignedChar.vecSlb(b: VectorUnsignedChar): VectorSignedChar = vslb(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSlb(b: VectorSignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vslb(this, transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorUnsignedShort.vecSlb(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSlb(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorSignedShort.vecSlb(b: VectorUnsignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vslb(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSlb(b: VectorSignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vslb(this, transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorUnsignedInt.vecSlb(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSlb(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorSignedInt.vecSlb(b: VectorUnsignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vslb(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSlb(b: VectorSignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vslb(this, transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorUnsignedLongLong.vecSlb(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSlb(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vslb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorSignedLongLong.vecSlb(b: VectorUnsignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vslb(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecSlb(b: VectorSignedInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vslb(this, transmuteWithLayouts<VectorSignedInt, VectorFloat>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorFloat.vecSlb(b: VectorUnsignedInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vslb(this, transmuteWithLayouts<VectorUnsignedInt, VectorFloat>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorFloat>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecSlb(b: VectorSignedLongLong): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vslb(this, transmuteWithLayouts<VectorSignedLongLong, VectorDouble>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
+public fun VectorDouble.vecSlb(b: VectorUnsignedLongLong): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vslb(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorDouble>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
 public interface VectorSrab<Other, out Result> {
     public fun vecSrab(b: Other): Result
 }
+
+public fun VectorUnsignedChar.vecSrab(b: VectorSignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsrab(this, transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorUnsignedChar.vecSrab(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSrab(b: VectorSignedChar): VectorSignedChar = vsrab(this, b)
+
+public fun VectorSignedChar.vecSrab(b: VectorUnsignedChar): VectorSignedChar = vsrab(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSrab(b: VectorSignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsrab(this, transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorUnsignedShort.vecSrab(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSrab(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorSignedShort.vecSrab(b: VectorUnsignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsrab(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSrab(b: VectorSignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsrab(this, transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorUnsignedInt.vecSrab(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSrab(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorSignedInt.vecSrab(b: VectorUnsignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsrab(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSrab(b: VectorSignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsrab(this, transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorUnsignedLongLong.vecSrab(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSrab(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsrab(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorSignedLongLong.vecSrab(b: VectorUnsignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsrab(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecSrab(b: VectorSignedInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vsrab(this, transmuteWithLayouts<VectorSignedInt, VectorFloat>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorFloat.vecSrab(b: VectorUnsignedInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vsrab(this, transmuteWithLayouts<VectorUnsignedInt, VectorFloat>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorFloat>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecSrab(b: VectorSignedLongLong): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vsrab(this, transmuteWithLayouts<VectorSignedLongLong, VectorDouble>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
+public fun VectorDouble.vecSrab(b: VectorUnsignedLongLong): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vsrab(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorDouble>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
 
 public interface VectorSrb<Other, out Result> {
     public fun vecSrb(b: Other): Result
 }
 
+public fun VectorUnsignedChar.vecSrb(b: VectorSignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsrlb(this, transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorUnsignedChar.vecSrb(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSrb(b: VectorSignedChar): VectorSignedChar = vsrlb(this, b)
+
+public fun VectorSignedChar.vecSrb(b: VectorUnsignedChar): VectorSignedChar = vsrlb(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSrb(b: VectorSignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsrlb(this, transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorUnsignedShort.vecSrb(b: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSrb(b: VectorSignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorSignedShort.vecSrb(b: VectorUnsignedShort): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsrlb(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSrb(b: VectorSignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsrlb(this, transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorUnsignedInt.vecSrb(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSrb(b: VectorSignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorSignedInt.vecSrb(b: VectorUnsignedInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsrlb(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSrb(b: VectorSignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsrlb(this, transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorUnsignedLongLong.vecSrb(b: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSrb(b: VectorSignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsrlb(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorSignedLongLong.vecSrb(b: VectorUnsignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsrlb(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorFloat.vecSrb(b: VectorSignedInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vsrlb(this, transmuteWithLayouts<VectorSignedInt, VectorFloat>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorFloat.vecSrb(b: VectorUnsignedInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vsrlb(this, transmuteWithLayouts<VectorUnsignedInt, VectorFloat>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorFloat>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun VectorDouble.vecSrb(b: VectorSignedLongLong): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vsrlb(this, transmuteWithLayouts<VectorSignedLongLong, VectorDouble>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
+public fun VectorDouble.vecSrb(b: VectorUnsignedLongLong): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vsrlb(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorDouble>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
 public interface VectorSrl<Other, out Result> {
     public fun vecSrl(b: Other): Result
 }
+
+public fun VectorUnsignedChar.vecSrl(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsrl(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSrl(b: VectorUnsignedChar): VectorSignedChar = vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSrl(b: VectorUnsignedChar): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSrl(b: VectorUnsignedChar): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSrl(b: VectorUnsignedChar): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSrl(b: VectorUnsignedChar): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSrl(b: VectorUnsignedChar): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSrl(b: VectorUnsignedChar): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsrl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
 
 public interface VectorSral<Other, out Result> {
     public fun vecSral(b: Other): Result
 }
 
+public fun VectorUnsignedChar.vecSral(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsra(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSral(b: VectorUnsignedChar): VectorSignedChar = vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSral(b: VectorUnsignedChar): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSral(b: VectorUnsignedChar): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSral(b: VectorUnsignedChar): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSral(b: VectorUnsignedChar): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSral(b: VectorUnsignedChar): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSral(b: VectorUnsignedChar): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsra(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
 public interface VectorSll<Other, out Result> {
     public fun vecSll(b: Other): Result
 }
+
+public fun VectorUnsignedChar.vecSll(b: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vsl(this, b), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecSll(b: VectorUnsignedChar): VectorSignedChar = vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecSll(b: VectorUnsignedChar): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecSll(b: VectorUnsignedChar): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecSll(b: VectorUnsignedChar): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecSll(b: VectorUnsignedChar): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecSll(b: VectorUnsignedChar): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecSll(b: VectorUnsignedChar): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vsl(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
 
 public interface VectorRl<Other, T, out Result> {
     public fun vecRl(b: Other): Result
 }
 
-public fun verllvb(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
+public fun verllvb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
-public fun verllvh(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
+public fun verllvh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
-public fun verllvf(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
+public fun verllvf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
-public fun verllvg(a: TTL, b: TTL): TTL = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
+public fun verllvg(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedLongLong = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = b; _simdArg0 }
 
-public fun verllvbImm(a: TTL, bits: CUlong): TTL {
+public fun VectorUnsignedChar.vecRl(b: VectorUnsignedChar): VectorUnsignedChar = verllvb(this, b)
+
+public fun VectorSignedChar.vecRl(b: VectorUnsignedChar): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(verllvb(this, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
+
+public fun VectorUnsignedShort.vecRl(b: VectorUnsignedShort): VectorUnsignedShort = verllvh(this, b)
+
+public fun VectorSignedShort.vecRl(b: VectorUnsignedShort): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(verllvh(this, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecRl(b: VectorUnsignedInt): VectorUnsignedInt = verllvf(this, b)
+
+public fun VectorSignedInt.vecRl(b: VectorUnsignedInt): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(verllvf(this, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecRl(b: VectorUnsignedLongLong): VectorUnsignedLongLong = verllvg(this, b)
+
+public fun VectorSignedLongLong.vecRl(b: VectorUnsignedLongLong): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(verllvg(this, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun verllvbImm(a: VectorUnsignedChar, bits: CUlong): VectorUnsignedChar {
     val bits1 = (bits % 8u.toULong()).toUByte()
-    val b = TTS.splat(bits1)
+    val b = U8x16.splat(bits1)
     return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = transmute(b); _simdArg0 }
 }
 
-public fun verllvhImm(a: TTL, bits: CUlong): TTL {
+public fun verllvhImm(a: VectorUnsignedShort, bits: CUlong): VectorUnsignedShort {
     val bits1 = (bits % 16u.toULong()).toUShort()
-    val b = TTS.splat(bits1)
+    val b = U16x8.splat(bits1)
     return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = transmute(b); _simdArg0 }
 }
 
-public fun verllvfImm(a: TTL, bits: CUlong): TTL {
+public fun verllvfImm(a: VectorUnsignedInt, bits: CUlong): VectorUnsignedInt {
     val bits1 = (bits % 32u.toULong()).toUInt()
-    val b = TTS.splat(bits1)
+    val b = U32x4.splat(bits1)
     return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = transmute(b); _simdArg0 }
 }
 
-public fun verllvgImm(a: TTL, bits: CUlong): TTL {
+public fun verllvgImm(a: VectorUnsignedLongLong, bits: CUlong): VectorUnsignedLongLong {
     val bits1 = (bits % 64u.toULong())
-    val b = TTS.splat(bits1)
+    val b = U64x2.splat(bits1)
     return run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = transmute(b); _simdArg0 }
 }
 
@@ -958,39 +1620,49 @@ public interface VectorRli<T> {
     public fun vecRli(bits: CUlong): T
 }
 
-public fun VectorSignedChar.vecRli(bits: CUlong): VectorSignedChar = transmuteWithLayouts<TTL, VectorSignedChar>(verllvbImm(this, bits), UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<VectorSignedChar>())
+public fun VectorSignedChar.vecRli(bits: CUlong): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(verllvbImm(this, bits), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
 
-public fun TU.vecRli(bits: CUlong): TU = verllvbImm(this, bits)
+public fun VectorUnsignedChar.vecRli(bits: CUlong): VectorUnsignedChar = verllvbImm(this, bits)
 
-public fun VectorSignedShort.vecRli(bits: CUlong): VectorSignedShort = transmuteWithLayouts<TTL, VectorSignedShort>(verllvhImm(this, bits), UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<VectorSignedShort>())
+public fun VectorSignedShort.vecRli(bits: CUlong): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(verllvhImm(this, bits), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
 
-public fun VectorSignedInt.vecRli(bits: CUlong): VectorSignedInt = transmuteWithLayouts<TTL, VectorSignedInt>(verllvfImm(this, bits), UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<VectorSignedInt>())
+public fun VectorUnsignedShort.vecRli(bits: CUlong): VectorUnsignedShort = verllvhImm(this, bits)
 
-public fun VectorSignedLongLong.vecRli(bits: CUlong): VectorSignedLongLong = transmuteWithLayouts<TTL, VectorSignedLongLong>(verllvgImm(this, bits), UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+public fun VectorSignedInt.vecRli(bits: CUlong): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(verllvfImm(this, bits), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedInt.vecRli(bits: CUlong): VectorUnsignedInt = verllvfImm(this, bits)
+
+public fun VectorSignedLongLong.vecRli(bits: CUlong): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(verllvgImm(this, bits), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun VectorUnsignedLongLong.vecRli(bits: CUlong): VectorUnsignedLongLong = verllvgImm(this, bits)
 
 public interface VectorRlMask<Other, T> {
     public fun vecRlMask(other: Other, imm8: UByte): T
 }
 
-public fun testVerimb(a: VectorSignedChar, b: TU, imm8: UByte): VectorSignedChar = verimb(a, a, transmuteWithLayouts<TU, VectorSignedChar>(b, UnresolvedTypeLayout<TU>(), UnresolvedTypeLayout<VectorSignedChar>()), (imm8 % LTT.BITS.toUByte()).toInt())
+public fun testVerimb(a: VectorSignedChar, b: VectorUnsignedChar, imm8: UByte): VectorSignedChar = verimb(a, a, transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>()), (imm8 % 8u.toUByte()).toInt())
 
-public fun VectorSignedChar.vecRlMask(other: TU, imm8: UByte): VectorSignedChar = testVerimb(this, other, imm8)
+public fun VectorSignedChar.vecRlMask(other: VectorUnsignedChar, imm8: UByte): VectorSignedChar = testVerimb(this, other, imm8)
 
-public fun TU.vecRlMask(other: TU, imm8: UByte): TU = transmute(testVerimb(this, other, imm8))
+public fun VectorUnsignedChar.vecRlMask(other: VectorUnsignedChar, imm8: UByte): VectorUnsignedChar = transmute(testVerimb(this, other, imm8))
 
-public fun testVerimh(a: VectorSignedShort, b: TU, imm8: UByte): VectorSignedShort = verimh(a, a, transmuteWithLayouts<TU, VectorSignedShort>(b, UnresolvedTypeLayout<TU>(), UnresolvedTypeLayout<VectorSignedShort>()), (imm8 % LTT.BITS.toUByte()).toInt())
+public fun testVerimh(a: VectorSignedShort, b: VectorUnsignedShort, imm8: UByte): VectorSignedShort = verimh(a, a, transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>()), (imm8 % 16u.toUByte()).toInt())
 
-public fun VectorSignedShort.vecRlMask(other: TU, imm8: UByte): VectorSignedShort = testVerimh(this, other, imm8)
+public fun VectorSignedShort.vecRlMask(other: VectorUnsignedShort, imm8: UByte): VectorSignedShort = testVerimh(this, other, imm8)
 
-public fun TU.vecRlMaskTU(other: TU, imm8: UByte): TU = transmute(testVerimh(this, other, imm8))
+public fun VectorUnsignedShort.vecRlMask(other: VectorUnsignedShort, imm8: UByte): VectorUnsignedShort = transmute(testVerimh(this, other, imm8))
 
-public fun testVerimf(a: VectorSignedInt, b: TU, imm8: UByte): VectorSignedInt = verimf(a, a, transmuteWithLayouts<TU, VectorSignedInt>(b, UnresolvedTypeLayout<TU>(), UnresolvedTypeLayout<VectorSignedInt>()), (imm8 % LTT.BITS.toUByte()).toInt())
+public fun testVerimf(a: VectorSignedInt, b: VectorUnsignedInt, imm8: UByte): VectorSignedInt = verimf(a, a, transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>()), (imm8 % 32u.toUByte()).toInt())
 
-public fun VectorSignedInt.vecRlMask(other: TU, imm8: UByte): VectorSignedInt = testVerimf(this, other, imm8)
+public fun VectorSignedInt.vecRlMask(other: VectorUnsignedInt, imm8: UByte): VectorSignedInt = testVerimf(this, other, imm8)
 
-public fun testVerimg(a: VectorSignedLongLong, b: TU, imm8: UByte): VectorSignedLongLong = verimg(a, a, transmuteWithLayouts<TU, VectorSignedLongLong>(b, UnresolvedTypeLayout<TU>(), UnresolvedTypeLayout<VectorSignedLongLong>()), (imm8 % LTT.BITS.toUByte()).toInt())
+public fun VectorUnsignedInt.vecRlMask(other: VectorUnsignedInt, imm8: UByte): VectorUnsignedInt = transmute(testVerimf(this, other, imm8))
 
-public fun VectorSignedLongLong.vecRlMask(other: TU, imm8: UByte): VectorSignedLongLong = testVerimg(this, other, imm8)
+public fun testVerimg(a: VectorSignedLongLong, b: VectorUnsignedLongLong, imm8: UByte): VectorSignedLongLong = verimg(a, a, transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>()), (imm8 % 64u.toUByte()).toInt())
+
+public fun VectorSignedLongLong.vecRlMask(other: VectorUnsignedLongLong, imm8: UByte): VectorSignedLongLong = testVerimg(this, other, imm8)
+
+public fun VectorUnsignedLongLong.vecRlMask(other: VectorUnsignedLongLong, imm8: UByte): VectorUnsignedLongLong = transmute(testVerimg(this, other, imm8))
 
 public interface VectorReve<T> {
     public fun vecReve(): T
@@ -1042,21 +1714,33 @@ public fun reveb(a: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = 
 
 public fun VectorSignedChar.vecReve(): VectorSignedChar = reveb(this)
 
-public fun TU.vecReve(): TU = transmuteWithLayouts<VectorSignedChar, TU>(reveb(this), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TU>())
+public fun VectorUnsignedChar.vecReve(): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(reveb(this), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
 
-public fun TB.vecReve(): TB = transmuteWithLayouts<VectorSignedChar, TB>(reveb(this), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolChar.vecReve(): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(reveb(this), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
 public fun reveh(a: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.reverse(); _simdArg0 }
 
 public fun VectorSignedShort.vecReve(): VectorSignedShort = reveh(this)
 
+public fun VectorUnsignedShort.vecReve(): VectorUnsignedShort = transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(reveh(this), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorBoolShort.vecReve(): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(reveh(this), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
+
 public fun revef(a: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.reverse(); _simdArg0 }
 
 public fun VectorSignedInt.vecReve(): VectorSignedInt = revef(this)
 
+public fun VectorUnsignedInt.vecReve(): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(revef(this), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorBoolInt.vecReve(): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(revef(this), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
+
 public fun reveg(a: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.reverse(); _simdArg0 }
 
 public fun VectorSignedLongLong.vecReve(): VectorSignedLongLong = reveg(this)
+
+public fun VectorUnsignedLongLong.vecReve(): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(reveg(this), UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorBoolLongLong.vecReve(): VectorBoolLongLong = transmuteWithLayouts<VectorSignedLongLong, VectorBoolLongLong>(reveg(this), UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorBoolLongLong>())
 
 public fun VectorFloat.vecReve(): VectorFloat = transmute(transmuteWithLayouts<VectorFloat, VectorSignedInt>(this, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<VectorSignedInt>()).vecReve())
 
@@ -1065,6 +1749,30 @@ public fun VectorDouble.vecReve(): VectorDouble = transmute(transmuteWithLayouts
 public interface VectorRevb<T> {
     public fun vecRevb(): T
 }
+
+public fun bswapb(a: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = a; _simdArg0 }
+
+public fun bswaph(a: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = a; _simdArg0 }
+
+public fun bswapf(a: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = a; _simdArg0 }
+
+public fun bswapg(a: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = a; _simdArg0 }
+
+public fun VectorUnsignedChar.vecRevb(): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(bswapb(this), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorSignedChar.vecRevb(): VectorSignedChar = bswapb(this)
+
+public fun VectorUnsignedShort.vecRevb(): VectorUnsignedShort = transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(bswaph(this), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorSignedShort.vecRevb(): VectorSignedShort = bswaph(this)
+
+public fun VectorUnsignedInt.vecRevb(): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(bswapf(this), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorSignedInt.vecRevb(): VectorSignedInt = bswapf(this)
+
+public fun VectorUnsignedLongLong.vecRevb(): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(bswapg(this), UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun VectorSignedLongLong.vecRevb(): VectorSignedLongLong = bswapg(this)
 
 public fun VectorFloat.vecRevb(): VectorFloat = transmute(transmuteWithLayouts<VectorFloat, VectorSignedInt>(this, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<VectorSignedInt>()).vecRevb())
 
@@ -1082,37 +1790,49 @@ public fun vmrlb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar = r
 
 public fun VectorSignedChar.vecMergel(other: VectorSignedChar): VectorSignedChar = vmrlb(this, other)
 
-public fun TU.vecMergel(other: TU): TU = transmuteWithLayouts<VectorSignedChar, TU>(vmrlb(this, other), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TU>())
+public fun VectorUnsignedChar.vecMergel(other: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vmrlb(this, other), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
 
 public fun vmrhb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeHigh(); _simdArg0 }
 
 public fun VectorSignedChar.vecMergeh(other: VectorSignedChar): VectorSignedChar = vmrhb(this, other)
 
-public fun TU.vecMergeh(other: TU): TU = transmuteWithLayouts<VectorSignedChar, TU>(vmrhb(this, other), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TU>())
+public fun VectorUnsignedChar.vecMergeh(other: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vmrhb(this, other), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
 
 public fun vmrlh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeLow(); _simdArg0 }
 
 public fun VectorSignedShort.vecMergel(other: VectorSignedShort): VectorSignedShort = vmrlh(this, other)
 
+public fun VectorUnsignedShort.vecMergel(other: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(vmrlh(this, other), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
 public fun vmrhh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeHigh(); _simdArg0 }
 
 public fun VectorSignedShort.vecMergeh(other: VectorSignedShort): VectorSignedShort = vmrhh(this, other)
+
+public fun VectorUnsignedShort.vecMergeh(other: VectorUnsignedShort): VectorUnsignedShort = transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(vmrhh(this, other), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>())
 
 public fun vmrlf(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeLow(); _simdArg0 }
 
 public fun VectorSignedInt.vecMergel(other: VectorSignedInt): VectorSignedInt = vmrlf(this, other)
 
+public fun VectorUnsignedInt.vecMergel(other: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(vmrlf(this, other), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
 public fun vmrhf(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeHigh(); _simdArg0 }
 
 public fun VectorSignedInt.vecMergeh(other: VectorSignedInt): VectorSignedInt = vmrhf(this, other)
+
+public fun VectorUnsignedInt.vecMergeh(other: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(vmrhf(this, other), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
 
 public fun vmrlg(a: VectorSignedLongLong, b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeLow(); _simdArg0 }
 
 public fun VectorSignedLongLong.vecMergel(other: VectorSignedLongLong): VectorSignedLongLong = vmrlg(this, other)
 
+public fun VectorUnsignedLongLong.vecMergel(other: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(vmrlg(this, other), UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
 public fun vmrhg(a: VectorSignedLongLong, b: VectorSignedLongLong): VectorSignedLongLong = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.mergeHigh(); _simdArg0 }
 
 public fun VectorSignedLongLong.vecMergeh(other: VectorSignedLongLong): VectorSignedLongLong = vmrhg(this, other)
+
+public fun VectorUnsignedLongLong.vecMergeh(other: VectorUnsignedLongLong): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(vmrhg(this, other), UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
 
 public interface VectorPerm<T> {
     public fun vecPerm(other: T, c: VectorUnsignedChar): T
@@ -1162,6 +1882,10 @@ public interface VectorSum2<T> {
     public fun vecSum2(other: T): VectorUnsignedLongLong
 }
 
+public fun vecVsumgh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedLongLong = vsumgh(a, b)
+
+public fun vecVsumgf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedLongLong = vsumgf(a, b)
+
 public fun VectorUnsignedShort.vecSum2(other: VectorUnsignedShort): VectorUnsignedLongLong = vecVsumgh(this, other)
 
 public fun VectorUnsignedInt.vecSum2(other: VectorUnsignedInt): VectorUnsignedLongLong = vecVsumgf(this, other)
@@ -1169,6 +1893,10 @@ public fun VectorUnsignedInt.vecSum2(other: VectorUnsignedInt): VectorUnsignedLo
 public interface VectorSum4<T> {
     public fun vecSum4(other: T): VectorUnsignedInt
 }
+
+public fun vecVsumb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedInt = vsumb(a, b)
+
+public fun vecVsumh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedInt = vsumh(a, b)
 
 public fun VectorUnsignedChar.vecSum4(other: VectorUnsignedChar): VectorUnsignedInt = vecVsumb(this, other)
 
@@ -1178,9 +1906,33 @@ public interface VectorSubc<Other, out Result> {
     public fun vecSubc(b: Other): Result
 }
 
+public fun vecVscbib(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar = vscbib(a, b)
+
+public fun vecVscbih(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort = vscbih(a, b)
+
+public fun vecVscbif(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt = vscbif(a, b)
+
+public fun vecVscbig(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedLongLong = vscbig(a, b)
+
+public fun VectorUnsignedChar.vecSubc(b: VectorUnsignedChar): VectorUnsignedChar = vecVscbib(this, b)
+
+public fun VectorUnsignedShort.vecSubc(b: VectorUnsignedShort): VectorUnsignedShort = vecVscbih(this, b)
+
+public fun VectorUnsignedInt.vecSubc(b: VectorUnsignedInt): VectorUnsignedInt = vecVscbif(this, b)
+
+public fun VectorUnsignedLongLong.vecSubc(b: VectorUnsignedLongLong): VectorUnsignedLongLong = vecVscbig(this, b)
+
 public interface VectorSqrt<T> {
     public fun vecSqrt(): T
 }
+
+public fun vecSqrtF32(v: VectorFloat): VectorFloat = run { val _simdArg0 = v; _simdArg0 }
+
+public fun vecSqrtF64(v: VectorDouble): VectorDouble = run { val _simdArg0 = v; _simdArg0 }
+
+public fun VectorFloat.vecSqrt(): VectorFloat = vecSqrtF32(this)
+
+public fun VectorDouble.vecSqrt(): VectorDouble = vecSqrtF64(this)
 
 public fun vfaeb(a: VectorSignedChar, b: VectorSignedChar, imm: Int): VectorSignedChar = io.github.kotlinmania.rustlang.corearch.s390x.vector.vfaeb(a, b, imm)
 
@@ -1198,45 +1950,45 @@ public interface VectorFindAnyEq<Other, out Result> {
     public fun vecFindAnyEq(other: Other): Result
 }
 
-public fun VectorSignedChar.vecFindAnyEq(b: VectorSignedChar): TB = transmuteWithLayouts<VectorSignedChar, TB>(vfaeb(transmuteWithLayouts<VectorSignedChar, TB>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorSignedChar, TB>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorSignedChar.vecFindAnyEq(b: VectorSignedChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(vfaeb(transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
-public fun VectorUnsignedChar.vecFindAnyEq(b: VectorUnsignedChar): TB = transmuteWithLayouts<VectorSignedChar, TB>(vfaeb(transmuteWithLayouts<VectorUnsignedChar, TB>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorUnsignedChar, TB>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorUnsignedChar.vecFindAnyEq(b: VectorUnsignedChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(vfaeb(transmuteWithLayouts<VectorUnsignedChar, VectorBoolChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorBoolChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
-public fun VectorBoolChar.vecFindAnyEq(b: VectorBoolChar): TB = transmuteWithLayouts<VectorSignedChar, TB>(vfaeb(transmuteWithLayouts<VectorBoolChar, TB>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorBoolChar, TB>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolChar.vecFindAnyEq(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(vfaeb(this, b, FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
-public fun VectorSignedShort.vecFindAnyEq(b: VectorSignedShort): TB = transmuteWithLayouts<VectorSignedShort, TB>(vfaeh(transmuteWithLayouts<VectorSignedShort, TB>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorSignedShort, TB>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>())
+public fun VectorSignedShort.vecFindAnyEq(b: VectorSignedShort): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(vfaeh(transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
 
-public fun VectorUnsignedShort.vecFindAnyEq(b: VectorUnsignedShort): TB = transmuteWithLayouts<VectorSignedShort, TB>(vfaeh(transmuteWithLayouts<VectorUnsignedShort, TB>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorUnsignedShort, TB>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>())
+public fun VectorUnsignedShort.vecFindAnyEq(b: VectorUnsignedShort): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(vfaeh(transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
 
-public fun VectorBoolShort.vecFindAnyEq(b: VectorBoolShort): TB = transmuteWithLayouts<VectorSignedShort, TB>(vfaeh(transmuteWithLayouts<VectorBoolShort, TB>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorBoolShort, TB>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolShort.vecFindAnyEq(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(vfaeh(this, b, FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
 
-public fun VectorSignedInt.vecFindAnyEq(b: VectorSignedInt): TB = transmuteWithLayouts<VectorSignedInt, TB>(vfaef(transmuteWithLayouts<VectorSignedInt, TB>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorSignedInt, TB>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>())
+public fun VectorSignedInt.vecFindAnyEq(b: VectorSignedInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(vfaef(transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorUnsignedInt.vecFindAnyEq(b: VectorUnsignedInt): TB = transmuteWithLayouts<VectorSignedInt, TB>(vfaef(transmuteWithLayouts<VectorUnsignedInt, TB>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorUnsignedInt, TB>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>())
+public fun VectorUnsignedInt.vecFindAnyEq(b: VectorUnsignedInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(vfaef(transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorBoolInt.vecFindAnyEq(b: VectorBoolInt): TB = transmuteWithLayouts<VectorSignedInt, TB>(vfaef(transmuteWithLayouts<VectorBoolInt, TB>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorBoolInt, TB>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<TB>()), FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolInt.vecFindAnyEq(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(vfaef(this, b, FindImm.Eq.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
 public interface VectorFindAnyNe<Other, out Result> {
     public fun vecFindAnyNe(other: Other): Result
 }
 
-public fun VectorSignedChar.vecFindAnyNe(b: VectorSignedChar): TB = transmuteWithLayouts<VectorSignedChar, TB>(vfaeb(transmuteWithLayouts<VectorSignedChar, TB>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorSignedChar, TB>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorSignedChar.vecFindAnyNe(b: VectorSignedChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(vfaeb(transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
-public fun VectorUnsignedChar.vecFindAnyNe(b: VectorUnsignedChar): TB = transmuteWithLayouts<VectorSignedChar, TB>(vfaeb(transmuteWithLayouts<VectorUnsignedChar, TB>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorUnsignedChar, TB>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorUnsignedChar.vecFindAnyNe(b: VectorUnsignedChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(vfaeb(transmuteWithLayouts<VectorUnsignedChar, VectorBoolChar>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), transmuteWithLayouts<VectorUnsignedChar, VectorBoolChar>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorBoolChar>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
-public fun VectorBoolChar.vecFindAnyNe(b: VectorBoolChar): TB = transmuteWithLayouts<VectorSignedChar, TB>(vfaeb(transmuteWithLayouts<VectorBoolChar, TB>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorBoolChar, TB>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolChar.vecFindAnyNe(b: VectorBoolChar): VectorBoolChar = transmuteWithLayouts<VectorSignedChar, VectorBoolChar>(vfaeb(this, b, FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
 
-public fun VectorSignedShort.vecFindAnyNe(b: VectorSignedShort): TB = transmuteWithLayouts<VectorSignedShort, TB>(vfaeh(transmuteWithLayouts<VectorSignedShort, TB>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorSignedShort, TB>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>())
+public fun VectorSignedShort.vecFindAnyNe(b: VectorSignedShort): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(vfaeh(transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
 
-public fun VectorUnsignedShort.vecFindAnyNe(b: VectorUnsignedShort): TB = transmuteWithLayouts<VectorSignedShort, TB>(vfaeh(transmuteWithLayouts<VectorUnsignedShort, TB>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorUnsignedShort, TB>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>())
+public fun VectorUnsignedShort.vecFindAnyNe(b: VectorUnsignedShort): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(vfaeh(transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
 
-public fun VectorBoolShort.vecFindAnyNe(b: VectorBoolShort): TB = transmuteWithLayouts<VectorSignedShort, TB>(vfaeh(transmuteWithLayouts<VectorBoolShort, TB>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorBoolShort, TB>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolShort.vecFindAnyNe(b: VectorBoolShort): VectorBoolShort = transmuteWithLayouts<VectorSignedShort, VectorBoolShort>(vfaeh(this, b, FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
 
-public fun VectorSignedInt.vecFindAnyNe(b: VectorSignedInt): TB = transmuteWithLayouts<VectorSignedInt, TB>(vfaef(transmuteWithLayouts<VectorSignedInt, TB>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorSignedInt, TB>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>())
+public fun VectorSignedInt.vecFindAnyNe(b: VectorSignedInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(vfaef(transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorUnsignedInt.vecFindAnyNe(b: VectorUnsignedInt): TB = transmuteWithLayouts<VectorSignedInt, TB>(vfaef(transmuteWithLayouts<VectorUnsignedInt, TB>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorUnsignedInt, TB>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>())
+public fun VectorUnsignedInt.vecFindAnyNe(b: VectorUnsignedInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(vfaef(transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorBoolInt.vecFindAnyNe(b: VectorBoolInt): TB = transmuteWithLayouts<VectorSignedInt, TB>(vfaef(transmuteWithLayouts<VectorBoolInt, TB>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<TB>()), transmuteWithLayouts<VectorBoolInt, TB>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<TB>()), FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TB>())
+public fun VectorBoolInt.vecFindAnyNe(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(vfaef(this, b, FindImm.Ne.value.toInt()), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
 public interface VectorFindAnyEqOrZeroIdx<Other, out Result> {
     public fun vecFindAnyEqOr0Idx(other: Other): Result
@@ -1342,64 +2094,64 @@ public interface VectorFindAnyEqCC<Other, out Result> {
     public fun vecFindAnyEqCc(other: Other): Pair<Result, Int>
 }
 
-public fun VectorSignedChar.vecFindAnyEqCc(b: VectorSignedChar): Pair<TB, Int> {
-    val structVal = vfaebs(transmuteWithLayouts<VectorSignedChar, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorSignedChar, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorSignedChar.vecFindAnyEqCc(b: VectorSignedChar): Pair<VectorBoolChar, Int> {
+    val structVal = vfaebs(transmuteWithLayouts<VectorSignedChar, Pair<VectorBoolChar, Int>>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), transmuteWithLayouts<VectorSignedChar, Pair<VectorBoolChar, Int>>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorUnsignedChar.vecFindAnyEqCc(b: VectorUnsignedChar): Pair<TB, Int> {
-    val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorUnsignedChar, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorUnsignedChar.vecFindAnyEqCc(b: VectorUnsignedChar): Pair<VectorBoolChar, Int> {
+    val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, Pair<VectorBoolChar, Int>>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), transmuteWithLayouts<VectorUnsignedChar, Pair<VectorBoolChar, Int>>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorBoolChar.vecFindAnyEqCc(b: VectorBoolChar): Pair<TB, Int> {
-    val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorBoolChar, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorBoolChar.vecFindAnyEqCc(b: VectorBoolChar): Pair<VectorBoolChar, Int> {
+    val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, Pair<VectorBoolChar, Int>>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), transmuteWithLayouts<VectorBoolChar, Pair<VectorBoolChar, Int>>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorSignedShort.vecFindAnyEqCc(b: VectorSignedShort): Pair<TB, Int> {
-    val structVal = vfaehs(transmuteWithLayouts<VectorSignedShort, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorSignedShort, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorSignedShort.vecFindAnyEqCc(b: VectorSignedShort): Pair<VectorBoolShort, Int> {
+    val structVal = vfaehs(transmuteWithLayouts<VectorSignedShort, Pair<VectorBoolShort, Int>>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), transmuteWithLayouts<VectorSignedShort, Pair<VectorBoolShort, Int>>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorUnsignedShort.vecFindAnyEqCc(b: VectorUnsignedShort): Pair<TB, Int> {
-    val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorUnsignedShort, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorUnsignedShort.vecFindAnyEqCc(b: VectorUnsignedShort): Pair<VectorBoolShort, Int> {
+    val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, Pair<VectorBoolShort, Int>>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), transmuteWithLayouts<VectorUnsignedShort, Pair<VectorBoolShort, Int>>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorBoolShort.vecFindAnyEqCc(b: VectorBoolShort): Pair<TB, Int> {
-    val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorBoolShort, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorBoolShort.vecFindAnyEqCc(b: VectorBoolShort): Pair<VectorBoolShort, Int> {
+    val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, Pair<VectorBoolShort, Int>>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), transmuteWithLayouts<VectorBoolShort, Pair<VectorBoolShort, Int>>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorSignedInt.vecFindAnyEqCc(b: VectorSignedInt): Pair<TB, Int> {
-    val structVal = vfaefs(transmuteWithLayouts<VectorSignedInt, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorSignedInt, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorSignedInt.vecFindAnyEqCc(b: VectorSignedInt): Pair<VectorBoolInt, Int> {
+    val structVal = vfaefs(transmuteWithLayouts<VectorSignedInt, Pair<VectorBoolInt, Int>>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), transmuteWithLayouts<VectorSignedInt, Pair<VectorBoolInt, Int>>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorUnsignedInt.vecFindAnyEqCc(b: VectorUnsignedInt): Pair<TB, Int> {
-    val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorUnsignedInt, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorUnsignedInt.vecFindAnyEqCc(b: VectorUnsignedInt): Pair<VectorBoolInt, Int> {
+    val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, Pair<VectorBoolInt, Int>>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), transmuteWithLayouts<VectorUnsignedInt, Pair<VectorBoolInt, Int>>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorBoolInt.vecFindAnyEqCc(b: VectorBoolInt): Pair<TB, Int> {
-    val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorBoolInt, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Eq.value.toInt())
+public fun VectorBoolInt.vecFindAnyEqCc(b: VectorBoolInt): Pair<VectorBoolInt, Int> {
+    val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, Pair<VectorBoolInt, Int>>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), transmuteWithLayouts<VectorBoolInt, Pair<VectorBoolInt, Int>>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), FindImm.Eq.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
@@ -1409,64 +2161,64 @@ public interface VectorFindAnyNeCC<Other, out Result> {
     public fun vecFindAnyNeCc(other: Other): Pair<Result, Int>
 }
 
-public fun VectorSignedChar.vecFindAnyNeCc(b: VectorSignedChar): Pair<TB, Int> {
-    val structVal = vfaebs(transmuteWithLayouts<VectorSignedChar, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorSignedChar, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorSignedChar.vecFindAnyNeCc(b: VectorSignedChar): Pair<VectorBoolChar, Int> {
+    val structVal = vfaebs(transmuteWithLayouts<VectorSignedChar, Pair<VectorBoolChar, Int>>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), transmuteWithLayouts<VectorSignedChar, Pair<VectorBoolChar, Int>>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorUnsignedChar.vecFindAnyNeCc(b: VectorUnsignedChar): Pair<TB, Int> {
-    val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorUnsignedChar, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorUnsignedChar.vecFindAnyNeCc(b: VectorUnsignedChar): Pair<VectorBoolChar, Int> {
+    val structVal = vfaebs(transmuteWithLayouts<VectorUnsignedChar, Pair<VectorBoolChar, Int>>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), transmuteWithLayouts<VectorUnsignedChar, Pair<VectorBoolChar, Int>>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorBoolChar.vecFindAnyNeCc(b: VectorBoolChar): Pair<TB, Int> {
-    val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorBoolChar, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorBoolChar.vecFindAnyNeCc(b: VectorBoolChar): Pair<VectorBoolChar, Int> {
+    val structVal = vfaebs(transmuteWithLayouts<VectorBoolChar, Pair<VectorBoolChar, Int>>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), transmuteWithLayouts<VectorBoolChar, Pair<VectorBoolChar, Int>>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<Pair<VectorBoolChar, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorSignedShort.vecFindAnyNeCc(b: VectorSignedShort): Pair<TB, Int> {
-    val structVal = vfaehs(transmuteWithLayouts<VectorSignedShort, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorSignedShort, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorSignedShort.vecFindAnyNeCc(b: VectorSignedShort): Pair<VectorBoolShort, Int> {
+    val structVal = vfaehs(transmuteWithLayouts<VectorSignedShort, Pair<VectorBoolShort, Int>>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), transmuteWithLayouts<VectorSignedShort, Pair<VectorBoolShort, Int>>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorUnsignedShort.vecFindAnyNeCc(b: VectorUnsignedShort): Pair<TB, Int> {
-    val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorUnsignedShort, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorUnsignedShort.vecFindAnyNeCc(b: VectorUnsignedShort): Pair<VectorBoolShort, Int> {
+    val structVal = vfaehs(transmuteWithLayouts<VectorUnsignedShort, Pair<VectorBoolShort, Int>>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), transmuteWithLayouts<VectorUnsignedShort, Pair<VectorBoolShort, Int>>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorBoolShort.vecFindAnyNeCc(b: VectorBoolShort): Pair<TB, Int> {
-    val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorBoolShort, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorBoolShort.vecFindAnyNeCc(b: VectorBoolShort): Pair<VectorBoolShort, Int> {
+    val structVal = vfaehs(transmuteWithLayouts<VectorBoolShort, Pair<VectorBoolShort, Int>>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), transmuteWithLayouts<VectorBoolShort, Pair<VectorBoolShort, Int>>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<Pair<VectorBoolShort, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorSignedInt.vecFindAnyNeCc(b: VectorSignedInt): Pair<TB, Int> {
-    val structVal = vfaefs(transmuteWithLayouts<VectorSignedInt, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorSignedInt, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorSignedInt.vecFindAnyNeCc(b: VectorSignedInt): Pair<VectorBoolInt, Int> {
+    val structVal = vfaefs(transmuteWithLayouts<VectorSignedInt, Pair<VectorBoolInt, Int>>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), transmuteWithLayouts<VectorSignedInt, Pair<VectorBoolInt, Int>>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorUnsignedInt.vecFindAnyNeCc(b: VectorUnsignedInt): Pair<TB, Int> {
-    val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorUnsignedInt, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorUnsignedInt.vecFindAnyNeCc(b: VectorUnsignedInt): Pair<VectorBoolInt, Int> {
+    val structVal = vfaefs(transmuteWithLayouts<VectorUnsignedInt, Pair<VectorBoolInt, Int>>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), transmuteWithLayouts<VectorUnsignedInt, Pair<VectorBoolInt, Int>>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
 }
 
-public fun VectorBoolInt.vecFindAnyNeCc(b: VectorBoolInt): Pair<TB, Int> {
-    val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, Pair<TB, Int>>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), transmuteWithLayouts<VectorBoolInt, Pair<TB, Int>>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<TB, Int>>()), FindImm.Ne.value.toInt())
+public fun VectorBoolInt.vecFindAnyNeCc(b: VectorBoolInt): Pair<VectorBoolInt, Int> {
+    val structVal = vfaefs(transmuteWithLayouts<VectorBoolInt, Pair<VectorBoolInt, Int>>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), transmuteWithLayouts<VectorBoolInt, Pair<VectorBoolInt, Int>>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Pair<VectorBoolInt, Int>>()), FindImm.Ne.value.toInt())
     val x = structVal.x
     val y = structVal.y
     return Pair(transmute(x), y)
@@ -1762,12 +2514,84 @@ public interface VectorStore<ElementType> {
     public fun vecStoreLen(ptr: MutPtr, byteCount: UInt)
 }
 
-public fun vectorLoadVecLoadLenTTL(ptr: ConstPtr, byteCount: UInt): TTL = transmuteWithLayouts<VectorSignedChar, TTL>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TTL>())
+public fun vectorLoadVecLoadLenVectorSignedChar(ptr: ConstPtr, byteCount: UInt): VectorSignedChar = vll(byteCount, ptr)
 
-public fun vectorLoadVecLoadBndryTTL(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<TTL> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<TTL>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<TTL>>())
+public fun vectorLoadVecLoadBndryVectorSignedChar(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorSignedChar> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorSignedChar>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedChar>>())
 
-public fun TTL.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
-    vstl(transmuteWithLayouts<TTL, Unit>(this, UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+public fun VectorSignedChar.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorSignedChar, Unit>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorUnsignedChar(ptr: ConstPtr, byteCount: UInt): VectorUnsignedChar = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun vectorLoadVecLoadBndryVectorUnsignedChar(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorUnsignedChar> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorUnsignedChar>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedChar>>())
+
+public fun VectorUnsignedChar.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorUnsignedChar, Unit>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorSignedShort(ptr: ConstPtr, byteCount: UInt): VectorSignedShort = transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun vectorLoadVecLoadBndryVectorSignedShort(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorSignedShort> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorSignedShort>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedShort>>())
+
+public fun VectorSignedShort.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorSignedShort, Unit>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorUnsignedShort(ptr: ConstPtr, byteCount: UInt): VectorUnsignedShort = transmuteWithLayouts<VectorSignedChar, VectorUnsignedShort>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun vectorLoadVecLoadBndryVectorUnsignedShort(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorUnsignedShort> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorUnsignedShort>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedShort>>())
+
+public fun VectorUnsignedShort.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorUnsignedShort, Unit>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorSignedInt(ptr: ConstPtr, byteCount: UInt): VectorSignedInt = transmuteWithLayouts<VectorSignedChar, VectorSignedInt>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun vectorLoadVecLoadBndryVectorSignedInt(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorSignedInt> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorSignedInt>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedInt>>())
+
+public fun VectorSignedInt.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorSignedInt, Unit>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorUnsignedInt(ptr: ConstPtr, byteCount: UInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedChar, VectorUnsignedInt>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun vectorLoadVecLoadBndryVectorUnsignedInt(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorUnsignedInt> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorUnsignedInt>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedInt>>())
+
+public fun VectorUnsignedInt.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorUnsignedInt, Unit>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorSignedLongLong(ptr: ConstPtr, byteCount: UInt): VectorSignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorSignedLongLong>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+
+public fun vectorLoadVecLoadBndryVectorSignedLongLong(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorSignedLongLong> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorSignedLongLong>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedLongLong>>())
+
+public fun VectorSignedLongLong.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorSignedLongLong, Unit>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorUnsignedLongLong(ptr: ConstPtr, byteCount: UInt): VectorUnsignedLongLong = transmuteWithLayouts<VectorSignedChar, VectorUnsignedLongLong>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+
+public fun vectorLoadVecLoadBndryVectorUnsignedLongLong(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorUnsignedLongLong> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorUnsignedLongLong>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedLongLong>>())
+
+public fun VectorUnsignedLongLong.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorUnsignedLongLong, Unit>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorFloat(ptr: ConstPtr, byteCount: UInt): VectorFloat = transmuteWithLayouts<VectorSignedChar, VectorFloat>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorFloat>())
+
+public fun vectorLoadVecLoadBndryVectorFloat(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorFloat> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorFloat>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorFloat>>())
+
+public fun VectorFloat.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorFloat, Unit>(this, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
+}
+
+public fun vectorLoadVecLoadLenVectorDouble(ptr: ConstPtr, byteCount: UInt): VectorDouble = transmuteWithLayouts<VectorSignedChar, VectorDouble>(vll(byteCount, ptr), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorDouble>())
+
+public fun vectorLoadVecLoadBndryVectorDouble(ptr: ConstPtr, blockBoundary: UShort): MaybeUninit<VectorDouble> = transmuteWithLayouts<VectorSignedChar, MaybeUninit<VectorDouble>>(vlbb(ptr, validateBlockBoundary(blockBoundary)), UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorDouble>>())
+
+public fun VectorDouble.vecStoreLen(ptr: MutPtr, byteCount: UInt) {
+    vstl(transmuteWithLayouts<VectorDouble, Unit>(this, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<Unit>()), byteCount, ptr)
 }
 
 public fun testVecLoadLen(ptr: ConstPtr, byteCount: UInt): VectorSignedInt = vectorSignedInt.vecLoadLen(ptr, byteCount)
@@ -1786,7 +2610,7 @@ public fun vectorLoadPairVecLoadPairVectorSignedLongLong(a: Long, b: Long): Vect
 
 public fun vectorLoadPairVecLoadPairVectorUnsignedLongLong(a: ULong, b: ULong): VectorUnsignedLongLong = vectorUnsignedLongLong(ulongArrayOf(a, b))
 
-public fun <T> pack(a: T, b: T, n: Int): T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.pack(); _simdArg0 }
+public fun <T> pack(a: T, b: T, n: Int): T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = ShuffleMask.pack(n); _simdArg0 }
 
 public fun vpkh(a: I16x8, b: I16x8): I8x16 {
     val a1: I8x16 = transmuteWithLayouts<I16x8, I8x16>(a, UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<I8x16>())
@@ -1810,9 +2634,39 @@ public interface VectorPack<Other, out Result> {
     public fun vecPack(b: Other): Result
 }
 
+public fun VectorSignedShort.vecPack(b: VectorSignedShort): VectorSignedChar = transmuteWithLayouts<I8x16, VectorSignedChar>(vpkh(transmuteWithLayouts<VectorSignedShort, VectorSignedChar>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorSignedShort, VectorSignedChar>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorSignedChar>())), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<VectorSignedChar>())
+
+public fun VectorUnsignedShort.vecPack(b: VectorUnsignedShort): VectorUnsignedChar = transmuteWithLayouts<I8x16, VectorUnsignedChar>(vpkh(transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<VectorUnsignedChar>())
+
+public fun VectorBoolShort.vecPack(b: VectorBoolShort): VectorBoolChar = transmuteWithLayouts<I8x16, VectorBoolChar>(vpkh(transmuteWithLayouts<VectorBoolShort, VectorBoolChar>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorBoolChar>()), transmuteWithLayouts<VectorBoolShort, VectorBoolChar>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorBoolChar>())), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorSignedInt.vecPack(b: VectorSignedInt): VectorSignedShort = transmuteWithLayouts<I16x8, VectorSignedShort>(vpkf(transmuteWithLayouts<VectorSignedInt, VectorSignedShort>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorSignedInt, VectorSignedShort>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorSignedShort>())), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorUnsignedInt.vecPack(b: VectorUnsignedInt): VectorUnsignedShort = transmuteWithLayouts<I16x8, VectorUnsignedShort>(vpkf(transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()), transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>())), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<VectorUnsignedShort>())
+
+public fun VectorBoolInt.vecPack(b: VectorBoolInt): VectorBoolShort = transmuteWithLayouts<I16x8, VectorBoolShort>(vpkf(transmuteWithLayouts<VectorBoolInt, VectorBoolShort>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorBoolShort>()), transmuteWithLayouts<VectorBoolInt, VectorBoolShort>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorBoolShort>())), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorSignedLongLong.vecPack(b: VectorSignedLongLong): VectorSignedInt = transmuteWithLayouts<I32x4, VectorSignedInt>(vpkg(transmuteWithLayouts<VectorSignedLongLong, VectorSignedInt>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorSignedLongLong, VectorSignedInt>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorSignedInt>())), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorUnsignedLongLong.vecPack(b: VectorUnsignedLongLong): VectorUnsignedInt = transmuteWithLayouts<I32x4, VectorUnsignedInt>(vpkg(transmuteWithLayouts<VectorUnsignedLongLong, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()), transmuteWithLayouts<VectorUnsignedLongLong, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>())), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+
+public fun VectorBoolLongLong.vecPack(b: VectorBoolLongLong): VectorBoolInt = transmuteWithLayouts<I32x4, VectorBoolInt>(vpkg(transmuteWithLayouts<VectorBoolLongLong, VectorBoolInt>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorBoolInt>()), transmuteWithLayouts<VectorBoolLongLong, VectorBoolInt>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorBoolInt>())), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<VectorBoolInt>())
+
 public interface VectorPacks<Other, out Result> {
     public fun vecPacks(b: Other): Result
 }
+
+public fun VectorSignedShort.vecPacks(b: VectorSignedShort): VectorSignedChar = vpksh(transmuteWithLayouts<VectorSignedShort, VectorSignedChar>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorSignedChar>()), transmuteWithLayouts<VectorSignedShort, VectorSignedChar>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorSignedChar>()))
+
+public fun VectorUnsignedShort.vecPacks(b: VectorUnsignedShort): VectorUnsignedChar = vpklsh(transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
+
+public fun VectorSignedInt.vecPacks(b: VectorSignedInt): VectorSignedShort = vpksf(transmuteWithLayouts<VectorSignedInt, VectorSignedShort>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorSignedShort>()), transmuteWithLayouts<VectorSignedInt, VectorSignedShort>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorSignedShort>()))
+
+public fun VectorUnsignedInt.vecPacks(b: VectorUnsignedInt): VectorUnsignedShort = vpklsf(transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()), transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
+
+public fun VectorSignedLongLong.vecPacks(b: VectorSignedLongLong): VectorSignedInt = vpksg(transmuteWithLayouts<VectorSignedLongLong, VectorSignedInt>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorSignedInt>()), transmuteWithLayouts<VectorSignedLongLong, VectorSignedInt>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorSignedInt>()))
+
+public fun VectorUnsignedLongLong.vecPacks(b: VectorUnsignedLongLong): VectorUnsignedInt = vpklsg(transmuteWithLayouts<VectorUnsignedLongLong, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()), transmuteWithLayouts<VectorUnsignedLongLong, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
 
 public interface VectorPacksu<Other, out Result> {
     public fun vecPacksu(b: Other): Result
@@ -1823,6 +2677,18 @@ public fun vpacksuh(a: VectorSignedShort, b: VectorSignedShort): VectorUnsignedC
 public fun vpacksuf(a: VectorSignedInt, b: VectorSignedInt): VectorUnsignedShort = vpklsf(vecMax(a, vectorSignedInt(List(4) { 0 })), vecMax(b, vectorSignedInt(List(4) { 0 })))
 
 public fun vpacksug(a: VectorSignedLongLong, b: VectorSignedLongLong): VectorUnsignedInt = vpklsg(vecMax(a, vectorSignedLongLong(List(2) { 0 })), vecMax(b, vectorSignedLongLong(List(2) { 0 })))
+
+public fun VectorSignedShort.vecPacksu(b: VectorSignedShort): VectorUnsignedChar = vpacksuh(transmuteWithLayouts<VectorSignedShort, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<VectorSignedShort, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
+
+public fun VectorUnsignedShort.vecPacksu(b: VectorUnsignedShort): VectorUnsignedChar = vpklsh(transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedChar>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
+
+public fun VectorSignedInt.vecPacksu(b: VectorSignedInt): VectorUnsignedShort = vpacksuf(transmuteWithLayouts<VectorSignedInt, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()), transmuteWithLayouts<VectorSignedInt, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
+
+public fun VectorUnsignedInt.vecPacksu(b: VectorUnsignedInt): VectorUnsignedShort = vpklsf(transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()), transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
+
+public fun VectorSignedLongLong.vecPacksu(b: VectorSignedLongLong): VectorUnsignedInt = vpacksug(transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()), transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
+
+public fun VectorUnsignedLongLong.vecPacksu(b: VectorUnsignedLongLong): VectorUnsignedInt = vpklsg(transmuteWithLayouts<VectorUnsignedLongLong, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()), transmuteWithLayouts<VectorUnsignedLongLong, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
 
 public interface VectorPacksCC<T, out Result> {
     public fun vecPacksCc(b: T): Pair<Result, Int>
@@ -1898,7 +2764,15 @@ public interface VectorMadd<T> {
     public fun vecMsub(b: T, c: T): T
 }
 
+public fun vfmasb(a: VectorFloat, b: VectorFloat, c: VectorFloat): VectorFloat = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+
+public fun vfmadb(a: VectorDouble, b: VectorDouble, c: VectorDouble): VectorDouble = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = c; _simdArg0 }
+
 public fun <T> simdFms(a: T, b: T, c: T): T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
+
+public fun vfmssb(a: VectorFloat, b: VectorFloat, c: VectorFloat): VectorFloat = simdFms(a, b, c)
+
+public fun vfmsdb(a: VectorDouble, b: VectorDouble, c: VectorDouble): VectorDouble = simdFms(a, b, c)
 
 public fun VectorFloat.vecMadd(b: VectorFloat, c: VectorFloat): VectorFloat = vfmasb(this, b, c)
 
@@ -1924,6 +2798,24 @@ public fun vuplhh(a: VectorUnsignedShort): VectorUnsignedInt = run { val _simdAr
 
 public fun vuplhf(a: VectorUnsignedInt): VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackHigh(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; _simdArg0 }
 
+public fun VectorSignedChar.vecUnpackh(): VectorSignedShort = vuphb(transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>()))
+
+public fun VectorSignedShort.vecUnpackh(): VectorSignedInt = vuphh(transmuteWithLayouts<VectorSignedShort, VectorSignedInt>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorSignedInt>()))
+
+public fun VectorSignedInt.vecUnpackh(): VectorSignedLongLong = vuphf(transmuteWithLayouts<VectorSignedInt, VectorSignedLongLong>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorSignedLongLong>()))
+
+public fun VectorUnsignedChar.vecUnpackh(): VectorUnsignedShort = vuplhb(transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
+
+public fun VectorUnsignedShort.vecUnpackh(): VectorUnsignedInt = vuplhh(transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
+
+public fun VectorUnsignedInt.vecUnpackh(): VectorUnsignedLongLong = vuplhf(transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedLongLong>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
+
+public fun VectorBoolChar.vecUnpackh(): VectorBoolShort = transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(vuplhb(transmuteWithLayouts<VectorBoolChar, VectorBoolShort>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorBoolShort>())), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorBoolShort.vecUnpackh(): VectorBoolInt = transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(vuplhh(transmuteWithLayouts<VectorBoolShort, VectorBoolInt>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorBoolInt>())), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorBoolInt.vecUnpackh(): VectorBoolLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorBoolLongLong>(vuplhf(transmuteWithLayouts<VectorBoolInt, VectorBoolLongLong>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorBoolLongLong>())), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorBoolLongLong>())
+
 public interface VectorUnpackl<out Result> {
     public fun vecUnpackl(): Result
 }
@@ -1940,9 +2832,59 @@ public fun vupllh(a: VectorUnsignedShort): VectorUnsignedInt = run { val _simdAr
 
 public fun vupllf(a: VectorUnsignedInt): VectorUnsignedLongLong = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = a; val _simdArg2 = ShuffleMask.unpackLow(); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); val res = (UnresolvedTypeLayout<U32x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<U32x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<U32x2>()).alignBytes)); res } }; _simdArg0 }
 
+public fun VectorSignedChar.vecUnpackl(): VectorSignedShort = vuplb(transmuteWithLayouts<VectorSignedChar, VectorSignedShort>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorSignedShort>()))
+
+public fun VectorSignedShort.vecUnpackl(): VectorSignedInt = vuplhw(transmuteWithLayouts<VectorSignedShort, VectorSignedInt>(this, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorSignedInt>()))
+
+public fun VectorSignedInt.vecUnpackl(): VectorSignedLongLong = vuplf(transmuteWithLayouts<VectorSignedInt, VectorSignedLongLong>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorSignedLongLong>()))
+
+public fun VectorUnsignedChar.vecUnpackl(): VectorUnsignedShort = vupllb(transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
+
+public fun VectorUnsignedShort.vecUnpackl(): VectorUnsignedInt = vupllh(transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
+
+public fun VectorUnsignedInt.vecUnpackl(): VectorUnsignedLongLong = vupllf(transmuteWithLayouts<VectorUnsignedInt, VectorUnsignedLongLong>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
+
+public fun VectorBoolChar.vecUnpackl(): VectorBoolShort = transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(vupllb(transmuteWithLayouts<VectorBoolChar, VectorBoolShort>(this, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorBoolShort>())), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorBoolShort.vecUnpackl(): VectorBoolInt = transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(vupllh(transmuteWithLayouts<VectorBoolShort, VectorBoolInt>(this, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorBoolInt>())), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorBoolInt.vecUnpackl(): VectorBoolLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorBoolLongLong>(vupllf(transmuteWithLayouts<VectorBoolInt, VectorBoolLongLong>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorBoolLongLong>())), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorBoolLongLong>())
+
+public fun vecVavgb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar = vavgb(a, b)
+
+public fun vecVavgh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort = vavgh(a, b)
+
+public fun vecVavgf(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = vavgf(a, b)
+
+public fun vecVavgg(a: VectorSignedLongLong, b: VectorSignedLongLong): VectorSignedLongLong = vavgg(a, b)
+
+public fun vecVavglb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar = vavglb(a, b)
+
+public fun vecVavglh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort = vavglh(a, b)
+
+public fun vecVavglf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt = vavglf(a, b)
+
+public fun vecVavglg(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): VectorUnsignedLongLong = vavglg(a, b)
+
 public interface VectorAvg<Other, out Result> {
     public fun vecAvg(b: Other): Result
 }
+
+public fun VectorUnsignedChar.vecAvg(b: VectorUnsignedChar): VectorUnsignedChar = vecVavglb(this, b)
+
+public fun VectorSignedChar.vecAvg(b: VectorSignedChar): VectorSignedChar = vecVavgb(this, b)
+
+public fun VectorUnsignedShort.vecAvg(b: VectorUnsignedShort): VectorUnsignedShort = vecVavglh(this, b)
+
+public fun VectorSignedShort.vecAvg(b: VectorSignedShort): VectorSignedShort = vecVavgh(this, b)
+
+public fun VectorUnsignedInt.vecAvg(b: VectorUnsignedInt): VectorUnsignedInt = vecVavglf(this, b)
+
+public fun VectorSignedInt.vecAvg(b: VectorSignedInt): VectorSignedInt = vecVavgf(this, b)
+
+public fun VectorUnsignedLongLong.vecAvg(b: VectorUnsignedLongLong): VectorUnsignedLongLong = vecVavglg(this, b)
+
+public fun VectorSignedLongLong.vecAvg(b: VectorSignedLongLong): VectorSignedLongLong = vecVavgg(this, b)
 
 public interface VectorMule<Result, T> {
     public fun vecMule(b: T): Result
@@ -2052,6 +2994,18 @@ public interface VectorMulh<Result, T> {
     public fun vecMulh(b: T): Result
 }
 
+public fun vecVmhb(a: VectorSignedChar, b: VectorSignedChar): VectorSignedChar = vmhb(a, b)
+
+public fun vecVmhh(a: VectorSignedShort, b: VectorSignedShort): VectorSignedShort = vmhh(a, b)
+
+public fun vecVmhf(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt = vmhf(a, b)
+
+public fun vecVmlhb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar = vmlhb(a, b)
+
+public fun vecVmlhh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedShort = vmlhh(a, b)
+
+public fun vecVmlhf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedInt = vmlhf(a, b)
+
 public fun VectorSignedChar.vecMulh(b: VectorSignedChar): VectorSignedChar = vecVmhb(this, b)
 
 public fun VectorSignedShort.vecMulh(b: VectorSignedShort): VectorSignedShort = vecVmhh(this, b)
@@ -2067,6 +3021,18 @@ public fun VectorUnsignedInt.vecMulh(b: VectorUnsignedInt): VectorUnsignedInt = 
 public interface VectorMeadd<T, Result> {
     public fun vecMeadd(b: T, c: Result): Result
 }
+
+public fun vecVmaeb(a: VectorSignedChar, b: VectorSignedChar, c: VectorSignedShort): VectorSignedShort = vmaeb(a, b, c)
+
+public fun vecVmaeh(a: VectorSignedShort, b: VectorSignedShort, c: VectorSignedInt): VectorSignedInt = vmaeh(a, b, c)
+
+public fun vecVmaef(a: VectorSignedInt, b: VectorSignedInt, c: VectorSignedLongLong): VectorSignedLongLong = vmaef(a, b, c)
+
+public fun vecVmaleb(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedShort): VectorUnsignedShort = vmaleb(a, b, c)
+
+public fun vecVmaleh(a: VectorUnsignedShort, b: VectorUnsignedShort, c: VectorUnsignedInt): VectorUnsignedInt = vmaleh(a, b, c)
+
+public fun vecVmalef(a: VectorUnsignedInt, b: VectorUnsignedInt, c: VectorUnsignedLongLong): VectorUnsignedLongLong = vmalef(a, b, c)
 
 public fun VectorSignedChar.vecMeadd(b: VectorSignedChar, c: VectorSignedShort): VectorSignedShort = vecVmaeb(this, b, c)
 
@@ -2084,6 +3050,18 @@ public interface VectorMoadd<T, Result> {
     public fun vecMoadd(b: T, c: Result): Result
 }
 
+public fun vecVmaob(a: VectorSignedChar, b: VectorSignedChar, c: VectorSignedShort): VectorSignedShort = vmaob(a, b, c)
+
+public fun vecVmaoh(a: VectorSignedShort, b: VectorSignedShort, c: VectorSignedInt): VectorSignedInt = vmaoh(a, b, c)
+
+public fun vecVmaof(a: VectorSignedInt, b: VectorSignedInt, c: VectorSignedLongLong): VectorSignedLongLong = vmaof(a, b, c)
+
+public fun vecVmalob(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedShort): VectorUnsignedShort = vmalob(a, b, c)
+
+public fun vecVmaloh(a: VectorUnsignedShort, b: VectorUnsignedShort, c: VectorUnsignedInt): VectorUnsignedInt = vmaloh(a, b, c)
+
+public fun vecVmalof(a: VectorUnsignedInt, b: VectorUnsignedInt, c: VectorUnsignedLongLong): VectorUnsignedLongLong = vmalof(a, b, c)
+
 public fun VectorSignedChar.vecMoadd(b: VectorSignedChar, c: VectorSignedShort): VectorSignedShort = vecVmaob(this, b, c)
 
 public fun VectorSignedShort.vecMoadd(b: VectorSignedShort, c: VectorSignedInt): VectorSignedInt = vecVmaoh(this, b, c)
@@ -2099,6 +3077,18 @@ public fun VectorUnsignedInt.vecMoadd(b: VectorUnsignedInt, c: VectorUnsignedLon
 public interface VectorMhadd<T, Result> {
     public fun vecMhadd(b: T, c: Result): Result
 }
+
+public fun vecVmahb(a: VectorSignedChar, b: VectorSignedChar, c: VectorSignedChar): VectorSignedChar = vmahb(a, b, c)
+
+public fun vecVmahh(a: VectorSignedShort, b: VectorSignedShort, c: VectorSignedShort): VectorSignedShort = vmahh(a, b, c)
+
+public fun vecVmahf(a: VectorSignedInt, b: VectorSignedInt, c: VectorSignedInt): VectorSignedInt = vmahf(a, b, c)
+
+public fun vecVmalhb(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = vmalhb(a, b, c)
+
+public fun vecVmalhh(a: VectorUnsignedShort, b: VectorUnsignedShort, c: VectorUnsignedShort): VectorUnsignedShort = vmalhh(a, b, c)
+
+public fun vecVmalhf(a: VectorUnsignedInt, b: VectorUnsignedInt, c: VectorUnsignedInt): VectorUnsignedInt = vmalhf(a, b, c)
 
 public fun VectorSignedChar.vecMhadd(b: VectorSignedChar, c: VectorSignedChar): VectorSignedChar = vecVmahb(this, b, c)
 
@@ -2118,6 +3108,18 @@ public interface VectorMladd<T, Result> {
 
 public fun <T> simdMladd(a: T, b: T, c: T): T = run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg1 = c; _simdArg0 }
 
+public fun vecVmalIb(a: VectorSignedChar, b: VectorSignedChar, c: VectorSignedChar): VectorSignedChar = simdMladd(a, b, c)
+
+public fun vecVmalIh(a: VectorSignedShort, b: VectorSignedShort, c: VectorSignedShort): VectorSignedShort = simdMladd(a, b, c)
+
+public fun vecVmalIf(a: VectorSignedInt, b: VectorSignedInt, c: VectorSignedInt): VectorSignedInt = simdMladd(a, b, c)
+
+public fun vecVmalUb(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = simdMladd(a, b, c)
+
+public fun vecVmalUh(a: VectorUnsignedShort, b: VectorUnsignedShort, c: VectorUnsignedShort): VectorUnsignedShort = simdMladd(a, b, c)
+
+public fun vecVmalUf(a: VectorUnsignedInt, b: VectorUnsignedInt, c: VectorUnsignedInt): VectorUnsignedInt = simdMladd(a, b, c)
+
 public fun VectorSignedChar.vecMladd(b: VectorSignedChar, c: VectorSignedChar): VectorSignedChar = vecVmalIb(this, b, c)
 
 public fun VectorSignedShort.vecMladd(b: VectorSignedShort, c: VectorSignedShort): VectorSignedShort = vecVmalIh(this, b, c)
@@ -2134,6 +3136,12 @@ public interface VectorGfmsum<Result, T> {
     public fun vecGfmsum(b: T): Result
 }
 
+public fun vecVgfmb(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedShort = vgfmb(a, b)
+
+public fun vecVgfmh(a: VectorUnsignedShort, b: VectorUnsignedShort): VectorUnsignedInt = vgfmh(a, b)
+
+public fun vecVgfmf(a: VectorUnsignedInt, b: VectorUnsignedInt): VectorUnsignedLongLong = vgfmf(a, b)
+
 public fun VectorUnsignedChar.vecGfmsum(b: VectorUnsignedChar): VectorUnsignedShort = vecVgfmb(transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(this, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>()), transmuteWithLayouts<VectorUnsignedChar, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
 
 public fun VectorUnsignedShort.vecGfmsum(b: VectorUnsignedShort): VectorUnsignedInt = vecVgfmh(transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedInt>()), transmuteWithLayouts<VectorUnsignedShort, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
@@ -2143,6 +3151,12 @@ public fun VectorUnsignedInt.vecGfmsum(b: VectorUnsignedInt): VectorUnsignedLong
 public interface VectorGfmsumAccum<T, Result> {
     public fun vecGfmsumAccum(b: T, c: Result): Result
 }
+
+public fun vecVgfmab(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedShort): VectorUnsignedShort = vgfmab(a, b, c)
+
+public fun vecVgfmah(a: VectorUnsignedShort, b: VectorUnsignedShort, c: VectorUnsignedInt): VectorUnsignedInt = vgfmah(a, b, c)
+
+public fun vecVgfmaf(a: VectorUnsignedInt, b: VectorUnsignedInt, c: VectorUnsignedLongLong): VectorUnsignedLongLong = vgfmaf(a, b, c)
 
 public fun VectorUnsignedChar.vecGfmsumAccum(b: VectorUnsignedChar, c: VectorUnsignedShort): VectorUnsignedShort = vecVgfmab(this, b, c)
 
@@ -2174,21 +3188,21 @@ public interface VectorGatherElement<T, Element, Offset> {
     public fun vecGatherElement(b: Offset, c: ConstPtr, d: UInt): T
 }
 
-public fun VectorSignedInt.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorSignedInt = transmute(vgef(this, b, c, d))
+public fun VectorSignedInt.vecGatherElement(b: VectorUnsignedInt, c: ConstPtr, d: UInt): VectorSignedInt = transmute(vgef(this, b, c, d))
 
-public fun VectorBoolInt.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorBoolInt = transmute(vgef(this, b, c, d))
+public fun VectorBoolInt.vecGatherElement(b: VectorUnsignedInt, c: ConstPtr, d: UInt): VectorBoolInt = transmute(vgef(this, b, c, d))
 
-public fun VectorUnsignedInt.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorUnsignedInt = transmute(vgef(this, b, c, d))
+public fun VectorUnsignedInt.vecGatherElement(b: VectorUnsignedInt, c: ConstPtr, d: UInt): VectorUnsignedInt = transmute(vgef(this, b, c, d))
 
-public fun VectorSignedLongLong.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorSignedLongLong = transmute(vgeg(this, b, c, d))
+public fun VectorSignedLongLong.vecGatherElement(b: VectorUnsignedLongLong, c: ConstPtr, d: UInt): VectorSignedLongLong = transmute(vgeg(this, b, c, d))
 
-public fun VectorBoolLongLong.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorBoolLongLong = transmute(vgeg(this, b, c, d))
+public fun VectorBoolLongLong.vecGatherElement(b: VectorUnsignedLongLong, c: ConstPtr, d: UInt): VectorBoolLongLong = transmute(vgeg(this, b, c, d))
 
-public fun VectorUnsignedLongLong.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorUnsignedLongLong = transmute(vgeg(this, b, c, d))
+public fun VectorUnsignedLongLong.vecGatherElement(b: VectorUnsignedLongLong, c: ConstPtr, d: UInt): VectorUnsignedLongLong = transmute(vgeg(this, b, c, d))
 
-public fun VectorFloat.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorFloat = transmute(vgef(this, b, c, d))
+public fun VectorFloat.vecGatherElement(b: VectorUnsignedInt, c: ConstPtr, d: UInt): VectorFloat = transmute(vgef(this, b, c, d))
 
-public fun VectorDouble.vecGatherElement(b: TU, c: ConstPtr, d: UInt): VectorDouble = transmute(vgeg(this, b, c, d))
+public fun VectorDouble.vecGatherElement(b: VectorUnsignedLongLong, c: ConstPtr, d: UInt): VectorDouble = transmute(vgeg(this, b, c, d))
 
 public fun vscef(a: VectorUnsignedInt, b: VectorUnsignedInt, c: MutPtr, d: UInt) {
     run {
@@ -2214,35 +3228,35 @@ public interface VectorScatterElement<Element, Offset> {
     public fun vecScatterElement(b: Offset, c: MutPtr, d: UInt)
 }
 
-public fun VectorSignedInt.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorSignedInt.vecScatterElement(b: VectorUnsignedInt, c: MutPtr, d: UInt) {
     vscef(transmuteWithLayouts<VectorSignedInt, Unit>(this, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorBoolInt.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorBoolInt.vecScatterElement(b: VectorUnsignedInt, c: MutPtr, d: UInt) {
     vscef(transmuteWithLayouts<VectorBoolInt, Unit>(this, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorUnsignedInt.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorUnsignedInt.vecScatterElement(b: VectorUnsignedInt, c: MutPtr, d: UInt) {
     vscef(transmuteWithLayouts<VectorUnsignedInt, Unit>(this, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorSignedLongLong.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorSignedLongLong.vecScatterElement(b: VectorUnsignedLongLong, c: MutPtr, d: UInt) {
     vsceg(transmuteWithLayouts<VectorSignedLongLong, Unit>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorBoolLongLong.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorBoolLongLong.vecScatterElement(b: VectorUnsignedLongLong, c: MutPtr, d: UInt) {
     vsceg(transmuteWithLayouts<VectorBoolLongLong, Unit>(this, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorUnsignedLongLong.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorUnsignedLongLong.vecScatterElement(b: VectorUnsignedLongLong, c: MutPtr, d: UInt) {
     vsceg(transmuteWithLayouts<VectorUnsignedLongLong, Unit>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorFloat.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorFloat.vecScatterElement(b: VectorUnsignedInt, c: MutPtr, d: UInt) {
     vscef(transmuteWithLayouts<VectorFloat, Unit>(this, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
-public fun VectorDouble.vecScatterElement(b: TU, c: MutPtr, d: UInt) {
+public fun VectorDouble.vecScatterElement(b: VectorUnsignedLongLong, c: MutPtr, d: UInt) {
     vsceg(transmuteWithLayouts<VectorDouble, Unit>(this, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<Unit>()), b, c, d)
 }
 
@@ -2250,117 +3264,117 @@ public interface VectorSel<Mask, T> {
     public fun vecSel(b: T, c: Mask): T
 }
 
-public fun VectorSignedChar.vecSel(b: VectorSignedChar, c: TU): VectorSignedChar {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedChar, TU>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorSignedChar.vecSel(b: VectorSignedChar, c: VectorUnsignedChar): VectorSignedChar {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedChar.vecSelVectorSel(b: VectorSignedChar, c: TB): VectorSignedChar = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorSignedChar.vecSelVectorSel(b: VectorSignedChar, c: VectorBoolChar): VectorSignedChar = this.vecSel(b, transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(c, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
 
-public fun VectorSignedShort.vecSel(b: VectorSignedShort, c: TU): VectorSignedShort {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedShort, TU>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorSignedShort.vecSel(b: VectorSignedShort, c: VectorUnsignedShort): VectorSignedShort {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedShort.vecSelVectorSel(b: VectorSignedShort, c: TB): VectorSignedShort = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorSignedShort.vecSelVectorSel(b: VectorSignedShort, c: VectorBoolShort): VectorSignedShort = this.vecSel(b, transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(c, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
 
-public fun VectorSignedInt.vecSel(b: VectorSignedInt, c: TU): VectorSignedInt {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedInt, TU>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorSignedInt.vecSel(b: VectorSignedInt, c: VectorUnsignedInt): VectorSignedInt {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedInt.vecSelVectorSel(b: VectorSignedInt, c: TB): VectorSignedInt = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorSignedInt.vecSelVectorSel(b: VectorSignedInt, c: VectorBoolInt): VectorSignedInt = this.vecSel(b, transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(c, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
 
-public fun VectorSignedLongLong.vecSel(b: VectorSignedLongLong, c: TU): VectorSignedLongLong {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedLongLong, TU>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorSignedLongLong.vecSel(b: VectorSignedLongLong, c: VectorUnsignedLongLong): VectorSignedLongLong {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorSignedLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorSignedLongLong.vecSelVectorSel(b: VectorSignedLongLong, c: TB): VectorSignedLongLong = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorSignedLongLong.vecSelVectorSel(b: VectorSignedLongLong, c: VectorBoolLongLong): VectorSignedLongLong = this.vecSel(b, transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(c, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
 
-public fun VectorUnsignedChar.vecSel(b: VectorUnsignedChar, c: TU): VectorUnsignedChar {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorUnsignedChar, TU>(b, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorUnsignedChar.vecSel(b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar {
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedChar.vecSelVectorSel(b: VectorUnsignedChar, c: TB): VectorUnsignedChar = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorUnsignedChar.vecSelVectorSel(b: VectorUnsignedChar, c: VectorBoolChar): VectorUnsignedChar = this.vecSel(b, transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(c, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
 
-public fun VectorUnsignedShort.vecSel(b: VectorUnsignedShort, c: TU): VectorUnsignedShort {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorUnsignedShort, TU>(b, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorUnsignedShort.vecSel(b: VectorUnsignedShort, c: VectorUnsignedShort): VectorUnsignedShort {
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedShort.vecSelVectorSel(b: VectorUnsignedShort, c: TB): VectorUnsignedShort = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorUnsignedShort.vecSelVectorSel(b: VectorUnsignedShort, c: VectorBoolShort): VectorUnsignedShort = this.vecSel(b, transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(c, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
 
-public fun VectorUnsignedInt.vecSel(b: VectorUnsignedInt, c: TU): VectorUnsignedInt {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorUnsignedInt, TU>(b, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorUnsignedInt.vecSel(b: VectorUnsignedInt, c: VectorUnsignedInt): VectorUnsignedInt {
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedInt.vecSelVectorSel(b: VectorUnsignedInt, c: TB): VectorUnsignedInt = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorUnsignedInt.vecSelVectorSel(b: VectorUnsignedInt, c: VectorBoolInt): VectorUnsignedInt = this.vecSel(b, transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(c, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
 
-public fun VectorUnsignedLongLong.vecSel(b: VectorUnsignedLongLong, c: TU): VectorUnsignedLongLong {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorUnsignedLongLong, TU>(b, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorUnsignedLongLong.vecSel(b: VectorUnsignedLongLong, c: VectorUnsignedLongLong): VectorUnsignedLongLong {
+    val b1 = run { val _simdArg0 = b; val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorUnsignedLongLong.vecSelVectorSel(b: VectorUnsignedLongLong, c: TB): VectorUnsignedLongLong = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorUnsignedLongLong.vecSelVectorSel(b: VectorUnsignedLongLong, c: VectorBoolLongLong): VectorUnsignedLongLong = this.vecSel(b, transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(c, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
 
-public fun VectorBoolChar.vecSel(b: VectorBoolChar, c: TU): VectorBoolChar {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, TU>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorBoolChar.vecSel(b: VectorBoolChar, c: VectorUnsignedChar): VectorBoolChar {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(b, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolChar.vecSelVectorSel(b: VectorBoolChar, c: TB): VectorBoolChar = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorBoolChar.vecSelVectorSel(b: VectorBoolChar, c: VectorBoolChar): VectorBoolChar = this.vecSel(b, transmuteWithLayouts<VectorBoolChar, VectorUnsignedChar>(c, UnresolvedTypeLayout<VectorBoolChar>(), UnresolvedTypeLayout<VectorUnsignedChar>()))
 
-public fun VectorBoolShort.vecSel(b: VectorBoolShort, c: TU): VectorBoolShort {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, TU>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorBoolShort.vecSel(b: VectorBoolShort, c: VectorUnsignedShort): VectorBoolShort {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(b, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolShort.vecSelVectorSel(b: VectorBoolShort, c: TB): VectorBoolShort = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorBoolShort.vecSelVectorSel(b: VectorBoolShort, c: VectorBoolShort): VectorBoolShort = this.vecSel(b, transmuteWithLayouts<VectorBoolShort, VectorUnsignedShort>(c, UnresolvedTypeLayout<VectorBoolShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()))
 
-public fun VectorBoolInt.vecSel(b: VectorBoolInt, c: TU): VectorBoolInt {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, TU>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorBoolInt.vecSel(b: VectorBoolInt, c: VectorUnsignedInt): VectorBoolInt {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolInt.vecSelVectorSel(b: VectorBoolInt, c: TB): VectorBoolInt = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorBoolInt.vecSelVectorSel(b: VectorBoolInt, c: VectorBoolInt): VectorBoolInt = this.vecSel(b, transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(c, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
 
-public fun VectorBoolLongLong.vecSel(b: VectorBoolLongLong, c: TU): VectorBoolLongLong {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, TU>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorBoolLongLong.vecSel(b: VectorBoolLongLong, c: VectorUnsignedLongLong): VectorBoolLongLong {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorBoolLongLong.vecSelVectorSel(b: VectorBoolLongLong, c: TB): VectorBoolLongLong = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorBoolLongLong.vecSelVectorSel(b: VectorBoolLongLong, c: VectorBoolLongLong): VectorBoolLongLong = this.vecSel(b, transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(c, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
 
-public fun VectorFloat.vecSel(b: VectorFloat, c: TU): VectorFloat {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorFloat, TU>(b, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorFloat.vecSel(b: VectorFloat, c: VectorUnsignedInt): VectorFloat {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorFloat, VectorUnsignedInt>(b, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<VectorUnsignedInt>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorFloat.vecSelVectorSel(b: VectorFloat, c: TB): VectorFloat = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorFloat.vecSelVectorSel(b: VectorFloat, c: VectorBoolInt): VectorFloat = this.vecSel(b, transmuteWithLayouts<VectorBoolInt, VectorUnsignedInt>(c, UnresolvedTypeLayout<VectorBoolInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
 
-public fun VectorDouble.vecSel(b: VectorDouble, c: TU): VectorDouble {
-    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorDouble, TU>(b, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<TU>()); val _simdArg1 = c; _simdArg0 }
+public fun VectorDouble.vecSel(b: VectorDouble, c: VectorUnsignedLongLong): VectorDouble {
+    val b1 = run { val _simdArg0 = transmuteWithLayouts<VectorDouble, VectorUnsignedLongLong>(b, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()); val _simdArg1 = c; _simdArg0 }
     val a = run { val _simdArg0 = this; val _simdArg1 = run { val _simdArg0 = c; val _simdArg1 = transmute(vectorSignedChar(List(16) { 0.inv() })); _simdArg0 }; _simdArg0 }
     return transmute(run { val _simdArg0 = a; val _simdArg1 = b1; _simdArg0 })
 }
 
-public fun VectorDouble.vecSelVectorSel(b: VectorDouble, c: TB): VectorDouble = this.vecSel(b, transmuteWithLayouts<TB, TU>(c, UnresolvedTypeLayout<TB>(), UnresolvedTypeLayout<TU>()))
+public fun VectorDouble.vecSelVectorSel(b: VectorDouble, c: VectorBoolLongLong): VectorDouble = this.vecSel(b, transmuteWithLayouts<VectorBoolLongLong, VectorUnsignedLongLong>(c, UnresolvedTypeLayout<VectorBoolLongLong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
 
 public interface VectorFpTestDataClass<out Result> {
     public fun vecFpTestDataClass(cls: UInt): Pair<Result, Int>
@@ -2390,99 +3404,99 @@ public interface VectorCompare<T> {
     public fun vecAllGe(other: T): Int
 }
 
-public fun VectorSignedChar.vecAllLt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllLt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorSignedChar.vecAllLe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllLe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorSignedChar.vecAllGt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllGt(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorSignedChar.vecAllGe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedChar.vecAllGe(other: VectorSignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllLt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllLt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllLe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllLe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllGt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllGt(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorUnsignedChar.vecAllGe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedChar.vecAllGe(other: VectorUnsignedChar): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolChar() }; false }).toInt()
 
-public fun VectorSignedShort.vecAllLt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllLt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorSignedShort.vecAllLe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllLe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorSignedShort.vecAllGt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllGt(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorSignedShort.vecAllGe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedShort.vecAllGe(other: VectorSignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllLt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllLt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllLe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllLe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllGt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllGt(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorUnsignedShort.vecAllGe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedShort.vecAllGe(other: VectorUnsignedShort): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolShort() }; false }).toInt()
 
-public fun VectorSignedInt.vecAllLt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllLt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorSignedInt.vecAllLe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllLe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorSignedInt.vecAllGt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllGt(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorSignedInt.vecAllGe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedInt.vecAllGe(other: VectorSignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllLt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllLt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllLe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllLe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllGt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllGt(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorUnsignedInt.vecAllGe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedInt.vecAllGe(other: VectorUnsignedInt): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorFloat.vecAllLt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllLt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorFloat.vecAllLe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllLe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorFloat.vecAllGt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllGt(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorFloat.vecAllGe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorFloat.vecAllGe(other: VectorFloat): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolInt() }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllLt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllLt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllLe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllLe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllGt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllGt(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorSignedLongLong.vecAllGe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorSignedLongLong.vecAllGe(other: VectorSignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllLt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllLt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllLe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllLe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllGt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllGt(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorUnsignedLongLong.vecAllGe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllGe(other: VectorUnsignedLongLong): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorDouble.vecAllLt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllLt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorDouble.vecAllLe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllLe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorDouble.vecAllGt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllGt(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
-public fun VectorDouble.vecAllGe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); val res = (UnresolvedTypeLayout<TB>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<TB>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<TB>()).alignBytes)); res } }; false }).toInt()
+public fun VectorDouble.vecAllGe(other: VectorDouble): Int = (run { val _simdArg0 = run { val _simdArg0 = this; val _simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
 
 public interface VectorTestMask<Mask> {
     public fun vecTestMask(other: Mask): Int
 }
 
-public fun VectorSignedShort.vecTestMask(other: TU): Int = vtm(transmuteWithLayouts<VectorSignedShort, Int>(this, UnresolvedTypeLayout<VectorSignedShort>(), PrimitiveLayouts.I32), transmuteWithLayouts<TU, Int>(other, UnresolvedTypeLayout<TU>(), PrimitiveLayouts.I32))
+public fun VectorSignedShort.vecTestMask(other: VectorUnsignedShort): Int = vtm(transmuteWithLayouts<VectorSignedShort, Int>(this, UnresolvedTypeLayout<VectorSignedShort>(), PrimitiveLayouts.I32), transmuteWithLayouts<VectorUnsignedShort, Int>(other, UnresolvedTypeLayout<VectorUnsignedShort>(), PrimitiveLayouts.I32))
 
-public fun VectorSignedLongLong.vecTestMask(other: TU): Int = vtm(transmuteWithLayouts<VectorSignedLongLong, Int>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), PrimitiveLayouts.I32), transmuteWithLayouts<TU, Int>(other, UnresolvedTypeLayout<TU>(), PrimitiveLayouts.I32))
+public fun VectorSignedLongLong.vecTestMask(other: VectorUnsignedLongLong): Int = vtm(transmuteWithLayouts<VectorSignedLongLong, Int>(this, UnresolvedTypeLayout<VectorSignedLongLong>(), PrimitiveLayouts.I32), transmuteWithLayouts<VectorUnsignedLongLong, Int>(other, UnresolvedTypeLayout<VectorUnsignedLongLong>(), PrimitiveLayouts.I32))
 
-public fun VectorUnsignedShort.vecTestMask(other: TU): Int = vtm(transmuteWithLayouts<VectorUnsignedShort, Int>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), PrimitiveLayouts.I32), transmuteWithLayouts<TU, Int>(other, UnresolvedTypeLayout<TU>(), PrimitiveLayouts.I32))
+public fun VectorUnsignedShort.vecTestMask(other: VectorUnsignedShort): Int = vtm(transmuteWithLayouts<VectorUnsignedShort, Int>(this, UnresolvedTypeLayout<VectorUnsignedShort>(), PrimitiveLayouts.I32), transmuteWithLayouts<VectorUnsignedShort, Int>(other, UnresolvedTypeLayout<VectorUnsignedShort>(), PrimitiveLayouts.I32))
 
-public fun VectorUnsignedLongLong.vecTestMask(other: TU): Int = vtm(transmuteWithLayouts<VectorUnsignedLongLong, Int>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), PrimitiveLayouts.I32), transmuteWithLayouts<TU, Int>(other, UnresolvedTypeLayout<TU>(), PrimitiveLayouts.I32))
+public fun VectorUnsignedLongLong.vecTestMask(other: VectorUnsignedLongLong): Int = vtm(transmuteWithLayouts<VectorUnsignedLongLong, Int>(this, UnresolvedTypeLayout<VectorUnsignedLongLong>(), PrimitiveLayouts.I32), transmuteWithLayouts<VectorUnsignedLongLong, Int>(other, UnresolvedTypeLayout<VectorUnsignedLongLong>(), PrimitiveLayouts.I32))
 
-public fun VectorDouble.vecTestMask(other: TU): Int = vtm(transmuteWithLayouts<VectorDouble, Int>(this, UnresolvedTypeLayout<VectorDouble>(), PrimitiveLayouts.I32), transmuteWithLayouts<TU, Int>(other, UnresolvedTypeLayout<TU>(), PrimitiveLayouts.I32))
+public fun VectorDouble.vecTestMask(other: VectorUnsignedLongLong): Int = vtm(transmuteWithLayouts<VectorDouble, Int>(this, UnresolvedTypeLayout<VectorDouble>(), PrimitiveLayouts.I32), transmuteWithLayouts<VectorUnsignedLongLong, Int>(other, UnresolvedTypeLayout<VectorUnsignedLongLong>(), PrimitiveLayouts.I32))
 
 public interface VectorSearchString<T> {
     public fun vecSearchStringCc(b: T, c: VectorUnsignedChar): Pair<VectorUnsignedChar, Int>
@@ -2664,17 +3678,63 @@ public interface VectorSigned<out Result> {
     public fun vecSigned(): Result
 }
 
+public fun vcgsb(a: VectorFloat): VectorSignedInt = run { val _simdArg0 = a; _simdArg0 }
+
+public fun vcgdb(a: VectorDouble): VectorSignedLongLong = run { val _simdArg0 = a; _simdArg0 }
+
+public fun VectorFloat.vecSigned(): VectorSignedInt = vcgsb(transmuteWithLayouts<VectorFloat, VectorSignedInt>(this, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<VectorSignedInt>()))
+
+public fun VectorDouble.vecSigned(): VectorSignedLongLong = vcgdb(transmuteWithLayouts<VectorDouble, VectorSignedLongLong>(this, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<VectorSignedLongLong>()))
+
 public interface VectorUnsigned<out Result> {
     public fun vecUnsigned(): Result
 }
+
+public fun vclgsb(a: VectorFloat): VectorUnsignedInt = run { val _simdArg0 = a; _simdArg0 }
+
+public fun vclgdb(a: VectorDouble): VectorUnsignedLongLong = run { val _simdArg0 = a; _simdArg0 }
+
+public fun VectorFloat.vecUnsigned(): VectorUnsignedInt = vclgsb(transmuteWithLayouts<VectorFloat, VectorUnsignedInt>(this, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<VectorUnsignedInt>()))
+
+public fun VectorDouble.vecUnsigned(): VectorUnsignedLongLong = vclgdb(transmuteWithLayouts<VectorDouble, VectorUnsignedLongLong>(this, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()))
 
 public interface VectorCopyUntilZero<T> {
     public fun vecCpUntilZero(): T
 }
 
+public fun vecVistrb(a: VectorUnsignedChar): VectorUnsignedChar = vistrb(a)
+
+public fun vecVistrh(a: VectorUnsignedShort): VectorUnsignedShort = vistrh(a)
+
+public fun vecVistrf(a: VectorUnsignedInt): VectorUnsignedInt = vistrf(a)
+
+public fun VectorSignedChar.vecCpUntilZero(): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(vecVistrb(this), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
+
+public fun VectorBoolChar.vecCpUntilZero(): VectorBoolChar = transmuteWithLayouts<VectorUnsignedChar, VectorBoolChar>(vecVistrb(this), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorBoolChar>())
+
+public fun VectorUnsignedChar.vecCpUntilZero(): VectorUnsignedChar = vecVistrb(this)
+
+public fun VectorSignedShort.vecCpUntilZero(): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(vecVistrh(this), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
+
+public fun VectorBoolShort.vecCpUntilZero(): VectorBoolShort = transmuteWithLayouts<VectorUnsignedShort, VectorBoolShort>(vecVistrh(this), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorBoolShort>())
+
+public fun VectorUnsignedShort.vecCpUntilZero(): VectorUnsignedShort = vecVistrh(this)
+
+public fun VectorSignedInt.vecCpUntilZero(): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(vecVistrf(this), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
+
+public fun VectorBoolInt.vecCpUntilZero(): VectorBoolInt = transmuteWithLayouts<VectorUnsignedInt, VectorBoolInt>(vecVistrf(this), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
+
+public fun VectorUnsignedInt.vecCpUntilZero(): VectorUnsignedInt = vecVistrf(this)
+
 public interface VectorCopyUntilZeroCC<T> {
     public fun vecCpUntilZeroCc(): Pair<T, Int>
 }
+
+public fun vecVistrbs(a: VectorUnsignedChar): PackedTuple<VectorUnsignedChar, Int> = vistrbs(a)
+
+public fun vecVistrhs(a: VectorUnsignedShort): PackedTuple<VectorUnsignedShort, Int> = vistrhs(a)
+
+public fun vecVistrfs(a: VectorUnsignedInt): PackedTuple<VectorUnsignedInt, Int> = vistrfs(a)
 
 public fun VectorSignedChar.vecCpUntilZeroCc(): Pair<VectorSignedChar, Int> {
     val structVal = vecVistrbs(transmuteWithLayouts<VectorSignedChar, Pair<VectorSignedChar, Int>>(this, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Pair<VectorSignedChar, Int>>()))
@@ -3170,17 +4230,17 @@ public fun validateCompareRangeImm(imm: UInt) {
     }
 }
 
-public fun VectorUnsignedChar.vstrc(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): TB {
+public fun VectorUnsignedChar.vstrc(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): VectorBoolChar {
     ::validateCompareRangeImm
     return vstrcb(this, b, c, imm)
 }
 
-public fun VectorUnsignedChar.vstrcz(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): TB {
+public fun VectorUnsignedChar.vstrcz(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): VectorBoolChar {
     ::validateCompareRangeImm
     return vstrczb(this, b, c, imm)
 }
 
-public fun VectorUnsignedChar.vstrcs(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): Pair<TB, Int> {
+public fun VectorUnsignedChar.vstrcs(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): Pair<VectorBoolChar, Int> {
     ::validateCompareRangeImm
     val structVal = vstrcbs(this, b, c, imm)
     val x = structVal.x
@@ -3188,7 +4248,7 @@ public fun VectorUnsignedChar.vstrcs(b: VectorUnsignedChar, c: VectorUnsignedCha
     return Pair(x, y)
 }
 
-public fun VectorUnsignedChar.vstrczs(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): Pair<TB, Int> {
+public fun VectorUnsignedChar.vstrczs(b: VectorUnsignedChar, c: VectorUnsignedChar, imm: UInt): Pair<VectorBoolChar, Int> {
     ::validateCompareRangeImm
     val structVal = vstrczbs(this, b, c, imm)
     val x = structVal.x
@@ -3196,17 +4256,17 @@ public fun VectorUnsignedChar.vstrczs(b: VectorUnsignedChar, c: VectorUnsignedCh
     return Pair(x, y)
 }
 
-public fun VectorUnsignedShort.vstrc(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): TB {
+public fun VectorUnsignedShort.vstrc(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): VectorBoolShort {
     ::validateCompareRangeImm
     return vstrch(this, b, c, imm)
 }
 
-public fun VectorUnsignedShort.vstrcz(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): TB {
+public fun VectorUnsignedShort.vstrcz(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): VectorBoolShort {
     ::validateCompareRangeImm
     return vstrczh(this, b, c, imm)
 }
 
-public fun VectorUnsignedShort.vstrcs(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): Pair<TB, Int> {
+public fun VectorUnsignedShort.vstrcs(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): Pair<VectorBoolShort, Int> {
     ::validateCompareRangeImm
     val structVal = vstrchs(this, b, c, imm)
     val x = structVal.x
@@ -3214,7 +4274,7 @@ public fun VectorUnsignedShort.vstrcs(b: VectorUnsignedShort, c: VectorUnsignedS
     return Pair(x, y)
 }
 
-public fun VectorUnsignedShort.vstrczs(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): Pair<TB, Int> {
+public fun VectorUnsignedShort.vstrczs(b: VectorUnsignedShort, c: VectorUnsignedShort, imm: UInt): Pair<VectorBoolShort, Int> {
     ::validateCompareRangeImm
     val structVal = vstrczhs(this, b, c, imm)
     val x = structVal.x
@@ -3222,17 +4282,17 @@ public fun VectorUnsignedShort.vstrczs(b: VectorUnsignedShort, c: VectorUnsigned
     return Pair(x, y)
 }
 
-public fun VectorUnsignedInt.vstrc(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): TB {
+public fun VectorUnsignedInt.vstrc(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): VectorBoolInt {
     ::validateCompareRangeImm
     return vstrcf(this, b, c, imm)
 }
 
-public fun VectorUnsignedInt.vstrcz(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): TB {
+public fun VectorUnsignedInt.vstrcz(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): VectorBoolInt {
     ::validateCompareRangeImm
     return vstrczf(this, b, c, imm)
 }
 
-public fun VectorUnsignedInt.vstrcs(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): Pair<TB, Int> {
+public fun VectorUnsignedInt.vstrcs(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): Pair<VectorBoolInt, Int> {
     ::validateCompareRangeImm
     val structVal = vstrcfs(this, b, c, imm)
     val x = structVal.x
@@ -3240,7 +4300,7 @@ public fun VectorUnsignedInt.vstrcs(b: VectorUnsignedInt, c: VectorUnsignedInt, 
     return Pair(x, y)
 }
 
-public fun VectorUnsignedInt.vstrczs(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): Pair<TB, Int> {
+public fun VectorUnsignedInt.vstrczs(b: VectorUnsignedInt, c: VectorUnsignedInt, imm: UInt): Pair<VectorBoolInt, Int> {
     ::validateCompareRangeImm
     val structVal = vstrczfs(this, b, c, imm)
     val x = structVal.x
@@ -3646,112 +4706,112 @@ public fun vllezf(x: ConstPtr): VectorUnsignedInt = vectorUnsignedInt(uintArrayO
 
 public fun vllezg(x: ConstPtr): VectorUnsignedLongLong = vectorUnsignedLongLong(ulongArrayOf((PrimitiveLayouts.U64).readNative((x).rawAddress), 0uL))
 
-public fun vectorExtractVecExtractVectorSignedChar(a: VectorSignedChar, b: Int): LTT = transmuteWithLayouts<UByte, LTT>(vlgvb(transmuteWithLayouts<VectorSignedChar, LTT>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UByte>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorSignedChar(a: VectorSignedChar, b: Int): Byte = transmuteWithLayouts<UByte, Byte>(vlgvb(transmuteWithLayouts<VectorSignedChar, Byte>(a, UnresolvedTypeLayout<VectorSignedChar>(), UnresolvedTypeLayout<Byte>()), b), UnresolvedTypeLayout<UByte>(), UnresolvedTypeLayout<Byte>())
 
-public fun vectorInsertVecInsertVectorSignedChar(a: LTT, b: VectorSignedChar, c: Int): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(vlvgb(transmuteWithLayouts<LTT, VectorSignedChar>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorSignedChar>()), b, c), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
+public fun vectorInsertVecInsertVectorSignedChar(a: Byte, b: VectorSignedChar, c: Int): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(vlvgb(transmuteWithLayouts<Byte, VectorSignedChar>(a, UnresolvedTypeLayout<Byte>(), UnresolvedTypeLayout<VectorSignedChar>()), b, c), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedChar(a: ConstPtr): VectorSignedChar = transmuteWithLayouts<VectorUnsignedChar, VectorSignedChar>(vllezb(a), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<VectorSignedChar>())
 
-public fun vectorPromoteVecPromoteVectorSignedChar(a: LTT, c: Int): MaybeUninit<VectorSignedChar> {
+public fun vectorPromoteVecPromoteVectorSignedChar(a: Byte, c: Int): MaybeUninit<VectorSignedChar> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedChar>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedChar, MaybeUninit<VectorSignedChar>>(vlvgb(transmuteWithLayouts<LTT, MaybeUninit<VectorSignedChar>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedChar>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedChar>>()), UnresolvedTypeLayout<VectorSignedChar>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedChar, MaybeUninit<VectorSignedChar>>(vlvgb(transmuteWithLayouts<Byte, MaybeUninit<VectorSignedChar>>(a, UnresolvedTypeLayout<Byte>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedChar>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedChar>>()), UnresolvedTypeLayout<VectorSignedChar>())
 }
 
-public fun vectorExtractVecExtractVectorUnsignedChar(a: VectorUnsignedChar, b: Int): LTT = transmuteWithLayouts<UByte, LTT>(vlgvb(transmuteWithLayouts<VectorUnsignedChar, LTT>(a, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UByte>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorUnsignedChar(a: VectorUnsignedChar, b: Int): UByte = vlgvb(transmuteWithLayouts<VectorUnsignedChar, UByte>(a, UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<UByte>()), b)
 
-public fun vectorInsertVecInsertVectorUnsignedChar(a: LTT, b: VectorUnsignedChar, c: Int): VectorUnsignedChar = vlvgb(transmuteWithLayouts<LTT, VectorUnsignedChar>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorUnsignedChar>()), b, c)
+public fun vectorInsertVecInsertVectorUnsignedChar(a: UByte, b: VectorUnsignedChar, c: Int): VectorUnsignedChar = vlvgb(transmuteWithLayouts<UByte, VectorUnsignedChar>(a, UnresolvedTypeLayout<UByte>(), UnresolvedTypeLayout<VectorUnsignedChar>()), b, c)
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedChar(a: ConstPtr): VectorUnsignedChar = vllezb(a)
 
-public fun vectorPromoteVecPromoteVectorUnsignedChar(a: LTT, c: Int): MaybeUninit<VectorUnsignedChar> {
+public fun vectorPromoteVecPromoteVectorUnsignedChar(a: UByte, c: Int): MaybeUninit<VectorUnsignedChar> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedChar>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedChar, MaybeUninit<VectorUnsignedChar>>(vlvgb(transmuteWithLayouts<LTT, MaybeUninit<VectorUnsignedChar>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedChar>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedChar>>()), UnresolvedTypeLayout<VectorUnsignedChar>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedChar, MaybeUninit<VectorUnsignedChar>>(vlvgb(transmuteWithLayouts<UByte, MaybeUninit<VectorUnsignedChar>>(a, UnresolvedTypeLayout<UByte>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedChar>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedChar>>()), UnresolvedTypeLayout<VectorUnsignedChar>())
 }
 
-public fun vectorExtractVecExtractVectorSignedShort(a: VectorSignedShort, b: Int): LTT = transmuteWithLayouts<UShort, LTT>(vlgvh(transmuteWithLayouts<VectorSignedShort, LTT>(a, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UShort>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorSignedShort(a: VectorSignedShort, b: Int): Short = transmuteWithLayouts<UShort, Short>(vlgvh(transmuteWithLayouts<VectorSignedShort, Short>(a, UnresolvedTypeLayout<VectorSignedShort>(), UnresolvedTypeLayout<Short>()), b), UnresolvedTypeLayout<UShort>(), UnresolvedTypeLayout<Short>())
 
-public fun vectorInsertVecInsertVectorSignedShort(a: LTT, b: VectorSignedShort, c: Int): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(vlvgh(transmuteWithLayouts<LTT, VectorSignedShort>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorSignedShort>()), b, c), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
+public fun vectorInsertVecInsertVectorSignedShort(a: Short, b: VectorSignedShort, c: Int): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(vlvgh(transmuteWithLayouts<Short, VectorSignedShort>(a, UnresolvedTypeLayout<Short>(), UnresolvedTypeLayout<VectorSignedShort>()), b, c), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedShort(a: ConstPtr): VectorSignedShort = transmuteWithLayouts<VectorUnsignedShort, VectorSignedShort>(vllezh(a), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<VectorSignedShort>())
 
-public fun vectorPromoteVecPromoteVectorSignedShort(a: LTT, c: Int): MaybeUninit<VectorSignedShort> {
+public fun vectorPromoteVecPromoteVectorSignedShort(a: Short, c: Int): MaybeUninit<VectorSignedShort> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedShort>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedShort, MaybeUninit<VectorSignedShort>>(vlvgh(transmuteWithLayouts<LTT, MaybeUninit<VectorSignedShort>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedShort>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedShort>>()), UnresolvedTypeLayout<VectorSignedShort>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedShort, MaybeUninit<VectorSignedShort>>(vlvgh(transmuteWithLayouts<Short, MaybeUninit<VectorSignedShort>>(a, UnresolvedTypeLayout<Short>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedShort>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedShort>>()), UnresolvedTypeLayout<VectorSignedShort>())
 }
 
-public fun vectorExtractVecExtractVectorUnsignedShort(a: VectorUnsignedShort, b: Int): LTT = transmuteWithLayouts<UShort, LTT>(vlgvh(transmuteWithLayouts<VectorUnsignedShort, LTT>(a, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UShort>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorUnsignedShort(a: VectorUnsignedShort, b: Int): UShort = vlgvh(transmuteWithLayouts<VectorUnsignedShort, UShort>(a, UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<UShort>()), b)
 
-public fun vectorInsertVecInsertVectorUnsignedShort(a: LTT, b: VectorUnsignedShort, c: Int): VectorUnsignedShort = vlvgh(transmuteWithLayouts<LTT, VectorUnsignedShort>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorUnsignedShort>()), b, c)
+public fun vectorInsertVecInsertVectorUnsignedShort(a: UShort, b: VectorUnsignedShort, c: Int): VectorUnsignedShort = vlvgh(transmuteWithLayouts<UShort, VectorUnsignedShort>(a, UnresolvedTypeLayout<UShort>(), UnresolvedTypeLayout<VectorUnsignedShort>()), b, c)
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedShort(a: ConstPtr): VectorUnsignedShort = vllezh(a)
 
-public fun vectorPromoteVecPromoteVectorUnsignedShort(a: LTT, c: Int): MaybeUninit<VectorUnsignedShort> {
+public fun vectorPromoteVecPromoteVectorUnsignedShort(a: UShort, c: Int): MaybeUninit<VectorUnsignedShort> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedShort>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedShort, MaybeUninit<VectorUnsignedShort>>(vlvgh(transmuteWithLayouts<LTT, MaybeUninit<VectorUnsignedShort>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedShort>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedShort>>()), UnresolvedTypeLayout<VectorUnsignedShort>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedShort, MaybeUninit<VectorUnsignedShort>>(vlvgh(transmuteWithLayouts<UShort, MaybeUninit<VectorUnsignedShort>>(a, UnresolvedTypeLayout<UShort>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedShort>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedShort>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedShort>>()), UnresolvedTypeLayout<VectorUnsignedShort>())
 }
 
-public fun vectorExtractVecExtractVectorSignedInt(a: VectorSignedInt, b: Int): LTT = transmuteWithLayouts<UInt, LTT>(vlgvf(transmuteWithLayouts<VectorSignedInt, LTT>(a, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorSignedInt(a: VectorSignedInt, b: Int): Int = transmuteWithLayouts<UInt, Int>(vlgvf(transmuteWithLayouts<VectorSignedInt, Int>(a, UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<Int>()), b), UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<Int>())
 
-public fun vectorInsertVecInsertVectorSignedInt(a: LTT, b: VectorSignedInt, c: Int): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(vlvgf(transmuteWithLayouts<LTT, VectorSignedInt>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorSignedInt>()), b, c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
+public fun vectorInsertVecInsertVectorSignedInt(a: Int, b: VectorSignedInt, c: Int): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(vlvgf(transmuteWithLayouts<Int, VectorSignedInt>(a, UnresolvedTypeLayout<Int>(), UnresolvedTypeLayout<VectorSignedInt>()), b, c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedInt(a: ConstPtr): VectorSignedInt = transmuteWithLayouts<VectorUnsignedInt, VectorSignedInt>(vllezf(a), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorSignedInt>())
 
-public fun vectorPromoteVecPromoteVectorSignedInt(a: LTT, c: Int): MaybeUninit<VectorSignedInt> {
+public fun vectorPromoteVecPromoteVectorSignedInt(a: Int, c: Int): MaybeUninit<VectorSignedInt> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedInt>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedInt, MaybeUninit<VectorSignedInt>>(vlvgf(transmuteWithLayouts<LTT, MaybeUninit<VectorSignedInt>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedInt>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedInt>>()), UnresolvedTypeLayout<VectorSignedInt>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedInt, MaybeUninit<VectorSignedInt>>(vlvgf(transmuteWithLayouts<Int, MaybeUninit<VectorSignedInt>>(a, UnresolvedTypeLayout<Int>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedInt>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedInt>>()), UnresolvedTypeLayout<VectorSignedInt>())
 }
 
-public fun vectorExtractVecExtractVectorUnsignedInt(a: VectorUnsignedInt, b: Int): LTT = transmuteWithLayouts<UInt, LTT>(vlgvf(transmuteWithLayouts<VectorUnsignedInt, LTT>(a, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorUnsignedInt(a: VectorUnsignedInt, b: Int): UInt = vlgvf(transmuteWithLayouts<VectorUnsignedInt, UInt>(a, UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<UInt>()), b)
 
-public fun vectorInsertVecInsertVectorUnsignedInt(a: LTT, b: VectorUnsignedInt, c: Int): VectorUnsignedInt = vlvgf(transmuteWithLayouts<LTT, VectorUnsignedInt>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorUnsignedInt>()), b, c)
+public fun vectorInsertVecInsertVectorUnsignedInt(a: UInt, b: VectorUnsignedInt, c: Int): VectorUnsignedInt = vlvgf(transmuteWithLayouts<UInt, VectorUnsignedInt>(a, UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<VectorUnsignedInt>()), b, c)
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedInt(a: ConstPtr): VectorUnsignedInt = vllezf(a)
 
-public fun vectorPromoteVecPromoteVectorUnsignedInt(a: LTT, c: Int): MaybeUninit<VectorUnsignedInt> {
+public fun vectorPromoteVecPromoteVectorUnsignedInt(a: UInt, c: Int): MaybeUninit<VectorUnsignedInt> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedInt>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedInt, MaybeUninit<VectorUnsignedInt>>(vlvgf(transmuteWithLayouts<LTT, MaybeUninit<VectorUnsignedInt>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedInt>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedInt>>()), UnresolvedTypeLayout<VectorUnsignedInt>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedInt, MaybeUninit<VectorUnsignedInt>>(vlvgf(transmuteWithLayouts<UInt, MaybeUninit<VectorUnsignedInt>>(a, UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedInt>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedInt>>()), UnresolvedTypeLayout<VectorUnsignedInt>())
 }
 
-public fun vectorExtractVecExtractVectorSignedLongLong(a: VectorSignedLongLong, b: Int): LTT = transmuteWithLayouts<ULong, LTT>(vlgvg(transmuteWithLayouts<VectorSignedLongLong, LTT>(a, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorSignedLongLong(a: VectorSignedLongLong, b: Int): Long = transmuteWithLayouts<ULong, Long>(vlgvg(transmuteWithLayouts<VectorSignedLongLong, Long>(a, UnresolvedTypeLayout<VectorSignedLongLong>(), UnresolvedTypeLayout<Long>()), b), UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<Long>())
 
-public fun vectorInsertVecInsertVectorSignedLongLong(a: LTT, b: VectorSignedLongLong, c: Int): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(vlvgg(transmuteWithLayouts<LTT, VectorSignedLongLong>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorSignedLongLong>()), b, c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
+public fun vectorInsertVecInsertVectorSignedLongLong(a: Long, b: VectorSignedLongLong, c: Int): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(vlvgg(transmuteWithLayouts<Long, VectorSignedLongLong>(a, UnresolvedTypeLayout<Long>(), UnresolvedTypeLayout<VectorSignedLongLong>()), b, c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorSignedLongLong(a: ConstPtr): VectorSignedLongLong = transmuteWithLayouts<VectorUnsignedLongLong, VectorSignedLongLong>(vllezg(a), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorSignedLongLong>())
 
-public fun vectorPromoteVecPromoteVectorSignedLongLong(a: LTT, c: Int): MaybeUninit<VectorSignedLongLong> {
+public fun vectorPromoteVecPromoteVectorSignedLongLong(a: Long, c: Int): MaybeUninit<VectorSignedLongLong> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorSignedLongLong>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedLongLong, MaybeUninit<VectorSignedLongLong>>(vlvgg(transmuteWithLayouts<LTT, MaybeUninit<VectorSignedLongLong>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedLongLong>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedLongLong>>()), UnresolvedTypeLayout<VectorSignedLongLong>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedLongLong, MaybeUninit<VectorSignedLongLong>>(vlvgg(transmuteWithLayouts<Long, MaybeUninit<VectorSignedLongLong>>(a, UnresolvedTypeLayout<Long>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedLongLong>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<MaybeUninit<VectorSignedLongLong>>()), UnresolvedTypeLayout<VectorSignedLongLong>())
 }
 
-public fun vectorExtractVecExtractVectorUnsignedLongLong(a: VectorUnsignedLongLong, b: Int): LTT = transmuteWithLayouts<ULong, LTT>(vlgvg(transmuteWithLayouts<VectorUnsignedLongLong, LTT>(a, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorUnsignedLongLong(a: VectorUnsignedLongLong, b: Int): ULong = vlgvg(transmuteWithLayouts<VectorUnsignedLongLong, ULong>(a, UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<ULong>()), b)
 
-public fun vectorInsertVecInsertVectorUnsignedLongLong(a: LTT, b: VectorUnsignedLongLong, c: Int): VectorUnsignedLongLong = vlvgg(transmuteWithLayouts<LTT, VectorUnsignedLongLong>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()), b, c)
+public fun vectorInsertVecInsertVectorUnsignedLongLong(a: ULong, b: VectorUnsignedLongLong, c: Int): VectorUnsignedLongLong = vlvgg(transmuteWithLayouts<ULong, VectorUnsignedLongLong>(a, UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<VectorUnsignedLongLong>()), b, c)
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorUnsignedLongLong(a: ConstPtr): VectorUnsignedLongLong = vllezg(a)
 
-public fun vectorPromoteVecPromoteVectorUnsignedLongLong(a: LTT, c: Int): MaybeUninit<VectorUnsignedLongLong> {
+public fun vectorPromoteVecPromoteVectorUnsignedLongLong(a: ULong, c: Int): MaybeUninit<VectorUnsignedLongLong> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorUnsignedLongLong>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedLongLong, MaybeUninit<VectorUnsignedLongLong>>(vlvgg(transmuteWithLayouts<LTT, MaybeUninit<VectorUnsignedLongLong>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedLongLong>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedLongLong>>()), UnresolvedTypeLayout<VectorUnsignedLongLong>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedLongLong, MaybeUninit<VectorUnsignedLongLong>>(vlvgg(transmuteWithLayouts<ULong, MaybeUninit<VectorUnsignedLongLong>>(a, UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedLongLong>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<MaybeUninit<VectorUnsignedLongLong>>()), UnresolvedTypeLayout<VectorUnsignedLongLong>())
 }
 
-public fun vectorExtractVecExtractVectorFloat(a: VectorFloat, b: Int): LTT = transmuteWithLayouts<UInt, LTT>(vlgvf(transmuteWithLayouts<VectorFloat, LTT>(a, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorFloat(a: VectorFloat, b: Int): Float = transmuteWithLayouts<UInt, Float>(vlgvf(transmuteWithLayouts<VectorFloat, Float>(a, UnresolvedTypeLayout<VectorFloat>(), UnresolvedTypeLayout<Float>()), b), UnresolvedTypeLayout<UInt>(), UnresolvedTypeLayout<Float>())
 
-public fun vectorInsertVecInsertVectorFloat(a: LTT, b: VectorFloat, c: Int): VectorFloat = transmuteWithLayouts<VectorUnsignedInt, VectorFloat>(vlvgf(transmuteWithLayouts<LTT, VectorFloat>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorFloat>()), b, c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorFloat>())
+public fun vectorInsertVecInsertVectorFloat(a: Float, b: VectorFloat, c: Int): VectorFloat = transmuteWithLayouts<VectorUnsignedInt, VectorFloat>(vlvgf(transmuteWithLayouts<Float, VectorFloat>(a, UnresolvedTypeLayout<Float>(), UnresolvedTypeLayout<VectorFloat>()), b, c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorFloat>())
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorFloat(a: ConstPtr): VectorFloat = transmuteWithLayouts<VectorUnsignedInt, VectorFloat>(vllezf(a), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<VectorFloat>())
 
-public fun vectorPromoteVecPromoteVectorFloat(a: LTT, c: Int): MaybeUninit<VectorFloat> {
+public fun vectorPromoteVecPromoteVectorFloat(a: Float, c: Int): MaybeUninit<VectorFloat> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorFloat>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedInt, MaybeUninit<VectorFloat>>(vlvgf(transmuteWithLayouts<LTT, MaybeUninit<VectorFloat>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorFloat>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<MaybeUninit<VectorFloat>>()), UnresolvedTypeLayout<VectorFloat>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedInt, MaybeUninit<VectorFloat>>(vlvgf(transmuteWithLayouts<Float, MaybeUninit<VectorFloat>>(a, UnresolvedTypeLayout<Float>(), UnresolvedTypeLayout<MaybeUninit<VectorFloat>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedInt>(), UnresolvedTypeLayout<MaybeUninit<VectorFloat>>()), UnresolvedTypeLayout<VectorFloat>())
 }
 
-public fun vectorExtractVecExtractVectorDouble(a: VectorDouble, b: Int): LTT = transmuteWithLayouts<ULong, LTT>(vlgvg(transmuteWithLayouts<VectorDouble, LTT>(a, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<LTT>()), b), UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<LTT>())
+public fun vectorExtractVecExtractVectorDouble(a: VectorDouble, b: Int): Double = transmuteWithLayouts<ULong, Double>(vlgvg(transmuteWithLayouts<VectorDouble, Double>(a, UnresolvedTypeLayout<VectorDouble>(), UnresolvedTypeLayout<Double>()), b), UnresolvedTypeLayout<ULong>(), UnresolvedTypeLayout<Double>())
 
-public fun vectorInsertVecInsertVectorDouble(a: LTT, b: VectorDouble, c: Int): VectorDouble = transmuteWithLayouts<VectorUnsignedLongLong, VectorDouble>(vlvgg(transmuteWithLayouts<LTT, VectorDouble>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<VectorDouble>()), b, c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())
+public fun vectorInsertVecInsertVectorDouble(a: Double, b: VectorDouble, c: Int): VectorDouble = transmuteWithLayouts<VectorUnsignedLongLong, VectorDouble>(vlvgg(transmuteWithLayouts<Double, VectorDouble>(a, UnresolvedTypeLayout<Double>(), UnresolvedTypeLayout<VectorDouble>()), b, c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())
 
 public fun vectorInsertAndZeroVecInsertAndZeroVectorDouble(a: ConstPtr): VectorDouble = transmuteWithLayouts<VectorUnsignedLongLong, VectorDouble>(vllezg(a), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<VectorDouble>())
 
-public fun vectorPromoteVecPromoteVectorDouble(a: LTT, c: Int): MaybeUninit<VectorDouble> {
+public fun vectorPromoteVecPromoteVectorDouble(a: Double, c: Int): MaybeUninit<VectorDouble> {
     val b = MaybeUninit.zeroed(UnresolvedTypeLayout<VectorDouble>())
-    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedLongLong, MaybeUninit<VectorDouble>>(vlvgg(transmuteWithLayouts<LTT, MaybeUninit<VectorDouble>>(a, UnresolvedTypeLayout<LTT>(), UnresolvedTypeLayout<MaybeUninit<VectorDouble>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<MaybeUninit<VectorDouble>>()), UnresolvedTypeLayout<VectorDouble>())
+    return MaybeUninit.new(transmuteWithLayouts<VectorUnsignedLongLong, MaybeUninit<VectorDouble>>(vlvgg(transmuteWithLayouts<Double, MaybeUninit<VectorDouble>>(a, UnresolvedTypeLayout<Double>(), UnresolvedTypeLayout<MaybeUninit<VectorDouble>>()), transmute(b), c), UnresolvedTypeLayout<VectorUnsignedLongLong>(), UnresolvedTypeLayout<MaybeUninit<VectorDouble>>()), UnresolvedTypeLayout<VectorDouble>())
 }

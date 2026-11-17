@@ -112,7 +112,7 @@ public open class AuxVec(
 public fun auxv(): Result<AuxVec, Unit> {
     // Try to call a getauxval function.
     when (val matchVal = getauxval(AT_HWCAP)) {
-        is Ok -> {
+        is Result.Ok -> {
             val hwcap = matchVal.value
             // Targets with only AT_HWCAP:
             if (hwcap != 0) {
@@ -120,7 +120,7 @@ public fun auxv(): Result<AuxVec, Unit> {
             }
             // Targets with AT_HWCAP and AT_HWCAP2:
             when (val matchVal1 = getauxval(AT_HWCAP2)) {
-                is Ok -> {
+                is Result.Ok -> {
                     val hwcap2 = matchVal1.value
                     // Zero could indicate that no features were detected, but it's also used to indicate
                     // an error. In particular, on many platforms AT_HWCAP2 will be legitimately zero,

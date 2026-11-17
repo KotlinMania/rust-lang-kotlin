@@ -53,7 +53,7 @@ public fun <T> repeat(value: T, n: Int): List<T> {
     val iter = repeatN(value, n)
     // SAFETY: Unless a panic occurs, fromFn will call the closure N times,
     // and repeatN's next() will return Some for N times.
-    return fromFn({ iter.next().unwrapUnchecked() })
+    return fromFn({ iter.next().unwrapUnchecked() }, n)
 }
 
 /**
@@ -105,7 +105,7 @@ public fun <T> repeat(value: T, n: Int): List<T> {
  * check(a == listOf(1, 2, 4, 8, 16, 32))
  * ```
  */
-public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCircuit.wrapMut1(f)).first
+public fun <T> fromFn(f: (Int) -> T, n: Int): List<T> = tryFromFn(NeverShortCircuit.wrapMut1(f), n).first
 
 /**
  * Creates an array `[T; N]` where each fallible array element `T` is returned by the `cb` call.
@@ -147,7 +147,7 @@ public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutput
         }
         is ControlFlow.Continue -> {
             // SAFETY: All elements of the array were populated.
-            MaybeUninit.arrayAssumeInit(array)
+            MaybeUninit.arrayAssumeInit(array, n)
         }
     }
 }
@@ -442,7 +442,7 @@ public fun <T> specArrayCloneCloneT(array: List<T>, n: Int): List<T> {
         val old = ptr
         ptr = ConstPtr((ptr).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
         ((UnresolvedTypeLayout<T>()).readNative((old).rawAddress)).clone()
-    } })
+    } }, n)
 }
 
 public fun <T> defaultTArray32(defaultTFn: () -> T): List<T> = listOf(defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn(), defaultTFn())
@@ -611,8 +611,8 @@ public fun <T, U> List<T>.map(f: (T) -> U, n: Int): List<U> = this.tryMap(NeverS
 public fun <Output, Residual, T, R> List<T>.tryMap(f: (T) -> R, n: Int): ChangeOutputType<R, List<Output>> where R : Try<R, Output, Residual> {
     val me = this
     // SAFETY: tryFromFn calls `f` N times.
-    val f1 = Drain.new(me, f)
-    return tryFromFn(f1)
+    val f1 = Drain.new(me, f, n)
+    return tryFromFn(f1, n)
 }
 
 /**
@@ -825,11 +825,11 @@ public fun <I : Iterator<T>, T> I.specNextChunk(n: Int): Result<List<T>, IntoIte
     val r = iterNextChunkErased(array, this)
     return when (r) { is Result.Ok -> {
         // SAFETY: All elements of `array` were populated.
-        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
     }; is Result.Err -> {
         val initialized = r.error
         // SAFETY: Only the first `initialized` elements were populated
-        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until initialized))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until initialized, n))
     } }
 }
 
@@ -838,14 +838,14 @@ public fun <I, T> I.specNextChunkTN(n: Int): Result<List<T>, IntoIter<T>> where 
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get len items out of it.
-        write(array, this, len)
+        write(array, this, len, n)
         // SAFETY: Only the first `len` elements were populated
-        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until len))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, 0 until len, n))
     } else {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get N items out of it.
-        write(array, this, n)
+        write(array, this, n, n)
         // SAFETY: All N items were populated
-        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
     }
 }
 
@@ -854,11 +854,11 @@ public fun <I, T> I.specNextChunkBack(n: Int): Result<List<T>, IntoIter<T>> {
     val r = iterNextChunkBackErased(array, this)
     return when (r) { is Result.Ok -> {
         // SAFETY: All elements of `array` were populated.
-        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
     }; is Result.Err -> {
         val initialized = r.error
         // SAFETY: Only the last `initialized` elements were populated
-        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - initialized until n))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - initialized until n, n))
     } }
 }
 
@@ -867,13 +867,13 @@ public fun <I : TrustedLen, T> I.specNextChunkBackTN(n: Int): Result<List<T>, In
     val array = MutableList(n) { MaybeUninit.uninit(UnresolvedTypeLayout<T>()) }
     return if (len < n) {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get len items out of it.
-        writeBack(array, this, len)
+        writeBack(array, this, len, n)
         // SAFETY: Only the last `len` elements were populated
-        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - len until n))
+        Result.Err<List<T>, IntoIter<T>>(IntoIter.newUnchecked(array, n - len until n, n))
     } else {
         // SAFETY: `TrustedLen`, an unchecked trait, requires that i can get N items out of it.
-        writeBack(array, this, n)
+        writeBack(array, this, n, n)
         // SAFETY: All N items were populated
-        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array))
+        Result.Ok<List<T>, IntoIter<T>>(MaybeUninit.arrayAssumeInit(array, n))
     }
 }

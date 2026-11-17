@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.core.tuple
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.*
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Break
-import io.github.kotlinmania.rustlang.core.ops.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
+import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 
 /**
  * This trait is implemented for tuples up to twelve items long.

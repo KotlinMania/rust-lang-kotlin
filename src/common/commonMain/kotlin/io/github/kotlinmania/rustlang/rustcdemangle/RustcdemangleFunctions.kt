@@ -131,7 +131,7 @@ public fun demangleLine(line: String, output: Write, includeHash: Boolean): Resu
         val mangled = line.substring(head until matchEnd)
         head = head + mangled.length
         when (val matchVal1 = tryDemangle(mangled)) {
-            is Ok -> {
+            is Result.Ok -> {
                 val demangled = matchVal1.value
                 if (includeHash) {
                     output.append("$demangled")

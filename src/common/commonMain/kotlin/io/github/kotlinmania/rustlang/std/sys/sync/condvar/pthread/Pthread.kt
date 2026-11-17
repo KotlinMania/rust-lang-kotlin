@@ -8,30 +8,29 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
-import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
+import io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread.Mutex
 import io.github.kotlinmania.rustlang.std.sys.sync.oncebox.OnceBox
 import io.github.kotlinmania.rustlang.std.time.Instant
-import io.github.kotlinmania.rustlang.std.sys.pal.sync as pal
 
 public open class Condvar internal constructor(
-    cvarCtorArg: OnceBox<pal.Condvar>,
+    cvarCtorArg: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar>,
     mutexCtorArg: Atomic<Int, Align8<Int>>,
 ) {
-    public var cvar: OnceBox<pal.Condvar> = cvarCtorArg
+    public var cvar: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar> = cvarCtorArg
         internal set
 
     public var mutex: Atomic<Int, Align8<Int>> = mutexCtorArg
         internal set
 
-    public open fun get(): Pin<pal.Condvar> =
+    public open fun get(): Pin<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar> =
         this.cvar.getOrInit({
-            var cvar = Box.pin(pal.Condvar.new())
+            var cvar = Box.pin(io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar.new())
             // SAFETY: we only call `init` once per `pal.Condvar`, namely here.
             cvar.asMut().init()
             cvar
         })
 
-    public open fun verify(mutex: Pin<pal.Mutex>) {
+    public open fun verify(mutex: Pin<Mutex>) {
         val addr = mutex.addr()
         // Relaxed is okay here because we never read through `self.mutex`, and only use it to
         // compare addresses.
@@ -59,7 +58,7 @@ public open class Condvar internal constructor(
         this.get().notifyAll()
     }
 
-    public open fun wait(mutex: Mutex) {
+    public open fun wait(mutex: io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread.Mutex) {
         // SAFETY: the caller guarantees that the lock is owned, thus the mutex
         // must have been initialized already.
         val mutex1 = mutex.pal.getUnchecked()
@@ -70,12 +69,12 @@ public open class Condvar internal constructor(
         this.get().wait(mutex1)
     }
 
-    public open fun waitTimeout(mutex: Mutex, dur: Duration): Boolean {
+    public open fun waitTimeout(mutex: io.github.kotlinmania.rustlang.std.sys.sync.mutex.pthread.Mutex, dur: Duration): Boolean {
         // SAFETY: the caller guarantees that the lock is owned, thus the mutex
         // must have been initialized already.
         val mutex1 = mutex.pal.getUnchecked()
         this.verify(mutex1)
-        return if (pal.Condvar.PRECISE_TIMEOUT) {
+        return if (io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar.PRECISE_TIMEOUT) {
             // SAFETY: we called `init` above, we verified that this condition
             // variable is only used with `mutex` and the caller guarantees that
             // `mutex` is locked by the current thread.
@@ -93,7 +92,7 @@ public open class Condvar internal constructor(
 
     public companion object {
         public operator fun invoke(
-            cvar: OnceBox<pal.Condvar>,
+            cvar: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar>,
             mutex: Atomic<Int, Align8<Int>>,
         ): Condvar = Condvar(
             cvarCtorArg = cvar,

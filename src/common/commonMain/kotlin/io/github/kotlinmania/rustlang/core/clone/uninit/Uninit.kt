@@ -2,13 +2,13 @@
 package io.github.kotlinmania.rustlang.core.clone.uninit
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.option.Option
+import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
@@ -43,7 +43,7 @@ public fun <T> copySpecCloneSliceT(src: List<T>, dst: MutPtr, typeLayoutT: TypeL
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = Eq
+                    val kind = AssertKind.Eq
                     assertFailed(kind, leftVal, rightVal, Option.Some("clone_to_uninit() source and destination must have equal lengths"))
                 }
             }
@@ -83,7 +83,7 @@ public fun <T : TrivialClone<T>> copySpecCloneSliceT(src: List<T>, dst: MutPtr) 
                 val leftVal = matchVal.first
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
-                    val kind = Eq
+                    val kind = AssertKind.Eq
                     assertFailed(kind, leftVal, rightVal, Option.Some("clone_to_uninit() source and destination must have equal lengths"))
                 }
             }

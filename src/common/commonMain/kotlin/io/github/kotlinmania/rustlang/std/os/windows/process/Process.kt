@@ -21,11 +21,11 @@ import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
-import io.github.kotlinmania.rustlang.std.sys.process.unsupported.ChildPipe
-import io.github.kotlinmania.rustlang.std.sys.process.unsupported.Stdio
 import io.github.kotlinmania.rustlang.std.sys.process.windows.Process
+import io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio
+import io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe.ChildPipe
 
 // Windows-specific extensions to primitives in the [std.process] module.
 

@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.seek.Seek
 import io.github.kotlinmania.rustlang.core.io.seek.SeekFrom
 import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -294,7 +295,7 @@ public open class BufReader<R>(
                 }
             }
         }
-        return this.seek(SeekFrom.Current(offset)).map({ Unit })
+        return this.seek(SeekFrom.Current(offset)).map({ drop(it) })
     }
 
     public override fun specReadByte(): Result<UByte>? {

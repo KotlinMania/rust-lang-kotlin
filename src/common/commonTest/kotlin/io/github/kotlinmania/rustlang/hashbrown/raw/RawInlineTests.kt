@@ -13,10 +13,9 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
-import io.github.kotlinmania.rustlang.std.thread.lifecycle.scope
 
 public fun <T> rehashInPlace(table: RawTable<T, Global>, hasher: (T) -> ULong, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     run {
@@ -185,7 +184,7 @@ public class RawTestMapInlineTests {
             table.insert(idx1, Pair(idx1, CheckedCloneDrop(panicInClone = panicInClone, dropped = false, needDrop = mutableListOf(idx1))), { (k, _) -> k })
         }
         check(table.len() == 7)
-        scope({ s ->
+        Thread.scope({ s ->
             val result =
                 s.spawn({
                     val armedFlags = listOf(DISARMED, DISARMED, ARMED, DISARMED, DISARMED, DISARMED, DISARMED)

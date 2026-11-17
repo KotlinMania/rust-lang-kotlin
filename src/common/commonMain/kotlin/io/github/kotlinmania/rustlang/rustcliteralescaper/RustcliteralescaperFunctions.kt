@@ -239,7 +239,7 @@ public fun checkForErrors(src: String, mode: Mode, errorCallback: (IntRange, Esc
         Mode.Char -> {
             val chars = src.chars()
             when (val matchVal = String.unescapeSingle(chars)) {
-                is Err -> {
+                is Result.Err -> {
                     val e = matchVal.error
                     errorCallback(0 until (src.length - chars.asStr().length), e)
                 }
@@ -249,7 +249,7 @@ public fun checkForErrors(src: String, mode: Mode, errorCallback: (IntRange, Esc
         Mode.Byte -> {
             val chars1 = src.chars()
             when (val matchVal1 = List.unescapeSingle(chars1)) {
-                is Err -> {
+                is Result.Err -> {
                     val e1 = matchVal1.error
                     errorCallback(0 until (src.length - chars1.asStr().length), e1)
                 }

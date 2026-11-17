@@ -20,13 +20,14 @@ import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.args.common.Args
-import io.github.kotlinmania.rustlang.std.sys.c
 import io.github.kotlinmania.rustlang.std.sys.helpers.wstr.WStrUnits
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getCommandLineW
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getFullPathNameW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.ensureNoNuls
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.fillUtf16Buf
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.toU16s
 import io.github.kotlinmania.rustlang.std.sys.path.windows.getLongPath
-import io.github.kotlinmania.rustlang.std.sys.paths.unix.currentExe
+import io.github.kotlinmania.rustlang.std.sys.paths.windows.currentExe
 
 // The Windows command line is just a string
 // <https://docs.microsoft.com/en-us/archive/blogs/larryosterman/the-windows-command-line-is-just-a-string>
@@ -37,7 +38,7 @@ public fun args(): Args {
     // SAFETY: `GetCommandLineW` returns a pointer to a null terminated UTF-16
     // string so it's safe for `WStrUnits` to use.
     return run {
-        val lpCmdLine = c.GetCommandLineW()
+        val lpCmdLine = getCommandLineW()
         val parsedArgsList =
             parseLpCmdLine(WStrUnits.new(lpCmdLine), {
                 currentExe().map(PathBuf::intoOsString).unwrapOrElse({ OsString.new() })
@@ -391,7 +392,7 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
         // `\\?\C:\...` => `C:\...`
         path.size >= 7 && path[0] == SEP && path[1] == SEP && path[2] == QUERY && path[3] == SEP && path[5] == COLON && path[6] == SEP -> run {
             val lpfilename = ((path).subList(4, (path).size)).asPtr()
-            fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
+            fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
                 if (fullPath == ((path).subList(4, path.size - 1))) {
                     val path1: List<UShort>  = fullPath.into()
                     path1.push(0)
@@ -406,7 +407,7 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
             // Change the `C` in `UNC\` to `\` so we can get a slice that starts with `\\`.
             path[6] = 92u.toUShort()
             val lpfilename1 = ((path).subList(6, (path).size)).asPtr()
-            fillUtf16Buf({ buffer, size -> c.GetFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
+            fillUtf16Buf({ buffer, size -> getFullPathNameW(lpfilename1, size, buffer, MutPtr(0L)) }, { fullPath: List<UShort> ->
                 if (fullPath == ((path).subList(6, path.size - 1))) {
                     val path1: List<UShort>  = fullPath.into()
                     path1.push(0)

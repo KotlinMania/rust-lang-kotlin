@@ -1,10 +1,10 @@
 // port-lint: source math/pow.rs
 package io.github.kotlinmania.rustlang.libm.math.pow
 
+import io.github.kotlinmania.rustlang.libm.math.arch.aarch64.sqrt.sqrt
 import io.github.kotlinmania.rustlang.libm.math.fabs.fabs
 import io.github.kotlinmania.rustlang.libm.math.getHighWord
 import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbn
-import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrt
 import io.github.kotlinmania.rustlang.libm.math.withSetHighWord
 import io.github.kotlinmania.rustlang.libm.math.withSetLowWord
 

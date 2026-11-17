@@ -321,7 +321,7 @@ public open class Object internal constructor(
                     val notes = valueVal
                     while (true) {
                         val matchVal1 = notes.next()
-                        if (matchVal1 !is Result.Ok) break
+                        if (!(matchVal1 is Result.Ok && matchVal1.value != null)) break
                         val valueVal1 = (matchVal1 as Result.Ok).value
                         val note = valueVal1
                         if (note.name() == ELF_NOTE_GNU && note.nType(this.endian) == NT_GNU_BUILD_ID) {

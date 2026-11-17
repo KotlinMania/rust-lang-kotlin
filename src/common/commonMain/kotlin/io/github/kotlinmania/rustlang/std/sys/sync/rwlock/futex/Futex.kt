@@ -73,7 +73,7 @@ public open class RwLock(
             // Make sure the readers waiting bit is set before we go to sleep.
             if (!hasReadersWaiting(state)) {
                 when (val matchVal1 = this.state.compareExchange(state, state or READERS_WAITING, Relaxed, Relaxed)) {
-                    is Err -> {
+                    is Result.Err -> {
                         val s1 = matchVal1.error
                         state = s1
                         continue
@@ -146,7 +146,7 @@ public open class RwLock(
             // Set the waiting bit indicating that we're waiting on it.
             if (!hasWritersWaiting(state)) {
                 when (val matchVal1 = this.state.compareExchange(state, state or WRITERS_WAITING, Relaxed, Relaxed)) {
-                    is Err -> {
+                    is Result.Err -> {
                         val s1 = matchVal1.error
                         state = s1
                         continue

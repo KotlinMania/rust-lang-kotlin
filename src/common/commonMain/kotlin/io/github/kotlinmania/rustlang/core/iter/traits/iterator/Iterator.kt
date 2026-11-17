@@ -128,7 +128,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun nextChunk(n: Int): Result<List<Item>, IntoIter<Item>> = iterNextChunk(this)
+    public fun nextChunk(n: Int): Result<List<Item>, IntoIter<Item>> = iterNextChunk(this, n)
 
     /**
      * Returns the bounds on the remaining length of the iterator.
@@ -1505,7 +1505,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <R> mapWindows(f: (List<Item>) -> R, n: Int): MapWindows<SelfType, (List<Item>) -> R> = MapWindows.new(this, f)
+    public fun <R> mapWindows(f: (List<Item>) -> R, n: Int): MapWindows<SelfType, (List<Item>) -> R> = MapWindows.new(this, f, n)
 
     /**
      * Creates an iterator which ends after the first [None].
@@ -3011,7 +3011,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun arrayChunks(n: Int): ArrayChunks<SelfType> = ArrayChunks.new(this)
+    public fun arrayChunks(n: Int): ArrayChunks<SelfType> = ArrayChunks.new(this, n)
 
     /**
      * Sums the elements of an iterator.

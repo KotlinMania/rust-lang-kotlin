@@ -121,7 +121,7 @@ public open class Once internal constructor(
                 state == POISONED || state == INCOMPLETE -> {
                     // Try to register this thread as the one RUNNING.
                     when (val matchVal = this.stateAndQueue.compareExchangeWeak(current, current.mask(QUEUE_MASK).wrappingByteAdd(RUNNING), Acquire, Acquire)) {
-                        is Err -> {
+                        is Result.Err -> {
                             val new = matchVal.error
                             current = new
                             continue
@@ -338,7 +338,7 @@ public fun wait(stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>, current: StateAnd
         // Try to slide in the node at the head of the linked list, making sure
         // that another thread didn't just replace the head of the linked list.
         when (val matchVal = stateAndQueue.compareExchangeWeak(current1, mutPtrFromRustCast(node.wrappingByteAdd(state)), Release, Acquire)) {
-            is Err -> {
+            is Result.Err -> {
                 val new = matchVal.error
                 current1 = new
                 continue

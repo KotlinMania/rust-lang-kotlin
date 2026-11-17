@@ -291,7 +291,7 @@ public open class Layout(
         // `Long.MAX + 1 + Long.MAX`, which is `Int.MAX`, and cannot overflow.
         val newSize = uncheckedAdd(offset, next.size)
         return when (val matchVal = Layout.fromSizeAlignment(newSize, newAlignment)) {
-            is Ok -> {
+            is Result.Ok -> {
                 val layout = matchVal.value
                 Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(layout, offset))
             }

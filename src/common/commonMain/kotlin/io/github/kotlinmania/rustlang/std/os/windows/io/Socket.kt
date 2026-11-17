@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -19,7 +20,7 @@ import io.github.kotlinmania.rustlang.std.os.windows.raw.FromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.RawSocket
 import io.github.kotlinmania.rustlang.std.sync.Arc
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 
 // Owned and borrowed OS sockets.
 
@@ -160,7 +161,7 @@ public open class OwnedSocket internal constructor(
     public open fun tryClone(): Result<OwnedSocket, Error> = this.asSocket().tryCloneToOwned()
 
     // Note(strictProvenanceMagic): we defined RawSocket to be a u64 ;-;
-    public open fun setNoInherit(): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt(C.SetHandleInformation(((this.asRawSocket() as Any?) as C.Handle), C.HANDLE_FLAG_INHERIT, 0)).map({ Unit })
+    public open fun setNoInherit(): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt(C.SetHandleInformation(((this.asRawSocket() as Any?) as C.Handle), C.HANDLE_FLAG_INHERIT, 0)).map({ drop(it) })
 
     public override fun asRawSocket(): RawSocket = this.socket.asInner()
 

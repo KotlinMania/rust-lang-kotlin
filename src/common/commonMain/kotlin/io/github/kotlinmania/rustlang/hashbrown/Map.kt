@@ -7,8 +7,8 @@ import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawDrain
@@ -1029,12 +1029,12 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * val got = libraries.getDisjointMut(listOf("Athenæum", "Athenæum"))
      * ```
      */
-    public open fun <Q> getDisjointMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointMutInner(ks).map({ res -> res.map({ (_, v) -> v }) })
+    public open fun <Q> getDisjointMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointMutInner(ks, n).map({ res -> res.map({ (_, v) -> v }) })
 
     /**
      * Attempts to get mutable references to `N` values in the map at once.
      */
-    public open fun <Q> getManyMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointMut(ks)
+    public open fun <Q> getManyMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointMut(ks, n)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, without validating that
@@ -1076,13 +1076,13 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * check(got1 == listOf(RustMutableReference(allocateNativeCell(1807, PrimitiveLayouts.I32), PrimitiveLayouts.I32), null))
      * ```
      */
-    public open fun <Q> getDisjointUncheckedMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointUncheckedMutInner(ks).map({ res -> res.map({ (_, v) -> v }) })
+    public open fun <Q> getDisjointUncheckedMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointUncheckedMutInner(ks, n).map({ res -> res.map({ (_, v) -> v }) })
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, without validating that
      * the values are unique.
      */
-    public open fun <Q> getManyUncheckedMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointUncheckedMut(ks)
+    public open fun <Q> getManyUncheckedMut(ks: List<Q>, n: Int): List<V> where Q : Equivalent<K> = this.getDisjointUncheckedMut(ks, n)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, with immutable
@@ -1125,13 +1125,13 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * val got = libraries.getDisjointKeyValueMut(listOf("Bodleian Library", "Herzogin-Anna-Amalia-Bibliothek", "Herzogin-Anna-Amalia-Bibliothek"))
      * ```
      */
-    public open fun <Q> getDisjointKeyValueMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointMutInner(ks).map({ res -> res.map({ (k, v) -> Pair(k, v) }) })
+    public open fun <Q> getDisjointKeyValueMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointMutInner(ks, n).map({ res -> res.map({ (k, v) -> Pair(k, v) }) })
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, with immutable
      * references to the corresponding keys.
      */
-    public open fun <Q> getManyKeyValueMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointKeyValueMut(ks)
+    public open fun <Q> getManyKeyValueMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointKeyValueMut(ks, n)
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, with immutable
@@ -1169,22 +1169,22 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
      * check(got1 == listOf(Pair("Bodleian Library".toString(), RustMutableReference(allocateNativeCell(1602, PrimitiveLayouts.I32), PrimitiveLayouts.I32)), null))
      * ```
      */
-    public open fun <Q> getDisjointKeyValueUncheckedMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointUncheckedMutInner(ks).map({ res -> res.map({ (k, v) -> Pair(k, v) }) })
+    public open fun <Q> getDisjointKeyValueUncheckedMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointUncheckedMutInner(ks, n).map({ res -> res.map({ (k, v) -> Pair(k, v) }) })
 
     /**
      * Attempts to get mutable references to `N` values in the map at once, with immutable
      * references to the corresponding keys, without validating that the values are unique.
      */
-    public open fun <Q> getManyKeyValueUncheckedMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointKeyValueUncheckedMut(ks)
+    public open fun <Q> getManyKeyValueUncheckedMut(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> = this.getDisjointKeyValueUncheckedMut(ks, n)
 
     public open fun <Q> getDisjointMutInner(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> {
-        val hashes = this.buildHashesInner(ks)
+        val hashes = this.buildHashesInner(ks, n)
         return this.table.getDisjointMut(hashes, { i, (k, _) -> ks[i].equivalent(k) })
     }
 
     public open fun <Q> getDisjointUncheckedMutInner(ks: List<Q>, n: Int): List<Pair<K, V>> where Q : Equivalent<K> =
         run {
-            val hashes = this.buildHashesInner(ks)
+            val hashes = this.buildHashesInner(ks, n)
             this.table.getDisjointUncheckedMut(hashes, { i, (k, _) -> ks[i].equivalent(k) })
         }
 

@@ -3,12 +3,12 @@ package io.github.kotlinmania.rustlang.alloc.vec.specextendwith
 
 import io.github.kotlinmania.rustlang.alloc.vec.setlenondrop.SetLenOnDrop
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
-import io.github.kotlinmania.rustlang.core.array.write
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 public interface SpecExtendWith<T> {

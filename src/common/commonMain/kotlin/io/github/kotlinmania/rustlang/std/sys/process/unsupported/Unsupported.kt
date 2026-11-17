@@ -14,9 +14,9 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
-import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
+import io.github.kotlinmania.rustlang.std.sys.fs.unsupported.File
 import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
+import io.github.kotlinmania.rustlang.std.sys.pipe.unsupported.Pipe
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs

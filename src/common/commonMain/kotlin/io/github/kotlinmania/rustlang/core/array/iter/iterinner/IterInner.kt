@@ -124,7 +124,7 @@ public fun <T> specPolymorphicIterCloneSpecCloneT(thisRef: PolymorphicIter<List<
     }
     // Note, we don't really need to match the exact same alive range, so
     // we can just clone into offset 0 regardless of where `self` is.
-    val new = PolymorphicIter.empty()
+    val new = PolymorphicIter.empty(n)
     cloneIntoNew(thisRef, new)
     return new
 }

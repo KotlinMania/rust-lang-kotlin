@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -104,7 +105,7 @@ public fun <T> AlignedSystemBox.Companion.new(v: Value<T>, align: Int, typeLayou
             }
             else -> {
                 val err = matchVal
-                val err1 = err.asRef().map({ Unit })
+                val err1 = err.asRef().map({ drop(it) })
                 run {
                     when (val matchVal1 = panicOutput()) {
                         null -> {}
@@ -158,7 +159,7 @@ public fun <T> AlignedSystemBox<T>.drop(align: Int, typeLayoutT: TypeLayout<T> =
             }
             else -> {
                 val err = matchVal
-                val err1 = err.asRef().map({ Unit })
+                val err1 = err.asRef().map({ drop(it) })
                 run {
                     when (val matchVal1 = panicOutput()) {
                         null -> {}
@@ -203,7 +204,7 @@ public fun <T> Storage<T>.get(i: T?, f: () -> T, align: Int): ConstPtr {
         (UnresolvedTypeLayout<Value<T>>()).readNative((ptr).rawAddress).value
     } else {
         // SAFETY: trivially correct.
-        Storage.tryInitialize(key, ptr, i, f)
+        Storage.tryInitialize(key, ptr, i, f, align)
     }
 }
 
@@ -217,8 +218,8 @@ public fun <T> Storage.Companion.tryInitialize(key: Key, ptr: MutPtr, i: T?, f: 
         // destructor is running
         return ConstPtr(0L)
     }
-    val value = AlignedSystemBox.new(Value(value = (i?.let(Option::take) ?: f()), key = key))
-    val ptr1 = AlignedSystemBox.intoRaw(value)
+    val value = AlignedSystemBox.new(Value(value = (i?.let(Option::take) ?: f()), key = key), align)
+    val ptr1 = AlignedSystemBox.intoRaw(value, align)
     // SAFETY:
     // * key came from a `LazyKey` and is thus correct.
     // * `ptr` is a correct pointer that can be destroyed by the key destructor.
@@ -235,7 +236,7 @@ public fun <T> Storage.Companion.tryInitialize(key: Key, ptr: MutPtr, i: T?, f: 
         // initializer has already returned and the next scope only starts
         // after we return the pointer. Therefore, there can be no references
         // to the old value.
-        (AlignedSystemBox.fromRaw(old1)).let { }
+        (AlignedSystemBox.fromRaw(old1, align)).let { }
     }
     // SAFETY: We just created this value above.
     return ptr1.value
@@ -252,7 +253,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
     // Note that to prevent an infinite loop we reset it back to null right
     // before we return from the destructor ourselves.
     abortOnDtorUnwind({
-        val ptr1 = AlignedSystemBox.fromRaw(MutPtr(ptr.rawAddress, ptr.rawMeta))
+        val ptr1 = AlignedSystemBox.fromRaw(MutPtr(ptr.rawAddress, ptr.rawMeta), align)
         val key = ptr1.key
         // SAFETY: `key` is the TLS key `ptr` was stored under.
         set(key, ptr.withoutProvenanceMut(1))

@@ -412,7 +412,7 @@ public fun tryFromNonZeroChar(zeroable: Char): Result<NonZero<Char, NonZeroCharI
 
 public fun <NonZeroInner, T> tryFromNonZeroTSlice(zeroable: List<T>): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromSlice(zeroable)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable, n)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
 /**
  * Implementation of `From<[NonZero<T>; N]> for [T; N]`.

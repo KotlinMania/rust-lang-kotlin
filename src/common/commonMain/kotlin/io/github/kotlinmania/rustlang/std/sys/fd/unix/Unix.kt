@@ -13,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.preadv
 import io.github.kotlinmania.rustlang.libc.pwritev
-import io.github.kotlinmania.rustlang.libc.read
 import io.github.kotlinmania.rustlang.libc.readv
 import io.github.kotlinmania.rustlang.libc.unix.bsd.FIOCLEX
 import io.github.kotlinmania.rustlang.libc.unix.bsd.IOV_MAX
@@ -47,7 +46,7 @@ public open class FileDesc(
     public open fun tryClone(): Result<FileDesc, Error> = this.duplicate()
 
     public open fun read(buf: MutableList<UByte>): Result<Int, Error> {
-        val ret = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.read(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(Read(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, minOf(buf.size, READ_LIMIT)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Int, Error>(tryResult.error) }
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
@@ -67,7 +66,7 @@ public open class FileDesc(
 
     public open fun readBuf(cursor: BorrowedCursor<UByte>): Result<Unit, Error> {
         // SAFETY: `cursor.asMut()` starts with `cursor.capacity()` writable bytes
-        val ret = when (val tryResult = cvt(read(this.asRawFd(), cursor.asMut().asMutPtr().cast(), minOf(cursor.capacity(), READ_LIMIT)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val ret = when (val tryResult = cvt(Read(this.asRawFd(), cursor.asMut().asMutPtr().cast(), minOf(cursor.capacity(), READ_LIMIT)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         // SAFETY: `ret` bytes were written to the initialized portion of the buffer
         run {
             cursor.advance(ret.toInt())

@@ -4,10 +4,10 @@ package io.github.kotlinmania.rustlang.core.range
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
-import io.github.kotlinmania.rustlang.core.ops.Bound.Excluded
-import io.github.kotlinmania.rustlang.core.ops.Bound.Included
-import io.github.kotlinmania.rustlang.core.ops.Bound.Unbounded
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
+import io.github.kotlinmania.rustlang.core.ops.range.Bound.Excluded
+import io.github.kotlinmania.rustlang.core.ops.range.Bound.Included
+import io.github.kotlinmania.rustlang.core.ops.range.Bound.Unbounded
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound
 import io.github.kotlinmania.rustlang.core.range.iter.RangeFromIter
 import io.github.kotlinmania.rustlang.core.range.iter.RangeInclusiveIter

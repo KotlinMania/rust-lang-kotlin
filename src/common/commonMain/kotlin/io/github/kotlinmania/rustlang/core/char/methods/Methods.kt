@@ -50,7 +50,10 @@ import io.github.kotlinmania.rustlang.core.unicode.Uppercase
 import io.github.kotlinmania.rustlang.core.unicode.WhiteSpace
 import io.github.kotlinmania.rustlang.core.unicode.XidContinue
 import io.github.kotlinmania.rustlang.core.unicode.XidStart
-import io.github.kotlinmania.rustlang.core.unicode.conversions
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toCasefold
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toLower
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toTitle
+import io.github.kotlinmania.rustlang.core.unicode.unicodedata.conversions.toUpper
 
 // impl char ()
 
@@ -1409,7 +1412,7 @@ public fun Char.isCaseIgnorable(): Boolean =
  *
  * [SpecialCasing.txt]: https://www.unicode.org/Public/UCD/latest/ucd/SpecialCasing.txt
  */
-public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(conversions.toLower(this)))
+public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(toLower(this)))
 
 /**
  * Returns an iterator that yields the titlecase mapping of this `char` as one or more
@@ -1592,7 +1595,7 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(con
  *
  * [toUppercase]: Self.toUppercase()
  */
-public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(conversions.toTitle(this)))
+public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(toTitle(this)))
 
 /**
  * Returns an iterator that yields the uppercase mapping of this `char` as one or more
@@ -1695,7 +1698,7 @@ public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(con
  *
  * [toTitlecase]: Self.toTitlecase()
  */
-public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(conversions.toUpper(this)))
+public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(toUpper(this)))
 
 /**
  * Returns an iterator that yields the case folding of this `char` as one or more
@@ -1801,7 +1804,7 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(con
  *
  * [normalization]: https://www.unicode.org/faq/normalization.html
  */
-public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIter.new(conversions.toCasefold(this)))
+public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIter.new(toCasefold(this)))
 
 /**
  * Returns the code point value as a `UInt`.

@@ -49,7 +49,7 @@ int32_t wasip1LibGeneratedPathUnlinkFile(int32_t arg0, int32_t arg1, int32_t arg
 int32_t wasip1LibGeneratedPollOneoff(int32_t arg0, int32_t arg1, int32_t arg2, int32_t arg3);
 void wasip1LibGeneratedProcExit(int32_t arg0);
 int32_t wasip1LibGeneratedProcRaise(int32_t arg0);
-int32_t wasip1LibGeneratedSchedYield(void);
+int32_t wasip1LibGeneratedWasiSnapshotPreview1SchedYield(void);
 int32_t wasip1LibGeneratedRandomGet(int32_t arg0, int32_t arg1);
 int32_t wasip1LibGeneratedSockAccept(int32_t arg0, int32_t arg1, int32_t arg2);
 int32_t wasip1LibGeneratedSockRecv(int32_t arg0, int32_t arg1, int32_t arg2, int32_t arg3, int32_t arg4, int32_t arg5);

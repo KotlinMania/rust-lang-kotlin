@@ -32,7 +32,7 @@ import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
 // Owned and borrowed OS handles.
@@ -138,7 +138,7 @@ public open class BorrowedHandle internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "BorrowedHandle").field("handle", this.handle).finish()
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.windows.isTerminal(this)
 
     public override fun asHandle(): BorrowedHandle = this
 
@@ -260,7 +260,7 @@ public open class OwnedHandle internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "OwnedHandle").field("handle", this.handle).finish()
 
-    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.isatty.isTerminal(this)
+    public override fun isTerminal(): Boolean = io.github.kotlinmania.rustlang.std.sys.io.isterminal.windows.isTerminal(this)
 
     public override fun asHandle(): BorrowedHandle {
         // Safety: `OwnedHandle` and `BorrowedHandle` have the same validity

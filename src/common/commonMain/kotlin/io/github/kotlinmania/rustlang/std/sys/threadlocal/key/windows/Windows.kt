@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.windows
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -16,8 +17,18 @@ import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
-import io.github.kotlinmania.rustlang.std.sys.c
-import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INIT_ONCE_STATIC_INIT
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FALSE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.InitOnce
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.TLS_OUT_OF_INDEXES
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.TRUE
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.initOnceBeginInitialize
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.initOnceComplete
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsAlloc
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsFree
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsGetValue
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.tlsSetValue
+import io.github.kotlinmania.rustlang.std.sys.stdio.windows.panicOutput
 
 // Implementation of `LazyKey` for Windows.
 //
@@ -52,7 +63,7 @@ public open class LazyKey internal constructor(
     keyCtorArg: Atomic<Key>,
     public var dtor: Dtor?,
     nextCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
-    onceCtorArg: UnsafeCell<c.InitOnce>,
+    onceCtorArg: UnsafeCell<InitOnce>,
 ) {
     /**
      * The key value shifted up by one. Since TLS_OUT_OF_INDEXES == u32.Max
@@ -70,7 +81,7 @@ public open class LazyKey internal constructor(
      * initialization for keys. Instead, we need synchronize initialization.
      * Use the Windows-provided `Once` since it does not require TLS.
      */
-    public var once: UnsafeCell<c.InitOnce> = onceCtorArg
+    public var once: UnsafeCell<InitOnce> = onceCtorArg
         internal set
 
     public open fun force(): Key {
@@ -90,17 +101,17 @@ public open class LazyKey internal constructor(
 
     public open fun init(): Key =
         if (this.dtor != null) {
-            val pending = c.FALSE
-            val r = c.InitOnceBeginInitialize(this.once.get(), 0, pending, MutPtr(0L))
-            if (r != c.TRUE) {
+            val pending = FALSE
+            val r = initOnceBeginInitialize(this.once.get(), 0u, pending, MutPtr(0L))
+            if (r != TRUE) {
                 fail()
             }
-            if (pending == c.FALSE) {
+            if (pending == FALSE) {
                 // Some other thread initialized the key, load it.
                 this.key.load(Relaxed).wrappingSub(1)
             } else {
-                val key = c.TlsAlloc()
-                if (key == c.TLS_OUT_OF_INDEXES) {
+                val key = tlsAlloc()
+                if (key == TLS_OUT_OF_INDEXES) {
                     run {
                         when (val matchVal = panicOutput()) {
                             null -> {}
@@ -126,16 +137,16 @@ public open class LazyKey internal constructor(
                 // need to establish synchronization through `key`. In particular that acquire load
                 // must happen-after the registerDtor above, to ensure the dtor actually runs!
                 this.key.store((key + 1u), Release)
-                val r1 = c.InitOnceComplete(this.once.get(), 0, MutPtr(0L))
-                if (r1 != c.TRUE) {
+                val r1 = initOnceComplete(this.once.get(), 0u, MutPtr(0L))
+                if (r1 != TRUE) {
                     fail()
                 }
                 key
             }
         } else {
             // If there is no destructor to clean up, we can use racy initialization.
-            val key1 = c.TlsAlloc()
-            if (key1 == c.TLS_OUT_OF_INDEXES) {
+            val key1 = tlsAlloc()
+            if (key1 == TLS_OUT_OF_INDEXES) {
                 run {
                     when (val matchVal1 = panicOutput()) {
                         null -> {}
@@ -159,8 +170,8 @@ public open class LazyKey internal constructor(
                     run {
                         // Some other thread completed initialization first, so destroy
                         // our key and use theirs.
-                        val r2 = c.TlsFree(key1)
-                        if (r2 != c.TRUE) {
+                        val r2 = tlsFree(key1)
+                        if (r2 != TRUE) {
                             fail()
                         }
                         new.wrappingSub(1)
@@ -174,7 +185,7 @@ public open class LazyKey internal constructor(
             key: Atomic<Key>,
             dtor: Dtor?,
             next: Atomic<MutPtr, Align8<MutPtr>>,
-            once: UnsafeCell<c.InitOnce>,
+            once: UnsafeCell<InitOnce>,
         ): LazyKey = LazyKey(
             keyCtorArg = key,
             dtor = dtor,
@@ -182,7 +193,7 @@ public open class LazyKey internal constructor(
             onceCtorArg = once,
         )
 
-        public fun new(dtor: Dtor?): LazyKey = LazyKey(key = AtomicU32.new(0), dtor = dtor, next = AtomicPtr.new(MutPtr(0L)), once = UnsafeCell.new(c.INIT_ONCE_STATIC_INIT))
+        public fun new(dtor: Dtor?): LazyKey = LazyKey(key = AtomicU32.new(0), dtor = dtor, next = AtomicPtr.new(MutPtr(0L)), once = UnsafeCell.new(INIT_ONCE_STATIC_INIT))
     }
 }
 
@@ -202,14 +213,14 @@ public fun fail(): Nothing =
     }
 
 public fun set(key: Key, value: MutPtr) {
-    val r = c.TlsSetValue(key, value)
+    val r = tlsSetValue(key, value)
     // According to MS documentation, `TlsSetValue` returns zero "if it fails"
-    if (r != c.TRUE) {
+    if (r != TRUE) {
         fail()
     }
 }
 
-public fun get(key: Key): MutPtr = MutPtr((c.TlsGetValue(key)).rawAddress)
+public fun get(key: Key): MutPtr = MutPtr((tlsGetValue(key)).rawAddress)
 
 public var DTORS: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(MutPtr(0L))
 
@@ -256,7 +267,7 @@ public fun runDtors() {
                         }
                         else -> {
                             val err = matchVal
-                            val err1 = err.asRef().map({ Unit })
+                            val err1 = err.asRef().map({ drop(it) })
                             run {
                                 when (val matchVal1 = panicOutput()) {
                                     null -> {}
@@ -283,10 +294,10 @@ public fun runDtors() {
             // everything relevant for this key. (It's not clear that this is needed, since the
             // release-acquire pair on DTORS also establishes synchronization, but better safe than
             // sorry.)
-            val ptr = c.TlsGetValue(key)
+            val ptr = tlsGetValue(key)
             if (!((ptr).rawAddress == 0L)) {
                 run {
-                    c.TlsSetValue(key, MutPtr(0L))
+                    tlsSetValue(key, MutPtr(0L))
                     dtor(ptr)
                     anyRun = true
                 }

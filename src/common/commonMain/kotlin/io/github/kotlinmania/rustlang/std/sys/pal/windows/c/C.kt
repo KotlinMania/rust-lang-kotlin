@@ -204,7 +204,7 @@ public val AF_UNIX: AddressFamily = AF_UNIX.toUShort()
 // Desktop specific functions & types
 public val EXCEPTION_CONTINUE_SEARCH: Int = 0
 
-public val INVALID_HANDLE_VALUE: Handle = ptr.withoutProvenanceMut(null)
+public val INVALID_HANDLE_VALUE: Handle = withoutProvenanceMut(null)
 
 // dwShareMode -- CreateFile
 public val FILE_SHARE_DELETE: UInt = cu(FILE_SHARE_DELETE)

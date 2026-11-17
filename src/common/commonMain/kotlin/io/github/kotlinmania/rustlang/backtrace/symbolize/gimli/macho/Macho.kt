@@ -243,7 +243,7 @@ public open class Object(
             var objectMappings = mutableListOf()
             while (true) {
                 val matchVal = commands.next()
-                if (matchVal !is Result.Ok) break
+                if (!(matchVal is Result.Ok && matchVal.value != null)) break
                 val valueVal = (matchVal as Result.Ok).value
                 val command = valueVal
                 when (val matchVal2 = (MachSegment.fromCommand(command).ok() ?: return null)) {
