@@ -3,14 +3,15 @@ package io.github.kotlinmania.rustlang.core.iter.traits.iterator
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.array.iterNextChunk
-import io.github.kotlinmania.rustlang.core.asynciter.fromiter.FromIter
 import io.github.kotlinmania.rustlang.core.cmp.KeyAndValue
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.cmp.maxBy
 import io.github.kotlinmania.rustlang.core.cmp.min
+import io.github.kotlinmania.rustlang.core.cmp.minBy
 import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.ArrayChunks
 import io.github.kotlinmania.rustlang.core.iter.adapters.byrefsized.ByRefSized
 import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
@@ -41,6 +42,8 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Product
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.product
+import io.github.kotlinmania.rustlang.core.iter.traits.accum.sum
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -1759,7 +1762,7 @@ public interface Iterator<SelfType, Item> {
             val hint = this.sizeHint()
             check(hint.second.isNoneOr({ high -> high >= hint.first })) { "Malformed size_hint $hint" }
         }
-        return FromIterator.FromIter(this)
+        return FromIterator.fromIter(this)
     }
 
     /**
@@ -2802,7 +2805,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun maxBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.maxBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> maxBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -2845,7 +2848,7 @@ public interface Iterator<SelfType, Item> {
      * ```
      */
     public fun minBy(compare: (Item, Item) -> Ordering): Item? {
-        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> cmp.minBy(x, y, compare1) }
+        fun <T> fold(compare1: (T, T) -> Ordering): (T, T) -> T = { x, y -> minBy(x, y, compare1) }
         return this.reduce(fold(compare))
     }
 
@@ -3047,7 +3050,7 @@ public interface Iterator<SelfType, Item> {
      * check(sum1 == -0.0f)
      * ```
      */
-    public fun <S> sum(): S where S : Sum<Item, S> = Sum.Sum(this)
+    public fun <S> sum(): S where S : Sum<Item, S> = Sum.sum(this)
 
     /**
      * Iterates over the entire iterator, multiplying all the elements.
@@ -3074,7 +3077,7 @@ public interface Iterator<SelfType, Item> {
      * check(factorial(5u) == 120u)
      * ```
      */
-    public fun <P> product(): P where P : Product<Item, P> = Product.Product(this)
+    public fun <P> product(): P where P : Product<Item, P> = Product.product(this)
 
     /**
      * [Lexicographically](Ord#lexicographical-comparison) compares the elements of this [Iterator] with those
@@ -3244,7 +3247,7 @@ public interface Iterator<SelfType, Item> {
                     ControlFlow.Break(Unit)
                 }
             }
-        return SpecIterEq.SpecIterEq(this, other.iterator(), compare(eq))
+        return this.specIterEq(other.iterator(), compare(eq))
     }
 
     /**

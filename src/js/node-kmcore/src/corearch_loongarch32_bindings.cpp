@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchLoongarch32Cacop_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarch32ExternCacop_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t b = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -84,7 +84,7 @@ static Napi::Value corearchLoongarch32Cacop_napi(const Napi::CallbackInfo& km_in
     return km_env.Undefined();
 }
 
-static Napi::Value corearchLoongarch32Csrrd_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarch32ExternCsrrd_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -117,7 +117,7 @@ static Napi::Value corearchLoongarch32Csrrd_napi(const Napi::CallbackInfo& km_in
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchLoongarch32Csrwr_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarch32ExternCsrwr_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t b = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -151,7 +151,7 @@ static Napi::Value corearchLoongarch32Csrwr_napi(const Napi::CallbackInfo& km_in
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchLoongarch32Csrxchg_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchLoongarch32ExternCsrxchg_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t b = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -187,10 +187,10 @@ static Napi::Value corearchLoongarch32Csrxchg_napi(const Napi::CallbackInfo& km_
 }
 
 static void register_loongarch32_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchLoongarch32Cacop", Napi::Function::New(env, corearchLoongarch32Cacop_napi));
-    exports.Set("corearchLoongarch32Csrrd", Napi::Function::New(env, corearchLoongarch32Csrrd_napi));
-    exports.Set("corearchLoongarch32Csrwr", Napi::Function::New(env, corearchLoongarch32Csrwr_napi));
-    exports.Set("corearchLoongarch32Csrxchg", Napi::Function::New(env, corearchLoongarch32Csrxchg_napi));
+    exports.Set("corearchLoongarch32ExternCacop", Napi::Function::New(env, corearchLoongarch32ExternCacop_napi));
+    exports.Set("corearchLoongarch32ExternCsrrd", Napi::Function::New(env, corearchLoongarch32ExternCsrrd_napi));
+    exports.Set("corearchLoongarch32ExternCsrwr", Napi::Function::New(env, corearchLoongarch32ExternCsrwr_napi));
+    exports.Set("corearchLoongarch32ExternCsrxchg", Napi::Function::New(env, corearchLoongarch32ExternCsrxchg_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_loongarch32_napi, nullptr };

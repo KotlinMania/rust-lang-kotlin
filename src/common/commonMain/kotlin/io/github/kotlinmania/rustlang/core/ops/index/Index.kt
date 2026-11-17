@@ -20,6 +20,30 @@ package io.github.kotlinmania.rustlang.core.ops.index
  *     public data object C : Nucleotide()
  *     public data object G : Nucleotide()
  *     public data object T : Nucleotide()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         A -> 0
+ *         C -> 1
+ *         G -> 2
+ *         T -> 3
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * open class NucleotideCount(
  *     public var a: Int,
@@ -71,6 +95,28 @@ public interface Index<Idx, out Output> {
  * sealed class Side {
  *     public data object Left : Side()
  *     public data object Right : Side()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Left -> 0
+ *         Right -> 1
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * sealed class Weight {
  *     public data class Kilogram(public var value: Float) : Weight()

@@ -15,7 +15,7 @@
 #endif
 #endif
 
-uint32_t corearchS390xVectorLcbb(void* a, uint32_t b) {
+uint32_t corearchS390xVectorExternLcbb(void* a, uint32_t b) {
     typedef uint32_t (*km_fn_t)(void*, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

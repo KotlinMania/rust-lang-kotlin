@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.cell.once
 
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugTuple(
@@ -376,7 +375,7 @@ public open class OnceCell<T>(
             null -> OnceCell.new()
             else -> {
                 val value = matchVal
-                OnceCell.From(value.clone())
+                OnceCell.from(value.clone())
             }
         }
 

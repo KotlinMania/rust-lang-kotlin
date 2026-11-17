@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
-import io.github.kotlinmania.rustlang.backtrace.dbghelp.Init
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymAddrIncludeInlineTrace
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymFromInlineContextW
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymGetLineFromInlineContextW
@@ -130,7 +129,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
     // Ensure this process's symbols are initialized
     val dbghelp1 =
         run {
-            val matchVal = dbghelp.Init()
+            val matchVal = dbghelp.init()
             when (matchVal) { is Result.Ok<*, *> -> {
                 val dbghelp = matchVal.okValue()
                 dbghelp

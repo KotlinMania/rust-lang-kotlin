@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
-import io.github.kotlinmania.rustlang.core.iter.adapters.zip.Zip
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -187,9 +187,9 @@ public open class Big64x20(
      * Adds `other` to itself and returns its own mutable reference.
      */
     public open fun add(other: Big64x20): Big64x20 {
-        var sz = cmp.max(this.size, other.size)
+        var sz = max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -222,9 +222,9 @@ public open class Big64x20(
      * Subtracts `other` from itself and returns its own mutable reference.
      */
     public open fun sub(other: Big64x20): Big64x20 {
-        val sz = cmp.max(this.size, other.size)
+        val sz = max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -340,7 +340,7 @@ public open class Big64x20(
             }
             return retsz
         }
-        val ret = MutableList(20) { 0 }
+        val ret = ULongArray(20) { 0uL }
         val retsz =
             if (this.size < other.size) {
                 mulInner(ret, this.digits(), other)
@@ -518,9 +518,9 @@ public open class Big8x3(
      * Adds `other` to itself and returns its own mutable reference.
      */
     public open fun add(other: Big8x3): Big8x3 {
-        var sz = cmp.max(this.size, other.size)
+        var sz = max(this.size, other.size)
         var carry = false
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(b, carry)
             a = v
             carry = c
@@ -553,9 +553,9 @@ public open class Big8x3(
      * Subtracts `other` from itself and returns its own mutable reference.
      */
     public open fun sub(other: Big8x3): Big8x3 {
-        val sz = cmp.max(this.size, other.size)
+        val sz = max(this.size, other.size)
         var noborrow = true
-        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = iter.Zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
+        for ((a, b) in run { val subSlice0 = this.base.sliceArray(0 until sz); val subCall0 = zip(subSlice0, ((other.base).sliceArray(0 until sz))); subSlice0.copyInto(this.base, destinationOffset = 0); subCall0 }) {
             val (v, c) = a.carryingAdd(!b, noborrow)
             a = v
             noborrow = c
@@ -671,7 +671,7 @@ public open class Big8x3(
             }
             return retsz
         }
-        val ret = MutableList(3) { 0 }
+        val ret = UByteArray(3) { 0u.toUByte() }
         val retsz =
             if (this.size < other.size) {
                 mulInner(ret, this.digits(), other)

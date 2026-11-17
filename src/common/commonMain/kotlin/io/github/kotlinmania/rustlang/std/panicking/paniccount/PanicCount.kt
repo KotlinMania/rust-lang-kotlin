@@ -14,6 +14,28 @@ public val ALWAYS_ABORT_FLAG: Int = 1 shl (32u - 1u).toInt()
 public sealed class MustAbort {
     public data object AlwaysAbort : MustAbort()
     public data object PanicInHook : MustAbort()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        AlwaysAbort -> 0
+        PanicInHook -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 // Sum of panic counts from all threads. The purpose of this is to have

@@ -2,8 +2,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.aarch64
 
-public actual fun rndr(): Tuple =
+public actual fun externRndr(): Tuple =
     null as Tuple
 
-public actual fun rndrrs(): Tuple =
+public actual fun externRndrrs(): Tuple =
     null as Tuple

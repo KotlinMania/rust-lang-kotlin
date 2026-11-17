@@ -14,6 +14,7 @@ import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
 import io.github.kotlinmania.rustlang.std.sys.exit.uniqueThreadExit
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased.CLEANUP
+import io.github.kotlinmania.rustlang.std.thread.current.currentId
 import io.github.kotlinmania.rustlang.std.thread.current.dropCurrent
 import io.github.kotlinmania.rustlang.std.thread.mainthread.set
 
@@ -73,7 +74,7 @@ public inline fun <reified T> handleRtPanic(e: RustAny): T {
 public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
     // Remember the main thread ID to give it the correct name.
     // SAFETY: this is the only time and place where we call this function.
-    set(thread.currentId())
+    set(currentId())
     io.github.kotlinmania.rustlang.std.sys.args.unix.init(argc, argv, sigpipe)
 }
 

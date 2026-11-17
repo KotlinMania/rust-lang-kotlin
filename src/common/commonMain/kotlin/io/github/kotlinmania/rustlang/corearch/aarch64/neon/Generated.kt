@@ -1346,13 +1346,13 @@ public fun vceqsF32(a: Float, b: Float): UInt = vgetLaneU32(vceqF32(vdupNF32(a),
  * Compare bitwise equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vceqdS64)
  */
-public fun vceqdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqS64((a).toULong(), (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vceqdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare bitwise equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vceqdU64)
  */
-public fun vceqdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqU64(a, b), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vceqdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare equal
@@ -1598,13 +1598,13 @@ public fun vceqzqU64(a: Uint64x2T): Uint64x2T {
  * Compare bitwise equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vceqzdS64)
  */
-public fun vceqzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqzS64((a).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vceqzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqzS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare bitwise equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vceqzdU64)
  */
-public fun vceqzdU64(a: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqzU64(a), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vceqzdU64(a: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vceqzU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare bitwise equal to zero
@@ -1676,13 +1676,13 @@ public fun vcgesF32(a: Float, b: Float): UInt = vgetLaneU32(vcgeF32(vdupNF32(a),
  * Compare greater than or equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgedS64)
  */
-public fun vcgedS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgeS64((a).toULong(), (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcgedS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgeS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare greater than or equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgedU64)
  */
-public fun vcgedU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgeU64(a, b), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcgedU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgeU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare greater than or equal
@@ -1814,7 +1814,7 @@ public fun vcgezsF32(a: Float): UInt = vgetLaneU32(vcgezF32(vdupNF32(a)), 0u)
  * Compare signed greater than or equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgezdS64)
  */
-public fun vcgezdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgezS64((a).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcgezdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgezS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare greater than or equal to zero
@@ -1874,13 +1874,13 @@ public fun vcgtsF32(a: Float, b: Float): UInt = vgetLaneU32(vcgtF32(vdupNF32(a),
  * Compare greater than
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgtdS64)
  */
-public fun vcgtdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgtS64((a).toULong(), (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcgtdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgtS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare greater than
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgtdU64)
  */
-public fun vcgtdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgtU64(a, b), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcgtdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgtU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare greater than
@@ -2012,7 +2012,7 @@ public fun vcgtzsF32(a: Float): UInt = vgetLaneU32(vcgtzF32(vdupNF32(a)), 0u)
  * Compare signed greater than zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgtzdS64)
  */
-public fun vcgtzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgtzS64((a).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcgtzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcgtzS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare greater than zero
@@ -2072,13 +2072,13 @@ public fun vclesF32(a: Float, b: Float): UInt = vgetLaneU32(vcleF32(vdupNF32(a),
  * Compare less than or equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcledU64)
  */
-public fun vcledU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcleU64(a, b), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcledU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcleU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare less than or equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcledS64)
  */
-public fun vcledS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcleS64((a).toULong(), (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcledS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcleS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare less than or equal
@@ -2210,7 +2210,7 @@ public fun vclezsF32(a: Float): UInt = vgetLaneU32(vclezF32(vdupNF32(a)), 0u)
  * Compare less than or equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclezdS64)
  */
-public fun vclezdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vclezS64((a).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vclezdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vclezS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare less than or equal to zero
@@ -2258,13 +2258,13 @@ public fun vcltqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T = run { val simdArg0 
  * Compare less than
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcltdU64)
  */
-public fun vcltdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcltU64(a, b), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcltdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcltU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare less than
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcltdS64)
  */
-public fun vcltdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcltS64((a).toULong(), (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcltdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcltS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare less than
@@ -2408,7 +2408,7 @@ public fun vcltzsF32(a: Float): UInt = vgetLaneU32(vcltzF32(vdupNF32(a)), 0u)
  * Compare less than zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcltzdS64)
  */
-public fun vcltzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcltzS64((a).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vcltzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vcltzS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Floating-point compare less than zero
@@ -6693,7 +6693,7 @@ public fun vld1qF64X4(ptr: ConstPtr): Float64x2x4T = readUnaligned(ptr, typeLayo
  *  * Neon intrinsic unchecked
  */
 public fun vld2DupF64(a: ConstPtr): Float64x1x2T {
-    fun vld2DupF64(ptr: ConstPtr): Float64x1x2T = Float64x1x2T()
+    fun vld2DupF64(ptr: ConstPtr): Float64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).alignBytes)); res }
     return vld2DupF64(a)
 }
 
@@ -6704,7 +6704,7 @@ public fun vld2DupF64(a: ConstPtr): Float64x1x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupF64(a: ConstPtr): Float64x2x2T {
-    fun vld2qDupF64(ptr: ConstPtr): Float64x2x2T = Float64x2x2T()
+    fun vld2qDupF64(ptr: ConstPtr): Float64x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).alignBytes)); res }
     return vld2qDupF64(a)
 }
 
@@ -6715,7 +6715,7 @@ public fun vld2qDupF64(a: ConstPtr): Float64x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qDupS64(a: ConstPtr): Int64x2x2T {
-    fun vld2qDupS64(ptr: ConstPtr): Int64x2x2T = Int64x2x2T()
+    fun vld2qDupS64(ptr: ConstPtr): Int64x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).alignBytes)); res }
     return vld2qDupS64(a)
 }
 
@@ -6734,11 +6734,11 @@ public fun vld2F64(a: ConstPtr): Float64x1x2T = readUnaligned(a, typeLayoutT = P
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneF64(a: ConstPtr, b: Float64x1x2T, lane: Int): Float64x1x2T {
-    fun vld2LaneF64(a1: Float64x1T, b1: Float64x1T, n: Long, ptr: ConstPtr): Float64x1x2T = Float64x1x2T()
+    fun vld2LaneF64(a1: Float64x1T, b1: Float64x1T, n: Long, ptr: ConstPtr): Float64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x2T>()).alignBytes)); res }
     run {
         check(lane == 0)
     }
-    return vld2LaneF64(b.first, b.second, lane.toLong(), a)
+    return vld2LaneF64(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6748,11 +6748,11 @@ public fun vld2LaneF64(a: ConstPtr, b: Float64x1x2T, lane: Int): Float64x1x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2LaneS64(a: ConstPtr, b: Int64x1x2T, lane: Int): Int64x1x2T {
-    fun vld2LaneS64(a1: Int64x1T, b1: Int64x1T, n: Long, ptr: ConstPtr): Int64x1x2T = Int64x1x2T()
+    fun vld2LaneS64(a1: Int64x1T, b1: Int64x1T, n: Long, ptr: ConstPtr): Int64x1x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x2T>()).alignBytes)); res }
     run {
         check(lane == 0)
     }
-    return vld2LaneS64(b.first, b.second, lane.toLong(), a)
+    return vld2LaneS64(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6765,7 +6765,7 @@ public fun vld2LaneP64(a: ConstPtr, b: Poly64x1x2T, lane: Int): Poly64x1x2T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1x2T, Poly64x1x2T>(vld2LaneS64(transmuteWithLayouts<ConstPtr, Poly64x1x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x1x2T>()), b, lane), UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<Poly64x1x2T>())
+    return transmuteWithLayouts<Int64x1x2T, Poly64x1x2T>(vld2LaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly64x1x2T, Int64x1x2T>(b, UnresolvedTypeLayout<Poly64x1x2T>(), UnresolvedTypeLayout<Int64x1x2T>()), lane), UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<Poly64x1x2T>())
 }
 
 /**
@@ -6778,7 +6778,7 @@ public fun vld2LaneU64(a: ConstPtr, b: Uint64x1x2T, lane: Int): Uint64x1x2T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1x2T, Uint64x1x2T>(vld2LaneS64(transmuteWithLayouts<ConstPtr, Uint64x1x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x1x2T>()), b, lane), UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<Uint64x1x2T>())
+    return transmuteWithLayouts<Int64x1x2T, Uint64x1x2T>(vld2LaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint64x1x2T, Int64x1x2T>(b, UnresolvedTypeLayout<Uint64x1x2T>(), UnresolvedTypeLayout<Int64x1x2T>()), lane), UnresolvedTypeLayout<Int64x1x2T>(), UnresolvedTypeLayout<Uint64x1x2T>())
 }
 
 /**
@@ -6787,7 +6787,7 @@ public fun vld2LaneU64(a: ConstPtr, b: Uint64x1x2T, lane: Int): Uint64x1x2T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld2qDupP64(a: ConstPtr): Poly64x2x2T = transmuteWithLayouts<Int64x2x2T, Poly64x2x2T>(vld2qDupS64(transmuteWithLayouts<ConstPtr, Poly64x2x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x2T>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Poly64x2x2T>())
+public fun vld2qDupP64(a: ConstPtr): Poly64x2x2T = transmuteWithLayouts<Int64x2x2T, Poly64x2x2T>(vld2qDupS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Poly64x2x2T>())
 
 /**
  * Load single 2-element structure and replicate to all lanes of two registers
@@ -6795,7 +6795,7 @@ public fun vld2qDupP64(a: ConstPtr): Poly64x2x2T = transmuteWithLayouts<Int64x2x
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld2qDupU64(a: ConstPtr): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(vld2qDupS64(transmuteWithLayouts<ConstPtr, Uint64x2x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x2T>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Uint64x2x2T>())
+public fun vld2qDupU64(a: ConstPtr): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(vld2qDupS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Uint64x2x2T>())
 
 /**
  * Load multiple 2-element structures to two registers
@@ -6804,8 +6804,8 @@ public fun vld2qDupU64(a: ConstPtr): Uint64x2x2T = transmuteWithLayouts<Int64x2x
  *  * Neon intrinsic unchecked
  */
 public fun vld2qF64(a: ConstPtr): Float64x2x2T {
-    fun vld2qF64(ptr: ConstPtr): Float64x2x2T = Float64x2x2T()
-    return vld2qF64(a)
+    fun vld2qF64(ptr: ConstPtr): Float64x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).alignBytes)); res }
+    return vld2qF64(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6815,8 +6815,8 @@ public fun vld2qF64(a: ConstPtr): Float64x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qS64(a: ConstPtr): Int64x2x2T {
-    fun vld2qS64(ptr: ConstPtr): Int64x2x2T = Int64x2x2T()
-    return vld2qS64(a)
+    fun vld2qS64(ptr: ConstPtr): Int64x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).alignBytes)); res }
+    return vld2qS64(ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6826,11 +6826,11 @@ public fun vld2qS64(a: ConstPtr): Int64x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneF64(a: ConstPtr, b: Float64x2x2T, lane: Int): Float64x2x2T {
-    fun vld2qLaneF64(a1: Float64x2T, b1: Float64x2T, n: Long, ptr: ConstPtr): Float64x2x2T = Float64x2x2T()
+    fun vld2qLaneF64(a1: Float64x2T, b1: Float64x2T, n: Long, ptr: ConstPtr): Float64x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld2qLaneF64(b.first, b.second, lane.toLong(), a)
+    return vld2qLaneF64(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6840,11 +6840,11 @@ public fun vld2qLaneF64(a: ConstPtr, b: Float64x2x2T, lane: Int): Float64x2x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneS8(a: ConstPtr, b: Int8x16x2T, lane: Int): Int8x16x2T {
-    fun vld2qLaneS8(a1: Int8x16T, b1: Int8x16T, n: Long, ptr: ConstPtr): Int8x16x2T = Int8x16x2T()
+    fun vld2qLaneS8(a1: Int8x16T, b1: Int8x16T, n: Long, ptr: ConstPtr): Int8x16x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return vld2qLaneS8(b.first, b.second, lane.toLong(), a)
+    return vld2qLaneS8(b.field0, b.field1, lane.toLong(), a)
 }
 
 /**
@@ -6854,11 +6854,11 @@ public fun vld2qLaneS8(a: ConstPtr, b: Int8x16x2T, lane: Int): Int8x16x2T {
  *  * Neon intrinsic unchecked
  */
 public fun vld2qLaneS64(a: ConstPtr, b: Int64x2x2T, lane: Int): Int64x2x2T {
-    fun vld2qLaneS64(a1: Int64x2T, b1: Int64x2T, n: Long, ptr: ConstPtr): Int64x2x2T = Int64x2x2T()
+    fun vld2qLaneS64(a1: Int64x2T, b1: Int64x2T, n: Long, ptr: ConstPtr): Int64x2x2T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x2T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x2T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld2qLaneS64(b.first, b.second, lane.toLong(), a)
+    return vld2qLaneS64(b.field0, b.field1, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6871,7 +6871,7 @@ public fun vld2qLaneP64(a: ConstPtr, b: Poly64x2x2T, lane: Int): Poly64x2x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2x2T, Poly64x2x2T>(vld2qLaneS64(transmuteWithLayouts<ConstPtr, Poly64x2x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x2T>()), b, lane), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Poly64x2x2T>())
+    return transmuteWithLayouts<Int64x2x2T, Poly64x2x2T>(vld2qLaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly64x2x2T, Int64x2x2T>(b, UnresolvedTypeLayout<Poly64x2x2T>(), UnresolvedTypeLayout<Int64x2x2T>()), lane), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Poly64x2x2T>())
 }
 
 /**
@@ -6884,7 +6884,7 @@ public fun vld2qLaneU8(a: ConstPtr, b: Uint8x16x2T, lane: Int): Uint8x16x2T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16x2T, Uint8x16x2T>(vld2qLaneS8(transmuteWithLayouts<ConstPtr, Uint8x16x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint8x16x2T>()), b, lane), UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<Uint8x16x2T>())
+    return transmuteWithLayouts<Int8x16x2T, Uint8x16x2T>(vld2qLaneS8(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint8x16x2T, Int8x16x2T>(b, UnresolvedTypeLayout<Uint8x16x2T>(), UnresolvedTypeLayout<Int8x16x2T>()), lane), UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<Uint8x16x2T>())
 }
 
 /**
@@ -6897,7 +6897,7 @@ public fun vld2qLaneU64(a: ConstPtr, b: Uint64x2x2T, lane: Int): Uint64x2x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(vld2qLaneS64(transmuteWithLayouts<ConstPtr, Uint64x2x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x2T>()), b, lane), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Uint64x2x2T>())
+    return transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(vld2qLaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint64x2x2T, Int64x2x2T>(b, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<Int64x2x2T>()), lane), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Uint64x2x2T>())
 }
 
 /**
@@ -6910,7 +6910,7 @@ public fun vld2qLaneP8(a: ConstPtr, b: Poly8x16x2T, lane: Int): Poly8x16x2T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16x2T, Poly8x16x2T>(vld2qLaneS8(transmuteWithLayouts<ConstPtr, Poly8x16x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly8x16x2T>()), b, lane), UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<Poly8x16x2T>())
+    return transmuteWithLayouts<Int8x16x2T, Poly8x16x2T>(vld2qLaneS8(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly8x16x2T, Int8x16x2T>(b, UnresolvedTypeLayout<Poly8x16x2T>(), UnresolvedTypeLayout<Int8x16x2T>()), lane), UnresolvedTypeLayout<Int8x16x2T>(), UnresolvedTypeLayout<Poly8x16x2T>())
 }
 
 /**
@@ -6919,7 +6919,7 @@ public fun vld2qLaneP8(a: ConstPtr, b: Poly8x16x2T, lane: Int): Poly8x16x2T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld2qP64(a: ConstPtr): Poly64x2x2T = transmuteWithLayouts<Int64x2x2T, Poly64x2x2T>(vld2qS64(transmuteWithLayouts<ConstPtr, Poly64x2x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x2T>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Poly64x2x2T>())
+public fun vld2qP64(a: ConstPtr): Poly64x2x2T = transmuteWithLayouts<Int64x2x2T, Poly64x2x2T>(vld2qS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Poly64x2x2T>())
 
 /**
  * Load multiple 2-element structures to two registers
@@ -6927,7 +6927,7 @@ public fun vld2qP64(a: ConstPtr): Poly64x2x2T = transmuteWithLayouts<Int64x2x2T,
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld2qU64(a: ConstPtr): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(vld2qS64(transmuteWithLayouts<ConstPtr, Uint64x2x2T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x2T>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Uint64x2x2T>())
+public fun vld2qU64(a: ConstPtr): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T, Uint64x2x2T>(vld2qS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x2T>(), UnresolvedTypeLayout<Uint64x2x2T>())
 
 /**
  * Load single 3-element structure and replicate to all lanes of three registers
@@ -6936,7 +6936,7 @@ public fun vld2qU64(a: ConstPtr): Uint64x2x2T = transmuteWithLayouts<Int64x2x2T,
  *  * Neon intrinsic unchecked
  */
 public fun vld3DupF64(a: ConstPtr): Float64x1x3T {
-    fun vld3DupF64(ptr: ConstPtr): Float64x1x3T = Float64x1x3T()
+    fun vld3DupF64(ptr: ConstPtr): Float64x1x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x1x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).alignBytes)); res }
     return vld3DupF64(a)
 }
 
@@ -6947,7 +6947,7 @@ public fun vld3DupF64(a: ConstPtr): Float64x1x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupF64(a: ConstPtr): Float64x2x3T {
-    fun vld3qDupF64(ptr: ConstPtr): Float64x2x3T = Float64x2x3T()
+    fun vld3qDupF64(ptr: ConstPtr): Float64x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).alignBytes)); res }
     return vld3qDupF64(a)
 }
 
@@ -6958,7 +6958,7 @@ public fun vld3qDupF64(a: ConstPtr): Float64x2x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qDupS64(a: ConstPtr): Int64x2x3T {
-    fun vld3qDupS64(ptr: ConstPtr): Int64x2x3T = Int64x2x3T()
+    fun vld3qDupS64(ptr: ConstPtr): Int64x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).alignBytes)); res }
     return vld3qDupS64(a)
 }
 
@@ -6977,11 +6977,11 @@ public fun vld3F64(a: ConstPtr): Float64x1x3T = readUnaligned(a, typeLayoutT = P
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneF64(a: ConstPtr, b: Float64x1x3T, lane: Int): Float64x1x3T {
-    fun vld3LaneF64(a1: Float64x1T, b1: Float64x1T, c: Float64x1T, n: Long, ptr: ConstPtr): Float64x1x3T = Float64x1x3T()
+    fun vld3LaneF64(a1: Float64x1T, b1: Float64x1T, c: Float64x1T, n: Long, ptr: ConstPtr): Float64x1x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x1x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x3T>()).alignBytes)); res }
     run {
         check(lane == 0)
     }
-    return vld3LaneF64(b.first, b.second, b.third, lane.toLong(), a)
+    return vld3LaneF64(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -6994,7 +6994,7 @@ public fun vld3LaneP64(a: ConstPtr, b: Poly64x1x3T, lane: Int): Poly64x1x3T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1x3T, Poly64x1x3T>(vld3LaneS64(transmuteWithLayouts<ConstPtr, Poly64x1x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x1x3T>()), b, lane), UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<Poly64x1x3T>())
+    return transmuteWithLayouts<Int64x1x3T, Poly64x1x3T>(vld3LaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly64x1x3T, Int64x1x3T>(b, UnresolvedTypeLayout<Poly64x1x3T>(), UnresolvedTypeLayout<Int64x1x3T>()), lane), UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<Poly64x1x3T>())
 }
 
 /**
@@ -7004,11 +7004,11 @@ public fun vld3LaneP64(a: ConstPtr, b: Poly64x1x3T, lane: Int): Poly64x1x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3LaneS64(a: ConstPtr, b: Int64x1x3T, lane: Int): Int64x1x3T {
-    fun vld3LaneS64(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, n: Long, ptr: ConstPtr): Int64x1x3T = Int64x1x3T()
+    fun vld3LaneS64(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, n: Long, ptr: ConstPtr): Int64x1x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x3T>()).alignBytes)); res }
     run {
         check(lane == 0)
     }
-    return vld3LaneS64(b.first, b.second, b.third, lane.toLong(), a)
+    return vld3LaneS64(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7021,7 +7021,7 @@ public fun vld3LaneU64(a: ConstPtr, b: Uint64x1x3T, lane: Int): Uint64x1x3T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1x3T, Uint64x1x3T>(vld3LaneS64(transmuteWithLayouts<ConstPtr, Uint64x1x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x1x3T>()), b, lane), UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<Uint64x1x3T>())
+    return transmuteWithLayouts<Int64x1x3T, Uint64x1x3T>(vld3LaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint64x1x3T, Int64x1x3T>(b, UnresolvedTypeLayout<Uint64x1x3T>(), UnresolvedTypeLayout<Int64x1x3T>()), lane), UnresolvedTypeLayout<Int64x1x3T>(), UnresolvedTypeLayout<Uint64x1x3T>())
 }
 
 /**
@@ -7030,7 +7030,7 @@ public fun vld3LaneU64(a: ConstPtr, b: Uint64x1x3T, lane: Int): Uint64x1x3T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld3qDupP64(a: ConstPtr): Poly64x2x3T = transmuteWithLayouts<Int64x2x3T, Poly64x2x3T>(vld3qDupS64(transmuteWithLayouts<ConstPtr, Poly64x2x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x3T>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Poly64x2x3T>())
+public fun vld3qDupP64(a: ConstPtr): Poly64x2x3T = transmuteWithLayouts<Int64x2x3T, Poly64x2x3T>(vld3qDupS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Poly64x2x3T>())
 
 /**
  * Load single 3-element structure and replicate to all lanes of three registers
@@ -7038,7 +7038,7 @@ public fun vld3qDupP64(a: ConstPtr): Poly64x2x3T = transmuteWithLayouts<Int64x2x
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld3qDupU64(a: ConstPtr): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(vld3qDupS64(transmuteWithLayouts<ConstPtr, Uint64x2x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x3T>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Uint64x2x3T>())
+public fun vld3qDupU64(a: ConstPtr): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(vld3qDupS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Uint64x2x3T>())
 
 /**
  * Load multiple 3-element structures to three registers
@@ -7079,11 +7079,11 @@ public fun vld3qS64(a: ConstPtr): Int64x2x3T =
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneF64(a: ConstPtr, b: Float64x2x3T, lane: Int): Float64x2x3T {
-    fun vld3qLaneF64(a1: Float64x2T, b1: Float64x2T, c: Float64x2T, n: Long, ptr: ConstPtr): Float64x2x3T = Float64x2x3T()
+    fun vld3qLaneF64(a1: Float64x2T, b1: Float64x2T, c: Float64x2T, n: Long, ptr: ConstPtr): Float64x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld3qLaneF64(b.first, b.second, b.third, lane.toLong(), a)
+    return vld3qLaneF64(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7096,7 +7096,7 @@ public fun vld3qLaneP64(a: ConstPtr, b: Poly64x2x3T, lane: Int): Poly64x2x3T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2x3T, Poly64x2x3T>(vld3qLaneS64(transmuteWithLayouts<ConstPtr, Poly64x2x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x3T>()), b, lane), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Poly64x2x3T>())
+    return transmuteWithLayouts<Int64x2x3T, Poly64x2x3T>(vld3qLaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly64x2x3T, Int64x2x3T>(b, UnresolvedTypeLayout<Poly64x2x3T>(), UnresolvedTypeLayout<Int64x2x3T>()), lane), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Poly64x2x3T>())
 }
 
 /**
@@ -7106,11 +7106,11 @@ public fun vld3qLaneP64(a: ConstPtr, b: Poly64x2x3T, lane: Int): Poly64x2x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneS8(a: ConstPtr, b: Int8x16x3T, lane: Int): Int8x16x3T {
-    fun vld3qLaneS8(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, n: Long, ptr: ConstPtr): Int8x16x3T = Int8x16x3T()
+    fun vld3qLaneS8(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, n: Long, ptr: ConstPtr): Int8x16x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return vld3qLaneS8(b.first, b.second, b.third, lane.toLong(), a)
+    return vld3qLaneS8(b.field0, b.field1, b.field2, lane.toLong(), a)
 }
 
 /**
@@ -7120,11 +7120,11 @@ public fun vld3qLaneS8(a: ConstPtr, b: Int8x16x3T, lane: Int): Int8x16x3T {
  *  * Neon intrinsic unchecked
  */
 public fun vld3qLaneS64(a: ConstPtr, b: Int64x2x3T, lane: Int): Int64x2x3T {
-    fun vld3qLaneS64(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, n: Long, ptr: ConstPtr): Int64x2x3T = Int64x2x3T()
+    fun vld3qLaneS64(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, n: Long, ptr: ConstPtr): Int64x2x3T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x3T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x3T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld3qLaneS64(b.first, b.second, b.third, lane.toLong(), a)
+    return vld3qLaneS64(b.field0, b.field1, b.field2, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7137,7 +7137,7 @@ public fun vld3qLaneU8(a: ConstPtr, b: Uint8x16x3T, lane: Int): Uint8x16x3T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16x3T, Uint8x16x3T>(vld3qLaneS8(transmuteWithLayouts<ConstPtr, Uint8x16x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint8x16x3T>()), b, lane), UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<Uint8x16x3T>())
+    return transmuteWithLayouts<Int8x16x3T, Uint8x16x3T>(vld3qLaneS8(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint8x16x3T, Int8x16x3T>(b, UnresolvedTypeLayout<Uint8x16x3T>(), UnresolvedTypeLayout<Int8x16x3T>()), lane), UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<Uint8x16x3T>())
 }
 
 /**
@@ -7150,7 +7150,7 @@ public fun vld3qLaneU64(a: ConstPtr, b: Uint64x2x3T, lane: Int): Uint64x2x3T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(vld3qLaneS64(transmuteWithLayouts<ConstPtr, Uint64x2x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x3T>()), b, lane), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Uint64x2x3T>())
+    return transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(vld3qLaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint64x2x3T, Int64x2x3T>(b, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<Int64x2x3T>()), lane), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Uint64x2x3T>())
 }
 
 /**
@@ -7163,7 +7163,7 @@ public fun vld3qLaneP8(a: ConstPtr, b: Poly8x16x3T, lane: Int): Poly8x16x3T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16x3T, Poly8x16x3T>(vld3qLaneS8(transmuteWithLayouts<ConstPtr, Poly8x16x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly8x16x3T>()), b, lane), UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<Poly8x16x3T>())
+    return transmuteWithLayouts<Int8x16x3T, Poly8x16x3T>(vld3qLaneS8(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly8x16x3T, Int8x16x3T>(b, UnresolvedTypeLayout<Poly8x16x3T>(), UnresolvedTypeLayout<Int8x16x3T>()), lane), UnresolvedTypeLayout<Int8x16x3T>(), UnresolvedTypeLayout<Poly8x16x3T>())
 }
 
 /**
@@ -7172,7 +7172,7 @@ public fun vld3qLaneP8(a: ConstPtr, b: Poly8x16x3T, lane: Int): Poly8x16x3T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld3qP64(a: ConstPtr): Poly64x2x3T = transmuteWithLayouts<Int64x2x3T, Poly64x2x3T>(vld3qS64(transmuteWithLayouts<ConstPtr, Poly64x2x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x3T>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Poly64x2x3T>())
+public fun vld3qP64(a: ConstPtr): Poly64x2x3T = transmuteWithLayouts<Int64x2x3T, Poly64x2x3T>(vld3qS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Poly64x2x3T>())
 
 /**
  * Load multiple 3-element structures to three registers
@@ -7180,7 +7180,7 @@ public fun vld3qP64(a: ConstPtr): Poly64x2x3T = transmuteWithLayouts<Int64x2x3T,
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld3qU64(a: ConstPtr): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(vld3qS64(transmuteWithLayouts<ConstPtr, Uint64x2x3T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x3T>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Uint64x2x3T>())
+public fun vld3qU64(a: ConstPtr): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T, Uint64x2x3T>(vld3qS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x3T>(), UnresolvedTypeLayout<Uint64x2x3T>())
 
 /**
  * Load single 4-element structure and replicate to all lanes of four registers
@@ -7189,7 +7189,7 @@ public fun vld3qU64(a: ConstPtr): Uint64x2x3T = transmuteWithLayouts<Int64x2x3T,
  *  * Neon intrinsic unchecked
  */
 public fun vld4DupF64(a: ConstPtr): Float64x1x4T {
-    fun vld4DupF64(ptr: ConstPtr): Float64x1x4T = Float64x1x4T()
+    fun vld4DupF64(ptr: ConstPtr): Float64x1x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x1x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).alignBytes)); res }
     return vld4DupF64(a)
 }
 
@@ -7200,7 +7200,7 @@ public fun vld4DupF64(a: ConstPtr): Float64x1x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupF64(a: ConstPtr): Float64x2x4T {
-    fun vld4qDupF64(ptr: ConstPtr): Float64x2x4T = Float64x2x4T()
+    fun vld4qDupF64(ptr: ConstPtr): Float64x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).alignBytes)); res }
     return vld4qDupF64(a)
 }
 
@@ -7211,7 +7211,7 @@ public fun vld4qDupF64(a: ConstPtr): Float64x2x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qDupS64(a: ConstPtr): Int64x2x4T {
-    fun vld4qDupS64(ptr: ConstPtr): Int64x2x4T = Int64x2x4T()
+    fun vld4qDupS64(ptr: ConstPtr): Int64x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).alignBytes)); res }
     return vld4qDupS64(a)
 }
 
@@ -7230,11 +7230,11 @@ public fun vld4F64(a: ConstPtr): Float64x1x4T = readUnaligned(a, typeLayoutT = P
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneF64(a: ConstPtr, b: Float64x1x4T, lane: Int): Float64x1x4T {
-    fun vld4LaneF64(a1: Float64x1T, b1: Float64x1T, c: Float64x1T, d: Float64x1T, n: Long, ptr: ConstPtr): Float64x1x4T = Float64x1x4T()
+    fun vld4LaneF64(a1: Float64x1T, b1: Float64x1T, c: Float64x1T, d: Float64x1T, n: Long, ptr: ConstPtr): Float64x1x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x1x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x1x4T>()).alignBytes)); res }
     run {
         check(lane == 0)
     }
-    return vld4LaneF64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    return vld4LaneF64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7244,11 +7244,11 @@ public fun vld4LaneF64(a: ConstPtr, b: Float64x1x4T, lane: Int): Float64x1x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4LaneS64(a: ConstPtr, b: Int64x1x4T, lane: Int): Int64x1x4T {
-    fun vld4LaneS64(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, d: Int64x1T, n: Long, ptr: ConstPtr): Int64x1x4T = Int64x1x4T()
+    fun vld4LaneS64(a1: Int64x1T, b1: Int64x1T, c: Int64x1T, d: Int64x1T, n: Long, ptr: ConstPtr): Int64x1x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x1x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x1x4T>()).alignBytes)); res }
     run {
         check(lane == 0)
     }
-    return vld4LaneS64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    return vld4LaneS64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7261,7 +7261,7 @@ public fun vld4LaneP64(a: ConstPtr, b: Poly64x1x4T, lane: Int): Poly64x1x4T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1x4T, Poly64x1x4T>(vld4LaneS64(transmuteWithLayouts<ConstPtr, Poly64x1x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x1x4T>()), b, lane), UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<Poly64x1x4T>())
+    return transmuteWithLayouts<Int64x1x4T, Poly64x1x4T>(vld4LaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly64x1x4T, Int64x1x4T>(b, UnresolvedTypeLayout<Poly64x1x4T>(), UnresolvedTypeLayout<Int64x1x4T>()), lane), UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<Poly64x1x4T>())
 }
 
 /**
@@ -7274,7 +7274,7 @@ public fun vld4LaneU64(a: ConstPtr, b: Uint64x1x4T, lane: Int): Uint64x1x4T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1x4T, Uint64x1x4T>(vld4LaneS64(transmuteWithLayouts<ConstPtr, Uint64x1x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x1x4T>()), b, lane), UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<Uint64x1x4T>())
+    return transmuteWithLayouts<Int64x1x4T, Uint64x1x4T>(vld4LaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint64x1x4T, Int64x1x4T>(b, UnresolvedTypeLayout<Uint64x1x4T>(), UnresolvedTypeLayout<Int64x1x4T>()), lane), UnresolvedTypeLayout<Int64x1x4T>(), UnresolvedTypeLayout<Uint64x1x4T>())
 }
 
 /**
@@ -7283,7 +7283,7 @@ public fun vld4LaneU64(a: ConstPtr, b: Uint64x1x4T, lane: Int): Uint64x1x4T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld4qDupP64(a: ConstPtr): Poly64x2x4T = transmuteWithLayouts<Int64x2x4T, Poly64x2x4T>(vld4qDupS64(transmuteWithLayouts<ConstPtr, Poly64x2x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x4T>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Poly64x2x4T>())
+public fun vld4qDupP64(a: ConstPtr): Poly64x2x4T = transmuteWithLayouts<Int64x2x4T, Poly64x2x4T>(vld4qDupS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Poly64x2x4T>())
 
 /**
  * Load single 4-element structure and replicate to all lanes of four registers
@@ -7291,7 +7291,7 @@ public fun vld4qDupP64(a: ConstPtr): Poly64x2x4T = transmuteWithLayouts<Int64x2x
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld4qDupU64(a: ConstPtr): Uint64x2x4T = transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(vld4qDupS64(transmuteWithLayouts<ConstPtr, Uint64x2x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x4T>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Uint64x2x4T>())
+public fun vld4qDupU64(a: ConstPtr): Uint64x2x4T = transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(vld4qDupS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Uint64x2x4T>())
 
 /**
  * Load multiple 4-element structures to four registers
@@ -7332,11 +7332,11 @@ public fun vld4qS64(a: ConstPtr): Int64x2x4T =
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneF64(a: ConstPtr, b: Float64x2x4T, lane: Int): Float64x2x4T {
-    fun vld4qLaneF64(a1: Float64x2T, b1: Float64x2T, c: Float64x2T, d: Float64x2T, n: Long, ptr: ConstPtr): Float64x2x4T = Float64x2x4T()
+    fun vld4qLaneF64(a1: Float64x2T, b1: Float64x2T, c: Float64x2T, d: Float64x2T, n: Long, ptr: ConstPtr): Float64x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Float64x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Float64x2x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld4qLaneF64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    return vld4qLaneF64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7346,11 +7346,11 @@ public fun vld4qLaneF64(a: ConstPtr, b: Float64x2x4T, lane: Int): Float64x2x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneS8(a: ConstPtr, b: Int8x16x4T, lane: Int): Int8x16x4T {
-    fun vld4qLaneS8(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, d: Int8x16T, n: Long, ptr: ConstPtr): Int8x16x4T = Int8x16x4T()
+    fun vld4qLaneS8(a1: Int8x16T, b1: Int8x16T, c: Int8x16T, d: Int8x16T, n: Long, ptr: ConstPtr): Int8x16x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int8x16x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int8x16x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return vld4qLaneS8(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    return vld4qLaneS8(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -7360,11 +7360,11 @@ public fun vld4qLaneS8(a: ConstPtr, b: Int8x16x4T, lane: Int): Int8x16x4T {
  *  * Neon intrinsic unchecked
  */
 public fun vld4qLaneS64(a: ConstPtr, b: Int64x2x4T, lane: Int): Int64x2x4T {
-    fun vld4qLaneS64(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, d: Int64x2T, n: Long, ptr: ConstPtr): Int64x2x4T = Int64x2x4T()
+    fun vld4qLaneS64(a1: Int64x2T, b1: Int64x2T, c: Int64x2T, d: Int64x2T, n: Long, ptr: ConstPtr): Int64x2x4T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).alignBytes)); val res = (UnresolvedTypeLayout<Int64x2x4T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Int64x2x4T>()).alignBytes)); res }
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return vld4qLaneS64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    return vld4qLaneS64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), ConstPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -7377,7 +7377,7 @@ public fun vld4qLaneP64(a: ConstPtr, b: Poly64x2x4T, lane: Int): Poly64x2x4T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2x4T, Poly64x2x4T>(vld4qLaneS64(transmuteWithLayouts<ConstPtr, Poly64x2x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x4T>()), b, lane), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Poly64x2x4T>())
+    return transmuteWithLayouts<Int64x2x4T, Poly64x2x4T>(vld4qLaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly64x2x4T, Int64x2x4T>(b, UnresolvedTypeLayout<Poly64x2x4T>(), UnresolvedTypeLayout<Int64x2x4T>()), lane), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Poly64x2x4T>())
 }
 
 /**
@@ -7390,7 +7390,7 @@ public fun vld4qLaneU8(a: ConstPtr, b: Uint8x16x4T, lane: Int): Uint8x16x4T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16x4T, Uint8x16x4T>(vld4qLaneS8(transmuteWithLayouts<ConstPtr, Uint8x16x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint8x16x4T>()), b, lane), UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<Uint8x16x4T>())
+    return transmuteWithLayouts<Int8x16x4T, Uint8x16x4T>(vld4qLaneS8(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint8x16x4T, Int8x16x4T>(b, UnresolvedTypeLayout<Uint8x16x4T>(), UnresolvedTypeLayout<Int8x16x4T>()), lane), UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<Uint8x16x4T>())
 }
 
 /**
@@ -7403,7 +7403,7 @@ public fun vld4qLaneU64(a: ConstPtr, b: Uint64x2x4T, lane: Int): Uint64x2x4T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(vld4qLaneS64(transmuteWithLayouts<ConstPtr, Uint64x2x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x4T>()), b, lane), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Uint64x2x4T>())
+    return transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(vld4qLaneS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Uint64x2x4T, Int64x2x4T>(b, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<Int64x2x4T>()), lane), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Uint64x2x4T>())
 }
 
 /**
@@ -7416,7 +7416,7 @@ public fun vld4qLaneP8(a: ConstPtr, b: Poly8x16x4T, lane: Int): Poly8x16x4T {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16x4T, Poly8x16x4T>(vld4qLaneS8(transmuteWithLayouts<ConstPtr, Poly8x16x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly8x16x4T>()), b, lane), UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<Poly8x16x4T>())
+    return transmuteWithLayouts<Int8x16x4T, Poly8x16x4T>(vld4qLaneS8(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>()), transmuteWithLayouts<Poly8x16x4T, Int8x16x4T>(b, UnresolvedTypeLayout<Poly8x16x4T>(), UnresolvedTypeLayout<Int8x16x4T>()), lane), UnresolvedTypeLayout<Int8x16x4T>(), UnresolvedTypeLayout<Poly8x16x4T>())
 }
 
 /**
@@ -7425,7 +7425,7 @@ public fun vld4qLaneP8(a: ConstPtr, b: Poly8x16x4T, lane: Int): Poly8x16x4T {
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld4qP64(a: ConstPtr): Poly64x2x4T = transmuteWithLayouts<Int64x2x4T, Poly64x2x4T>(vld4qS64(transmuteWithLayouts<ConstPtr, Poly64x2x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Poly64x2x4T>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Poly64x2x4T>())
+public fun vld4qP64(a: ConstPtr): Poly64x2x4T = transmuteWithLayouts<Int64x2x4T, Poly64x2x4T>(vld4qS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Poly64x2x4T>())
 
 /**
  * Load multiple 4-element structures to four registers
@@ -7433,7 +7433,7 @@ public fun vld4qP64(a: ConstPtr): Poly64x2x4T = transmuteWithLayouts<Int64x2x4T,
  * ## Safety
  *  * Neon intrinsic unchecked
  */
-public fun vld4qU64(a: ConstPtr): Uint64x2x4T = transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(vld4qS64(transmuteWithLayouts<ConstPtr, Uint64x2x4T>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<Uint64x2x4T>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Uint64x2x4T>())
+public fun vld4qU64(a: ConstPtr): Uint64x2x4T = transmuteWithLayouts<Int64x2x4T, Uint64x2x4T>(vld4qS64(transmuteWithLayouts<ConstPtr, ConstPtr>(a, PrimitiveLayouts.constPtrLayout(64L), UnresolvedTypeLayout<ConstPtr>())), UnresolvedTypeLayout<Int64x2x4T>(), UnresolvedTypeLayout<Uint64x2x4T>())
 
 /**
  * Load-acquire RCpc one single-element structure to one lane of one register
@@ -7473,7 +7473,7 @@ public fun vldap1qLaneF64(ptr: ConstPtr, src: Float64x2T, lane: Int): Float64x2T
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2T, Float64x2T>(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), src, lane), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Float64x2T>())
+    return transmuteWithLayouts<Int64x2T, Float64x2T>(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmuteWithLayouts<Float64x2T, Int64x2T>(src, UnresolvedTypeLayout<Float64x2T>(), UnresolvedTypeLayout<Int64x2T>()), lane), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Float64x2T>())
 }
 
 /**
@@ -7486,7 +7486,7 @@ public fun vldap1LaneU64(ptr: ConstPtr, src: Uint64x1T, lane: Int): Uint64x1T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1T, Uint64x1T>(vldap1LaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), src, lane), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>())
+    return transmuteWithLayouts<Int64x1T, Uint64x1T>(vldap1LaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmuteWithLayouts<Uint64x1T, Int64x1T>(src, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>()), lane), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>())
 }
 
 /**
@@ -7499,7 +7499,7 @@ public fun vldap1qLaneU64(ptr: ConstPtr, src: Uint64x2T, lane: Int): Uint64x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2T, Uint64x2T>(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), src, lane), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>())
+    return transmuteWithLayouts<Int64x2T, Uint64x2T>(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmuteWithLayouts<Uint64x2T, Int64x2T>(src, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>()), lane), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>())
 }
 
 /**
@@ -7512,7 +7512,7 @@ public fun vldap1LaneP64(ptr: ConstPtr, src: Poly64x1T, lane: Int): Poly64x1T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int64x1T, Poly64x1T>(vldap1LaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), src, lane), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Poly64x1T>())
+    return transmuteWithLayouts<Int64x1T, Poly64x1T>(vldap1LaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmuteWithLayouts<Poly64x1T, Int64x1T>(src, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Int64x1T>()), lane), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Poly64x1T>())
 }
 
 /**
@@ -7525,7 +7525,7 @@ public fun vldap1qLaneP64(ptr: ConstPtr, src: Poly64x2T, lane: Int): Poly64x2T {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int64x2T, Poly64x2T>(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), src, lane), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Poly64x2T>())
+    return transmuteWithLayouts<Int64x2T, Poly64x2T>(vldap1qLaneS64((MutPtr(ptr.rawAddress, ptr.rawMeta)).asConstPtr(), transmuteWithLayouts<Poly64x2T, Int64x2T>(src, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Int64x2T>()), lane), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Poly64x2T>())
 }
 
 /**
@@ -7538,7 +7538,7 @@ public fun vluti2LaneF16(a: Float16x4T, b: Uint8x8T, index: Int): Float16x8T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2LaneS16(transmuteWithLayouts<Float16x4T, Float16x8T>(a, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Float16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
+    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2LaneS16(transmuteWithLayouts<Float16x4T, Int16x4T>(a, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Int16x4T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -7551,7 +7551,7 @@ public fun vluti2qLaneF16(a: Float16x8T, b: Uint8x8T, index: Int): Float16x8T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2qLaneS16(a, b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
+    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2qLaneS16(transmuteWithLayouts<Float16x8T, Int16x8T>(a, UnresolvedTypeLayout<Float16x8T>(), UnresolvedTypeLayout<Int16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -7564,7 +7564,7 @@ public fun vluti2LaneU8(a: Uint8x8T, b: Uint8x8T, index: Int): Uint8x16T {
     run {
         check(index >= 0 && index <= 1)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2LaneS8(transmuteWithLayouts<Uint8x8T, Uint8x16T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Uint8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2LaneS8(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -7577,7 +7577,7 @@ public fun vluti2qLaneU8(a: Uint8x16T, b: Uint8x8T, index: Int): Uint8x16T {
     run {
         check(index >= 0 && index <= 1)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2qLaneS8(a, b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2qLaneS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -7590,7 +7590,7 @@ public fun vluti2LaneU16(a: Uint16x4T, b: Uint8x8T, index: Int): Uint16x8T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2LaneS16(transmuteWithLayouts<Uint16x4T, Uint16x8T>(a, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Uint16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2LaneS16(transmuteWithLayouts<Uint16x4T, Int16x4T>(a, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -7603,7 +7603,7 @@ public fun vluti2qLaneU16(a: Uint16x8T, b: Uint8x8T, index: Int): Uint16x8T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2qLaneS16(a, b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2qLaneS16(transmuteWithLayouts<Uint16x8T, Int16x8T>(a, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -7616,7 +7616,7 @@ public fun vluti2LaneP8(a: Poly8x8T, b: Uint8x8T, index: Int): Poly8x16T {
     run {
         check(index >= 0 && index <= 1)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2LaneS8(transmuteWithLayouts<Poly8x8T, Poly8x16T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Poly8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2LaneS8(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -7629,7 +7629,7 @@ public fun vluti2qLaneP8(a: Poly8x16T, b: Uint8x8T, index: Int): Poly8x16T {
     run {
         check(index >= 0 && index <= 1)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2qLaneS8(a, b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2qLaneS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -7642,7 +7642,7 @@ public fun vluti2LaneP16(a: Poly16x4T, b: Uint8x8T, index: Int): Poly16x8T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2LaneS16(transmuteWithLayouts<Poly16x4T, Poly16x8T>(a, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Poly16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2LaneS16(transmuteWithLayouts<Poly16x4T, Int16x4T>(a, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Int16x4T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -7655,7 +7655,7 @@ public fun vluti2qLaneP16(a: Poly16x8T, b: Uint8x8T, index: Int): Poly16x8T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2qLaneS16(a, b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2qLaneS16(transmuteWithLayouts<Poly16x8T, Int16x8T>(a, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Int16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -7724,7 +7724,7 @@ public fun vluti2LaneqF16(a: Float16x4T, b: Uint8x16T, index: Int): Float16x8T {
     run {
         check(index >= 0 && index <= 7)
     }
-    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2LaneqS16(transmuteWithLayouts<Float16x4T, Float16x8T>(a, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Float16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
+    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2LaneqS16(transmuteWithLayouts<Float16x4T, Int16x4T>(a, UnresolvedTypeLayout<Float16x4T>(), UnresolvedTypeLayout<Int16x4T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -7737,7 +7737,7 @@ public fun vluti2qLaneqF16(a: Float16x8T, b: Uint8x16T, index: Int): Float16x8T 
     run {
         check(index >= 0 && index <= 7)
     }
-    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2qLaneqS16(a, b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
+    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti2qLaneqS16(transmuteWithLayouts<Float16x8T, Int16x8T>(a, UnresolvedTypeLayout<Float16x8T>(), UnresolvedTypeLayout<Int16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -7750,7 +7750,7 @@ public fun vluti2LaneqU8(a: Uint8x8T, b: Uint8x16T, index: Int): Uint8x16T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2LaneqS8(transmuteWithLayouts<Uint8x8T, Uint8x16T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Uint8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2LaneqS8(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -7763,7 +7763,7 @@ public fun vluti2qLaneqU8(a: Uint8x16T, b: Uint8x16T, index: Int): Uint8x16T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2qLaneqS8(a, b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti2qLaneqS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -7776,7 +7776,7 @@ public fun vluti2LaneqU16(a: Uint16x4T, b: Uint8x16T, index: Int): Uint16x8T {
     run {
         check(index >= 0 && index <= 7)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2LaneqS16(transmuteWithLayouts<Uint16x4T, Uint16x8T>(a, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Uint16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2LaneqS16(transmuteWithLayouts<Uint16x4T, Int16x4T>(a, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -7789,7 +7789,7 @@ public fun vluti2qLaneqU16(a: Uint16x8T, b: Uint8x16T, index: Int): Uint16x8T {
     run {
         check(index >= 0 && index <= 7)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2qLaneqS16(a, b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti2qLaneqS16(transmuteWithLayouts<Uint16x8T, Int16x8T>(a, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -7802,7 +7802,7 @@ public fun vluti2LaneqP8(a: Poly8x8T, b: Uint8x16T, index: Int): Poly8x16T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2LaneqS8(transmuteWithLayouts<Poly8x8T, Poly8x16T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Poly8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2LaneqS8(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -7815,7 +7815,7 @@ public fun vluti2qLaneqP8(a: Poly8x16T, b: Uint8x16T, index: Int): Poly8x16T {
     run {
         check(index >= 0 && index <= 3)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2qLaneqS8(a, b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti2qLaneqS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, index), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -7828,7 +7828,7 @@ public fun vluti2LaneqP16(a: Poly16x4T, b: Uint8x16T, index: Int): Poly16x8T {
     run {
         check(index >= 0 && index <= 7)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2LaneqS16(transmuteWithLayouts<Poly16x4T, Poly16x8T>(a, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Poly16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2LaneqS16(transmuteWithLayouts<Poly16x4T, Int16x4T>(a, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Int16x4T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -7841,7 +7841,7 @@ public fun vluti2qLaneqP16(a: Poly16x8T, b: Uint8x16T, index: Int): Poly16x8T {
     run {
         check(index >= 0 && index <= 7)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2qLaneqS16(a, b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti2qLaneqS16(transmuteWithLayouts<Poly16x8T, Int16x8T>(a, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Int16x8T>()), b, index), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -7910,7 +7910,7 @@ public fun vluti4qLaneF16X2(a: Float16x8x2T, b: Uint8x8T, lane: Int): Float16x8T
     run {
         check(lane >= 0 && lane <= 1)
     }
-    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti4qLaneS16X2(transmuteWithLayouts<Float16x8x2T, Float16x8T>(a, UnresolvedTypeLayout<Float16x8x2T>(), UnresolvedTypeLayout<Float16x8T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
+    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti4qLaneS16X2(transmuteWithLayouts<Float16x8x2T, Int16x8x2T>(a, UnresolvedTypeLayout<Float16x8x2T>(), UnresolvedTypeLayout<Int16x8x2T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -7923,7 +7923,7 @@ public fun vluti4qLaneU16X2(a: Uint16x8x2T, b: Uint8x8T, lane: Int): Uint16x8T {
     run {
         check(lane >= 0 && lane <= 1)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti4qLaneS16X2(transmuteWithLayouts<Uint16x8x2T, Uint16x8T>(a, UnresolvedTypeLayout<Uint16x8x2T>(), UnresolvedTypeLayout<Uint16x8T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti4qLaneS16X2(transmuteWithLayouts<Uint16x8x2T, Int16x8x2T>(a, UnresolvedTypeLayout<Uint16x8x2T>(), UnresolvedTypeLayout<Int16x8x2T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -7936,7 +7936,7 @@ public fun vluti4qLaneP16X2(a: Poly16x8x2T, b: Uint8x8T, lane: Int): Poly16x8T {
     run {
         check(lane >= 0 && lane <= 1)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti4qLaneS16X2(transmuteWithLayouts<Poly16x8x2T, Poly16x8T>(a, UnresolvedTypeLayout<Poly16x8x2T>(), UnresolvedTypeLayout<Poly16x8T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti4qLaneS16X2(transmuteWithLayouts<Poly16x8x2T, Int16x8x2T>(a, UnresolvedTypeLayout<Poly16x8x2T>(), UnresolvedTypeLayout<Int16x8x2T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -7950,7 +7950,7 @@ public fun vluti4qLaneS16X2(a: Int16x8x2T, b: Uint8x8T, lane: Int): Int16x8T {
     run {
         check(lane >= 0 && lane <= 1)
     }
-    return vluti4qLaneS16X2(a.first, a.second, b, lane)
+    return vluti4qLaneS16X2(a.field0, a.field1, b, lane)
 }
 
 /**
@@ -7977,7 +7977,7 @@ public fun vluti4qLaneU8(a: Uint8x16T, b: Uint8x8T, lane: Int): Uint8x16T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti4qLaneS8(a, b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti4qLaneS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -7990,7 +7990,7 @@ public fun vluti4qLaneP8(a: Poly8x16T, b: Uint8x8T, lane: Int): Poly8x16T {
     run {
         check(lane == 0)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti4qLaneS8(a, b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti4qLaneS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -8003,7 +8003,7 @@ public fun vluti4qLaneqF16X2(a: Float16x8x2T, b: Uint8x16T, lane: Int): Float16x
     run {
         check(lane >= 0 && lane <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti4qLaneqS16X2(transmuteWithLayouts<Float16x8x2T, Float16x8T>(a, UnresolvedTypeLayout<Float16x8x2T>(), UnresolvedTypeLayout<Float16x8T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
+    return transmuteWithLayouts<Int16x8T, Float16x8T>(vluti4qLaneqS16X2(transmuteWithLayouts<Float16x8x2T, Int16x8x2T>(a, UnresolvedTypeLayout<Float16x8x2T>(), UnresolvedTypeLayout<Int16x8x2T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Float16x8T>())
 }
 
 /**
@@ -8016,7 +8016,7 @@ public fun vluti4qLaneqU16X2(a: Uint16x8x2T, b: Uint8x16T, lane: Int): Uint16x8T
     run {
         check(lane >= 0 && lane <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti4qLaneqS16X2(transmuteWithLayouts<Uint16x8x2T, Uint16x8T>(a, UnresolvedTypeLayout<Uint16x8x2T>(), UnresolvedTypeLayout<Uint16x8T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vluti4qLaneqS16X2(transmuteWithLayouts<Uint16x8x2T, Int16x8x2T>(a, UnresolvedTypeLayout<Uint16x8x2T>(), UnresolvedTypeLayout<Int16x8x2T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -8029,7 +8029,7 @@ public fun vluti4qLaneqP16X2(a: Poly16x8x2T, b: Uint8x16T, lane: Int): Poly16x8T
     run {
         check(lane >= 0 && lane <= 3)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti4qLaneqS16X2(transmuteWithLayouts<Poly16x8x2T, Poly16x8T>(a, UnresolvedTypeLayout<Poly16x8x2T>(), UnresolvedTypeLayout<Poly16x8T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vluti4qLaneqS16X2(transmuteWithLayouts<Poly16x8x2T, Int16x8x2T>(a, UnresolvedTypeLayout<Poly16x8x2T>(), UnresolvedTypeLayout<Int16x8x2T>()), b, lane), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -8043,7 +8043,7 @@ public fun vluti4qLaneqS16X2(a: Int16x8x2T, b: Uint8x16T, lane: Int): Int16x8T {
     run {
         check(lane >= 0 && lane <= 3)
     }
-    return vluti4qLaneqS16X2(a.first, a.second, b, lane)
+    return vluti4qLaneqS16X2(a.field0, a.field1, b, lane)
 }
 
 /**
@@ -8070,7 +8070,7 @@ public fun vluti4qLaneqU8(a: Uint8x16T, b: Uint8x16T, lane: Int): Uint8x16T {
     run {
         check(lane >= 0 && lane <= 1)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti4qLaneqS8(a, b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vluti4qLaneqS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -8083,7 +8083,7 @@ public fun vluti4qLaneqP8(a: Poly8x16T, b: Uint8x16T, lane: Int): Poly8x16T {
     run {
         check(lane >= 0 && lane <= 1)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti4qLaneqS8(a, b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vluti4qLaneqS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b, lane), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -12291,25 +12291,25 @@ public fun vqtbl1qS8(a: Int8x16T, b: Uint8x16T): Int8x16T = vqtbl1q(a, b)
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl1U8)
  */
-public fun vqtbl1U8(a: Uint8x16T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl1(transmuteWithLayouts<Uint8x16T, Uint8x8T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Uint8x8T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbl1U8(a: Uint8x16T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl1(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl1qU8)
  */
-public fun vqtbl1qU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl1q(a, b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbl1qU8(a: Uint8x16T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl1q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl1P8)
  */
-public fun vqtbl1P8(a: Poly8x16T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl1(transmuteWithLayouts<Poly8x16T, Poly8x8T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Poly8x8T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbl1P8(a: Poly8x16T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl1(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl1qP8)
  */
-public fun vqtbl1qP8(a: Poly8x16T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl1q(a, b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbl1qP8(a: Poly8x16T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl1q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Table look-up
@@ -12333,37 +12333,37 @@ public fun vqtbl2q(a: Int8x16T, b: Int8x16T, c: Uint8x16T): Int8x16T {
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl2S8)
  */
-public fun vqtbl2S8(a: Int8x16x2T, b: Uint8x8T): Int8x8T = vqtbl2(a.first, a.second, b)
+public fun vqtbl2S8(a: Int8x16x2T, b: Uint8x8T): Int8x8T = vqtbl2(a.field0, a.field1, b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl2qS8)
  */
-public fun vqtbl2qS8(a: Int8x16x2T, b: Uint8x16T): Int8x16T = vqtbl2q(a.first, a.second, b)
+public fun vqtbl2qS8(a: Int8x16x2T, b: Uint8x16T): Int8x16T = vqtbl2q(a.field0, a.field1, b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl2U8)
  */
-public fun vqtbl2U8(a: Uint8x16x2T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl2(transmute(a.first), transmute(a.second), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbl2U8(a: Uint8x16x2T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl2(transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl2qU8)
  */
-public fun vqtbl2qU8(a: Uint8x16x2T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl2q(transmute(a.first), transmute(a.second), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbl2qU8(a: Uint8x16x2T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl2q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl2P8)
  */
-public fun vqtbl2P8(a: Poly8x16x2T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl2(transmute(a.first), transmute(a.second), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbl2P8(a: Poly8x16x2T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl2(transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl2qP8)
  */
-public fun vqtbl2qP8(a: Poly8x16x2T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl2q(transmute(a.first), transmute(a.second), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbl2qP8(a: Poly8x16x2T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl2q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Table look-up
@@ -12387,37 +12387,37 @@ public fun vqtbl3q(a: Int8x16T, b: Int8x16T, c: Int8x16T, d: Uint8x16T): Int8x16
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl3S8)
  */
-public fun vqtbl3S8(a: Int8x16x3T, b: Uint8x8T): Int8x8T = vqtbl3(a.first, a.second, a.third, b)
+public fun vqtbl3S8(a: Int8x16x3T, b: Uint8x8T): Int8x8T = vqtbl3(a.field0, a.field1, a.field2, b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl3qS8)
  */
-public fun vqtbl3qS8(a: Int8x16x3T, b: Uint8x16T): Int8x16T = vqtbl3q(a.first, a.second, a.third, b)
+public fun vqtbl3qS8(a: Int8x16x3T, b: Uint8x16T): Int8x16T = vqtbl3q(a.field0, a.field1, a.field2, b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl3U8)
  */
-public fun vqtbl3U8(a: Uint8x16x3T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl3(transmute(a.first), transmute(a.second), transmute(a.third), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbl3U8(a: Uint8x16x3T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl3(transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl3qU8)
  */
-public fun vqtbl3qU8(a: Uint8x16x3T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl3q(transmute(a.first), transmute(a.second), transmute(a.third), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbl3qU8(a: Uint8x16x3T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl3q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl3P8)
  */
-public fun vqtbl3P8(a: Poly8x16x3T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl3(transmute(a.first), transmute(a.second), transmute(a.third), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbl3P8(a: Poly8x16x3T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl3(transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl3qP8)
  */
-public fun vqtbl3qP8(a: Poly8x16x3T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl3q(transmute(a.first), transmute(a.second), transmute(a.third), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbl3qP8(a: Poly8x16x3T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl3q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Table look-up
@@ -12441,37 +12441,37 @@ public fun vqtbl4q(a: Int8x16T, b: Int8x16T, c: Int8x16T, d: Int8x16T, e: Uint8x
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl4S8)
  */
-public fun vqtbl4S8(a: Int8x16x4T, b: Uint8x8T): Int8x8T = vqtbl4(a.first, a.second, a.third, a.field3, b)
+public fun vqtbl4S8(a: Int8x16x4T, b: Uint8x8T): Int8x8T = vqtbl4(a.field0, a.field1, a.field2, a.field3, b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl4qS8)
  */
-public fun vqtbl4qS8(a: Int8x16x4T, b: Uint8x16T): Int8x16T = vqtbl4q(a.first, a.second, a.third, a.field3, b)
+public fun vqtbl4qS8(a: Int8x16x4T, b: Uint8x16T): Int8x16T = vqtbl4q(a.field0, a.field1, a.field2, a.field3, b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl4U8)
  */
-public fun vqtbl4U8(a: Uint8x16x4T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl4(transmute(a.first), transmute(a.second), transmute(a.third), transmuteWithLayouts<Uint8x16T, Uint8x8T>(a.field3, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Uint8x8T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbl4U8(a: Uint8x16x4T, b: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbl4(transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field3, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl4qU8)
  */
-public fun vqtbl4qU8(a: Uint8x16x4T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl4q(transmute(a.first), transmute(a.second), transmute(a.third), a.field3, b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbl4qU8(a: Uint8x16x4T, b: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbl4q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(a.field3, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl4P8)
  */
-public fun vqtbl4P8(a: Poly8x16x4T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl4(transmute(a.first), transmute(a.second), transmute(a.third), transmuteWithLayouts<Poly8x16T, Poly8x8T>(a.field3, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Poly8x8T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbl4P8(a: Poly8x16x4T, b: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbl4(transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field3, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbl4qP8)
  */
-public fun vqtbl4qP8(a: Poly8x16x4T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl4q(transmute(a.first), transmute(a.second), transmute(a.third), a.field3, b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbl4qP8(a: Poly8x16x4T, b: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbl4q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(a.field3, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), b), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Extended table look-up
@@ -12507,25 +12507,25 @@ public fun vqtbx1qS8(a: Int8x16T, b: Int8x16T, c: Uint8x16T): Int8x16T = vqtbx1q
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx1U8)
  */
-public fun vqtbx1U8(a: Uint8x8T, b: Uint8x16T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx1(a, transmuteWithLayouts<Uint8x16T, Uint8x8T>(b, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Uint8x8T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbx1U8(a: Uint8x8T, b: Uint8x16T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx1(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx1qU8)
  */
-public fun vqtbx1qU8(a: Uint8x16T, b: Uint8x16T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx1q(a, b, c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbx1qU8(a: Uint8x16T, b: Uint8x16T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx1q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx1P8)
  */
-public fun vqtbx1P8(a: Poly8x8T, b: Poly8x16T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx1(a, transmuteWithLayouts<Poly8x16T, Poly8x8T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Poly8x8T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbx1P8(a: Poly8x8T, b: Poly8x16T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx1(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx1qP8)
  */
-public fun vqtbx1qP8(a: Poly8x16T, b: Poly8x16T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx1q(a, b, c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbx1qP8(a: Poly8x16T, b: Poly8x16T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx1q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Extended table look-up
@@ -12549,37 +12549,37 @@ public fun vqtbx2q(a: Int8x16T, b: Int8x16T, c: Int8x16T, d: Uint8x16T): Int8x16
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx2S8)
  */
-public fun vqtbx2S8(a: Int8x8T, b: Int8x16x2T, c: Uint8x8T): Int8x8T = vqtbx2(a, b.first, b.second, c)
+public fun vqtbx2S8(a: Int8x8T, b: Int8x16x2T, c: Uint8x8T): Int8x8T = vqtbx2(a, b.field0, b.field1, c)
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx2qS8)
  */
-public fun vqtbx2qS8(a: Int8x16T, b: Int8x16x2T, c: Uint8x16T): Int8x16T = vqtbx2q(a, b.first, b.second, c)
+public fun vqtbx2qS8(a: Int8x16T, b: Int8x16x2T, c: Uint8x16T): Int8x16T = vqtbx2q(a, b.field0, b.field1, c)
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx2U8)
  */
-public fun vqtbx2U8(a: Uint8x8T, b: Uint8x16x2T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx2(a, transmute(b.first), transmute(b.second), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbx2U8(a: Uint8x8T, b: Uint8x16x2T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx2(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx2qU8)
  */
-public fun vqtbx2qU8(a: Uint8x16T, b: Uint8x16x2T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx2q(a, transmute(b.first), transmute(b.second), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbx2qU8(a: Uint8x16T, b: Uint8x16x2T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx2q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx2P8)
  */
-public fun vqtbx2P8(a: Poly8x8T, b: Poly8x16x2T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx2(a, transmute(b.first), transmute(b.second), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbx2P8(a: Poly8x8T, b: Poly8x16x2T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx2(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx2qP8)
  */
-public fun vqtbx2qP8(a: Poly8x16T, b: Poly8x16x2T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx2q(a, transmute(b.first), transmute(b.second), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbx2qP8(a: Poly8x16T, b: Poly8x16x2T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx2q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Extended table look-up
@@ -12603,37 +12603,37 @@ public fun vqtbx3q(a: Int8x16T, b: Int8x16T, c: Int8x16T, d: Int8x16T, e: Uint8x
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx3S8)
  */
-public fun vqtbx3S8(a: Int8x8T, b: Int8x16x3T, c: Uint8x8T): Int8x8T = vqtbx3(a, b.first, b.second, b.third, c)
+public fun vqtbx3S8(a: Int8x8T, b: Int8x16x3T, c: Uint8x8T): Int8x8T = vqtbx3(a, b.field0, b.field1, b.field2, c)
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx3qS8)
  */
-public fun vqtbx3qS8(a: Int8x16T, b: Int8x16x3T, c: Uint8x16T): Int8x16T = vqtbx3q(a, b.first, b.second, b.third, c)
+public fun vqtbx3qS8(a: Int8x16T, b: Int8x16x3T, c: Uint8x16T): Int8x16T = vqtbx3q(a, b.field0, b.field1, b.field2, c)
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx3U8)
  */
-public fun vqtbx3U8(a: Uint8x8T, b: Uint8x16x3T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx3(a, transmute(b.first), transmute(b.second), transmute(b.third), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbx3U8(a: Uint8x8T, b: Uint8x16x3T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx3(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx3qU8)
  */
-public fun vqtbx3qU8(a: Uint8x16T, b: Uint8x16x3T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx3q(a, transmute(b.first), transmute(b.second), transmute(b.third), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbx3qU8(a: Uint8x16T, b: Uint8x16x3T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx3q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx3P8)
  */
-public fun vqtbx3P8(a: Poly8x8T, b: Poly8x16x3T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx3(a, transmute(b.first), transmute(b.second), transmute(b.third), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbx3P8(a: Poly8x8T, b: Poly8x16x3T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx3(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx3qP8)
  */
-public fun vqtbx3qP8(a: Poly8x16T, b: Poly8x16x3T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx3q(a, transmute(b.first), transmute(b.second), transmute(b.third), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbx3qP8(a: Poly8x16T, b: Poly8x16x3T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx3q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Extended table look-up
@@ -12657,37 +12657,37 @@ public fun vqtbx4q(a: Int8x16T, b: Int8x16T, c: Int8x16T, d: Int8x16T, e: Int8x1
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx4S8)
  */
-public fun vqtbx4S8(a: Int8x8T, b: Int8x16x4T, c: Uint8x8T): Int8x8T = vqtbx4(a, b.first, b.second, b.third, b.field3, c)
+public fun vqtbx4S8(a: Int8x8T, b: Int8x16x4T, c: Uint8x8T): Int8x8T = vqtbx4(a, b.field0, b.field1, b.field2, b.field3, c)
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx4qS8)
  */
-public fun vqtbx4qS8(a: Int8x16T, b: Int8x16x4T, c: Uint8x16T): Int8x16T = vqtbx4q(a, b.first, b.second, b.third, b.field3, c)
+public fun vqtbx4qS8(a: Int8x16T, b: Int8x16x4T, c: Uint8x16T): Int8x16T = vqtbx4q(a, b.field0, b.field1, b.field2, b.field3, c)
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx4U8)
  */
-public fun vqtbx4U8(a: Uint8x8T, b: Uint8x16x4T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx4(a, transmute(b.first), transmute(b.second), transmute(b.third), transmuteWithLayouts<Uint8x16T, Uint8x8T>(b.field3, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Uint8x8T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vqtbx4U8(a: Uint8x8T, b: Uint8x16x4T, c: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vqtbx4(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field3, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx4qU8)
  */
-public fun vqtbx4qU8(a: Uint8x16T, b: Uint8x16x4T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx4q(a, transmute(b.first), transmute(b.second), transmute(b.third), b.field3, c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vqtbx4qU8(a: Uint8x16T, b: Uint8x16x4T, c: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vqtbx4q(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b.field3, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx4P8)
  */
-public fun vqtbx4P8(a: Poly8x8T, b: Poly8x16x4T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx4(a, transmute(b.first), transmute(b.second), transmute(b.third), transmuteWithLayouts<Poly8x16T, Poly8x8T>(b.field3, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Poly8x8T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vqtbx4P8(a: Poly8x8T, b: Poly8x16x4T, c: Uint8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vqtbx4(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field3, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqtbx4qP8)
  */
-public fun vqtbx4qP8(a: Poly8x16T, b: Poly8x16x4T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx4q(a, transmute(b.first), transmute(b.second), transmute(b.third), b.field3, c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vqtbx4qP8(a: Poly8x16T, b: Poly8x16x4T, c: Uint8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vqtbx4q(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field0, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field1, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field2, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b.field3, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), c), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Rotate and exclusive OR
@@ -12714,25 +12714,25 @@ public fun vrbitqS8(a: Int8x16T): Int8x16T = run { val simdArg0 = a; simdArg0 }
  * Reverse bit order
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrbitU8)
  */
-public fun vrbitU8(a: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vrbitS8(a), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+public fun vrbitU8(a: Uint8x8T): Uint8x8T = transmuteWithLayouts<Int8x8T, Uint8x8T>(vrbitS8(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>())), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 
 /**
  * Reverse bit order
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrbitqU8)
  */
-public fun vrbitqU8(a: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vrbitqS8(a), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+public fun vrbitqU8(a: Uint8x16T): Uint8x16T = transmuteWithLayouts<Int8x16T, Uint8x16T>(vrbitqS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>())), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 
 /**
  * Reverse bit order
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrbitP8)
  */
-public fun vrbitP8(a: Poly8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vrbitS8(a), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+public fun vrbitP8(a: Poly8x8T): Poly8x8T = transmuteWithLayouts<Int8x8T, Poly8x8T>(vrbitS8(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>())), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 
 /**
  * Reverse bit order
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vrbitqP8)
  */
-public fun vrbitqP8(a: Poly8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vrbitqS8(a), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+public fun vrbitqP8(a: Poly8x16T): Poly8x16T = transmuteWithLayouts<Int8x16T, Poly8x16T>(vrbitqS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>())), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 
 /**
  * Reciprocal estimate.
@@ -14063,13 +14063,13 @@ public fun vsha512su1qU64(a: Uint64x2T, b: Uint64x2T, c: Uint64x2T): Uint64x2T {
  * Signed Shift left
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshldS64)
  */
-public fun vshldS64(a: Long, b: Long): Long = transmuteWithLayouts<Int64x1T, Long>(vshlS64(a, b), UnresolvedTypeLayout<Int64x1T>(), PrimitiveLayouts.I64)
+public fun vshldS64(a: Long, b: Long): Long = transmuteWithLayouts<Int64x1T, Long>(vshlS64(transmute(a), transmute(b)), UnresolvedTypeLayout<Int64x1T>(), PrimitiveLayouts.I64)
 
 /**
  * Unsigned Shift left
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vshldU64)
  */
-public fun vshldU64(a: ULong, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vshlU64(a, (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vshldU64(a: ULong, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vshlU64(transmute(a), transmute(b)), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Signed shift left long
@@ -14313,7 +14313,7 @@ public fun vsliNU8(a: Uint8x8T, b: Uint8x8T, n: Int): Uint8x8T {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x8T, Uint8x8T>(vsliNS8(a, b, n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+    return transmuteWithLayouts<Int8x8T, Uint8x8T>(vsliNS8(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Uint8x8T, Int8x8T>(b, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 }
 
 /**
@@ -14324,7 +14324,7 @@ public fun vsliqNU8(a: Uint8x16T, b: Uint8x16T, n: Int): Uint8x16T {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vsliqNS8(a, b, n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vsliqNS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -14335,7 +14335,7 @@ public fun vsliNU16(a: Uint16x4T, b: Uint16x4T, n: Int): Uint16x4T {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int16x4T, Uint16x4T>(vsliNS16(a, b, n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>())
+    return transmuteWithLayouts<Int16x4T, Uint16x4T>(vsliNS16(transmuteWithLayouts<Uint16x4T, Int16x4T>(a, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>()), transmuteWithLayouts<Uint16x4T, Int16x4T>(b, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>()), n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>())
 }
 
 /**
@@ -14346,7 +14346,7 @@ public fun vsliqNU16(a: Uint16x8T, b: Uint16x8T, n: Int): Uint16x8T {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vsliqNS16(a, b, n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vsliqNS16(transmuteWithLayouts<Uint16x8T, Int16x8T>(a, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>()), transmuteWithLayouts<Uint16x8T, Int16x8T>(b, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>()), n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -14357,7 +14357,7 @@ public fun vsliNU32(a: Uint32x2T, b: Uint32x2T, n: Int): Uint32x2T {
     run {
         check(n >= 0 && n <= 31)
     }
-    return transmuteWithLayouts<Int32x2T, Uint32x2T>(vsliNS32(a, b, n), UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>())
+    return transmuteWithLayouts<Int32x2T, Uint32x2T>(vsliNS32(transmuteWithLayouts<Uint32x2T, Int32x2T>(a, UnresolvedTypeLayout<Uint32x2T>(), UnresolvedTypeLayout<Int32x2T>()), transmuteWithLayouts<Uint32x2T, Int32x2T>(b, UnresolvedTypeLayout<Uint32x2T>(), UnresolvedTypeLayout<Int32x2T>()), n), UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>())
 }
 
 /**
@@ -14368,7 +14368,7 @@ public fun vsliqNU32(a: Uint32x4T, b: Uint32x4T, n: Int): Uint32x4T {
     run {
         check(n >= 0 && n <= 31)
     }
-    return transmuteWithLayouts<Int32x4T, Uint32x4T>(vsliqNS32(a, b, n), UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>())
+    return transmuteWithLayouts<Int32x4T, Uint32x4T>(vsliqNS32(transmuteWithLayouts<Uint32x4T, Int32x4T>(a, UnresolvedTypeLayout<Uint32x4T>(), UnresolvedTypeLayout<Int32x4T>()), transmuteWithLayouts<Uint32x4T, Int32x4T>(b, UnresolvedTypeLayout<Uint32x4T>(), UnresolvedTypeLayout<Int32x4T>()), n), UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>())
 }
 
 /**
@@ -14379,7 +14379,7 @@ public fun vsliNU64(a: Uint64x1T, b: Uint64x1T, n: Int): Uint64x1T {
     run {
         check(n >= 0 && n <= 63)
     }
-    return transmuteWithLayouts<Int64x1T, Uint64x1T>(vsliNS64(a, b, n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>())
+    return transmuteWithLayouts<Int64x1T, Uint64x1T>(vsliNS64(transmuteWithLayouts<Uint64x1T, Int64x1T>(a, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Uint64x1T, Int64x1T>(b, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>()), n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>())
 }
 
 /**
@@ -14390,7 +14390,7 @@ public fun vsliqNU64(a: Uint64x2T, b: Uint64x2T, n: Int): Uint64x2T {
     run {
         check(n >= 0 && n <= 63)
     }
-    return transmuteWithLayouts<Int64x2T, Uint64x2T>(vsliqNS64(a, b, n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>())
+    return transmuteWithLayouts<Int64x2T, Uint64x2T>(vsliqNS64(transmuteWithLayouts<Uint64x2T, Int64x2T>(a, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>()), transmuteWithLayouts<Uint64x2T, Int64x2T>(b, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>()), n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>())
 }
 
 /**
@@ -14401,7 +14401,7 @@ public fun vsliNP8(a: Poly8x8T, b: Poly8x8T, n: Int): Poly8x8T {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x8T, Poly8x8T>(vsliNS8(a, b, n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+    return transmuteWithLayouts<Int8x8T, Poly8x8T>(vsliNS8(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Poly8x8T, Int8x8T>(b, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 }
 
 /**
@@ -14412,7 +14412,7 @@ public fun vsliqNP8(a: Poly8x16T, b: Poly8x16T, n: Int): Poly8x16T {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vsliqNS8(a, b, n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vsliqNS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -14423,7 +14423,7 @@ public fun vsliNP16(a: Poly16x4T, b: Poly16x4T, n: Int): Poly16x4T {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int16x4T, Poly16x4T>(vsliNS16(a, b, n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Poly16x4T>())
+    return transmuteWithLayouts<Int16x4T, Poly16x4T>(vsliNS16(transmuteWithLayouts<Poly16x4T, Int16x4T>(a, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Int16x4T>()), transmuteWithLayouts<Poly16x4T, Int16x4T>(b, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Int16x4T>()), n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Poly16x4T>())
 }
 
 /**
@@ -14434,7 +14434,7 @@ public fun vsliqNP16(a: Poly16x8T, b: Poly16x8T, n: Int): Poly16x8T {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vsliqNS16(a, b, n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vsliqNS16(transmuteWithLayouts<Poly16x8T, Int16x8T>(a, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Int16x8T>()), transmuteWithLayouts<Poly16x8T, Int16x8T>(b, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Int16x8T>()), n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -14445,7 +14445,7 @@ public fun vsliNP64(a: Poly64x1T, b: Poly64x1T, n: Int): Poly64x1T {
     run {
         check(n >= 0 && n <= 63)
     }
-    return transmuteWithLayouts<Int64x1T, Poly64x1T>(vsliNS64(a, b, n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Poly64x1T>())
+    return transmuteWithLayouts<Int64x1T, Poly64x1T>(vsliNS64(transmuteWithLayouts<Poly64x1T, Int64x1T>(a, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Poly64x1T, Int64x1T>(b, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Int64x1T>()), n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Poly64x1T>())
 }
 
 /**
@@ -14456,7 +14456,7 @@ public fun vsliqNP64(a: Poly64x2T, b: Poly64x2T, n: Int): Poly64x2T {
     run {
         check(n >= 0 && n <= 63)
     }
-    return transmuteWithLayouts<Int64x2T, Poly64x2T>(vsliqNS64(a, b, n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Poly64x2T>())
+    return transmuteWithLayouts<Int64x2T, Poly64x2T>(vsliqNS64(transmuteWithLayouts<Poly64x2T, Int64x2T>(a, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Int64x2T>()), transmuteWithLayouts<Poly64x2T, Int64x2T>(b, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Int64x2T>()), n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Poly64x2T>())
 }
 
 /**
@@ -14467,7 +14467,7 @@ public fun vslidNS64(a: Long, b: Long, n: Int): Long {
     run {
         check(n >= 0 && n <= 63)
     }
-    return transmuteWithLayouts<Int64x1T, Long>(vsliNS64(a, b, n), UnresolvedTypeLayout<Int64x1T>(), PrimitiveLayouts.I64)
+    return transmuteWithLayouts<Int64x1T, Long>(vsliNS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), n), UnresolvedTypeLayout<Int64x1T>(), PrimitiveLayouts.I64)
 }
 
 /**
@@ -14478,7 +14478,7 @@ public fun vslidNU64(a: ULong, b: ULong, n: Int): ULong {
     run {
         check(n >= 0 && n <= 63)
     }
-    return transmuteWithLayouts<Uint64x1T, ULong>(vsliNU64(a, b, n), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+    return transmuteWithLayouts<Uint64x1T, ULong>(vsliNU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), n), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 }
 
 /**
@@ -14910,7 +14910,7 @@ public fun vsriNU8(a: Uint8x8T, b: Uint8x8T, n: Int): Uint8x8T {
     run {
         check(n >= 1 && n <= 8)
     }
-    return transmuteWithLayouts<Int8x8T, Uint8x8T>(vsriNS8(a, b, n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
+    return transmuteWithLayouts<Int8x8T, Uint8x8T>(vsriNS8(transmuteWithLayouts<Uint8x8T, Int8x8T>(a, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Uint8x8T, Int8x8T>(b, UnresolvedTypeLayout<Uint8x8T>(), UnresolvedTypeLayout<Int8x8T>()), n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Uint8x8T>())
 }
 
 /**
@@ -14921,7 +14921,7 @@ public fun vsriqNU8(a: Uint8x16T, b: Uint8x16T, n: Int): Uint8x16T {
     run {
         check(n >= 1 && n <= 8)
     }
-    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vsriqNS8(a, b, n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
+    return transmuteWithLayouts<Int8x16T, Uint8x16T>(vsriqNS8(transmuteWithLayouts<Uint8x16T, Int8x16T>(a, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Uint8x16T, Int8x16T>(b, UnresolvedTypeLayout<Uint8x16T>(), UnresolvedTypeLayout<Int8x16T>()), n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Uint8x16T>())
 }
 
 /**
@@ -14932,7 +14932,7 @@ public fun vsriNU16(a: Uint16x4T, b: Uint16x4T, n: Int): Uint16x4T {
     run {
         check(n >= 1 && n <= 16)
     }
-    return transmuteWithLayouts<Int16x4T, Uint16x4T>(vsriNS16(a, b, n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>())
+    return transmuteWithLayouts<Int16x4T, Uint16x4T>(vsriNS16(transmuteWithLayouts<Uint16x4T, Int16x4T>(a, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>()), transmuteWithLayouts<Uint16x4T, Int16x4T>(b, UnresolvedTypeLayout<Uint16x4T>(), UnresolvedTypeLayout<Int16x4T>()), n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Uint16x4T>())
 }
 
 /**
@@ -14943,7 +14943,7 @@ public fun vsriqNU16(a: Uint16x8T, b: Uint16x8T, n: Int): Uint16x8T {
     run {
         check(n >= 1 && n <= 16)
     }
-    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vsriqNS16(a, b, n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
+    return transmuteWithLayouts<Int16x8T, Uint16x8T>(vsriqNS16(transmuteWithLayouts<Uint16x8T, Int16x8T>(a, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>()), transmuteWithLayouts<Uint16x8T, Int16x8T>(b, UnresolvedTypeLayout<Uint16x8T>(), UnresolvedTypeLayout<Int16x8T>()), n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Uint16x8T>())
 }
 
 /**
@@ -14954,7 +14954,7 @@ public fun vsriNU32(a: Uint32x2T, b: Uint32x2T, n: Int): Uint32x2T {
     run {
         check(n >= 1 && n <= 32)
     }
-    return transmuteWithLayouts<Int32x2T, Uint32x2T>(vsriNS32(a, b, n), UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>())
+    return transmuteWithLayouts<Int32x2T, Uint32x2T>(vsriNS32(transmuteWithLayouts<Uint32x2T, Int32x2T>(a, UnresolvedTypeLayout<Uint32x2T>(), UnresolvedTypeLayout<Int32x2T>()), transmuteWithLayouts<Uint32x2T, Int32x2T>(b, UnresolvedTypeLayout<Uint32x2T>(), UnresolvedTypeLayout<Int32x2T>()), n), UnresolvedTypeLayout<Int32x2T>(), UnresolvedTypeLayout<Uint32x2T>())
 }
 
 /**
@@ -14965,7 +14965,7 @@ public fun vsriqNU32(a: Uint32x4T, b: Uint32x4T, n: Int): Uint32x4T {
     run {
         check(n >= 1 && n <= 32)
     }
-    return transmuteWithLayouts<Int32x4T, Uint32x4T>(vsriqNS32(a, b, n), UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>())
+    return transmuteWithLayouts<Int32x4T, Uint32x4T>(vsriqNS32(transmuteWithLayouts<Uint32x4T, Int32x4T>(a, UnresolvedTypeLayout<Uint32x4T>(), UnresolvedTypeLayout<Int32x4T>()), transmuteWithLayouts<Uint32x4T, Int32x4T>(b, UnresolvedTypeLayout<Uint32x4T>(), UnresolvedTypeLayout<Int32x4T>()), n), UnresolvedTypeLayout<Int32x4T>(), UnresolvedTypeLayout<Uint32x4T>())
 }
 
 /**
@@ -14976,7 +14976,7 @@ public fun vsriNU64(a: Uint64x1T, b: Uint64x1T, n: Int): Uint64x1T {
     run {
         check(n >= 1 && n <= 64)
     }
-    return transmuteWithLayouts<Int64x1T, Uint64x1T>(vsriNS64(a, b, n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>())
+    return transmuteWithLayouts<Int64x1T, Uint64x1T>(vsriNS64(transmuteWithLayouts<Uint64x1T, Int64x1T>(a, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Uint64x1T, Int64x1T>(b, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>()), n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Uint64x1T>())
 }
 
 /**
@@ -14987,7 +14987,7 @@ public fun vsriqNU64(a: Uint64x2T, b: Uint64x2T, n: Int): Uint64x2T {
     run {
         check(n >= 1 && n <= 64)
     }
-    return transmuteWithLayouts<Int64x2T, Uint64x2T>(vsriqNS64(a, b, n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>())
+    return transmuteWithLayouts<Int64x2T, Uint64x2T>(vsriqNS64(transmuteWithLayouts<Uint64x2T, Int64x2T>(a, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>()), transmuteWithLayouts<Uint64x2T, Int64x2T>(b, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>()), n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Uint64x2T>())
 }
 
 /**
@@ -14998,7 +14998,7 @@ public fun vsriNP8(a: Poly8x8T, b: Poly8x8T, n: Int): Poly8x8T {
     run {
         check(n >= 1 && n <= 8)
     }
-    return transmuteWithLayouts<Int8x8T, Poly8x8T>(vsriNS8(a, b, n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
+    return transmuteWithLayouts<Int8x8T, Poly8x8T>(vsriNS8(transmuteWithLayouts<Poly8x8T, Int8x8T>(a, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), transmuteWithLayouts<Poly8x8T, Int8x8T>(b, UnresolvedTypeLayout<Poly8x8T>(), UnresolvedTypeLayout<Int8x8T>()), n), UnresolvedTypeLayout<Int8x8T>(), UnresolvedTypeLayout<Poly8x8T>())
 }
 
 /**
@@ -15009,7 +15009,7 @@ public fun vsriqNP8(a: Poly8x16T, b: Poly8x16T, n: Int): Poly8x16T {
     run {
         check(n >= 1 && n <= 8)
     }
-    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vsriqNS8(a, b, n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
+    return transmuteWithLayouts<Int8x16T, Poly8x16T>(vsriqNS8(transmuteWithLayouts<Poly8x16T, Int8x16T>(a, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), transmuteWithLayouts<Poly8x16T, Int8x16T>(b, UnresolvedTypeLayout<Poly8x16T>(), UnresolvedTypeLayout<Int8x16T>()), n), UnresolvedTypeLayout<Int8x16T>(), UnresolvedTypeLayout<Poly8x16T>())
 }
 
 /**
@@ -15020,7 +15020,7 @@ public fun vsriNP16(a: Poly16x4T, b: Poly16x4T, n: Int): Poly16x4T {
     run {
         check(n >= 1 && n <= 16)
     }
-    return transmuteWithLayouts<Int16x4T, Poly16x4T>(vsriNS16(a, b, n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Poly16x4T>())
+    return transmuteWithLayouts<Int16x4T, Poly16x4T>(vsriNS16(transmuteWithLayouts<Poly16x4T, Int16x4T>(a, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Int16x4T>()), transmuteWithLayouts<Poly16x4T, Int16x4T>(b, UnresolvedTypeLayout<Poly16x4T>(), UnresolvedTypeLayout<Int16x4T>()), n), UnresolvedTypeLayout<Int16x4T>(), UnresolvedTypeLayout<Poly16x4T>())
 }
 
 /**
@@ -15031,7 +15031,7 @@ public fun vsriqNP16(a: Poly16x8T, b: Poly16x8T, n: Int): Poly16x8T {
     run {
         check(n >= 1 && n <= 16)
     }
-    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vsriqNS16(a, b, n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
+    return transmuteWithLayouts<Int16x8T, Poly16x8T>(vsriqNS16(transmuteWithLayouts<Poly16x8T, Int16x8T>(a, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Int16x8T>()), transmuteWithLayouts<Poly16x8T, Int16x8T>(b, UnresolvedTypeLayout<Poly16x8T>(), UnresolvedTypeLayout<Int16x8T>()), n), UnresolvedTypeLayout<Int16x8T>(), UnresolvedTypeLayout<Poly16x8T>())
 }
 
 /**
@@ -15042,7 +15042,7 @@ public fun vsriNP64(a: Poly64x1T, b: Poly64x1T, n: Int): Poly64x1T {
     run {
         check(n >= 1 && n <= 64)
     }
-    return transmuteWithLayouts<Int64x1T, Poly64x1T>(vsriNS64(a, b, n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Poly64x1T>())
+    return transmuteWithLayouts<Int64x1T, Poly64x1T>(vsriNS64(transmuteWithLayouts<Poly64x1T, Int64x1T>(a, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Poly64x1T, Int64x1T>(b, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Int64x1T>()), n), UnresolvedTypeLayout<Int64x1T>(), UnresolvedTypeLayout<Poly64x1T>())
 }
 
 /**
@@ -15053,7 +15053,7 @@ public fun vsriqNP64(a: Poly64x2T, b: Poly64x2T, n: Int): Poly64x2T {
     run {
         check(n >= 1 && n <= 64)
     }
-    return transmuteWithLayouts<Int64x2T, Poly64x2T>(vsriqNS64(a, b, n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Poly64x2T>())
+    return transmuteWithLayouts<Int64x2T, Poly64x2T>(vsriqNS64(transmuteWithLayouts<Poly64x2T, Int64x2T>(a, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Int64x2T>()), transmuteWithLayouts<Poly64x2T, Int64x2T>(b, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Int64x2T>()), n), UnresolvedTypeLayout<Int64x2T>(), UnresolvedTypeLayout<Poly64x2T>())
 }
 
 /**
@@ -15064,7 +15064,7 @@ public fun vsridNS64(a: Long, b: Long, n: Int): Long {
     run {
         check(n >= 1 && n <= 64)
     }
-    return transmuteWithLayouts<Int64x1T, Long>(vsriNS64(a, b, n), UnresolvedTypeLayout<Int64x1T>(), PrimitiveLayouts.I64)
+    return transmuteWithLayouts<Int64x1T, Long>(vsriNS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), n), UnresolvedTypeLayout<Int64x1T>(), PrimitiveLayouts.I64)
 }
 
 /**
@@ -15075,7 +15075,7 @@ public fun vsridNU64(a: ULong, b: ULong, n: Int): ULong {
     run {
         check(n >= 1 && n <= 64)
     }
-    return transmuteWithLayouts<Uint64x1T, ULong>(vsriNU64(a, b, n), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+    return transmuteWithLayouts<Uint64x1T, ULong>(vsriNU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), n), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 }
 
 /**
@@ -15366,7 +15366,7 @@ public fun vst1qP64(ptr: MutPtr, a: Poly64x2T) {
  */
 public fun vst1F64X2(a: MutPtr, b: Float64x1x2T) {
     fun vst1F64X2(a1: Float64x1T, b1: Float64x1T, ptr: MutPtr) {}
-    vst1F64X2(b.first, b.second, a)
+    vst1F64X2(b.field0, b.field1, a)
 }
 
 /**
@@ -15377,7 +15377,7 @@ public fun vst1F64X2(a: MutPtr, b: Float64x1x2T) {
  */
 public fun vst1qF64X2(a: MutPtr, b: Float64x2x2T) {
     fun vst1qF64X2(a1: Float64x2T, b1: Float64x2T, ptr: MutPtr) {}
-    vst1qF64X2(b.first, b.second, a)
+    vst1qF64X2(b.field0, b.field1, a)
 }
 
 /**
@@ -15388,7 +15388,7 @@ public fun vst1qF64X2(a: MutPtr, b: Float64x2x2T) {
  */
 public fun vst1F64X3(a: MutPtr, b: Float64x1x3T) {
     fun vst1F64X3(a1: Float64x1T, b1: Float64x1T, c: Float64x1T, ptr: MutPtr) {}
-    vst1F64X3(b.first, b.second, b.third, a)
+    vst1F64X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -15399,7 +15399,7 @@ public fun vst1F64X3(a: MutPtr, b: Float64x1x3T) {
  */
 public fun vst1qF64X3(a: MutPtr, b: Float64x2x3T) {
     fun vst1qF64X3(a1: Float64x2T, b1: Float64x2T, c: Float64x2T, ptr: MutPtr) {}
-    vst1qF64X3(b.first, b.second, b.third, a)
+    vst1qF64X3(b.field0, b.field1, b.field2, a)
 }
 
 /**
@@ -15410,7 +15410,7 @@ public fun vst1qF64X3(a: MutPtr, b: Float64x2x3T) {
  */
 public fun vst1F64X4(a: MutPtr, b: Float64x1x4T) {
     fun vst1F64X4(a1: Float64x1T, b1: Float64x1T, c: Float64x1T, d: Float64x1T, ptr: MutPtr) {}
-    vst1F64X4(b.first, b.second, b.third, b.field3, a)
+    vst1F64X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -15421,7 +15421,7 @@ public fun vst1F64X4(a: MutPtr, b: Float64x1x4T) {
  */
 public fun vst1qF64X4(a: MutPtr, b: Float64x2x4T) {
     fun vst1qF64X4(a1: Float64x2T, b1: Float64x2T, c: Float64x2T, d: Float64x2T, ptr: MutPtr) {}
-    vst1qF64X4(b.first, b.second, b.third, b.field3, a)
+    vst1qF64X4(b.field0, b.field1, b.field2, b.field3, a)
 }
 
 /**
@@ -15471,7 +15471,7 @@ public fun vst2LaneF64(a: MutPtr, b: Float64x1x2T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst2LaneF64(b.first, b.second, lane.toLong(), a)
+    vst2LaneF64(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15485,7 +15485,7 @@ public fun vst2LaneS64(a: MutPtr, b: Int64x1x2T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst2LaneS64(b.first, b.second, lane.toLong(), a)
+    vst2LaneS64(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15498,7 +15498,7 @@ public fun vst2LaneP64(a: MutPtr, b: Poly64x1x2T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst2LaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x1x2T, Unit>(b, UnresolvedTypeLayout<Poly64x1x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst2LaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x1x2T, Int64x1x2T>(b, UnresolvedTypeLayout<Poly64x1x2T>(), UnresolvedTypeLayout<Int64x1x2T>()), lane)
 }
 
 /**
@@ -15511,7 +15511,7 @@ public fun vst2LaneU64(a: MutPtr, b: Uint64x1x2T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst2LaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x1x2T, Unit>(b, UnresolvedTypeLayout<Uint64x1x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst2LaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x1x2T, Int64x1x2T>(b, UnresolvedTypeLayout<Uint64x1x2T>(), UnresolvedTypeLayout<Int64x1x2T>()), lane)
 }
 
 /**
@@ -15522,7 +15522,7 @@ public fun vst2LaneU64(a: MutPtr, b: Uint64x1x2T, lane: Int) {
  */
 public fun vst2qF64(a: MutPtr, b: Float64x2x2T) {
     run {
-        val w: W = run { val simdArg0 = b.first; val simdArg1 = b.second; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 2, 2, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
+        val w: W = run { val simdArg0 = b.field0; val simdArg1 = b.field1; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 2, 2, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -15535,7 +15535,7 @@ public fun vst2qF64(a: MutPtr, b: Float64x2x2T) {
  */
 public fun vst2qS64(a: MutPtr, b: Int64x2x2T) {
     run {
-        val w: W = run { val simdArg0 = b.first; val simdArg1 = b.second; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 2, 2, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
+        val w: W = run { val simdArg0 = b.field0; val simdArg1 = b.field1; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 2, 2, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
 }
@@ -15551,7 +15551,7 @@ public fun vst2qLaneF64(a: MutPtr, b: Float64x2x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2qLaneF64(b.first, b.second, lane.toLong(), a)
+    vst2qLaneF64(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15565,7 +15565,7 @@ public fun vst2qLaneS8(a: MutPtr, b: Int8x16x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst2qLaneS8(b.first, b.second, lane.toLong(), a)
+    vst2qLaneS8(b.field0, b.field1, lane.toLong(), a)
 }
 
 /**
@@ -15579,7 +15579,7 @@ public fun vst2qLaneS64(a: MutPtr, b: Int64x2x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2qLaneS64(b.first, b.second, lane.toLong(), a)
+    vst2qLaneS64(b.field0, b.field1, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15592,7 +15592,7 @@ public fun vst2qLaneP64(a: MutPtr, b: Poly64x2x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2qLaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x2x2T, Unit>(b, UnresolvedTypeLayout<Poly64x2x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst2qLaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x2x2T, Int64x2x2T>(b, UnresolvedTypeLayout<Poly64x2x2T>(), UnresolvedTypeLayout<Int64x2x2T>()), lane)
 }
 
 /**
@@ -15605,7 +15605,7 @@ public fun vst2qLaneU8(a: MutPtr, b: Uint8x16x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst2qLaneS8(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint8x16x2T, Unit>(b, UnresolvedTypeLayout<Uint8x16x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst2qLaneS8(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint8x16x2T, Int8x16x2T>(b, UnresolvedTypeLayout<Uint8x16x2T>(), UnresolvedTypeLayout<Int8x16x2T>()), lane)
 }
 
 /**
@@ -15618,7 +15618,7 @@ public fun vst2qLaneU64(a: MutPtr, b: Uint64x2x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst2qLaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x2x2T, Unit>(b, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst2qLaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x2x2T, Int64x2x2T>(b, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<Int64x2x2T>()), lane)
 }
 
 /**
@@ -15631,7 +15631,7 @@ public fun vst2qLaneP8(a: MutPtr, b: Poly8x16x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst2qLaneS8(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly8x16x2T, Unit>(b, UnresolvedTypeLayout<Poly8x16x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst2qLaneS8(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly8x16x2T, Int8x16x2T>(b, UnresolvedTypeLayout<Poly8x16x2T>(), UnresolvedTypeLayout<Int8x16x2T>()), lane)
 }
 
 /**
@@ -15641,7 +15641,7 @@ public fun vst2qLaneP8(a: MutPtr, b: Poly8x16x2T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qP64(a: MutPtr, b: Poly64x2x2T) {
-    vst2qS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x2x2T, Unit>(b, UnresolvedTypeLayout<Poly64x2x2T>(), UnresolvedTypeLayout<Unit>()))
+    vst2qS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x2x2T, Int64x2x2T>(b, UnresolvedTypeLayout<Poly64x2x2T>(), UnresolvedTypeLayout<Int64x2x2T>()))
 }
 
 /**
@@ -15651,7 +15651,7 @@ public fun vst2qP64(a: MutPtr, b: Poly64x2x2T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst2qU64(a: MutPtr, b: Uint64x2x2T) {
-    vst2qS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x2x2T, Unit>(b, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<Unit>()))
+    vst2qS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x2x2T, Int64x2x2T>(b, UnresolvedTypeLayout<Uint64x2x2T>(), UnresolvedTypeLayout<Int64x2x2T>()))
 }
 
 /**
@@ -15675,7 +15675,7 @@ public fun vst3LaneF64(a: MutPtr, b: Float64x1x3T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst3LaneF64(b.first, b.second, b.third, lane.toLong(), a)
+    vst3LaneF64(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15689,7 +15689,7 @@ public fun vst3LaneS64(a: MutPtr, b: Int64x1x3T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst3LaneS64(b.first, b.second, b.third, lane.toLong(), a)
+    vst3LaneS64(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15702,7 +15702,7 @@ public fun vst3LaneP64(a: MutPtr, b: Poly64x1x3T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst3LaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x1x3T, Unit>(b, UnresolvedTypeLayout<Poly64x1x3T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst3LaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x1x3T, Int64x1x3T>(b, UnresolvedTypeLayout<Poly64x1x3T>(), UnresolvedTypeLayout<Int64x1x3T>()), lane)
 }
 
 /**
@@ -15715,7 +15715,7 @@ public fun vst3LaneU64(a: MutPtr, b: Uint64x1x3T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst3LaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x1x3T, Unit>(b, UnresolvedTypeLayout<Uint64x1x3T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst3LaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x1x3T, Int64x1x3T>(b, UnresolvedTypeLayout<Uint64x1x3T>(), UnresolvedTypeLayout<Int64x1x3T>()), lane)
 }
 
 /**
@@ -15726,8 +15726,8 @@ public fun vst3LaneU64(a: MutPtr, b: Uint64x1x3T, lane: Int) {
  */
 public fun vst3qF64(a: MutPtr, b: Float64x2x3T) {
     run {
-        val v0v1: Simd<Double> = run { val simdArg0 = b.first; val simdArg1 = b.second; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
-        val v2v2: Simd<Double> = run { val simdArg0 = b.third; val simdArg1 = b.third; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
+        val v0v1: Simd<Double> = run { val simdArg0 = b.field0; val simdArg1 = b.field1; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
+        val v2v2: Simd<Double> = run { val simdArg0 = b.field2; val simdArg1 = b.field2; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
         val w: W = run { val simdArg0 = v0v1; val simdArg1 = v2v2; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 3, 2, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
         val arr: DoubleArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.doubleArray((2 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
@@ -15742,8 +15742,8 @@ public fun vst3qF64(a: MutPtr, b: Float64x2x3T) {
  */
 public fun vst3qS64(a: MutPtr, b: Int64x2x3T) {
     run {
-        val v0v1: Simd<Long> = run { val simdArg0 = b.first; val simdArg1 = b.second; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
-        val v2v2: Simd<Long> = run { val simdArg0 = b.third; val simdArg1 = b.third; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
+        val v0v1: Simd<Long> = run { val simdArg0 = b.field0; val simdArg1 = b.field1; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
+        val v2v2: Simd<Long> = run { val simdArg0 = b.field2; val simdArg1 = b.field2; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
         val w: W = run { val simdArg0 = v0v1; val simdArg1 = v2v2; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 3, 2, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
         val arr: LongArray = transmuteCopy(w)
         (PrimitiveArrayLayouts.longArray((2 * 3).toInt())).writeNative((MutPtr((a).rawAddress)).rawAddress, arr)
@@ -15761,7 +15761,7 @@ public fun vst3qLaneF64(a: MutPtr, b: Float64x2x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3qLaneF64(b.first, b.second, b.third, lane.toLong(), a)
+    vst3qLaneF64(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15775,7 +15775,7 @@ public fun vst3qLaneS8(a: MutPtr, b: Int8x16x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst3qLaneS8(b.first, b.second, b.third, lane.toLong(), a)
+    vst3qLaneS8(b.field0, b.field1, b.field2, lane.toLong(), a)
 }
 
 /**
@@ -15789,7 +15789,7 @@ public fun vst3qLaneS64(a: MutPtr, b: Int64x2x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3qLaneS64(b.first, b.second, b.third, lane.toLong(), a)
+    vst3qLaneS64(b.field0, b.field1, b.field2, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15802,7 +15802,7 @@ public fun vst3qLaneP64(a: MutPtr, b: Poly64x2x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3qLaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x2x3T, Unit>(b, UnresolvedTypeLayout<Poly64x2x3T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst3qLaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x2x3T, Int64x2x3T>(b, UnresolvedTypeLayout<Poly64x2x3T>(), UnresolvedTypeLayout<Int64x2x3T>()), lane)
 }
 
 /**
@@ -15815,7 +15815,7 @@ public fun vst3qLaneU8(a: MutPtr, b: Uint8x16x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst3qLaneS8(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint8x16x3T, Unit>(b, UnresolvedTypeLayout<Uint8x16x3T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst3qLaneS8(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint8x16x3T, Int8x16x3T>(b, UnresolvedTypeLayout<Uint8x16x3T>(), UnresolvedTypeLayout<Int8x16x3T>()), lane)
 }
 
 /**
@@ -15828,7 +15828,7 @@ public fun vst3qLaneU64(a: MutPtr, b: Uint64x2x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst3qLaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x2x3T, Unit>(b, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst3qLaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x2x3T, Int64x2x3T>(b, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<Int64x2x3T>()), lane)
 }
 
 /**
@@ -15841,7 +15841,7 @@ public fun vst3qLaneP8(a: MutPtr, b: Poly8x16x3T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst3qLaneS8(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly8x16x3T, Unit>(b, UnresolvedTypeLayout<Poly8x16x3T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst3qLaneS8(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly8x16x3T, Int8x16x3T>(b, UnresolvedTypeLayout<Poly8x16x3T>(), UnresolvedTypeLayout<Int8x16x3T>()), lane)
 }
 
 /**
@@ -15851,7 +15851,7 @@ public fun vst3qLaneP8(a: MutPtr, b: Poly8x16x3T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qP64(a: MutPtr, b: Poly64x2x3T) {
-    vst3qS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x2x3T, Unit>(b, UnresolvedTypeLayout<Poly64x2x3T>(), UnresolvedTypeLayout<Unit>()))
+    vst3qS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x2x3T, Int64x2x3T>(b, UnresolvedTypeLayout<Poly64x2x3T>(), UnresolvedTypeLayout<Int64x2x3T>()))
 }
 
 /**
@@ -15861,7 +15861,7 @@ public fun vst3qP64(a: MutPtr, b: Poly64x2x3T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst3qU64(a: MutPtr, b: Uint64x2x3T) {
-    vst3qS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x2x3T, Unit>(b, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<Unit>()))
+    vst3qS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x2x3T, Int64x2x3T>(b, UnresolvedTypeLayout<Uint64x2x3T>(), UnresolvedTypeLayout<Int64x2x3T>()))
 }
 
 /**
@@ -15885,7 +15885,7 @@ public fun vst4LaneF64(a: MutPtr, b: Float64x1x4T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst4LaneF64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    vst4LaneF64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15899,7 +15899,7 @@ public fun vst4LaneS64(a: MutPtr, b: Int64x1x4T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst4LaneS64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    vst4LaneS64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15912,7 +15912,7 @@ public fun vst4LaneP64(a: MutPtr, b: Poly64x1x4T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst4LaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x1x4T, Unit>(b, UnresolvedTypeLayout<Poly64x1x4T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst4LaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x1x4T, Int64x1x4T>(b, UnresolvedTypeLayout<Poly64x1x4T>(), UnresolvedTypeLayout<Int64x1x4T>()), lane)
 }
 
 /**
@@ -15925,7 +15925,7 @@ public fun vst4LaneU64(a: MutPtr, b: Uint64x1x4T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vst4LaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x1x4T, Unit>(b, UnresolvedTypeLayout<Uint64x1x4T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst4LaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x1x4T, Int64x1x4T>(b, UnresolvedTypeLayout<Uint64x1x4T>(), UnresolvedTypeLayout<Int64x1x4T>()), lane)
 }
 
 /**
@@ -15936,8 +15936,8 @@ public fun vst4LaneU64(a: MutPtr, b: Uint64x1x4T, lane: Int) {
  */
 public fun vst4qF64(a: MutPtr, b: Float64x2x4T) {
     run {
-        val v0v1: Simd<Double> = run { val simdArg0 = b.first; val simdArg1 = b.second; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
-        val v2v3: Simd<Double> = run { val simdArg0 = b.third; val simdArg1 = b.field3; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
+        val v0v1: Simd<Double> = run { val simdArg0 = b.field0; val simdArg1 = b.field1; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
+        val v2v3: Simd<Double> = run { val simdArg0 = b.field2; val simdArg1 = b.field3; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Double>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Double>>()).alignBytes)); res } }
         val w: W = run { val simdArg0 = v0v1; val simdArg1 = v2v3; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 4, 2, 4)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
@@ -15951,8 +15951,8 @@ public fun vst4qF64(a: MutPtr, b: Float64x2x4T) {
  */
 public fun vst4qS64(a: MutPtr, b: Int64x2x4T) {
     run {
-        val v0v1: Simd<Long> = run { val simdArg0 = b.first; val simdArg1 = b.second; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
-        val v2v3: Simd<Long> = run { val simdArg0 = b.third; val simdArg1 = b.field3; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
+        val v0v1: Simd<Long> = run { val simdArg0 = b.field0; val simdArg1 = b.field1; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
+        val v2v3: Simd<Long> = run { val simdArg0 = b.field2; val simdArg1 = b.field3; val simdArg2 = SimdShuffleIdx(identity(2 * 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<Long>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<Long>>()).alignBytes)); res } }
         val w: W = run { val simdArg0 = v0v1; val simdArg1 = v2v3; val simdArg2 = SimdShuffleIdx(interleaveMask(2 * 4, 2, 4)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); val res = (UnresolvedTypeLayout<W>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<W>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<W>()).alignBytes)); res } }
         writeUnaligned(MutPtr(a.rawAddress, a.rawMeta), w, typeLayoutT = UnresolvedTypeLayout<W>())
     }
@@ -15969,7 +15969,7 @@ public fun vst4qLaneF64(a: MutPtr, b: Float64x2x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4qLaneF64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    vst4qLaneF64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -15983,7 +15983,7 @@ public fun vst4qLaneS8(a: MutPtr, b: Int8x16x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst4qLaneS8(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    vst4qLaneS8(b.field0, b.field1, b.field2, b.field3, lane.toLong(), a)
 }
 
 /**
@@ -15997,7 +15997,7 @@ public fun vst4qLaneS64(a: MutPtr, b: Int64x2x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4qLaneS64(b.first, b.second, b.third, b.field3, lane.toLong(), a)
+    vst4qLaneS64(b.field0, b.field1, b.field2, b.field3, lane.toLong(), MutPtr(a.rawAddress, a.rawMeta))
 }
 
 /**
@@ -16010,7 +16010,7 @@ public fun vst4qLaneP64(a: MutPtr, b: Poly64x2x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4qLaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x2x4T, Unit>(b, UnresolvedTypeLayout<Poly64x2x4T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst4qLaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x2x4T, Int64x2x4T>(b, UnresolvedTypeLayout<Poly64x2x4T>(), UnresolvedTypeLayout<Int64x2x4T>()), lane)
 }
 
 /**
@@ -16023,7 +16023,7 @@ public fun vst4qLaneU8(a: MutPtr, b: Uint8x16x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst4qLaneS8(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint8x16x4T, Unit>(b, UnresolvedTypeLayout<Uint8x16x4T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst4qLaneS8(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint8x16x4T, Int8x16x4T>(b, UnresolvedTypeLayout<Uint8x16x4T>(), UnresolvedTypeLayout<Int8x16x4T>()), lane)
 }
 
 /**
@@ -16036,7 +16036,7 @@ public fun vst4qLaneU64(a: MutPtr, b: Uint64x2x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vst4qLaneS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x2x4T, Unit>(b, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst4qLaneS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x2x4T, Int64x2x4T>(b, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<Int64x2x4T>()), lane)
 }
 
 /**
@@ -16049,7 +16049,7 @@ public fun vst4qLaneP8(a: MutPtr, b: Poly8x16x4T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 4)) { "LANE doesn't fit in 4 bits (unsigned)" }
     }
-    vst4qLaneS8(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly8x16x4T, Unit>(b, UnresolvedTypeLayout<Poly8x16x4T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vst4qLaneS8(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly8x16x4T, Int8x16x4T>(b, UnresolvedTypeLayout<Poly8x16x4T>(), UnresolvedTypeLayout<Int8x16x4T>()), lane)
 }
 
 /**
@@ -16059,7 +16059,7 @@ public fun vst4qLaneP8(a: MutPtr, b: Poly8x16x4T, lane: Int) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qP64(a: MutPtr, b: Poly64x2x4T) {
-    vst4qS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Poly64x2x4T, Unit>(b, UnresolvedTypeLayout<Poly64x2x4T>(), UnresolvedTypeLayout<Unit>()))
+    vst4qS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Poly64x2x4T, Int64x2x4T>(b, UnresolvedTypeLayout<Poly64x2x4T>(), UnresolvedTypeLayout<Int64x2x4T>()))
 }
 
 /**
@@ -16069,7 +16069,7 @@ public fun vst4qP64(a: MutPtr, b: Poly64x2x4T) {
  *  * Neon intrinsic unchecked
  */
 public fun vst4qU64(a: MutPtr, b: Uint64x2x4T) {
-    vst4qS64(transmuteWithLayouts<MutPtr, Unit>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<Uint64x2x4T, Unit>(b, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<Unit>()))
+    vst4qS64(transmuteWithLayouts<MutPtr, MutPtr>(a, PrimitiveLayouts.mutPtrLayout(64L), UnresolvedTypeLayout<MutPtr>()), transmuteWithLayouts<Uint64x2x4T, Int64x2x4T>(b, UnresolvedTypeLayout<Uint64x2x4T>(), UnresolvedTypeLayout<Int64x2x4T>()))
 }
 
 /**
@@ -16082,7 +16082,7 @@ public fun vstl1LaneF64(ptr: MutPtr, value: Float64x1T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vstl1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Float64x1T, Unit>(value, UnresolvedTypeLayout<Float64x1T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vstl1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Float64x1T, Int64x1T>(value, UnresolvedTypeLayout<Float64x1T>(), UnresolvedTypeLayout<Int64x1T>()), lane)
 }
 
 /**
@@ -16095,7 +16095,7 @@ public fun vstl1qLaneF64(ptr: MutPtr, value: Float64x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vstl1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Float64x2T, Unit>(value, UnresolvedTypeLayout<Float64x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vstl1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Float64x2T, Int64x2T>(value, UnresolvedTypeLayout<Float64x2T>(), UnresolvedTypeLayout<Int64x2T>()), lane)
 }
 
 /**
@@ -16108,7 +16108,7 @@ public fun vstl1LaneU64(ptr: MutPtr, value: Uint64x1T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vstl1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Uint64x1T, Unit>(value, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vstl1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Uint64x1T, Int64x1T>(value, UnresolvedTypeLayout<Uint64x1T>(), UnresolvedTypeLayout<Int64x1T>()), lane)
 }
 
 /**
@@ -16121,7 +16121,7 @@ public fun vstl1qLaneU64(ptr: MutPtr, value: Uint64x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vstl1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Uint64x2T, Unit>(value, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vstl1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Uint64x2T, Int64x2T>(value, UnresolvedTypeLayout<Uint64x2T>(), UnresolvedTypeLayout<Int64x2T>()), lane)
 }
 
 /**
@@ -16134,7 +16134,7 @@ public fun vstl1LaneP64(ptr: MutPtr, value: Poly64x1T, lane: Int) {
     run {
         check(lane == 0)
     }
-    vstl1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Poly64x1T, Unit>(value, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vstl1LaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Poly64x1T, Int64x1T>(value, UnresolvedTypeLayout<Poly64x1T>(), UnresolvedTypeLayout<Int64x1T>()), lane)
 }
 
 /**
@@ -16147,7 +16147,7 @@ public fun vstl1qLaneP64(ptr: MutPtr, value: Poly64x2T, lane: Int) {
     run {
         check(0 <= lane && lane < (1 shl 1)) { "LANE doesn't fit in 1 bits (unsigned)" }
     }
-    vstl1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Poly64x2T, Unit>(value, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Unit>()), lane)
+    vstl1qLaneS64(MutPtr(ptr.rawAddress, ptr.rawMeta), transmuteWithLayouts<Poly64x2T, Int64x2T>(value, UnresolvedTypeLayout<Poly64x2T>(), UnresolvedTypeLayout<Int64x2T>()), lane)
 }
 
 /**
@@ -16334,7 +16334,7 @@ public fun vsubwHighU32(a: Uint64x2T, b: Uint32x4T): Uint64x2T {
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl1S8)
  */
-public fun vtbl1S8(a: Int8x8T, b: Int8x8T): Int8x8T = vqtbl1S8(vcombineS8(a, Int8x8T()), b)
+public fun vtbl1S8(a: Int8x8T, b: Int8x8T): Int8x8T = vqtbl1S8(vcombineS8(a, Int8x8T()), transmute(b))
 
 /**
  * Table look-up
@@ -16352,26 +16352,26 @@ public fun vtbl1P8(a: Poly8x8T, b: Uint8x8T): Poly8x8T = vqtbl1P8(vcombineP8(a, 
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl2S8)
  */
-public fun vtbl2S8(a: Int8x8x2T, b: Int8x8T): Int8x8T = vqtbl1S8(vcombineS8(a.first, a.second), vreinterpretU8S8(b))
+public fun vtbl2S8(a: Int8x8x2T, b: Int8x8T): Int8x8T = vqtbl1S8(vcombineS8(a.field0, a.field1), vreinterpretU8S8(b))
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl2U8)
  */
-public fun vtbl2U8(a: Uint8x8x2T, b: Uint8x8T): Uint8x8T = vqtbl1U8(vcombineU8(a.first, a.second), b)
+public fun vtbl2U8(a: Uint8x8x2T, b: Uint8x8T): Uint8x8T = vqtbl1U8(vcombineU8(a.field0, a.field1), b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl2P8)
  */
-public fun vtbl2P8(a: Poly8x8x2T, b: Uint8x8T): Poly8x8T = vqtbl1P8(vcombineP8(a.first, a.second), b)
+public fun vtbl2P8(a: Poly8x8x2T, b: Uint8x8T): Poly8x8T = vqtbl1P8(vcombineP8(a.field0, a.field1), b)
 
 /**
  * Table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl3S8)
  */
 public fun vtbl3S8(a: Int8x8x3T, b: Int8x8T): Int8x8T {
-    val x = Int8x16x2T(vcombineS8(a.first, a.second), vcombineS8(a.third, Int8x8T()))
+    val x = Int8x16x2T(vcombineS8(a.field0, a.field1), vcombineS8(a.field2, Int8x8T()))
     return vqtbl2S8(x, vreinterpretU8S8(b))
 }
 
@@ -16380,7 +16380,7 @@ public fun vtbl3S8(a: Int8x8x3T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl3U8)
  */
 public fun vtbl3U8(a: Uint8x8x3T, b: Uint8x8T): Uint8x8T {
-    val x = Uint8x16x2T(vcombineU8(a.first, a.second), vcombineU8(a.third, Uint8x8T()))
+    val x = Uint8x16x2T(vcombineU8(a.field0, a.field1), vcombineU8(a.field2, Uint8x8T()))
     return vqtbl2U8(x, b)
 }
 
@@ -16389,7 +16389,7 @@ public fun vtbl3U8(a: Uint8x8x3T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl3P8)
  */
 public fun vtbl3P8(a: Poly8x8x3T, b: Uint8x8T): Poly8x8T {
-    val x = Poly8x16x2T(vcombineP8(a.first, a.second), vcombineP8(a.third, Poly8x8T()))
+    val x = Poly8x16x2T(vcombineP8(a.field0, a.field1), vcombineP8(a.field2, Poly8x8T()))
     return vqtbl2P8(x, b)
 }
 
@@ -16398,7 +16398,7 @@ public fun vtbl3P8(a: Poly8x8x3T, b: Uint8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl4S8)
  */
 public fun vtbl4S8(a: Int8x8x4T, b: Int8x8T): Int8x8T {
-    val x = Int8x16x2T(vcombineS8(a.first, a.second), vcombineS8(a.third, a.field3))
+    val x = Int8x16x2T(vcombineS8(a.field0, a.field1), vcombineS8(a.field2, a.field3))
     return vqtbl2S8(x, vreinterpretU8S8(b))
 }
 
@@ -16407,7 +16407,7 @@ public fun vtbl4S8(a: Int8x8x4T, b: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl4U8)
  */
 public fun vtbl4U8(a: Uint8x8x4T, b: Uint8x8T): Uint8x8T {
-    val x = Uint8x16x2T(vcombineU8(a.first, a.second), vcombineU8(a.third, a.field3))
+    val x = Uint8x16x2T(vcombineU8(a.field0, a.field1), vcombineU8(a.field2, a.field3))
     return vqtbl2U8(x, b)
 }
 
@@ -16416,7 +16416,7 @@ public fun vtbl4U8(a: Uint8x8x4T, b: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbl4P8)
  */
 public fun vtbl4P8(a: Poly8x8x4T, b: Uint8x8T): Poly8x8T {
-    val x = Poly8x16x2T(vcombineP8(a.first, a.second), vcombineP8(a.third, a.field3))
+    val x = Poly8x16x2T(vcombineP8(a.field0, a.field1), vcombineP8(a.field2, a.field3))
     return vqtbl2P8(x, b)
 }
 
@@ -16442,26 +16442,26 @@ public fun vtbx1P8(a: Poly8x8T, b: Poly8x8T, c: Uint8x8T): Poly8x8T = run { val 
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx2S8)
  */
-public fun vtbx2S8(a: Int8x8T, b: Int8x8x2T, c: Int8x8T): Int8x8T = run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<Byte>(List(8) { 16.toByte() })); Int8x8T() }; val simdArg1 = vqtbx1S8(a, vcombineS8(b.first, b.second), vreinterpretU8S8(c)); val simdArg2 = a; simdArg1 }
+public fun vtbx2S8(a: Int8x8T, b: Int8x8x2T, c: Int8x8T): Int8x8T = run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<Byte>(List(8) { 16.toByte() })); Int8x8T() }; val simdArg1 = vqtbx1S8(a, vcombineS8(b.field0, b.field1), vreinterpretU8S8(c)); val simdArg2 = a; simdArg1 }
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx2U8)
  */
-public fun vtbx2U8(a: Uint8x8T, b: Uint8x8x2T, c: Uint8x8T): Uint8x8T = run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 16u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx1U8(a, vcombineU8(b.first, b.second), c); val simdArg2 = a; simdArg1 }
+public fun vtbx2U8(a: Uint8x8T, b: Uint8x8x2T, c: Uint8x8T): Uint8x8T = run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 16u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx1U8(a, vcombineU8(b.field0, b.field1), c); val simdArg2 = a; simdArg1 }
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx2P8)
  */
-public fun vtbx2P8(a: Poly8x8T, b: Poly8x8x2T, c: Uint8x8T): Poly8x8T = run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 16u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx1P8(a, vcombineP8(b.first, b.second), c); val simdArg2 = a; simdArg1 }
+public fun vtbx2P8(a: Poly8x8T, b: Poly8x8x2T, c: Uint8x8T): Poly8x8T = run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 16u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx1P8(a, vcombineP8(b.field0, b.field1), c); val simdArg2 = a; simdArg1 }
 
 /**
  * Extended table look-up
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx3S8)
  */
 public fun vtbx3S8(a: Int8x8T, b: Int8x8x3T, c: Int8x8T): Int8x8T {
-    val x = Int8x16x2T(vcombineS8(b.first, b.second), vcombineS8(b.third, Int8x8T()))
+    val x = Int8x16x2T(vcombineS8(b.field0, b.field1), vcombineS8(b.field2, Int8x8T()))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<Byte>(List(8) { 24.toByte() })); Int8x8T() }; val simdArg1 = vqtbx2S8(a, x, vreinterpretU8S8(c)); val simdArg2 = a; simdArg1 }
 }
 
@@ -16470,7 +16470,7 @@ public fun vtbx3S8(a: Int8x8T, b: Int8x8x3T, c: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx3U8)
  */
 public fun vtbx3U8(a: Uint8x8T, b: Uint8x8x3T, c: Uint8x8T): Uint8x8T {
-    val x = Uint8x16x2T(vcombineU8(b.first, b.second), vcombineU8(b.third, Uint8x8T()))
+    val x = Uint8x16x2T(vcombineU8(b.field0, b.field1), vcombineU8(b.field2, Uint8x8T()))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 24u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2U8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16479,7 +16479,7 @@ public fun vtbx3U8(a: Uint8x8T, b: Uint8x8x3T, c: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx3P8)
  */
 public fun vtbx3P8(a: Poly8x8T, b: Poly8x8x3T, c: Uint8x8T): Poly8x8T {
-    val x = Poly8x16x2T(vcombineP8(b.first, b.second), vcombineP8(b.third, Poly8x8T()))
+    val x = Poly8x16x2T(vcombineP8(b.field0, b.field1), vcombineP8(b.field2, Poly8x8T()))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 24u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2P8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16488,7 +16488,7 @@ public fun vtbx3P8(a: Poly8x8T, b: Poly8x8x3T, c: Uint8x8T): Poly8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx4S8)
  */
 public fun vtbx4S8(a: Int8x8T, b: Int8x8x4T, c: Int8x8T): Int8x8T {
-    val x = Int8x16x2T(vcombineS8(b.first, b.second), vcombineS8(b.third, b.field3))
+    val x = Int8x16x2T(vcombineS8(b.field0, b.field1), vcombineS8(b.field2, b.field3))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<Byte>(List(8) { 32.toByte() })); Int8x8T() }; val simdArg1 = vqtbx2S8(a, x, vreinterpretU8S8(c)); val simdArg2 = a; simdArg1 }
 }
 
@@ -16497,7 +16497,7 @@ public fun vtbx4S8(a: Int8x8T, b: Int8x8x4T, c: Int8x8T): Int8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx4U8)
  */
 public fun vtbx4U8(a: Uint8x8T, b: Uint8x8x4T, c: Uint8x8T): Uint8x8T {
-    val x = Uint8x16x2T(vcombineU8(b.first, b.second), vcombineU8(b.third, b.field3))
+    val x = Uint8x16x2T(vcombineU8(b.field0, b.field1), vcombineU8(b.field2, b.field3))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 32u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2U8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16506,7 +16506,7 @@ public fun vtbx4U8(a: Uint8x8T, b: Uint8x8x4T, c: Uint8x8T): Uint8x8T {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtbx4P8)
  */
 public fun vtbx4P8(a: Poly8x8T, b: Poly8x8x4T, c: Uint8x8T): Poly8x8T {
-    val x = Poly8x16x2T(vcombineP8(b.first, b.second), vcombineP8(b.third, b.field3))
+    val x = Poly8x16x2T(vcombineP8(b.field0, b.field1), vcombineP8(b.field2, b.field3))
     return run { val simdArg0 = run { val simdArg0 = c; val simdArg1 = transmute(Simd<UByte>(List(8) { 32u.toUByte() })); Int8x8T() }; val simdArg1 = vqtbx2P8(a, x, c); val simdArg2 = a; simdArg1 }
 }
 
@@ -16868,13 +16868,13 @@ public fun vtstqU64(a: Uint64x2T, b: Uint64x2T): Uint64x2T =
  * Compare bitwise test bits nonzero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtstdS64)
  */
-public fun vtstdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vtstS64((a).toULong(), (b).toULong()), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vtstdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vtstS64(transmuteWithLayouts<Long, Int64x1T>(a, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>()), transmuteWithLayouts<Long, Int64x1T>(b, PrimitiveLayouts.I64, UnresolvedTypeLayout<Int64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Compare bitwise test bits nonzero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vtstdU64)
  */
-public fun vtstdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vtstU64(a, b), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
+public fun vtstdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vtstU64(transmuteWithLayouts<ULong, Uint64x1T>(a, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>()), transmuteWithLayouts<ULong, Uint64x1T>(b, PrimitiveLayouts.U64, UnresolvedTypeLayout<Uint64x1T>())), UnresolvedTypeLayout<Uint64x1T>(), PrimitiveLayouts.U64)
 
 /**
  * Signed saturating Accumulate of Unsigned value.

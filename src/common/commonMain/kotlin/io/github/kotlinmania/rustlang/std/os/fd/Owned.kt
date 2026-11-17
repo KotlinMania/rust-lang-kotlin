@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.fd
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.fcntl
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.F_DUPFD_CLOEXEC
-import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
@@ -37,6 +37,7 @@ import io.github.kotlinmania.rustlang.std.os.raw.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.RawFd
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugAssertFdIsOpen
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -125,7 +126,7 @@ public open class BorrowedFd internal constructor(
         val cmd = F_DUPFD_CLOEXEC
         // Avoid using file descriptors below 3 as they are used for stdio
         val fd = when (val tryResult = cvt(fcntl(this.asRawFd(), cmd, 3))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) }
-        return Result.Ok<OwnedFd, Error>(OwnedFd.FromRawFd(fd))
+        return Result.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd, fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawFd>>()))
     }
 
     public override fun asRawFd(): RawFd = this.fd.asInner()
@@ -363,19 +364,19 @@ public fun File.asFd(): BorrowedFd = this.asInner().asFd()
  * Returns a [`File`](fs.File) that takes ownership of the given
  * file descriptor.
  */
-public fun fromFile(ownedFd: OwnedFd): File = File.FromInner(FromInner.FromInner(FromInner.FromInner(ownedFd)))
+public fun fromFile(ownedFd: OwnedFd): File = File.fromInner(FromInner.fromInner(FromInner.fromInner(ownedFd)))
 
 public fun TcpStream.asFd(): BorrowedFd = this.asInner().socket().asFd()
 
-public fun fromTcpStream(ownedFd: OwnedFd): TcpStream = TcpStream.FromInner(FromInner.FromInner(FromInner.FromInner(FromInner.FromInner(ownedFd))))
+public fun fromTcpStream(ownedFd: OwnedFd): TcpStream = TcpStream.fromInner(FromInner.fromInner(FromInner.fromInner(FromInner.fromInner(ownedFd))))
 
 public fun TcpListener.asFd(): BorrowedFd = this.asInner().socket().asFd()
 
-public fun fromTcpListener(ownedFd: OwnedFd): TcpListener = TcpListener.FromInner(FromInner.FromInner(FromInner.FromInner(FromInner.FromInner(ownedFd))))
+public fun fromTcpListener(ownedFd: OwnedFd): TcpListener = TcpListener.fromInner(FromInner.fromInner(FromInner.fromInner(FromInner.fromInner(ownedFd))))
 
 public fun UdpSocket.asFd(): BorrowedFd = this.asInner().socket().asFd()
 
-public fun fromUdpSocket(ownedFd: OwnedFd): UdpSocket = UdpSocket.FromInner(FromInner.FromInner(FromInner.FromInner(FromInner.FromInner(ownedFd))))
+public fun fromUdpSocket(ownedFd: OwnedFd): UdpSocket = UdpSocket.fromInner(FromInner.fromInner(FromInner.fromInner(FromInner.fromInner(ownedFd))))
 
 /**
  * This impl allows implementing traits that require `AsFd` on Arc.
@@ -416,6 +417,6 @@ public fun PipeReader.asFd(): BorrowedFd = this.value.asFd()
 
 public fun PipeWriter.asFd(): BorrowedFd = this.value.asFd()
 
-public fun fromPipeReader(ownedFd: OwnedFd): PipeReader = PipeReader(FromInner.FromInner(ownedFd))
+public fun fromPipeReader(ownedFd: OwnedFd): PipeReader = PipeReader(FromInner.fromInner(ownedFd))
 
-public fun fromPipeWriter(ownedFd: OwnedFd): PipeWriter = PipeWriter(FromInner.FromInner(ownedFd))
+public fun fromPipeWriter(ownedFd: OwnedFd): PipeWriter = PipeWriter(FromInner.fromInner(ownedFd))

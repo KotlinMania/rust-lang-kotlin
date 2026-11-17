@@ -2,9 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.io.impls
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.alloc.io.read.appendToString
-import io.github.kotlinmania.rustlang.alloc.io.read.read
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
@@ -196,7 +194,7 @@ public fun <A : Allocator> List<UByte>.flush(): Result<Unit> = RustResult.Ok(Uni
  */
 public fun <A : Allocator> VecDeque<UByte, A>.read(buf: MutableList<UByte>): Result<Int> {
     var (front, _) = this.asSlices()
-    val n = when (val tryResult = Read.Read(front, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+    val n = when (val tryResult = front.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.drain(0 until n)
     return RustResult.Ok(n)
 }

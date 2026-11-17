@@ -14,13 +14,13 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.num.reverseBits
-import io.github.kotlinmania.rustlang.core.ops.BitAnd
-import io.github.kotlinmania.rustlang.core.ops.BitAndAssign
-import io.github.kotlinmania.rustlang.core.ops.BitOr
-import io.github.kotlinmania.rustlang.core.ops.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ops.BitXor
-import io.github.kotlinmania.rustlang.core.ops.BitXorAssign
-import io.github.kotlinmania.rustlang.core.ops.Not
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
+import io.github.kotlinmania.rustlang.core.ops.bit.BitAndAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.BitXor
+import io.github.kotlinmania.rustlang.core.ops.bit.BitXorAssign
+import io.github.kotlinmania.rustlang.core.ops.bit.Not
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
@@ -182,7 +182,7 @@ public val FALSE4: Int = 0
 public open class Mask<T, Mask, Unsigned> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Simd<T>> = UnresolvedTypeLayout(),
-) : BitAnd<Mask<T, Mask, Unsigned>, Any?, Mask<T, Mask, Unsigned>>, BitOr<Mask<T, Mask, Unsigned>, Any?, Mask<T, Mask, Unsigned>>, BitXor<Mask<T, Mask, Unsigned>, Any?, Mask<T, Mask, Unsigned>>, Not<Any?, Mask<T, Mask, Unsigned>>, BitAndAssign<Mask<T, Mask, Unsigned>>, BitOrAssign<Mask<T, Mask, Unsigned>>, BitXorAssign<Mask<T, Mask, Unsigned>> {
+) : BitAnd<Mask<T, Mask, Unsigned>, Mask<T, Mask, Unsigned>>, BitOr<Mask<T, Mask, Unsigned>, Mask<T, Mask, Unsigned>>, BitXor<Mask<T, Mask, Unsigned>, Mask<T, Mask, Unsigned>>, Not<Mask<T, Mask, Unsigned>>, BitAndAssign<Mask<T, Mask, Unsigned>>, BitOrAssign<Mask<T, Mask, Unsigned>>, BitXorAssign<Mask<T, Mask, Unsigned>> {
     public var field0: Simd<T>
         get() = value
         set(v) {

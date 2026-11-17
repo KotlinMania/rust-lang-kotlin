@@ -55,6 +55,7 @@ import io.github.kotlinmania.rustlang.core.str.iter.SplitWhitespace
 import io.github.kotlinmania.rustlang.core.str.pattern.Pattern
 import io.github.kotlinmania.rustlang.core.str.pattern.Searcher
 import io.github.kotlinmania.rustlang.core.str.traits.FromStr
+import io.github.kotlinmania.rustlang.core.str.traits.fromStr
 
 public fun sliceErrorFail(s: String, begin: Int, end: Int): Nothing = constEvalSelect(Triple(s, begin, end), ::sliceErrorFailCt, ::sliceErrorFailRt)
 
@@ -1521,7 +1522,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.splitInclusive(pat: P): Spli
  * check(v == listOf("ghi", "def", "abc"))
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.rsplit(pat: P): RSplit<P> = RSplit(this.split(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rsplit(pat: P): RSplit<P> = RSplit(this.split(pat).value)
 
 /**
  * Returns an iterator over substrings of the given string slice, separated
@@ -1562,7 +1563,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.rsplit(pat: P): RSplit<P> = 
  * check(v2 == listOf("A", "B", "C", "D"))
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.splitTerminator(pat: P): SplitTerminator<P> = SplitTerminator(this.split(pat).first.copy(allowTrailingEmpty = false))
+public fun <Searcher, P : Pattern<Searcher>> String.splitTerminator(pat: P): SplitTerminator<P> = SplitTerminator(this.split(pat).value.copy(allowTrailingEmpty = false))
 
 /**
  * Returns an iterator over substrings of `self`, separated by characters
@@ -1603,7 +1604,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.splitTerminator(pat: P): Spl
  * check(v2 == listOf("D", "C", "B", "A"))
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.rsplitTerminator(pat: P): RSplitTerminator<P> = RSplitTerminator(this.splitTerminator(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rsplitTerminator(pat: P): RSplitTerminator<P> = RSplitTerminator(this.splitTerminator(pat).value)
 
 /**
  * Returns an iterator over substrings of the given string slice, separated
@@ -1649,7 +1650,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.rsplitTerminator(pat: P): RS
  * check(v == listOf("abc", "defXghi"))
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.splitn(n: Int, pat: P): SplitN<P> = SplitN(SplitNInternal(iter = this.split(pat).first, count = n))
+public fun <Searcher, P : Pattern<Searcher>> String.splitn(n: Int, pat: P): SplitN<P> = SplitN(SplitNInternal(iter = this.split(pat).value, count = n))
 
 /**
  * Returns an iterator over substrings of this string slice, separated by a
@@ -1693,7 +1694,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.splitn(n: Int, pat: P): Spli
  * check(v == listOf("ghi", "abc1def"))
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.rsplitn(n: Int, pat: P): RSplitN<P> = RSplitN(this.splitn(n, pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rsplitn(n: Int, pat: P): RSplitN<P> = RSplitN(this.splitn(n, pat).value)
 
 /**
  * Splits the string on the first occurrence of the specified delimiter and
@@ -1792,7 +1793,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.matches(pat: P): Matches<P> 
  * check(v1 == listOf("3", "2", "1"))
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.rmatches(pat: P): RMatches<P> = RMatches(this.matches(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rmatches(pat: P): RMatches<P> = RMatches(this.matches(pat).value)
 
 /**
  * Returns an iterator over the disjoint matches of a pattern within this string
@@ -1865,7 +1866,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.matchIndices(pat: P): MatchI
  * // only the last `aba`
  * ```
  */
-public fun <Searcher, P : Pattern<Searcher>> String.rmatchIndices(pat: P): RMatchIndices<P> = RMatchIndices(this.matchIndices(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rmatchIndices(pat: P): RMatchIndices<P> = RMatchIndices(this.matchIndices(pat).value)
 
 /**
  * Returns a string slice with leading and trailing whitespace removed.
@@ -2393,7 +2394,7 @@ public fun <Searcher, P : Pattern<Searcher>> String.trimRightMatches(pat: P): St
  * check(nope.isErr())
  * ```
  */
-public fun <Err, F : FromStr<F, Err>> String.parse(): Result<F, Err> = FromStr.FromStr(this)
+public fun <Err, F : FromStr<F, Err>> String.parse(): Result<F, Err> = FromStr.fromStr(this)
 
 /**
  * Checks if all characters in this string are within the ASCII range.

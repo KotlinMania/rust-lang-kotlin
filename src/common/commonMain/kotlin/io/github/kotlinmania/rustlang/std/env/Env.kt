@@ -13,6 +13,9 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.env.unix.env
+import io.github.kotlinmania.rustlang.std.sys.env.unix.getenv
+import io.github.kotlinmania.rustlang.std.sys.env.unix.setenv
+import io.github.kotlinmania.rustlang.std.sys.env.unix.unsetenv
 import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_EXTENSION
 import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_PREFIX
 import io.github.kotlinmania.rustlang.std.sys.envconsts.os.DLL_SUFFIX
@@ -22,7 +25,6 @@ import io.github.kotlinmania.rustlang.std.sys.envconsts.os.FAMILY
 import io.github.kotlinmania.rustlang.std.sys.envconsts.os.OS
 import io.github.kotlinmania.rustlang.std.sys.paths.unix.chdir
 import io.github.kotlinmania.rustlang.std.sys.paths.unix.getcwd
-import io.github.kotlinmania.rustlang.std.sys.env.unix.env as envimp
 
 // Inspection and manipulation of the process's environment.
 //
@@ -149,7 +151,7 @@ public open class Vars(
  * [env.varsOs]: varsOs
  */
 public open class VarsOs(
-    public var inner: envimp.Env,
+    public var inner: Env,
 ) : Iterable<Pair<OsString, OsString>> {
     override fun iterator(): Iterator<Pair<OsString, OsString>> = object : AbstractIterator<Pair<OsString, OsString>>() {
         override fun computeNext() {
@@ -218,7 +220,7 @@ public fun vars(): Vars = Vars(inner = varsOs())
  * }
  * ```
  */
-public fun varsOs(): VarsOs = VarsOs(inner = envimp.Env())
+public fun varsOs(): VarsOs = VarsOs(inner = env())
 
 /**
  * Fetches the environment variable `key` from the current process.
@@ -255,7 +257,7 @@ public fun varsOs(): VarsOs = VarsOs(inner = envimp.Env())
  */
 public fun variable(key: OsStr): Result<String, VarError> {
     fun inner(key1: OsStr): Result<String, VarError> {
-        return when (val tryResult = envimp.getenv(key1).okOr(VarError.NotPresent)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, VarError>(tryResult.errValue()) }.intoString().mapErr({ VarError.NotUnicode(it) })
+        return when (val tryResult = (getenv(key1)?.let { Result.Ok<Option, VarError>(it) } ?: Result.Err<Option, VarError>(VarError.NotPresent))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, VarError>(tryResult.errValue()) }.intoString().mapErr({ VarError.NotUnicode(it) })
     }
     return inner(key)
 }
@@ -289,7 +291,7 @@ public fun variable(key: OsStr): Result<String, VarError> {
  * If expecting a delimited variable (such as `PATH`), [splitPaths]
  * can be used to separate items.
  */
-public fun varOs(key: OsStr): OsString? = envimp.getenv(key)
+public fun varOs(key: OsStr): OsString? = getenv(key)
 
 /**
  * The error type for operations interacting with environment variables.
@@ -376,7 +378,7 @@ public sealed class VarError {
  */
 public fun setVar(key: OsStr, value: OsStr) {
     val (key1, value1) = Pair(key, value)
-    envimp.setenv(key1, value1).unwrapOrElse({ e ->
+    setenv(key1, value1).unwrapOrElse({ e ->
         error("failed to set environment variable `$key` to `$value`: $e")
     })
 }
@@ -440,7 +442,7 @@ public fun setVar(key: OsStr, value: OsStr) {
  */
 public fun removeVar(key: OsStr) {
     val key1 = key
-    envimp.unsetenv(key1).unwrapOrElse({ e -> error("failed to remove environment variable `$key`: $e") })
+    unsetenv(key1).unwrapOrElse({ e -> error("failed to remove environment variable `$key`: $e") })
 }
 
 /**

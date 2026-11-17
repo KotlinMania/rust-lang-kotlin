@@ -6,21 +6,21 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 
 // `i586`s `xsave` and `xsaveopt` target feature intrinsics
 
-public expect fun xsave(p: MutPtr, hi: UInt, lo: UInt)
+public expect fun externXsave(p: MutPtr, hi: UInt, lo: UInt)
 
-public expect fun xrstor(p: ConstPtr, hi: UInt, lo: UInt)
+public expect fun externXrstor(p: ConstPtr, hi: UInt, lo: UInt)
 
-public expect fun xsetbv(v: UInt, hi: UInt, lo: UInt)
+public expect fun externXsetbv(v: UInt, hi: UInt, lo: UInt)
 
 public expect fun externXgetbv(v: UInt): Long
 
-public expect fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt)
+public expect fun externXsaveopt(p: MutPtr, hi: UInt, lo: UInt)
 
-public expect fun xsavec(p: MutPtr, hi: UInt, lo: UInt)
+public expect fun externXsavec(p: MutPtr, hi: UInt, lo: UInt)
 
-public expect fun xsaves(p: MutPtr, hi: UInt, lo: UInt)
+public expect fun externXsaves(p: MutPtr, hi: UInt, lo: UInt)
 
-public expect fun xrstors(p: ConstPtr, hi: UInt, lo: UInt)
+public expect fun externXrstors(p: ConstPtr, hi: UInt, lo: UInt)
 
 /**
  * Performs a full or partial save of the enabled processor states to memory at
@@ -35,7 +35,7 @@ public expect fun xrstors(p: ConstPtr, hi: UInt, lo: UInt)
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xsave)
  */
 public fun xsave(memAddr: MutPtr, saveMask: ULong) {
-    xsave(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
+    externXsave(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
 }
 
 /**
@@ -49,7 +49,7 @@ public fun xsave(memAddr: MutPtr, saveMask: ULong) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xrstor)
  */
 public fun xrstor(memAddr: ConstPtr, rsMask: ULong) {
-    xrstor(memAddr, (rsMask shr 32).toUInt(), rsMask.toUInt())
+    externXrstor(memAddr, (rsMask shr 32).toUInt(), rsMask.toUInt())
 }
 
 /**
@@ -68,7 +68,7 @@ public val XCR_XFEATURE_ENABLED_MASK: UInt = 0u
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xsetbv)
  */
 public fun xsetbv(a: UInt, value: ULong) {
-    xsetbv(a, (value shr 32).toUInt(), value.toUInt())
+    externXsetbv(a, (value shr 32).toUInt(), value.toUInt())
 }
 
 /**
@@ -91,7 +91,7 @@ public fun xgetbv(xcrNo: UInt): ULong = externXgetbv(xcrNo).toULong()
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xsaveopt)
  */
 public fun xsaveopt(memAddr: MutPtr, saveMask: ULong) {
-    xsaveopt(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
+    externXsaveopt(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
 }
 
 /**
@@ -105,7 +105,7 @@ public fun xsaveopt(memAddr: MutPtr, saveMask: ULong) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xsavec)
  */
 public fun xsavec(memAddr: MutPtr, saveMask: ULong) {
-    xsavec(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
+    externXsavec(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
 }
 
 /**
@@ -120,7 +120,7 @@ public fun xsavec(memAddr: MutPtr, saveMask: ULong) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xsaves)
  */
 public fun xsaves(memAddr: MutPtr, saveMask: ULong) {
-    xsaves(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
+    externXsaves(memAddr, (saveMask shr 32).toUInt(), saveMask.toUInt())
 }
 
 /**
@@ -137,5 +137,5 @@ public fun xsaves(memAddr: MutPtr, saveMask: ULong) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_xrstors)
  */
 public fun xrstors(memAddr: ConstPtr, rsMask: ULong) {
-    xrstors(memAddr, (rsMask shr 32).toUInt(), rsMask.toUInt())
+    externXrstors(memAddr, (rsMask shr 32).toUInt(), rsMask.toUInt())
 }

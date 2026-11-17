@@ -2587,7 +2587,7 @@ public fun <T, A : Allocator> tryFromRcTArraynA(boxedSlice: Rc<List<T>, A>, n: I
  * // Just a single allocation happens here.
  * ```
  */
-public fun <T, I : Iterable<T>> fromIteratorFromIterRcTSlice(iter: I): Rc<List<T>, Global> = ToRcSlice.ToRcSlice(iter.iterator())
+public fun <T, I : Iterable<T>> fromIteratorFromIterRcTSlice(iter: I): Rc<List<T>, Global> = iter.iterator().toRcSlice()
 
 /**
  * Specialization trait used for collecting into `Rc<[T]>`.

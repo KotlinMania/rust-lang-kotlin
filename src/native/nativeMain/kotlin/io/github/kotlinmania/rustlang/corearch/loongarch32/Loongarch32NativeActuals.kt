@@ -2,21 +2,21 @@
 
 package io.github.kotlinmania.rustlang.corearch.loongarch32
 
-import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Cacop
-import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Csrrd
-import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Csrwr
-import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32Csrxchg
+import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32ExternCacop
+import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32ExternCsrrd
+import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32ExternCsrwr
+import io.github.kotlinmania.rustlang.corearch.loongarch32.cinterop.corearchLoongarch32ExternCsrxchg
 import kotlinx.cinterop.ExperimentalForeignApi
 
-public actual fun cacop(a: Int, b: Int, c: Int) {
-    corearchLoongarch32Cacop(a, b, c)
+public actual fun externCacop(a: Int, b: Int, c: Int) {
+    corearchLoongarch32ExternCacop(a, b, c)
 }
 
-public actual fun csrrd(a: Int): Int =
-    corearchLoongarch32Csrrd(a)
+public actual fun externCsrrd(a: Int): Int =
+    corearchLoongarch32ExternCsrrd(a)
 
-public actual fun csrwr(a: Int, b: Int): Int =
-    corearchLoongarch32Csrwr(a, b)
+public actual fun externCsrwr(a: Int, b: Int): Int =
+    corearchLoongarch32ExternCsrwr(a, b)
 
-public actual fun csrxchg(a: Int, b: Int, c: Int): Int =
-    corearchLoongarch32Csrxchg(a, b, c)
+public actual fun externCsrxchg(a: Int, b: Int, c: Int): Int =
+    corearchLoongarch32ExternCsrxchg(a, b, c)

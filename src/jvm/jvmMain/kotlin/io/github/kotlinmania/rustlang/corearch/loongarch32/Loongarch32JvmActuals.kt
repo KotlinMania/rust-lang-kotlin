@@ -56,27 +56,27 @@ private object Loongarch32JniBridge {
     }
 
     @JvmStatic
-    external fun corearchLoongarch32Cacop(a: Int, b: Int, c: Int)
+    external fun corearchLoongarch32ExternCacop(a: Int, b: Int, c: Int)
 
     @JvmStatic
-    external fun corearchLoongarch32Csrrd(a: Int): Int
+    external fun corearchLoongarch32ExternCsrrd(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarch32Csrwr(a: Int, b: Int): Int
+    external fun corearchLoongarch32ExternCsrwr(a: Int, b: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarch32Csrxchg(a: Int, b: Int, c: Int): Int
+    external fun corearchLoongarch32ExternCsrxchg(a: Int, b: Int, c: Int): Int
 }
 
-public actual fun cacop(a: Int, b: Int, c: Int) {
-    Loongarch32JniBridge.corearchLoongarch32Cacop(a, b, c)
+public actual fun externCacop(a: Int, b: Int, c: Int) {
+    Loongarch32JniBridge.corearchLoongarch32ExternCacop(a, b, c)
 }
 
-public actual fun csrrd(a: Int): Int =
-    Loongarch32JniBridge.corearchLoongarch32Csrrd(a)
+public actual fun externCsrrd(a: Int): Int =
+    Loongarch32JniBridge.corearchLoongarch32ExternCsrrd(a)
 
-public actual fun csrwr(a: Int, b: Int): Int =
-    Loongarch32JniBridge.corearchLoongarch32Csrwr(a, b)
+public actual fun externCsrwr(a: Int, b: Int): Int =
+    Loongarch32JniBridge.corearchLoongarch32ExternCsrwr(a, b)
 
-public actual fun csrxchg(a: Int, b: Int, c: Int): Int =
-    Loongarch32JniBridge.corearchLoongarch32Csrxchg(a, b, c)
+public actual fun externCsrxchg(a: Int, b: Int, c: Int): Int =
+    Loongarch32JniBridge.corearchLoongarch32ExternCsrxchg(a, b, c)

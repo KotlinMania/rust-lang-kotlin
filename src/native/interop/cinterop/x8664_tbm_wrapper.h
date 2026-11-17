@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-uint64_t corearchX8664TbmBextriU64(uint64_t a, uint64_t control);
+uint64_t corearchX8664TbmExternBextriU64(uint64_t a, uint64_t control);
 
 #ifdef __cplusplus
 }

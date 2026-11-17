@@ -15,7 +15,7 @@
 #endif
 #endif
 
-uint64_t corearchX8664TbmBextriU64(uint64_t a, uint64_t control) {
+uint64_t corearchX8664TbmExternBextriU64(uint64_t a, uint64_t control) {
     typedef uint64_t (*km_fn_t)(uint64_t, uint64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

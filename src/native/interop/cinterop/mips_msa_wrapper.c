@@ -15,7 +15,7 @@
 #endif
 #endif
 
-int32_t corearchMipsMsaMsaCfcmsa(int32_t a) {
+int32_t corearchMipsMsaExternMsaCfcmsa(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -43,7 +43,7 @@ int32_t corearchMipsMsaMsaCfcmsa(int32_t a) {
     return -1;
 }
 
-void corearchMipsMsaMsaCtcmsa(int32_t imm5, int32_t a) {
+void corearchMipsMsaExternMsaCtcmsa(int32_t imm5, int32_t a) {
     typedef void (*km_fn_t)(int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

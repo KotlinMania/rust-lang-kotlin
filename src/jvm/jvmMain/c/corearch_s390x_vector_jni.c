@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_s390x_vector_S390xVectorJniBridge_corearchS390xVectorLcbb(JNIEnv* km_env, jclass km_clazz, jlong a, jint b) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_s390x_vector_S390xVectorJniBridge_corearchS390xVectorExternLcbb(JNIEnv* km_env, jclass km_clazz, jlong a, jint b) {
     (void)km_env;
     (void)km_clazz;
     typedef uint32_t (*km_fn_t)(void*, uint32_t);

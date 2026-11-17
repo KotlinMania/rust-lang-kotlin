@@ -470,6 +470,28 @@ public fun RustTypeId.variants(): Int = typeIdVariants(this)
  *     public data object Foo : Enum()
  *     // variant index == 0
  *     public data object Bar : Enum()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Foo -> 0
+ *         Bar -> 1
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * ```
  *
@@ -535,6 +557,22 @@ public fun RustTypeId.variant(variantIndex: Int): VariantId {
  *     public data object Seven : Number(7)
  *     // variant index == 0
  *     public data object Six : Number(6)
+ *
+ *     public fun toByte(): Byte = value.toByte()
+ *
+ *     public fun toUByte(): UByte = value.toUByte()
+ *
+ *     public fun toShort(): Short = value.toShort()
+ *
+ *     public fun toUShort(): UShort = value.toUShort()
+ *
+ *     public fun toInt(): Int = value
+ *
+ *     public fun toUInt(): UInt = value.toUInt()
+ *
+ *     public fun toLong(): Long = value.toLong()
+ *
+ *     public fun toULong(): ULong = value.toULong()
  * }
  * ```
  *
@@ -766,6 +804,28 @@ public open class VariantId(
      *         @foo(123)
      *         public data object VarA : A()
      *         public data object VarB : A()
+     *
+     *         private fun kmDiscriminant(): Int =
+     *             when (this) {
+     *             VarA -> 0
+     *             VarB -> 1
+     *             }
+     *
+     *         public fun toByte(): Byte = kmDiscriminant().toByte()
+     *
+     *         public fun toUByte(): UByte = kmDiscriminant().toUByte()
+     *
+     *         public fun toShort(): Short = kmDiscriminant().toShort()
+     *
+     *         public fun toUShort(): UShort = kmDiscriminant().toUShort()
+     *
+     *         public fun toInt(): Int = kmDiscriminant()
+     *
+     *         public fun toUInt(): UInt = kmDiscriminant().toUInt()
+     *
+     *         public fun toLong(): Long = kmDiscriminant().toLong()
+     *
+     *         public fun toULong(): ULong = kmDiscriminant().toULong()
      *     }
      *     check(RustTypeId.of<A>().variant(0).reflectedAttrs() == listOf("#[reflectionPlaceholder.a(1, false)]", "#[reflectionPlaceholder.foo = 123]"))
      * }

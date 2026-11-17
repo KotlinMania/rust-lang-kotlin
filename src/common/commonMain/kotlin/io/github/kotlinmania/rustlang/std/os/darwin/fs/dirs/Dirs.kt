@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.PATH_MAX
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDirectoryT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathDomainMaskT
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SysdirSearchPathEnumerationState
+import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.io.constError
@@ -235,7 +236,7 @@ public interface MediaDirsExt<T> {
     }
 }
 
-public fun userHome(): Result<PathBuf, Error> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "home path not absolute"))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(constError(ErrorKind.InvalidData, "home path not absolute")))
 
 public fun homeDirsExtSysdirHomeDirs(): Result<HomeDirs, Error> {
     val dirs = HomeDirs.empty()

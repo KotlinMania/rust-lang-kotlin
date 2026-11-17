@@ -5,10 +5,10 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.num.saturating.Saturating
 import io.github.kotlinmania.rustlang.core.num.wrapping.Wrapping
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.iter.tryProcess
 
 /**
  * Trait to represent types that can be created by summing up an iterator.

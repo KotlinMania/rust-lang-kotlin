@@ -16,8 +16,8 @@ private external fun initS390xVectorNapiAddon(): Boolean
 
 private val s390xVectorNapiAvailable: Boolean = initS390xVectorNapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchS390xVectorLcbb(p0, p1)")
-private external fun wasmCorearchS390xVectorLcbb(p0: String, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchS390xVectorExternLcbb(p0, p1)")
+private external fun wasmCorearchS390xVectorExternLcbb(p0: String, p1: Int): Int
 
 public actual fun nearbyintV4f32(a: VectorFloat): VectorFloat =
     throw UnsupportedOperationException("Native FFI addon is not available")
@@ -156,8 +156,8 @@ public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
     throw UnsupportedOperationException("Native FFI addon is not available")
 }
 
-public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    if (s390xVectorNapiAvailable) wasmCorearchS390xVectorLcbb(a.rawAddress.toString(), b.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externLcbb(a: ConstPtr, b: UInt): UInt =
+    if (s390xVectorNapiAvailable) wasmCorearchS390xVectorExternLcbb(a.rawAddress.toString(), b.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     throw UnsupportedOperationException("Native FFI addon is not available")

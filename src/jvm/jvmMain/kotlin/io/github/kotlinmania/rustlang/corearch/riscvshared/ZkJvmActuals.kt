@@ -56,10 +56,10 @@ private object RiscvsharedZkJniBridge {
     }
 
     @JvmStatic
-    external fun corearchRiscvsharedZkSm4ed(rs1: Int, rs2: Int, bs: Int): Int
+    external fun corearchRiscvsharedZkExternSm4ed(rs1: Int, rs2: Int, bs: Int): Int
 
     @JvmStatic
-    external fun corearchRiscvsharedZkSm4ks(rs1: Int, rs2: Int, bs: Int): Int
+    external fun corearchRiscvsharedZkExternSm4ks(rs1: Int, rs2: Int, bs: Int): Int
 
     @JvmStatic
     external fun corearchRiscvsharedZkExternSm3p0(rs1: Int): Int
@@ -86,11 +86,11 @@ private object RiscvsharedZkJniBridge {
     external fun corearchRiscvsharedZkXperm464(rs1: Long, rs2: Long): Long
 }
 
-public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
-    RiscvsharedZkJniBridge.corearchRiscvsharedZkSm4ed(rs1, rs2, bs)
+public actual fun externSm4ed(rs1: Int, rs2: Int, bs: Int): Int =
+    RiscvsharedZkJniBridge.corearchRiscvsharedZkExternSm4ed(rs1, rs2, bs)
 
-public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
-    RiscvsharedZkJniBridge.corearchRiscvsharedZkSm4ks(rs1, rs2, bs)
+public actual fun externSm4ks(rs1: Int, rs2: Int, bs: Int): Int =
+    RiscvsharedZkJniBridge.corearchRiscvsharedZkExternSm4ks(rs1, rs2, bs)
 
 public actual fun externSm3p0(rs1: Int): Int =
     RiscvsharedZkJniBridge.corearchRiscvsharedZkExternSm3p0(rs1)

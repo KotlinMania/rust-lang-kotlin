@@ -65,23 +65,23 @@ public actual fun externMsaAddvW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaAddvD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAddvD")
 
-public actual fun msaAddviB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaAddviB")
+public actual fun externMsaAddviB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAddviB")
 
-public actual fun msaAddviH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaAddviH")
+public actual fun externMsaAddviH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAddviH")
 
-public actual fun msaAddviW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaAddviW")
+public actual fun externMsaAddviW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAddviW")
 
-public actual fun msaAddviD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaAddviD")
+public actual fun externMsaAddviD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAddviD")
 
 public actual fun externMsaAndV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAndV")
 
-public actual fun msaAndiB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaAndiB")
+public actual fun externMsaAndiB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAndiB")
 
 public actual fun externMsaAsubSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaAsubSB")
@@ -167,17 +167,17 @@ public actual fun externMsaBclrW(a: V4u32, b: V4u32): V4u32 =
 public actual fun externMsaBclrD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBclrD")
 
-public actual fun msaBclriB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBclriB")
+public actual fun externMsaBclriB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBclriB")
 
-public actual fun msaBclriH(a: V8u16, b: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBclriH")
+public actual fun externMsaBclriH(a: V8u16, b: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBclriH")
 
-public actual fun msaBclriW(a: V4u32, b: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBclriW")
+public actual fun externMsaBclriW(a: V4u32, b: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBclriW")
 
-public actual fun msaBclriD(a: V2u64, b: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBclriD")
+public actual fun externMsaBclriD(a: V2u64, b: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBclriD")
 
 public actual fun externMsaBinslB(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinslB")
@@ -191,17 +191,17 @@ public actual fun externMsaBinslW(a: V4u32, b: V4u32, c: V4u32): V4u32 =
 public actual fun externMsaBinslD(a: V2u64, b: V2u64, c: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinslD")
 
-public actual fun msaBinsliB(a: V16u8, b: V16u8, c: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsliB")
+public actual fun externMsaBinsliB(a: V16u8, b: V16u8, c: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsliB")
 
-public actual fun msaBinsliH(a: V8u16, b: V8u16, c: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsliH")
+public actual fun externMsaBinsliH(a: V8u16, b: V8u16, c: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsliH")
 
-public actual fun msaBinsliW(a: V4u32, b: V4u32, c: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsliW")
+public actual fun externMsaBinsliW(a: V4u32, b: V4u32, c: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsliW")
 
-public actual fun msaBinsliD(a: V2u64, b: V2u64, c: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsliD")
+public actual fun externMsaBinsliD(a: V2u64, b: V2u64, c: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsliD")
 
 public actual fun externMsaBinsrB(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsrB")
@@ -215,29 +215,29 @@ public actual fun externMsaBinsrW(a: V4u32, b: V4u32, c: V4u32): V4u32 =
 public actual fun externMsaBinsrD(a: V2u64, b: V2u64, c: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsrD")
 
-public actual fun msaBinsriB(a: V16u8, b: V16u8, c: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsriB")
+public actual fun externMsaBinsriB(a: V16u8, b: V16u8, c: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsriB")
 
-public actual fun msaBinsriH(a: V8u16, b: V8u16, c: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsriH")
+public actual fun externMsaBinsriH(a: V8u16, b: V8u16, c: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsriH")
 
-public actual fun msaBinsriW(a: V4u32, b: V4u32, c: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsriW")
+public actual fun externMsaBinsriW(a: V4u32, b: V4u32, c: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsriW")
 
-public actual fun msaBinsriD(a: V2u64, b: V2u64, c: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBinsriD")
+public actual fun externMsaBinsriD(a: V2u64, b: V2u64, c: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBinsriD")
 
 public actual fun externMsaBmnzV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBmnzV")
 
-public actual fun msaBmnziB(a: V16u8, b: V16u8, c: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBmnziB")
+public actual fun externMsaBmnziB(a: V16u8, b: V16u8, c: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBmnziB")
 
 public actual fun externMsaBmzV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBmzV")
 
-public actual fun msaBmziB(a: V16u8, b: V16u8, c: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBmziB")
+public actual fun externMsaBmziB(a: V16u8, b: V16u8, c: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBmziB")
 
 public actual fun externMsaBnegB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnegB")
@@ -251,17 +251,17 @@ public actual fun externMsaBnegW(a: V4u32, b: V4u32): V4u32 =
 public actual fun externMsaBnegD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnegD")
 
-public actual fun msaBnegiB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBnegiB")
+public actual fun externMsaBnegiB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnegiB")
 
-public actual fun msaBnegiH(a: V8u16, b: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBnegiH")
+public actual fun externMsaBnegiH(a: V8u16, b: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnegiH")
 
-public actual fun msaBnegiW(a: V4u32, b: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBnegiW")
+public actual fun externMsaBnegiW(a: V4u32, b: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnegiW")
 
-public actual fun msaBnegiD(a: V2u64, b: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBnegiD")
+public actual fun externMsaBnegiD(a: V2u64, b: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnegiD")
 
 public actual fun externMsaBnzB(a: V16u8): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBnzB")
@@ -281,8 +281,8 @@ public actual fun externMsaBnzV(a: V16u8): Int =
 public actual fun externMsaBselV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBselV")
 
-public actual fun msaBseliB(a: V16u8, b: V16u8, c: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBseliB")
+public actual fun externMsaBseliB(a: V16u8, b: V16u8, c: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBseliB")
 
 public actual fun externMsaBsetB(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBsetB")
@@ -296,17 +296,17 @@ public actual fun externMsaBsetW(a: V4u32, b: V4u32): V4u32 =
 public actual fun externMsaBsetD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBsetD")
 
-public actual fun msaBsetiB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBsetiB")
+public actual fun externMsaBsetiB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBsetiB")
 
-public actual fun msaBsetiH(a: V8u16, b: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBsetiH")
+public actual fun externMsaBsetiH(a: V8u16, b: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBsetiH")
 
-public actual fun msaBsetiW(a: V4u32, b: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBsetiW")
+public actual fun externMsaBsetiW(a: V4u32, b: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBsetiW")
 
-public actual fun msaBsetiD(a: V2u64, b: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaBsetiD")
+public actual fun externMsaBsetiD(a: V2u64, b: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBsetiD")
 
 public actual fun externMsaBzB(a: V16u8): Int =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaBzB")
@@ -335,23 +335,23 @@ public actual fun externMsaCeqW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaCeqD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCeqD")
 
-public actual fun msaCeqiB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCeqiB")
+public actual fun externMsaCeqiB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCeqiB")
 
-public actual fun msaCeqiH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCeqiH")
+public actual fun externMsaCeqiH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCeqiH")
 
-public actual fun msaCeqiW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCeqiW")
+public actual fun externMsaCeqiW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCeqiW")
 
-public actual fun msaCeqiD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCeqiD")
+public actual fun externMsaCeqiD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCeqiD")
 
-@kotlin.wasm.WasmImport("kmcore", "corearchMipsMsaMsaCfcmsa")
-private external fun wasiCorearchMipsMsaMsaCfcmsa(a: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchMipsMsaExternMsaCfcmsa")
+private external fun wasiCorearchMipsMsaExternMsaCfcmsa(a: Int): Int
 
-public actual fun msaCfcmsa(a: Int): Int =
-    wasiCorearchMipsMsaMsaCfcmsa(a).toInt()
+public actual fun externMsaCfcmsa(a: Int): Int =
+    wasiCorearchMipsMsaExternMsaCfcmsa(a).toInt()
 
 public actual fun externMsaCleSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleSB")
@@ -377,29 +377,29 @@ public actual fun externMsaCleUW(a: V4u32, b: V4u32): V4i32 =
 public actual fun externMsaCleUD(a: V2u64, b: V2u64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleUD")
 
-public actual fun msaCleiSB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiSB")
+public actual fun externMsaCleiSB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiSB")
 
-public actual fun msaCleiSH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiSH")
+public actual fun externMsaCleiSH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiSH")
 
-public actual fun msaCleiSW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiSW")
+public actual fun externMsaCleiSW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiSW")
 
-public actual fun msaCleiSD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiSD")
+public actual fun externMsaCleiSD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiSD")
 
-public actual fun msaCleiUB(a: V16u8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiUB")
+public actual fun externMsaCleiUB(a: V16u8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiUB")
 
-public actual fun msaCleiUH(a: V8u16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiUH")
+public actual fun externMsaCleiUH(a: V8u16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiUH")
 
-public actual fun msaCleiUW(a: V4u32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiUW")
+public actual fun externMsaCleiUW(a: V4u32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiUW")
 
-public actual fun msaCleiUD(a: V2u64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCleiUD")
+public actual fun externMsaCleiUD(a: V2u64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCleiUD")
 
 public actual fun externMsaCltSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltSB")
@@ -425,59 +425,59 @@ public actual fun externMsaCltUW(a: V4u32, b: V4u32): V4i32 =
 public actual fun externMsaCltUD(a: V2u64, b: V2u64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltUD")
 
-public actual fun msaCltiSB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiSB")
+public actual fun externMsaCltiSB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiSB")
 
-public actual fun msaCltiSH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiSH")
+public actual fun externMsaCltiSH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiSH")
 
-public actual fun msaCltiSW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiSW")
+public actual fun externMsaCltiSW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiSW")
 
-public actual fun msaCltiSD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiSD")
+public actual fun externMsaCltiSD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiSD")
 
-public actual fun msaCltiUB(a: V16u8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiUB")
+public actual fun externMsaCltiUB(a: V16u8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiUB")
 
-public actual fun msaCltiUH(a: V8u16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiUH")
+public actual fun externMsaCltiUH(a: V8u16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiUH")
 
-public actual fun msaCltiUW(a: V4u32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiUW")
+public actual fun externMsaCltiUW(a: V4u32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiUW")
 
-public actual fun msaCltiUD(a: V2u64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCltiUD")
+public actual fun externMsaCltiUD(a: V2u64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCltiUD")
 
-public actual fun msaCopySB(a: V16i8, b: Int): Int =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopySB")
+public actual fun externMsaCopySB(a: V16i8, b: Int): Int =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopySB")
 
-public actual fun msaCopySH(a: V8i16, b: Int): Int =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopySH")
+public actual fun externMsaCopySH(a: V8i16, b: Int): Int =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopySH")
 
-public actual fun msaCopySW(a: V4i32, b: Int): Int =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopySW")
+public actual fun externMsaCopySW(a: V4i32, b: Int): Int =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopySW")
 
-public actual fun msaCopySD(a: V2i64, b: Int): Long =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopySD")
+public actual fun externMsaCopySD(a: V2i64, b: Int): Long =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopySD")
 
-public actual fun msaCopyUB(a: V16i8, b: Int): UInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopyUB")
+public actual fun externMsaCopyUB(a: V16i8, b: Int): UInt =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopyUB")
 
-public actual fun msaCopyUH(a: V8i16, b: Int): UInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopyUH")
+public actual fun externMsaCopyUH(a: V8i16, b: Int): UInt =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopyUH")
 
-public actual fun msaCopyUW(a: V4i32, b: Int): UInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopyUW")
+public actual fun externMsaCopyUW(a: V4i32, b: Int): UInt =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopyUW")
 
-public actual fun msaCopyUD(a: V2i64, b: Int): ULong =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaCopyUD")
+public actual fun externMsaCopyUD(a: V2i64, b: Int): ULong =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaCopyUD")
 
-@kotlin.wasm.WasmImport("kmcore", "corearchMipsMsaMsaCtcmsa")
-private external fun wasiCorearchMipsMsaMsaCtcmsa(imm5: Int, a: Int): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchMipsMsaExternMsaCtcmsa")
+private external fun wasiCorearchMipsMsaExternMsaCtcmsa(imm5: Int, a: Int): Unit
 
-public actual fun msaCtcmsa(imm5: Int, a: Int): Unit =
-    wasiCorearchMipsMsaMsaCtcmsa(imm5, a)
+public actual fun externMsaCtcmsa(imm5: Int, a: Int): Unit =
+    wasiCorearchMipsMsaExternMsaCtcmsa(imm5, a)
 
 public actual fun externMsaDivSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaDivSB")
@@ -950,53 +950,53 @@ public actual fun externMsaIlvrW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaIlvrD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaIlvrD")
 
-public actual fun msaInsertB(a: V16i8, b: Int, c: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsertB")
+public actual fun externMsaInsertB(a: V16i8, b: Int, c: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsertB")
 
-public actual fun msaInsertH(a: V8i16, b: Int, c: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsertH")
+public actual fun externMsaInsertH(a: V8i16, b: Int, c: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsertH")
 
-public actual fun msaInsertW(a: V4i32, b: Int, c: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsertW")
+public actual fun externMsaInsertW(a: V4i32, b: Int, c: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsertW")
 
-public actual fun msaInsertD(a: V2i64, b: Int, c: Long): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsertD")
+public actual fun externMsaInsertD(a: V2i64, b: Int, c: Long): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsertD")
 
-public actual fun msaInsveB(a: V16i8, b: Int, c: V16i8): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsveB")
+public actual fun externMsaInsveB(a: V16i8, b: Int, c: V16i8): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsveB")
 
-public actual fun msaInsveH(a: V8i16, b: Int, c: V8i16): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsveH")
+public actual fun externMsaInsveH(a: V8i16, b: Int, c: V8i16): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsveH")
 
-public actual fun msaInsveW(a: V4i32, b: Int, c: V4i32): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsveW")
+public actual fun externMsaInsveW(a: V4i32, b: Int, c: V4i32): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsveW")
 
-public actual fun msaInsveD(a: V2i64, b: Int, c: V2i64): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaInsveD")
+public actual fun externMsaInsveD(a: V2i64, b: Int, c: V2i64): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaInsveD")
 
-public actual fun msaLdB(memAddr: MutPtr, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdB")
+public actual fun externMsaLdB(memAddr: MutPtr, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdB")
 
-public actual fun msaLdH(memAddr: MutPtr, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdH")
+public actual fun externMsaLdH(memAddr: MutPtr, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdH")
 
-public actual fun msaLdW(memAddr: MutPtr, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdW")
+public actual fun externMsaLdW(memAddr: MutPtr, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdW")
 
-public actual fun msaLdD(memAddr: MutPtr, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdD")
+public actual fun externMsaLdD(memAddr: MutPtr, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdD")
 
-public actual fun msaLdiB(a: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdiB")
+public actual fun externMsaLdiB(a: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdiB")
 
-public actual fun msaLdiH(a: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdiH")
+public actual fun externMsaLdiH(a: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdiH")
 
-public actual fun msaLdiW(a: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdiW")
+public actual fun externMsaLdiW(a: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdiW")
 
-public actual fun msaLdiD(a: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaLdiD")
+public actual fun externMsaLdiD(a: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaLdiD")
 
 public actual fun externMsaMaddQH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaddQH")
@@ -1058,29 +1058,29 @@ public actual fun externMsaMaxUW(a: V4u32, b: V4u32): V4u32 =
 public actual fun externMsaMaxUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxUD")
 
-public actual fun msaMaxiSB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiSB")
+public actual fun externMsaMaxiSB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiSB")
 
-public actual fun msaMaxiSH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiSH")
+public actual fun externMsaMaxiSH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiSH")
 
-public actual fun msaMaxiSW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiSW")
+public actual fun externMsaMaxiSW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiSW")
 
-public actual fun msaMaxiSD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiSD")
+public actual fun externMsaMaxiSD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiSD")
 
-public actual fun msaMaxiUB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiUB")
+public actual fun externMsaMaxiUB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiUB")
 
-public actual fun msaMaxiUH(a: V8u16, b: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiUH")
+public actual fun externMsaMaxiUH(a: V8u16, b: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiUH")
 
-public actual fun msaMaxiUW(a: V4u32, b: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiUW")
+public actual fun externMsaMaxiUW(a: V4u32, b: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiUW")
 
-public actual fun msaMaxiUD(a: V2u64, b: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMaxiUD")
+public actual fun externMsaMaxiUD(a: V2u64, b: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMaxiUD")
 
 public actual fun externMsaMinAB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMinAB")
@@ -1118,29 +1118,29 @@ public actual fun externMsaMinUW(a: V4u32, b: V4u32): V4u32 =
 public actual fun externMsaMinUD(a: V2u64, b: V2u64): V2u64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMinUD")
 
-public actual fun msaMiniSB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniSB")
+public actual fun externMsaMiniSB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniSB")
 
-public actual fun msaMiniSH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniSH")
+public actual fun externMsaMiniSH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniSH")
 
-public actual fun msaMiniSW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniSW")
+public actual fun externMsaMiniSW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniSW")
 
-public actual fun msaMiniSD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniSD")
+public actual fun externMsaMiniSD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniSD")
 
-public actual fun msaMiniUB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniUB")
+public actual fun externMsaMiniUB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniUB")
 
-public actual fun msaMiniUH(a: V8u16, b: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniUH")
+public actual fun externMsaMiniUH(a: V8u16, b: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniUH")
 
-public actual fun msaMiniUW(a: V4u32, b: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniUW")
+public actual fun externMsaMiniUW(a: V4u32, b: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniUW")
 
-public actual fun msaMiniUD(a: V2u64, b: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaMiniUD")
+public actual fun externMsaMiniUD(a: V2u64, b: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaMiniUD")
 
 public actual fun externMsaModSB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaModSB")
@@ -1244,14 +1244,14 @@ public actual fun externMsaNlzcD(a: V2i64): V2i64 =
 public actual fun externMsaNorV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaNorV")
 
-public actual fun msaNoriB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaNoriB")
+public actual fun externMsaNoriB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaNoriB")
 
 public actual fun externMsaOrV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaOrV")
 
-public actual fun msaOriB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaOriB")
+public actual fun externMsaOriB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaOriB")
 
 public actual fun externMsaPckevB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaPckevB")
@@ -1289,38 +1289,38 @@ public actual fun externMsaPcntW(a: V4i32): V4i32 =
 public actual fun externMsaPcntD(a: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaPcntD")
 
-public actual fun msaSatSB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatSB")
+public actual fun externMsaSatSB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatSB")
 
-public actual fun msaSatSH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatSH")
+public actual fun externMsaSatSH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatSH")
 
-public actual fun msaSatSW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatSW")
+public actual fun externMsaSatSW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatSW")
 
-public actual fun msaSatSD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatSD")
+public actual fun externMsaSatSD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatSD")
 
-public actual fun msaSatUB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatUB")
+public actual fun externMsaSatUB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatUB")
 
-public actual fun msaSatUH(a: V8u16, b: Int): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatUH")
+public actual fun externMsaSatUH(a: V8u16, b: Int): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatUH")
 
-public actual fun msaSatUW(a: V4u32, b: Int): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatUW")
+public actual fun externMsaSatUW(a: V4u32, b: Int): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatUW")
 
-public actual fun msaSatUD(a: V2u64, b: Int): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSatUD")
+public actual fun externMsaSatUD(a: V2u64, b: Int): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSatUD")
 
-public actual fun msaShfB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaShfB")
+public actual fun externMsaShfB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaShfB")
 
-public actual fun msaShfH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaShfH")
+public actual fun externMsaShfH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaShfH")
 
-public actual fun msaShfW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaShfW")
+public actual fun externMsaShfW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaShfW")
 
 public actual fun externMsaSldB(a: V16i8, b: V16i8, c: Int): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSldB")
@@ -1334,17 +1334,17 @@ public actual fun externMsaSldW(a: V4i32, b: V4i32, c: Int): V4i32 =
 public actual fun externMsaSldD(a: V2i64, b: V2i64, c: Int): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSldD")
 
-public actual fun msaSldiB(a: V16i8, b: V16i8, c: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSldiB")
+public actual fun externMsaSldiB(a: V16i8, b: V16i8, c: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSldiB")
 
-public actual fun msaSldiH(a: V8i16, b: V8i16, c: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSldiH")
+public actual fun externMsaSldiH(a: V8i16, b: V8i16, c: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSldiH")
 
-public actual fun msaSldiW(a: V4i32, b: V4i32, c: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSldiW")
+public actual fun externMsaSldiW(a: V4i32, b: V4i32, c: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSldiW")
 
-public actual fun msaSldiD(a: V2i64, b: V2i64, c: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSldiD")
+public actual fun externMsaSldiD(a: V2i64, b: V2i64, c: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSldiD")
 
 public actual fun externMsaSllB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSllB")
@@ -1358,17 +1358,17 @@ public actual fun externMsaSllW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaSllD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSllD")
 
-public actual fun msaSlliB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSlliB")
+public actual fun externMsaSlliB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSlliB")
 
-public actual fun msaSlliH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSlliH")
+public actual fun externMsaSlliH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSlliH")
 
-public actual fun msaSlliW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSlliW")
+public actual fun externMsaSlliW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSlliW")
 
-public actual fun msaSlliD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSlliD")
+public actual fun externMsaSlliD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSlliD")
 
 public actual fun externMsaSplatB(a: V16i8, c: Int): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSplatB")
@@ -1382,17 +1382,17 @@ public actual fun externMsaSplatW(a: V4i32, w: Int): V4i32 =
 public actual fun externMsaSplatD(a: V2i64, c: Int): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSplatD")
 
-public actual fun msaSplatiB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSplatiB")
+public actual fun externMsaSplatiB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSplatiB")
 
-public actual fun msaSplatiH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSplatiH")
+public actual fun externMsaSplatiH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSplatiH")
 
-public actual fun msaSplatiW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSplatiW")
+public actual fun externMsaSplatiW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSplatiW")
 
-public actual fun msaSplatiD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSplatiD")
+public actual fun externMsaSplatiD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSplatiD")
 
 public actual fun externMsaSraB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSraB")
@@ -1406,17 +1406,17 @@ public actual fun externMsaSraW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaSraD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSraD")
 
-public actual fun msaSraiB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSraiB")
+public actual fun externMsaSraiB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSraiB")
 
-public actual fun msaSraiH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSraiH")
+public actual fun externMsaSraiH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSraiH")
 
-public actual fun msaSraiW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSraiW")
+public actual fun externMsaSraiW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSraiW")
 
-public actual fun msaSraiD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSraiD")
+public actual fun externMsaSraiD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSraiD")
 
 public actual fun externMsaSrarB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrarB")
@@ -1430,17 +1430,17 @@ public actual fun externMsaSrarW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaSrarD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrarD")
 
-public actual fun msaSrariB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrariB")
+public actual fun externMsaSrariB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrariB")
 
-public actual fun msaSrariH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrariH")
+public actual fun externMsaSrariH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrariH")
 
-public actual fun msaSrariW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrariW")
+public actual fun externMsaSrariW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrariW")
 
-public actual fun msaSrariD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrariD")
+public actual fun externMsaSrariD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrariD")
 
 public actual fun externMsaSrlB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlB")
@@ -1454,17 +1454,17 @@ public actual fun externMsaSrlW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaSrlD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlD")
 
-public actual fun msaSrliB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrliB")
+public actual fun externMsaSrliB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrliB")
 
-public actual fun msaSrliH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrliH")
+public actual fun externMsaSrliH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrliH")
 
-public actual fun msaSrliW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrliW")
+public actual fun externMsaSrliW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrliW")
 
-public actual fun msaSrliD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrliD")
+public actual fun externMsaSrliD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrliD")
 
 public actual fun externMsaSrlrB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlrB")
@@ -1478,32 +1478,32 @@ public actual fun externMsaSrlrW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaSrlrD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlrD")
 
-public actual fun msaSrlriB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrlriB")
+public actual fun externMsaSrlriB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlriB")
 
-public actual fun msaSrlriH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrlriH")
+public actual fun externMsaSrlriH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlriH")
 
-public actual fun msaSrlriW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrlriW")
+public actual fun externMsaSrlriW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlriW")
 
-public actual fun msaSrlriD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSrlriD")
+public actual fun externMsaSrlriD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSrlriD")
 
-public actual fun msaStB(a: V16i8, memAddr: MutPtr, immS10: Int) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStB")
+public actual fun externMsaStB(a: V16i8, memAddr: MutPtr, immS10: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaStB")
 }
 
-public actual fun msaStH(a: V8i16, memAddr: MutPtr, immS11: Int) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStH")
+public actual fun externMsaStH(a: V8i16, memAddr: MutPtr, immS11: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaStH")
 }
 
-public actual fun msaStW(a: V4i32, memAddr: MutPtr, immS12: Int) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStW")
+public actual fun externMsaStW(a: V4i32, memAddr: MutPtr, immS12: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaStW")
 }
 
-public actual fun msaStD(a: V2i64, memAddr: MutPtr, immS13: Int) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaStD")
+public actual fun externMsaStD(a: V2i64, memAddr: MutPtr, immS13: Int) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaStD")
 }
 
 public actual fun externMsaSubsSB(a: V16i8, b: V16i8): V16i8 =
@@ -1566,17 +1566,17 @@ public actual fun externMsaSubvW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externMsaSubvD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSubvD")
 
-public actual fun msaSubviB(a: V16i8, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSubviB")
+public actual fun externMsaSubviB(a: V16i8, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSubviB")
 
-public actual fun msaSubviH(a: V8i16, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSubviH")
+public actual fun externMsaSubviH(a: V8i16, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSubviH")
 
-public actual fun msaSubviW(a: V4i32, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSubviW")
+public actual fun externMsaSubviW(a: V4i32, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSubviW")
 
-public actual fun msaSubviD(a: V2i64, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaSubviD")
+public actual fun externMsaSubviD(a: V2i64, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaSubviD")
 
 public actual fun externMsaVshfB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaVshfB")
@@ -1593,5 +1593,5 @@ public actual fun externMsaVshfD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
 public actual fun externMsaXorV(a: V16u8, b: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaXorV")
 
-public actual fun msaXoriB(a: V16u8, b: Int): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaMsaXoriB")
+public actual fun externMsaXoriB(a: V16u8, b: Int): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchMipsMsaExternMsaXoriB")

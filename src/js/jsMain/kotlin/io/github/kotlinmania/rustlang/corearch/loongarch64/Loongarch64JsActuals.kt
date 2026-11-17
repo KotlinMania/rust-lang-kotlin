@@ -29,22 +29,22 @@ public actual fun externCrccWWW(a: Int, b: Int): Int =
 public actual fun externCrccWDW(a: Long, b: Int): Int =
     if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64ExternCrccWDW(a.toString(), b) as Int) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun cacop(a: Long, b: Long, c: Long) {
+public actual fun externCacop(a: Long, b: Long, c: Long) {
     if (loongarch64NapiAddon != null) {
-        loongarch64NapiAddon.corearchLoongarch64Cacop(a.toString(), b.toString(), c.toString())
+        loongarch64NapiAddon.corearchLoongarch64ExternCacop(a.toString(), b.toString(), c.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun csrrd(a: Int): Long =
-    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64Csrrd(a) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCsrrd(a: Int): Long =
+    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64ExternCsrrd(a) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun csrwr(a: Long, b: Int): Long =
-    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64Csrwr(a.toString(), b) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCsrwr(a: Long, b: Int): Long =
+    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64ExternCsrwr(a.toString(), b) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun csrxchg(a: Long, b: Long, c: Int): Long =
-    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64Csrxchg(a.toString(), b.toString(), c) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCsrxchg(a: Long, b: Long, c: Int): Long =
+    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64ExternCsrxchg(a.toString(), b.toString(), c) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun externIocsrrdD(a: Int): Long =
     if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64ExternIocsrrdD(a) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -73,12 +73,12 @@ public actual fun externAsrtgt(a: Long, b: Long) {
     }
 }
 
-public actual fun lddir(a: Long, b: Long): Long =
-    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64Lddir(a.toString(), b.toString()) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externLddir(a: Long, b: Long): Long =
+    if (loongarch64NapiAddon != null) (loongarch64NapiAddon.corearchLoongarch64ExternLddir(a.toString(), b.toString()) as String).toLong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun ldpte(a: Long, b: Long) {
+public actual fun externLdpte(a: Long, b: Long) {
     if (loongarch64NapiAddon != null) {
-        loongarch64NapiAddon.corearchLoongarch64Ldpte(a.toString(), b.toString())
+        loongarch64NapiAddon.corearchLoongarch64ExternLdpte(a.toString(), b.toString())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

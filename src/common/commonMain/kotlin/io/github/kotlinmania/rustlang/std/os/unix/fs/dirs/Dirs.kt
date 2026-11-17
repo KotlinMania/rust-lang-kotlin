@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.env.SplitPathsRef
+import io.github.kotlinmania.rustlang.std.env.homeDir
 import io.github.kotlinmania.rustlang.std.env.joinPaths
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
@@ -445,10 +446,10 @@ public fun MediaDirs.setTemplates(path: PathBuf): MediaDirs {
 
 public fun splitPathsRef(paths: OsStr): SplitPathsRef {
     // returns Some on cfg(unix)
-    return env.splitPathsRef(paths).unwrap()
+    return io.github.kotlinmania.rustlang.std.env.splitPathsRef(paths).unwrap()
 }
 
-public fun userHome(): Result<PathBuf, Error> = env.homeDir().filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "user home directory path not absolute"))
+public fun userHome(): Result<PathBuf, Error> = (homeDir().filter({ p -> p.isAbsolute() })?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(constError(ErrorKind.InvalidData, "user home directory path not absolute")))
 
 public fun dir(env: String): PathBuf? = varOs(env).filter({ s -> !s.isEmpty() })?.let(PathBuf::from).filter({ path -> path.isAbsolute() })
 

@@ -259,7 +259,7 @@ public fun sleep(dur: Duration) {
         ts.tvNsec = nsecs
         secs -= ts.tvSec.toULong()
         val tsPtr = localStorageL610C12.asMutPtr()
-        val r = nanosleep(tsPtr, tsPtr)
+        val r = nanosleep((tsPtr).asConstPtr(), tsPtr)
         if (r != 0) {
             check(r == EINTR)
             secs += ts.tvSec.toULong()
@@ -326,6 +326,28 @@ public sealed class Cgroup {
     public data object V2 : Cgroup()
 
     public fun rustEquals(other: Cgroup): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        V1 -> 0
+        V2 -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -370,8 +392,8 @@ public fun quota(): Int {
                 })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()) }
             val cgroupPath1 = PathBuf.from(OsString.fromVec(cgroupPath))
             quota = when (version) {
-                Cgroup.v1 -> quotaV1(cgroupPath1)
-                Cgroup.v2 -> quotaV2(cgroupPath1)
+                Cgroup.V1 -> quotaV1(cgroupPath1)
+                Cgroup.V2 -> quotaV2(cgroupPath1)
             }
         }
     return quota

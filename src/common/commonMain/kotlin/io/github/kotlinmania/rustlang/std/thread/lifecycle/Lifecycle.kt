@@ -8,11 +8,11 @@ import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
 import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sync.Arc
@@ -46,7 +46,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
                     return@closure1 n - 1
                 }
             }
-            val amt = env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
+            val amt = (varOs("RUST_MIN_STACK")?.let({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }) ?: DEFAULT_MIN_STACK_SIZE)
             MIN.store(amt + 1, Ordering.Relaxed)
             amt
         }())

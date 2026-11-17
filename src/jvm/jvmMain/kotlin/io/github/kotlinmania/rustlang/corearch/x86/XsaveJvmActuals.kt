@@ -59,57 +59,57 @@ private object X86XsaveJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86XsaveXsave(p: Long, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXsave(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX86XsaveXrstor(p: Long, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXrstor(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX86XsaveXsetbv(v: Int, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXsetbv(v: Int, hi: Int, lo: Int)
 
     @JvmStatic
     external fun corearchX86XsaveExternXgetbv(v: Int): Long
 
     @JvmStatic
-    external fun corearchX86XsaveXsaveopt(p: Long, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXsaveopt(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX86XsaveXsavec(p: Long, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXsavec(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX86XsaveXsaves(p: Long, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXsaves(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX86XsaveXrstors(p: Long, hi: Int, lo: Int)
+    external fun corearchX86XsaveExternXrstors(p: Long, hi: Int, lo: Int)
 }
 
-public actual fun xsave(p: MutPtr, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXsave(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsave(p: MutPtr, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXsave(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xrstor(p: ConstPtr, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXrstor(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXrstor(p: ConstPtr, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXrstor(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXsetbv(v.toInt(), hi.toInt(), lo.toInt())
+public actual fun externXsetbv(v: UInt, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXsetbv(v.toInt(), hi.toInt(), lo.toInt())
 }
 
 public actual fun externXgetbv(v: UInt): Long =
     X86XsaveJniBridge.corearchX86XsaveExternXgetbv(v.toInt())
 
-public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXsaveopt(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXsaveopt(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xsavec(p: MutPtr, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXsavec(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsavec(p: MutPtr, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXsavec(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xsaves(p: MutPtr, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXsaves(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsaves(p: MutPtr, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXsaves(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xrstors(p: ConstPtr, hi: UInt, lo: UInt) {
-    X86XsaveJniBridge.corearchX86XsaveXrstors(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXrstors(p: ConstPtr, hi: UInt, lo: UInt) {
+    X86XsaveJniBridge.corearchX86XsaveExternXrstors(p.rawAddress, hi.toInt(), lo.toInt())
 }

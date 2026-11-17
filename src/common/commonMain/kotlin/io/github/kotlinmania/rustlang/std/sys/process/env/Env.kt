@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.process.env
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.env.VarsOs
+import io.github.kotlinmania.rustlang.std.env.varsOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.path.Iter
@@ -55,7 +55,7 @@ public open class CommandEnv(
     public open fun capture(): MutableMap<EnvKey, OsString> {
         val result = mutableMapOf()
         if (!this.clear) {
-            for ((k, v) in env.VarsOs()) {
+            for ((k, v) in varsOs()) {
                 result.put(k.into(), v)
             }
         }

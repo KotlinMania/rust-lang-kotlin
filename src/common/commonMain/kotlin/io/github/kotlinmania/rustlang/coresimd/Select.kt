@@ -95,13 +95,13 @@ public fun <Mask, T> ULong.select(trueValues: Simd<T>, falseValues: Simd<T>, n: 
 }
 
 public fun <Mask, Unsigned, T, U> Mask<U>.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned>, U : MaskElement<U, Mask, Unsigned> {
-    val selected: Simd<T> = Select.Select(this, trueValues.toSimd(), falseValues.toSimd())
+    val selected: Simd<T> = this.select(trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
     return fromSimdUnchecked(selected)
 }
 
 public fun <Mask, Unsigned, T> ULong.select(trueValues: Mask<T>, falseValues: Mask<T>, n: Int): Mask<T> where T : MaskElement<T, Mask, Unsigned> {
-    val selected: Simd<T> = Select.Select(this, trueValues.toSimd(), falseValues.toSimd())
+    val selected: Simd<T> = this.select(trueValues.toSimd(), falseValues.toSimd())
     // Safety: all values come from masks
     return fromSimdUnchecked(selected)
 }

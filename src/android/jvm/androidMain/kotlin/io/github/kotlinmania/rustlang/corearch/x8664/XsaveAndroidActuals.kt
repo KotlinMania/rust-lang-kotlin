@@ -11,44 +11,44 @@ private object X8664XsaveJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX8664XsaveXsave64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveExternXsave64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX8664XsaveXrstor64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveExternXrstor64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX8664XsaveXsaveopt64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveExternXsaveopt64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX8664XsaveXsavec64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveExternXsavec64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX8664XsaveXsaves64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveExternXsaves64(p: Long, hi: Int, lo: Int)
 
     @JvmStatic
-    external fun corearchX8664XsaveXrstors64(p: Long, hi: Int, lo: Int)
+    external fun corearchX8664XsaveExternXrstors64(p: Long, hi: Int, lo: Int)
 }
 
-public actual fun xsave64(p: MutPtr, hi: UInt, lo: UInt) {
-    X8664XsaveJniBridge.corearchX8664XsaveXsave64(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsave64(p: MutPtr, hi: UInt, lo: UInt) {
+    X8664XsaveJniBridge.corearchX8664XsaveExternXsave64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xrstor64(p: ConstPtr, hi: UInt, lo: UInt) {
-    X8664XsaveJniBridge.corearchX8664XsaveXrstor64(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXrstor64(p: ConstPtr, hi: UInt, lo: UInt) {
+    X8664XsaveJniBridge.corearchX8664XsaveExternXrstor64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xsaveopt64(p: MutPtr, hi: UInt, lo: UInt) {
-    X8664XsaveJniBridge.corearchX8664XsaveXsaveopt64(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsaveopt64(p: MutPtr, hi: UInt, lo: UInt) {
+    X8664XsaveJniBridge.corearchX8664XsaveExternXsaveopt64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xsavec64(p: MutPtr, hi: UInt, lo: UInt) {
-    X8664XsaveJniBridge.corearchX8664XsaveXsavec64(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsavec64(p: MutPtr, hi: UInt, lo: UInt) {
+    X8664XsaveJniBridge.corearchX8664XsaveExternXsavec64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xsaves64(p: MutPtr, hi: UInt, lo: UInt) {
-    X8664XsaveJniBridge.corearchX8664XsaveXsaves64(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXsaves64(p: MutPtr, hi: UInt, lo: UInt) {
+    X8664XsaveJniBridge.corearchX8664XsaveExternXsaves64(p.rawAddress, hi.toInt(), lo.toInt())
 }
 
-public actual fun xrstors64(p: ConstPtr, hi: UInt, lo: UInt) {
-    X8664XsaveJniBridge.corearchX8664XsaveXrstors64(p.rawAddress, hi.toInt(), lo.toInt())
+public actual fun externXrstors64(p: ConstPtr, hi: UInt, lo: UInt) {
+    X8664XsaveJniBridge.corearchX8664XsaveExternXrstors64(p.rawAddress, hi.toInt(), lo.toInt())
 }

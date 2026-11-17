@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.iter.adapters.take
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
-import io.github.kotlinmania.rustlang.core.iter.adapters.arraychunks.SpecFold
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.sources.repeat.Repeat
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -19,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.option.Item
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -123,7 +123,7 @@ public open class Take<I>(
         }
     }
 
-    public open fun <B> fold(init: B, f: (B, Item) -> B): B = Take.SpecFold(this, init, f)
+    public open fun <B> fold(init: B, f: (B, Item) -> B): B = Take.specFold(this, init, f)
 
     public open fun forEach(f: (Item) -> Unit) {
         Take.specForEach(this, f)

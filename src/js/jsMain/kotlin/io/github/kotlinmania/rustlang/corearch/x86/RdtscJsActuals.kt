@@ -8,5 +8,5 @@ private val x86RdtscNapiAddon: dynamic =
 public actual fun externRdtsc(): ULong =
     if (x86RdtscNapiAddon != null) (x86RdtscNapiAddon.corearchX86RdtscExternRdtsc() as String).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun rdtscp(): Pair<ULong, UInt> =
+public actual fun externRdtscp(): Pair<ULong, UInt> =
     throw UnsupportedOperationException("Native FFI addon is not available")

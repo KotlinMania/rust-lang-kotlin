@@ -18,17 +18,17 @@ public actual fun externLsxVsrarW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externLsxVsrarD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrarD")
 
-public actual fun lsxVsrariB(a: V16i8, b: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrariB")
+public actual fun externLsxVsrariB(a: V16i8, b: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrariB")
 
-public actual fun lsxVsrariH(a: V8i16, b: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrariH")
+public actual fun externLsxVsrariH(a: V8i16, b: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrariH")
 
-public actual fun lsxVsrariW(a: V4i32, b: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrariW")
+public actual fun externLsxVsrariW(a: V4i32, b: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrariW")
 
-public actual fun lsxVsrariD(a: V2i64, b: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrariD")
+public actual fun externLsxVsrariD(a: V2i64, b: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrariD")
 
 public actual fun externLsxVsrlrB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlrB")
@@ -42,89 +42,89 @@ public actual fun externLsxVsrlrW(a: V4i32, b: V4i32): V4i32 =
 public actual fun externLsxVsrlrD(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlrD")
 
-public actual fun lsxVsrlriB(a: V16i8, b: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlriB")
+public actual fun externLsxVsrlriB(a: V16i8, b: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlriB")
 
-public actual fun lsxVsrlriH(a: V8i16, b: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlriH")
+public actual fun externLsxVsrlriH(a: V8i16, b: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlriH")
 
-public actual fun lsxVsrlriW(a: V4i32, b: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlriW")
+public actual fun externLsxVsrlriW(a: V4i32, b: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlriW")
 
-public actual fun lsxVsrlriD(a: V2i64, b: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlriD")
+public actual fun externLsxVsrlriD(a: V2i64, b: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlriD")
 
-public actual fun lsxVbitclriB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitclriB")
+public actual fun externLsxVbitclriB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitclriB")
 
-public actual fun lsxVbitclriH(a: V8u16, b: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitclriH")
+public actual fun externLsxVbitclriH(a: V8u16, b: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitclriH")
 
-public actual fun lsxVbitclriW(a: V4u32, b: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitclriW")
+public actual fun externLsxVbitclriW(a: V4u32, b: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitclriW")
 
-public actual fun lsxVbitclriD(a: V2u64, b: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitclriD")
+public actual fun externLsxVbitclriD(a: V2u64, b: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitclriD")
 
-public actual fun lsxVbitsetiB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitsetiB")
+public actual fun externLsxVbitsetiB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitsetiB")
 
-public actual fun lsxVbitsetiH(a: V8u16, b: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitsetiH")
+public actual fun externLsxVbitsetiH(a: V8u16, b: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitsetiH")
 
-public actual fun lsxVbitsetiW(a: V4u32, b: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitsetiW")
+public actual fun externLsxVbitsetiW(a: V4u32, b: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitsetiW")
 
-public actual fun lsxVbitsetiD(a: V2u64, b: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitsetiD")
+public actual fun externLsxVbitsetiD(a: V2u64, b: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitsetiD")
 
-public actual fun lsxVbitreviB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitreviB")
+public actual fun externLsxVbitreviB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitreviB")
 
-public actual fun lsxVbitreviH(a: V8u16, b: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitreviH")
+public actual fun externLsxVbitreviH(a: V8u16, b: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitreviH")
 
-public actual fun lsxVbitreviW(a: V4u32, b: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitreviW")
+public actual fun externLsxVbitreviW(a: V4u32, b: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitreviW")
 
-public actual fun lsxVbitreviD(a: V2u64, b: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitreviD")
+public actual fun externLsxVbitreviD(a: V2u64, b: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitreviD")
 
-public actual fun lsxVsubiBu(a: V16i8, b: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsubiBu")
+public actual fun externLsxVsubiBu(a: V16i8, b: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsubiBu")
 
-public actual fun lsxVsubiHu(a: V8i16, b: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsubiHu")
+public actual fun externLsxVsubiHu(a: V8i16, b: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsubiHu")
 
-public actual fun lsxVsubiWu(a: V4i32, b: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsubiWu")
+public actual fun externLsxVsubiWu(a: V4i32, b: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsubiWu")
 
-public actual fun lsxVsubiDu(a: V2i64, b: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsubiDu")
+public actual fun externLsxVsubiDu(a: V2i64, b: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsubiDu")
 
-public actual fun lsxVsatB(a: V16i8, b: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatB")
+public actual fun externLsxVsatB(a: V16i8, b: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatB")
 
-public actual fun lsxVsatH(a: V8i16, b: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatH")
+public actual fun externLsxVsatH(a: V8i16, b: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatH")
 
-public actual fun lsxVsatW(a: V4i32, b: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatW")
+public actual fun externLsxVsatW(a: V4i32, b: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatW")
 
-public actual fun lsxVsatD(a: V2i64, b: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatD")
+public actual fun externLsxVsatD(a: V2i64, b: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatD")
 
-public actual fun lsxVsatBu(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatBu")
+public actual fun externLsxVsatBu(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatBu")
 
-public actual fun lsxVsatHu(a: V8u16, b: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatHu")
+public actual fun externLsxVsatHu(a: V8u16, b: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatHu")
 
-public actual fun lsxVsatWu(a: V4u32, b: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatWu")
+public actual fun externLsxVsatWu(a: V4u32, b: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatWu")
 
-public actual fun lsxVsatDu(a: V2u64, b: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsatDu")
+public actual fun externLsxVsatDu(a: V2u64, b: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsatDu")
 
 public actual fun externLsxVdivB(a: V16i8, b: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVdivB")
@@ -231,23 +231,23 @@ public actual fun externLsxVshufW(a: V4i32, b: V4i32, c: V4i32): V4i32 =
 public actual fun externLsxVshufD(a: V2i64, b: V2i64, c: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVshufD")
 
-public actual fun lsxVandiB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVandiB")
+public actual fun externLsxVandiB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVandiB")
 
-public actual fun lsxVoriB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVoriB")
+public actual fun externLsxVoriB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVoriB")
 
-public actual fun lsxVnoriB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVnoriB")
+public actual fun externLsxVnoriB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVnoriB")
 
-public actual fun lsxVxoriB(a: V16u8, b: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVxoriB")
+public actual fun externLsxVxoriB(a: V16u8, b: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVxoriB")
 
 public actual fun externLsxVbitselV(a: V16u8, b: V16u8, c: V16u8): V16u8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitselV")
 
-public actual fun lsxVbitseliB(a: V16u8, b: V16u8, c: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVbitseliB")
+public actual fun externLsxVbitseliB(a: V16u8, b: V16u8, c: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVbitseliB")
 
 public actual fun externLsxVcloB(a: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVcloB")
@@ -369,23 +369,23 @@ public actual fun externLsxVffintSWu(a: V4u32): V4f32 =
 public actual fun externLsxVffintDLu(a: V2u64): V2f64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVffintDLu")
 
-public actual fun lsxVsllwilHB(a: V16i8, b: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsllwilHB")
+public actual fun externLsxVsllwilHB(a: V16i8, b: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsllwilHB")
 
-public actual fun lsxVsllwilWH(a: V8i16, b: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsllwilWH")
+public actual fun externLsxVsllwilWH(a: V8i16, b: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsllwilWH")
 
-public actual fun lsxVsllwilDW(a: V4i32, b: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsllwilDW")
+public actual fun externLsxVsllwilDW(a: V4i32, b: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsllwilDW")
 
-public actual fun lsxVsllwilHuBu(a: V16u8, b: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsllwilHuBu")
+public actual fun externLsxVsllwilHuBu(a: V16u8, b: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsllwilHuBu")
 
-public actual fun lsxVsllwilWuHu(a: V8u16, b: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsllwilWuHu")
+public actual fun externLsxVsllwilWuHu(a: V8u16, b: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsllwilWuHu")
 
-public actual fun lsxVsllwilDuWu(a: V4u32, b: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsllwilDuWu")
+public actual fun externLsxVsllwilDuWu(a: V4u32, b: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsllwilDuWu")
 
 public actual fun externLsxVsranBH(a: V8i16, b: V8i16): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsranBH")
@@ -477,11 +477,11 @@ public actual fun externLsxVssrlrnHuW(a: V4u32, b: V4u32): V8u16 =
 public actual fun externLsxVssrlrnWuD(a: V2u64, b: V2u64): V4u32 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrnWuD")
 
-public actual fun lsxVfrstpiB(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVfrstpiB")
+public actual fun externLsxVfrstpiB(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVfrstpiB")
 
-public actual fun lsxVfrstpiH(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVfrstpiH")
+public actual fun externLsxVfrstpiH(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVfrstpiH")
 
 public actual fun externLsxVfrstpB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVfrstpB")
@@ -489,17 +489,17 @@ public actual fun externLsxVfrstpB(a: V16i8, b: V16i8, c: V16i8): V16i8 =
 public actual fun externLsxVfrstpH(a: V8i16, b: V8i16, c: V8i16): V8i16 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVfrstpH")
 
-public actual fun lsxVextrinsB(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVextrinsB")
+public actual fun externLsxVextrinsB(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVextrinsB")
 
-public actual fun lsxVextrinsH(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVextrinsH")
+public actual fun externLsxVextrinsH(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVextrinsH")
 
-public actual fun lsxVextrinsW(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVextrinsW")
+public actual fun externLsxVextrinsW(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVextrinsW")
 
-public actual fun lsxVextrinsD(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVextrinsD")
+public actual fun externLsxVextrinsD(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVextrinsD")
 
 public actual fun externLsxVmskltzB(a: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVmskltzB")
@@ -603,20 +603,20 @@ public actual fun externLsxVfrintrneS(a: V4f32): V4f32 =
 public actual fun externLsxVfrintrneD(a: V2f64): V2f64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVfrintrneD")
 
-public actual fun lsxVstelmB(a: V16i8, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVstelmB")
+public actual fun externLsxVstelmB(a: V16i8, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVstelmB")
 }
 
-public actual fun lsxVstelmH(a: V8i16, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVstelmH")
+public actual fun externLsxVstelmH(a: V8i16, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVstelmH")
 }
 
-public actual fun lsxVstelmW(a: V4i32, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVstelmW")
+public actual fun externLsxVstelmW(a: V4i32, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVstelmW")
 }
 
-public actual fun lsxVstelmD(a: V2i64, b: MutPtr, c: Int, d: UInt) {
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVstelmD")
+public actual fun externLsxVstelmD(a: V2i64, b: MutPtr, c: Int, d: UInt) {
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVstelmD")
 }
 
 public actual fun externLsxVaddwevDW(a: V4i32, b: V4i32): V2i64 =
@@ -901,17 +901,17 @@ public actual fun externLsxVaddQ(a: V2i64, b: V2i64): V2i64 =
 public actual fun externLsxVsubQ(a: V2i64, b: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsubQ")
 
-public actual fun lsxVldreplB(a: ConstPtr, b: Int): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVldreplB")
+public actual fun externLsxVldreplB(a: ConstPtr, b: Int): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVldreplB")
 
-public actual fun lsxVldreplH(a: ConstPtr, b: Int): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVldreplH")
+public actual fun externLsxVldreplH(a: ConstPtr, b: Int): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVldreplH")
 
-public actual fun lsxVldreplW(a: ConstPtr, b: Int): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVldreplW")
+public actual fun externLsxVldreplW(a: ConstPtr, b: Int): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVldreplW")
 
-public actual fun lsxVldreplD(a: ConstPtr, b: Int): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVldreplD")
+public actual fun externLsxVldreplD(a: ConstPtr, b: Int): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVldreplD")
 
 public actual fun externLsxVmskgezB(a: V16i8): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVmskgezB")
@@ -946,152 +946,152 @@ public actual fun externLsxVexthQuDu(a: V2u64): V2u64 =
 public actual fun externLsxVextlQD(a: V2i64): V2i64 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVextlQD")
 
-public actual fun lsxVsrlniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlniBH")
+public actual fun externLsxVsrlniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlniBH")
 
-public actual fun lsxVsrlniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlniHW")
+public actual fun externLsxVsrlniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlniHW")
 
-public actual fun lsxVsrlniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlniWD")
+public actual fun externLsxVsrlniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlniWD")
 
-public actual fun lsxVsrlniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlniDQ")
+public actual fun externLsxVsrlniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlniDQ")
 
-public actual fun lsxVsrlrniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlrniBH")
+public actual fun externLsxVsrlrniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlrniBH")
 
-public actual fun lsxVsrlrniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlrniHW")
+public actual fun externLsxVsrlrniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlrniHW")
 
-public actual fun lsxVsrlrniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlrniWD")
+public actual fun externLsxVsrlrniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlrniWD")
 
-public actual fun lsxVsrlrniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrlrniDQ")
+public actual fun externLsxVsrlrniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrlrniDQ")
 
-public actual fun lsxVssrlniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniBH")
+public actual fun externLsxVssrlniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniBH")
 
-public actual fun lsxVssrlniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniHW")
+public actual fun externLsxVssrlniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniHW")
 
-public actual fun lsxVssrlniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniWD")
+public actual fun externLsxVssrlniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniWD")
 
-public actual fun lsxVssrlniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniDQ")
+public actual fun externLsxVssrlniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniDQ")
 
-public actual fun lsxVssrlniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniBuH")
+public actual fun externLsxVssrlniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniBuH")
 
-public actual fun lsxVssrlniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniHuW")
+public actual fun externLsxVssrlniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniHuW")
 
-public actual fun lsxVssrlniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniWuD")
+public actual fun externLsxVssrlniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniWuD")
 
-public actual fun lsxVssrlniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlniDuQ")
+public actual fun externLsxVssrlniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlniDuQ")
 
-public actual fun lsxVssrlrniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniBH")
+public actual fun externLsxVssrlrniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniBH")
 
-public actual fun lsxVssrlrniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniHW")
+public actual fun externLsxVssrlrniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniHW")
 
-public actual fun lsxVssrlrniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniWD")
+public actual fun externLsxVssrlrniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniWD")
 
-public actual fun lsxVssrlrniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniDQ")
+public actual fun externLsxVssrlrniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniDQ")
 
-public actual fun lsxVssrlrniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniBuH")
+public actual fun externLsxVssrlrniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniBuH")
 
-public actual fun lsxVssrlrniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniHuW")
+public actual fun externLsxVssrlrniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniHuW")
 
-public actual fun lsxVssrlrniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniWuD")
+public actual fun externLsxVssrlrniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniWuD")
 
-public actual fun lsxVssrlrniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrlrniDuQ")
+public actual fun externLsxVssrlrniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrniDuQ")
 
-public actual fun lsxVsraniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsraniBH")
+public actual fun externLsxVsraniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsraniBH")
 
-public actual fun lsxVsraniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsraniHW")
+public actual fun externLsxVsraniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsraniHW")
 
-public actual fun lsxVsraniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsraniWD")
+public actual fun externLsxVsraniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsraniWD")
 
-public actual fun lsxVsraniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsraniDQ")
+public actual fun externLsxVsraniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsraniDQ")
 
-public actual fun lsxVsrarniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrarniBH")
+public actual fun externLsxVsrarniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrarniBH")
 
-public actual fun lsxVsrarniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrarniHW")
+public actual fun externLsxVsrarniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrarniHW")
 
-public actual fun lsxVsrarniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrarniWD")
+public actual fun externLsxVsrarniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrarniWD")
 
-public actual fun lsxVsrarniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVsrarniDQ")
+public actual fun externLsxVsrarniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVsrarniDQ")
 
-public actual fun lsxVssraniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniBH")
+public actual fun externLsxVssraniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniBH")
 
-public actual fun lsxVssraniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniHW")
+public actual fun externLsxVssraniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniHW")
 
-public actual fun lsxVssraniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniWD")
+public actual fun externLsxVssraniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniWD")
 
-public actual fun lsxVssraniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniDQ")
+public actual fun externLsxVssraniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniDQ")
 
-public actual fun lsxVssraniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniBuH")
+public actual fun externLsxVssraniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniBuH")
 
-public actual fun lsxVssraniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniHuW")
+public actual fun externLsxVssraniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniHuW")
 
-public actual fun lsxVssraniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniWuD")
+public actual fun externLsxVssraniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniWuD")
 
-public actual fun lsxVssraniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssraniDuQ")
+public actual fun externLsxVssraniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssraniDuQ")
 
-public actual fun lsxVssrarniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniBH")
+public actual fun externLsxVssrarniBH(a: V16i8, b: V16i8, c: UInt): V16i8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniBH")
 
-public actual fun lsxVssrarniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniHW")
+public actual fun externLsxVssrarniHW(a: V8i16, b: V8i16, c: UInt): V8i16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniHW")
 
-public actual fun lsxVssrarniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniWD")
+public actual fun externLsxVssrarniWD(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniWD")
 
-public actual fun lsxVssrarniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniDQ")
+public actual fun externLsxVssrarniDQ(a: V2i64, b: V2i64, c: UInt): V2i64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniDQ")
 
-public actual fun lsxVssrarniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniBuH")
+public actual fun externLsxVssrarniBuH(a: V16u8, b: V16i8, c: UInt): V16u8 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniBuH")
 
-public actual fun lsxVssrarniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniHuW")
+public actual fun externLsxVssrarniHuW(a: V8u16, b: V8i16, c: UInt): V8u16 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniHuW")
 
-public actual fun lsxVssrarniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniWuD")
+public actual fun externLsxVssrarniWuD(a: V4u32, b: V4i32, c: UInt): V4u32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniWuD")
 
-public actual fun lsxVssrarniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVssrarniDuQ")
+public actual fun externLsxVssrarniDuQ(a: V2u64, b: V2i64, c: UInt): V2u64 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrarniDuQ")
 
-public actual fun lsxVpermiW(a: V4i32, b: V4i32, c: UInt): V4i32 =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedLsxVpermiW")
+public actual fun externLsxVpermiW(a: V4i32, b: V4i32, c: UInt): V4i32 =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVpermiW")
 
 public actual fun externLsxVssrlrnBH(a: V8i16, b: V8i16): V16i8 =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchLoongarch64LsxGeneratedExternLsxVssrlrnBH")

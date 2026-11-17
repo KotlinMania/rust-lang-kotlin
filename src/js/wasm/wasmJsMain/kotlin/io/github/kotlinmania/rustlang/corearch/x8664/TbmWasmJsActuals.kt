@@ -7,8 +7,8 @@ private external fun initX8664TbmNapiAddon(): Boolean
 
 private val x8664TbmNapiAvailable: Boolean = initX8664TbmNapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchX8664TbmBextriU64(p0, p1)")
-private external fun wasmCorearchX8664TbmBextriU64(p0: String, p1: String): String
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchX8664TbmExternBextriU64(p0, p1)")
+private external fun wasmCorearchX8664TbmExternBextriU64(p0: String, p1: String): String
 
-public actual fun bextriU64(a: ULong, control: ULong): ULong =
-    if (x8664TbmNapiAvailable) wasmCorearchX8664TbmBextriU64(a.toString(), control.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externBextriU64(a: ULong, control: ULong): ULong =
+    if (x8664TbmNapiAvailable) wasmCorearchX8664TbmExternBextriU64(a.toString(), control.toString()).toULong() else throw UnsupportedOperationException("Native FFI addon is not available")

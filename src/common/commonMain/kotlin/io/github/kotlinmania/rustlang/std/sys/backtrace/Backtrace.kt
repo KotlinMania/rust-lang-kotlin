@@ -8,6 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
+import io.github.kotlinmania.rustlang.std.env.currentDir
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
@@ -85,7 +86,7 @@ public fun printFmt(fmt: StringBuilder, printFmt: PrintFmt): Result<Unit, io.git
     // this allows Miri to display backtraces in isolation mode
     val cwd =
         if (!false) {
-            env.currentDir().ok()
+            currentDir().ok()
         } else {
             null
         }

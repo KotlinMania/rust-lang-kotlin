@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-void corearchAarch64PrefetchPrefetch(void* p, int32_t rw, int32_t loc, int32_t ty);
+void corearchAarch64PrefetchExternPrefetch(void* p, int32_t rw, int32_t loc, int32_t ty);
 
 #ifdef __cplusplus
 }

@@ -14,16 +14,15 @@ import io.github.kotlinmania.rustlang.libc.wasi.EBADF
 import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.io.DEFAULT_BUF_SIZE
 
 public open class Stdin : Read {
-    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = FileDesc.FromRawFd(STDIN_FILENO).read(buf)
+    public open fun read(buf: MutableList<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).read(buf)
 
-    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = FileDesc.FromRawFd(STDIN_FILENO).readBuf(buf)
+    public open fun readBuf(buf: BorrowedCursor<UByte>): Result<Unit, Error> = FileDesc.fromRawFd(STDIN_FILENO).readBuf(buf)
 
-    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = FileDesc.FromRawFd(STDIN_FILENO).readVectored(bufs)
+    public open fun readVectored(bufs: MutableList<IoSliceMut>): Result<Int, Error> = FileDesc.fromRawFd(STDIN_FILENO).readVectored(bufs)
 
     public open fun isReadVectored(): Boolean = true
 
@@ -47,9 +46,9 @@ public open class Stdin : Read {
 }
 
 public open class Stdout : Write {
-    public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.FromRawFd(STDOUT_FILENO).write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.FromRawFd(STDOUT_FILENO).writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDOUT_FILENO).writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = true
 
@@ -75,9 +74,9 @@ public open class Stdout : Write {
 }
 
 public open class Stderr : Write {
-    public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.FromRawFd(STDERR_FILENO).write(buf)
+    public open fun write(buf: List<UByte>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).write(buf)
 
-    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.FromRawFd(STDERR_FILENO).writeVectored(bufs)
+    public open fun writeVectored(bufs: List<IoSlice>): Result<Int, Error> = FileDesc.fromRawFd(STDERR_FILENO).writeVectored(bufs)
 
     public open fun isWriteVectored(): Boolean = true
 

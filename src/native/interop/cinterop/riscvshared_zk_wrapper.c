@@ -15,7 +15,7 @@
 #endif
 #endif
 
-int32_t corearchRiscvsharedZkSm4ed(int32_t rs1, int32_t rs2, int32_t bs) {
+int32_t corearchRiscvsharedZkExternSm4ed(int32_t rs1, int32_t rs2, int32_t bs) {
     typedef int32_t (*km_fn_t)(int32_t, int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -43,7 +43,7 @@ int32_t corearchRiscvsharedZkSm4ed(int32_t rs1, int32_t rs2, int32_t bs) {
     return -1;
 }
 
-int32_t corearchRiscvsharedZkSm4ks(int32_t rs1, int32_t rs2, int32_t bs) {
+int32_t corearchRiscvsharedZkExternSm4ks(int32_t rs1, int32_t rs2, int32_t bs) {
     typedef int32_t (*km_fn_t)(int32_t, int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

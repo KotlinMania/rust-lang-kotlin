@@ -1776,7 +1776,7 @@ public fun mmMovemaskPd(a: M128d): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I64x2 = run { val simdArg0 = transmuteWithLayouts<M128d, I64x2>(a, UnresolvedTypeLayout<M128d>(), UnresolvedTypeLayout<I64x2>()); val simdArg1 = Simd<Long>(List(2) { 0L }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x2>()).alignBytes)); res } }
+        val mask: I64x2 = run { val simdArg0 = transmute(a); val simdArg1 = Simd<Long>(List(2) { 0L }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x2>()).alignBytes)); val res = (UnresolvedTypeLayout<I64x2>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I64x2>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I64x2>()).alignBytes)); res } }
         (run { val simdArg0 = mask; 0u }).toInt()
     }
 }

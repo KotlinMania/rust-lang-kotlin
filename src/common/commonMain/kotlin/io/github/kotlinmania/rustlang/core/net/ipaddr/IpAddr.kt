@@ -7,13 +7,13 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.convert.From
-import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows.Buffer
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.component6
+import io.github.kotlinmania.rustlang.core.mem.component7
+import io.github.kotlinmania.rustlang.core.mem.component8
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
 import io.github.kotlinmania.rustlang.core.ops.bit.BitAnd
@@ -421,8 +421,8 @@ public sealed class IpAddr {
          */
         public fun unspecifiedFrom(thisRef: IpAddr): IpAddr =
             when (thisRef) {
-                is V4 -> IpAddr.v4(Ipv4Addr.UNSPECIFIED)
-                is V6 -> IpAddr.v6(Ipv6Addr.UNSPECIFIED)
+                is V4 -> IpAddr.V4(Ipv4Addr.UNSPECIFIED)
+                is V6 -> IpAddr.V6(Ipv6Addr.UNSPECIFIED)
             }
 
         /**
@@ -438,7 +438,7 @@ public sealed class IpAddr {
          * check(IpAddr.v4(addr) == IpAddr.from(addr))
          * ```
          */
-        public fun from(ipv4: Ipv4Addr): IpAddr = IpAddr.v4(ipv4)
+        public fun from(ipv4: Ipv4Addr): IpAddr = IpAddr.V4(ipv4)
 
         /**
          * Copies this address to a new `IpAddr.V6`.
@@ -453,7 +453,7 @@ public sealed class IpAddr {
          * check(IpAddr.v6(addr) == IpAddr.from(addr))
          * ```
          */
-        public fun from(ipv6: Ipv6Addr): IpAddr = IpAddr.v6(ipv6)
+        public fun from(ipv6: Ipv6Addr): IpAddr = IpAddr.V6(ipv6)
 
         /**
          * Creates an `IpAddr.V4` from a four element byte array.
@@ -472,7 +472,7 @@ public sealed class IpAddr {
          * }
          * ```
          */
-        public fun from(octets: UByteArray): IpAddr = IpAddr.v4(Ipv4Addr.From(octets))
+        public fun from(octets: UByteArray): IpAddr = IpAddr.V4(Ipv4Addr.from(octets))
 
         /**
          * Creates an `IpAddr.V6` from a sixteen element byte array.
@@ -491,7 +491,7 @@ public sealed class IpAddr {
          * }
          * ```
          */
-        public fun fromUByteArray16(octets: UByteArray): IpAddr = IpAddr.v6(Ipv6Addr.From(octets))
+        public fun fromUByteArray16(octets: UByteArray): IpAddr = IpAddr.V6(Ipv6Addr.from(octets))
 
         /**
          * Creates an `IpAddr.V6` from an eight element 16-bit array.
@@ -510,7 +510,7 @@ public sealed class IpAddr {
          * }
          * ```
          */
-        public fun from(segments: UShortArray): IpAddr = IpAddr.v6(Ipv6Addr.From(segments))
+        public fun from(segments: UShortArray): IpAddr = IpAddr.V6(Ipv6Addr.from(segments))
     }
 }
 
@@ -1005,7 +1005,7 @@ public open class Ipv4Addr(
             fmt.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}")
         } else {
             val LONGEST_IPV4_ADDR: String = "255.255.255.255"
-            val buf = DisplayBuffer.Buffer(LONGEST_IPV4_ADDR.len())
+            val buf = DisplayBuffer.buffer(LONGEST_IPV4_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}").unwrap()
             run { fmt.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
@@ -1894,10 +1894,10 @@ public open class Ipv6Addr(
             null -> {}
             else -> {
                 val mapped = matchVal
-                return IpAddr.v4(mapped)
+                return IpAddr.V4(mapped)
             }
         }
-        return IpAddr.v6(this)
+        return IpAddr.V6(this)
     }
 
     /**
@@ -1965,8 +1965,8 @@ public open class Ipv6Addr(
                     }
                     // Find the inner 0 span
                     val zeroes = run {
-                        var longest = Span.Default()
-                        var current = Span.Default()
+                        var longest = Span.default()
+                        var current = Span.default()
                         for ((i, segment) in segments.mapIndexed { index, item -> Pair(index, item) }) {
                             if (segment == 0) {
                                 if (current.len == 0) {
@@ -1977,7 +1977,7 @@ public open class Ipv6Addr(
                                     longest = current
                                 }
                             } else {
-                                current = Span.Default()
+                                current = Span.default()
                             }
                         }
                         longest
@@ -1997,7 +1997,7 @@ public open class Ipv6Addr(
             }
         } else {
             val LONGEST_IPV6_ADDR: String = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
-            val buf = DisplayBuffer.Buffer(LONGEST_IPV6_ADDR.len())
+            val buf = DisplayBuffer.buffer(LONGEST_IPV6_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this}").unwrap()
             run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
@@ -2381,6 +2381,22 @@ public sealed class Ipv6MulticastScope(
     public data object ReservedF : Ipv6MulticastScope(0xF)
 
     public fun rustEquals(other: Ipv6MulticastScope): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }
 
 /**

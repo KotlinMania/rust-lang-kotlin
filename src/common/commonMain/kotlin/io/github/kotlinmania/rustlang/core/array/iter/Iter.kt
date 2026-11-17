@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.array.iter
 
 import io.github.kotlinmania.rustlang.core.array.iter.iterinner.PolymorphicIter
-import io.github.kotlinmania.rustlang.core.iter.sources.empty.Empty
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
@@ -11,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.needsDrop
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.ops.drop.Drop
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.read
@@ -95,7 +93,7 @@ public open class IntoIter<T>(
     public open fun drop() {
         if (needsDrop<T>()) {
             // SAFETY: This is the only place where we drop this field.
-            ManuallyDrop.Drop(this.inner)
+            ManuallyDrop.drop(this.inner)
         }
     }
 
@@ -114,7 +112,7 @@ public open class IntoIter<T>(
         /**
          * Creates a new iterator over the given `array`.
          */
-        public fun <T> new(array: List<T>, n: Int): IntoIter<T> = IntoIterator.IntoIter(array)
+        public fun <T> new(array: List<T>, n: Int): IntoIter<T> = array.intoIter()
 
         /**
          * Creates an iterator over the elements in a partially-initialized buffer.
@@ -238,11 +236,11 @@ public open class IntoIter<T>(
          * ```
          */
         public fun <T> empty(n: Int): IntoIter<T> {
-            val inner = PolymorphicIter.Empty()
+            val inner = PolymorphicIter.empty(n)
             return IntoIter(inner = inner)
         }
 
-        public fun <T> default(n: Int): IntoIter<T> = IntoIter.Empty()
+        public fun <T> default(n: Int): IntoIter<T> = IntoIter.empty(n)
     }
 }
 

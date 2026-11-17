@@ -370,193 +370,302 @@ public sealed class Feature {
      */
     public data object P : Feature()
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Rv32i -> 0
+        Rv32e -> 1
+        Rv64i -> 2
+        Rv128i -> 3
+        UnalignedScalarMem -> 4
+        UnalignedVectorMem -> 5
+        Zicsr -> 6
+        Zicntr -> 7
+        Zihpm -> 8
+        Zifencei -> 9
+        Zihintntl -> 10
+        Zihintpause -> 11
+        Zimop -> 12
+        Zicbom -> 13
+        Zicboz -> 14
+        Zicond -> 15
+        M -> 16
+        Zmmul -> 17
+        A -> 18
+        Zalrsc -> 19
+        Zaamo -> 20
+        Zawrs -> 21
+        Zabha -> 22
+        Zacas -> 23
+        Zam -> 24
+        Ztso -> 25
+        F -> 26
+        D -> 27
+        Q -> 28
+        Zfh -> 29
+        Zfhmin -> 30
+        Zfa -> 31
+        Zfbfmin -> 32
+        Zfinx -> 33
+        Zdinx -> 34
+        Zhinx -> 35
+        Zhinxmin -> 36
+        C -> 37
+        Zca -> 38
+        Zcf -> 39
+        Zcd -> 40
+        Zcb -> 41
+        Zcmop -> 42
+        B -> 43
+        Zba -> 44
+        Zbb -> 45
+        Zbc -> 46
+        Zbs -> 47
+        Zbkb -> 48
+        Zbkc -> 49
+        Zbkx -> 50
+        Zknd -> 51
+        Zkne -> 52
+        Zknh -> 53
+        Zksed -> 54
+        Zksh -> 55
+        Zkr -> 56
+        Zkn -> 57
+        Zks -> 58
+        Zk -> 59
+        Zkt -> 60
+        V -> 61
+        Zve32x -> 62
+        Zve32f -> 63
+        Zve64x -> 64
+        Zve64f -> 65
+        Zve64d -> 66
+        Zvfh -> 67
+        Zvfhmin -> 68
+        Zvfbfmin -> 69
+        Zvfbfwma -> 70
+        Zvbb -> 71
+        Zvbc -> 72
+        Zvkb -> 73
+        Zvkg -> 74
+        Zvkned -> 75
+        Zvknha -> 76
+        Zvknhb -> 77
+        Zvksed -> 78
+        Zvksh -> 79
+        Zvkn -> 80
+        Zvknc -> 81
+        Zvkng -> 82
+        Zvks -> 83
+        Zvksc -> 84
+        Zvksg -> 85
+        Zvkt -> 86
+        J -> 87
+        P -> 88
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public open fun toStr(): String =
         when (this) {
-            Feature.rv32i -> "rv32i"
-            Feature.rv32e -> "rv32e"
-            Feature.rv64i -> "rv64i"
-            Feature.rv128i -> "rv128i"
-            Feature.unalignedScalarMem -> "unaligned-scalar-mem"
-            Feature.unalignedVectorMem -> "unaligned-vector-mem"
-            Feature.zicsr -> "zicsr"
-            Feature.zicntr -> "zicntr"
-            Feature.zihpm -> "zihpm"
-            Feature.zifencei -> "zifencei"
-            Feature.zihintntl -> "zihintntl"
-            Feature.zihintpause -> "zihintpause"
-            Feature.zimop -> "zimop"
-            Feature.zicbom -> "zicbom"
-            Feature.zicboz -> "zicboz"
-            Feature.zicond -> "zicond"
-            Feature.m -> "m"
-            Feature.zmmul -> "zmmul"
-            Feature.a -> "a"
-            Feature.zalrsc -> "zalrsc"
-            Feature.zaamo -> "zaamo"
-            Feature.zawrs -> "zawrs"
-            Feature.zabha -> "zabha"
-            Feature.zacas -> "zacas"
-            Feature.zam -> "zam"
-            Feature.ztso -> "ztso"
-            Feature.f -> "f"
-            Feature.d -> "d"
-            Feature.q -> "q"
-            Feature.zfh -> "zfh"
-            Feature.zfhmin -> "zfhmin"
-            Feature.zfa -> "zfa"
-            Feature.zfbfmin -> "zfbfmin"
-            Feature.zfinx -> "zfinx"
-            Feature.zdinx -> "zdinx"
-            Feature.zhinx -> "zhinx"
-            Feature.zhinxmin -> "zhinxmin"
-            Feature.c -> "c"
-            Feature.zca -> "zca"
-            Feature.zcf -> "zcf"
-            Feature.zcd -> "zcd"
-            Feature.zcb -> "zcb"
-            Feature.zcmop -> "zcmop"
-            Feature.b -> "b"
-            Feature.zba -> "zba"
-            Feature.zbb -> "zbb"
-            Feature.zbc -> "zbc"
-            Feature.zbs -> "zbs"
-            Feature.zbkb -> "zbkb"
-            Feature.zbkc -> "zbkc"
-            Feature.zbkx -> "zbkx"
-            Feature.zknd -> "zknd"
-            Feature.zkne -> "zkne"
-            Feature.zknh -> "zknh"
-            Feature.zksed -> "zksed"
-            Feature.zksh -> "zksh"
-            Feature.zkr -> "zkr"
-            Feature.zkn -> "zkn"
-            Feature.zks -> "zks"
-            Feature.zk -> "zk"
-            Feature.zkt -> "zkt"
-            Feature.v -> "v"
-            Feature.zve32x -> "zve32x"
-            Feature.zve32f -> "zve32f"
-            Feature.zve64x -> "zve64x"
-            Feature.zve64f -> "zve64f"
-            Feature.zve64d -> "zve64d"
-            Feature.zvfh -> "zvfh"
-            Feature.zvfhmin -> "zvfhmin"
-            Feature.zvfbfmin -> "zvfbfmin"
-            Feature.zvfbfwma -> "zvfbfwma"
-            Feature.zvbb -> "zvbb"
-            Feature.zvbc -> "zvbc"
-            Feature.zvkb -> "zvkb"
-            Feature.zvkg -> "zvkg"
-            Feature.zvkned -> "zvkned"
-            Feature.zvknha -> "zvknha"
-            Feature.zvknhb -> "zvknhb"
-            Feature.zvksed -> "zvksed"
-            Feature.zvksh -> "zvksh"
-            Feature.zvkn -> "zvkn"
-            Feature.zvknc -> "zvknc"
-            Feature.zvkng -> "zvkng"
-            Feature.zvks -> "zvks"
-            Feature.zvksc -> "zvksc"
-            Feature.zvksg -> "zvksg"
-            Feature.zvkt -> "zvkt"
-            Feature.j -> "j"
-            Feature.p -> "p"
+            Feature.Rv32i -> "rv32i"
+            Feature.Rv32e -> "rv32e"
+            Feature.Rv64i -> "rv64i"
+            Feature.Rv128i -> "rv128i"
+            Feature.UnalignedScalarMem -> "unaligned-scalar-mem"
+            Feature.UnalignedVectorMem -> "unaligned-vector-mem"
+            Feature.Zicsr -> "zicsr"
+            Feature.Zicntr -> "zicntr"
+            Feature.Zihpm -> "zihpm"
+            Feature.Zifencei -> "zifencei"
+            Feature.Zihintntl -> "zihintntl"
+            Feature.Zihintpause -> "zihintpause"
+            Feature.Zimop -> "zimop"
+            Feature.Zicbom -> "zicbom"
+            Feature.Zicboz -> "zicboz"
+            Feature.Zicond -> "zicond"
+            Feature.M -> "m"
+            Feature.Zmmul -> "zmmul"
+            Feature.A -> "a"
+            Feature.Zalrsc -> "zalrsc"
+            Feature.Zaamo -> "zaamo"
+            Feature.Zawrs -> "zawrs"
+            Feature.Zabha -> "zabha"
+            Feature.Zacas -> "zacas"
+            Feature.Zam -> "zam"
+            Feature.Ztso -> "ztso"
+            Feature.F -> "f"
+            Feature.D -> "d"
+            Feature.Q -> "q"
+            Feature.Zfh -> "zfh"
+            Feature.Zfhmin -> "zfhmin"
+            Feature.Zfa -> "zfa"
+            Feature.Zfbfmin -> "zfbfmin"
+            Feature.Zfinx -> "zfinx"
+            Feature.Zdinx -> "zdinx"
+            Feature.Zhinx -> "zhinx"
+            Feature.Zhinxmin -> "zhinxmin"
+            Feature.C -> "c"
+            Feature.Zca -> "zca"
+            Feature.Zcf -> "zcf"
+            Feature.Zcd -> "zcd"
+            Feature.Zcb -> "zcb"
+            Feature.Zcmop -> "zcmop"
+            Feature.B -> "b"
+            Feature.Zba -> "zba"
+            Feature.Zbb -> "zbb"
+            Feature.Zbc -> "zbc"
+            Feature.Zbs -> "zbs"
+            Feature.Zbkb -> "zbkb"
+            Feature.Zbkc -> "zbkc"
+            Feature.Zbkx -> "zbkx"
+            Feature.Zknd -> "zknd"
+            Feature.Zkne -> "zkne"
+            Feature.Zknh -> "zknh"
+            Feature.Zksed -> "zksed"
+            Feature.Zksh -> "zksh"
+            Feature.Zkr -> "zkr"
+            Feature.Zkn -> "zkn"
+            Feature.Zks -> "zks"
+            Feature.Zk -> "zk"
+            Feature.Zkt -> "zkt"
+            Feature.V -> "v"
+            Feature.Zve32x -> "zve32x"
+            Feature.Zve32f -> "zve32f"
+            Feature.Zve64x -> "zve64x"
+            Feature.Zve64f -> "zve64f"
+            Feature.Zve64d -> "zve64d"
+            Feature.Zvfh -> "zvfh"
+            Feature.Zvfhmin -> "zvfhmin"
+            Feature.Zvfbfmin -> "zvfbfmin"
+            Feature.Zvfbfwma -> "zvfbfwma"
+            Feature.Zvbb -> "zvbb"
+            Feature.Zvbc -> "zvbc"
+            Feature.Zvkb -> "zvkb"
+            Feature.Zvkg -> "zvkg"
+            Feature.Zvkned -> "zvkned"
+            Feature.Zvknha -> "zvknha"
+            Feature.Zvknhb -> "zvknhb"
+            Feature.Zvksed -> "zvksed"
+            Feature.Zvksh -> "zvksh"
+            Feature.Zvkn -> "zvkn"
+            Feature.Zvknc -> "zvknc"
+            Feature.Zvkng -> "zvkng"
+            Feature.Zvks -> "zvks"
+            Feature.Zvksc -> "zvksc"
+            Feature.Zvksg -> "zvksg"
+            Feature.Zvkt -> "zvkt"
+            Feature.J -> "j"
+            Feature.P -> "p"
         }
 
     public companion object {
-        public val ALL: List<Feature> = listOf(Feature::rv32i, Feature::rv32e, Feature::rv64i, Feature::rv128i, Feature::unalignedScalarMem, Feature::unalignedVectorMem, Feature::zicsr, Feature::zicntr, Feature::zihpm, Feature::zifencei, Feature::zihintntl, Feature::zihintpause, Feature::zimop, Feature::zicbom, Feature::zicboz, Feature::zicond, Feature::m, Feature::zmmul, Feature::a, Feature::zalrsc, Feature::zaamo, Feature::zawrs, Feature::zabha, Feature::zacas, Feature::zam, Feature::ztso, Feature::f, Feature::d, Feature::q, Feature::zfh, Feature::zfhmin, Feature::zfa, Feature::zfbfmin, Feature::zfinx, Feature::zdinx, Feature::zhinx, Feature::zhinxmin, Feature::c, Feature::zca, Feature::zcf, Feature::zcd, Feature::zcb, Feature::zcmop, Feature::b, Feature::zba, Feature::zbb, Feature::zbc, Feature::zbs, Feature::zbkb, Feature::zbkc, Feature::zbkx, Feature::zknd, Feature::zkne, Feature::zknh, Feature::zksed, Feature::zksh, Feature::zkr, Feature::zkn, Feature::zks, Feature::zk, Feature::zkt, Feature::v, Feature::zve32x, Feature::zve32f, Feature::zve64x, Feature::zve64f, Feature::zve64d, Feature::zvfh, Feature::zvfhmin, Feature::zvfbfmin, Feature::zvfbfwma, Feature::zvbb, Feature::zvbc, Feature::zvkb, Feature::zvkg, Feature::zvkned, Feature::zvknha, Feature::zvknhb, Feature::zvksed, Feature::zvksh, Feature::zvkn, Feature::zvknc, Feature::zvkng, Feature::zvks, Feature::zvksc, Feature::zvksg, Feature::zvkt, Feature::j, Feature::p)
+        public val ALL: List<Feature> = listOf(Feature.Rv32i, Feature.Rv32e, Feature.Rv64i, Feature.Rv128i, Feature.UnalignedScalarMem, Feature.UnalignedVectorMem, Feature.Zicsr, Feature.Zicntr, Feature.Zihpm, Feature.Zifencei, Feature.Zihintntl, Feature.Zihintpause, Feature.Zimop, Feature.Zicbom, Feature.Zicboz, Feature.Zicond, Feature.M, Feature.Zmmul, Feature.A, Feature.Zalrsc, Feature.Zaamo, Feature.Zawrs, Feature.Zabha, Feature.Zacas, Feature.Zam, Feature.Ztso, Feature.F, Feature.D, Feature.Q, Feature.Zfh, Feature.Zfhmin, Feature.Zfa, Feature.Zfbfmin, Feature.Zfinx, Feature.Zdinx, Feature.Zhinx, Feature.Zhinxmin, Feature.C, Feature.Zca, Feature.Zcf, Feature.Zcd, Feature.Zcb, Feature.Zcmop, Feature.B, Feature.Zba, Feature.Zbb, Feature.Zbc, Feature.Zbs, Feature.Zbkb, Feature.Zbkc, Feature.Zbkx, Feature.Zknd, Feature.Zkne, Feature.Zknh, Feature.Zksed, Feature.Zksh, Feature.Zkr, Feature.Zkn, Feature.Zks, Feature.Zk, Feature.Zkt, Feature.V, Feature.Zve32x, Feature.Zve32f, Feature.Zve64x, Feature.Zve64f, Feature.Zve64d, Feature.Zvfh, Feature.Zvfhmin, Feature.Zvfbfmin, Feature.Zvfbfwma, Feature.Zvbb, Feature.Zvbc, Feature.Zvkb, Feature.Zvkg, Feature.Zvkned, Feature.Zvknha, Feature.Zvknhb, Feature.Zvksed, Feature.Zvksh, Feature.Zvkn, Feature.Zvknc, Feature.Zvkng, Feature.Zvks, Feature.Zvksc, Feature.Zvksg, Feature.Zvkt, Feature.J, Feature.P)
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "rv32i" -> Result.Ok<Feature, Unit>(Feature::rv32i)
-                "rv32e" -> Result.Ok<Feature, Unit>(Feature::rv32e)
-                "rv64i" -> Result.Ok<Feature, Unit>(Feature::rv64i)
-                "rv128i" -> Result.Ok<Feature, Unit>(Feature::rv128i)
-                "unaligned-scalar-mem" -> Result.Ok<Feature, Unit>(Feature::unalignedScalarMem)
-                "unaligned-vector-mem" -> Result.Ok<Feature, Unit>(Feature::unalignedVectorMem)
-                "zicsr" -> Result.Ok<Feature, Unit>(Feature::zicsr)
-                "zicntr" -> Result.Ok<Feature, Unit>(Feature::zicntr)
-                "zihpm" -> Result.Ok<Feature, Unit>(Feature::zihpm)
-                "zifencei" -> Result.Ok<Feature, Unit>(Feature::zifencei)
-                "zihintntl" -> Result.Ok<Feature, Unit>(Feature::zihintntl)
-                "zihintpause" -> Result.Ok<Feature, Unit>(Feature::zihintpause)
-                "zimop" -> Result.Ok<Feature, Unit>(Feature::zimop)
-                "zicbom" -> Result.Ok<Feature, Unit>(Feature::zicbom)
-                "zicboz" -> Result.Ok<Feature, Unit>(Feature::zicboz)
-                "zicond" -> Result.Ok<Feature, Unit>(Feature::zicond)
-                "m" -> Result.Ok<Feature, Unit>(Feature::m)
-                "zmmul" -> Result.Ok<Feature, Unit>(Feature::zmmul)
-                "a" -> Result.Ok<Feature, Unit>(Feature::a)
-                "zalrsc" -> Result.Ok<Feature, Unit>(Feature::zalrsc)
-                "zaamo" -> Result.Ok<Feature, Unit>(Feature::zaamo)
-                "zawrs" -> Result.Ok<Feature, Unit>(Feature::zawrs)
-                "zabha" -> Result.Ok<Feature, Unit>(Feature::zabha)
-                "zacas" -> Result.Ok<Feature, Unit>(Feature::zacas)
-                "zam" -> Result.Ok<Feature, Unit>(Feature::zam)
-                "ztso" -> Result.Ok<Feature, Unit>(Feature::ztso)
-                "f" -> Result.Ok<Feature, Unit>(Feature::f)
-                "d" -> Result.Ok<Feature, Unit>(Feature::d)
-                "q" -> Result.Ok<Feature, Unit>(Feature::q)
-                "zfh" -> Result.Ok<Feature, Unit>(Feature::zfh)
-                "zfhmin" -> Result.Ok<Feature, Unit>(Feature::zfhmin)
-                "zfa" -> Result.Ok<Feature, Unit>(Feature::zfa)
-                "zfbfmin" -> Result.Ok<Feature, Unit>(Feature::zfbfmin)
-                "zfinx" -> Result.Ok<Feature, Unit>(Feature::zfinx)
-                "zdinx" -> Result.Ok<Feature, Unit>(Feature::zdinx)
-                "zhinx" -> Result.Ok<Feature, Unit>(Feature::zhinx)
-                "zhinxmin" -> Result.Ok<Feature, Unit>(Feature::zhinxmin)
-                "c" -> Result.Ok<Feature, Unit>(Feature::c)
-                "zca" -> Result.Ok<Feature, Unit>(Feature::zca)
-                "zcf" -> Result.Ok<Feature, Unit>(Feature::zcf)
-                "zcd" -> Result.Ok<Feature, Unit>(Feature::zcd)
-                "zcb" -> Result.Ok<Feature, Unit>(Feature::zcb)
-                "zcmop" -> Result.Ok<Feature, Unit>(Feature::zcmop)
-                "b" -> Result.Ok<Feature, Unit>(Feature::b)
-                "zba" -> Result.Ok<Feature, Unit>(Feature::zba)
-                "zbb" -> Result.Ok<Feature, Unit>(Feature::zbb)
-                "zbc" -> Result.Ok<Feature, Unit>(Feature::zbc)
-                "zbs" -> Result.Ok<Feature, Unit>(Feature::zbs)
-                "zbkb" -> Result.Ok<Feature, Unit>(Feature::zbkb)
-                "zbkc" -> Result.Ok<Feature, Unit>(Feature::zbkc)
-                "zbkx" -> Result.Ok<Feature, Unit>(Feature::zbkx)
-                "zknd" -> Result.Ok<Feature, Unit>(Feature::zknd)
-                "zkne" -> Result.Ok<Feature, Unit>(Feature::zkne)
-                "zknh" -> Result.Ok<Feature, Unit>(Feature::zknh)
-                "zksed" -> Result.Ok<Feature, Unit>(Feature::zksed)
-                "zksh" -> Result.Ok<Feature, Unit>(Feature::zksh)
-                "zkr" -> Result.Ok<Feature, Unit>(Feature::zkr)
-                "zkn" -> Result.Ok<Feature, Unit>(Feature::zkn)
-                "zks" -> Result.Ok<Feature, Unit>(Feature::zks)
-                "zk" -> Result.Ok<Feature, Unit>(Feature::zk)
-                "zkt" -> Result.Ok<Feature, Unit>(Feature::zkt)
-                "v" -> Result.Ok<Feature, Unit>(Feature::v)
-                "zve32x" -> Result.Ok<Feature, Unit>(Feature::zve32x)
-                "zve32f" -> Result.Ok<Feature, Unit>(Feature::zve32f)
-                "zve64x" -> Result.Ok<Feature, Unit>(Feature::zve64x)
-                "zve64f" -> Result.Ok<Feature, Unit>(Feature::zve64f)
-                "zve64d" -> Result.Ok<Feature, Unit>(Feature::zve64d)
-                "zvfh" -> Result.Ok<Feature, Unit>(Feature::zvfh)
-                "zvfhmin" -> Result.Ok<Feature, Unit>(Feature::zvfhmin)
-                "zvfbfmin" -> Result.Ok<Feature, Unit>(Feature::zvfbfmin)
-                "zvfbfwma" -> Result.Ok<Feature, Unit>(Feature::zvfbfwma)
-                "zvbb" -> Result.Ok<Feature, Unit>(Feature::zvbb)
-                "zvbc" -> Result.Ok<Feature, Unit>(Feature::zvbc)
-                "zvkb" -> Result.Ok<Feature, Unit>(Feature::zvkb)
-                "zvkg" -> Result.Ok<Feature, Unit>(Feature::zvkg)
-                "zvkned" -> Result.Ok<Feature, Unit>(Feature::zvkned)
-                "zvknha" -> Result.Ok<Feature, Unit>(Feature::zvknha)
-                "zvknhb" -> Result.Ok<Feature, Unit>(Feature::zvknhb)
-                "zvksed" -> Result.Ok<Feature, Unit>(Feature::zvksed)
-                "zvksh" -> Result.Ok<Feature, Unit>(Feature::zvksh)
-                "zvkn" -> Result.Ok<Feature, Unit>(Feature::zvkn)
-                "zvknc" -> Result.Ok<Feature, Unit>(Feature::zvknc)
-                "zvkng" -> Result.Ok<Feature, Unit>(Feature::zvkng)
-                "zvks" -> Result.Ok<Feature, Unit>(Feature::zvks)
-                "zvksc" -> Result.Ok<Feature, Unit>(Feature::zvksc)
-                "zvksg" -> Result.Ok<Feature, Unit>(Feature::zvksg)
-                "zvkt" -> Result.Ok<Feature, Unit>(Feature::zvkt)
-                "j" -> Result.Ok<Feature, Unit>(Feature::j)
-                "p" -> Result.Ok<Feature, Unit>(Feature::p)
+                "rv32i" -> Result.Ok<Feature, Unit>(Feature.Rv32i)
+                "rv32e" -> Result.Ok<Feature, Unit>(Feature.Rv32e)
+                "rv64i" -> Result.Ok<Feature, Unit>(Feature.Rv64i)
+                "rv128i" -> Result.Ok<Feature, Unit>(Feature.Rv128i)
+                "unaligned-scalar-mem" -> Result.Ok<Feature, Unit>(Feature.UnalignedScalarMem)
+                "unaligned-vector-mem" -> Result.Ok<Feature, Unit>(Feature.UnalignedVectorMem)
+                "zicsr" -> Result.Ok<Feature, Unit>(Feature.Zicsr)
+                "zicntr" -> Result.Ok<Feature, Unit>(Feature.Zicntr)
+                "zihpm" -> Result.Ok<Feature, Unit>(Feature.Zihpm)
+                "zifencei" -> Result.Ok<Feature, Unit>(Feature.Zifencei)
+                "zihintntl" -> Result.Ok<Feature, Unit>(Feature.Zihintntl)
+                "zihintpause" -> Result.Ok<Feature, Unit>(Feature.Zihintpause)
+                "zimop" -> Result.Ok<Feature, Unit>(Feature.Zimop)
+                "zicbom" -> Result.Ok<Feature, Unit>(Feature.Zicbom)
+                "zicboz" -> Result.Ok<Feature, Unit>(Feature.Zicboz)
+                "zicond" -> Result.Ok<Feature, Unit>(Feature.Zicond)
+                "m" -> Result.Ok<Feature, Unit>(Feature.M)
+                "zmmul" -> Result.Ok<Feature, Unit>(Feature.Zmmul)
+                "a" -> Result.Ok<Feature, Unit>(Feature.A)
+                "zalrsc" -> Result.Ok<Feature, Unit>(Feature.Zalrsc)
+                "zaamo" -> Result.Ok<Feature, Unit>(Feature.Zaamo)
+                "zawrs" -> Result.Ok<Feature, Unit>(Feature.Zawrs)
+                "zabha" -> Result.Ok<Feature, Unit>(Feature.Zabha)
+                "zacas" -> Result.Ok<Feature, Unit>(Feature.Zacas)
+                "zam" -> Result.Ok<Feature, Unit>(Feature.Zam)
+                "ztso" -> Result.Ok<Feature, Unit>(Feature.Ztso)
+                "f" -> Result.Ok<Feature, Unit>(Feature.F)
+                "d" -> Result.Ok<Feature, Unit>(Feature.D)
+                "q" -> Result.Ok<Feature, Unit>(Feature.Q)
+                "zfh" -> Result.Ok<Feature, Unit>(Feature.Zfh)
+                "zfhmin" -> Result.Ok<Feature, Unit>(Feature.Zfhmin)
+                "zfa" -> Result.Ok<Feature, Unit>(Feature.Zfa)
+                "zfbfmin" -> Result.Ok<Feature, Unit>(Feature.Zfbfmin)
+                "zfinx" -> Result.Ok<Feature, Unit>(Feature.Zfinx)
+                "zdinx" -> Result.Ok<Feature, Unit>(Feature.Zdinx)
+                "zhinx" -> Result.Ok<Feature, Unit>(Feature.Zhinx)
+                "zhinxmin" -> Result.Ok<Feature, Unit>(Feature.Zhinxmin)
+                "c" -> Result.Ok<Feature, Unit>(Feature.C)
+                "zca" -> Result.Ok<Feature, Unit>(Feature.Zca)
+                "zcf" -> Result.Ok<Feature, Unit>(Feature.Zcf)
+                "zcd" -> Result.Ok<Feature, Unit>(Feature.Zcd)
+                "zcb" -> Result.Ok<Feature, Unit>(Feature.Zcb)
+                "zcmop" -> Result.Ok<Feature, Unit>(Feature.Zcmop)
+                "b" -> Result.Ok<Feature, Unit>(Feature.B)
+                "zba" -> Result.Ok<Feature, Unit>(Feature.Zba)
+                "zbb" -> Result.Ok<Feature, Unit>(Feature.Zbb)
+                "zbc" -> Result.Ok<Feature, Unit>(Feature.Zbc)
+                "zbs" -> Result.Ok<Feature, Unit>(Feature.Zbs)
+                "zbkb" -> Result.Ok<Feature, Unit>(Feature.Zbkb)
+                "zbkc" -> Result.Ok<Feature, Unit>(Feature.Zbkc)
+                "zbkx" -> Result.Ok<Feature, Unit>(Feature.Zbkx)
+                "zknd" -> Result.Ok<Feature, Unit>(Feature.Zknd)
+                "zkne" -> Result.Ok<Feature, Unit>(Feature.Zkne)
+                "zknh" -> Result.Ok<Feature, Unit>(Feature.Zknh)
+                "zksed" -> Result.Ok<Feature, Unit>(Feature.Zksed)
+                "zksh" -> Result.Ok<Feature, Unit>(Feature.Zksh)
+                "zkr" -> Result.Ok<Feature, Unit>(Feature.Zkr)
+                "zkn" -> Result.Ok<Feature, Unit>(Feature.Zkn)
+                "zks" -> Result.Ok<Feature, Unit>(Feature.Zks)
+                "zk" -> Result.Ok<Feature, Unit>(Feature.Zk)
+                "zkt" -> Result.Ok<Feature, Unit>(Feature.Zkt)
+                "v" -> Result.Ok<Feature, Unit>(Feature.V)
+                "zve32x" -> Result.Ok<Feature, Unit>(Feature.Zve32x)
+                "zve32f" -> Result.Ok<Feature, Unit>(Feature.Zve32f)
+                "zve64x" -> Result.Ok<Feature, Unit>(Feature.Zve64x)
+                "zve64f" -> Result.Ok<Feature, Unit>(Feature.Zve64f)
+                "zve64d" -> Result.Ok<Feature, Unit>(Feature.Zve64d)
+                "zvfh" -> Result.Ok<Feature, Unit>(Feature.Zvfh)
+                "zvfhmin" -> Result.Ok<Feature, Unit>(Feature.Zvfhmin)
+                "zvfbfmin" -> Result.Ok<Feature, Unit>(Feature.Zvfbfmin)
+                "zvfbfwma" -> Result.Ok<Feature, Unit>(Feature.Zvfbfwma)
+                "zvbb" -> Result.Ok<Feature, Unit>(Feature.Zvbb)
+                "zvbc" -> Result.Ok<Feature, Unit>(Feature.Zvbc)
+                "zvkb" -> Result.Ok<Feature, Unit>(Feature.Zvkb)
+                "zvkg" -> Result.Ok<Feature, Unit>(Feature.Zvkg)
+                "zvkned" -> Result.Ok<Feature, Unit>(Feature.Zvkned)
+                "zvknha" -> Result.Ok<Feature, Unit>(Feature.Zvknha)
+                "zvknhb" -> Result.Ok<Feature, Unit>(Feature.Zvknhb)
+                "zvksed" -> Result.Ok<Feature, Unit>(Feature.Zvksed)
+                "zvksh" -> Result.Ok<Feature, Unit>(Feature.Zvksh)
+                "zvkn" -> Result.Ok<Feature, Unit>(Feature.Zvkn)
+                "zvknc" -> Result.Ok<Feature, Unit>(Feature.Zvknc)
+                "zvkng" -> Result.Ok<Feature, Unit>(Feature.Zvkng)
+                "zvks" -> Result.Ok<Feature, Unit>(Feature.Zvks)
+                "zvksc" -> Result.Ok<Feature, Unit>(Feature.Zvksc)
+                "zvksg" -> Result.Ok<Feature, Unit>(Feature.Zvksg)
+                "zvkt" -> Result.Ok<Feature, Unit>(Feature.Zvkt)
+                "j" -> Result.Ok<Feature, Unit>(Feature.J)
+                "p" -> Result.Ok<Feature, Unit>(Feature.P)
                 else -> Result.Err<Feature, Unit>(Unit)
             }
     }
@@ -566,532 +675,532 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv32i(): Boolean = checkFor(Feature::rv32i)
+public fun rv32i(): Boolean = checkFor(Feature.Rv32i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv32e(): Boolean = checkFor(Feature::rv32e)
+public fun rv32e(): Boolean = checkFor(Feature.Rv32e)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv64i(): Boolean = checkFor(Feature::rv64i)
+public fun rv64i(): Boolean = checkFor(Feature.Rv64i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun rv128i(): Boolean = checkFor(Feature::rv128i)
+public fun rv128i(): Boolean = checkFor(Feature.Rv128i)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun unalignedScalarMem(): Boolean = checkFor(Feature::unalignedScalarMem)
+public fun unalignedScalarMem(): Boolean = checkFor(Feature.UnalignedScalarMem)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun unalignedVectorMem(): Boolean = checkFor(Feature::unalignedVectorMem)
+public fun unalignedVectorMem(): Boolean = checkFor(Feature.UnalignedVectorMem)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicsr(): Boolean = checkFor(Feature::zicsr)
+public fun zicsr(): Boolean = checkFor(Feature.Zicsr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicntr(): Boolean = checkFor(Feature::zicntr)
+public fun zicntr(): Boolean = checkFor(Feature.Zicntr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihpm(): Boolean = checkFor(Feature::zihpm)
+public fun zihpm(): Boolean = checkFor(Feature.Zihpm)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zifencei(): Boolean = checkFor(Feature::zifencei)
+public fun zifencei(): Boolean = checkFor(Feature.Zifencei)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihintntl(): Boolean = checkFor(Feature::zihintntl)
+public fun zihintntl(): Boolean = checkFor(Feature.Zihintntl)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zihintpause(): Boolean = checkFor(Feature::zihintpause)
+public fun zihintpause(): Boolean = checkFor(Feature.Zihintpause)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zimop(): Boolean = checkFor(Feature::zimop)
+public fun zimop(): Boolean = checkFor(Feature.Zimop)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicbom(): Boolean = checkFor(Feature::zicbom)
+public fun zicbom(): Boolean = checkFor(Feature.Zicbom)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicboz(): Boolean = checkFor(Feature::zicboz)
+public fun zicboz(): Boolean = checkFor(Feature.Zicboz)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zicond(): Boolean = checkFor(Feature::zicond)
+public fun zicond(): Boolean = checkFor(Feature.Zicond)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun m(): Boolean = checkFor(Feature::m)
+public fun m(): Boolean = checkFor(Feature.M)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zmmul(): Boolean = checkFor(Feature::zmmul)
+public fun zmmul(): Boolean = checkFor(Feature.Zmmul)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun a(): Boolean = checkFor(Feature::a)
+public fun a(): Boolean = checkFor(Feature.A)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zalrsc(): Boolean = checkFor(Feature::zalrsc)
+public fun zalrsc(): Boolean = checkFor(Feature.Zalrsc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zaamo(): Boolean = checkFor(Feature::zaamo)
+public fun zaamo(): Boolean = checkFor(Feature.Zaamo)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zawrs(): Boolean = checkFor(Feature::zawrs)
+public fun zawrs(): Boolean = checkFor(Feature.Zawrs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zabha(): Boolean = checkFor(Feature::zabha)
+public fun zabha(): Boolean = checkFor(Feature.Zabha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zacas(): Boolean = checkFor(Feature::zacas)
+public fun zacas(): Boolean = checkFor(Feature.Zacas)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zam(): Boolean = checkFor(Feature::zam)
+public fun zam(): Boolean = checkFor(Feature.Zam)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun ztso(): Boolean = checkFor(Feature::ztso)
+public fun ztso(): Boolean = checkFor(Feature.Ztso)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun f(): Boolean = checkFor(Feature::f)
+public fun f(): Boolean = checkFor(Feature.F)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun d(): Boolean = checkFor(Feature::d)
+public fun d(): Boolean = checkFor(Feature.D)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun q(): Boolean = checkFor(Feature::q)
+public fun q(): Boolean = checkFor(Feature.Q)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfh(): Boolean = checkFor(Feature::zfh)
+public fun zfh(): Boolean = checkFor(Feature.Zfh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfhmin(): Boolean = checkFor(Feature::zfhmin)
+public fun zfhmin(): Boolean = checkFor(Feature.Zfhmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfa(): Boolean = checkFor(Feature::zfa)
+public fun zfa(): Boolean = checkFor(Feature.Zfa)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfbfmin(): Boolean = checkFor(Feature::zfbfmin)
+public fun zfbfmin(): Boolean = checkFor(Feature.Zfbfmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zfinx(): Boolean = checkFor(Feature::zfinx)
+public fun zfinx(): Boolean = checkFor(Feature.Zfinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zdinx(): Boolean = checkFor(Feature::zdinx)
+public fun zdinx(): Boolean = checkFor(Feature.Zdinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zhinx(): Boolean = checkFor(Feature::zhinx)
+public fun zhinx(): Boolean = checkFor(Feature.Zhinx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zhinxmin(): Boolean = checkFor(Feature::zhinxmin)
+public fun zhinxmin(): Boolean = checkFor(Feature.Zhinxmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun c(): Boolean = checkFor(Feature::c)
+public fun c(): Boolean = checkFor(Feature.C)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zca(): Boolean = checkFor(Feature::zca)
+public fun zca(): Boolean = checkFor(Feature.Zca)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcf(): Boolean = checkFor(Feature::zcf)
+public fun zcf(): Boolean = checkFor(Feature.Zcf)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcd(): Boolean = checkFor(Feature::zcd)
+public fun zcd(): Boolean = checkFor(Feature.Zcd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcb(): Boolean = checkFor(Feature::zcb)
+public fun zcb(): Boolean = checkFor(Feature.Zcb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zcmop(): Boolean = checkFor(Feature::zcmop)
+public fun zcmop(): Boolean = checkFor(Feature.Zcmop)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun b(): Boolean = checkFor(Feature::b)
+public fun b(): Boolean = checkFor(Feature.B)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zba(): Boolean = checkFor(Feature::zba)
+public fun zba(): Boolean = checkFor(Feature.Zba)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbb(): Boolean = checkFor(Feature::zbb)
+public fun zbb(): Boolean = checkFor(Feature.Zbb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbc(): Boolean = checkFor(Feature::zbc)
+public fun zbc(): Boolean = checkFor(Feature.Zbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbs(): Boolean = checkFor(Feature::zbs)
+public fun zbs(): Boolean = checkFor(Feature.Zbs)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkb(): Boolean = checkFor(Feature::zbkb)
+public fun zbkb(): Boolean = checkFor(Feature.Zbkb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkc(): Boolean = checkFor(Feature::zbkc)
+public fun zbkc(): Boolean = checkFor(Feature.Zbkc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zbkx(): Boolean = checkFor(Feature::zbkx)
+public fun zbkx(): Boolean = checkFor(Feature.Zbkx)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zknd(): Boolean = checkFor(Feature::zknd)
+public fun zknd(): Boolean = checkFor(Feature.Zknd)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkne(): Boolean = checkFor(Feature::zkne)
+public fun zkne(): Boolean = checkFor(Feature.Zkne)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zknh(): Boolean = checkFor(Feature::zknh)
+public fun zknh(): Boolean = checkFor(Feature.Zknh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zksed(): Boolean = checkFor(Feature::zksed)
+public fun zksed(): Boolean = checkFor(Feature.Zksed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zksh(): Boolean = checkFor(Feature::zksh)
+public fun zksh(): Boolean = checkFor(Feature.Zksh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkr(): Boolean = checkFor(Feature::zkr)
+public fun zkr(): Boolean = checkFor(Feature.Zkr)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkn(): Boolean = checkFor(Feature::zkn)
+public fun zkn(): Boolean = checkFor(Feature.Zkn)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zks(): Boolean = checkFor(Feature::zks)
+public fun zks(): Boolean = checkFor(Feature.Zks)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zk(): Boolean = checkFor(Feature::zk)
+public fun zk(): Boolean = checkFor(Feature.Zk)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zkt(): Boolean = checkFor(Feature::zkt)
+public fun zkt(): Boolean = checkFor(Feature.Zkt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun v(): Boolean = checkFor(Feature::v)
+public fun v(): Boolean = checkFor(Feature.V)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve32x(): Boolean = checkFor(Feature::zve32x)
+public fun zve32x(): Boolean = checkFor(Feature.Zve32x)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve32f(): Boolean = checkFor(Feature::zve32f)
+public fun zve32f(): Boolean = checkFor(Feature.Zve32f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64x(): Boolean = checkFor(Feature::zve64x)
+public fun zve64x(): Boolean = checkFor(Feature.Zve64x)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64f(): Boolean = checkFor(Feature::zve64f)
+public fun zve64f(): Boolean = checkFor(Feature.Zve64f)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zve64d(): Boolean = checkFor(Feature::zve64d)
+public fun zve64d(): Boolean = checkFor(Feature.Zve64d)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfh(): Boolean = checkFor(Feature::zvfh)
+public fun zvfh(): Boolean = checkFor(Feature.Zvfh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfhmin(): Boolean = checkFor(Feature::zvfhmin)
+public fun zvfhmin(): Boolean = checkFor(Feature.Zvfhmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfbfmin(): Boolean = checkFor(Feature::zvfbfmin)
+public fun zvfbfmin(): Boolean = checkFor(Feature.Zvfbfmin)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvfbfwma(): Boolean = checkFor(Feature::zvfbfwma)
+public fun zvfbfwma(): Boolean = checkFor(Feature.Zvfbfwma)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvbb(): Boolean = checkFor(Feature::zvbb)
+public fun zvbb(): Boolean = checkFor(Feature.Zvbb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvbc(): Boolean = checkFor(Feature::zvbc)
+public fun zvbc(): Boolean = checkFor(Feature.Zvbc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkb(): Boolean = checkFor(Feature::zvkb)
+public fun zvkb(): Boolean = checkFor(Feature.Zvkb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkg(): Boolean = checkFor(Feature::zvkg)
+public fun zvkg(): Boolean = checkFor(Feature.Zvkg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkned(): Boolean = checkFor(Feature::zvkned)
+public fun zvkned(): Boolean = checkFor(Feature.Zvkned)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknha(): Boolean = checkFor(Feature::zvknha)
+public fun zvknha(): Boolean = checkFor(Feature.Zvknha)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknhb(): Boolean = checkFor(Feature::zvknhb)
+public fun zvknhb(): Boolean = checkFor(Feature.Zvknhb)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksed(): Boolean = checkFor(Feature::zvksed)
+public fun zvksed(): Boolean = checkFor(Feature.Zvksed)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksh(): Boolean = checkFor(Feature::zvksh)
+public fun zvksh(): Boolean = checkFor(Feature.Zvksh)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkn(): Boolean = checkFor(Feature::zvkn)
+public fun zvkn(): Boolean = checkFor(Feature.Zvkn)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvknc(): Boolean = checkFor(Feature::zvknc)
+public fun zvknc(): Boolean = checkFor(Feature.Zvknc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkng(): Boolean = checkFor(Feature::zvkng)
+public fun zvkng(): Boolean = checkFor(Feature.Zvkng)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvks(): Boolean = checkFor(Feature::zvks)
+public fun zvks(): Boolean = checkFor(Feature.Zvks)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksc(): Boolean = checkFor(Feature::zvksc)
+public fun zvksc(): Boolean = checkFor(Feature.Zvksc)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvksg(): Boolean = checkFor(Feature::zvksg)
+public fun zvksg(): Boolean = checkFor(Feature.Zvksg)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun zvkt(): Boolean = checkFor(Feature::zvkt)
+public fun zvkt(): Boolean = checkFor(Feature.Zvkt)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun j(): Boolean = checkFor(Feature::j)
+public fun j(): Boolean = checkFor(Feature.J)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun p(): Boolean = checkFor(Feature::p)
+public fun p(): Boolean = checkFor(Feature.P)

@@ -4,9 +4,7 @@
 package io.github.kotlinmania.rustlang.core.time
 
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.convert.From
-import io.github.kotlinmania.rustlang.core.convert.TryFrom
-import io.github.kotlinmania.rustlang.core.convert.from
+import io.github.kotlinmania.rustlang.core.fmt.Alignment
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
@@ -1164,7 +1162,7 @@ public open class Duration(
          */
         public fun fromNanosU128(nanos: U128): Duration {
             val NANOS_PER_SEC: U128 = U128.fromUInt(NANOS_PER_SEC)
-            val secs = when (val tryResult = ULong.TryFrom(nanos / NANOS_PER_SEC)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> error("overflow in `Duration::from_nanos_u128`") }
+            val secs = when (val tryResult = ULong.tryFrom(nanos / NANOS_PER_SEC)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> error("overflow in `Duration::from_nanos_u128`") }
             val subsecNanos = (nanos % NANOS_PER_SEC).toUInt()
             // SAFETY: x % 1_000_000_000 < 1_000_000_000 also, subsecNanos >= 0 since u128 >=0 and u32 >=0
             val subsecNanos1 = Nanoseconds.newUnchecked(subsecNanos)
@@ -1475,7 +1473,7 @@ public open class Duration(
                     } else if (exp < 0.toShort()) {
                         val t = (ULong.from(mant).toInt() shl ((41 + exp).toInt())).toShort()
                         val nanosOffset = 23 + 41
-                        val nanosTmp = U128.From(NANOS_PER_SEC) * U128.From(t)
+                        val nanosTmp = U128.from(NANOS_PER_SEC) * U128.from(t)
                         val nanos = (nanosTmp shr nanosOffset.toInt()).toUInt()
                         val remMask = (1 shl nanosOffset.toInt()) - 1
                         val remMsbMask = 1 shl (nanosOffset - 1).toInt()
@@ -1491,7 +1489,7 @@ public open class Duration(
                             Pair(1, 0)
                         }
                     } else if (exp < 23.toShort()) {
-                        val secs1 = ULong.From(mant shr (23 - exp).toInt())
+                        val secs1 = ULong.from(mant shr (23 - exp).toInt())
                         val t1 = ULong.from((mant shl exp.toInt()) and MANT_MASK)
                         val nanosOffset1 = 23
                         val nanosTmp1 = ULong.from(NANOS_PER_SEC) * t1
@@ -1510,7 +1508,7 @@ public open class Duration(
                             Pair(secs1 + 1, 0)
                         }
                     } else if (exp < 64.toShort()) {
-                        val secs2 = (ULong.From(mant).toInt() shl ((exp - 23).toInt())).toShort()
+                        val secs2 = (ULong.from(mant).toInt() shl ((exp - 23).toInt())).toShort()
                         Pair(secs2, 0)
                     } else {
                         return Result.Err<Duration, TryFromFloatSecsError>(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.OverflowOrNan))
@@ -1595,7 +1593,7 @@ public open class Duration(
                     } else if (exp < 0.toShort()) {
                         val t = (U128.from(mant).toInt() shl ((44 + exp).toInt())).toShort()
                         val nanosOffset = 52 + 44
-                        val nanosTmp = U128.From(NANOS_PER_SEC) * U128.From(t)
+                        val nanosTmp = U128.from(NANOS_PER_SEC) * U128.from(t)
                         val nanos = (nanosTmp shr nanosOffset.toInt()).toUInt()
                         val remMask = (1 shl nanosOffset.toInt()) - 1
                         val remMsbMask = 1 shl (nanosOffset - 1).toInt()
@@ -1611,7 +1609,7 @@ public open class Duration(
                             Pair(1, 0)
                         }
                     } else if (exp < 52.toShort()) {
-                        val secs1 = ULong.From(mant shr (52 - exp).toInt())
+                        val secs1 = ULong.from(mant shr (52 - exp).toInt())
                         val t1 = U128.from((mant shl exp.toInt()) and MANT_MASK)
                         val nanosOffset1 = 52
                         val nanosTmp1 = U128.from(NANOS_PER_SEC) * t1
@@ -1630,7 +1628,7 @@ public open class Duration(
                             Pair(secs1 + 1, 0)
                         }
                     } else if (exp < 64.toShort()) {
-                        val secs2 = (ULong.From(mant).toInt() shl ((exp - 52).toInt())).toShort()
+                        val secs2 = (ULong.from(mant).toInt() shl ((exp - 52).toInt())).toShort()
                         Pair(secs2, 0)
                     } else {
                         return Result.Err<Duration, TryFromFloatSecsError>(TryFromFloatSecsError(kind = TryFromFloatSecsErrorKind.OverflowOrNan))
@@ -1799,7 +1797,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                 emitWithoutPadding(f)
             } else {
                 // We need to add padding. Use the `Formatter.padding` helper function.
-                val defaultAlign = fmt.Alignment.Left
+                val defaultAlign = Alignment.Left
                 val postPadding = when (val tryResult = f.padding((requestedW - actualW).toUShort(), defaultAlign)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                 when (val tryResult = emitWithoutPadding(f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
                 postPadding.write(f)
@@ -1891,4 +1889,26 @@ public sealed class TryFromFloatSecsErrorKind {
     public data object OverflowOrNan : TryFromFloatSecsErrorKind()
 
     public fun rustEquals(other: TryFromFloatSecsErrorKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Negative -> 0
+        OverflowOrNan -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }

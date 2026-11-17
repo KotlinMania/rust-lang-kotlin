@@ -33,6 +33,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -145,7 +146,7 @@ public open class FileDesc(
     public companion object {
         public fun fromInner(ownedFd: OwnedFd): FileDesc = FileDesc(ownedFd)
 
-        public fun fromRawFd(rawFd: RawFd): FileDesc = FileDesc(FromRawFd.FromRawFd(rawFd))
+        public fun fromRawFd(rawFd: RawFd): FileDesc = FileDesc(FromRawFd.fromRawFd(rawFd))
     }
 }
 

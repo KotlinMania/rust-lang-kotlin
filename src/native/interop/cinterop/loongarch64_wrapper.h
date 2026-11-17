@@ -17,16 +17,16 @@ int32_t corearchLoongarch64ExternCrccWBW(int32_t a, int32_t b);
 int32_t corearchLoongarch64ExternCrccWHW(int32_t a, int32_t b);
 int32_t corearchLoongarch64ExternCrccWWW(int32_t a, int32_t b);
 int32_t corearchLoongarch64ExternCrccWDW(int64_t a, int32_t b);
-void corearchLoongarch64Cacop(int64_t a, int64_t b, int64_t c);
-int64_t corearchLoongarch64Csrrd(int32_t a);
-int64_t corearchLoongarch64Csrwr(int64_t a, int32_t b);
-int64_t corearchLoongarch64Csrxchg(int64_t a, int64_t b, int32_t c);
+void corearchLoongarch64ExternCacop(int64_t a, int64_t b, int64_t c);
+int64_t corearchLoongarch64ExternCsrrd(int32_t a);
+int64_t corearchLoongarch64ExternCsrwr(int64_t a, int32_t b);
+int64_t corearchLoongarch64ExternCsrxchg(int64_t a, int64_t b, int32_t c);
 int64_t corearchLoongarch64ExternIocsrrdD(int32_t a);
 void corearchLoongarch64ExternIocsrwrD(int64_t a, int32_t b);
 void corearchLoongarch64ExternAsrtle(int64_t a, int64_t b);
 void corearchLoongarch64ExternAsrtgt(int64_t a, int64_t b);
-int64_t corearchLoongarch64Lddir(int64_t a, int64_t b);
-void corearchLoongarch64Ldpte(int64_t a, int64_t b);
+int64_t corearchLoongarch64ExternLddir(int64_t a, int64_t b);
+void corearchLoongarch64ExternLdpte(int64_t a, int64_t b);
 
 #ifdef __cplusplus
 }

@@ -18,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.char.methods.isAsciiUppercase
 import io.github.kotlinmania.rustlang.core.char.methods.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiLowercase
 import io.github.kotlinmania.rustlang.core.char.methods.toAsciiUppercase
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.escape.HEX_DIGITS
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -599,6 +598,22 @@ public sealed class AsciiChar(
     public data object Delete : AsciiChar(127u)
 
     public fun rustEquals(other: AsciiChar): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value.toInt()
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 
     /**
      * Gets this ASCII character as a byte.
@@ -1206,8 +1221,8 @@ public sealed class AsciiChar(
                 this.toU8().isAsciiControl() -> {
                     val HEX_DIGITS: List<AsciiChar> = "0123456789abcdef".encodeToByteArray().asAscii().unwrap()
                     val byte = this.toU8()
-                    val hi = HEX_DIGITS[Int.From((byte.toUInt() shr 4).toUByte())]
-                    val lo = HEX_DIGITS[Int.From(byte and 0xfu.toUByte())]
+                    val hi = HEX_DIGITS[Int.from((byte.toUInt() shr 4).toUByte())]
+                    val lo = HEX_DIGITS[Int.from(byte and 0xfu.toUByte())]
                     Pair(listOf(Apostrophe, Backslash, AsciiChar.SmallX, hi, lo, Apostrophe), 6)
                 }
                 else -> Pair(listOf(Apostrophe, this, Apostrophe, Null, Null, Null), 3)

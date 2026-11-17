@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike.register
 
 public interface DestroyedState<SelfType> {
     public fun <T> registerDtor(s: Storage<T, SelfType>)
@@ -26,7 +26,7 @@ public fun <T> destroyedStateRegisterDtorNothing(arg0: Storage<T, Nothing>) {}
 
 public fun <T> destroyedStateRegisterDtor(s: Storage<T, Unit>) {
     run {
-        destructors.register(s.castMut().cast(), destroy<T>)
+        register(s.castMut().cast(), destroy<T>)
     }
 }
 

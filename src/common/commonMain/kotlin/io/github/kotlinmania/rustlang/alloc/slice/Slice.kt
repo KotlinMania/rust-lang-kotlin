@@ -479,7 +479,7 @@ public fun <T> List<T>.repeat(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTyp
  * check(listOf(listOf(1, 2), listOf(3, 4)).concat() == listOf(1, 2, 3, 4))
  * ```
  */
-public fun <Output, T, Item> List<T>.concat(): Output = Concat.Concat(this)
+public fun <Output, T, Item> List<T>.concat(): Output = Concat.concat(this)
 
 /**
  * Flattens a slice of `T` into a single value `Self.Output`, placing a
@@ -493,7 +493,7 @@ public fun <Output, T, Item> List<T>.concat(): Output = Concat.Concat(this)
  * check(listOf(listOf(1, 2), listOf(3, 4)).join(listOf(0, 0)) == listOf(1, 2, 0, 0, 3, 4))
  * ```
  */
-public fun <Output, T, Separator> List<T>.join(sep: Separator): Output = Join.Join(this, sep)
+public fun <Output, T, Separator> List<T>.join(sep: Separator): Output = Join.join(this, sep)
 
 /**
  * Flattens a slice of `T` into a single value `Self.Output`, placing a
@@ -506,7 +506,7 @@ public fun <Output, T, Separator> List<T>.join(sep: Separator): Output = Join.Jo
  * check(listOf(listOf(1, 2), listOf(3, 4)).connect(0) == listOf(1, 2, 0, 3, 4))
  * ```
  */
-public fun <Output, T, Separator> List<T>.connect(sep: Separator): Output = Join.Join(this, sep)
+public fun <Output, T, Separator> List<T>.connect(sep: Separator): Output = Join.join(this, sep)
 
 /**
  * Returns a vector containing a copy of this slice where each byte

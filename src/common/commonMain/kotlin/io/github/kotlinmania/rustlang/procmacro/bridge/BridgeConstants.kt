@@ -1,7 +1,6 @@
 package io.github.kotlinmania.rustlang.procmacro.bridge
 
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
-import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.emitDiagnostic
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.literalFromStr
 import io.github.kotlinmania.rustlang.procmacro.bridge.server.spanByteRange
@@ -66,293 +65,344 @@ public sealed class Tag {
     public data object SpanSaveSpan : Tag()
     public data object SpanRecoverProcMacroSpan : Tag()
     public data object SymbolNormalizeAndValidateIdent : Tag()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        TrackEnvVar -> 0
+        TrackPath -> 1
+        LiteralFromStr -> 2
+        EmitDiagnostic -> 3
+        TsDrop -> 4
+        TsClone -> 5
+        TsIsEmpty -> 6
+        TsExpandExpr -> 7
+        TsFromStr -> 8
+        TsToString -> 9
+        TsFromTokenTree -> 10
+        TsConcatTrees -> 11
+        TsConcatStreams -> 12
+        TsIntoTrees -> 13
+        SpanDebug -> 14
+        SpanParent -> 15
+        SpanSource -> 16
+        SpanByteRange -> 17
+        SpanStart -> 18
+        SpanEnd -> 19
+        SpanLine -> 20
+        SpanColumn -> 21
+        SpanFile -> 22
+        SpanLocalFile -> 23
+        SpanJoin -> 24
+        SpanSubspan -> 25
+        SpanResolvedAt -> 26
+        SpanSourceText -> 27
+        SpanSaveSpan -> 28
+        SpanRecoverProcMacroSpan -> 29
+        SymbolNormalizeAndValidateIdent -> 30
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
-public val TRACK_ENV_VAR: UByte = (Tag::trackEnvVar).toUByte()
+public val TRACK_ENV_VAR: UByte = Tag.TrackEnvVar.toUByte()
 
-public val TRACK_PATH: UByte = (Tag::trackPath).toUByte()
+public val TRACK_PATH: UByte = Tag.TrackPath.toUByte()
 
-public val LITERAL_FROM_STR: UByte = (Tag::literalFromStr).toUByte()
+public val LITERAL_FROM_STR: UByte = Tag.LiteralFromStr.toUByte()
 
-public val EMIT_DIAGNOSTIC: UByte = (Tag::emitDiagnostic).toUByte()
+public val EMIT_DIAGNOSTIC: UByte = Tag.EmitDiagnostic.toUByte()
 
-public val TS_DROP: UByte = (Tag::tsDrop).toUByte()
+public val TS_DROP: UByte = Tag.TsDrop.toUByte()
 
-public val TS_CLONE: UByte = (Tag::tsClone).toUByte()
+public val TS_CLONE: UByte = Tag.TsClone.toUByte()
 
-public val TS_IS_EMPTY: UByte = (Tag::tsIsEmpty).toUByte()
+public val TS_IS_EMPTY: UByte = Tag.TsIsEmpty.toUByte()
 
-public val TS_EXPAND_EXPR: UByte = (Tag::tsExpandExpr).toUByte()
+public val TS_EXPAND_EXPR: UByte = Tag.TsExpandExpr.toUByte()
 
-public val TS_FROM_STR: UByte = (Tag::tsFromStr).toUByte()
+public val TS_FROM_STR: UByte = Tag.TsFromStr.toUByte()
 
-public val TS_TO_STRING: UByte = (Tag::tsToString).toUByte()
+public val TS_TO_STRING: UByte = Tag.TsToString.toUByte()
 
-public val TS_FROM_TOKEN_TREE: UByte = (Tag::tsFromTokenTree).toUByte()
+public val TS_FROM_TOKEN_TREE: UByte = Tag.TsFromTokenTree.toUByte()
 
-public val TS_CONCAT_TREES: UByte = (Tag::tsConcatTrees).toUByte()
+public val TS_CONCAT_TREES: UByte = Tag.TsConcatTrees.toUByte()
 
-public val TS_CONCAT_STREAMS: UByte = (Tag::tsConcatStreams).toUByte()
+public val TS_CONCAT_STREAMS: UByte = Tag.TsConcatStreams.toUByte()
 
-public val TS_INTO_TREES: UByte = (Tag::tsIntoTrees).toUByte()
+public val TS_INTO_TREES: UByte = Tag.TsIntoTrees.toUByte()
 
-public val SPAN_DEBUG: UByte = (Tag::spanDebug).toUByte()
+public val SPAN_DEBUG: UByte = Tag.SpanDebug.toUByte()
 
-public val SPAN_PARENT: UByte = (Tag::spanParent).toUByte()
+public val SPAN_PARENT: UByte = Tag.SpanParent.toUByte()
 
-public val SPAN_SOURCE: UByte = (Tag::spanSource).toUByte()
+public val SPAN_SOURCE: UByte = Tag.SpanSource.toUByte()
 
-public val SPAN_BYTE_RANGE: UByte = (Tag::spanByteRange).toUByte()
+public val SPAN_BYTE_RANGE: UByte = Tag.SpanByteRange.toUByte()
 
-public val SPAN_START: UByte = (Tag::spanStart).toUByte()
+public val SPAN_START: UByte = Tag.SpanStart.toUByte()
 
-public val SPAN_END: UByte = (Tag::spanEnd).toUByte()
+public val SPAN_END: UByte = Tag.SpanEnd.toUByte()
 
-public val SPAN_LINE: UByte = (Tag::spanLine).toUByte()
+public val SPAN_LINE: UByte = Tag.SpanLine.toUByte()
 
-public val SPAN_COLUMN: UByte = (Tag::spanColumn).toUByte()
+public val SPAN_COLUMN: UByte = Tag.SpanColumn.toUByte()
 
-public val SPAN_FILE: UByte = (Tag::spanFile).toUByte()
+public val SPAN_FILE: UByte = Tag.SpanFile.toUByte()
 
-public val SPAN_LOCAL_FILE: UByte = (Tag::spanLocalFile).toUByte()
+public val SPAN_LOCAL_FILE: UByte = Tag.SpanLocalFile.toUByte()
 
-public val SPAN_JOIN: UByte = (Tag::spanJoin).toUByte()
+public val SPAN_JOIN: UByte = Tag.SpanJoin.toUByte()
 
-public val SPAN_SUBSPAN: UByte = (Tag::spanSubspan).toUByte()
+public val SPAN_SUBSPAN: UByte = Tag.SpanSubspan.toUByte()
 
-public val SPAN_RESOLVED_AT: UByte = (Tag::spanResolvedAt).toUByte()
+public val SPAN_RESOLVED_AT: UByte = Tag.SpanResolvedAt.toUByte()
 
-public val SPAN_SOURCE_TEXT: UByte = (Tag::spanSourceText).toUByte()
+public val SPAN_SOURCE_TEXT: UByte = Tag.SpanSourceText.toUByte()
 
-public val SPAN_SAVE_SPAN: UByte = (Tag::spanSaveSpan).toUByte()
+public val SPAN_SAVE_SPAN: UByte = Tag.SpanSaveSpan.toUByte()
 
-public val SPAN_RECOVER_PROC_MACRO_SPAN: UByte = (Tag::spanRecoverProcMacroSpan).toUByte()
+public val SPAN_RECOVER_PROC_MACRO_SPAN: UByte = Tag.SpanRecoverProcMacroSpan.toUByte()
 
-public val SYMBOL_NORMALIZE_AND_VALIDATE_IDENT: UByte = (Tag::symbolNormalizeAndValidateIdent).toUByte()
+public val SYMBOL_NORMALIZE_AND_VALIDATE_IDENT: UByte = Tag.SymbolNormalizeAndValidateIdent.toUByte()
 
 public fun <S> ApiTags.encode(w: Buffer, s: S) {
     when (this) {
-        ApiTags.trackEnvVar -> {
+        ApiTags.TrackEnvVar -> {
             trackEnvVar.encode(w, s)
         }
-        ApiTags.trackPath -> {
+        ApiTags.TrackPath -> {
             trackPath.encode(w, s)
         }
-        ApiTags.literalFromStr -> {
+        ApiTags.LiteralFromStr -> {
             literalFromStr.encode(w, s)
         }
-        ApiTags.emitDiagnostic -> {
+        ApiTags.EmitDiagnostic -> {
             emitDiagnostic.encode(w, s)
         }
-        ApiTags.tsDrop -> {
+        ApiTags.TsDrop -> {
             tsDrop.encode(w, s)
         }
-        ApiTags.tsClone -> {
+        ApiTags.TsClone -> {
             tsClone.encode(w, s)
         }
-        ApiTags.tsIsEmpty -> {
+        ApiTags.TsIsEmpty -> {
             tsIsEmpty.encode(w, s)
         }
-        ApiTags.tsExpandExpr -> {
+        ApiTags.TsExpandExpr -> {
             tsExpandExpr.encode(w, s)
         }
-        ApiTags.tsFromStr -> {
+        ApiTags.TsFromStr -> {
             tsFromStr.encode(w, s)
         }
-        ApiTags.tsToString -> {
+        ApiTags.TsToString -> {
             tsToString.encode(w, s)
         }
-        ApiTags.tsFromTokenTree -> {
+        ApiTags.TsFromTokenTree -> {
             tsFromTokenTree.encode(w, s)
         }
-        ApiTags.tsConcatTrees -> {
+        ApiTags.TsConcatTrees -> {
             tsConcatTrees.encode(w, s)
         }
-        ApiTags.tsConcatStreams -> {
+        ApiTags.TsConcatStreams -> {
             tsConcatStreams.encode(w, s)
         }
-        ApiTags.tsIntoTrees -> {
+        ApiTags.TsIntoTrees -> {
             tsIntoTrees.encode(w, s)
         }
-        ApiTags.spanDebug -> {
+        ApiTags.SpanDebug -> {
             spanDebug.encode(w, s)
         }
-        ApiTags.spanParent -> {
+        ApiTags.SpanParent -> {
             spanParent.encode(w, s)
         }
-        ApiTags.spanSource -> {
+        ApiTags.SpanSource -> {
             spanSource.encode(w, s)
         }
-        ApiTags.spanByteRange -> {
+        ApiTags.SpanByteRange -> {
             spanByteRange.encode(w, s)
         }
-        ApiTags.spanStart -> {
+        ApiTags.SpanStart -> {
             spanStart.encode(w, s)
         }
-        ApiTags.spanEnd -> {
+        ApiTags.SpanEnd -> {
             spanEnd.encode(w, s)
         }
-        ApiTags.spanLine -> {
+        ApiTags.SpanLine -> {
             spanLine.encode(w, s)
         }
-        ApiTags.spanColumn -> {
+        ApiTags.SpanColumn -> {
             spanColumn.encode(w, s)
         }
-        ApiTags.spanFile -> {
+        ApiTags.SpanFile -> {
             spanFile.encode(w, s)
         }
-        ApiTags.spanLocalFile -> {
+        ApiTags.SpanLocalFile -> {
             spanLocalFile.encode(w, s)
         }
-        ApiTags.spanJoin -> {
+        ApiTags.SpanJoin -> {
             spanJoin.encode(w, s)
         }
-        ApiTags.spanSubspan -> {
+        ApiTags.SpanSubspan -> {
             spanSubspan.encode(w, s)
         }
-        ApiTags.spanResolvedAt -> {
+        ApiTags.SpanResolvedAt -> {
             spanResolvedAt.encode(w, s)
         }
-        ApiTags.spanSourceText -> {
+        ApiTags.SpanSourceText -> {
             spanSourceText.encode(w, s)
         }
-        ApiTags.spanSaveSpan -> {
+        ApiTags.SpanSaveSpan -> {
             spanSaveSpan.encode(w, s)
         }
-        ApiTags.spanRecoverProcMacroSpan -> {
+        ApiTags.SpanRecoverProcMacroSpan -> {
             spanRecoverProcMacroSpan.encode(w, s)
         }
-        ApiTags.symbolNormalizeAndValidateIdent -> {
+        ApiTags.SymbolNormalizeAndValidateIdent -> {
             symbolNormalizeAndValidateIdent.encode(w, s)
         }
     }
 }
 
 public fun <S> decodeApiTags(r: List<UByte>, s: S): ApiTags =
-    when (val matchVal = UByte.Decode(r, s)) {
+    when (val matchVal = UByte.decode(r, s)) {
         else -> {
             val trackEnvVar = matchVal
-            ApiTags::trackEnvVar
+            ApiTags.TrackEnvVar
         }
         else -> {
             val trackPath = matchVal
-            ApiTags::trackPath
+            ApiTags.TrackPath
         }
         else -> {
             val literalFromStr = matchVal
-            ApiTags::literalFromStr
+            ApiTags.LiteralFromStr
         }
         else -> {
             val emitDiagnostic = matchVal
-            ApiTags::emitDiagnostic
+            ApiTags.EmitDiagnostic
         }
         else -> {
             val tsDrop = matchVal
-            ApiTags::tsDrop
+            ApiTags.TsDrop
         }
         else -> {
             val tsClone = matchVal
-            ApiTags::tsClone
+            ApiTags.TsClone
         }
         else -> {
             val tsIsEmpty = matchVal
-            ApiTags::tsIsEmpty
+            ApiTags.TsIsEmpty
         }
         else -> {
             val tsExpandExpr = matchVal
-            ApiTags::tsExpandExpr
+            ApiTags.TsExpandExpr
         }
         else -> {
             val tsFromStr = matchVal
-            ApiTags::tsFromStr
+            ApiTags.TsFromStr
         }
         else -> {
             val tsToString = matchVal
-            ApiTags::tsToString
+            ApiTags.TsToString
         }
         else -> {
             val tsFromTokenTree = matchVal
-            ApiTags::tsFromTokenTree
+            ApiTags.TsFromTokenTree
         }
         else -> {
             val tsConcatTrees = matchVal
-            ApiTags::tsConcatTrees
+            ApiTags.TsConcatTrees
         }
         else -> {
             val tsConcatStreams = matchVal
-            ApiTags::tsConcatStreams
+            ApiTags.TsConcatStreams
         }
         else -> {
             val tsIntoTrees = matchVal
-            ApiTags::tsIntoTrees
+            ApiTags.TsIntoTrees
         }
         else -> {
             val spanDebug = matchVal
-            ApiTags::spanDebug
+            ApiTags.SpanDebug
         }
         else -> {
             val spanParent = matchVal
-            ApiTags::spanParent
+            ApiTags.SpanParent
         }
         else -> {
             val spanSource = matchVal
-            ApiTags::spanSource
+            ApiTags.SpanSource
         }
         else -> {
             val spanByteRange = matchVal
-            ApiTags::spanByteRange
+            ApiTags.SpanByteRange
         }
         else -> {
             val spanStart = matchVal
-            ApiTags::spanStart
+            ApiTags.SpanStart
         }
         else -> {
             val spanEnd = matchVal
-            ApiTags::spanEnd
+            ApiTags.SpanEnd
         }
         else -> {
             val spanLine = matchVal
-            ApiTags::spanLine
+            ApiTags.SpanLine
         }
         else -> {
             val spanColumn = matchVal
-            ApiTags::spanColumn
+            ApiTags.SpanColumn
         }
         else -> {
             val spanFile = matchVal
-            ApiTags::spanFile
+            ApiTags.SpanFile
         }
         else -> {
             val spanLocalFile = matchVal
-            ApiTags::spanLocalFile
+            ApiTags.SpanLocalFile
         }
         else -> {
             val spanJoin = matchVal
-            ApiTags::spanJoin
+            ApiTags.SpanJoin
         }
         else -> {
             val spanSubspan = matchVal
-            ApiTags::spanSubspan
+            ApiTags.SpanSubspan
         }
         else -> {
             val spanResolvedAt = matchVal
-            ApiTags::spanResolvedAt
+            ApiTags.SpanResolvedAt
         }
         else -> {
             val spanSourceText = matchVal
-            ApiTags::spanSourceText
+            ApiTags.SpanSourceText
         }
         else -> {
             val spanSaveSpan = matchVal
-            ApiTags::spanSaveSpan
+            ApiTags.SpanSaveSpan
         }
         else -> {
             val spanRecoverProcMacroSpan = matchVal
-            ApiTags::spanRecoverProcMacroSpan
+            ApiTags.SpanRecoverProcMacroSpan
         }
         else -> {
             val symbolNormalizeAndValidateIdent = matchVal
-            ApiTags::symbolNormalizeAndValidateIdent
+            ApiTags.SymbolNormalizeAndValidateIdent
         }
         else -> error("unreachable")
     }

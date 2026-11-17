@@ -38,6 +38,8 @@ import io.github.kotlinmania.rustlang.std.sys.backtrace.PrintFmt
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.thread.current.currentOsId
+import io.github.kotlinmania.rustlang.std.thread.current.withCurrentName
 
 // Implementation of various bits and pieces of the `panic` macro and
 // associated runtime pieces.
@@ -174,7 +176,7 @@ public var HOOK: RwLock<Hook> = RwLock.new(Hook.Default)
  * ```
  */
 public fun setHook(hook: (PanicHookInfo) -> Unit) {
-    if (thread.panicking()) {
+    if (io.github.kotlinmania.rustlang.std.thread.functions.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     // Drop the old hook after changing the hook to avoid deadlocking if its
@@ -211,7 +213,7 @@ public fun setHook(hook: (PanicHookInfo) -> Unit) {
  * ```
  */
 public fun takeHook(): (PanicHookInfo) -> Unit {
-    if (thread.panicking()) {
+    if (io.github.kotlinmania.rustlang.std.thread.functions.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     return HOOK.replace(Hook.Default).intoBox()
@@ -252,7 +254,7 @@ public fun takeHook(): (PanicHookInfo) -> Unit {
  * ```
  */
 public fun updateHook(hookFn: ((PanicHookInfo) -> Unit, PanicHookInfo) -> Unit) {
-    if (thread.panicking()) {
+    if (io.github.kotlinmania.rustlang.std.thread.functions.panicking()) {
         error("cannot modify the panic hook from a panicking thread")
     }
     var hook = HOOK.write()
@@ -270,7 +272,7 @@ public fun defaultHook(info: PanicHookInfo) {
         if (info.forceNoBacktrace()) {
             null
         } else if (getCount() >= 2) {
-            BacktraceStyle.full()
+            BacktraceStyle.Full()
         } else {
             getBacktraceStyle()
         }
@@ -282,9 +284,9 @@ public fun defaultHook(info: PanicHookInfo) {
             // Use a lock to prevent mixed output in multithreading context.
             // Some platforms also require it when printing a backtrace, like `SymFromAddr` on Windows.
             var lock = lock()
-            thread.withCurrentName({ name ->
+            withCurrentName({ name ->
                 val name1 = name.unwrapOr("<unnamed>")
-                val tid = thread.currentOsId()
+                val tid = currentOsId()
                 // Try to write the panic message to a buffer first to prevent other concurrent outputs
                 // interleaving with it.
                 var buffer = UByteArray(512) { 0u.toUByte() }
@@ -445,7 +447,7 @@ public fun <M> beginPanic(msg: M): Nothing {
             // propagate this allocation to be performed in the parent of this thread instead of the
             // thread that's panicking.
             return when (val matchVal = this.inner.also { this.inner = null }) {
-                null -> process.abort()
+                null -> abort()
                 else -> {
                     val a = matchVal
                     RustAny.from(a)
@@ -455,7 +457,7 @@ public fun <M> beginPanic(msg: M): Nothing {
 
         public open fun get(): RustAny =
             when (val matchVal = this.inner) {
-                null -> process.abort()
+                null -> abort()
                 else -> {
                     val a = matchVal
                     a
@@ -464,7 +466,7 @@ public fun <M> beginPanic(msg: M): Nothing {
 
         public open fun fmt(f: StringBuilder): Result<Unit, Error> =
             when (val matchVal = this.inner) {
-                null -> process.abort()
+                null -> abort()
                 else -> {
                     val a = matchVal
                     run { f.append(payloadAsStr(a)); Result.Ok<Unit, Error>(Unit) }

@@ -4,10 +4,13 @@
 package io.github.kotlinmania.rustlang.core.bytestr.traits
 
 import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.eq
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.range.Bound
@@ -25,11 +28,11 @@ import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 
 // Trait implementations for `ByteStr`.
 
-public fun ByteStr.cmp(other: ByteStr): Ordering = this.value.cmp(other.first)
+public fun ByteStr.cmp(other: ByteStr): Ordering = kmCompareValues(this.value, other.value).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
 
-public fun ByteStr.partialCmp(other: ByteStr): Ordering? = this.value.partialCmp(other.first)
+public fun ByteStr.partialCmp(other: ByteStr): Ordering? = kmPartialCompareValues(this.value, other.value)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
 
-public fun ByteStr.eq(other: ByteStr): Boolean = this.value == other.first
+public fun ByteStr.eq(other: ByteStr): Boolean = this.value == other.value
 
 public fun <H> ByteStr.hash(state: H) {
     this.value.hash(state)
@@ -43,62 +46,62 @@ public fun <H> ByteStr.hash(state: H) {
 // PartialOrd with `[UByte; N]` omitted to avoid inference failures
 public fun ByteStr.eq(other: List<UByte>): Boolean {
     val other1: List<UByte> = other
-    return PartialEq.Eq(this.asBytes(), other1)
+    return this.asBytes().eq(other1)
 }
 
 public fun List<UByte>.eq(other: ByteStr): Boolean {
     val thisRef: List<UByte> = this
-    return PartialEq.Eq(thisRef, other.asBytes())
+    return thisRef.eq(other.asBytes())
 }
 
 public fun ByteStr.eqUByteSlice(other: List<UByte>): Boolean {
     val other1: List<UByte> = other
-    return PartialEq.Eq(this.asBytes(), other1)
+    return this.asBytes().eq(other1)
 }
 
 public fun List<UByte>.eqByteStr(other: ByteStr): Boolean {
     val thisRef: List<UByte> = this
-    return PartialEq.Eq(thisRef, other.asBytes())
+    return thisRef.eq(other.asBytes())
 }
 
 public fun ByteStr.eq(other: String): Boolean {
     val other1: List<UByte> = other
-    return PartialEq.Eq(this.asBytes(), other1)
+    return this.asBytes().eq(other1)
 }
 
 public fun String.eq(other: ByteStr): Boolean {
     val thisRef: List<UByte> = this
-    return PartialEq.Eq(thisRef, other.asBytes())
+    return thisRef.eq(other.asBytes())
 }
 
 public fun ByteStr.eqString(other: String): Boolean {
     val other1: List<UByte> = other
-    return PartialEq.Eq(this.asBytes(), other1)
+    return this.asBytes().eq(other1)
 }
 
 public fun String.eqByteStr(other: ByteStr): Boolean {
     val thisRef: List<UByte> = this
-    return PartialEq.Eq(thisRef, other.asBytes())
+    return thisRef.eq(other.asBytes())
 }
 
 public fun ByteStr.eq(other: UByteArray, n: Int): Boolean {
     val other1: List<UByte> = other.asRef()
-    return PartialEq.Eq(this.asBytes(), other1)
+    return this.asBytes().eq(other1)
 }
 
 public fun UByteArray.eqByteStrFromUByteArrayn(other: ByteStr, n: Int): Boolean {
     val thisRef: List<UByte> = this.asRef()
-    return PartialEq.Eq(thisRef, other.asBytes())
+    return thisRef.eq(other.asBytes())
 }
 
 public fun ByteStr.eqUByteArrayn(other: UByteArray, n: Int): Boolean {
     val other1: List<UByte> = other.asRef()
-    return PartialEq.Eq(this.asBytes(), other1)
+    return this.asBytes().eq(other1)
 }
 
 public fun UByteArray.eq(other: ByteStr, n: Int): Boolean {
     val thisRef: List<UByte> = this.asRef()
-    return PartialEq.Eq(thisRef, other.asBytes())
+    return thisRef.eq(other.asBytes())
 }
 
 public fun <Output, I> ByteStr.index(index: I): Output where I : SliceIndex<ByteStr, Output> = index.index(this)

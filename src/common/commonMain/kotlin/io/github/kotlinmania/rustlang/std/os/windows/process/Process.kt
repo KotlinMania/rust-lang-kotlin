@@ -23,53 +23,58 @@ import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
-import io.github.kotlinmania.rustlang.std.sys.FromInner
-import io.github.kotlinmania.rustlang.std.sys.fromInner
+import io.github.kotlinmania.rustlang.std.process.Child
+import io.github.kotlinmania.rustlang.std.process.ChildStderr
+import io.github.kotlinmania.rustlang.std.process.ChildStdin
+import io.github.kotlinmania.rustlang.std.process.ChildStdout
+import io.github.kotlinmania.rustlang.std.process.Command
+import io.github.kotlinmania.rustlang.std.process.ExitCode
+import io.github.kotlinmania.rustlang.std.process.ExitStatus
+import io.github.kotlinmania.rustlang.std.process.Stdio
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
-import io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio
 import io.github.kotlinmania.rustlang.std.sys.process.windows.childpipe.ChildPipe
 
 // Windows-specific extensions to primitives in the [std.process] module.
 
-public fun fromRawHandleStdio(handle: RawHandle): process.Stdio {
+public fun fromRawHandleStdio(handle: RawHandle): Stdio {
     val handle1 = Handle.Handle.fromRawHandle(MutPtr(handle.rawAddress, handle.rawMeta))
-    val io = Stdio.Handle(handle1)
-    return process.Stdio.FromInner(io)
+    val io = io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio.Handle(handle1)
+    return Stdio.fromInner(io)
 }
 
 /**
  * Takes ownership of a handle and returns a [`Stdio`](process.Stdio)
  * that can attach a stream to it.
  */
-public fun fromStdio(handle: OwnedHandle): process.Stdio {
+public fun fromStdio(handle: OwnedHandle): Stdio {
     val handle1 = Handle.Handle.fromInner(handle)
-    val io = Stdio.Handle(handle1)
-    return process.Stdio.FromInner(io)
+    val io = io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio.Handle(handle1)
+    return Stdio.fromInner(io)
 }
 
-public fun process.Child.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun Child.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun process.Child.asHandle(): BorrowedHandle = this.asInner().handle().asHandle()
+public fun Child.asHandle(): BorrowedHandle = this.asInner().handle().asHandle()
 
-public fun process.Child.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun Child.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
 /**
  * Takes ownership of a [`Child`](process.Child)'s process handle.
  */
-public fun fromOwnedHandle(child: process.Child): OwnedHandle = child.intoInner().intoHandle().intoInner()
+public fun fromOwnedHandle(child: Child): OwnedHandle = child.intoInner().intoHandle().intoInner()
 
-public fun process.ChildStdin.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun ChildStdin.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun process.ChildStdout.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun ChildStdout.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun process.ChildStderr.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
+public fun ChildStderr.asRawHandle(): RawHandle = mutPtrFromRustCast(this.asInner().handle().asRawHandle())
 
-public fun process.ChildStdin.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun ChildStdin.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
-public fun process.ChildStdout.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun ChildStdout.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
-public fun process.ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
+public fun ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoHandle().intoRawHandle())
 
 /**
  * Creates a `ChildStdin` from the provided `OwnedHandle`.
@@ -77,10 +82,10 @@ public fun process.ChildStderr.intoRawHandle(): RawHandle = mutPtrFromRustCast(t
  * The provided handle must be asynchronous, as reading and
  * writing from and to it is implemented using asynchronous APIs.
  */
-public fun fromChildStdin(handle: OwnedHandle): process.ChildStdin {
+public fun fromChildStdin(handle: OwnedHandle): ChildStdin {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return process.ChildStdin.FromInner(pipe)
+    return ChildStdin.fromInner(pipe)
 }
 
 /**
@@ -89,10 +94,10 @@ public fun fromChildStdin(handle: OwnedHandle): process.ChildStdin {
  * The provided handle must be asynchronous, as reading and
  * writing from and to it is implemented using asynchronous APIs.
  */
-public fun fromChildStdout(handle: OwnedHandle): process.ChildStdout {
+public fun fromChildStdout(handle: OwnedHandle): ChildStdout {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return process.ChildStdout.FromInner(pipe)
+    return ChildStdout.fromInner(pipe)
 }
 
 /**
@@ -101,10 +106,10 @@ public fun fromChildStdout(handle: OwnedHandle): process.ChildStdout {
  * The provided handle must be asynchronous, as reading and
  * writing from and to it is implemented using asynchronous APIs.
  */
-public fun fromChildStderr(handle: OwnedHandle): process.ChildStderr {
+public fun fromChildStderr(handle: OwnedHandle): ChildStderr {
     val handle1 = Handle.Handle.fromInner(handle)
     val pipe = ChildPipe.fromInner(handle1)
-    return process.ChildStderr.FromInner(pipe)
+    return ChildStderr.fromInner(pipe)
 }
 
 /**
@@ -118,11 +123,11 @@ public interface ExitStatusExt<T> {
     public fun fromRaw(raw: UInt): T
 
     public companion object {
-        public fun fromRaw(raw: UInt): process.ExitStatus = exitStatusExtFromRawExitStatus(raw)
+        public fun fromRaw(raw: UInt): ExitStatus = exitStatusExtFromRawExitStatus(raw)
     }
 }
 
-public fun exitStatusExtFromRawExitStatus(raw: UInt): process.ExitStatus = process.ExitStatus.FromInner(From.from(raw))
+public fun exitStatusExtFromRawExitStatus(raw: UInt): ExitStatus = ExitStatus.fromInner(From.from(raw))
 
 /**
  * Windows-specific extensions to the [process.Command] builder.
@@ -135,7 +140,7 @@ public interface CommandExt {
      *
      * [1]: https://docs.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
      */
-    public fun creationFlags(flags: UInt): process.Command
+    public fun creationFlags(flags: UInt): Command
 
     /**
      * Places the child process on the desktop named `desktop` by setting the
@@ -145,7 +150,7 @@ public interface CommandExt {
      *
      * [1]: <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow>
      */
-    public fun desktop(desktop: OsStr): process.Command
+    public fun desktop(desktop: OsStr): Command
 
     /**
      * Sets the field `wShowWindow` of [STARTUPINFO][1] that is passed to `CreateProcess`.
@@ -154,7 +159,7 @@ public interface CommandExt {
      *
      * [1]: <https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow>
      */
-    public fun showWindow(cmdShow: UShort): process.Command
+    public fun showWindow(cmdShow: UShort): Command
 
     /**
      * Forces all arguments to be wrapped in quote (`"`) characters.
@@ -171,7 +176,7 @@ public interface CommandExt {
      * [1]: <https://github.com/msys2/MSYS2-packages/issues/2176>
      * [2]: <https://msdn.microsoft.com/en-us/library/17w5ykft.aspx>
      */
-    public fun forceQuotes(enabled: Boolean): process.Command
+    public fun forceQuotes(enabled: Boolean): Command
 
     /**
      * Append literal text to the command line without any quoting or escaping.
@@ -219,7 +224,7 @@ public interface CommandExt {
      * }
      * ````
      */
-    public fun rawArg(textToAppendAsIs: OsStr): process.Command
+    public fun rawArg(textToAppendAsIs: OsStr): Command
 
     /**
      * When [process.Command] creates pipes, request that our side is always async.
@@ -250,7 +255,7 @@ public interface CommandExt {
      *     .stderr(Stdio.piped());
      * ```kotlin
      */
-    public fun asyncPipes(alwaysAsync: Boolean): process.Command
+    public fun asyncPipes(alwaysAsync: Boolean): Command
 
     /**
      * Executes the command as a child process with the given
@@ -296,21 +301,21 @@ public interface CommandExt {
      * # Ok::<(), std.io.Error>(())
      * ```kotlin
      */
-    public fun spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<process.Child, Error>
+    public fun spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<Child, Error>
 
     /**
      * When true, sets the `STARTF_RUNFULLSCREEN` flag on the [STARTUPINFO][1] struct before passing it to `CreateProcess`.
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
      */
-    public fun startupinfoFullscreen(enabled: Boolean): process.Command
+    public fun startupinfoFullscreen(enabled: Boolean): Command
 
     /**
      * When true, sets the `STARTF_UNTRUSTEDSOURCE` flag on the [STARTUPINFO][1] struct before passing it to `CreateProcess`.
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
      */
-    public fun startupinfoUntrustedSource(enabled: Boolean): process.Command
+    public fun startupinfoUntrustedSource(enabled: Boolean): Command
 
     /**
      * When specified, sets the following flags on the [STARTUPINFO][1] struct before passing it to `CreateProcess`:
@@ -320,7 +325,7 @@ public interface CommandExt {
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa
      */
-    public fun startupinfoForceFeedback(enabled: Boolean?): process.Command
+    public fun startupinfoForceFeedback(enabled: Boolean?): Command
 
     /**
      * If this flag is set to `true`, each inheritable handle in the calling
@@ -335,35 +340,35 @@ public interface CommandExt {
      *
      * [1]: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw#remarks
      */
-    public fun inheritHandles(inheritHandles: Boolean): process.Command
+    public fun inheritHandles(inheritHandles: Boolean): Command
 }
 
-public fun process.Command.creationFlags(flags: UInt): process.Command {
+public fun Command.creationFlags(flags: UInt): Command {
     this.asInnerMut().creationFlags(flags)
     return this
 }
 
-public fun process.Command.desktop(desktop: OsStr): process.Command {
+public fun Command.desktop(desktop: OsStr): Command {
     this.asInnerMut().desktop(desktop)
     return this
 }
 
-public fun process.Command.showWindow(cmdShow: UShort): process.Command {
+public fun Command.showWindow(cmdShow: UShort): Command {
     this.asInnerMut().showWindow(cmdShow)
     return this
 }
 
-public fun process.Command.forceQuotes(enabled: Boolean): process.Command {
+public fun Command.forceQuotes(enabled: Boolean): Command {
     this.asInnerMut().forceQuotes(enabled)
     return this
 }
 
-public fun process.Command.rawArg(rawText: OsStr): process.Command {
+public fun Command.rawArg(rawText: OsStr): Command {
     this.asInnerMut().rawArg(rawText)
     return this
 }
 
-public fun process.Command.asyncPipes(alwaysAsync: Boolean): process.Command {
+public fun Command.asyncPipes(alwaysAsync: Boolean): Command {
     // Note: This currently has an intentional no-op implementation.
     // For the time being our side of the pipes will always be async.
     // Once the ecosystem has adjusted, we may then be able to start making
@@ -371,24 +376,24 @@ public fun process.Command.asyncPipes(alwaysAsync: Boolean): process.Command {
     return this
 }
 
-public fun process.Command.spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<process.Child, Error> = this.asInnerMut().spawnWithAttributes(Stdio.Inherit, true, attributeList).map(process.Child::fromInner)
+public fun Command.spawnWithAttributes(attributeList: ProcThreadAttributeList): Result<Child, Error> = this.asInnerMut().spawnWithAttributes(io.github.kotlinmania.rustlang.std.sys.process.windows.Stdio.Inherit, true, attributeList).map(Child::fromInner)
 
-public fun process.Command.startupinfoFullscreen(enabled: Boolean): process.Command {
+public fun Command.startupinfoFullscreen(enabled: Boolean): Command {
     this.asInnerMut().startupinfoFullscreen(enabled)
     return this
 }
 
-public fun process.Command.startupinfoUntrustedSource(enabled: Boolean): process.Command {
+public fun Command.startupinfoUntrustedSource(enabled: Boolean): Command {
     this.asInnerMut().startupinfoUntrustedSource(enabled)
     return this
 }
 
-public fun process.Command.startupinfoForceFeedback(enabled: Boolean?): process.Command {
+public fun Command.startupinfoForceFeedback(enabled: Boolean?): Command {
     this.asInnerMut().startupinfoForceFeedback(enabled)
     return this
 }
 
-public fun process.Command.inheritHandles(inheritHandles: Boolean): process.Command {
+public fun Command.inheritHandles(inheritHandles: Boolean): Command {
     this.asInnerMut().inheritHandles(inheritHandles)
     return this
 }
@@ -400,7 +405,7 @@ public interface ChildExt<T> {
     public fun mainThreadHandle(): BorrowedHandle
 }
 
-public fun process.Child.mainThreadHandle(): BorrowedHandle = this.handle.mainThreadHandle()
+public fun Child.mainThreadHandle(): BorrowedHandle = this.handle.mainThreadHandle()
 
 /**
  * Windows-specific extensions to [process.ExitCode].
@@ -417,11 +422,11 @@ public interface ExitCodeExt<T> {
     public fun fromRaw(raw: UInt): T
 
     public companion object {
-        public fun fromRaw(raw: UInt): process.ExitCode = exitCodeExtFromRawExitCode(raw)
+        public fun fromRaw(raw: UInt): ExitCode = exitCodeExtFromRawExitCode(raw)
     }
 }
 
-public fun exitCodeExtFromRawExitCode(raw: UInt): process.ExitCode = process.ExitCode.FromInner(From.from(raw))
+public fun exitCodeExtFromRawExitCode(raw: UInt): ExitCode = ExitCode.fromInner(From.from(raw))
 
 /**
  * A wrapper around windows [`ProcThreadAttributeList`][1].

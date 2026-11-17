@@ -18,7 +18,7 @@ import io.github.kotlinmania.rustlang.core.str.iter.Chars
  * NOTE: Does no escaping, but produces errors for bare carriage return ('\r').
  */
 public fun checkRawStr(src: String, callback: (IntRange, Result<Char, EscapeError>) -> Unit) {
-    String.CheckRaw(src, callback)
+    String.checkRaw(src, callback)
 }
 
 /**
@@ -42,7 +42,7 @@ public fun checkRawByteStr(src: String, callback: (IntRange, Result<UByte, Escap
  * NOTE: Does no escaping, but produces errors for bare carriage return ('\r').
  */
 public fun checkRawCStr(src: String, callback: (IntRange, Result<NonZero<Char, NonZeroCharInner>, EscapeError>) -> Unit) {
-    CStr.CheckRaw(src, callback)
+    CStr.checkRaw(src, callback)
 }
 
 /**
@@ -81,7 +81,7 @@ public fun unescapeByte(src: String): Result<UByte, EscapeError> = List.unescape
  * which are returned by invoking `callback`.
  */
 public fun unescapeStr(src: String, callback: (IntRange, Result<Char, EscapeError>) -> Unit) {
-    String.Unescape(src, callback)
+    String.unescape(src, callback)
 }
 
 /**
@@ -103,7 +103,7 @@ public fun unescapeByteStr(src: String, callback: (IntRange, Result<UByte, Escap
  * which are returned by invoking `callback`.
  */
 public fun unescapeCStr(src: String, callback: (IntRange, Result<MixedUnit, EscapeError>) -> Unit) {
-    CStr.Unescape(src, callback)
+    CStr.unescape(src, callback)
 }
 
 // single use in Unescape.unescape1

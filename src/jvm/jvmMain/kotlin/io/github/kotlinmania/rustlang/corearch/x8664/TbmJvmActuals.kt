@@ -56,8 +56,8 @@ private object X8664TbmJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX8664TbmBextriU64(a: Long, control: Long): Long
+    external fun corearchX8664TbmExternBextriU64(a: Long, control: Long): Long
 }
 
-public actual fun bextriU64(a: ULong, control: ULong): ULong =
-    X8664TbmJniBridge.corearchX8664TbmBextriU64(a.toLong(), control.toLong()).toULong()
+public actual fun externBextriU64(a: ULong, control: ULong): ULong =
+    X8664TbmJniBridge.corearchX8664TbmExternBextriU64(a.toLong(), control.toLong()).toULong()

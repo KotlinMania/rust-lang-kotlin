@@ -24,4 +24,27 @@ public sealed class Shutdown {
     public data object Both : Shutdown()
 
     public fun rustEquals(other: Shutdown): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Read -> 0
+        Write -> 1
+        Both -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }

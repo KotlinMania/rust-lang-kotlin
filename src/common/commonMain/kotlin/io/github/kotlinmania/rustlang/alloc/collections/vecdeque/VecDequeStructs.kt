@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.intoiter.IntoIt
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.iter.Iter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.itermut.IterMut
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.SpecFromIter
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.specfromiter.specFromIter
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.splice.Splice
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
@@ -3377,7 +3378,7 @@ public fun <T, U, A : Allocator> VecDeque<T, A>.eqUArrayn(other: List<U>, n: Int
     return sa == oa && sb == ob
 }
 
-public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.SpecFromIter(iter.iterator())
+public fun <T, I : Iterable<T>> fromIteratorFromIterVecDequeT(iter: I): VecDeque<T, Global> = SpecFromIter.specFromIter(iter.iterator())
 
 /**
  * Converts a `[T; N]` into a `VecDeque<T>`.

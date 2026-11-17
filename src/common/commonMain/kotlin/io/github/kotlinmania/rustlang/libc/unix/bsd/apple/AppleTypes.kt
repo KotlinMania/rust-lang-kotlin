@@ -325,6 +325,22 @@ public sealed class SysdirSearchPathDirectoryT(
     public data object SysdirDirectoryAllApplications : SysdirSearchPathDirectoryT(100u)
     public data object SysdirDirectoryAllLibraries : SysdirSearchPathDirectoryT(101u)
 
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value.toInt()
+
+    public fun toUInt(): UInt = value
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
+
     public open fun clone(): SysdirSearchPathDirectoryT = this
 }
 
@@ -336,6 +352,22 @@ public sealed class SysdirSearchPathDomainMaskT(
     public data object SysdirDomainMaskNetwork : SysdirSearchPathDomainMaskT((1u shl 2))
     public data object SysdirDomainMaskSystem : SysdirSearchPathDomainMaskT((1u shl 3))
     public data object SysdirDomainMaskAll : SysdirSearchPathDomainMaskT(0x0ffffu)
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value.toInt()
+
+    public fun toUInt(): UInt = value
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 
     public open fun clone(): SysdirSearchPathDomainMaskT = this
 }

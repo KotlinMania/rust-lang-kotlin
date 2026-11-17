@@ -43,6 +43,28 @@ public sealed class CVoid {
     public data object Variant1 : CVoid()
     public data object Variant2 : CVoid()
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Variant1 -> 0
+        Variant2 -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "c_void").finish(); Result.Ok<Unit, Unit>(Unit) }
 }
 

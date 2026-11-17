@@ -6,12 +6,12 @@ import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.macros.formatArgsNl
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
-import io.github.kotlinmania.rustlang.std.formatArgsNl
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
@@ -26,6 +26,7 @@ import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.intoInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.abortInternal
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
@@ -1684,7 +1685,7 @@ public open class Stdio(
          * // "!dlrow ,olleH" echoed to console
          * ```
          */
-        public fun from(child: ChildStdin): Stdio = Stdio.FromInner(child.intoInner().into())
+        public fun from(child: ChildStdin): Stdio = Stdio.fromInner(child.intoInner().into())
 
         /**
          * Converts a [ChildStdout] into a [Stdio].
@@ -1702,7 +1703,7 @@ public open class Stdio(
          * check(reverse.stdout == "!dlrow ,olleH\n".encodeToByteArray())
          * ```
          */
-        public fun from(child: ChildStdout): Stdio = Stdio.FromInner(child.intoInner().into())
+        public fun from(child: ChildStdout): Stdio = Stdio.fromInner(child.intoInner().into())
 
         /**
          * Converts a [ChildStderr] into a [Stdio].
@@ -1718,7 +1719,7 @@ public open class Stdio(
          * check(String.fromUtf8Lossy(cat.stdout) == "rev: cannot open nonExistingFile.txt: No such file or directory\n")
          * ```
          */
-        public fun from(child: ChildStderr): Stdio = Stdio.FromInner(child.intoInner().into())
+        public fun from(child: ChildStderr): Stdio = Stdio.fromInner(child.intoInner().into())
 
         /**
          * Converts a [`File`](fs.File) into a [Stdio].
@@ -1737,7 +1738,7 @@ public open class Stdio(
          * check(reverse.stdout == "!dlrow ,olleH".encodeToByteArray())
          * ```
          */
-        public fun from(file: File): Stdio = Stdio.FromInner(file.intoInner().into())
+        public fun from(file: File): Stdio = Stdio.fromInner(file.intoInner().into())
 
         // "whoami" is a command which exists on both Unix and Windows,
         // and which succeeds, producing some stdout output but no stderr.
@@ -1760,7 +1761,7 @@ public open class Stdio(
          * }
          * ```
          */
-        public fun from(inherit: Stdout): Stdio = Stdio.FromInner(inherit.into())
+        public fun from(inherit: Stdout): Stdio = Stdio.fromInner(inherit.into())
 
         /**
          * Redirect command stdout/stderr to our stderr
@@ -1780,11 +1781,11 @@ public open class Stdio(
          * }
          * ```
          */
-        public fun from(inherit: Stderr): Stdio = Stdio.FromInner(inherit.into())
+        public fun from(inherit: Stderr): Stdio = Stdio.fromInner(inherit.into())
 
-        public fun from(pipe: PipeWriter): Stdio = Stdio.FromInner(pipe.intoInner().into())
+        public fun from(pipe: PipeWriter): Stdio = Stdio.fromInner(pipe.intoInner().into())
 
-        public fun from(pipe: PipeReader): Stdio = Stdio.FromInner(pipe.intoInner().into())
+        public fun from(pipe: PipeReader): Stdio = Stdio.fromInner(pipe.intoInner().into())
     }
 }
 
@@ -1907,7 +1908,7 @@ public open class ExitStatus(
          */
         public fun default(): ExitStatus {
             // Ideally this would be done by ExitCode.default().into() but that is complicated.
-            return ExitStatus.FromInner(io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus.default())
+            return ExitStatus.fromInner(io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus.default())
         }
 
         public fun fromInner(s: io.github.kotlinmania.rustlang.std.sys.process.unix.unix.ExitStatus): ExitStatus = ExitStatus(s)

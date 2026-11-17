@@ -483,7 +483,7 @@ public open class RustAllocString(
         var selfMut = this
         // use saturating arithmetic to ensure that in the case of an overflow, reserve() throws OOM
         val additional: Saturating<Int> = slice.map({ x -> Saturating(x.len()) }).sum()
-        selfMut.reserve(additional.first)
+        selfMut.reserve(additional.value)
         val (ptr, len, cap) = take(selfMut).intoRawParts()
         // SAFETY: `self` have reserved enough space for strs in `slice`, and we are copying from valid UTF-8 slices.
         // Therefore all unchecked operations are safe.
@@ -493,7 +493,7 @@ public open class RustAllocString(
                 copyNonoverlapping(new.asPtr(), dst, new.len())
                 dst = dst.add(new.len())
             }
-            selfMut = String.fromRawParts(ptr, len + additional.first, cap)
+            selfMut = String.fromRawParts(ptr, len + additional.value, cap)
         }
     }
 
@@ -1648,7 +1648,7 @@ public open class RustAllocString(
         return String.from(s)
     }
 
-    public open fun extendFromEscapeDefault(escaper: str.EscapeDefault) {
+    public open fun extendFromEscapeDefault(escaper: EscapeDefault) {
         val (front, middle, tail) = escaper.intoParts()
         val lengths = front.asRef().mapOrDefault({ f -> f.sizeHint().first }) + middle.asRef().mapOrDefault({ m -> m.sizeHint().first }) + tail.asRef().mapOrDefault({ t -> t.sizeHint().first })
         this.reserve(lengths)
@@ -2598,6 +2598,28 @@ public sealed class FromUtf16ErrorKind {
     public data object OddBytes : FromUtf16ErrorKind()
 
     public fun rustEquals(other: FromUtf16ErrorKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        LoneSurrogate -> 0
+        OddBytes -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public interface FromCharIterSpec : Iterator<Char> {
@@ -2606,7 +2628,7 @@ public interface FromCharIterSpec : Iterator<Char> {
     public fun next(): Char?
 }
 
-public fun str.EscapeDefault.toStringSpec(): String {
+public fun EscapeDefault.toStringSpec(): String {
     // go through the ToString specialization
     return this.toString()
 }
@@ -2628,7 +2650,7 @@ public fun <T : Iterable<Char>> T.specExtendInto(target: String) {
     iterator.forEach({ c -> target += c })
 }
 
-public fun str.EscapeDefault.specExtendInto(target: String) {
+public fun EscapeDefault.specExtendInto(target: String) {
     target.extendFromEscapeDefault(this)
 }
 
@@ -2852,7 +2874,7 @@ public fun String.specToString(): String {
 
 public fun Arguments.specToString(): String = format(this)
 
-public fun str.EscapeDefault.specToString(): String {
+public fun EscapeDefault.specToString(): String {
     val s = String.new()
     s.extendFromEscapeDefault(this.clone())
     return s

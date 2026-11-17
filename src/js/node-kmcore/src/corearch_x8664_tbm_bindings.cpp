@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchX8664TbmBextriU64_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX8664TbmExternBextriU64_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     uint64_t a = km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0;
     uint64_t control = km_info.Length() > 1 ? km_napi_arg_u64(km_info[1]) : 0;
@@ -91,7 +91,7 @@ static Napi::Value corearchX8664TbmBextriU64_napi(const Napi::CallbackInfo& km_i
 }
 
 static void register_x8664_tbm_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchX8664TbmBextriU64", Napi::Function::New(env, corearchX8664TbmBextriU64_napi));
+    exports.Set("corearchX8664TbmExternBextriU64", Napi::Function::New(env, corearchX8664TbmExternBextriU64_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_x8664_tbm_napi, nullptr };

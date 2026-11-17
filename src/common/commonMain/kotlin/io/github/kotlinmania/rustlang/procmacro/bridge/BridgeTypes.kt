@@ -37,6 +37,57 @@ public sealed class ApiTags {
     public data object SpanSaveSpan : ApiTags()
     public data object SpanRecoverProcMacroSpan : ApiTags()
     public data object SymbolNormalizeAndValidateIdent : ApiTags()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        TrackEnvVar -> 0
+        TrackPath -> 1
+        LiteralFromStr -> 2
+        EmitDiagnostic -> 3
+        TsDrop -> 4
+        TsClone -> 5
+        TsIsEmpty -> 6
+        TsExpandExpr -> 7
+        TsFromStr -> 8
+        TsToString -> 9
+        TsFromTokenTree -> 10
+        TsConcatTrees -> 11
+        TsConcatStreams -> 12
+        TsIntoTrees -> 13
+        SpanDebug -> 14
+        SpanParent -> 15
+        SpanSource -> 16
+        SpanByteRange -> 17
+        SpanStart -> 18
+        SpanEnd -> 19
+        SpanLine -> 20
+        SpanColumn -> 21
+        SpanFile -> 22
+        SpanLocalFile -> 23
+        SpanJoin -> 24
+        SpanSubspan -> 25
+        SpanResolvedAt -> 26
+        SpanSourceText -> 27
+        SpanSaveSpan -> 28
+        SpanRecoverProcMacroSpan -> 29
+        SymbolNormalizeAndValidateIdent -> 30
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -84,6 +135,29 @@ public sealed class IdentKind : Mark<IdentKind, IdentKind> {
 
     public fun rustEquals(other: IdentKind): Boolean = this == other
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Normal -> 0
+        Raw -> 1
+        ForcedKeyword -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public override fun unmark(): IdentKind = this
 
     public open fun prefix(): String? =
@@ -109,19 +183,19 @@ public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Spa
     when (unmarked) {
         is TokenTree.Group<*, *, *> -> {
             val (tt) = unmarked
-            TokenTree.Group(Mark.Mark(tt))
+            TokenTree.Group(Mark.mark(tt))
         }
         is TokenTree.Punct<*, *, *> -> {
             val (tt1) = unmarked
-            TokenTree.Punct(Mark.Mark(tt1))
+            TokenTree.Punct(Mark.mark(tt1))
         }
         is TokenTree.Ident<*, *, *> -> {
             val (tt2) = unmarked
-            TokenTree.Ident(Mark.Mark(tt2))
+            TokenTree.Ident(Mark.mark(tt2))
         }
         is TokenTree.Literal<*, *, *> -> {
             val (tt3) = unmarked
-            TokenTree.Literal(Mark.Mark(tt3))
+            TokenTree.Literal(Mark.mark(tt3))
         }
     }
 

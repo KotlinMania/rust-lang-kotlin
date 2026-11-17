@@ -6441,7 +6441,7 @@ public fun svdupqNB8(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean, x4: Boo
 public fun svdupqNF32(x0: Float, x1: Float, x2: Float, x3: Float): Svfloat32T {
     fun svdupqNF32(op0: Svfloat32T, op1: Float32x4T, idx: Long): Svfloat32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat32T>()).alignBytes)); res }
     return run {
-        val op = svdupqNF32(svundefF32(), transmuteWithLayouts<FloatArray, Svfloat32T>(floatArrayOf(x0, x1, x2, x3), PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<Svfloat32T>()), 0)
+        val op = svdupqNF32(svundefF32(), transmuteWithLayouts<FloatArray, Float32x4T>(floatArrayOf(x0, x1, x2, x3), PrimitiveArrayLayouts.floatArray((4).toInt()), UnresolvedTypeLayout<Float32x4T>()), 0)
         svdupqLaneF32(op, 0uL)
     }
 }
@@ -6453,7 +6453,7 @@ public fun svdupqNF32(x0: Float, x1: Float, x2: Float, x3: Float): Svfloat32T {
 public fun svdupqNS32(x0: Int, x1: Int, x2: Int, x3: Int): Svint32T {
     fun svdupqNS32(op0: Svint32T, op1: Int32x4T, idx: Long): Svint32T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint32T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint32T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS32(svundefS32(), transmuteWithLayouts<IntArray, Svint32T>(intArrayOf(x0, x1, x2, x3), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<Svint32T>()), 0)
+        val op = svdupqNS32(svundefS32(), transmuteWithLayouts<IntArray, Int32x4T>(intArrayOf(x0, x1, x2, x3), PrimitiveArrayLayouts.intArray((4).toInt()), UnresolvedTypeLayout<Int32x4T>()), 0)
         svdupqLaneS32(op, 0uL)
     }
 }
@@ -6471,7 +6471,7 @@ public fun svdupqNU32(x0: UInt, x1: UInt, x2: UInt, x3: UInt): Svuint32T = svdup
 public fun svdupqNF64(x0: Double, x1: Double): Svfloat64T {
     fun svdupqNF64(op0: Svfloat64T, op1: Float64x2T, idx: Long): Svfloat64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svfloat64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svfloat64T>()).alignBytes)); res }
     return run {
-        val op = svdupqNF64(svundefF64(), transmuteWithLayouts<DoubleArray, Svfloat64T>(doubleArrayOf(x0, x1), PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<Svfloat64T>()), 0)
+        val op = svdupqNF64(svundefF64(), transmuteWithLayouts<DoubleArray, Float64x2T>(doubleArrayOf(x0, x1), PrimitiveArrayLayouts.doubleArray((2).toInt()), UnresolvedTypeLayout<Float64x2T>()), 0)
         svdupqLaneF64(op, 0uL)
     }
 }
@@ -6483,7 +6483,7 @@ public fun svdupqNF64(x0: Double, x1: Double): Svfloat64T {
 public fun svdupqNS64(x0: Long, x1: Long): Svint64T {
     fun svdupqNS64(op0: Svint64T, op1: Int64x2T, idx: Long): Svint64T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint64T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint64T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS64(svundefS64(), transmuteWithLayouts<LongArray, Svint64T>(longArrayOf(x0, x1), PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<Svint64T>()), 0)
+        val op = svdupqNS64(svundefS64(), transmuteWithLayouts<LongArray, Int64x2T>(longArrayOf(x0, x1), PrimitiveArrayLayouts.longArray((2).toInt()), UnresolvedTypeLayout<Int64x2T>()), 0)
         svdupqLaneS64(op, 0uL)
     }
 }
@@ -6501,7 +6501,7 @@ public fun svdupqNU64(x0: ULong, x1: ULong): Svuint64T = svdupqNS64(x0.asSigned(
 public fun svdupqNS16(x0: Short, x1: Short, x2: Short, x3: Short, x4: Short, x5: Short, x6: Short, x7: Short): Svint16T {
     fun svdupqNS16(op0: Svint16T, op1: Int16x8T, idx: Long): Svint16T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint16T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint16T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS16(svundefS16(), transmuteWithLayouts<ShortArray, Svint16T>(shortArrayOf(x0, x1, x2, x3, x4, x5, x6, x7), PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<Svint16T>()), 0)
+        val op = svdupqNS16(svundefS16(), transmuteWithLayouts<ShortArray, Int16x8T>(shortArrayOf(x0, x1, x2, x3, x4, x5, x6, x7), PrimitiveArrayLayouts.shortArray((8).toInt()), UnresolvedTypeLayout<Int16x8T>()), 0)
         svdupqLaneS16(op, 0uL)
     }
 }
@@ -6519,7 +6519,7 @@ public fun svdupqNU16(x0: UShort, x1: UShort, x2: UShort, x3: UShort, x4: UShort
 public fun svdupqNS8(x0: Byte, x1: Byte, x2: Byte, x3: Byte, x4: Byte, x5: Byte, x6: Byte, x7: Byte, x8: Byte, x9: Byte, x10: Byte, x11: Byte, x12: Byte, x13: Byte, x14: Byte, x15: Byte): Svint8T {
     fun svdupqNS8(op0: Svint8T, op1: Int8x16T, idx: Long): Svint8T = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); val res = (UnresolvedTypeLayout<Svint8T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Svint8T>()).alignBytes)); res }
     return run {
-        val op = svdupqNS8(svundefS8(), transmuteWithLayouts<ByteArray, Svint8T>(byteArrayOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15), PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<Svint8T>()), 0)
+        val op = svdupqNS8(svundefS8(), transmuteWithLayouts<ByteArray, Int8x16T>(byteArrayOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15), PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<Int8x16T>()), 0)
         svdupqLaneS8(op, 0uL)
     }
 }
@@ -8337,7 +8337,7 @@ public fun svld1GatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = svl
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svld1GatherU32baseOffsetF32(pg, bases, index.uncheckedShl(2))
+public fun svld1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svld1GatherU32baseOffsetF32(pg, bases, (index shl 2))
 
 /**
  * Unextended load
@@ -8347,7 +8347,7 @@ public fun svld1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svld1GatherU32baseOffsetS32(pg, bases, index.uncheckedShl(2))
+public fun svld1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svld1GatherU32baseOffsetS32(pg, bases, (index shl 2))
 
 /**
  * Unextended load
@@ -8357,7 +8357,7 @@ public fun svld1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svld1GatherU32baseOffsetU32(pg, bases, index.uncheckedShl(2))
+public fun svld1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svld1GatherU32baseOffsetU32(pg, bases, (index shl 2))
 
 /**
  * Unextended load
@@ -8367,7 +8367,7 @@ public fun svld1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svld1GatherU64baseOffsetF64(pg, bases, index.uncheckedShl(3))
+public fun svld1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svld1GatherU64baseOffsetF64(pg, bases, (index shl 3))
 
 /**
  * Unextended load
@@ -8377,7 +8377,7 @@ public fun svld1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1GatherU64baseOffsetS64(pg, bases, index.uncheckedShl(3))
+public fun svld1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1GatherU64baseOffsetS64(pg, bases, (index shl 3))
 
 /**
  * Unextended load
@@ -8387,7 +8387,7 @@ public fun svld1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1GatherU64baseOffsetU64(pg, bases, index.uncheckedShl(3))
+public fun svld1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1GatherU64baseOffsetU64(pg, bases, (index shl 3))
 
 /**
  * Unextended load
@@ -9545,7 +9545,7 @@ public fun svld1swGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svld1shGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+public fun svld1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svld1shGatherU32baseOffsetS32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and sign-extend
@@ -9555,7 +9555,7 @@ public fun svld1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svld1shGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+public fun svld1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svld1shGatherU32baseOffsetU32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and sign-extend
@@ -9565,7 +9565,7 @@ public fun svld1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1shGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+public fun svld1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1shGatherU64baseOffsetS64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and sign-extend
@@ -9575,7 +9575,7 @@ public fun svld1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1swGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+public fun svld1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1swGatherU64baseOffsetS64(pg, bases, (index shl 2))
 
 /**
  * Load 16-bit data and sign-extend
@@ -9585,7 +9585,7 @@ public fun svld1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1shGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+public fun svld1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1shGatherU64baseOffsetU64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and sign-extend
@@ -9595,7 +9595,7 @@ public fun svld1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1swGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+public fun svld1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1swGatherU64baseOffsetU64(pg, bases, (index shl 2))
 
 /**
  * Load 8-bit data and zero-extend
@@ -10375,7 +10375,7 @@ public fun svld1uwGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svuint
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svld1uhGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+public fun svld1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svld1uhGatherU32baseOffsetS32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and zero-extend
@@ -10385,7 +10385,7 @@ public fun svld1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svld1uhGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+public fun svld1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svld1uhGatherU32baseOffsetU32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and zero-extend
@@ -10395,7 +10395,7 @@ public fun svld1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1uhGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+public fun svld1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1uhGatherU64baseOffsetS64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and zero-extend
@@ -10405,7 +10405,7 @@ public fun svld1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1uwGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+public fun svld1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svld1uwGatherU64baseOffsetS64(pg, bases, (index shl 2))
 
 /**
  * Load 16-bit data and zero-extend
@@ -10415,7 +10415,7 @@ public fun svld1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1uhGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+public fun svld1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1uhGatherU64baseOffsetU64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and zero-extend
@@ -10425,7 +10425,7 @@ public fun svld1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * This dereferences and accesses the calculated address for each active element (governed by `pg`).
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svld1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1uwGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+public fun svld1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svld1uwGatherU64baseOffsetU64(pg, bases, (index shl 2))
 
 /**
  * Load two-element tuples into two vectors
@@ -11490,7 +11490,7 @@ public fun svldff1GatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = s
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svldff1GatherU32baseOffsetF32(pg, bases, index.uncheckedShl(2))
+public fun svldff1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svldff1GatherU32baseOffsetF32(pg, bases, (index shl 2))
 
 /**
  * Unextended load, first-faulting
@@ -11501,7 +11501,7 @@ public fun svldff1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldff1GatherU32baseOffsetS32(pg, bases, index.uncheckedShl(2))
+public fun svldff1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldff1GatherU32baseOffsetS32(pg, bases, (index shl 2))
 
 /**
  * Unextended load, first-faulting
@@ -11512,7 +11512,7 @@ public fun svldff1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldff1GatherU32baseOffsetU32(pg, bases, index.uncheckedShl(2))
+public fun svldff1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldff1GatherU32baseOffsetU32(pg, bases, (index shl 2))
 
 /**
  * Unextended load, first-faulting
@@ -11523,7 +11523,7 @@ public fun svldff1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svldff1GatherU64baseOffsetF64(pg, bases, index.uncheckedShl(3))
+public fun svldff1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svldff1GatherU64baseOffsetF64(pg, bases, (index shl 3))
 
 /**
  * Unextended load, first-faulting
@@ -11534,7 +11534,7 @@ public fun svldff1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1GatherU64baseOffsetS64(pg, bases, index.uncheckedShl(3))
+public fun svldff1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1GatherU64baseOffsetS64(pg, bases, (index shl 3))
 
 /**
  * Unextended load, first-faulting
@@ -11545,7 +11545,7 @@ public fun svldff1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1GatherU64baseOffsetU64(pg, bases, index.uncheckedShl(3))
+public fun svldff1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1GatherU64baseOffsetU64(pg, bases, (index shl 3))
 
 /**
  * Unextended load, first-faulting
@@ -12580,7 +12580,7 @@ public fun svldff1swGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svui
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldff1shGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+public fun svldff1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldff1shGatherU32baseOffsetS32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and sign-extend, first-faulting
@@ -12591,7 +12591,7 @@ public fun svldff1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldff1shGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+public fun svldff1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldff1shGatherU32baseOffsetU32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and sign-extend, first-faulting
@@ -12602,7 +12602,7 @@ public fun svldff1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1shGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+public fun svldff1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1shGatherU64baseOffsetS64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and sign-extend, first-faulting
@@ -12613,7 +12613,7 @@ public fun svldff1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1swGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+public fun svldff1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1swGatherU64baseOffsetS64(pg, bases, (index shl 2))
 
 /**
  * Load 16-bit data and sign-extend, first-faulting
@@ -12624,7 +12624,7 @@ public fun svldff1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1shGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+public fun svldff1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1shGatherU64baseOffsetU64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and sign-extend, first-faulting
@@ -12635,7 +12635,7 @@ public fun svldff1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1swGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+public fun svldff1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1swGatherU64baseOffsetU64(pg, bases, (index shl 2))
 
 /**
  * Load 8-bit data and zero-extend, first-faulting
@@ -13492,7 +13492,7 @@ public fun svldff1uwGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svui
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldff1uhGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+public fun svldff1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldff1uhGatherU32baseOffsetS32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and zero-extend, first-faulting
@@ -13503,7 +13503,7 @@ public fun svldff1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldff1uhGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+public fun svldff1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldff1uhGatherU32baseOffsetU32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and zero-extend, first-faulting
@@ -13514,7 +13514,7 @@ public fun svldff1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1uhGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+public fun svldff1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1uhGatherU64baseOffsetS64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and zero-extend, first-faulting
@@ -13525,7 +13525,7 @@ public fun svldff1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1uwGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+public fun svldff1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldff1uwGatherU64baseOffsetS64(pg, bases, (index shl 2))
 
 /**
  * Load 16-bit data and zero-extend, first-faulting
@@ -13536,7 +13536,7 @@ public fun svldff1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1uhGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+public fun svldff1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1uhGatherU64baseOffsetU64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and zero-extend, first-faulting
@@ -13547,7 +13547,7 @@ public fun svldff1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Result lanes corresponding to inactive FFR lanes (either before or as a result of this intrinsic) have "CONSTRAINED UNPREDICTABLE" values, irrespective of predication. Refer to architectural documentation for details.
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
-public fun svldff1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1uwGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+public fun svldff1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldff1uwGatherU64baseOffsetU64(pg, bases, (index shl 2))
 
 /**
  * Unextended load, non-faulting
@@ -20261,7 +20261,7 @@ public fun svprfbGatherU32baseOffset(pg: SvboolT, bases: Svuint32T, offset: Long
  */
 public fun svprfhGatherU32baseIndex(pg: SvboolT, bases: Svuint32T, index: Long, op: Svprfop) {
     fun svprfhGatherU32baseIndex(pg1: Svbool4T, bases1: Svint32T, index1: Long, op: Svprfop) {}
-    svprfhGatherU32baseIndex(pg.sveInto(), bases.asSigned(), index.uncheckedShl(1), op)
+    svprfhGatherU32baseIndex(pg.sveInto(), bases.asSigned(), (index shl 1), op)
 }
 
 /**
@@ -20273,7 +20273,7 @@ public fun svprfhGatherU32baseIndex(pg: SvboolT, bases: Svuint32T, index: Long, 
  */
 public fun svprfwGatherU32baseIndex(pg: SvboolT, bases: Svuint32T, index: Long, op: Svprfop) {
     fun svprfwGatherU32baseIndex(pg1: Svbool4T, bases1: Svint32T, index1: Long, op: Svprfop) {}
-    svprfwGatherU32baseIndex(pg.sveInto(), bases.asSigned(), index.uncheckedShl(2), op)
+    svprfwGatherU32baseIndex(pg.sveInto(), bases.asSigned(), (index shl 2), op)
 }
 
 /**
@@ -20285,7 +20285,7 @@ public fun svprfwGatherU32baseIndex(pg: SvboolT, bases: Svuint32T, index: Long, 
  */
 public fun svprfdGatherU32baseIndex(pg: SvboolT, bases: Svuint32T, index: Long, op: Svprfop) {
     fun svprfdGatherU32baseIndex(pg1: Svbool4T, bases1: Svint32T, index1: Long, op: Svprfop) {}
-    svprfdGatherU32baseIndex(pg.sveInto(), bases.asSigned(), index.uncheckedShl(3), op)
+    svprfdGatherU32baseIndex(pg.sveInto(), bases.asSigned(), (index shl 3), op)
 }
 
 /**
@@ -20309,7 +20309,7 @@ public fun svprfbGatherU64baseOffset(pg: SvboolT, bases: Svuint64T, offset: Long
  */
 public fun svprfhGatherU64baseIndex(pg: SvboolT, bases: Svuint64T, index: Long, op: Svprfop) {
     fun svprfhGatherU64baseIndex(pg1: Svbool2T, bases1: Svint64T, index1: Long, op: Svprfop) {}
-    svprfhGatherU64baseIndex(pg.sveInto(), bases.asSigned(), index.uncheckedShl(1), op)
+    svprfhGatherU64baseIndex(pg.sveInto(), bases.asSigned(), (index shl 1), op)
 }
 
 /**
@@ -20321,7 +20321,7 @@ public fun svprfhGatherU64baseIndex(pg: SvboolT, bases: Svuint64T, index: Long, 
  */
 public fun svprfwGatherU64baseIndex(pg: SvboolT, bases: Svuint64T, index: Long, op: Svprfop) {
     fun svprfwGatherU64baseIndex(pg1: Svbool2T, bases1: Svint64T, index1: Long, op: Svprfop) {}
-    svprfwGatherU64baseIndex(pg.sveInto(), bases.asSigned(), index.uncheckedShl(2), op)
+    svprfwGatherU64baseIndex(pg.sveInto(), bases.asSigned(), (index shl 2), op)
 }
 
 /**
@@ -20333,7 +20333,7 @@ public fun svprfwGatherU64baseIndex(pg: SvboolT, bases: Svuint64T, index: Long, 
  */
 public fun svprfdGatherU64baseIndex(pg: SvboolT, bases: Svuint64T, index: Long, op: Svprfop) {
     fun svprfdGatherU64baseIndex(pg1: Svbool2T, bases1: Svint64T, index1: Long, op: Svprfop) {}
-    svprfdGatherU64baseIndex(pg.sveInto(), bases.asSigned(), index.uncheckedShl(3), op)
+    svprfdGatherU64baseIndex(pg.sveInto(), bases.asSigned(), (index shl 3), op)
 }
 
 /**
@@ -24494,7 +24494,7 @@ public fun svst1ScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint64T
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1ScatterU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svfloat32T) {
-    svst1ScatterU32baseOffsetF32(pg, bases, index.uncheckedShl(2), data)
+    svst1ScatterU32baseOffsetF32(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -24506,7 +24506,7 @@ public fun svst1ScatterU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Lon
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1ScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svint32T) {
-    svst1ScatterU32baseOffsetS32(pg, bases, index.uncheckedShl(2), data)
+    svst1ScatterU32baseOffsetS32(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -24518,7 +24518,7 @@ public fun svst1ScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Lon
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1ScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svuint32T) {
-    svst1ScatterU32baseOffsetU32(pg, bases, index.uncheckedShl(2), data)
+    svst1ScatterU32baseOffsetU32(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -24530,7 +24530,7 @@ public fun svst1ScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Lon
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1ScatterU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svfloat64T) {
-    svst1ScatterU64baseOffsetF64(pg, bases, index.uncheckedShl(3), data)
+    svst1ScatterU64baseOffsetF64(pg, bases, (index shl 3), data)
 }
 
 /**
@@ -24542,7 +24542,7 @@ public fun svst1ScatterU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Lon
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1ScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
-    svst1ScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(3), data)
+    svst1ScatterU64baseOffsetS64(pg, bases, (index shl 3), data)
 }
 
 /**
@@ -24554,7 +24554,7 @@ public fun svst1ScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lon
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1ScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
-    svst1ScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(3), data)
+    svst1ScatterU64baseOffsetU64(pg, bases, (index shl 3), data)
 }
 
 /**
@@ -25630,7 +25630,7 @@ public fun svst1wScatterU64indexU64(pg: SvboolT, base: MutPtr, indices: Svuint64
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1hScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svint32T) {
-    svst1hScatterU32baseOffsetS32(pg, bases, index.uncheckedShl(1), data)
+    svst1hScatterU32baseOffsetS32(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -25642,7 +25642,7 @@ public fun svst1hScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1hScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svuint32T) {
-    svst1hScatterU32baseOffsetU32(pg, bases, index.uncheckedShl(1), data)
+    svst1hScatterU32baseOffsetU32(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -25654,7 +25654,7 @@ public fun svst1hScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1hScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
-    svst1hScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(1), data)
+    svst1hScatterU64baseOffsetS64(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -25666,7 +25666,7 @@ public fun svst1hScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1wScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
-    svst1wScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(2), data)
+    svst1wScatterU64baseOffsetS64(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -25678,7 +25678,7 @@ public fun svst1wScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1hScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
-    svst1hScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(1), data)
+    svst1hScatterU64baseOffsetU64(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -25690,7 +25690,7 @@ public fun svst1hScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  */
 public fun svst1wScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
-    svst1wScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(2), data)
+    svst1wScatterU64baseOffsetU64(pg, bases, (index shl 2), data)
 }
 
 /**

@@ -20,12 +20,14 @@ import io.github.kotlinmania.rustlang.std.os.fd.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.asInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.unsupported.unsupported
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.err2io
 import io.github.kotlinmania.rustlang.wasip1.FDFLAGS_NONBLOCK
@@ -84,7 +86,7 @@ public open class Socket(
     public companion object {
         public fun fromInner(inner: FileDesc): Socket = Socket(inner)
 
-        public fun fromRawFd(rawFd: RawFd): Socket = Socket(FromRawFd.FromRawFd(rawFd))
+        public fun fromRawFd(rawFd: RawFd): Socket = Socket(FromRawFd.fromRawFd(rawFd))
     }
 }
 
@@ -186,7 +188,7 @@ public open class TcpListener(
 
     public open fun accept(): Result<Pair<TcpStream, SocketAddr>, Error> {
         val fd = when (val tryResult = sockAccept(this.asInner().asInner().asRawFd(), 0).mapErr(err2io)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<TcpStream, SocketAddr>, Error>(tryResult.errValue()) }
-        return Result.Ok<Pair<TcpStream, SocketAddr>, Error>(Pair(TcpStream.FromInner(Socket.FromRawFd(fd.toInt())), SocketAddr.new(Ipv4Addr.UNSPECIFIED.into(), 0)))
+        return Result.Ok<Pair<TcpStream, SocketAddr>, Error>(Pair(TcpStream.fromInner(Socket.fromRawFd(fd.toInt())), SocketAddr.new(Ipv4Addr.UNSPECIFIED.into(), 0)))
     }
 
     public open fun duplicate(): Result<TcpListener, Error> = unsupported()

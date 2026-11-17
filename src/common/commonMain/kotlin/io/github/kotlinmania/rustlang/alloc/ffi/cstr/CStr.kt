@@ -519,7 +519,7 @@ public open class CString(
                  * Provided by libc or compilerBuiltins.
                  */
                 fun strlen(s: ConstPtr): ULong = 0uL
-                val len = strlen(ptr) + 1uL
+                val len = strlen((ptr).asConstPtr()) + 1uL
                 // Including the NUL byte
                 val slice = linearMutSliceView(ptr, len.toInt(), UnresolvedTypeLayout<CChar>())
                 CString(inner = Box.fromRaw((mutPtrFromRustCast(slice)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }))

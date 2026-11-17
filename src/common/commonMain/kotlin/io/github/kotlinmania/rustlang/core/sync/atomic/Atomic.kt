@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.sync.atomic
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
-import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicFence
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAtomicSignalFence
@@ -544,6 +543,31 @@ public sealed class Ordering {
     public data object SeqCst : Ordering()
 
     public fun rustEquals(other: Ordering): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Relaxed -> 0
+        Release -> 1
+        Acquire -> 2
+        AcqRel -> 3
+        SeqCst -> 4
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -2719,7 +2743,7 @@ public class AtomicI8(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<A
     public companion object
 }
 
-public fun defaultAtomicI8(): AtomicI8 = AtomicI8.new(Default.Default())
+public fun defaultAtomicI8(): AtomicI8 = AtomicI8.new(AtomicI8.default())
 
 public fun fromAtomicI8(v: Byte): AtomicI8 = AtomicI8.new(v)
 
@@ -3476,7 +3500,7 @@ public class AtomicU8(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<A
     public companion object
 }
 
-public fun defaultAtomicU8(): AtomicU8 = AtomicU8.new(Default.Default())
+public fun defaultAtomicU8(): AtomicU8 = AtomicU8.new(AtomicU8.default())
 
 public fun fromAtomicU8(v: UByte): AtomicU8 = AtomicU8.new(v)
 
@@ -4233,7 +4257,7 @@ public class AtomicI16(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicI16(): AtomicI16 = AtomicI16.new(Default.Default())
+public fun defaultAtomicI16(): AtomicI16 = AtomicI16.new(AtomicI16.default())
 
 public fun fromAtomicI16(v: Short): AtomicI16 = AtomicI16.new(v)
 
@@ -4990,7 +5014,7 @@ public class AtomicU16(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicU16(): AtomicU16 = AtomicU16.new(Default.Default())
+public fun defaultAtomicU16(): AtomicU16 = AtomicU16.new(AtomicU16.default())
 
 public fun fromAtomicU16(v: UShort): AtomicU16 = AtomicU16.new(v)
 
@@ -5747,7 +5771,7 @@ public class AtomicI32(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicI32(): AtomicI32 = AtomicI32.new(Default.Default())
+public fun defaultAtomicI32(): AtomicI32 = AtomicI32.new(AtomicI32.default())
 
 public fun fromAtomicI32(v: Int): AtomicI32 = AtomicI32.new(v)
 
@@ -6504,7 +6528,7 @@ public class AtomicU32(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicU32(): AtomicU32 = AtomicU32.new(Default.Default())
+public fun defaultAtomicU32(): AtomicU32 = AtomicU32.new(AtomicU32.default())
 
 public fun fromAtomicU32(v: UInt): AtomicU32 = AtomicU32.new(v)
 
@@ -7261,7 +7285,7 @@ public class AtomicI64(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicI64(): AtomicI64 = AtomicI64.new(Default.Default())
+public fun defaultAtomicI64(): AtomicI64 = AtomicI64.new(AtomicI64.default())
 
 public fun fromAtomicI64(v: Long): AtomicI64 = AtomicI64.new(v)
 
@@ -8018,7 +8042,7 @@ public class AtomicU64(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell<
     public companion object
 }
 
-public fun defaultAtomicU64(): AtomicU64 = AtomicU64.new(Default.Default())
+public fun defaultAtomicU64(): AtomicU64 = AtomicU64.new(AtomicU64.default())
 
 public fun fromAtomicU64(v: ULong): AtomicU64 = AtomicU64.new(v)
 
@@ -8775,7 +8799,7 @@ public class AtomicI128(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell
     public companion object
 }
 
-public fun defaultAtomicI128(): AtomicI128 = AtomicI128.new(Default.Default())
+public fun defaultAtomicI128(): AtomicI128 = AtomicI128.new(AtomicI128.default())
 
 public fun fromAtomicI128(v: I128): AtomicI128 = AtomicI128.new(v)
 
@@ -9532,7 +9556,7 @@ public class AtomicU128(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCell
     public companion object
 }
 
-public fun defaultAtomicU128(): AtomicU128 = AtomicU128.new(Default.Default())
+public fun defaultAtomicU128(): AtomicU128 = AtomicU128.new(AtomicU128.default())
 
 public fun fromAtomicU128(v: U128): AtomicU128 = AtomicU128.new(v)
 
@@ -10289,7 +10313,7 @@ public class AtomicIsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCel
     public companion object
 }
 
-public fun defaultAtomicIsize(): AtomicIsize = AtomicIsize.new(Default.Default())
+public fun defaultAtomicIsize(): AtomicIsize = AtomicIsize.new(AtomicIsize.default())
 
 public fun fromAtomicIsize(v: Int): AtomicIsize = AtomicIsize.new(v)
 
@@ -11046,7 +11070,7 @@ public class AtomicUsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<UnsafeCel
     public companion object
 }
 
-public fun defaultAtomicUsize(): AtomicUsize = AtomicUsize.new(Default.Default())
+public fun defaultAtomicUsize(): AtomicUsize = AtomicUsize.new(AtomicUsize.default())
 
 public fun fromAtomicUsize(v: Int): AtomicUsize = AtomicUsize.new(v)
 

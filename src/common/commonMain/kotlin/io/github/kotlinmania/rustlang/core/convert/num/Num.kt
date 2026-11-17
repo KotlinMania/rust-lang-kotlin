@@ -7,7 +7,6 @@ import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDoubleToU128Unchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDoubleToU64Unchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFloatToU128Unchecked
@@ -2941,21 +2940,21 @@ public fun tryFromInt(u: Short): Result<Int, TryFromIntError> =
  */
 public fun tryFromInt(value: UShort): Result<Int, TryFromIntError> = Result.Ok<Int, TryFromIntError>(value.toInt())
 
-public fun fromNonZeroUShort(small: NonZero<UByte, NonZeroU8Inner>): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked<NonZeroU16Inner, UShort>(From.From(small.get()))
+public fun fromNonZeroUShort(small: NonZero<UByte, NonZeroU8Inner>): NonZero<UShort, NonZeroU16Inner> = NonZero.newUnchecked<NonZeroU16Inner, UShort>(From.from(small.get()))
 
-public fun fromNonZeroUInt(small: NonZero<UByte, NonZeroU8Inner>): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(From.From(small.get()))
+public fun fromNonZeroUInt(small: NonZero<UByte, NonZeroU8Inner>): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(From.from(small.get()))
 
-public fun fromNonZeroULong(small: NonZero<UByte, NonZeroU8Inner>): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked<NonZeroU64Inner, ULong>(From.From(small.get()))
+public fun fromNonZeroULong(small: NonZero<UByte, NonZeroU8Inner>): NonZero<ULong, NonZeroU64Inner> = NonZero.newUnchecked<NonZeroU64Inner, ULong>(From.from(small.get()))
 
-public fun fromNonZeroU128(small: NonZero<UByte, NonZeroU8Inner>): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked<NonZeroU128Inner, U128>(From.From(small.get()))
+public fun fromNonZeroU128(small: NonZero<UByte, NonZeroU8Inner>): NonZero<U128, NonZeroU128Inner> = NonZero.newUnchecked<NonZeroU128Inner, U128>(From.from(small.get()))
 
-public fun fromNonZeroInt(small: NonZero<UByte, NonZeroU8Inner>): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked<NonZeroUsizeInner, Int>(From.From(small.get()))
+public fun fromNonZeroInt(small: NonZero<UByte, NonZeroU8Inner>): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked<NonZeroUsizeInner, Int>(From.from(small.get()))
 
-public fun fromNonZeroShort(small: NonZero<Byte, NonZeroI8Inner>): NonZero<Short, NonZeroI16Inner> = NonZero.newUnchecked<NonZeroI16Inner, Short>(From.From(small.get()))
+public fun fromNonZeroShort(small: NonZero<Byte, NonZeroI8Inner>): NonZero<Short, NonZeroI16Inner> = NonZero.newUnchecked<NonZeroI16Inner, Short>(From.from(small.get()))
 
-public fun fromNonZeroLong(small: NonZero<Byte, NonZeroI8Inner>): NonZero<Long, NonZeroI64Inner> = NonZero.newUnchecked<NonZeroI64Inner, Long>(From.From(small.get()))
+public fun fromNonZeroLong(small: NonZero<Byte, NonZeroI8Inner>): NonZero<Long, NonZeroI64Inner> = NonZero.newUnchecked<NonZeroI64Inner, Long>(From.from(small.get()))
 
-public fun fromNonZeroI128(small: NonZero<Byte, NonZeroI8Inner>): NonZero<I128, NonZeroI128Inner> = NonZero.newUnchecked<NonZeroI128Inner, I128>(From.From(small.get()))
+public fun fromNonZeroI128(small: NonZero<Byte, NonZeroI8Inner>): NonZero<I128, NonZeroI128Inner> = NonZero.newUnchecked<NonZeroI128Inner, I128>(From.from(small.get()))
 
 public fun tryFromNonZeroUByte(value: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = ((NonZero.new<NonZeroU8Inner, UByte>(value))?.let { Result.Ok<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 

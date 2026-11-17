@@ -294,13 +294,13 @@ public fun xxpermdi(a: VectorSignedLong, b: VectorSignedLong, dm: UByte): Vector
     return transmuteWithLayouts<I64x2, VectorSignedLong>(r, UnresolvedTypeLayout<I64x2>(), VectorSignedLong.typeLayout())
 }
 
-public fun VectorUnsignedLong.vecXxpermdi(b: VectorUnsignedLong, dm: UByte): VectorUnsignedLong = transmuteWithLayouts<VectorSignedLong, VectorUnsignedLong>(xxpermdi(this, b, dm), VectorSignedLong.typeLayout(), VectorUnsignedLong.typeLayout())
+public fun VectorUnsignedLong.vecXxpermdi(b: VectorUnsignedLong, dm: UByte): VectorUnsignedLong = transmuteWithLayouts<VectorSignedLong, VectorUnsignedLong>(xxpermdi(transmute(this), transmute(b), dm), VectorSignedLong.typeLayout(), VectorUnsignedLong.typeLayout())
 
-public fun VectorSignedLong.vecXxpermdi(b: VectorSignedLong, dm: UByte): VectorSignedLong = xxpermdi(this, b, dm)
+public fun VectorSignedLong.vecXxpermdi(b: VectorSignedLong, dm: UByte): VectorSignedLong = xxpermdi(transmute(this), transmute(b), dm)
 
-public fun VectorBoolLong.vecXxpermdi(b: VectorBoolLong, dm: UByte): VectorBoolLong = transmuteWithLayouts<VectorSignedLong, VectorBoolLong>(xxpermdi(this, b, dm), VectorSignedLong.typeLayout(), VectorBoolLong.typeLayout())
+public fun VectorBoolLong.vecXxpermdi(b: VectorBoolLong, dm: UByte): VectorBoolLong = transmuteWithLayouts<VectorSignedLong, VectorBoolLong>(xxpermdi(transmute(this), transmute(b), dm), VectorSignedLong.typeLayout(), VectorBoolLong.typeLayout())
 
-public fun VectorDouble.vecXxpermdi(b: VectorDouble, dm: UByte): VectorDouble = transmuteWithLayouts<VectorSignedLong, VectorDouble>(xxpermdi(this, b, dm), VectorSignedLong.typeLayout(), VectorDouble.typeLayout())
+public fun VectorDouble.vecXxpermdi(b: VectorDouble, dm: UByte): VectorDouble = transmuteWithLayouts<VectorSignedLong, VectorDouble>(xxpermdi(transmute(this), transmute(b), dm), VectorSignedLong.typeLayout(), VectorDouble.typeLayout())
 
 public interface VectorMergeEo<T> {
     public fun vecMergee(b: T): T
@@ -318,21 +318,21 @@ public fun mergeo(a: VectorSignedInt, b: VectorSignedInt): VectorSignedInt {
     return vecPerm(a, b, p)
 }
 
-public fun VectorSignedInt.vecMergee(b: VectorSignedInt): VectorSignedInt = mergee(this, b)
+public fun VectorSignedInt.vecMergee(b: VectorSignedInt): VectorSignedInt = mergee(transmute(this), transmute(b))
 
-public fun VectorSignedInt.vecMergeo(b: VectorSignedInt): VectorSignedInt = mergeo(this, b)
+public fun VectorSignedInt.vecMergeo(b: VectorSignedInt): VectorSignedInt = mergeo(transmute(this), transmute(b))
 
-public fun VectorUnsignedInt.vecMergee(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(mergee(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+public fun VectorUnsignedInt.vecMergee(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(mergee(transmute(this), transmute(b)), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
 
-public fun VectorUnsignedInt.vecMergeo(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(mergeo(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
+public fun VectorUnsignedInt.vecMergeo(b: VectorUnsignedInt): VectorUnsignedInt = transmuteWithLayouts<VectorSignedInt, VectorUnsignedInt>(mergeo(transmute(this), transmute(b)), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorUnsignedInt>())
 
-public fun VectorBoolInt.vecMergee(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(mergee(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
+public fun VectorBoolInt.vecMergee(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(mergee(transmute(this), transmute(b)), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorBoolInt.vecMergeo(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(mergeo(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
+public fun VectorBoolInt.vecMergeo(b: VectorBoolInt): VectorBoolInt = transmuteWithLayouts<VectorSignedInt, VectorBoolInt>(mergeo(transmute(this), transmute(b)), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorBoolInt>())
 
-public fun VectorFloat.vecMergee(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedInt, VectorFloat>(mergee(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())
+public fun VectorFloat.vecMergee(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedInt, VectorFloat>(mergee(transmute(this), transmute(b)), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())
 
-public fun VectorFloat.vecMergeo(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedInt, VectorFloat>(mergeo(this, b), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())
+public fun VectorFloat.vecMergeo(b: VectorFloat): VectorFloat = transmuteWithLayouts<VectorSignedInt, VectorFloat>(mergeo(transmute(this), transmute(b)), UnresolvedTypeLayout<VectorSignedInt>(), UnresolvedTypeLayout<VectorFloat>())
 
 // @rustcLegacyConstGenerics(2)
 

@@ -51,29 +51,29 @@ private external fun wasiCorearchLoongarch64ExternCrccWDW(a: Long, b: Int): Int
 public actual fun externCrccWDW(a: Long, b: Int): Int =
     wasiCorearchLoongarch64ExternCrccWDW(a, b).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64Cacop")
-private external fun wasiCorearchLoongarch64Cacop(a: Long, b: Long, c: Long): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternCacop")
+private external fun wasiCorearchLoongarch64ExternCacop(a: Long, b: Long, c: Long): Unit
 
-public actual fun cacop(a: Long, b: Long, c: Long): Unit =
-    wasiCorearchLoongarch64Cacop(a, b, c)
+public actual fun externCacop(a: Long, b: Long, c: Long): Unit =
+    wasiCorearchLoongarch64ExternCacop(a, b, c)
 
-@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64Csrrd")
-private external fun wasiCorearchLoongarch64Csrrd(a: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternCsrrd")
+private external fun wasiCorearchLoongarch64ExternCsrrd(a: Int): Long
 
-public actual fun csrrd(a: Int): Long =
-    wasiCorearchLoongarch64Csrrd(a).toLong()
+public actual fun externCsrrd(a: Int): Long =
+    wasiCorearchLoongarch64ExternCsrrd(a).toLong()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64Csrwr")
-private external fun wasiCorearchLoongarch64Csrwr(a: Long, b: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternCsrwr")
+private external fun wasiCorearchLoongarch64ExternCsrwr(a: Long, b: Int): Long
 
-public actual fun csrwr(a: Long, b: Int): Long =
-    wasiCorearchLoongarch64Csrwr(a, b).toLong()
+public actual fun externCsrwr(a: Long, b: Int): Long =
+    wasiCorearchLoongarch64ExternCsrwr(a, b).toLong()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64Csrxchg")
-private external fun wasiCorearchLoongarch64Csrxchg(a: Long, b: Long, c: Int): Long
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternCsrxchg")
+private external fun wasiCorearchLoongarch64ExternCsrxchg(a: Long, b: Long, c: Int): Long
 
-public actual fun csrxchg(a: Long, b: Long, c: Int): Long =
-    wasiCorearchLoongarch64Csrxchg(a, b, c).toLong()
+public actual fun externCsrxchg(a: Long, b: Long, c: Int): Long =
+    wasiCorearchLoongarch64ExternCsrxchg(a, b, c).toLong()
 
 @kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternIocsrrdD")
 private external fun wasiCorearchLoongarch64ExternIocsrrdD(a: Int): Long
@@ -99,14 +99,14 @@ private external fun wasiCorearchLoongarch64ExternAsrtgt(a: Long, b: Long): Unit
 public actual fun externAsrtgt(a: Long, b: Long): Unit =
     wasiCorearchLoongarch64ExternAsrtgt(a, b)
 
-@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64Lddir")
-private external fun wasiCorearchLoongarch64Lddir(a: Long, b: Long): Long
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternLddir")
+private external fun wasiCorearchLoongarch64ExternLddir(a: Long, b: Long): Long
 
-public actual fun lddir(a: Long, b: Long): Long =
-    wasiCorearchLoongarch64Lddir(a, b).toLong()
+public actual fun externLddir(a: Long, b: Long): Long =
+    wasiCorearchLoongarch64ExternLddir(a, b).toLong()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64Ldpte")
-private external fun wasiCorearchLoongarch64Ldpte(a: Long, b: Long): Unit
+@kotlin.wasm.WasmImport("kmcore", "corearchLoongarch64ExternLdpte")
+private external fun wasiCorearchLoongarch64ExternLdpte(a: Long, b: Long): Unit
 
-public actual fun ldpte(a: Long, b: Long): Unit =
-    wasiCorearchLoongarch64Ldpte(a, b)
+public actual fun externLdpte(a: Long, b: Long): Unit =
+    wasiCorearchLoongarch64ExternLdpte(a, b)

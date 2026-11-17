@@ -48,6 +48,30 @@ public sealed class TestType {
     public data object Unknown : TestType()
 
     public fun rustEquals(other: TestType): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        UnitTest -> 0
+        IntegrationTest -> 1
+        DocTest -> 2
+        Unknown -> 3
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public sealed class NamePadding {
@@ -55,6 +79,28 @@ public sealed class NamePadding {
     public data object PadOnRight : NamePadding()
 
     public fun rustEquals(other: NamePadding): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        PadNone -> 0
+        PadOnRight -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 // The name of a test. By convention this follows the rules for rust
@@ -510,6 +556,28 @@ public sealed class TestListOrder {
     public data object Unsorted : TestListOrder()
 
     public fun rustEquals(other: TestListOrder): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Sorted -> 0
+        Unsorted -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

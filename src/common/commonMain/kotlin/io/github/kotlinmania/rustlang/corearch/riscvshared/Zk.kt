@@ -1,9 +1,9 @@
 // port-lint: source riscv_shared/zk.rs
 package io.github.kotlinmania.rustlang.corearch.riscvshared
 
-public expect fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int
+public expect fun externSm4ed(rs1: Int, rs2: Int, bs: Int): Int
 
-public expect fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int
+public expect fun externSm4ks(rs1: Int, rs2: Int, bs: Int): Int
 
 public expect fun externSm3p0(rs1: Int): Int
 
@@ -197,7 +197,7 @@ public fun sm4ed(rs1: UInt, rs2: UInt, bs: UByte): UInt {
     run {
         check(bs < 4u.toUByte())
     }
-    return sm4ed(rs1.toInt(), rs2.toInt(), bs.toInt()).toUInt()
+    return externSm4ed(rs1.toInt(), rs2.toInt(), bs.toInt()).toUInt()
 }
 
 /**
@@ -268,7 +268,7 @@ public fun sm4ks(rs1: UInt, rs2: UInt, bs: UByte): UInt {
     run {
         check(bs < 4u.toUByte())
     }
-    return sm4ks(rs1.toInt(), rs2.toInt(), bs.toInt()).toUInt()
+    return externSm4ks(rs1.toInt(), rs2.toInt(), bs.toInt()).toUInt()
 }
 
 /**

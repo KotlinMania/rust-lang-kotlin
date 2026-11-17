@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.std.sys.pipe.windows
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INVALID_HANDLE_VALUE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.createPipe
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle
@@ -18,6 +17,6 @@ public fun pipe(): Result<Pair<Pipe, Pipe>, Error> {
     return if (ret == 0) {
         Result.Err<Pair<Pipe, Pipe>, Error>(Error.lastOsError())
     } else {
-        Result.Ok<Pair<Pipe, Pipe>, Error>(Pair(Handle.FromRawHandle(readPipe), Handle.FromRawHandle(writePipe)))
+        Result.Ok<Pair<Pipe, Pipe>, Error>(Pair(Handle.fromRawHandle(readPipe), Handle.fromRawHandle(writePipe)))
     }
 }

@@ -24,13 +24,13 @@ public expect fun externCrccWWW(a: Int, b: Int): Int
 
 public expect fun externCrccWDW(a: Long, b: Int): Int
 
-public expect fun cacop(a: Long, b: Long, c: Long)
+public expect fun externCacop(a: Long, b: Long, c: Long)
 
-public expect fun csrrd(a: Int): Long
+public expect fun externCsrrd(a: Int): Long
 
-public expect fun csrwr(a: Long, b: Int): Long
+public expect fun externCsrwr(a: Long, b: Int): Long
 
-public expect fun csrxchg(a: Long, b: Long, c: Int): Long
+public expect fun externCsrxchg(a: Long, b: Long, c: Int): Long
 
 public expect fun externIocsrrdD(a: Int): Long
 
@@ -40,9 +40,9 @@ public expect fun externAsrtle(a: Long, b: Long)
 
 public expect fun externAsrtgt(a: Long, b: Long)
 
-public expect fun lddir(a: Long, b: Long): Long
+public expect fun externLddir(a: Long, b: Long): Long
 
-public expect fun ldpte(a: Long, b: Long)
+public expect fun externLdpte(a: Long, b: Long)
 
 /**
  * Calculate the CRC value using the IEEE 802.3 polynomial (0xEDB88320)
@@ -94,7 +94,7 @@ public fun cacop(b: Long, imm5: Long, immS12: Long) {
     run {
         check((-1L shl (12 - 1).toInt()) - 1L <= immS12 && immS12 < (1L shl (12 - 1).toInt())) { "IMM_S12 doesn't fit in 12 bits (signed)" }
     }
-    cacop(imm5, b, immS12)
+    externCacop(imm5, b, immS12)
 }
 
 /**
@@ -104,7 +104,7 @@ public fun csrrd(imm14: Int): Long {
     run {
         check(0 <= imm14 && imm14 < (1 shl 14)) { "IMM14 doesn't fit in 14 bits (unsigned)" }
     }
-    return csrrd(imm14)
+    return externCsrrd(imm14)
 }
 
 /**
@@ -114,7 +114,7 @@ public fun csrwr(a: Long, imm14: Int): Long {
     run {
         check(0 <= imm14 && imm14 < (1 shl 14)) { "IMM14 doesn't fit in 14 bits (unsigned)" }
     }
-    return csrwr(a, imm14)
+    return externCsrwr(a, imm14)
 }
 
 /**
@@ -124,7 +124,7 @@ public fun csrxchg(a: Long, b: Long, imm14: Int): Long {
     run {
         check(0 <= imm14 && imm14 < (1 shl 14)) { "IMM14 doesn't fit in 14 bits (unsigned)" }
     }
-    return csrxchg(a, b, imm14)
+    return externCsrxchg(a, b, imm14)
 }
 
 /**
@@ -160,7 +160,7 @@ public fun lddir(a: Long, imm8: Long): Long {
     run {
         check(0L <= imm8 && imm8 < (1L shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return lddir(a, imm8)
+    return externLddir(a, imm8)
 }
 
 /**
@@ -170,5 +170,5 @@ public fun ldpte(a: Long, imm8: Long) {
     run {
         check(0L <= imm8 && imm8 < (1L shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    ldpte(a, imm8)
+    externLdpte(a, imm8)
 }

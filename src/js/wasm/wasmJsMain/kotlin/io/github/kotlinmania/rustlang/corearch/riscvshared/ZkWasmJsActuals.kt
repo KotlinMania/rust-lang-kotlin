@@ -7,11 +7,11 @@ private external fun initRiscvsharedZkNapiAddon(): Boolean
 
 private val riscvsharedZkNapiAvailable: Boolean = initRiscvsharedZkNapiAddon()
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSm4ed(p0, p1, p2)")
-private external fun wasmCorearchRiscvsharedZkSm4ed(p0: Int, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSm4ed(p0, p1, p2)")
+private external fun wasmCorearchRiscvsharedZkExternSm4ed(p0: Int, p1: Int, p2: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkSm4ks(p0, p1, p2)")
-private external fun wasmCorearchRiscvsharedZkSm4ks(p0: Int, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSm4ks(p0, p1, p2)")
+private external fun wasmCorearchRiscvsharedZkExternSm4ks(p0: Int, p1: Int, p2: Int): Int
 
 @JsFun("(p0) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkExternSm3p0(p0)")
 private external fun wasmCorearchRiscvsharedZkExternSm3p0(p0: Int): Int
@@ -37,11 +37,11 @@ private external fun wasmCorearchRiscvsharedZkXperm864(p0: String, p1: String): 
 @JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchRiscvsharedZkXperm464(p0, p1)")
 private external fun wasmCorearchRiscvsharedZkXperm464(p0: String, p1: String): String
 
-public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSm4ed(rs1, rs2, bs) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSm4ed(rs1: Int, rs2: Int, bs: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSm4ed(rs1, rs2, bs) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
-    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkSm4ks(rs1, rs2, bs) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externSm4ks(rs1: Int, rs2: Int, bs: Int): Int =
+    if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSm4ks(rs1, rs2, bs) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun externSm3p0(rs1: Int): Int =
     if (riscvsharedZkNapiAvailable) wasmCorearchRiscvsharedZkExternSm3p0(rs1) else throw UnsupportedOperationException("Native FFI addon is not available")

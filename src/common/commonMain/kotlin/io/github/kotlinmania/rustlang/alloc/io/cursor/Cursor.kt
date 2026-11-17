@@ -2,8 +2,6 @@
 package io.github.kotlinmania.rustlang.alloc.io.cursor
 
 import io.github.kotlinmania.rustlang.alloc.io.constError
-import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.alloc.io.util.Split
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
@@ -32,14 +30,14 @@ import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 public fun Cursor<T>.read(buf: MutableList<UByte>): Result<Int> {
-    val n = when (val tryResult = Read.Read(Cursor.Split(this).second, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+    val n = when (val tryResult = (Cursor.split(this).second).read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.setPosition(this.position() + n.toULong())
     return RustResult.Ok(n)
 }
 
 public fun Cursor<T>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
     val prevWritten = cursor.written()
-    when (val tryResult = (Cursor.Split(this).second).readBuf(cursor.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+    when (val tryResult = (Cursor.split(this).second).readBuf(cursor.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.setPosition(this.position() + (cursor.written() - prevWritten).toULong())
     return RustResult.Ok(Unit)
 }
@@ -59,7 +57,7 @@ public fun Cursor<T>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
 public fun Cursor<T>.isReadVectored(): Boolean = true
 
 public fun Cursor<T>.readExact(buf: MutableList<UByte>): Result<Unit> {
-    val result = (Cursor.Split(this).second).readExact(buf)
+    val result = (Cursor.split(this).second).readExact(buf)
     when (result) { is RustResult.Ok<*, *> -> {
         this.setPosition(this.position() + buf.size.toULong())
     }; is RustResult.Err<*, *> -> {
@@ -70,13 +68,13 @@ public fun Cursor<T>.readExact(buf: MutableList<UByte>): Result<Unit> {
 
 public fun Cursor<T>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit> {
     val prevWritten = cursor.written()
-    val result = (Cursor.Split(this).second).readBufExact(cursor.reborrow())
+    val result = (Cursor.split(this).second).readBufExact(cursor.reborrow())
     this.setPosition(this.position() + (cursor.written() - prevWritten).toULong())
     return result
 }
 
 public fun Cursor<T>.readToEnd(buf: List<UByte>): Result<Int> {
-    val content = Cursor.Split(this).second
+    val content = Cursor.split(this).second
     val len = content.len()
     when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = buf.tryExtendFromSliceOfBytes(content)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -85,7 +83,7 @@ public fun Cursor<T>.readToEnd(buf: List<UByte>): Result<Int> {
 }
 
 public fun Cursor<T>.readToString(buf: String): Result<Int> {
-    val content = when (val tryResult = fromUtf8(Cursor.Split(this).second).mapErr({ Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
+    val content = when (val tryResult = fromUtf8(Cursor.split(this).second).mapErr({ Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val len = content.len()
     when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = buf.tryPushStr(content)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
@@ -93,7 +91,7 @@ public fun Cursor<T>.readToString(buf: String): Result<Int> {
     return RustResult.Ok(len)
 }
 
-public fun Cursor<T>.fillBuf(): Result<List<UByte>> = RustResult.Ok(Cursor.Split(this).second)
+public fun Cursor<T>.fillBuf(): Result<List<UByte>> = RustResult.Ok(Cursor.split(this).second)
 
 public fun Cursor<T>.consume(amt: Int) {
     this.setPosition(this.position() + amt.toULong())

@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSm4ed(JNIEnv* km_env, jclass km_clazz, jint rs1, jint rs2, jint bs) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSm4ed(JNIEnv* km_env, jclass km_clazz, jint rs1, jint rs2, jint bs) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t, int32_t, int32_t);
@@ -88,7 +88,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkSm4ks(JNIEnv* km_env, jclass km_clazz, jint rs1, jint rs2, jint bs) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_riscvshared_RiscvsharedZkJniBridge_corearchRiscvsharedZkExternSm4ks(JNIEnv* km_env, jclass km_clazz, jint rs1, jint rs2, jint bs) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t, int32_t, int32_t);

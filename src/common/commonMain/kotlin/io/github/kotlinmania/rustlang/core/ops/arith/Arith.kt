@@ -25,7 +25,7 @@ import io.github.kotlinmania.rustlang.core.U128
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Point(public var x: Int, public var y: Int) : Add<Point, Any?, Point> {
+ *     open class Point(public var x: Int, public var y: Int) : Add<Point, Point> {
  *         public open fun clone(): Point = Point(x, y)
  *
  *         public open fun add(other: Point): Point {
@@ -118,7 +118,7 @@ public fun F128.add(other: F128): F128 = this + other
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Point(public var x: Int, public var y: Int) : Sub<Point, Any?, Point> {
+ *     open class Point(public var x: Int, public var y: Int) : Sub<Point, Point> {
  *         public open fun clone(): Point = Point(x, y)
  *
  *         public open fun sub(other: Point): Point {
@@ -222,7 +222,7 @@ public fun F128.sub(other: F128): F128 = this - other
  *     // By the fundamental theorem of arithmetic, rational numbers in lowest
  *     // terms are unique. So, by keeping `Rational`s in reduced form, we can
  *     // derive `Eq` and `PartialEq`.
- *     open class Rational(public var numerator: Int, public var denominator: Int) : Mul<Rational, Any?, Rational> {
+ *     open class Rational(public var numerator: Int, public var denominator: Int) : Mul<Rational, Rational> {
  *         public open fun new(numerator: Int, denominator: Int): Rational {
  *             if (denominator == 0) {
  *                 error("Zero is an invalid denominator!")
@@ -337,7 +337,7 @@ public fun F128.mul(other: F128): F128 = this * other
  *     // By the fundamental theorem of arithmetic, rational numbers in lowest
  *     // terms are unique. So, by keeping `Rational`s in reduced form, we can
  *     // derive `Eq` and `PartialEq`.
- *     open class Rational(public var numerator: Int, public var denominator: Int) : Div<Rational, Any?, Rational> {
+ *     open class Rational(public var numerator: Int, public var denominator: Int) : Div<Rational, Rational> {
  *         public open fun new(numerator: Int, denominator: Int): Rational {
  *             if (denominator == 0) {
  *                 error("Zero is an invalid denominator!")
@@ -766,12 +766,35 @@ public fun F128.rem(other: F128): F128 = this % other
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     sealed class Sign : Neg<Any?, Sign> {
+ *     sealed class Sign : Neg<Sign> {
  *         public data object Negative : Sign()
  *         public data object Zero : Sign()
  *         public data object Positive : Sign()
  *
  *         public fun rustEquals(other: Sign): Boolean = this == other
+ *
+ *         private fun kmDiscriminant(): Int =
+ *             when (this) {
+ *             Negative -> 0
+ *             Zero -> 1
+ *             Positive -> 2
+ *             }
+ *
+ *         public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *         public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *         public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *         public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *         public fun toInt(): Int = kmDiscriminant()
+ *
+ *         public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *         public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *         public fun toULong(): ULong = kmDiscriminant().toULong()
  *
  *         public open fun neg(): Sign {
  *             return when (this) {

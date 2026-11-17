@@ -2,10 +2,10 @@
 package io.github.kotlinmania.rustlang.std.os.fd
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sync.Arc
-import io.github.kotlinmania.rustlang.std.sys.FromInner
 
 // Raw Unix-like file descriptors.
 
@@ -142,7 +141,7 @@ public fun fromRawFdRawFd(fd: RawFd): RawFd = fd
 
 public fun File.asRawFd(): RawFd = this.asInner().asRawFd()
 
-public fun fromRawFdFile(fd: RawFd): File = File.from(OwnedFd.FromRawFd(fd))
+public fun fromRawFdFile(fd: RawFd): File = File.from(OwnedFd.fromRawFd(fd))
 
 public fun File.intoRawFd(): RawFd = this.intoInner().intoInner().intoRawFd()
 
@@ -174,12 +173,12 @@ public fun <T : AsRawFd> Rc.UniqueRc<T>.asRawFd(): RawFd = this.asRawFd()
 
 public fun PipeReader.asRawFd(): RawFd = this.value.asRawFd()
 
-public fun fromRawFdPipeReader(rawFd: RawFd): PipeReader = PipeReader.FromInner(FromRawFd.FromRawFd(rawFd))
+public fun fromRawFdPipeReader(rawFd: RawFd): PipeReader = PipeReader.fromInner(FromRawFd.fromRawFd(rawFd))
 
 public fun PipeReader.intoRawFd(): RawFd = this.value.intoRawFd()
 
 public fun PipeWriter.asRawFd(): RawFd = this.value.asRawFd()
 
-public fun fromRawFdPipeWriter(rawFd: RawFd): PipeWriter = PipeWriter.FromInner(FromRawFd.FromRawFd(rawFd))
+public fun fromRawFdPipeWriter(rawFd: RawFd): PipeWriter = PipeWriter.fromInner(FromRawFd.fromRawFd(rawFd))
 
 public fun PipeWriter.intoRawFd(): RawFd = this.value.intoRawFd()

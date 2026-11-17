@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void corearchLoongarchsharedDbar(int32_t a) {
+void corearchLoongarchsharedExternDbar(int32_t a) {
     typedef void (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -43,7 +43,7 @@ void corearchLoongarchsharedDbar(int32_t a) {
     errno = ENOSYS;
 }
 
-void corearchLoongarchsharedIbar(int32_t a) {
+void corearchLoongarchsharedExternIbar(int32_t a) {
     typedef void (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -71,7 +71,7 @@ void corearchLoongarchsharedIbar(int32_t a) {
     errno = ENOSYS;
 }
 
-void corearchLoongarchsharedMovgr2fcsr(int32_t a, int32_t b) {
+void corearchLoongarchsharedExternMovgr2fcsr(int32_t a, int32_t b) {
     typedef void (*km_fn_t)(int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -99,7 +99,7 @@ void corearchLoongarchsharedMovgr2fcsr(int32_t a, int32_t b) {
     errno = ENOSYS;
 }
 
-int32_t corearchLoongarchsharedMovfcsr2gr(int32_t a) {
+int32_t corearchLoongarchsharedExternMovfcsr2gr(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -351,7 +351,7 @@ int32_t corearchLoongarchsharedExternCpucfg(int32_t a) {
     return -1;
 }
 
-void corearchLoongarchsharedSyscall(int32_t a) {
+void corearchLoongarchsharedExternSyscall(int32_t a) {
     typedef void (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

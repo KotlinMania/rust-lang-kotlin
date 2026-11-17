@@ -15,6 +15,28 @@ public sealed class BenchMode {
     public data object Single : BenchMode()
 
     public fun rustEquals(other: BenchMode): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Auto -> 0
+        Single -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -35,6 +57,29 @@ public sealed class ColorConfig {
     public data object AutoColor : ColorConfig()
     public data object AlwaysColor : ColorConfig()
     public data object NeverColor : ColorConfig()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        AutoColor -> 0
+        AlwaysColor -> 1
+        NeverColor -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -59,6 +104,30 @@ public sealed class OutputFormat {
     public data object Junit : OutputFormat()
 
     public fun rustEquals(other: OutputFormat): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Pretty -> 0
+        Terse -> 1
+        Json -> 2
+        Junit -> 3
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -73,6 +142,29 @@ public sealed class RunIgnored {
     public data object Only : RunIgnored()
 
     public fun rustEquals(other: RunIgnored): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Yes -> 0
+        No -> 1
+        Only -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public sealed class RunStrategy {
@@ -87,6 +179,28 @@ public sealed class RunStrategy {
      * that's currently running.
      */
     public data object SpawnPrimary : RunStrategy()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        InProcess -> 0
+        SpawnPrimary -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

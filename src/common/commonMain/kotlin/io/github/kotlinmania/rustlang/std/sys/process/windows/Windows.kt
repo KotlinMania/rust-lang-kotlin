@@ -36,18 +36,23 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
 import io.github.kotlinmania.rustlang.std.env.consts.EXE_EXTENSION
 import io.github.kotlinmania.rustlang.std.env.consts.EXE_SUFFIX
+import io.github.kotlinmania.rustlang.std.env.currentExe
+import io.github.kotlinmania.rustlang.std.env.splitPaths
+import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedHandle
-import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.process.ProcThreadAttributeList
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
 import io.github.kotlinmania.rustlang.std.sys.args.windows.Arg
+import io.github.kotlinmania.rustlang.std.sys.args.windows.appendArg
+import io.github.kotlinmania.rustlang.std.sys.args.windows.makeBatCommandLine
+import io.github.kotlinmania.rustlang.std.sys.args.windows.toUserPath
 import io.github.kotlinmania.rustlang.std.sys.env.windows.env
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.File
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.OpenOptions
@@ -102,7 +107,6 @@ import io.github.kotlinmania.rustlang.std.sys.path.windows.hasTrailingSlash
 import io.github.kotlinmania.rustlang.std.sys.path.windows.isAbsoluteExact
 import io.github.kotlinmania.rustlang.std.sys.path.windows.isFileName
 import io.github.kotlinmania.rustlang.std.sys.path.windows.isVerbatim
-import io.github.kotlinmania.rustlang.std.sys.paths.windows.SplitPaths
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
@@ -303,7 +307,7 @@ public open class Command(
             } else {
                 null
             }
-        val program = when (val tryResult = resolveExe(this.program, { env.varOs("PATH") }, childPaths)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
+        val program = when (val tryResult = resolveExe(this.program, { varOs("PATH") }, childPaths)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
         val hasBatExtension =
             { program1: List<UShort> ->
                 run {
@@ -322,7 +326,7 @@ public open class Command(
             }
         var (program1, cmdStr1) =
             if (isBatchFile) {
-                Pair(when (val tryResult = commandPrompt()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }, when (val tryResult = args.makeBatCommandLine(program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) })
+                Pair(when (val tryResult = commandPrompt()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }, when (val tryResult = makeBatCommandLine(program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) })
             } else {
                 val cmdStr = when (val tryResult = makeCommandLine(this.program, this.args, this.forceQuotesEnabled)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
                 Pair(program, cmdStr)
@@ -408,7 +412,7 @@ public open class Command(
             siPtr = (localStorageL364C8.asMutPtr())
         }
         when (val tryResult = cvt(createProcessW(program1.asPtr(), cmdStr1.asMutPtr(), MutPtr(0L), MutPtr(0L), inheritHandles, flags, envp, dirp, siPtr, pi))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
-        return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(Process(handle = Handle.FromRawHandle(pi.hProcess), mainThreadHandle = Handle.FromRawHandle(pi.hThread)), pipes))
+        return Result.Ok<Pair<Process, StdioPipes>, Error>(Pair(Process(handle = Handle.fromRawHandle(pi.hProcess), mainThreadHandle = Handle.fromRawHandle(pi.hThread)), pipes))
     }
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
@@ -498,14 +502,14 @@ public sealed class Stdio {
                 when (matchVal) { is Result.Ok<*, *> -> {
                     val io = matchVal.okValue()
                     run {
-                        val io1 = Handle.FromRawHandle(io)
+                        val io1 = Handle.fromRawHandle(io)
                         val ret = io1.duplicate(0, true, DUPLICATE_SAME_ACCESS)
                         io1.intoRawHandle()
                         // Don't close the handle
                         ret
                     }
                 }; is Result.Err<*, *> -> {
-                    Result.Ok(Handle.FromRawHandle(MutPtr(0L)))
+                    Result.Ok(Handle.fromRawHandle(MutPtr(0L)))
                 } }
             } }
         return when (this) {
@@ -601,7 +605,7 @@ public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: 
         if (hasExeSuffix) {
             // The application name is a path to a `.exe` file.
             // Let `CreateProcessW` figure out if it exists or not.
-            return args.toUserPath(Path.new(exePath))
+            return toUserPath(Path.new(exePath))
         }
         var path = PathBuf.from(exePath)
         // Append `.exe` if not already there.
@@ -611,7 +615,7 @@ public fun resolveExe(exePath: OsStr, parentPaths: () -> OsString?, childPaths: 
                 // It's ok to use `setExtension` here because the intent is to
                 // remove the extension that was just added.
                 path.setExtension("")
-                return args.toUserPath(path)
+                return toUserPath(path)
             }
             else -> {
                 val path1 = matchVal
@@ -649,7 +653,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
     // This is for consistency with Rust's historic behavior.
     if (childPaths != null) {
         val paths = childPaths
-        for (path in env.SplitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
+        for (path in splitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
             when (val matchVal = exists(path)) {
                 null -> {}
                 else -> {
@@ -660,7 +664,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         }
     }
     // 2. Application path
-    when (val matchVal1 = env.currentExe()) {
+    when (val matchVal1 = currentExe()) {
         is Result.Ok<*, *> -> {
             val appPath = matchVal1.okValue()
             appPath.pop()
@@ -699,7 +703,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         null -> {}
         else -> {
             val parentPaths1 = matchVal5
-            for (path5 in env.SplitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
+            for (path5 in splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
                 when (val matchVal6 = exists(path5)) {
                     null -> {}
                     else -> {
@@ -718,7 +722,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
  */
 public fun programExists(path: Path): List<UShort>? {
     return run {
-        val path1 = (args.toUserPath(path).ok() ?: return null)
+        val path1 = (toUserPath(path).ok() ?: return null)
         // Getting attributes using `GetFileAttributesW` does not follow symlinks
         // and it will almost always be successful if the link exists.
         // There are some exceptions for special system files (e.g. the pagefile)
@@ -969,7 +973,7 @@ public fun makeCommandLine(argv0: OsStr, args: List<Arg>, forceQuotes: Boolean):
     cmd.add(34u.toUShort())
     for (arg in args) {
         cmd.add((' ').code.toUShort())
-        when (val tryResult = args.appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
+        when (val tryResult = appendArg(cmd, arg, forceQuotes)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<UShort>, Error>(tryResult.errValue()) }
     }
     return Result.Ok<List<UShort>, Error>(cmd)
 }

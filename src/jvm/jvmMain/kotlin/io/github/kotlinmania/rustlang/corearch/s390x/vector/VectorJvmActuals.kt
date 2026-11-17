@@ -65,7 +65,7 @@ private object S390xVectorJniBridge {
     }
 
     @JvmStatic
-    external fun corearchS390xVectorLcbb(a: Long, b: Int): Int
+    external fun corearchS390xVectorExternLcbb(a: Long, b: Int): Int
 }
 
 public actual fun nearbyintV4f32(a: VectorFloat): VectorFloat =
@@ -203,8 +203,8 @@ public actual fun vlrl(a: UInt, b: ConstPtr): VectorUnsignedChar =
 public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
 }
 
-public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    S390xVectorJniBridge.corearchS390xVectorLcbb(a.rawAddress, b.toInt()).toUInt()
+public actual fun externLcbb(a: ConstPtr, b: UInt): UInt =
+    S390xVectorJniBridge.corearchS390xVectorExternLcbb(a.rawAddress, b.toInt()).toUInt()
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     MaybeUninit.uninit(VectorSignedChar.typeLayout())

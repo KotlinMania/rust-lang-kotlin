@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.procmacro.quote
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.procmacro.BitOr
 import io.github.kotlinmania.rustlang.procmacro.Delimiter
 import io.github.kotlinmania.rustlang.procmacro.Group
 import io.github.kotlinmania.rustlang.procmacro.Ident
@@ -18,8 +18,6 @@ import io.github.kotlinmania.rustlang.procmacro.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.totokens.ToTokens
 import io.github.kotlinmania.rustlang.procmacro.totokens.toTokens
 import io.github.kotlinmania.rustlang.std.path.Iter
-import io.github.kotlinmania.rustlang.procmacro.quote.HasIterator as HasIter
-import io.github.kotlinmania.rustlang.procmacro.quote.ThereIsNoIteratorInRepetition as DoesNotHaveIter
 
 // # Quasiquoter
 // This file contains the implementation internals of the quasiquoter provided by `quote`.
@@ -85,7 +83,7 @@ public open class ThereIsNoIteratorInRepetition : BitOr<ThereIsNoIteratorInRepet
  * Extension trait providing the `quoteIntoIter` method on iterators.
  */
 public interface RepIteratorExt<T> {
-    public fun quoteIntoIter(): Pair<T, HasIter> = Pair(this, HasIter)
+    public fun quoteIntoIter(): Pair<T, HasIterator> = Pair(this, HasIterator())
 }
 
 /**
@@ -101,7 +99,7 @@ public interface RepToTokensExt<T> {
      */
     public fun next(): T? = this
 
-    public fun quoteIntoIter(): Pair<T, DoesNotHaveIter> = Pair(this, DoesNotHaveIter)
+    public fun quoteIntoIter(): Pair<T, ThereIsNoIteratorInRepetition> = Pair(this, ThereIsNoIteratorInRepetition())
 }
 
 /**
@@ -109,16 +107,16 @@ public interface RepToTokensExt<T> {
  * can be referenced as an iterator.
  */
 public interface RepAsIteratorExt<out Iter> {
-    public fun quoteIntoIter(): Pair<Iter, HasIter>
+    public fun quoteIntoIter(): Pair<Iter, HasIterator>
 }
 
-public fun <T> List<T>.quoteIntoIter(): Pair<ArrayDeque<T>, HasIter> = Pair(this.iter(), HasIter)
+public fun <T> List<T>.quoteIntoIter(): Pair<ArrayDeque<T>, HasIterator> = Pair(this.iter(), HasIterator())
 
-public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int): Pair<ArrayDeque<T>, HasIter> = Pair(this.iter(), HasIter)
+public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int): Pair<ArrayDeque<T>, HasIterator> = Pair(this.iter(), HasIterator())
 
-public fun <T> MutableSet<T>.quoteIntoIter(): Pair<Iter<T>, HasIter> = Pair(this.iter(), HasIter)
+public fun <T> MutableSet<T>.quoteIntoIter(): Pair<Iter<T>, HasIterator> = Pair(this.iter(), HasIterator())
 
-public fun <Iter, T : RepAsIteratorExt<Iter>> RepInterp<T>.quoteIntoIter(): Pair<Iter, HasIter> = this.value.quoteIntoIter()
+public fun <Iter, T : RepAsIteratorExt<Iter>> RepInterp<T>.quoteIntoIter(): Pair<Iter, HasIterator> = this.value.quoteIntoIter()
 
 // Helper type used within interpolations to allow for repeated binding names.
 // Implements the relevant traits, and exports a dummy `next()` method.
@@ -187,20 +185,20 @@ public fun quote(stream: TokenStream): TokenStream {
     if (stream.isEmpty()) {
         return run {
             val ts = TokenStream.new()
-            ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("TokenStream", Span.defSite())), ts)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("new", Span.defSite())), ts)
-            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts)
+            TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+            TokenTree.from(Ident.new("TokenStream", Span.defSite())).toTokens(ts)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+            TokenTree.from(Ident.new("new", Span.defSite())).toTokens(ts)
+            TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts)
             ts
         }
     }
     val procMacroCrate = run {
         val ts1 = TokenStream.new()
-        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts1)
+        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts1)
         ts1
     }
     var afterDollar = false
@@ -241,95 +239,95 @@ public fun quote(stream: TokenStream): TokenStream {
                     val metaVars = collectMetaVars(contents.clone())
                     run {
                         val ts2 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("use", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ext", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('*', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(if (sepOpt != null) {
+                        TokenTree.from(Ident.new("use", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Ident.new("ext", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Punct.new('*', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts2)
+                        (if (sepOpt != null) {
                             run {
                                 val ts3 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts3)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts3)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("_i", Span.defSite())), ts3)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts3)
-                                ToTokens.ToTokens(TokenTree.from("0usize".parse<Literal>().unwrap()), ts3)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts3)
+                                TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts3)
+                                TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts3)
+                                TokenTree.from(Ident.new("_i", Span.defSite())).toTokens(ts3)
+                                TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts3)
+                                TokenTree.from("0usize".parse<Literal>().unwrap()).toTokens(ts3)
+                                TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts3)
                                 ts3
                             }
                         } else {
                             run {
                                 val ts4 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts4)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts4)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts4)
+                                TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts4)
                                 ts4
                             }
-                        }, ts2)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("has_iter", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ThereIsNoIteratorInRepetition", Span.defSite())), ts2)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts2)
+                        }).toTokens(ts2)
+                        TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Ident.new("has_iter", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts2)
+                        TokenTree.from(Ident.new("ThereIsNoIteratorInRepetition", Span.defSite())).toTokens(ts2)
+                        TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts2)
                         ts2
                     }.toTokens(repExpanded)
                     for (metaVar in metaVars) {
                         run {
                             val ts5 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('#', Spacing.Alone)), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Bracket, run {
+                            TokenTree.from(Punct.new('#', Spacing.Alone)).toTokens(ts5)
+                            TokenTree.from(Group.new(Delimiter.Bracket, run {
                                 val ts6 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("allow", Span.defSite())), ts6)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                TokenTree.from(Ident.new("allow", Span.defSite())).toTokens(ts6)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                     val ts7 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("unused_mut", Span.defSite())), ts7)
+                                    TokenTree.from(Ident.new("unused_mut", Span.defSite())).toTokens(ts7)
                                     ts7
-                                })), ts6)
+                                })).toTokens(ts6)
                                 ts6
-                            })), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                            })).toTokens(ts5)
+                            TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts5)
+                            TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                 val ts8 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts8)
-                                ToTokens.ToTokens(metaVar, ts8)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts8)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("i", Span.defSite())), ts8)
+                                TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts8)
+                                metaVar.toTokens(ts8)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts8)
+                                TokenTree.from(Ident.new("i", Span.defSite())).toTokens(ts8)
                                 ts8
-                            })), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts5)
-                            ToTokens.ToTokens(metaVar, ts5)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("quote_into_iter", Span.defSite())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("has_iter", Span.defSite())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("has_iter", Span.defSite())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('|', Spacing.Alone)), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("i", Span.defSite())), ts5)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts5)
+                            })).toTokens(ts5)
+                            TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts5)
+                            metaVar.toTokens(ts5)
+                            TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts5)
+                            TokenTree.from(Ident.new("quote_into_iter", Span.defSite())).toTokens(ts5)
+                            TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts5)
+                            TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts5)
+                            TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts5)
+                            TokenTree.from(Ident.new("has_iter", Span.defSite())).toTokens(ts5)
+                            TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts5)
+                            TokenTree.from(Ident.new("has_iter", Span.defSite())).toTokens(ts5)
+                            TokenTree.from(Punct.new('|', Spacing.Alone)).toTokens(ts5)
+                            TokenTree.from(Ident.new("i", Span.defSite())).toTokens(ts5)
+                            TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts5)
                             ts5
                         }.toTokens(repExpanded)
                     }
                     run {
                         val ts9 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("_", Span.defSite())), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("HasIterator", Span.defSite())), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("has_iter", Span.defSite())), ts9)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts9)
+                        TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts9)
+                        TokenTree.from(Ident.new("_", Span.defSite())).toTokens(ts9)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts9)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts9)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts9)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts9)
+                        TokenTree.from(Ident.new("HasIterator", Span.defSite())).toTokens(ts9)
+                        TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts9)
+                        TokenTree.from(Ident.new("has_iter", Span.defSite())).toTokens(ts9)
+                        TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts9)
                         ts9
                     }.toTokens(repExpanded)
                     // Append the `while` to `REP_EXPANDED`.
@@ -337,148 +335,148 @@ public fun quote(stream: TokenStream): TokenStream {
                     for (metaVar1 in metaVars) {
                         run {
                             val ts10 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts10)
-                            ToTokens.ToTokens(metaVar1, ts10)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts10)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("match", Span.defSite())), ts10)
-                            ToTokens.ToTokens(metaVar1, ts10)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts10)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("next", Span.defSite())), ts10)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts10)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Brace, run {
+                            TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts10)
+                            metaVar1.toTokens(ts10)
+                            TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts10)
+                            TokenTree.from(Ident.new("match", Span.defSite())).toTokens(ts10)
+                            metaVar1.toTokens(ts10)
+                            TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts10)
+                            TokenTree.from(Ident.new("next", Span.defSite())).toTokens(ts10)
+                            TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts10)
+                            TokenTree.from(Group.new(Delimiter.Brace, run {
                                 val ts11 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("Some", Span.defSite())), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                TokenTree.from(Ident.new("Some", Span.defSite())).toTokens(ts11)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                     val ts12 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("_x", Span.defSite())), ts12)
+                                    TokenTree.from(Ident.new("_x", Span.defSite())).toTokens(ts12)
                                     ts12
-                                })), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('>', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("RepInterp", Span.defSite())), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                })).toTokens(ts11)
+                                TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Punct.new('>', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts11)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Ident.new("RepInterp", Span.defSite())).toTokens(ts11)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                     val ts13 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("_x", Span.defSite())), ts13)
+                                    TokenTree.from(Ident.new("_x", Span.defSite())).toTokens(ts13)
                                     ts13
-                                })), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("None", Span.defSite())), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('>', Spacing.Alone)), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("break", Span.defSite())), ts11)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts11)
+                                })).toTokens(ts11)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Ident.new("None", Span.defSite())).toTokens(ts11)
+                                TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Punct.new('>', Spacing.Alone)).toTokens(ts11)
+                                TokenTree.from(Ident.new("break", Span.defSite())).toTokens(ts11)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts11)
                                 ts11
-                            })), ts10)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts10)
+                            })).toTokens(ts10)
+                            TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts10)
                             ts10
                         }.toTokens(whileBody)
                     }
                     run {
                         val ts14 = TokenStream.new()
-                        ToTokens.ToTokens(if (sepOpt != null) {
+                        (if (sepOpt != null) {
                             val sep1 = sepOpt
                             run {
                                 val ts15 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("if", Span.defSite())), ts15)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("_i", Span.defSite())), ts15)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('>', Spacing.Alone)), ts15)
-                                ToTokens.ToTokens(TokenTree.from("0".parse<Literal>().unwrap()), ts15)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Brace, run {
+                                TokenTree.from(Ident.new("if", Span.defSite())).toTokens(ts15)
+                                TokenTree.from(Ident.new("_i", Span.defSite())).toTokens(ts15)
+                                TokenTree.from(Punct.new('>', Spacing.Alone)).toTokens(ts15)
+                                TokenTree.from("0".parse<Literal>().unwrap()).toTokens(ts15)
+                                TokenTree.from(Group.new(Delimiter.Brace, run {
                                     val ts16 = TokenStream.new()
-                                    ToTokens.ToTokens(run {
+                                    (run {
                                         val ts17 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("ToTokens", Span.defSite())), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts17)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts17)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts17)
+                                        TokenTree.from(Ident.new("ToTokens", Span.defSite())).toTokens(ts17)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts17)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts17)
+                                        TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts17)
+                                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                             val ts18 = TokenStream.new()
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("TokenTree", Span.defSite())), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("Punct", Span.defSite())), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                            TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts18)
+                                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Ident.new("TokenTree", Span.defSite())).toTokens(ts18)
+                                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Ident.new("Punct", Span.defSite())).toTokens(ts18)
+                                            TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                                 val ts19 = TokenStream.new()
-                                                ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Ident.new("Punct", Span.defSite())), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Ident.new("new", Span.defSite())), ts19)
-                                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                                TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts19)
+                                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts19)
+                                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts19)
+                                                TokenTree.from(Ident.new("Punct", Span.defSite())).toTokens(ts19)
+                                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts19)
+                                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts19)
+                                                TokenTree.from(Ident.new("new", Span.defSite())).toTokens(ts19)
+                                                TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                                     val ts20 = TokenStream.new()
-                                                    ToTokens.ToTokens(TokenTree.from(Literal.character(sep1.asChar())), ts20)
-                                                    ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts20)
-                                                    ToTokens.ToTokens(run {
+                                                    TokenTree.from(Literal.character(sep1.asChar())).toTokens(ts20)
+                                                    TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts20)
+                                                    (run {
                                                         val ts21 = TokenStream.new()
-                                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts21)
-                                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts21)
-                                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts21)
-                                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Spacing", Span.defSite())), ts21)
-                                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts21)
-                                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts21)
-                                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Alone", Span.defSite())), ts21)
+                                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts21)
+                                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts21)
+                                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts21)
+                                                        TokenTree.from(Ident.new("Spacing", Span.defSite())).toTokens(ts21)
+                                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts21)
+                                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts21)
+                                                        TokenTree.from(Ident.new("Alone", Span.defSite())).toTokens(ts21)
                                                         ts21
-                                                    }, ts20)
-                                                    ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts20)
+                                                    }).toTokens(ts20)
+                                                    TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts20)
                                                     ts20
-                                                })), ts19)
+                                                })).toTokens(ts19)
                                                 ts19
-                                            })), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts18)
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts18)
+                                            })).toTokens(ts18)
+                                            TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts18)
+                                            TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts18)
+                                            TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts18)
                                             ts18
-                                        })), ts17)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts17)
+                                        })).toTokens(ts17)
+                                        TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts17)
                                         ts17
-                                    }, ts16)
+                                    }).toTokens(ts16)
                                     ts16
-                                })), ts15)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("_i", Span.defSite())), ts15)
-                                ToTokens.ToTokens(TokenTree.from(minimalQuoteTt()), ts15)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts15)
-                                ToTokens.ToTokens(TokenTree.from("1".parse<Literal>().unwrap()), ts15)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts15)
+                                })).toTokens(ts15)
+                                TokenTree.from(Ident.new("_i", Span.defSite())).toTokens(ts15)
+                                TokenTree.from(minimalQuoteTt()).toTokens(ts15)
+                                TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts15)
+                                TokenTree.from("1".parse<Literal>().unwrap()).toTokens(ts15)
+                                TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts15)
                                 ts15
                             }
                         } else {
                             run {
                                 val ts22 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts22)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts22)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts22)
+                                TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts22)
                                 ts22
                             }
-                        }, ts14)
-                        ToTokens.ToTokens(quote(contents.clone()), ts14)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts14)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts14)
-                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                        }).toTokens(ts14)
+                        quote(contents.clone()).toTokens(ts14)
+                        TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts14)
+                        TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts14)
+                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                             val ts23 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts23)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts23)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts23)
+                            TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts23)
+                            TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts23)
+                            TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts23)
                             ts23
-                        })), ts14)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts14)
+                        })).toTokens(ts14)
+                        TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts14)
                         ts14
                     }.toTokens(whileBody)
                     repExpanded.extend(mutableListOf(TokenTree.Ident(Ident.new("while", Span.callSite())), TokenTree.Ident(Ident.new("true", Span.callSite())), TokenTree.Group(Group.new(Delimiter.Brace, whileBody))))
                     run {
                         val ts24 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.Group(Group.new(Delimiter.Brace, repExpanded)), ts24)
+                        TokenTree.Group(Group.new(Delimiter.Brace, repExpanded)).toTokens(ts24)
                         ts24
                     }.toTokens(tokens)
                     continue
@@ -486,24 +484,24 @@ public fun quote(stream: TokenStream): TokenStream {
                 tree is TokenTree.Ident<*, *, *> -> {
                     run {
                         val ts25 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ToTokens", Span.defSite())), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts25)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts25)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts25)
+                        TokenTree.from(Ident.new("ToTokens", Span.defSite())).toTokens(ts25)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts25)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts25)
+                        TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts25)
+                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                             val ts26 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts26)
-                            ToTokens.ToTokens(tree, ts26)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts26)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts26)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts26)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts26)
+                            TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts26)
+                            tree.toTokens(ts26)
+                            TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts26)
+                            TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts26)
+                            TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts26)
+                            TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts26)
                             ts26
-                        })), ts25)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts25)
+                        })).toTokens(ts25)
+                        TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts25)
                         ts25
                     }.toTokens(tokens)
                     continue
@@ -525,72 +523,72 @@ public fun quote(stream: TokenStream): TokenStream {
                 val (tt3) = tree
                 run {
                     val ts27 = TokenStream.new()
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("ToTokens", Span.defSite())), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                    TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts27)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts27)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts27)
+                    TokenTree.from(Ident.new("ToTokens", Span.defSite())).toTokens(ts27)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts27)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts27)
+                    TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts27)
+                    TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                         val ts28 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("TokenTree", Span.defSite())), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("Punct", Span.defSite())), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts28)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Ident.new("TokenTree", Span.defSite())).toTokens(ts28)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Ident.new("Punct", Span.defSite())).toTokens(ts28)
+                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                             val ts29 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("Punct", Span.defSite())), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("new", Span.defSite())), ts29)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                            TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts29)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts29)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts29)
+                            TokenTree.from(Ident.new("Punct", Span.defSite())).toTokens(ts29)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts29)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts29)
+                            TokenTree.from(Ident.new("new", Span.defSite())).toTokens(ts29)
+                            TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                 val ts30 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Literal.character(tt3.asChar())), ts30)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts30)
-                                ToTokens.ToTokens(when (tt3.spacing()) {
+                                TokenTree.from(Literal.character(tt3.asChar())).toTokens(ts30)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts30)
+                                (when (tt3.spacing()) {
                                     Spacing.Alone -> {
                                         val ts31 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts31)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts31)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts31)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Spacing", Span.defSite())), ts31)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts31)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts31)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Alone", Span.defSite())), ts31)
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts31)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts31)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts31)
+                                        TokenTree.from(Ident.new("Spacing", Span.defSite())).toTokens(ts31)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts31)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts31)
+                                        TokenTree.from(Ident.new("Alone", Span.defSite())).toTokens(ts31)
                                         ts31
                                     }
                                     Spacing.Joint -> {
                                         val ts32 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts32)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts32)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts32)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Spacing", Span.defSite())), ts32)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts32)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts32)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Joint", Span.defSite())), ts32)
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts32)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts32)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts32)
+                                        TokenTree.from(Ident.new("Spacing", Span.defSite())).toTokens(ts32)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts32)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts32)
+                                        TokenTree.from(Ident.new("Joint", Span.defSite())).toTokens(ts32)
                                         ts32
                                     }
-                                }, ts30)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts30)
+                                }).toTokens(ts30)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts30)
                                 ts30
-                            })), ts29)
+                            })).toTokens(ts29)
                             ts29
-                        })), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts28)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts28)
+                        })).toTokens(ts28)
+                        TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts28)
+                        TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts28)
+                        TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts28)
                         ts28
-                    })), ts27)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts27)
+                    })).toTokens(ts27)
+                    TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts27)
                     ts27
                 }
             }
@@ -598,94 +596,94 @@ public fun quote(stream: TokenStream): TokenStream {
                 val (tt4) = tree
                 run {
                     val ts33 = TokenStream.new()
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("ToTokens", Span.defSite())), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                    TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts33)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts33)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts33)
+                    TokenTree.from(Ident.new("ToTokens", Span.defSite())).toTokens(ts33)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts33)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts33)
+                    TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts33)
+                    TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                         val ts34 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("TokenTree", Span.defSite())), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("Group", Span.defSite())), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts34)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Ident.new("TokenTree", Span.defSite())).toTokens(ts34)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Ident.new("Group", Span.defSite())).toTokens(ts34)
+                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                             val ts35 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("Group", Span.defSite())), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Ident.new("new", Span.defSite())), ts35)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                            TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts35)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts35)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts35)
+                            TokenTree.from(Ident.new("Group", Span.defSite())).toTokens(ts35)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts35)
+                            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts35)
+                            TokenTree.from(Ident.new("new", Span.defSite())).toTokens(ts35)
+                            TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                 val ts36 = TokenStream.new()
-                                ToTokens.ToTokens(when (tt4.delimiter()) {
+                                (when (tt4.delimiter()) {
                                     Delimiter.Parenthesis -> {
                                         val ts37 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts37)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts37)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts37)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Delimiter", Span.defSite())), ts37)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts37)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts37)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Parenthesis", Span.defSite())), ts37)
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts37)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts37)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts37)
+                                        TokenTree.from(Ident.new("Delimiter", Span.defSite())).toTokens(ts37)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts37)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts37)
+                                        TokenTree.from(Ident.new("Parenthesis", Span.defSite())).toTokens(ts37)
                                         ts37
                                     }
                                     Delimiter.Brace -> {
                                         val ts38 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts38)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts38)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts38)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Delimiter", Span.defSite())), ts38)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts38)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts38)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Brace", Span.defSite())), ts38)
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts38)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts38)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts38)
+                                        TokenTree.from(Ident.new("Delimiter", Span.defSite())).toTokens(ts38)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts38)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts38)
+                                        TokenTree.from(Ident.new("Brace", Span.defSite())).toTokens(ts38)
                                         ts38
                                     }
                                     Delimiter.Bracket -> {
                                         val ts39 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts39)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts39)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts39)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Delimiter", Span.defSite())), ts39)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts39)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts39)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Bracket", Span.defSite())), ts39)
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts39)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts39)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts39)
+                                        TokenTree.from(Ident.new("Delimiter", Span.defSite())).toTokens(ts39)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts39)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts39)
+                                        TokenTree.from(Ident.new("Bracket", Span.defSite())).toTokens(ts39)
                                         ts39
                                     }
                                     Delimiter.None -> {
                                         val ts40 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts40)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts40)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts40)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Delimiter", Span.defSite())), ts40)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts40)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts40)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("None", Span.defSite())), ts40)
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts40)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts40)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts40)
+                                        TokenTree.from(Ident.new("Delimiter", Span.defSite())).toTokens(ts40)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts40)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts40)
+                                        TokenTree.from(Ident.new("None", Span.defSite())).toTokens(ts40)
                                         ts40
                                     }
-                                }, ts36)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts36)
-                                ToTokens.ToTokens(quote(tt4.stream()), ts36)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts36)
+                                }).toTokens(ts36)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts36)
+                                quote(tt4.stream()).toTokens(ts36)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts36)
                                 ts36
-                            })), ts35)
+                            })).toTokens(ts35)
                             ts35
-                        })), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts34)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts34)
+                        })).toTokens(ts34)
+                        TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts34)
+                        TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts34)
+                        TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts34)
                         ts34
-                    })), ts33)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts33)
+                    })).toTokens(ts33)
+                    TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts33)
                     ts33
                 }
             }
@@ -697,13 +695,13 @@ public fun quote(stream: TokenStream): TokenStream {
                         null -> {
                             Pair(literal.asStr(), run {
                                 val ts41 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts41)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts41)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts41)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("Ident", Span.defSite())), ts41)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts41)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts41)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("new", Span.defSite())), ts41)
+                                TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts41)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts41)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts41)
+                                TokenTree.from(Ident.new("Ident", Span.defSite())).toTokens(ts41)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts41)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts41)
+                                TokenTree.from(Ident.new("new", Span.defSite())).toTokens(ts41)
                                 ts41
                             })
                         }
@@ -711,56 +709,56 @@ public fun quote(stream: TokenStream): TokenStream {
                             val stripped = matchVal2
                             Pair(stripped, run {
                                 val ts42 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts42)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts42)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts42)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("Ident", Span.defSite())), ts42)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts42)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts42)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("new_raw", Span.defSite())), ts42)
+                                TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts42)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts42)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts42)
+                                TokenTree.from(Ident.new("Ident", Span.defSite())).toTokens(ts42)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts42)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts42)
+                                TokenTree.from(Ident.new("new_raw", Span.defSite())).toTokens(ts42)
                                 ts42
                             })
                         }
                     }
                 run {
                     val ts43 = TokenStream.new()
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("ToTokens", Span.defSite())), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                    TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts43)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts43)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts43)
+                    TokenTree.from(Ident.new("ToTokens", Span.defSite())).toTokens(ts43)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts43)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts43)
+                    TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts43)
+                    TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                         val ts44 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("TokenTree", Span.defSite())), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("Ident", Span.defSite())), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts44)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Ident.new("TokenTree", Span.defSite())).toTokens(ts44)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Ident.new("Ident", Span.defSite())).toTokens(ts44)
+                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                             val ts45 = TokenStream.new()
-                            ToTokens.ToTokens(ctor, ts45)
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                            ctor.toTokens(ts45)
+                            TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                 val ts46 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Literal.string(literal1)), ts46)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts46)
-                                ToTokens.ToTokens(quoteSpan(procMacroCrate.clone(), tt5.span()), ts46)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts46)
+                                TokenTree.from(Literal.string(literal1)).toTokens(ts46)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts46)
+                                quoteSpan(procMacroCrate.clone(), tt5.span()).toTokens(ts46)
+                                TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts46)
                                 ts46
-                            })), ts45)
+                            })).toTokens(ts45)
                             ts45
-                        })), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts44)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts44)
+                        })).toTokens(ts44)
+                        TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts44)
+                        TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts44)
+                        TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts44)
                         ts44
-                    })), ts43)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts43)
+                    })).toTokens(ts43)
+                    TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts43)
                     ts43
                 }
             }
@@ -768,123 +766,123 @@ public fun quote(stream: TokenStream): TokenStream {
                 val (tt6) = tree
                 run {
                     val ts47 = TokenStream.new()
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("ToTokens", Span.defSite())), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Ident.new("to_tokens", Span.defSite())), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                    TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts47)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts47)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts47)
+                    TokenTree.from(Ident.new("ToTokens", Span.defSite())).toTokens(ts47)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts47)
+                    TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts47)
+                    TokenTree.from(Ident.new("to_tokens", Span.defSite())).toTokens(ts47)
+                    TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                         val ts48 = TokenStream.new()
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("TokenTree", Span.defSite())), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("Literal", Span.defSite())), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts48)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Ident.new("TokenTree", Span.defSite())).toTokens(ts48)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Ident.new("Literal", Span.defSite())).toTokens(ts48)
+                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                             val ts49 = TokenStream.new()
-                            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Brace, run {
+                            TokenTree.from(Group.new(Delimiter.Brace, run {
                                 val ts50 = TokenStream.new()
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("iter", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Literal.string(tt6.toString())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("parse", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('<', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("TokenStream", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('>', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("unwrap", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("into_iter", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("if", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Ident.new("iter", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Literal.string(tt6.toString())).toTokens(ts50)
+                                TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Ident.new("parse", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Punct.new('<', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Ident.new("TokenStream", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Punct.new('>', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts50)
+                                TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Ident.new("unwrap", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts50)
+                                TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Ident.new("into_iter", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts50)
+                                TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Ident.new("if", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                     val ts51 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("Some", Span.defSite())), ts51)
-                                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                    TokenTree.from(Ident.new("Some", Span.defSite())).toTokens(ts51)
+                                    TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                         val ts52 = TokenStream.new()
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("TokenTree", Span.defSite())), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Ident.new("Literal", Span.defSite())), ts52)
-                                        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                        TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts52)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts52)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts52)
+                                        TokenTree.from(Ident.new("TokenTree", Span.defSite())).toTokens(ts52)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts52)
+                                        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts52)
+                                        TokenTree.from(Ident.new("Literal", Span.defSite())).toTokens(ts52)
+                                        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                             val ts53 = TokenStream.new()
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts53)
-                                            ToTokens.ToTokens(TokenTree.from(Ident.new("lit", Span.defSite())), ts53)
+                                            TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts53)
+                                            TokenTree.from(Ident.new("lit", Span.defSite())).toTokens(ts53)
                                             ts53
-                                        })), ts52)
+                                        })).toTokens(ts52)
                                         ts52
-                                    })), ts51)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts51)
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("None", Span.defSite())), ts51)
+                                    })).toTokens(ts51)
+                                    TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts51)
+                                    TokenTree.from(Ident.new("None", Span.defSite())).toTokens(ts51)
                                     ts51
-                                })), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                })).toTokens(ts50)
+                                TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                     val ts54 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("iter", Span.defSite())), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("next", Span.defSite())), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("iter", Span.defSite())), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("next", Span.defSite())), ts54)
-                                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts54)
+                                    TokenTree.from(Ident.new("iter", Span.defSite())).toTokens(ts54)
+                                    TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts54)
+                                    TokenTree.from(Ident.new("next", Span.defSite())).toTokens(ts54)
+                                    TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts54)
+                                    TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts54)
+                                    TokenTree.from(Ident.new("iter", Span.defSite())).toTokens(ts54)
+                                    TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts54)
+                                    TokenTree.from(Ident.new("next", Span.defSite())).toTokens(ts54)
+                                    TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts54)
                                     ts54
-                                })), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Brace, run {
+                                })).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Brace, run {
                                     val ts55 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("lit", Span.defSite())), ts55)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new('.', Spacing.Alone)), ts55)
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("set_span", Span.defSite())), ts55)
-                                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+                                    TokenTree.from(Ident.new("lit", Span.defSite())).toTokens(ts55)
+                                    TokenTree.from(Punct.new('.', Spacing.Alone)).toTokens(ts55)
+                                    TokenTree.from(Ident.new("set_span", Span.defSite())).toTokens(ts55)
+                                    TokenTree.from(Group.new(Delimiter.Parenthesis, run {
                                         val ts56 = TokenStream.new()
-                                        ToTokens.ToTokens(quoteSpan(procMacroCrate.clone(), tt6.span()), ts56)
+                                        quoteSpan(procMacroCrate.clone(), tt6.span()).toTokens(ts56)
                                         ts56
-                                    })), ts55)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts55)
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("lit", Span.defSite())), ts55)
+                                    })).toTokens(ts55)
+                                    TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts55)
+                                    TokenTree.from(Ident.new("lit", Span.defSite())).toTokens(ts55)
                                     ts55
-                                })), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Ident.new("else", Span.defSite())), ts50)
-                                ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Brace, run {
+                                })).toTokens(ts50)
+                                TokenTree.from(Ident.new("else", Span.defSite())).toTokens(ts50)
+                                TokenTree.from(Group.new(Delimiter.Brace, run {
                                     val ts57 = TokenStream.new()
-                                    ToTokens.ToTokens(TokenTree.from(Ident.new("unreachable", Span.defSite())), ts57)
-                                    ToTokens.ToTokens(TokenTree.from(Punct.new('!', Spacing.Alone)), ts57)
-                                    ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts57)
+                                    TokenTree.from(Ident.new("unreachable", Span.defSite())).toTokens(ts57)
+                                    TokenTree.from(Punct.new('!', Spacing.Alone)).toTokens(ts57)
+                                    TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts57)
                                     ts57
-                                })), ts50)
+                                })).toTokens(ts50)
                                 ts50
-                            })), ts49)
+                            })).toTokens(ts49)
                             ts49
-                        })), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new(',', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Punct.new('&', Spacing.Alone)), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts48)
-                        ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts48)
+                        })).toTokens(ts48)
+                        TokenTree.from(Punct.new(',', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Punct.new('&', Spacing.Alone)).toTokens(ts48)
+                        TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts48)
+                        TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts48)
                         ts48
-                    })), ts47)
-                    ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts47)
+                    })).toTokens(ts47)
+                    TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts47)
                     ts47
                 }
             }
@@ -895,25 +893,25 @@ public fun quote(stream: TokenStream): TokenStream {
     }
     return run {
         val ts58 = TokenStream.new()
-        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Brace, run {
+        TokenTree.from(Group.new(Delimiter.Brace, run {
             val ts59 = TokenStream.new()
-            ToTokens.ToTokens(TokenTree.from(Ident.new("let", Span.defSite())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("mut", Span.defSite())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Punct.new('=', Spacing.Alone)), ts59)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("crate", Span.defSite())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts59)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts59)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("TokenStream", Span.defSite())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts59)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts59)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("new", Span.defSite())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())), ts59)
-            ToTokens.ToTokens(TokenTree.from(Punct.new(';', Spacing.Alone)), ts59)
-            ToTokens.ToTokens(tokens, ts59)
-            ToTokens.ToTokens(TokenTree.from(Ident.new("ts", Span.defSite())), ts59)
+            TokenTree.from(Ident.new("let", Span.defSite())).toTokens(ts59)
+            TokenTree.from(Ident.new("mut", Span.defSite())).toTokens(ts59)
+            TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts59)
+            TokenTree.from(Punct.new('=', Spacing.Alone)).toTokens(ts59)
+            TokenTree.from(Ident.new("crate", Span.defSite())).toTokens(ts59)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts59)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts59)
+            TokenTree.from(Ident.new("TokenStream", Span.defSite())).toTokens(ts59)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts59)
+            TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts59)
+            TokenTree.from(Ident.new("new", Span.defSite())).toTokens(ts59)
+            TokenTree.from(Group.new(Delimiter.Parenthesis, TokenStream.new())).toTokens(ts59)
+            TokenTree.from(Punct.new(';', Spacing.Alone)).toTokens(ts59)
+            tokens.toTokens(ts59)
+            TokenTree.from(Ident.new("ts", Span.defSite())).toTokens(ts59)
             ts59
-        })), ts58)
+        })).toTokens(ts58)
         ts58
     }
 }
@@ -963,18 +961,18 @@ public fun quoteSpan(procMacroCrate: TokenStream, span: Span): TokenStream {
     val id = span.saveSpan()
     return run {
         val ts = TokenStream.new()
-        ToTokens.ToTokens(procMacroCrate, ts)
-        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-        ToTokens.ToTokens(TokenTree.from(Ident.new("Span", Span.defSite())), ts)
-        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-        ToTokens.ToTokens(TokenTree.from(Punct.new(':', Spacing.Alone)), ts)
-        ToTokens.ToTokens(TokenTree.from(Ident.new("recover_proc_macro_span", Span.defSite())), ts)
-        ToTokens.ToTokens(TokenTree.from(Group.new(Delimiter.Parenthesis, run {
+        procMacroCrate.toTokens(ts)
+        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+        TokenTree.from(Ident.new("Span", Span.defSite())).toTokens(ts)
+        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+        TokenTree.from(Punct.new(':', Spacing.Alone)).toTokens(ts)
+        TokenTree.from(Ident.new("recover_proc_macro_span", Span.defSite())).toTokens(ts)
+        TokenTree.from(Group.new(Delimiter.Parenthesis, run {
             val ts1 = TokenStream.new()
-            ToTokens.ToTokens(TokenTree.from(Literal.usizeUnsuffixed(id)), ts1)
+            TokenTree.from(Literal.usizeUnsuffixed(id)).toTokens(ts1)
             ts1
-        })), ts)
+        })).toTokens(ts)
         ts
     }
 }

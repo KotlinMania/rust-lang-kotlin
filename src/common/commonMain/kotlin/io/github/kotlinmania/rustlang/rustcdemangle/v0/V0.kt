@@ -57,6 +57,28 @@ public sealed class ParseError {
 
     public fun rustEquals(other: ParseError): Boolean = this == other
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Invalid -> 0
+        RecursedTooDeep -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     /**
      * Snippet to print when the error is initially encountered.
      */
@@ -323,6 +345,28 @@ public open class HexNibbles(
                     sealed class Utf8FirstByteError {
                         public data object ContinuationByte : Utf8FirstByteError()
                         public data object TooLong : Utf8FirstByteError()
+    
+                        private fun kmDiscriminant(): Int =
+                            when (this) {
+                            ContinuationByte -> 0
+                            TooLong -> 1
+                            }
+    
+                        public fun toByte(): Byte = kmDiscriminant().toByte()
+    
+                        public fun toUByte(): UByte = kmDiscriminant().toUByte()
+    
+                        public fun toShort(): Short = kmDiscriminant().toShort()
+    
+                        public fun toUShort(): UShort = kmDiscriminant().toUShort()
+    
+                        public fun toInt(): Int = kmDiscriminant()
+    
+                        public fun toUInt(): UInt = kmDiscriminant().toUInt()
+    
+                        public fun toLong(): Long = kmDiscriminant().toLong()
+    
+                        public fun toULong(): ULong = kmDiscriminant().toULong()
                     }
                     fun utf8LenFromFirstByte(byte: UByte): Result<Int, Utf8FirstByteError> =
                         when (byte) {

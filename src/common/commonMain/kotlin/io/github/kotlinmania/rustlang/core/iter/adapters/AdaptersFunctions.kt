@@ -4,6 +4,7 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.fromResidual
 
 /**
  * Process the given iterator as if it yielded the item's `Try.Output`
@@ -20,7 +21,7 @@ public fun <TryType, I, T, R, U> tryProcess(iter: I, f: (GenericShunt<I, R>) -> 
         null -> Try.fromOutput(value)
         else -> {
             val r = residual
-            FromResidual.FromResidual(r)
+            FromResidual.fromResidual(r)
         }
     }
 }

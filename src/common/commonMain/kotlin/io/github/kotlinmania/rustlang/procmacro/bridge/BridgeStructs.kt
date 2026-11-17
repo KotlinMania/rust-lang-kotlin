@@ -122,9 +122,9 @@ public fun <S, Span : Encode<S>> DelimSpan<Span>.encode(w: Buffer, s: S) {
     this.entire.encode(w, s)
 }
 
-public fun <S, Span : Decode<S, Span>> decodeDelimSpanSpan(r: List<UByte>, s: S): DelimSpan<Span> = DelimSpan(open = Decode.Decode(r, s), close = Decode.Decode(r, s), entire = Decode.Decode(r, s))
+public fun <S, Span : Decode<S, Span>> decodeDelimSpanSpan(r: List<UByte>, s: S): DelimSpan<Span> = DelimSpan(open = Decode.decode(r, s), close = Decode.decode(r, s), entire = Decode.decode(r, s))
 
-public fun <Unmarked, Span : Mark<Span, Unmarked>> markDelimSpanSpan(unmarked: DelimSpan<Unmarked>): DelimSpan<Span> = DelimSpan(open = Mark.Mark(unmarked.open), close = Mark.Mark(unmarked.close), entire = Mark.Mark(unmarked.entire))
+public fun <Unmarked, Span : Mark<Span, Unmarked>> markDelimSpanSpan(unmarked: DelimSpan<Unmarked>): DelimSpan<Span> = DelimSpan(open = Mark.mark(unmarked.open), close = Mark.mark(unmarked.close), entire = Mark.mark(unmarked.entire))
 
 public fun <Unmarked, Span : Mark<Span, Unmarked>> DelimSpan<Span>.unmark(): DelimSpan<Unmarked> = DelimSpan(open = this.open.unmark(), close = this.close.unmark(), entire = this.entire.unmark())
 
@@ -142,9 +142,9 @@ public fun <S, TokenStream : Encode<S>, Span : Encode<S>> Group<TokenStream, Spa
     this.span.encode(w, s)
 }
 
-public fun <S, TokenStream : Decode<S, TokenStream>, Span : Decode<S, Span>> decodeGroupTokenStreamSpan(r: List<UByte>, s: S): Group<TokenStream, Span> = Group(delimiter = Decode.Decode(r, s), stream = Decode.Decode(r, s), span = Decode.Decode(r, s))
+public fun <S, TokenStream : Decode<S, TokenStream>, Span : Decode<S, Span>> decodeGroupTokenStreamSpan(r: List<UByte>, s: S): Group<TokenStream, Span> = Group(delimiter = Decode.decode(r, s), stream = Decode.decode(r, s), span = Decode.decode(r, s))
 
-public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Span, Unmarked>> markGroupTokenStreamSpan(unmarked: Group<Unmarked, Unmarked>): Group<TokenStream, Span> = Group(delimiter = Mark.Mark(unmarked.delimiter), stream = Mark.Mark(unmarked.stream), span = Mark.Mark(unmarked.span))
+public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Span, Unmarked>> markGroupTokenStreamSpan(unmarked: Group<Unmarked, Unmarked>): Group<TokenStream, Span> = Group(delimiter = Mark.mark(unmarked.delimiter), stream = Mark.mark(unmarked.stream), span = Mark.mark(unmarked.span))
 
 public fun <Unmarked, TokenStream : Mark<TokenStream, Unmarked>, Span : Mark<Span, Unmarked>> Group<TokenStream, Span>.unmark(): Group<Unmarked, Unmarked> = Group(delimiter = this.delimiter.unmark(), stream = this.stream.unmark(), span = this.span.unmark())
 
@@ -193,9 +193,9 @@ public fun <S, Span : Encode<S>> Punct<Span>.encode(w: Buffer, s: S) {
     this.span.encode(w, s)
 }
 
-public fun <S, Span : Decode<S, Span>> decodePunctSpan(r: List<UByte>, s: S): Punct<Span> = Punct(ch = Decode.Decode(r, s), joint = Decode.Decode(r, s), span = Decode.Decode(r, s))
+public fun <S, Span : Decode<S, Span>> decodePunctSpan(r: List<UByte>, s: S): Punct<Span> = Punct(ch = Decode.decode(r, s), joint = Decode.decode(r, s), span = Decode.decode(r, s))
 
-public fun <Unmarked, Span : Mark<Span, Unmarked>> markPunctSpan(unmarked: Punct<Unmarked>): Punct<Span> = Punct(ch = Mark.Mark(unmarked.ch), joint = Mark.Mark(unmarked.joint), span = Mark.Mark(unmarked.span))
+public fun <Unmarked, Span : Mark<Span, Unmarked>> markPunctSpan(unmarked: Punct<Unmarked>): Punct<Span> = Punct(ch = Mark.mark(unmarked.ch), joint = Mark.mark(unmarked.joint), span = Mark.mark(unmarked.span))
 
 public fun <Unmarked, Span : Mark<Span, Unmarked>> Punct<Span>.unmark(): Punct<Unmarked> = Punct(ch = this.ch.unmark(), joint = this.joint.unmark(), span = this.span.unmark())
 
@@ -213,9 +213,9 @@ public fun <S, Span : Encode<S>, Symbol : Encode<S>> Ident<Span, Symbol>.encode(
     this.span.encode(w, s)
 }
 
-public fun <S, Span : Decode<S, Span>, Symbol : Decode<S, Symbol>> decodeIdentSpanSymbol(r: List<UByte>, s: S): Ident<Span, Symbol> = Ident(sym = Decode.Decode(r, s), kind = Decode.Decode(r, s), span = Decode.Decode(r, s))
+public fun <S, Span : Decode<S, Span>, Symbol : Decode<S, Symbol>> decodeIdentSpanSymbol(r: List<UByte>, s: S): Ident<Span, Symbol> = Ident(sym = Decode.decode(r, s), kind = Decode.decode(r, s), span = Decode.decode(r, s))
 
-public fun <Unmarked, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> markIdentSpanSymbol(unmarked: Ident<Unmarked, Unmarked>): Ident<Span, Symbol> = Ident(sym = Mark.Mark(unmarked.sym), kind = Mark.Mark(unmarked.kind), span = Mark.Mark(unmarked.span))
+public fun <Unmarked, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> markIdentSpanSymbol(unmarked: Ident<Unmarked, Unmarked>): Ident<Span, Symbol> = Ident(sym = Mark.mark(unmarked.sym), kind = Mark.mark(unmarked.kind), span = Mark.mark(unmarked.span))
 
 public fun <Unmarked, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> Ident<Span, Symbol>.unmark(): Ident<Unmarked, Unmarked> = Ident(sym = this.sym.unmark(), kind = this.kind.unmark(), span = this.span.unmark())
 
@@ -235,9 +235,9 @@ public fun <S, Span : Encode<S>, Symbol : Encode<S>> Literal<Span, Symbol>.encod
     this.span.encode(w, s)
 }
 
-public fun <S, Span : Decode<S, Span>, Symbol : Decode<S, Symbol>> decodeLiteralSpanSymbol(r: List<UByte>, s: S): Literal<Span, Symbol> = Literal(kind = Decode.Decode(r, s), symbol = Decode.Decode(r, s), suffix = Decode.Decode(r, s), span = Decode.Decode(r, s))
+public fun <S, Span : Decode<S, Span>, Symbol : Decode<S, Symbol>> decodeLiteralSpanSymbol(r: List<UByte>, s: S): Literal<Span, Symbol> = Literal(kind = Decode.decode(r, s), symbol = Decode.decode(r, s), suffix = Decode.decode(r, s), span = Decode.decode(r, s))
 
-public fun <Unmarked, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> markLiteralSpanSymbol(unmarked: Literal<Unmarked, Unmarked>): Literal<Span, Symbol> = Literal(kind = Mark.Mark(unmarked.kind), symbol = Mark.Mark(unmarked.symbol), suffix = Mark.Mark(unmarked.suffix), span = Mark.Mark(unmarked.span))
+public fun <Unmarked, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> markLiteralSpanSymbol(unmarked: Literal<Unmarked, Unmarked>): Literal<Span, Symbol> = Literal(kind = Mark.mark(unmarked.kind), symbol = Mark.mark(unmarked.symbol), suffix = Mark.mark(unmarked.suffix), span = Mark.mark(unmarked.span))
 
 public fun <Unmarked, Span : Mark<Span, Unmarked>, Symbol : Mark<Symbol, Unmarked>> Literal<Span, Symbol>.unmark(): Literal<Unmarked, Unmarked> = Literal(kind = this.kind.unmark(), symbol = this.symbol.unmark(), suffix = this.suffix.unmark(), span = this.span.unmark())
 
@@ -257,9 +257,9 @@ public fun <S, Span : Encode<S>> Diagnostic<Span>.encode(w: Buffer, s: S) {
     this.children.encode(w, s)
 }
 
-public fun <S, Span : Decode<S, Span>> decodeDiagnosticSpan(r: List<UByte>, s: S): Diagnostic<Span> = Diagnostic(level = Decode.Decode(r, s), message = Decode.Decode(r, s), spans = Decode.Decode(r, s), children = Decode.Decode(r, s))
+public fun <S, Span : Decode<S, Span>> decodeDiagnosticSpan(r: List<UByte>, s: S): Diagnostic<Span> = Diagnostic(level = Decode.decode(r, s), message = Decode.decode(r, s), spans = Decode.decode(r, s), children = Decode.decode(r, s))
 
-public fun <Unmarked, Span : Mark<Span, Unmarked>> markDiagnosticSpan(unmarked: Diagnostic<Unmarked>): Diagnostic<Span> = Diagnostic(level = Mark.Mark(unmarked.level), message = Mark.Mark(unmarked.message), spans = Mark.Mark(unmarked.spans), children = Mark.Mark(unmarked.children))
+public fun <Unmarked, Span : Mark<Span, Unmarked>> markDiagnosticSpan(unmarked: Diagnostic<Unmarked>): Diagnostic<Span> = Diagnostic(level = Mark.mark(unmarked.level), message = Mark.mark(unmarked.message), spans = Mark.mark(unmarked.spans), children = Mark.mark(unmarked.children))
 
 public fun <Unmarked, Span : Mark<Span, Unmarked>> Diagnostic<Span>.unmark(): Diagnostic<Unmarked> = Diagnostic(level = this.level.unmark(), message = this.message.unmark(), spans = this.spans.unmark(), children = this.children.unmark())
 
@@ -313,8 +313,8 @@ public fun <S, Span : Encode<S>> ExpnGlobals<Span>.encode(w: Buffer, s: S) {
     this.mixedSite.encode(w, s)
 }
 
-public fun <S, Span : Decode<S, Span>> decodeExpnGlobalsSpan(r: List<UByte>, s: S): ExpnGlobals<Span> = ExpnGlobals(defSite = Decode.Decode(r, s), callSite = Decode.Decode(r, s), mixedSite = Decode.Decode(r, s))
+public fun <S, Span : Decode<S, Span>> decodeExpnGlobalsSpan(r: List<UByte>, s: S): ExpnGlobals<Span> = ExpnGlobals(defSite = Decode.decode(r, s), callSite = Decode.decode(r, s), mixedSite = Decode.decode(r, s))
 
-public fun <Unmarked, Span : Mark<Span, Unmarked>> markExpnGlobalsSpan(unmarked: ExpnGlobals<Unmarked>): ExpnGlobals<Span> = ExpnGlobals(defSite = Mark.Mark(unmarked.defSite), callSite = Mark.Mark(unmarked.callSite), mixedSite = Mark.Mark(unmarked.mixedSite))
+public fun <Unmarked, Span : Mark<Span, Unmarked>> markExpnGlobalsSpan(unmarked: ExpnGlobals<Unmarked>): ExpnGlobals<Span> = ExpnGlobals(defSite = Mark.mark(unmarked.defSite), callSite = Mark.mark(unmarked.callSite), mixedSite = Mark.mark(unmarked.mixedSite))
 
 public fun <Unmarked, Span : Mark<Span, Unmarked>> ExpnGlobals<Span>.unmark(): ExpnGlobals<Unmarked> = ExpnGlobals(defSite = this.defSite.unmark(), callSite = this.callSite.unmark(), mixedSite = this.mixedSite.unmark())

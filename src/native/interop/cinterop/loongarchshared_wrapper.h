@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-void corearchLoongarchsharedDbar(int32_t a);
-void corearchLoongarchsharedIbar(int32_t a);
-void corearchLoongarchsharedMovgr2fcsr(int32_t a, int32_t b);
-int32_t corearchLoongarchsharedMovfcsr2gr(int32_t a);
+void corearchLoongarchsharedExternDbar(int32_t a);
+void corearchLoongarchsharedExternIbar(int32_t a);
+void corearchLoongarchsharedExternMovgr2fcsr(int32_t a, int32_t b);
+int32_t corearchLoongarchsharedExternMovfcsr2gr(int32_t a);
 int32_t corearchLoongarchsharedExternIocsrrdB(int32_t a);
 int32_t corearchLoongarchsharedExternIocsrrdH(int32_t a);
 int32_t corearchLoongarchsharedExternIocsrrdW(int32_t a);
@@ -21,7 +21,7 @@ void corearchLoongarchsharedExternIocsrwrH(int32_t a, int32_t b);
 void corearchLoongarchsharedExternIocsrwrW(int32_t a, int32_t b);
 void corearchLoongarchsharedBreakTarget(int32_t a);
 int32_t corearchLoongarchsharedExternCpucfg(int32_t a);
-void corearchLoongarchsharedSyscall(int32_t a);
+void corearchLoongarchsharedExternSyscall(int32_t a);
 float corearchLoongarchsharedExternFrecipeS(float a);
 double corearchLoongarchsharedExternFrecipeD(double a);
 float corearchLoongarchsharedExternFrsqrteS(float a);

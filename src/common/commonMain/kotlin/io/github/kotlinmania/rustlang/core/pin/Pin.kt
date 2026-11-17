@@ -1,21 +1,17 @@
 // port-lint: source pin.rs
 package io.github.kotlinmania.rustlang.core.pin
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.eq
 import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -1044,11 +1040,11 @@ public open class Pin<Ptr>(
 
     public open fun clone(): Pin<Ptr> = Pin<Ptr>(pointer, fieldLayout)
 
-    public open fun cmp(other: Pin<Ptr>): cmp.Ordering = Ptr.Target.cmp(this, other)
+    public open fun cmp(other: Pin<Ptr>): Ordering = Ptr.Target.cmp(this, other)
 
     public override fun hashCode(): Int {
         var state = 0
-        Ptr.Target.Hash(this, state)
+        Ptr.Target.hash(this, state)
         return state
     }
 
@@ -1174,12 +1170,12 @@ public open class Pin<Ptr>(
         (this.pointer) = value
     }
 
-    public open fun deref(): Target = Pin.getRef(Pin.AsRef(this))
+    public open fun deref(): Target = Pin.getRef(this.asRef())
 
     public open fun derefMut(typeLayoutPtr: TypeLayout<Ptr> = UnresolvedTypeLayout()): Target {
         // SAFETY: Pin and PinHelper have the same layout, so this is equivalent to
         // `self.pointer` which is safe because `Target: Unpin`.
-        return PinDerefMutHelper.DerefMut(RustMutableReference(MutPtr((((MutPtr(this.fieldStorage.rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), TransparentTypeLayout(typeLayoutPtr, { ptr, layout -> PinHelper<Ptr>(ptr, layout) }, { it.pointer })))
+        return (RustMutableReference(MutPtr((((MutPtr(this.fieldStorage.rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), TransparentTypeLayout(typeLayoutPtr, { ptr, layout -> PinHelper<Ptr>(ptr, layout) }, { it.pointer }))).derefMut()
     }
 
     // The following implementations allow untrusted trait implementations to access
@@ -1408,11 +1404,11 @@ public open class Pin<Ptr>(
 //
 // See <https://internals.rust-lang.org/t/unsoundness-in-pin/11311/73> and the
 // `PinSafePointer` trait for more details.
-public fun <Ptr, Q> Pin<Ptr>.eq(other: Pin<Q>): Boolean = Ptr.Target.Eq(this, other)
+public fun <Ptr, Q> Pin<Ptr>.eq(other: Pin<Q>): Boolean = Ptr.Target.eq(this, other)
 
 public fun <Ptr, Q> Pin<Ptr>.ne(other: Pin<Q>): Boolean = Ptr.Target.ne(this, other)
 
-public fun <Ptr, Q> Pin<Ptr>.partialCmp(other: Pin<Q>): cmp.Ordering? = Ptr.Target.partialCmp(this, other)
+public fun <Ptr, Q> Pin<Ptr>.partialCmp(other: Pin<Q>): Ordering? = Ptr.Target.partialCmp(this, other)
 
 public fun <Ptr, Q> Pin<Ptr>.lt(other: Pin<Q>): Boolean = Ptr.Target.lt(this, other)
 

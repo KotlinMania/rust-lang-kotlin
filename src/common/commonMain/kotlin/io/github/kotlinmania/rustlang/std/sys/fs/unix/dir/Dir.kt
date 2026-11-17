@@ -23,9 +23,9 @@ import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
 import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.path.Path
-import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileAttr
@@ -61,7 +61,7 @@ public open class Dir(
     public open fun selfMetadata(): Result<FileAttr, Error> {
         // Reuse the implementation for files, which should work for all FDs.
         val fd = this.value.asRawFd()
-        val f = File(FileDesc.FromRawFd(fd))
+        val f = File(FileDesc.fromRawFd(fd))
         return f.fileAttr()
     }
 
@@ -88,7 +88,7 @@ public open class Dir(
     public open fun openFileC(path: CStr, opts: OpenOptions, extraFlags: CInt): Result<OwnedFd, Error> {
         val flags = O_CLOEXEC or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) } or (opts.customFlags and O_ACCMODE.inv()) or extraFlags
         val fd = when (val tryResult = cvtR({ openat64(this.value.asRawFd(), path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedFd, Error>(tryResult.errValue()) }
-        return Result.Ok<OwnedFd, Error>(OwnedFd.FromRawFd(fd))
+        return Result.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd))
     }
 
     public open fun removeC(path: CStr, removeDir: Boolean): Result<Unit, Error> =
@@ -136,13 +136,13 @@ public open class Dir(
         public fun openWithC(path: CStr, opts: OpenOptions): Result<Dir, Error> {
             val flags = O_CLOEXEC or O_DIRECTORY or when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) } or when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) } or (opts.customFlags and O_ACCMODE.inv())
             val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }
-            return Result.Ok<Dir, Error>(Dir(OwnedFd.FromRawFd(fd)))
+            return Result.Ok<Dir, Error>(Dir(OwnedFd.fromRawFd(fd)))
         }
 
         public fun openTraversalC(path: CStr): Result<Dir, Error> {
             val flags = O_CLOEXEC or O_DIRECTORY or TRAVERSE_DIRECTORY
             val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, 0) })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }
-            return Result.Ok<Dir, Error>(Dir(OwnedFd.FromRawFd(fd)))
+            return Result.Ok<Dir, Error>(Dir(OwnedFd.fromRawFd(fd)))
         }
     }
 }
@@ -151,10 +151,10 @@ public fun io.github.kotlinmania.rustlang.std.fs.Dir.asRawFd(): RawFd = this.asI
 
 public fun io.github.kotlinmania.rustlang.std.fs.Dir.intoRawFd(): RawFd = this.intoInner().first.intoRawFd()
 
-public fun fromRawFdDir(fd: RawFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.FromInner(Dir(FromRawFd.FromRawFd(fd)))
+public fun fromRawFdDir(fd: RawFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(FromRawFd.fromRawFd(fd)))
 
 public fun io.github.kotlinmania.rustlang.std.fs.Dir.asFd(): BorrowedFd = this.asInner().first.asFd()
 
 public fun fromOwnedFd(value: io.github.kotlinmania.rustlang.std.fs.Dir): OwnedFd = value.intoInner().first
 
-public fun fromDir(value: OwnedFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.FromInner(Dir(value))
+public fun fromDir(value: OwnedFd): io.github.kotlinmania.rustlang.std.fs.Dir = io.github.kotlinmania.rustlang.std.fs.Dir.fromInner(Dir(value))

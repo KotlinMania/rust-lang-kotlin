@@ -54,6 +54,7 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.asHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.asRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawHandle
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -63,6 +64,7 @@ import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.args.windows.fromWideToUserPath
 import io.github.kotlinmania.rustlang.std.sys.asInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.dir.Dir
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.removedirall.removeDirAllIterative
 import io.github.kotlinmania.rustlang.std.sys.intoInner
@@ -432,10 +434,10 @@ public open class File internal constructor(
             when (val tryResult = cvt(run {
                 // Grab this in advance to avoid it invalidating the pointer
                 // we get from `space.0.asMutPtr()`.
-                val len = space.first.len()
-                deviceIoControl(this.handle.asRawHandle(), FSCTL_GET_REPARSE_POINT, MutPtr(0L), 0u, space.first.asMutPtr().cast(), len.toUInt(), RustMutableReference(localStorageL696C12.asMutPtr(), localStorageL696C12.layout), MutPtr(0L))
+                val len = space.value.len()
+                deviceIoControl(this.handle.asRawHandle(), FSCTL_GET_REPARSE_POINT, MutPtr(0L), 0u, space.value.asMutPtr().cast(), len.toUInt(), RustMutableReference(localStorageL696C12.asMutPtr(), localStorageL696C12.layout), MutPtr(0L))
             })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<UInt, MutPtr>, Error>(tryResult.errValue()) }
-            Result.Ok<Pair<UInt, MutPtr>, Error>(Pair(bytes, space.first.asMutPtr().cast()))
+            Result.Ok<Pair<UInt, MutPtr>, Error>(Pair(bytes, space.value.asMutPtr().cast()))
         }
     }
 
@@ -653,7 +655,7 @@ public open class File internal constructor(
                 } else {
                     ConstPtr(0L)
                 }, creation, opts.getFlagsAndAttributes(), MutPtr(0L))
-            val handle1 = HandleOrInvalid.FromRawHandle(handle)
+            val handle1 = HandleOrInvalid.fromRawHandle(handle)
             return when (val matchVal = OwnedHandle.tryFrom(handle1)) {
                 is Result.Ok<*, *> -> {
                     val handle2 = matchVal.okValue()
@@ -681,7 +683,7 @@ public open class File internal constructor(
                             setFileInformationByHandle(handle2.asRawHandle(), eof)
                         }).ioResult()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.errValue()) }
                     }
-                    Result.Ok<File, Error>(File(handle = Handle.FromInner(handle2)))
+                    Result.Ok<File, Error>(File(handle = Handle.fromInner(handle2)))
                 }
                 else -> {
                     Result.Err<File, Error>(Error.lastOsError())
@@ -691,7 +693,7 @@ public open class File internal constructor(
 
         public fun fromInner(handle: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle): File = File(handle = handle)
 
-        public fun fromRawHandle(rawHandle: RawHandle): File = File(handle = FromInner.FromInner(FromRawHandle.FromRawHandle(rawHandle)))
+        public fun fromRawHandle(rawHandle: RawHandle): File = File(handle = FromInner.fromInner(FromRawHandle.fromRawHandle(rawHandle)))
     }
 }
 
@@ -1165,16 +1167,16 @@ public open class DirBuff internal constructor(
     public var buffer: Align8<List<MaybeUninit<UByte>>> = bufferCtorArg
         internal set
 
-    public open fun capacity(): Int = this.buffer.first.len()
+    public open fun capacity(): Int = this.buffer.value.len()
 
-    public open fun asMutPtr(): MutPtr = this.buffer.first.asMutPtr().cast()
+    public open fun asMutPtr(): MutPtr = this.buffer.value.asMutPtr().cast()
 
     /**
      * Returns a `DirBuffIter`.
      */
     public open fun iter(): DirBuffIter = DirBuffIter.new(this)
 
-    public open fun asRef(): List<MaybeUninit<UByte>> = this.buffer.first
+    public open fun asRef(): List<MaybeUninit<UByte>> = this.buffer.value
 
     public companion object {
         public operator fun invoke(
@@ -1518,6 +1520,22 @@ public sealed class ReparsePoint(
     public data object Open : ReparsePoint(FILE_FLAG_OPEN_REPARSE_POINT)
 
     public fun rustEquals(other: ReparsePoint): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value.toInt()
+
+    public fun toUInt(): UInt = value
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 
     public open fun asFlag(): UInt = this.toUInt()
 }

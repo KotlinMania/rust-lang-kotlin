@@ -56,8 +56,8 @@ private object X86TbmJniBridge {
     }
 
     @JvmStatic
-    external fun corearchX86TbmBextriU32(a: Int, control: Int): Int
+    external fun corearchX86TbmExternBextriU32(a: Int, control: Int): Int
 }
 
-public actual fun bextriU32(a: UInt, control: UInt): UInt =
-    X86TbmJniBridge.corearchX86TbmBextriU32(a.toInt(), control.toInt()).toUInt()
+public actual fun externBextriU32(a: UInt, control: UInt): UInt =
+    X86TbmJniBridge.corearchX86TbmExternBextriU32(a.toInt(), control.toInt()).toUInt()

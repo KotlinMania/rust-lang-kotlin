@@ -48,7 +48,6 @@ import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.intoVec
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
-import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
@@ -485,7 +484,7 @@ public sealed class Stdio {
             }
             is Stdio.StaticFd -> {
                 val (fd1) = this as Stdio.StaticFd
-                val fd2 = FileDesc.FromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) })
+                val fd2 = FileDesc.fromInner(when (val tryResult = fd1.tryCloneToOwned()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<ChildStdio, ChildPipe?>, Error>(tryResult.errValue()) })
                 Result.Ok<Pair<ChildStdio, ChildPipe?>, Error>(Pair(ChildStdio.Owned(fd2), null))
             }
             Stdio.MakePipe -> {
@@ -546,6 +545,29 @@ public sealed class ProgramKind {
     public data object Absolute : ProgramKind()
 
     public fun rustEquals(other: ProgramKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        PathLookup -> 0
+        Relative -> 1
+        Absolute -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public companion object {
         public fun new(program: OsStr): ProgramKind =

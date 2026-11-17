@@ -44,6 +44,29 @@ public sealed class State {
     public data object Destroying : State()
 
     public fun rustEquals(other: State): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Initial -> 0
+        Alive -> 1
+        Destroying -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public open class LazyStorage<T> internal constructor(

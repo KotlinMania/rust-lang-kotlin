@@ -39,6 +39,28 @@ public sealed class ObjcClass {
     public data object Variant1 : ObjcClass()
     public data object Variant2 : ObjcClass()
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Variant1 -> 0
+        Variant2 -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "objc_class").finish(); Result.Ok<Unit, Unit>(Unit) }
 }
 
@@ -48,6 +70,28 @@ public sealed class ObjcClass {
 public sealed class ObjcSelector {
     public data object Variant1 : ObjcSelector()
     public data object Variant2 : ObjcSelector()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Variant1 -> 0
+        Variant2 -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "objc_selector").finish(); Result.Ok<Unit, Unit>(Unit) }
 }

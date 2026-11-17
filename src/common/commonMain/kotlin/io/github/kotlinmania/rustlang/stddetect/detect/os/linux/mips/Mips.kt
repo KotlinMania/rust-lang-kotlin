@@ -4,18 +4,18 @@ package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.mips
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection for MIPS on Linux.
 
 /**
  * Try to read the features from the auxiliary vector.
  */
-public fun detectFeatures(): cache.Initializer {
-    val value = cache.Initializer.default()
+public fun detectFeatures(): Initializer {
+    val value = Initializer.default()
     val enableFeature =
-        { value1: cache.Initializer, f, enable ->
+        { value1: Initializer, f, enable ->
             if (enable) {
                 value1.set(f.toUInt())
             }

@@ -12,6 +12,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.mpmc.waker.currentThreadId
+import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalProcessAttrs
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.std.time.Instant
@@ -132,7 +133,7 @@ public open class Context(
         /**
          * Creates a new `Context`.
          */
-        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = thread.currentOrUnnamed(), threadId = currentThreadId()))
+        public fun new(): Context = Context(inner = Inner(select = AtomicUsize.new(Selected.Waiting.into()), packet = AtomicPtr.new(MutPtr(0L)), thread = currentOrUnnamed(), threadId = currentThreadId()))
     }
 }
 

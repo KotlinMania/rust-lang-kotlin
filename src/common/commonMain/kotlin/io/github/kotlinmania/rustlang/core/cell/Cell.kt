@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.cell
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -1363,7 +1362,7 @@ public open class Ref<T>(
          * check((b2).value == 5u)
          * ```
          */
-        public fun <T, U> map(orig: Ref<T>, f: (T) -> U): Ref<U> = Ref(value = NonNull.From(f((orig).value)), borrow = (orig).value.borrow)
+        public fun <T, U> map(orig: Ref<T>, f: (T) -> U): Ref<U> = Ref(value = NonNull.from(f((orig).value)), borrow = (orig).value.borrow)
 
         /**
          * Makes a new `Ref` for an optional component of the borrowed data. The
@@ -1393,7 +1392,7 @@ public open class Ref<T>(
                 null -> Result.Err<Ref<U>, Ref<T>>(orig)
                 else -> {
                     val value = matchVal
-                    Result.Ok<Ref<U>, Ref<T>>(Ref(value = NonNull.From(value), borrow = (orig).value.borrow))
+                    Result.Ok<Ref<U>, Ref<T>>(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
                 }
             }
 
@@ -1436,7 +1435,7 @@ public open class Ref<T>(
                 val matchVal = f((orig).value)
                 when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.okValue()
-                    Result.Ok<Ref<U>, Pair<Ref<T>, E>>(Ref(value = NonNull.From(value), borrow = (orig).value.borrow))
+                    Result.Ok<Ref<U>, Pair<Ref<T>, E>>(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
                 }; is Result.Err<*, *> -> {
                     val e = matchVal.errValue()
                     Result.Err<Ref<U>, Pair<Ref<T>, E>>(Pair(orig, e))
@@ -1469,7 +1468,7 @@ public open class Ref<T>(
         public fun <T, U, V> mapSplit(orig: Ref<T>, f: (T) -> Pair<U, V>): Pair<Ref<U>, Ref<V>> {
             val (a, b) = f((orig).value)
             val borrow = (orig).value.borrow.clone()
-            return Pair(Ref(value = NonNull.From(a), borrow = borrow), Ref(value = NonNull.From(b), borrow = (orig).value.borrow))
+            return Pair(Ref(value = NonNull.from(a), borrow = borrow), Ref(value = NonNull.from(b), borrow = (orig).value.borrow))
         }
 
         /**
@@ -1622,7 +1621,7 @@ public open class RefMut<T>(
          * ```
          */
         public fun <T, U> map(orig: RefMut<T>, f: (T) -> U): RefMut<U> {
-            val value = NonNull.From(f((orig).value))
+            val value = NonNull.from(f((orig).value))
             return RefMut(value = value, borrow = (orig).value.borrow, marker = Unit)
         }
 
@@ -1664,7 +1663,7 @@ public open class RefMut<T>(
                 null -> Result.Err<RefMut<U>, RefMut<T>>(orig)
                 else -> {
                     val value = matchVal
-                    Result.Ok<RefMut<U>, RefMut<T>>(RefMut(value = NonNull.From(value), borrow = (orig).value.borrow, marker = Unit))
+                    Result.Ok<RefMut<U>, RefMut<T>>(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
                 }
             }
         }
@@ -1717,7 +1716,7 @@ public open class RefMut<T>(
                 val matchVal = f((orig).value)
                 when (matchVal) { is Result.Ok<*, *> -> {
                     val value = matchVal.okValue()
-                    Result.Ok<RefMut<U>, Pair<RefMut<T>, E>>(RefMut(value = NonNull.From(value), borrow = (orig).value.borrow, marker = Unit))
+                    Result.Ok<RefMut<U>, Pair<RefMut<T>, E>>(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
                 }; is Result.Err<*, *> -> {
                     val e = matchVal.errValue()
                     Result.Err<RefMut<U>, Pair<RefMut<T>, E>>(Pair(orig, e))
@@ -1756,7 +1755,7 @@ public open class RefMut<T>(
         public fun <T, U, V> mapSplit(orig: RefMut<T>, f: (T) -> Pair<U, V>): Pair<RefMut<U>, RefMut<V>> {
             val borrow = (orig).value.borrow.clone()
             val (a, b) = f((orig).value)
-            return Pair(RefMut(value = NonNull.From(a), borrow = borrow, marker = Unit), RefMut(value = NonNull.From(b), borrow = (orig).value.borrow, marker = Unit))
+            return Pair(RefMut(value = NonNull.from(a), borrow = borrow, marker = Unit), RefMut(value = NonNull.from(b), borrow = (orig).value.borrow, marker = Unit))
         }
 
         /**

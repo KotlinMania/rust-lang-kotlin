@@ -101,7 +101,7 @@ public fun mmHsubPs(a: M128, b: M128): M128 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_lddqu_si128)
  */
-public fun mmLddquSi128(memAddr: ConstPtr): M128i = transmuteWithLayouts<I8x16, M128i>(lddqu(memAddr), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmLddquSi128(memAddr: ConstPtr): M128i = transmuteWithLayouts<I8x16, M128i>(lddqu(ConstPtr(memAddr.rawAddress, memAddr.rawMeta)), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Duplicate the low double-precision (64-bit) floating-point element

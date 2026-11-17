@@ -116,7 +116,7 @@ public fun <Mask, T> Simd<T>.reverse(n: Int): Simd<T> {
             index
         }
     }
-    return Reverse.Swizzle(this)
+    return Reverse.swizzle(this)
 }
 
 /**
@@ -144,7 +144,7 @@ public fun <Mask, T> Simd<T>.rotateElementsLeft(n: Int, offset: Int): Simd<T> {
             index
         }
     }
-    return Rotate.Swizzle(this)
+    return Rotate.swizzle(this)
 }
 
 /**
@@ -172,7 +172,7 @@ public fun <Mask, T> Simd<T>.rotateElementsRight(n: Int, offset: Int): Simd<T> {
             index
         }
     }
-    return Rotate.Swizzle(this)
+    return Rotate.swizzle(this)
 }
 
 /**
@@ -359,7 +359,7 @@ public fun <Mask, T> Simd<T>.extract(n: Int, start: Int, len: Int): Simd<T> {
             index
         }
     }
-    return Extract.Swizzle(this)
+    return Extract.swizzle(this)
 }
 
 /**

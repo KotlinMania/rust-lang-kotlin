@@ -95,6 +95,22 @@ public sealed class Svpattern(
     public data object SvAll : Svpattern(31)
 
     public fun rustEquals(other: Svpattern): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }
 
 /**
@@ -167,4 +183,20 @@ public sealed class Svprfop(
     public data object SvPstl3strm : Svprfop(13)
 
     public fun rustEquals(other: Svprfop): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }

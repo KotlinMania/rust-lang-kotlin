@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.std.env.currentDir
+import io.github.kotlinmania.rustlang.std.env.variable
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
@@ -209,13 +210,13 @@ public open class Backtrace(
             }
             val enabled =
                 run {
-                    val matchVal = env.variable("RUST_LIB_BACKTRACE")
+                    val matchVal = variable("RUST_LIB_BACKTRACE")
                     when (matchVal) { is Result.Ok<*, *> -> {
                         val s = matchVal.okValue()
                         s != "0"
                     }; is Result.Err<*, *> -> {
                         run {
-                            val matchVal1 = env.variable("RUST_BACKTRACE")
+                            val matchVal1 = variable("RUST_BACKTRACE")
                             when (matchVal1) { is Result.Ok<*, *> -> {
                                 val s1 = matchVal1.okValue()
                                 s1 != "0"
@@ -329,6 +330,29 @@ public sealed class BacktraceStatus {
     public data object Captured : BacktraceStatus()
 
     public fun rustEquals(other: BacktraceStatus): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Unsupported -> 0
+        Disabled -> 1
+        Captured -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public sealed class Inner {

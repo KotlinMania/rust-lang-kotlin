@@ -1156,6 +1156,28 @@ public sealed class TryRecvError {
 
     public fun rustEquals(other: TryRecvError): Boolean = this == other
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Empty -> 0
+        Disconnected -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
             TryRecvError.Empty -> "receiving on an empty channel".fmt(f)
@@ -1197,6 +1219,28 @@ public sealed class RecvTimeoutError {
     public data object Disconnected : RecvTimeoutError()
 
     public fun rustEquals(other: RecvTimeoutError): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Timeout -> 0
+        Disconnected -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {

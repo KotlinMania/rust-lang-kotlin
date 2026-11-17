@@ -1162,8 +1162,8 @@ public fun kmCompareValues(
             val c0 = kmCompareValues(a.first, rhs.first)
             if (c0 != 0) c0 else kmCompareValues(a.second, rhs.second)
         }
-        is Triple<*, *> -> {
-            val rhs = b as Triple<*, *>
+        is Triple<*, *, *> -> {
+            val rhs = b as Triple<*, *, *>
             val c0 = kmCompareValues(a.first, rhs.first)
             if (c0 != 0) {
                 c0
@@ -1201,7 +1201,7 @@ public fun kmPartialCompareValues(
             val c0 = kmPartialCompareValues(a.first, b.first) ?: return null
             if (c0 != 0) c0 else kmPartialCompareValues(a.second, b.second)
         }
-        a is Triple<*, *> && b is Triple<*, *> -> {
+        a is Triple<*, *, *> && b is Triple<*, *, *> -> {
             val c0 = kmPartialCompareValues(a.first, b.first) ?: return null
             if (c0 != 0) {
                 c0
@@ -1221,6 +1221,20 @@ public fun kmPartialCompareValues(
         else -> kmCompareValues(a, b)
     }
 }
+
+public operator fun <T> List<T>.component6(): T = this[5]
+
+public operator fun <T> List<T>.component7(): T = this[6]
+
+public operator fun <T> List<T>.component8(): T = this[7]
+
+public operator fun <T> List<T>.component9(): T = this[8]
+
+public operator fun <T> List<T>.component10(): T = this[9]
+
+public operator fun <T> List<T>.component11(): T = this[10]
+
+public operator fun <T> List<T>.component12(): T = this[11]
 
 public object PrimitiveArrayLayouts {
     private fun <A> arrayToBitsU64(

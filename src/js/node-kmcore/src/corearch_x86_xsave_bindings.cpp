@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchX86XsaveXsave_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXsave_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -84,7 +84,7 @@ static Napi::Value corearchX86XsaveXsave_napi(const Napi::CallbackInfo& km_info)
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX86XsaveXrstor_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXrstor_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -117,7 +117,7 @@ static Napi::Value corearchX86XsaveXrstor_napi(const Napi::CallbackInfo& km_info
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX86XsaveXsetbv_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXsetbv_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     uint32_t v = static_cast<uint32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -183,7 +183,7 @@ static Napi::Value corearchX86XsaveExternXgetbv_napi(const Napi::CallbackInfo& k
     return Napi::String::New(km_env, std::to_string(static_cast<int64_t>(km_res)));
 }
 
-static Napi::Value corearchX86XsaveXsaveopt_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXsaveopt_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -216,7 +216,7 @@ static Napi::Value corearchX86XsaveXsaveopt_napi(const Napi::CallbackInfo& km_in
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX86XsaveXsavec_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXsavec_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -249,7 +249,7 @@ static Napi::Value corearchX86XsaveXsavec_napi(const Napi::CallbackInfo& km_info
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX86XsaveXsaves_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXsaves_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -282,7 +282,7 @@ static Napi::Value corearchX86XsaveXsaves_napi(const Napi::CallbackInfo& km_info
     return km_env.Undefined();
 }
 
-static Napi::Value corearchX86XsaveXrstors_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86XsaveExternXrstors_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t hi = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -316,14 +316,14 @@ static Napi::Value corearchX86XsaveXrstors_napi(const Napi::CallbackInfo& km_inf
 }
 
 static void register_x86_xsave_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchX86XsaveXsave", Napi::Function::New(env, corearchX86XsaveXsave_napi));
-    exports.Set("corearchX86XsaveXrstor", Napi::Function::New(env, corearchX86XsaveXrstor_napi));
-    exports.Set("corearchX86XsaveXsetbv", Napi::Function::New(env, corearchX86XsaveXsetbv_napi));
+    exports.Set("corearchX86XsaveExternXsave", Napi::Function::New(env, corearchX86XsaveExternXsave_napi));
+    exports.Set("corearchX86XsaveExternXrstor", Napi::Function::New(env, corearchX86XsaveExternXrstor_napi));
+    exports.Set("corearchX86XsaveExternXsetbv", Napi::Function::New(env, corearchX86XsaveExternXsetbv_napi));
     exports.Set("corearchX86XsaveExternXgetbv", Napi::Function::New(env, corearchX86XsaveExternXgetbv_napi));
-    exports.Set("corearchX86XsaveXsaveopt", Napi::Function::New(env, corearchX86XsaveXsaveopt_napi));
-    exports.Set("corearchX86XsaveXsavec", Napi::Function::New(env, corearchX86XsaveXsavec_napi));
-    exports.Set("corearchX86XsaveXsaves", Napi::Function::New(env, corearchX86XsaveXsaves_napi));
-    exports.Set("corearchX86XsaveXrstors", Napi::Function::New(env, corearchX86XsaveXrstors_napi));
+    exports.Set("corearchX86XsaveExternXsaveopt", Napi::Function::New(env, corearchX86XsaveExternXsaveopt_napi));
+    exports.Set("corearchX86XsaveExternXsavec", Napi::Function::New(env, corearchX86XsaveExternXsavec_napi));
+    exports.Set("corearchX86XsaveExternXsaves", Napi::Function::New(env, corearchX86XsaveExternXsaves_napi));
+    exports.Set("corearchX86XsaveExternXrstors", Napi::Function::New(env, corearchX86XsaveExternXrstors_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_x86_xsave_napi, nullptr };

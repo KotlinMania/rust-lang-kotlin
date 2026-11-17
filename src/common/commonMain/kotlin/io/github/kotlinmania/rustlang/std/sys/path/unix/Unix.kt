@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.std.sys.path.unix
 
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.env.currentDir
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
@@ -39,7 +40,7 @@ public fun absolute(path: Path): Result<PathBuf, Error> {
                 PathBuf.new()
             }
         } else {
-            when (val tryResult = env.currentDir()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.errValue()) }
+            when (val tryResult = currentDir()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<PathBuf, Error>(tryResult.errValue()) }
         }
     normalized.extend(components)
     // "Interfaces using pathname resolution may specify additional constraints

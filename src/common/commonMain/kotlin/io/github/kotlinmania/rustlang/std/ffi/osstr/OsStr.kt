@@ -31,6 +31,7 @@ import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 
@@ -472,7 +473,7 @@ public open class OsString(
         this.inner.extendFromSliceUnchecked(other)
     }
 
-    public open fun index(index: RangeFull): OsStr = OsStr.FromInner(this.inner.asSlice())
+    public open fun index(index: RangeFull): OsStr = OsStr.fromInner(this.inner.asSlice())
 
     public open fun indexMut(index: RangeFull): RustMutableReference<OsStr> = OsStr.fromInnerMut(this.inner.asMutSlice())
 
@@ -1069,7 +1070,7 @@ public open class OsStr internal constructor(
      * check("grüße, jürgen ❤" == s.toAsciiLowercase())
      * ```
      */
-    public open fun toAsciiLowercase(): OsString = OsString.FromInner(this.inner.toAsciiLowercase())
+    public open fun toAsciiLowercase(): OsString = OsString.fromInner(this.inner.toAsciiLowercase())
 
     /**
      * Returns a copy of this string where each character is mapped to its
@@ -1089,7 +1090,7 @@ public open class OsStr internal constructor(
      * check("GRüßE, JüRGEN ❤" == s.toAsciiUppercase())
      * ```
      */
-    public open fun toAsciiUppercase(): OsString = OsString.FromInner(this.inner.toAsciiUppercase())
+    public open fun toAsciiUppercase(): OsString = OsString.fromInner(this.inner.toAsciiUppercase())
 
     /**
      * Checks if all characters in this string are within the ASCII range.
@@ -1265,7 +1266,7 @@ public open class OsStr internal constructor(
          *
          * [conversions]: super#conversions
          */
-        public fun fromEncodedBytesUnchecked(bytes: List<UByte>): OsStr = OsStr.FromInner(Slice.fromEncodedBytesUnchecked(bytes))
+        public fun fromEncodedBytesUnchecked(bytes: List<UByte>): OsStr = OsStr.fromInner(Slice.fromEncodedBytesUnchecked(bytes))
 
         public fun fromInner(inner: Slice): OsStr {
             // SAFETY: OsStr is just a wrapper of Slice,
@@ -1457,6 +1458,6 @@ public fun joinSSlice(slice: List<S>, sep: OsStr): OsString {
     })
 }
 
-public fun String.asRef(): OsStr = OsStr.FromInner(Slice.fromStr(this))
+public fun String.asRef(): OsStr = OsStr.fromInner(Slice.fromStr(this))
 
 public fun String.asRefOsStr(): OsStr = this

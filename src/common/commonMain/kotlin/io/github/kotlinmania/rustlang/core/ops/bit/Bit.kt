@@ -19,11 +19,33 @@ import io.github.kotlinmania.rustlang.core.U128
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     sealed class Answer : Not<Any?, Answer> {
+ *     sealed class Answer : Not<Answer> {
  *         public data object Yes : Answer()
  *         public data object No : Answer()
  *
  *         public fun rustEquals(other: Answer): Boolean = this == other
+ *
+ *         private fun kmDiscriminant(): Int =
+ *             when (this) {
+ *             Yes -> 0
+ *             No -> 1
+ *             }
+ *
+ *         public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *         public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *         public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *         public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *         public fun toInt(): Int = kmDiscriminant()
+ *
+ *         public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *         public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *         public fun toULong(): ULong = kmDiscriminant().toULong()
  *
  *         public open operator fun not(): Answer {
  *             return when (this) {
@@ -98,7 +120,7 @@ public operator fun Nothing.not(): Nothing = when (this) {}
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Scalar(public var value: Boolean) : BitAnd<Scalar, Any?, Scalar> {
+ *     open class Scalar(public var value: Boolean) : BitAnd<Scalar, Scalar> {
  *         public var field0: Boolean
  *             get() = value
  *             set(v) {
@@ -125,7 +147,7 @@ public operator fun Nothing.not(): Nothing = when (this) {}
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class BooleanVector(public var value: List<Boolean>) : BitAnd<BooleanVector, Any?, BooleanVector> {
+ *     open class BooleanVector(public var value: List<Boolean>) : BitAnd<BooleanVector, BooleanVector> {
  *         public var field0: List<Boolean>
  *             get() = value
  *             set(v) {
@@ -199,7 +221,7 @@ public fun I128.bitand(rhs: I128): I128 = this and rhs
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Scalar(public var value: Boolean) : BitOr<Scalar, Any?, Scalar> {
+ *     open class Scalar(public var value: Boolean) : BitOr<Scalar, Scalar> {
  *         public var field0: Boolean
  *             get() = value
  *             set(v) {
@@ -226,7 +248,7 @@ public fun I128.bitand(rhs: I128): I128 = this and rhs
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class BooleanVector(public var value: List<Boolean>) : BitOr<BooleanVector, Any?, BooleanVector> {
+ *     open class BooleanVector(public var value: List<Boolean>) : BitOr<BooleanVector, BooleanVector> {
  *         public var field0: List<Boolean>
  *             get() = value
  *             set(v) {
@@ -300,7 +322,7 @@ public fun I128.bitor(rhs: I128): I128 = this or rhs
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class Scalar(public var value: Boolean) : BitXor<Scalar, Any?, Scalar> {
+ *     open class Scalar(public var value: Boolean) : BitXor<Scalar, Scalar> {
  *         public var field0: Boolean
  *             get() = value
  *             set(v) {
@@ -327,7 +349,7 @@ public fun I128.bitor(rhs: I128): I128 = this or rhs
  * public typealias Output = Any
  *
  * public fun doctestEntry() {
- *     open class BooleanVector(public var value: List<Boolean>) : BitXor<BooleanVector, Any?, BooleanVector> {
+ *     open class BooleanVector(public var value: List<Boolean>) : BitXor<BooleanVector, BooleanVector> {
  *         public var field0: List<Boolean>
  *             get() = value
  *             set(v) {

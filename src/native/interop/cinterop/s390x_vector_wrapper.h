@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-uint32_t corearchS390xVectorLcbb(void* a, uint32_t b);
+uint32_t corearchS390xVectorExternLcbb(void* a, uint32_t b);
 
 #ifdef __cplusplus
 }

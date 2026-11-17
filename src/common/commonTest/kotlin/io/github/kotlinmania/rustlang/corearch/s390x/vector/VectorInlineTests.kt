@@ -926,12 +926,12 @@ public fun testVecAddcU128() {
     run {
         val a = U128.MAX_VALUE
         val b = U128(0x0uL, 0x1uL)
-        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecAddcU128(transmuteWithLayouts<U128, Unit>(a, UnresolvedTypeLayout<U128>(), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
+        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecAddcU128(transmuteWithLayouts<U128, VectorUnsignedChar>(a, UnresolvedTypeLayout<U128>(), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<U128, VectorUnsignedChar>(b, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a.checkedAdd(b) == null)
         check(d == U128(0x0uL, 0x1uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
-        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecAddcU128(transmuteWithLayouts<U128, Unit>(a1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
+        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecAddcU128(transmuteWithLayouts<U128, VectorUnsignedChar>(a1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<U128, VectorUnsignedChar>(b1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a1.checkedAdd(b1) != null)
         check(d1 == U128(0x0uL, 0x0uL))
     }
@@ -941,12 +941,12 @@ public fun testVecSubcU128() {
     run {
         val a = U128(0x0uL, 0x0uL)
         val b = U128(0x0uL, 0x1uL)
-        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecSubcU128(transmuteWithLayouts<U128, Unit>(a, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
+        val d: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecSubcU128(transmuteWithLayouts<U128, VectorUnsignedChar>(a, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<U128, VectorUnsignedChar>(b, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a.checkedSub(b) == null)
         check(d == U128(0x0uL, 0x0uL))
         val a1 = U128(0x0uL, 0x1uL)
         val b1 = U128(0x0uL, 0x1uL)
-        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecSubcU128(transmuteWithLayouts<U128, Unit>(a1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>()), transmuteWithLayouts<U128, Unit>(b1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<Unit>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
+        val d1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(vecSubcU128(transmuteWithLayouts<U128, VectorUnsignedChar>(a1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>()), transmuteWithLayouts<U128, VectorUnsignedChar>(b1, PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), UnresolvedTypeLayout<VectorUnsignedChar>())), UnresolvedTypeLayout<VectorUnsignedChar>(), UnresolvedTypeLayout<U128>())
         check(a1.checkedSub(b1) != null)
         check(d1 == U128(0x0uL, 0x1uL))
     }

@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
-int32_t corearchMipsMsaMsaCfcmsa(int32_t a);
-void corearchMipsMsaMsaCtcmsa(int32_t imm5, int32_t a);
+int32_t corearchMipsMsaExternMsaCfcmsa(int32_t a);
+void corearchMipsMsaExternMsaCtcmsa(int32_t imm5, int32_t a);
 
 #ifdef __cplusplus
 }

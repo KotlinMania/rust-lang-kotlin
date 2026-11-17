@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.core.any
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeId
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdEq
 import io.github.kotlinmania.rustlang.core.intrinsics.reflection.typeIdVtable
@@ -618,7 +619,7 @@ public open class TypeId internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = f.writeFmt("TypeId(${this.asU128()})")
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = f.writeFmt("TypeId(${this.asU128()})")
 
     public companion object {
         public fun typeLayout(): TypeLayout<TypeId> =

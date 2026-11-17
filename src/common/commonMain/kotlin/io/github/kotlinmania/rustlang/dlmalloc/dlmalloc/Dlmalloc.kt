@@ -712,19 +712,19 @@ public open class Dlmalloc<A> internal constructor(
         val i = leastbit.trailingZeros()
         var v = this.treebinAt(i)
         var t = v
-        var rsize = Chunk.size(TreeChunk.Chunk(t)) - size
+        var rsize = Chunk.size(TreeChunk.chunk(t)) - size
         while (true) {
             t = TreeChunk.leftmostChild(t)
             if (t.isNull()) {
                 break
             }
-            val trem = Chunk.size(TreeChunk.Chunk(t)) - size
+            val trem = Chunk.size(TreeChunk.chunk(t)) - size
             if (trem < rsize) {
                 rsize = trem
                 v = t
             }
         }
-        val vc = TreeChunk.Chunk(v)
+        val vc = TreeChunk.chunk(v)
         val r = MutPtr((Chunk.plusOffset(vc, size)).rawAddress)
         if (false) {
             check(Chunk.size(vc) == rsize + size)
@@ -733,7 +733,7 @@ public open class Dlmalloc<A> internal constructor(
         if (rsize < this.minChunkSize()) {
             Chunk.setInuseAndPinuse(vc, rsize + size)
         } else {
-            val rc = TreeChunk.Chunk(r)
+            val rc = TreeChunk.chunk(r)
             Chunk.setSizeAndPinuseOfInuseChunk(vc, size)
             Chunk.setSizeAndPinuseOfFreeChunk(rc, rsize)
             this.replaceDv(rc, rsize)
@@ -753,7 +753,7 @@ public open class Dlmalloc<A> internal constructor(
             // Keep track of the deepest untaken right subtree
             var rst = MutPtr(0L)
             while (true) {
-                val csize = Chunk.size(TreeChunk.Chunk(t))
+                val csize = Chunk.size(TreeChunk.chunk(t))
                 if (csize >= size && csize - size < rsize) {
                     v = t
                     rsize = csize - size
@@ -786,7 +786,7 @@ public open class Dlmalloc<A> internal constructor(
         }
         // Find the smallest of this tree or subtree
         while (!t.isNull()) {
-            val csize1 = Chunk.size(TreeChunk.Chunk(t))
+            val csize1 = Chunk.size(TreeChunk.chunk(t))
             if (csize1 >= size && csize1 - size < rsize) {
                 rsize = csize1 - size
                 v = t
@@ -797,7 +797,7 @@ public open class Dlmalloc<A> internal constructor(
         if (v.isNull() || (this.dvsize >= size && !(rsize < this.dvsize - size))) {
             return MutPtr(0L)
         }
-        val vc = TreeChunk.Chunk(v)
+        val vc = TreeChunk.chunk(v)
         val r = Chunk.plusOffset(vc, size)
         if (false) {
             check(Chunk.size(vc) == rsize + size)
@@ -1497,7 +1497,7 @@ public open class Dlmalloc<A> internal constructor(
         if (!false) {
             return
         }
-        val tc = TreeChunk.Chunk(t)
+        val tc = TreeChunk.chunk(t)
         val tindex = (TreeChunk.typeLayout()).readNative((t).rawAddress).index
         val tsize = Chunk.size(tc)
         val idx = this.computeTreeIndex(tsize)
@@ -1516,7 +1516,7 @@ public open class Dlmalloc<A> internal constructor(
         var u = t
         var head = MutPtr(0L)
         while (true) {
-            val uc = TreeChunk.Chunk(u)
+            val uc = TreeChunk.chunk(u)
             this.checkAnyChunk(uc)
             if (false) {
                 check((TreeChunk.typeLayout()).readNative((u).rawAddress).index == tindex)
@@ -1576,7 +1576,7 @@ public open class Dlmalloc<A> internal constructor(
                 }
                 if (!((left).rawAddress == 0L) && !((right).rawAddress == 0L)) {
                     if (false) {
-                        check(Chunk.size(TreeChunk.Chunk(left)) < Chunk.size(TreeChunk.Chunk(right)))
+                        check(Chunk.size(TreeChunk.chunk(left)) < Chunk.size(TreeChunk.chunk(right)))
                     }
                 }
             }
@@ -1995,9 +1995,9 @@ public open class TreeChunk internal constructor(
 
         public fun chunk(me: MutPtr): MutPtr = addrOfMut((TreeChunk.typeLayout()).readNative((me).rawAddress).chunk)
 
-        public fun next(me: MutPtr): MutPtr = MutPtr(((Chunk.typeLayout()).readNative((TreeChunk.Chunk(me)).rawAddress).next).rawAddress)
+        public fun next(me: MutPtr): MutPtr = MutPtr(((Chunk.typeLayout()).readNative((TreeChunk.chunk(me)).rawAddress).next).rawAddress)
 
-        public fun prev(me: MutPtr): MutPtr = MutPtr(((Chunk.typeLayout()).readNative((TreeChunk.Chunk(me)).rawAddress).prev).rawAddress)
+        public fun prev(me: MutPtr): MutPtr = MutPtr(((Chunk.typeLayout()).readNative((TreeChunk.chunk(me)).rawAddress).prev).rawAddress)
     }
 }
 

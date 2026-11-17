@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_aarch64_Aarch64PrefetchJniBridge_corearchAarch64PrefetchPrefetch(JNIEnv* km_env, jclass km_clazz, jlong p, jint rw, jint loc, jint ty) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_aarch64_Aarch64PrefetchJniBridge_corearchAarch64PrefetchExternPrefetch(JNIEnv* km_env, jclass km_clazz, jlong p, jint rw, jint loc, jint ty) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, int32_t, int32_t, int32_t);

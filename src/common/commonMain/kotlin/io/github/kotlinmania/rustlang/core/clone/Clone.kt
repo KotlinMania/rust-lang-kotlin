@@ -368,7 +368,7 @@ public interface Share<T> : Clone<T> {
      * sites to make aliasing intent explicit; implementors define this
      * operation through [Clone.clone], not by overriding this method.
      */
-    public fun share(): T = Clone.Clone(this)
+    public fun share(): T = this.clone()
 }
 
 /**

@@ -18,17 +18,38 @@ public sealed class Feature {
      */
     public data object Msa : Feature()
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Msa -> 0
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public open fun toStr(): String =
         when (this) {
-            Feature.msa -> "msa"
+            Feature.Msa -> "msa"
         }
 
     public companion object {
-        public val ALL: List<Feature> = listOf(Feature::msa)
+        public val ALL: List<Feature> = listOf(Feature.Msa)
 
         public fun fromStr(s: String): Result<Feature, Unit> =
             when (s) {
-                "msa" -> Result.Ok<Feature, Unit>(Feature::msa)
+                "msa" -> Result.Ok<Feature, Unit>(Feature.Msa)
                 else -> Result.Err<Feature, Unit>(Unit)
             }
     }
@@ -38,4 +59,4 @@ public sealed class Feature {
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun msa(): Boolean = checkFor(Feature::msa)
+public fun msa(): Boolean = checkFor(Feature.Msa)

@@ -7,8 +7,8 @@ private external fun initX86TbmNapiAddon(): Boolean
 
 private val x86TbmNapiAvailable: Boolean = initX86TbmNapiAddon()
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchX86TbmBextriU32(p0, p1)")
-private external fun wasmCorearchX86TbmBextriU32(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchX86TbmExternBextriU32(p0, p1)")
+private external fun wasmCorearchX86TbmExternBextriU32(p0: Int, p1: Int): Int
 
-public actual fun bextriU32(a: UInt, control: UInt): UInt =
-    if (x86TbmNapiAvailable) wasmCorearchX86TbmBextriU32(a.toInt(), control.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externBextriU32(a: UInt, control: UInt): UInt =
+    if (x86TbmNapiAvailable) wasmCorearchX86TbmExternBextriU32(a.toInt(), control.toInt()).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")

@@ -108,6 +108,49 @@ public sealed class EscapeErrorKind {
 
     public fun rustEquals(other: EscapeErrorKind): Boolean = this == other
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        ZeroChars -> 0
+        MoreThanOneChar -> 1
+        LoneSlash -> 2
+        InvalidEscape -> 3
+        BareCarriageReturn -> 4
+        BareCarriageReturnInRawString -> 5
+        EscapeOnlyChar -> 6
+        TooShortHexEscape -> 7
+        InvalidCharInHexEscape -> 8
+        OutOfRangeHexEscape -> 9
+        NoBraceInUnicodeEscape -> 10
+        InvalidCharInUnicodeEscape -> 11
+        EmptyUnicodeEscape -> 12
+        UnclosedUnicodeEscape -> 13
+        LeadingUnderscoreUnicodeEscape -> 14
+        OverlongUnicodeEscape -> 15
+        LoneSurrogateUnicodeEscape -> 16
+        OutOfRangeUnicodeEscape -> 17
+        UnicodeEscapeInByte -> 18
+        NonAsciiCharInByte -> 19
+        NulInCStr -> 20
+        UnskippedWhitespaceWarning -> 21
+        MultipleSkippedLinesWarning -> 22
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         return run {
 f.append(when (this) {
@@ -162,12 +205,12 @@ public sealed class ConversionErrorKind {
  * and returns whole groups as token trees.
  */
 public open class IntoIter internal constructor(
-    valueCtorArg: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>>,
+    valueCtorArg: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>>,
 ) : Iterable<TokenTree> {
-    public var value: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>> = valueCtorArg
+    public var value: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>> = valueCtorArg
         internal set
 
-    public var field0: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>>
+    public var field0: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>>
         get() = value
         set(v) {
             value = v
@@ -186,19 +229,19 @@ public open class IntoIter internal constructor(
 
     public open fun next(): TokenTree? =
         this.value.next()?.let({ tree -> when (tree) {
-            is bridge.TokenTree.Group<*, *, *> -> {
+            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Group<*, *, *> -> {
                 val (tt) = tree
                 TokenTree.Group(Group(tt))
             }
-            is bridge.TokenTree.Punct<*, *, *> -> {
+            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Punct<*, *, *> -> {
                 val (tt1) = tree
                 TokenTree.Punct(Punct(tt1))
             }
-            is bridge.TokenTree.Ident<*, *, *> -> {
+            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Ident<*, *, *> -> {
                 val (tt2) = tree
                 TokenTree.Ident(Ident(tt2))
             }
-            is bridge.TokenTree.Literal<*, *, *> -> {
+            is io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree.Literal<*, *, *> -> {
                 val (tt3) = tree
                 TokenTree.Literal(Literal(tt3))
             }
@@ -210,7 +253,7 @@ public open class IntoIter internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: ArrayDeque<bridge.TokenTree<bridge.TokenStream, bridge.Span, bridge.Symbol>>,
+            value: ArrayDeque<io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, io.github.kotlinmania.rustlang.procmacro.bridge.client.Span, Symbol>>,
         ): IntoIter = IntoIter(
             valueCtorArg = value,
         )
@@ -400,6 +443,30 @@ public sealed class Delimiter {
     public data object None : Delimiter()
 
     public fun rustEquals(other: Delimiter): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Parenthesis -> 0
+        Brace -> 1
+        Bracket -> 2
+        None -> 3
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -432,6 +499,28 @@ public sealed class Spacing {
     public data object Alone : Spacing()
 
     public fun rustEquals(other: Spacing): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Joint -> 0
+        Alone -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public sealed class Base(
@@ -443,6 +532,22 @@ public sealed class Base(
     public data object Hexadecimal : Base(16u)
 
     public fun rustEquals(other: Base): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value.toInt()
+
+    public fun toUInt(): UInt = value
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }
 
 /**

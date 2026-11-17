@@ -4,7 +4,6 @@ import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.borrow.BorrowMut
 import io.github.kotlinmania.rustlang.core.convert.AsMut
 import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.convert.TryFrom
 import io.github.kotlinmania.rustlang.core.fmt.Alignment
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -186,7 +185,7 @@ public open class ByteStr internal constructor(
                 }
             }
         // The width is originally stored as a 16-bit number, so this cannot fail.
-        val padding = UShort.TryFrom(requestedWidth.saturatingSub(actualWidth1)).unwrap()
+        val padding = UShort.tryFrom(requestedWidth.saturatingSub(actualWidth1)).unwrap()
         val postPadding = when (val tryResult = f.padding(padding, Alignment.Left)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         when (val tryResult = emit(truncated, f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
         return postPadding.write(f)

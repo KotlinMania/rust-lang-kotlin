@@ -46,11 +46,11 @@ public fun rdtsc(): ULong = externRdtsc()
  */
 public fun rdtscp(aux: MutPtr): ULong {
     val aux1 = aux
-    val (tsc, auxval) = rdtscp()
+    val (tsc, auxval) = externRdtscp()
     (PrimitiveLayouts.U32).writeNative((aux1).rawAddress, auxval)
     return tsc
 }
 
 public expect fun externRdtsc(): ULong
 
-public expect fun rdtscp(): Pair<ULong, UInt>
+public expect fun externRdtscp(): Pair<ULong, UInt>

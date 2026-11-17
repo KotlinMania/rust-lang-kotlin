@@ -151,8 +151,8 @@ public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
     throw UnsupportedOperationException("Native FFI addon is not available")
 }
 
-public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    if (s390xVectorNapiAddon != null) (s390xVectorNapiAddon.corearchS390xVectorLcbb(a.rawAddress.toString(), b.toInt()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externLcbb(a: ConstPtr, b: UInt): UInt =
+    if (s390xVectorNapiAddon != null) (s390xVectorNapiAddon.corearchS390xVectorExternLcbb(a.rawAddress.toString(), b.toInt()) as Int).toUInt() else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     throw UnsupportedOperationException("Native FFI addon is not available")

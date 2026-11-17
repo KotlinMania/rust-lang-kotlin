@@ -5,7 +5,6 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf32
 import io.github.kotlinmania.rustlang.core.num.f16.isSignNegative
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.macros.cfgSelectNofmt
 import io.github.kotlinmania.rustlang.libm.math.support.unboundedShrU64
 
@@ -160,7 +159,7 @@ public fun f16FromU2143(r64: ULong): F16 {
     // Truncate then round. Automatically accounts for subnormals with the unset explicit decimal
     // bit, since `rexp` is one less than the actual biased value.
     var r = (r641 shr extraBits.toInt()).toUShort()
-    r += UShort.CastFrom(rexp) shl F16.SIG_BITS.toInt()
+    r += UShort.castFrom(rexp) shl F16.SIG_BITS.toInt()
     r += roundUp1
     return F16.fromBits(r)
 }

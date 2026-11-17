@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_mips_msa_MipsMsaJniBridge_corearchMipsMsaMsaCfcmsa(JNIEnv* km_env, jclass km_clazz, jint a) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_mips_msa_MipsMsaJniBridge_corearchMipsMsaExternMsaCfcmsa(JNIEnv* km_env, jclass km_clazz, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -88,7 +88,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_mips_msa_Mip
     return (jint)km_res;
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_mips_msa_MipsMsaJniBridge_corearchMipsMsaMsaCtcmsa(JNIEnv* km_env, jclass km_clazz, jint imm5, jint a) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_mips_msa_MipsMsaJniBridge_corearchMipsMsaExternMsaCtcmsa(JNIEnv* km_env, jclass km_clazz, jint imm5, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t, int32_t);

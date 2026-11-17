@@ -313,7 +313,7 @@ public class SetTestSetInlineTests {
             public var field0: String,
             public var field1: Int,
         ) {
-            public open fun eq(other: Foo): Boolean = this.field0 == other.first
+            public open fun eq(other: Foo): Boolean = this.field0 == other.field0
 
             public override fun hashCode(): Int {
                 var h = 0

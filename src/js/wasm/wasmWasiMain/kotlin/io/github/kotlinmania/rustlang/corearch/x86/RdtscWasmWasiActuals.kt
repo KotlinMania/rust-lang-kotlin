@@ -9,5 +9,5 @@ private external fun wasiCorearchX86RdtscExternRdtsc(): Long
 public actual fun externRdtsc(): ULong =
     wasiCorearchX86RdtscExternRdtsc().toULong()
 
-public actual fun rdtscp(): Pair<ULong, UInt> =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86RdtscRdtscp")
+public actual fun externRdtscp(): Pair<ULong, UInt> =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchX86RdtscExternRdtscp")

@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.pipe2
 import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -17,6 +16,6 @@ public fun pipe(): Result<Pair<Pipe, Pipe>, Error> {
     val fds by localStorageL9C4
     return run {
         when (val tryResult = cvt(pipe2(localStorageL9C4.elementMutPtr(0), O_CLOEXEC))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Pipe, Pipe>, Error>(tryResult.errValue()) }
-        Result.Ok<Pair<Pipe, Pipe>, Error>(Pair(FileDesc.FromRawFd(fds[0]), FileDesc.FromRawFd(fds[1])))
+        Result.Ok<Pair<Pipe, Pipe>, Error>(Pair(FileDesc.fromRawFd(fds[0]), FileDesc.fromRawFd(fds[1])))
     }
 }

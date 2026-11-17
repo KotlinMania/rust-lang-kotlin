@@ -1,6 +1,8 @@
 // port-lint: source io/write.rs
 package io.github.kotlinmania.rustlang.core.io.write
 
+import io.github.kotlinmania.rustlang.core.fmt.Arguments
+import io.github.kotlinmania.rustlang.core.fmt.write
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -340,7 +342,7 @@ public interface Write<T> {
      * }
      * ```
      */
-    public fun writeFmt(args: fmt.Arguments): Result<Unit> =
+    public fun writeFmt(args: Arguments): Result<Unit> =
         when (val matchVal = args.asStaticallyKnownStr()) {
             null -> {
                 defaultWriteFmt(this, args)
@@ -384,7 +386,7 @@ public fun defaultWriteVectored(write: (List<UByte>) -> Result<Int>, bufs: List<
     return write(buf)
 }
 
-public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: fmt.Arguments): Result<Unit> {
+public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<Unit> {
     // Create a shim which translates a `Write` to a `fmt.Write` and saves off
     // I/O errors, instead of discarding them.
     open class Adapter<T>(
@@ -399,12 +401,12 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: fmt.Arguments): Resu
             }; is RustResult.Err<*, *> -> {
                 val e = matchVal.errValue()
                 this.error = RustResult.Err<Unit, Error>(e)
-                RustResult.Err<Unit, Error>(fmt.Error)
+                RustResult.Err<Unit, Error>(Error())
             } }
         }
     val output = Adapter(inner = thisRef, error = RustResult.Ok(Unit))
     return run {
-        val matchVal = fmt.Write(output, args)
+        val matchVal = write(output, args)
         when (matchVal) { is RustResult.Ok<*, *> -> {
             RustResult.Ok(Unit)
         }; is RustResult.Err<*, *> -> {

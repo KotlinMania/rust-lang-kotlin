@@ -15,7 +15,7 @@
 #endif
 #endif
 
-uint32_t corearchX86TbmBextriU32(uint32_t a, uint32_t control) {
+uint32_t corearchX86TbmExternBextriU32(uint32_t a, uint32_t control) {
     typedef uint32_t (*km_fn_t)(uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

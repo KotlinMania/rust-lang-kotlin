@@ -1,8 +1,8 @@
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -46,6 +46,28 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 // sealed class Version {
 //     public data object Version1 : Version()
 //     public data object Version2 : Version()
+//
+//     private fun kmDiscriminant(): Int =
+//         when (this) {
+//         Version1 -> 0
+//         Version2 -> 1
+//         }
+//
+//     public fun toByte(): Byte = kmDiscriminant().toByte()
+//
+//     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+//
+//     public fun toShort(): Short = kmDiscriminant().toShort()
+//
+//     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+//
+//     public fun toInt(): Int = kmDiscriminant()
+//
+//     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+//
+//     public fun toLong(): Long = kmDiscriminant().toLong()
+//
+//     public fun toULong(): ULong = kmDiscriminant().toULong()
 // }
 // fun parseVersion(header: List<UByte>): Result<Version> {
 //     return when (val matchVal = header.get(0)) {
@@ -55,7 +77,7 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 //         else -> Result.failure("invalid version")
 //     }
 // }
-// val version = parseVersion(listOf(1, 2, 3, 4))
+// val version = parseVersion(listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte()))
 // if (version.isSuccess) {
 //     val v = version.getOrThrow()
 //     println("working with version: $v")
@@ -1906,17 +1928,17 @@ public open class IntoIter<T>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = tryProcess(iter.iterator(), { i -> i.collect() })
 
 public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
     when (residual) {
         is Result.Err<*, *> -> {
             val e = residual.errValue()
-            Err(From.From(e))
+            Err(From.from(e))
         }
     }
 
 public fun <T, E, F> fromResidualResultTF(destructuredArg0: Yeet<E>): Result<T, F> {
     val e = destructuredArg0.value
-    return Err(From.From(e))
+    return Err(From.from(e))
 }

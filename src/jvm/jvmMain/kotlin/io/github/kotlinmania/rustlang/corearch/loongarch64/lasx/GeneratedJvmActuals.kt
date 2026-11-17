@@ -23,16 +23,16 @@ public actual fun externLasxXvsrarW(a: V8i32, b: V8i32): V8i32 =
 public actual fun externLasxXvsrarD(a: V4i64, b: V4i64): V4i64 =
     M256i()
 
-public actual fun lasxXvsrariB(a: V32i8, b: UInt): V32i8 =
+public actual fun externLasxXvsrariB(a: V32i8, b: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsrariH(a: V16i16, b: UInt): V16i16 =
+public actual fun externLasxXvsrariH(a: V16i16, b: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsrariW(a: V8i32, b: UInt): V8i32 =
+public actual fun externLasxXvsrariW(a: V8i32, b: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsrariD(a: V4i64, b: UInt): V4i64 =
+public actual fun externLasxXvsrariD(a: V4i64, b: UInt): V4i64 =
     M256i()
 
 public actual fun externLasxXvsrlrB(a: V32i8, b: V32i8): V32i8 =
@@ -47,88 +47,88 @@ public actual fun externLasxXvsrlrW(a: V8i32, b: V8i32): V8i32 =
 public actual fun externLasxXvsrlrD(a: V4i64, b: V4i64): V4i64 =
     M256i()
 
-public actual fun lasxXvsrlriB(a: V32i8, b: UInt): V32i8 =
+public actual fun externLasxXvsrlriB(a: V32i8, b: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsrlriH(a: V16i16, b: UInt): V16i16 =
+public actual fun externLasxXvsrlriH(a: V16i16, b: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsrlriW(a: V8i32, b: UInt): V8i32 =
+public actual fun externLasxXvsrlriW(a: V8i32, b: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsrlriD(a: V4i64, b: UInt): V4i64 =
+public actual fun externLasxXvsrlriD(a: V4i64, b: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvbitclriB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvbitclriB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvbitclriH(a: V16u16, b: UInt): V16u16 =
+public actual fun externLasxXvbitclriH(a: V16u16, b: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvbitclriW(a: V8u32, b: UInt): V8u32 =
+public actual fun externLasxXvbitclriW(a: V8u32, b: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvbitclriD(a: V4u64, b: UInt): V4u64 =
+public actual fun externLasxXvbitclriD(a: V4u64, b: UInt): V4u64 =
     M256i()
 
-public actual fun lasxXvbitsetiB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvbitsetiB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvbitsetiH(a: V16u16, b: UInt): V16u16 =
+public actual fun externLasxXvbitsetiH(a: V16u16, b: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvbitsetiW(a: V8u32, b: UInt): V8u32 =
+public actual fun externLasxXvbitsetiW(a: V8u32, b: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvbitsetiD(a: V4u64, b: UInt): V4u64 =
+public actual fun externLasxXvbitsetiD(a: V4u64, b: UInt): V4u64 =
     M256i()
 
-public actual fun lasxXvbitreviB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvbitreviB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvbitreviH(a: V16u16, b: UInt): V16u16 =
+public actual fun externLasxXvbitreviH(a: V16u16, b: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvbitreviW(a: V8u32, b: UInt): V8u32 =
+public actual fun externLasxXvbitreviW(a: V8u32, b: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvbitreviD(a: V4u64, b: UInt): V4u64 =
+public actual fun externLasxXvbitreviD(a: V4u64, b: UInt): V4u64 =
     M256i()
 
-public actual fun lasxXvsubiBu(a: V32i8, b: UInt): V32i8 =
+public actual fun externLasxXvsubiBu(a: V32i8, b: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsubiHu(a: V16i16, b: UInt): V16i16 =
+public actual fun externLasxXvsubiHu(a: V16i16, b: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsubiWu(a: V8i32, b: UInt): V8i32 =
+public actual fun externLasxXvsubiWu(a: V8i32, b: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsubiDu(a: V4i64, b: UInt): V4i64 =
+public actual fun externLasxXvsubiDu(a: V4i64, b: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvsatB(a: V32i8, b: UInt): V32i8 =
+public actual fun externLasxXvsatB(a: V32i8, b: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsatH(a: V16i16, b: UInt): V16i16 =
+public actual fun externLasxXvsatH(a: V16i16, b: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsatW(a: V8i32, b: UInt): V8i32 =
+public actual fun externLasxXvsatW(a: V8i32, b: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsatD(a: V4i64, b: UInt): V4i64 =
+public actual fun externLasxXvsatD(a: V4i64, b: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvsatBu(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvsatBu(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvsatHu(a: V16u16, b: UInt): V16u16 =
+public actual fun externLasxXvsatHu(a: V16u16, b: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvsatWu(a: V8u32, b: UInt): V8u32 =
+public actual fun externLasxXvsatWu(a: V8u32, b: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvsatDu(a: V4u64, b: UInt): V4u64 =
+public actual fun externLasxXvsatDu(a: V4u64, b: UInt): V4u64 =
     M256i()
 
 public actual fun externLasxXvdivB(a: V32i8, b: V32i8): V32i8 =
@@ -227,22 +227,22 @@ public actual fun externLasxXvshufW(a: V8i32, b: V8i32, c: V8i32): V8i32 =
 public actual fun externLasxXvshufD(a: V4i64, b: V4i64, c: V4i64): V4i64 =
     M256i()
 
-public actual fun lasxXvandiB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvandiB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvoriB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvoriB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvnoriB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvnoriB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvxoriB(a: V32u8, b: UInt): V32u8 =
+public actual fun externLasxXvxoriB(a: V32u8, b: UInt): V32u8 =
     M256i()
 
 public actual fun externLasxXvbitselV(a: V32u8, b: V32u8, c: V32u8): V32u8 =
     M256i()
 
-public actual fun lasxXvbitseliB(a: V32u8, b: V32u8, c: UInt): V32u8 =
+public actual fun externLasxXvbitseliB(a: V32u8, b: V32u8, c: UInt): V32u8 =
     M256i()
 
 public actual fun externLasxXvcloB(a: V32i8): V32i8 =
@@ -377,25 +377,25 @@ public actual fun externLasxXvreplveW(a: V8i32, b: Int): V8i32 =
 public actual fun externLasxXvreplveD(a: V4i64, b: Int): V4i64 =
     M256i()
 
-public actual fun lasxXvpermiW(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvpermiW(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsllwilHB(a: V32i8, b: UInt): V16i16 =
+public actual fun externLasxXvsllwilHB(a: V32i8, b: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsllwilWH(a: V16i16, b: UInt): V8i32 =
+public actual fun externLasxXvsllwilWH(a: V16i16, b: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsllwilDW(a: V8i32, b: UInt): V4i64 =
+public actual fun externLasxXvsllwilDW(a: V8i32, b: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvsllwilHuBu(a: V32u8, b: UInt): V16u16 =
+public actual fun externLasxXvsllwilHuBu(a: V32u8, b: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvsllwilWuHu(a: V16u16, b: UInt): V8u32 =
+public actual fun externLasxXvsllwilWuHu(a: V16u16, b: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvsllwilDuWu(a: V8u32, b: UInt): V4u64 =
+public actual fun externLasxXvsllwilDuWu(a: V8u32, b: UInt): V4u64 =
     M256i()
 
 public actual fun externLasxXvsranBH(a: V16i16, b: V16i16): V32i8 =
@@ -488,10 +488,10 @@ public actual fun externLasxXvssrlrnHuW(a: V8u32, b: V8u32): V16u16 =
 public actual fun externLasxXvssrlrnWuD(a: V4u64, b: V4u64): V8u32 =
     M256i()
 
-public actual fun lasxXvfrstpiB(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvfrstpiB(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvfrstpiH(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvfrstpiH(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
 public actual fun externLasxXvfrstpB(a: V32i8, b: V32i8, c: V32i8): V32i8 =
@@ -500,19 +500,19 @@ public actual fun externLasxXvfrstpB(a: V32i8, b: V32i8, c: V32i8): V32i8 =
 public actual fun externLasxXvfrstpH(a: V16i16, b: V16i16, c: V16i16): V16i16 =
     M256i()
 
-public actual fun lasxXvshuf4iD(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvshuf4iD(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvextrinsB(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvextrinsB(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvextrinsH(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvextrinsH(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvextrinsW(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvextrinsW(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvextrinsD(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvextrinsD(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
 public actual fun externLasxXvmskltzB(a: V32i8): V32i8 =
@@ -617,28 +617,28 @@ public actual fun externLasxXvfrintrneS(a: V8f32): V8f32 =
 public actual fun externLasxXvfrintrneD(a: V4f64): V4f64 =
     M256d()
 
-public actual fun lasxXvstelmB(a: V32i8, b: MutPtr, c: Int, d: UInt) {
+public actual fun externLasxXvstelmB(a: V32i8, b: MutPtr, c: Int, d: UInt) {
 }
 
-public actual fun lasxXvstelmH(a: V16i16, b: MutPtr, c: Int, d: UInt) {
+public actual fun externLasxXvstelmH(a: V16i16, b: MutPtr, c: Int, d: UInt) {
 }
 
-public actual fun lasxXvstelmW(a: V8i32, b: MutPtr, c: Int, d: UInt) {
+public actual fun externLasxXvstelmW(a: V8i32, b: MutPtr, c: Int, d: UInt) {
 }
 
-public actual fun lasxXvstelmD(a: V4i64, b: MutPtr, c: Int, d: UInt) {
+public actual fun externLasxXvstelmD(a: V4i64, b: MutPtr, c: Int, d: UInt) {
 }
 
-public actual fun lasxXvinsve0W(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvinsve0W(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvinsve0D(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvinsve0D(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvpickveW(a: V8i32, b: UInt): V8i32 =
+public actual fun externLasxXvpickveW(a: V8i32, b: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvpickveD(a: V4i64, b: UInt): V4i64 =
+public actual fun externLasxXvpickveD(a: V4i64, b: UInt): V4i64 =
     M256i()
 
 public actual fun externLasxXvssrlrnBH(a: V16i16, b: V16i16): V32i8 =
@@ -698,25 +698,25 @@ public actual fun externLasxVext2xvDuHu(a: V16i16): V4i64 =
 public actual fun externLasxVext2xvDuBu(a: V32i8): V4i64 =
     M256i()
 
-public actual fun lasxXvpermiQ(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvpermiQ(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvpermiD(a: V4i64, b: UInt): V4i64 =
+public actual fun externLasxXvpermiD(a: V4i64, b: UInt): V4i64 =
     M256i()
 
 public actual fun externLasxXvpermW(a: V8i32, b: V8i32): V8i32 =
     M256i()
 
-public actual fun lasxXvldreplB(a: ConstPtr, b: Int): V32i8 =
+public actual fun externLasxXvldreplB(a: ConstPtr, b: Int): V32i8 =
     M256i()
 
-public actual fun lasxXvldreplH(a: ConstPtr, b: Int): V16i16 =
+public actual fun externLasxXvldreplH(a: ConstPtr, b: Int): V16i16 =
     M256i()
 
-public actual fun lasxXvldreplW(a: ConstPtr, b: Int): V8i32 =
+public actual fun externLasxXvldreplW(a: ConstPtr, b: Int): V8i32 =
     M256i()
 
-public actual fun lasxXvldreplD(a: ConstPtr, b: Int): V4i64 =
+public actual fun externLasxXvldreplD(a: ConstPtr, b: Int): V4i64 =
     M256i()
 
 public actual fun externLasxXvaddwevQD(a: V4i64, b: V4i64): V4i64 =
@@ -1034,148 +1034,148 @@ public actual fun externLasxXvexthQuDu(a: V4u64): V4u64 =
 public actual fun externLasxXvextlQD(a: V4i64): V4i64 =
     M256i()
 
-public actual fun lasxXvsrlniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvsrlniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsrlniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvsrlniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsrlniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvsrlniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsrlniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvsrlniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvsrlrniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvsrlrniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsrlrniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvsrlrniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsrlrniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvsrlrniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsrlrniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvsrlrniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvssrlniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvssrlniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvssrlniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvssrlniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvssrlniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvssrlniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvssrlniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvssrlniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvssrlniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
+public actual fun externLasxXvssrlniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvssrlniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
+public actual fun externLasxXvssrlniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvssrlniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
+public actual fun externLasxXvssrlniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvssrlniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
+public actual fun externLasxXvssrlniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
     M256i()
 
-public actual fun lasxXvssrlrniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvssrlrniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvssrlrniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvssrlrniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvssrlrniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvssrlrniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvssrlrniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvssrlrniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvssrlrniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
+public actual fun externLasxXvssrlrniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvssrlrniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
+public actual fun externLasxXvssrlrniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvssrlrniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
+public actual fun externLasxXvssrlrniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvssrlrniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
+public actual fun externLasxXvssrlrniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
     M256i()
 
-public actual fun lasxXvsraniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvsraniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsraniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvsraniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsraniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvsraniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsraniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvsraniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvsrarniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvsrarniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvsrarniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvsrarniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvsrarniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvsrarniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvsrarniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvsrarniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvssraniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvssraniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvssraniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvssraniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvssraniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvssraniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvssraniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvssraniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvssraniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
+public actual fun externLasxXvssraniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvssraniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
+public actual fun externLasxXvssraniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvssraniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
+public actual fun externLasxXvssraniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvssraniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
+public actual fun externLasxXvssraniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
     M256i()
 
-public actual fun lasxXvssrarniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
+public actual fun externLasxXvssrarniBH(a: V32i8, b: V32i8, c: UInt): V32i8 =
     M256i()
 
-public actual fun lasxXvssrarniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
+public actual fun externLasxXvssrarniHW(a: V16i16, b: V16i16, c: UInt): V16i16 =
     M256i()
 
-public actual fun lasxXvssrarniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
+public actual fun externLasxXvssrarniWD(a: V8i32, b: V8i32, c: UInt): V8i32 =
     M256i()
 
-public actual fun lasxXvssrarniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
+public actual fun externLasxXvssrarniDQ(a: V4i64, b: V4i64, c: UInt): V4i64 =
     M256i()
 
-public actual fun lasxXvssrarniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
+public actual fun externLasxXvssrarniBuH(a: V32u8, b: V32i8, c: UInt): V32u8 =
     M256i()
 
-public actual fun lasxXvssrarniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
+public actual fun externLasxXvssrarniHuW(a: V16u16, b: V16i16, c: UInt): V16u16 =
     M256i()
 
-public actual fun lasxXvssrarniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
+public actual fun externLasxXvssrarniWuD(a: V8u32, b: V8i32, c: UInt): V8u32 =
     M256i()
 
-public actual fun lasxXvssrarniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
+public actual fun externLasxXvssrarniDuQ(a: V4u64, b: V4i64, c: UInt): V4u64 =
     M256i()
 
 public actual fun externLasxXbnzB(a: V32u8): Int =
@@ -1340,10 +1340,10 @@ public actual fun externLasxXvfcmpSuneS(a: V8f32, b: V8f32): V8i32 =
 public actual fun externLasxXvfcmpSunS(a: V8f32, b: V8f32): V8i32 =
     M256i()
 
-public actual fun lasxXvpickveDF(a: V4f64, b: UInt): V4f64 =
+public actual fun externLasxXvpickveDF(a: V4f64, b: UInt): V4f64 =
     M256d()
 
-public actual fun lasxXvpickveWF(a: V8f32, b: UInt): V8f32 =
+public actual fun externLasxXvpickveWF(a: V8f32, b: UInt): V8f32 =
     M256()
 
 public actual fun externLasxCast128S(a: V4f32): V8f32 =

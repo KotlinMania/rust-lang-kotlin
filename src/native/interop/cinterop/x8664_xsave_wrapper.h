@@ -9,12 +9,12 @@
 extern "C" {
 #endif
 
-void corearchX8664XsaveXsave64(void* p, uint32_t hi, uint32_t lo);
-void corearchX8664XsaveXrstor64(void* p, uint32_t hi, uint32_t lo);
-void corearchX8664XsaveXsaveopt64(void* p, uint32_t hi, uint32_t lo);
-void corearchX8664XsaveXsavec64(void* p, uint32_t hi, uint32_t lo);
-void corearchX8664XsaveXsaves64(void* p, uint32_t hi, uint32_t lo);
-void corearchX8664XsaveXrstors64(void* p, uint32_t hi, uint32_t lo);
+void corearchX8664XsaveExternXsave64(void* p, uint32_t hi, uint32_t lo);
+void corearchX8664XsaveExternXrstor64(void* p, uint32_t hi, uint32_t lo);
+void corearchX8664XsaveExternXsaveopt64(void* p, uint32_t hi, uint32_t lo);
+void corearchX8664XsaveExternXsavec64(void* p, uint32_t hi, uint32_t lo);
+void corearchX8664XsaveExternXsaves64(void* p, uint32_t hi, uint32_t lo);
+void corearchX8664XsaveExternXrstors64(void* p, uint32_t hi, uint32_t lo);
 
 #ifdef __cplusplus
 }

@@ -548,9 +548,9 @@ public open class PhantomData<T> : Copy, TrivialClone<PhantomData<T>>, Structura
 
     public open fun eq(other: PhantomData<T>): Boolean = true
 
-    public open fun partialCmp(other: PhantomData<T>): cmp.Ordering? = Option.Some(cmp.Ordering.Equal)
+    public open fun partialCmp(other: PhantomData<T>): Ordering? = Option.Some(Ordering.Equal)
 
-    public open fun cmp(other: PhantomData<T>): cmp.Ordering = cmp.Ordering.Equal
+    public open fun cmp(other: PhantomData<T>): Ordering = Ordering.Equal
 
     public open fun clone(): PhantomData<T> = PhantomData()
 

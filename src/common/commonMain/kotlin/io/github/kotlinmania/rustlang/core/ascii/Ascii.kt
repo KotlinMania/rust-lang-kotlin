@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.core.ascii
 
 import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
 import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
-import io.github.kotlinmania.rustlang.core.io.util.Empty
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -103,7 +102,7 @@ public open class EscapeDefault internal constructor(
 
         public fun new(c: UByte): EscapeDefault = EscapeDefault(EscapeIterInner.ascii(c))
 
-        public fun empty(): EscapeDefault = EscapeDefault(EscapeIterInner.Empty())
+        public fun empty(): EscapeDefault = EscapeDefault(EscapeIterInner.empty())
     }
 }
 

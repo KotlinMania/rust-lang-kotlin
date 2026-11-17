@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.stddetect.detect.os.windows.aarch64
 
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
-import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 
 // Run-time feature detection for Aarch64 on Windows.
 
@@ -13,7 +13,7 @@ public typealias Bool = Int
 /**
  * Try to read the features using IsProcessorFeaturePresent.
  */
-public fun detectFeatures(): cache.Initializer {
+public fun detectFeatures(): Initializer {
     val FALSE: Bool = 0
     // The following Microsoft documents isn't updated for aarch64.
     // https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-isprocessorfeaturepresent
@@ -47,7 +47,7 @@ public fun detectFeatures(): cache.Initializer {
     val PF_ARM_V82_FP16_INSTRUCTIONS_AVAILABLE: UInt = 67u
     val PF_ARM_V86_BF16_INSTRUCTIONS_AVAILABLE: UInt = 68u
     fun isProcessorFeaturePresent(processorFeature: Dword): Bool = 0
-    val value = cache.Initializer.default()
+    val value = Initializer.default()
     run {
         var enableFeature =
             { f, enable ->

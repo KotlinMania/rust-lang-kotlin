@@ -4,13 +4,13 @@ package io.github.kotlinmania.rustlang.core.num.nichetypes
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -45,7 +45,7 @@ public open class Nanoseconds internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -58,7 +58,7 @@ public open class Nanoseconds internal constructor(
 
         public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): Nanoseconds? =
             if (value in 0..999999999) {
-                Nanoseconds(transmuteWithLayouts<UInt, Nanoseconds?>(value, fieldLayout, UnresolvedTypeLayout<Nanoseconds?>()), fieldLayout = fieldLayout)
+                Nanoseconds(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -114,7 +114,7 @@ public open class NonZeroU8Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -127,7 +127,7 @@ public open class NonZeroU8Inner internal constructor(
 
         public fun new(value: UByte, fieldLayout: TypeLayout<UByte> = UnresolvedTypeLayout()): NonZeroU8Inner? =
             if (value >= 1) {
-                NonZeroU8Inner(transmuteWithLayouts<UByte, NonZeroU8Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroU8Inner?>()), fieldLayout = fieldLayout)
+                NonZeroU8Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -174,7 +174,7 @@ public open class NonZeroU16Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -187,7 +187,7 @@ public open class NonZeroU16Inner internal constructor(
 
         public fun new(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): NonZeroU16Inner? =
             if (value >= 1) {
-                NonZeroU16Inner(transmuteWithLayouts<UShort, NonZeroU16Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroU16Inner?>()), fieldLayout = fieldLayout)
+                NonZeroU16Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -234,7 +234,7 @@ public open class NonZeroU32Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -247,7 +247,7 @@ public open class NonZeroU32Inner internal constructor(
 
         public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): NonZeroU32Inner? =
             if (value >= 1) {
-                NonZeroU32Inner(transmuteWithLayouts<UInt, NonZeroU32Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroU32Inner?>()), fieldLayout = fieldLayout)
+                NonZeroU32Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -294,7 +294,7 @@ public open class NonZeroU64Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -307,7 +307,7 @@ public open class NonZeroU64Inner internal constructor(
 
         public fun new(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): NonZeroU64Inner? =
             if (value >= 1) {
-                NonZeroU64Inner(transmuteWithLayouts<ULong, NonZeroU64Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroU64Inner?>()), fieldLayout = fieldLayout)
+                NonZeroU64Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -354,7 +354,7 @@ public open class NonZeroU128Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -367,7 +367,7 @@ public open class NonZeroU128Inner internal constructor(
 
         public fun new(value: U128, fieldLayout: TypeLayout<U128> = UnresolvedTypeLayout()): NonZeroU128Inner? =
             if (value >= 1) {
-                NonZeroU128Inner(transmuteWithLayouts<U128, NonZeroU128Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroU128Inner?>()), fieldLayout = fieldLayout)
+                NonZeroU128Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -414,7 +414,7 @@ public open class NonZeroI8Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -427,7 +427,7 @@ public open class NonZeroI8Inner internal constructor(
 
         public fun new(value: Byte, fieldLayout: TypeLayout<Byte> = UnresolvedTypeLayout()): NonZeroI8Inner? =
             if (value < 0 || value >= 1) {
-                NonZeroI8Inner(transmuteWithLayouts<Byte, NonZeroI8Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroI8Inner?>()), fieldLayout = fieldLayout)
+                NonZeroI8Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -474,7 +474,7 @@ public open class NonZeroI16Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -487,7 +487,7 @@ public open class NonZeroI16Inner internal constructor(
 
         public fun new(value: Short, fieldLayout: TypeLayout<Short> = UnresolvedTypeLayout()): NonZeroI16Inner? =
             if (value < 0 || value >= 1) {
-                NonZeroI16Inner(transmuteWithLayouts<Short, NonZeroI16Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroI16Inner?>()), fieldLayout = fieldLayout)
+                NonZeroI16Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -534,7 +534,7 @@ public open class NonZeroI32Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -547,7 +547,7 @@ public open class NonZeroI32Inner internal constructor(
 
         public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroI32Inner? =
             if (value < 0 || value >= 1) {
-                NonZeroI32Inner(transmuteWithLayouts<Int, NonZeroI32Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroI32Inner?>()), fieldLayout = fieldLayout)
+                NonZeroI32Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -594,7 +594,7 @@ public open class NonZeroI64Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -607,7 +607,7 @@ public open class NonZeroI64Inner internal constructor(
 
         public fun new(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): NonZeroI64Inner? =
             if (value < 0 || value >= 1) {
-                NonZeroI64Inner(transmuteWithLayouts<Long, NonZeroI64Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroI64Inner?>()), fieldLayout = fieldLayout)
+                NonZeroI64Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -654,7 +654,7 @@ public open class NonZeroI128Inner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -667,7 +667,7 @@ public open class NonZeroI128Inner internal constructor(
 
         public fun new(value: I128, fieldLayout: TypeLayout<I128> = UnresolvedTypeLayout()): NonZeroI128Inner? =
             if (value < 0 || value >= 1) {
-                NonZeroI128Inner(transmuteWithLayouts<I128, NonZeroI128Inner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroI128Inner?>()), fieldLayout = fieldLayout)
+                NonZeroI128Inner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -714,7 +714,7 @@ public open class UsizeNoHighBit internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -727,7 +727,7 @@ public open class UsizeNoHighBit internal constructor(
 
         public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBit? =
             if (value in 0..HALF_USIZE) {
-                UsizeNoHighBit(transmuteWithLayouts<Int, UsizeNoHighBit?>(value, fieldLayout, UnresolvedTypeLayout<UsizeNoHighBit?>()), fieldLayout = fieldLayout)
+                UsizeNoHighBit(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -774,7 +774,7 @@ public open class UsizeNoHighBitMinusOne internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -787,7 +787,7 @@ public open class UsizeNoHighBitMinusOne internal constructor(
 
         public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): UsizeNoHighBitMinusOne? =
             if (value in 0..HALF_USIZE_MINUS_ONE) {
-                UsizeNoHighBitMinusOne(transmuteWithLayouts<Int, UsizeNoHighBitMinusOne?>(value, fieldLayout, UnresolvedTypeLayout<UsizeNoHighBitMinusOne?>()), fieldLayout = fieldLayout)
+                UsizeNoHighBitMinusOne(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -834,7 +834,7 @@ public open class NonZeroUsizeInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -847,7 +847,7 @@ public open class NonZeroUsizeInner internal constructor(
 
         public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroUsizeInner? =
             if (value >= 1) {
-                NonZeroUsizeInner(transmuteWithLayouts<Int, NonZeroUsizeInner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroUsizeInner?>()), fieldLayout = fieldLayout)
+                NonZeroUsizeInner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -894,7 +894,7 @@ public open class NonZeroIsizeInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -907,7 +907,7 @@ public open class NonZeroIsizeInner internal constructor(
 
         public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): NonZeroIsizeInner? =
             if (value < 0 || value >= 1) {
-                NonZeroIsizeInner(transmuteWithLayouts<Int, NonZeroIsizeInner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroIsizeInner?>()), fieldLayout = fieldLayout)
+                NonZeroIsizeInner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -954,7 +954,7 @@ public open class U32NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -967,7 +967,7 @@ public open class U32NotAllOnes internal constructor(
 
         public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): U32NotAllOnes? =
             if (value in 0 until UInt.MAX_VALUE) {
-                U32NotAllOnes(transmuteWithLayouts<UInt, U32NotAllOnes?>(value, fieldLayout, UnresolvedTypeLayout<U32NotAllOnes?>()), fieldLayout = fieldLayout)
+                U32NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -1014,7 +1014,7 @@ public open class I32NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -1027,7 +1027,7 @@ public open class I32NotAllOnes internal constructor(
 
         public fun new(value: Int, fieldLayout: TypeLayout<Int> = UnresolvedTypeLayout()): I32NotAllOnes? =
             if (value < -1 || value >= 0) {
-                I32NotAllOnes(transmuteWithLayouts<Int, I32NotAllOnes?>(value, fieldLayout, UnresolvedTypeLayout<I32NotAllOnes?>()), fieldLayout = fieldLayout)
+                I32NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -1074,7 +1074,7 @@ public open class U64NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -1087,7 +1087,7 @@ public open class U64NotAllOnes internal constructor(
 
         public fun new(value: ULong, fieldLayout: TypeLayout<ULong> = UnresolvedTypeLayout()): U64NotAllOnes? =
             if (value in 0 until ULong.MAX_VALUE) {
-                U64NotAllOnes(transmuteWithLayouts<ULong, U64NotAllOnes?>(value, fieldLayout, UnresolvedTypeLayout<U64NotAllOnes?>()), fieldLayout = fieldLayout)
+                U64NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -1134,7 +1134,7 @@ public open class I64NotAllOnes internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -1147,7 +1147,7 @@ public open class I64NotAllOnes internal constructor(
 
         public fun new(value: Long, fieldLayout: TypeLayout<Long> = UnresolvedTypeLayout()): I64NotAllOnes? =
             if (value < -1 || value >= 0) {
-                I64NotAllOnes(transmuteWithLayouts<Long, I64NotAllOnes?>(value, fieldLayout, UnresolvedTypeLayout<I64NotAllOnes?>()), fieldLayout = fieldLayout)
+                I64NotAllOnes(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -1194,7 +1194,7 @@ public open class NonZeroCharInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -1207,7 +1207,7 @@ public open class NonZeroCharInner internal constructor(
 
         public fun new(value: Char, fieldLayout: TypeLayout<Char> = UnresolvedTypeLayout()): NonZeroCharInner? =
             if (value in '\u0001'..0x10ffff) {
-                NonZeroCharInner(transmuteWithLayouts<Char, NonZeroCharInner?>(value, fieldLayout, UnresolvedTypeLayout<NonZeroCharInner?>()), fieldLayout = fieldLayout)
+                NonZeroCharInner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }
@@ -1258,7 +1258,7 @@ public open class CodePointInner internal constructor(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.asInner(), state)
+        this.asInner().hash(state)
         return state
     }
 
@@ -1271,7 +1271,7 @@ public open class CodePointInner internal constructor(
 
         public fun new(value: UInt, fieldLayout: TypeLayout<UInt> = UnresolvedTypeLayout()): CodePointInner? =
             if (value in 0..0x10ffff) {
-                CodePointInner(transmuteWithLayouts<UInt, CodePointInner?>(value, fieldLayout, UnresolvedTypeLayout<CodePointInner?>()), fieldLayout = fieldLayout)
+                CodePointInner(transmute(value), fieldLayout = fieldLayout)
             } else {
                 null
             }

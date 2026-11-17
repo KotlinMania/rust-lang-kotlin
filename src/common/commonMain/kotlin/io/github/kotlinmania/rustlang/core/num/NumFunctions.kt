@@ -25,13 +25,10 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.clamp
-import io.github.kotlinmania.rustlang.core.convert.TryInto
 import io.github.kotlinmania.rustlang.core.convert.num.BoundedCastFromInt
 import io.github.kotlinmania.rustlang.core.convert.num.CheckedCastFromInt
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
-import io.github.kotlinmania.rustlang.core.intrinsics.fallback.CarryingMulAdd
-import io.github.kotlinmania.rustlang.core.intrinsics.fallback.carryingMulAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI128
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI16
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI32
@@ -129,7 +126,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind.*
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.imp.intbits.u8.depositImpl
 import io.github.kotlinmania.rustlang.core.num.imp.intbits.u8.extractImpl
@@ -152,7 +149,7 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.num.ParseIntError as Pie
+import io.github.kotlinmania.rustlang.core.num.error.ParseIntError as Pie
 
 /**
  * Determines if a string of text of that length of that radix could be guaranteed to be
@@ -1276,7 +1273,7 @@ public fun Byte.strictNeg(): Byte {
  */
 public fun Byte.checkedShl(rhs: UInt): Byte? =
     if (rhs < 8u) {
-        this.uncheckedShl(rhs)
+        ((this).toInt() shl rhs.toInt()).toByte()
     } else {
         null
     }
@@ -1338,7 +1335,7 @@ public fun Byte.uncheckedShl(rhs: UInt): Byte {
  */
 public fun Byte.unboundedShl(rhs: UInt): Byte =
     if (rhs < 8u) {
-        this.uncheckedShl(rhs)
+        ((this).toInt() shl rhs.toInt()).toByte()
     } else {
         0
     }
@@ -1359,7 +1356,7 @@ public fun Byte.unboundedShl(rhs: UInt): Byte =
  */
 public fun Byte.shlExact(rhs: UInt): Byte? =
     if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
-        this.uncheckedShl(rhs)
+        ((this).toInt() shl rhs.toInt()).toByte()
     } else {
         null
     }
@@ -1376,7 +1373,7 @@ public fun Byte.shlExact(rhs: UInt): Byte? =
  */
 public fun Byte.uncheckedShlExact(rhs: UInt): Byte {
     Unit
-    return this.uncheckedShl(rhs)
+    return ((this).toInt() shl rhs.toInt()).toByte()
 }
 
 /**
@@ -1390,7 +1387,7 @@ public fun Byte.uncheckedShlExact(rhs: UInt): Byte {
  */
 public fun Byte.checkedShr(rhs: UInt): Byte? =
     if (rhs < 8u) {
-        this.uncheckedShr(rhs)
+        ((this).toInt() shr rhs.toInt()).toByte()
     } else {
         null
     }
@@ -1453,9 +1450,9 @@ public fun Byte.uncheckedShr(rhs: UInt): Byte {
  */
 public fun Byte.unboundedShr(rhs: UInt): Byte =
     if (rhs < 8u) {
-        this.uncheckedShr(rhs)
+        ((this).toInt() shr rhs.toInt()).toByte()
     } else {
-        this.uncheckedShr(8u - 1)
+        ((this).toInt() shr (8u - 1).toInt()).toByte()
     }
 
 /**
@@ -1473,7 +1470,7 @@ public fun Byte.unboundedShr(rhs: UInt): Byte =
  */
 public fun Byte.shrExact(rhs: UInt): Byte? =
     if (rhs <= this.trailingZeros() && rhs < 8u) {
-        this.uncheckedShr(rhs)
+        ((this).toInt() shr rhs.toInt()).toByte()
     } else {
         null
     }
@@ -1490,7 +1487,7 @@ public fun Byte.shrExact(rhs: UInt): Byte? =
  */
 public fun Byte.uncheckedShrExact(rhs: UInt): Byte {
     Unit
-    return this.uncheckedShr(rhs)
+    return ((this).toInt() shr rhs.toInt()).toByte()
 }
 
 /**
@@ -1994,7 +1991,7 @@ public fun Byte.wrappingNeg(): Byte = ((0.toByte()) - (this.toByte())).toByte()
  * ```kotlin
  * ```
  */
-public fun Byte.wrappingShl(rhs: UInt): Byte = this.uncheckedShl(rhs and (8u - 1u))
+public fun Byte.wrappingShl(rhs: UInt): Byte = ((this).toInt() shl (rhs and (8u - 1u)).toInt()).toByte()
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`, where `mask`
@@ -2018,7 +2015,7 @@ public fun Byte.wrappingShl(rhs: UInt): Byte = this.uncheckedShl(rhs and (8u - 1
  * check((-128).wrappingShr(64u) == -128)
  * ```
  */
-public fun Byte.wrappingShr(rhs: UInt): Byte = this.uncheckedShr(rhs and (8u - 1u))
+public fun Byte.wrappingShr(rhs: UInt): Byte = ((this).toInt() shr (rhs and (8u - 1u)).toInt()).toByte()
 
 /**
  * Wrapping (modular) absolute value. Computes `self.abs()`, wrapping around at
@@ -2274,7 +2271,7 @@ public fun Byte.overflowingMul(rhs: Byte): Pair<Byte, Boolean> {
  * }
  * ```
  */
-public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.CarryingMulAdd(this, rhs, carry, 0)
+public fun Byte.carryingMul(rhs: Byte, carry: Byte): Pair<UByte, Byte> = Byte.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -3156,7 +3153,7 @@ public fun Byte.Companion.maxValue(): Byte = Byte.MAX_VALUE
  * ```
  */
 public fun Byte.clampMagnitude(limit: UByte): Byte =
-    when (val matchVal = TryInto.TryInto(limit)) {
+    when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -4438,7 +4435,7 @@ public fun Short.strictNeg(): Short {
  */
 public fun Short.checkedShl(rhs: UInt): Short? =
     if (rhs < 16u) {
-        this.uncheckedShl(rhs)
+        ((this).toInt() shl rhs.toInt()).toShort()
     } else {
         null
     }
@@ -4500,7 +4497,7 @@ public fun Short.uncheckedShl(rhs: UInt): Short {
  */
 public fun Short.unboundedShl(rhs: UInt): Short =
     if (rhs < 16u) {
-        this.uncheckedShl(rhs)
+        ((this).toInt() shl rhs.toInt()).toShort()
     } else {
         0
     }
@@ -4521,7 +4518,7 @@ public fun Short.unboundedShl(rhs: UInt): Short =
  */
 public fun Short.shlExact(rhs: UInt): Short? =
     if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
-        this.uncheckedShl(rhs)
+        ((this).toInt() shl rhs.toInt()).toShort()
     } else {
         null
     }
@@ -4538,7 +4535,7 @@ public fun Short.shlExact(rhs: UInt): Short? =
  */
 public fun Short.uncheckedShlExact(rhs: UInt): Short {
     Unit
-    return this.uncheckedShl(rhs)
+    return ((this).toInt() shl rhs.toInt()).toShort()
 }
 
 /**
@@ -4552,7 +4549,7 @@ public fun Short.uncheckedShlExact(rhs: UInt): Short {
  */
 public fun Short.checkedShr(rhs: UInt): Short? =
     if (rhs < 16u) {
-        this.uncheckedShr(rhs)
+        ((this).toInt() shr rhs.toInt()).toShort()
     } else {
         null
     }
@@ -4615,9 +4612,9 @@ public fun Short.uncheckedShr(rhs: UInt): Short {
  */
 public fun Short.unboundedShr(rhs: UInt): Short =
     if (rhs < 16u) {
-        this.uncheckedShr(rhs)
+        ((this).toInt() shr rhs.toInt()).toShort()
     } else {
-        this.uncheckedShr(16u - 1)
+        ((this).toInt() shr (16u - 1).toInt()).toShort()
     }
 
 /**
@@ -4635,7 +4632,7 @@ public fun Short.unboundedShr(rhs: UInt): Short =
  */
 public fun Short.shrExact(rhs: UInt): Short? =
     if (rhs <= this.trailingZeros() && rhs < 16u) {
-        this.uncheckedShr(rhs)
+        ((this).toInt() shr rhs.toInt()).toShort()
     } else {
         null
     }
@@ -4652,7 +4649,7 @@ public fun Short.shrExact(rhs: UInt): Short? =
  */
 public fun Short.uncheckedShrExact(rhs: UInt): Short {
     Unit
-    return this.uncheckedShr(rhs)
+    return ((this).toInt() shr rhs.toInt()).toShort()
 }
 
 /**
@@ -5156,7 +5153,7 @@ public fun Short.wrappingNeg(): Short = ((0.toShort()) - (this.toShort())).toSho
  * ```kotlin
  * ```
  */
-public fun Short.wrappingShl(rhs: UInt): Short = this.uncheckedShl(rhs and (16u - 1u))
+public fun Short.wrappingShl(rhs: UInt): Short = ((this).toInt() shl (rhs and (16u - 1u)).toInt()).toShort()
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`, where `mask`
@@ -5180,7 +5177,7 @@ public fun Short.wrappingShl(rhs: UInt): Short = this.uncheckedShl(rhs and (16u 
  * check((-128).wrappingShr(64u) == -128)
  * ```
  */
-public fun Short.wrappingShr(rhs: UInt): Short = this.uncheckedShr(rhs and (16u - 1u))
+public fun Short.wrappingShr(rhs: UInt): Short = ((this).toInt() shr (rhs and (16u - 1u)).toInt()).toShort()
 
 /**
  * Wrapping (modular) absolute value. Computes `self.abs()`, wrapping around at
@@ -5436,7 +5433,7 @@ public fun Short.overflowingMul(rhs: Short): Pair<Short, Boolean> {
  * }
  * ```
  */
-public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Short.CarryingMulAdd(this, rhs, carry, 0)
+public fun Short.carryingMul(rhs: Short, carry: Short): Pair<UShort, Short> = Short.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -6288,7 +6285,7 @@ public fun Short.Companion.maxValue(): Short = Short.MAX_VALUE
  * ```
  */
 public fun Short.clampMagnitude(limit: UShort): Short =
-    when (val matchVal = TryInto.TryInto(limit)) {
+    when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -7570,7 +7567,7 @@ public fun Int.strictNeg(): Int {
  */
 public fun Int.checkedShl(rhs: UInt): Int? =
     if (rhs < 32u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -7632,7 +7629,7 @@ public fun Int.uncheckedShl(rhs: UInt): Int {
  */
 public fun Int.unboundedShl(rhs: UInt): Int =
     if (rhs < 32u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         0
     }
@@ -7653,7 +7650,7 @@ public fun Int.unboundedShl(rhs: UInt): Int =
  */
 public fun Int.shlExact(rhs: UInt): Int? =
     if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -7670,7 +7667,7 @@ public fun Int.shlExact(rhs: UInt): Int? =
  */
 public fun Int.uncheckedShlExact(rhs: UInt): Int {
     Unit
-    return this.uncheckedShl(rhs)
+    return (this shl rhs.toInt())
 }
 
 /**
@@ -7684,7 +7681,7 @@ public fun Int.uncheckedShlExact(rhs: UInt): Int {
  */
 public fun Int.checkedShr(rhs: UInt): Int? =
     if (rhs < 32u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -7747,9 +7744,9 @@ public fun Int.uncheckedShr(rhs: UInt): Int {
  */
 public fun Int.unboundedShr(rhs: UInt): Int =
     if (rhs < 32u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
-        this.uncheckedShr(32u - 1)
+        (this shr (32u - 1).toInt())
     }
 
 /**
@@ -7767,7 +7764,7 @@ public fun Int.unboundedShr(rhs: UInt): Int =
  */
 public fun Int.shrExact(rhs: UInt): Int? =
     if (rhs <= this.trailingZeros() && rhs < 32u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -7784,7 +7781,7 @@ public fun Int.shrExact(rhs: UInt): Int? =
  */
 public fun Int.uncheckedShrExact(rhs: UInt): Int {
     Unit
-    return this.uncheckedShr(rhs)
+    return (this shr rhs.toInt())
 }
 
 /**
@@ -8288,7 +8285,7 @@ public fun Int.wrappingNeg(): Int = ((0) - (this.toInt()))
  * ```kotlin
  * ```
  */
-public fun Int.wrappingShl(rhs: UInt): Int = this.uncheckedShl(rhs and (32u - 1u))
+public fun Int.wrappingShl(rhs: UInt): Int = (this shl (rhs and (32u - 1u)).toInt())
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`, where `mask`
@@ -8312,7 +8309,7 @@ public fun Int.wrappingShl(rhs: UInt): Int = this.uncheckedShl(rhs and (32u - 1u
  * check((-128).wrappingShr(64u) == -128)
  * ```
  */
-public fun Int.wrappingShr(rhs: UInt): Int = this.uncheckedShr(rhs and (32u - 1u))
+public fun Int.wrappingShr(rhs: UInt): Int = (this shr (rhs and (32u - 1u)).toInt())
 
 /**
  * Wrapping (modular) absolute value. Computes `self.abs()`, wrapping around at
@@ -8568,7 +8565,7 @@ public fun Int.overflowingMul(rhs: Int): Pair<Int, Boolean> {
  * }
  * ```
  */
-public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.CarryingMulAdd(this, rhs, carry, 0)
+public fun Int.carryingMul(rhs: Int, carry: Int): Pair<UInt, Int> = Int.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -9420,7 +9417,7 @@ public fun Int.Companion.maxValue(): Int = Int.MAX_VALUE
  * ```
  */
 public fun Int.clampMagnitude(limit: UInt): Int =
-    when (val matchVal = TryInto.TryInto(limit)) {
+    when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -10702,7 +10699,7 @@ public fun Long.strictNeg(): Long {
  */
 public fun Long.checkedShl(rhs: UInt): Long? =
     if (rhs < 64u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -10764,7 +10761,7 @@ public fun Long.uncheckedShl(rhs: UInt): Long {
  */
 public fun Long.unboundedShl(rhs: UInt): Long =
     if (rhs < 64u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         0L
     }
@@ -10785,7 +10782,7 @@ public fun Long.unboundedShl(rhs: UInt): Long =
  */
 public fun Long.shlExact(rhs: UInt): Long? =
     if (rhs < this.leadingZeros() || rhs < this.leadingOnes()) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -10802,7 +10799,7 @@ public fun Long.shlExact(rhs: UInt): Long? =
  */
 public fun Long.uncheckedShlExact(rhs: UInt): Long {
     Unit
-    return this.uncheckedShl(rhs)
+    return (this shl rhs.toInt())
 }
 
 /**
@@ -10816,7 +10813,7 @@ public fun Long.uncheckedShlExact(rhs: UInt): Long {
  */
 public fun Long.checkedShr(rhs: UInt): Long? =
     if (rhs < 64u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -10879,9 +10876,9 @@ public fun Long.uncheckedShr(rhs: UInt): Long {
  */
 public fun Long.unboundedShr(rhs: UInt): Long =
     if (rhs < 64u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
-        this.uncheckedShr(64u - 1)
+        (this shr (64u - 1).toInt())
     }
 
 /**
@@ -10899,7 +10896,7 @@ public fun Long.unboundedShr(rhs: UInt): Long =
  */
 public fun Long.shrExact(rhs: UInt): Long? =
     if (rhs <= this.trailingZeros() && rhs < 64u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -10916,7 +10913,7 @@ public fun Long.shrExact(rhs: UInt): Long? =
  */
 public fun Long.uncheckedShrExact(rhs: UInt): Long {
     Unit
-    return this.uncheckedShr(rhs)
+    return (this shr rhs.toInt())
 }
 
 /**
@@ -11420,7 +11417,7 @@ public fun Long.wrappingNeg(): Long = ((0.toLong()) - (this.toLong()))
  * ```kotlin
  * ```
  */
-public fun Long.wrappingShl(rhs: UInt): Long = this.uncheckedShl(rhs and (64u - 1u))
+public fun Long.wrappingShl(rhs: UInt): Long = (this shl (rhs and (64u - 1u)).toInt())
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`, where `mask`
@@ -11444,7 +11441,7 @@ public fun Long.wrappingShl(rhs: UInt): Long = this.uncheckedShl(rhs and (64u - 
  * check((-128).wrappingShr(64u) == -128)
  * ```
  */
-public fun Long.wrappingShr(rhs: UInt): Long = this.uncheckedShr(rhs and (64u - 1u))
+public fun Long.wrappingShr(rhs: UInt): Long = (this shr (rhs and (64u - 1u)).toInt())
 
 /**
  * Wrapping (modular) absolute value. Computes `self.abs()`, wrapping around at
@@ -11700,7 +11697,7 @@ public fun Long.overflowingMul(rhs: Long): Pair<Long, Boolean> {
  * }
  * ```
  */
-public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.CarryingMulAdd(this, rhs, carry, 0)
+public fun Long.carryingMul(rhs: Long, carry: Long): Pair<ULong, Long> = Long.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -12552,7 +12549,7 @@ public fun Long.Companion.maxValue(): Long = Long.MAX_VALUE
  * ```
  */
 public fun Long.clampMagnitude(limit: ULong): Long =
-    when (val matchVal = TryInto.TryInto(limit)) {
+    when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -14840,7 +14837,7 @@ public fun I128.overflowingMul(rhs: I128): Pair<I128, Boolean> {
  * }
  * ```
  */
-public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.CarryingMulAdd(this, rhs, carry, 0)
+public fun I128.carryingMul(rhs: I128, carry: I128): Pair<U128, I128> = I128.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`
@@ -15692,7 +15689,7 @@ public fun I128.Companion.maxValue(): I128 = I128.MAX_VALUE
  * ```
  */
 public fun I128.clampMagnitude(limit: U128): I128 =
-    when (val matchVal = TryInto.TryInto(limit)) {
+    when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -16094,7 +16091,7 @@ public fun Int.overflowingSubUnsigned(rhs: Int): Pair<Int, Boolean> {
  * ```
  */
 public fun Int.clampMagnitude(limit: Int): Int =
-    when (val matchVal = TryInto.TryInto(limit)) {
+    when (val matchVal = limit.tryInto()) {
         is Result.Ok<*, *> -> {
             val limit1 = matchVal.okValue()
             this.clamp(-limit1, limit1)
@@ -17570,7 +17567,7 @@ public fun UByte.strictNeg(): UByte {
  */
 public fun UByte.checkedShl(rhs: UInt): UByte? =
     if (rhs < 8u) {
-        this.uncheckedShl(rhs)
+        ((this).toUInt() shl rhs.toInt()).toUByte()
     } else {
         null
     }
@@ -17639,7 +17636,7 @@ public fun UByte.uncheckedShl(rhs: UInt): UByte {
  */
 public fun UByte.unboundedShl(rhs: UInt): UByte =
     if (rhs < 8u) {
-        this.uncheckedShl(rhs)
+        ((this).toUInt() shl rhs.toInt()).toUByte()
     } else {
         0u
     }
@@ -17659,7 +17656,7 @@ public fun UByte.unboundedShl(rhs: UInt): UByte =
  */
 public fun UByte.shlExact(rhs: UInt): UByte? =
     if (rhs <= this.leadingZeros() && rhs < 8u) {
-        this.uncheckedShl(rhs)
+        ((this).toUInt() shl rhs.toInt()).toUByte()
     } else {
         null
     }
@@ -17676,7 +17673,7 @@ public fun UByte.shlExact(rhs: UInt): UByte? =
  */
 public fun UByte.uncheckedShlExact(rhs: UInt): UByte {
     Unit
-    return this.uncheckedShl(rhs)
+    return ((this).toUInt() shl rhs.toInt()).toUByte()
 }
 
 /**
@@ -17690,7 +17687,7 @@ public fun UByte.uncheckedShlExact(rhs: UInt): UByte {
  */
 public fun UByte.checkedShr(rhs: UInt): UByte? =
     if (rhs < 8u) {
-        this.uncheckedShr(rhs)
+        ((this).toUInt() shr rhs.toInt()).toUByte()
     } else {
         null
     }
@@ -17759,7 +17756,7 @@ public fun UByte.uncheckedShr(rhs: UInt): UByte {
  */
 public fun UByte.unboundedShr(rhs: UInt): UByte =
     if (rhs < 8u) {
-        this.uncheckedShr(rhs)
+        ((this).toUInt() shr rhs.toInt()).toUByte()
     } else {
         0u
     }
@@ -17779,7 +17776,7 @@ public fun UByte.unboundedShr(rhs: UInt): UByte =
  */
 public fun UByte.shrExact(rhs: UInt): UByte? =
     if (rhs <= this.trailingZeros() && rhs < 8u) {
-        this.uncheckedShr(rhs)
+        ((this).toUInt() shr rhs.toInt()).toUByte()
     } else {
         null
     }
@@ -17796,7 +17793,7 @@ public fun UByte.shrExact(rhs: UInt): UByte? =
  */
 public fun UByte.uncheckedShrExact(rhs: UInt): UByte {
     Unit
-    return this.uncheckedShr(rhs)
+    return ((this).toUInt() shr rhs.toInt()).toUByte()
 }
 
 /**
@@ -18194,7 +18191,7 @@ public fun UByte.wrappingNeg(): UByte = ((0.toUByte()) - (this.toUByte())).toUBy
  * ```kotlin
  * ```
  */
-public fun UByte.wrappingShl(rhs: UInt): UByte = this.uncheckedShl(rhs and (8u - 1u))
+public fun UByte.wrappingShl(rhs: UInt): UByte = ((this).toUInt() shl (rhs and (8u - 1u)).toInt()).toUByte()
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`,
@@ -18220,7 +18217,7 @@ public fun UByte.wrappingShl(rhs: UInt): UByte = this.uncheckedShl(rhs and (8u -
  * ```kotlin
  * ```
  */
-public fun UByte.wrappingShr(rhs: UInt): UByte = this.uncheckedShr(rhs and (8u - 1u))
+public fun UByte.wrappingShr(rhs: UInt): UByte = ((this).toUInt() shr (rhs and (8u - 1u)).toInt()).toUByte()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -18478,7 +18475,7 @@ public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
  * }
  * ```
  */
-public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UByte.CarryingMulAdd(this, rhs, carry, 0)
+public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UByte.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -18528,7 +18525,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -21381,7 +21378,7 @@ public fun UShort.strictNeg(): UShort {
  */
 public fun UShort.checkedShl(rhs: UInt): UShort? =
     if (rhs < 16u) {
-        this.uncheckedShl(rhs)
+        ((this).toUInt() shl rhs.toInt()).toUShort()
     } else {
         null
     }
@@ -21450,7 +21447,7 @@ public fun UShort.uncheckedShl(rhs: UInt): UShort {
  */
 public fun UShort.unboundedShl(rhs: UInt): UShort =
     if (rhs < 16u) {
-        this.uncheckedShl(rhs)
+        ((this).toUInt() shl rhs.toInt()).toUShort()
     } else {
         0u
     }
@@ -21470,7 +21467,7 @@ public fun UShort.unboundedShl(rhs: UInt): UShort =
  */
 public fun UShort.shlExact(rhs: UInt): UShort? =
     if (rhs <= this.leadingZeros() && rhs < 16u) {
-        this.uncheckedShl(rhs)
+        ((this).toUInt() shl rhs.toInt()).toUShort()
     } else {
         null
     }
@@ -21487,7 +21484,7 @@ public fun UShort.shlExact(rhs: UInt): UShort? =
  */
 public fun UShort.uncheckedShlExact(rhs: UInt): UShort {
     Unit
-    return this.uncheckedShl(rhs)
+    return ((this).toUInt() shl rhs.toInt()).toUShort()
 }
 
 /**
@@ -21501,7 +21498,7 @@ public fun UShort.uncheckedShlExact(rhs: UInt): UShort {
  */
 public fun UShort.checkedShr(rhs: UInt): UShort? =
     if (rhs < 16u) {
-        this.uncheckedShr(rhs)
+        ((this).toUInt() shr rhs.toInt()).toUShort()
     } else {
         null
     }
@@ -21570,7 +21567,7 @@ public fun UShort.uncheckedShr(rhs: UInt): UShort {
  */
 public fun UShort.unboundedShr(rhs: UInt): UShort =
     if (rhs < 16u) {
-        this.uncheckedShr(rhs)
+        ((this).toUInt() shr rhs.toInt()).toUShort()
     } else {
         0u
     }
@@ -21590,7 +21587,7 @@ public fun UShort.unboundedShr(rhs: UInt): UShort =
  */
 public fun UShort.shrExact(rhs: UInt): UShort? =
     if (rhs <= this.trailingZeros() && rhs < 16u) {
-        this.uncheckedShr(rhs)
+        ((this).toUInt() shr rhs.toInt()).toUShort()
     } else {
         null
     }
@@ -21607,7 +21604,7 @@ public fun UShort.shrExact(rhs: UInt): UShort? =
  */
 public fun UShort.uncheckedShrExact(rhs: UInt): UShort {
     Unit
-    return this.uncheckedShr(rhs)
+    return ((this).toUInt() shr rhs.toInt()).toUShort()
 }
 
 /**
@@ -22005,7 +22002,7 @@ public fun UShort.wrappingNeg(): UShort = ((0.toUShort()) - (this.toUShort())).t
  * ```kotlin
  * ```
  */
-public fun UShort.wrappingShl(rhs: UInt): UShort = this.uncheckedShl(rhs and (16u - 1u))
+public fun UShort.wrappingShl(rhs: UInt): UShort = ((this).toUInt() shl (rhs and (16u - 1u)).toInt()).toUShort()
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`,
@@ -22031,7 +22028,7 @@ public fun UShort.wrappingShl(rhs: UInt): UShort = this.uncheckedShl(rhs and (16
  * ```kotlin
  * ```
  */
-public fun UShort.wrappingShr(rhs: UInt): UShort = this.uncheckedShr(rhs and (16u - 1u))
+public fun UShort.wrappingShr(rhs: UInt): UShort = ((this).toUInt() shr (rhs and (16u - 1u)).toInt()).toUShort()
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -22289,7 +22286,7 @@ public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
  * }
  * ```
  */
-public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> = UShort.CarryingMulAdd(this, rhs, carry, 0)
+public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> = UShort.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -22339,7 +22336,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -24600,7 +24597,7 @@ public fun UInt.strictNeg(): UInt {
  */
 public fun UInt.checkedShl(rhs: UInt): UInt? =
     if (rhs < 32u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -24669,7 +24666,7 @@ public fun UInt.uncheckedShl(rhs: UInt): UInt {
  */
 public fun UInt.unboundedShl(rhs: UInt): UInt =
     if (rhs < 32u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         0u
     }
@@ -24689,7 +24686,7 @@ public fun UInt.unboundedShl(rhs: UInt): UInt =
  */
 public fun UInt.shlExact(rhs: UInt): UInt? =
     if (rhs <= this.leadingZeros() && rhs < 32u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -24706,7 +24703,7 @@ public fun UInt.shlExact(rhs: UInt): UInt? =
  */
 public fun UInt.uncheckedShlExact(rhs: UInt): UInt {
     Unit
-    return this.uncheckedShl(rhs)
+    return (this shl rhs.toInt())
 }
 
 /**
@@ -24720,7 +24717,7 @@ public fun UInt.uncheckedShlExact(rhs: UInt): UInt {
  */
 public fun UInt.checkedShr(rhs: UInt): UInt? =
     if (rhs < 32u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -24789,7 +24786,7 @@ public fun UInt.uncheckedShr(rhs: UInt): UInt {
  */
 public fun UInt.unboundedShr(rhs: UInt): UInt =
     if (rhs < 32u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         0u
     }
@@ -24809,7 +24806,7 @@ public fun UInt.unboundedShr(rhs: UInt): UInt =
  */
 public fun UInt.shrExact(rhs: UInt): UInt? =
     if (rhs <= this.trailingZeros() && rhs < 32u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -24826,7 +24823,7 @@ public fun UInt.shrExact(rhs: UInt): UInt? =
  */
 public fun UInt.uncheckedShrExact(rhs: UInt): UInt {
     Unit
-    return this.uncheckedShr(rhs)
+    return (this shr rhs.toInt())
 }
 
 /**
@@ -25224,7 +25221,7 @@ public fun UInt.wrappingNeg(): UInt = ((0.toUInt()) - (this.toUInt()))
  * ```kotlin
  * ```
  */
-public fun UInt.wrappingShl(rhs: UInt): UInt = this.uncheckedShl(rhs and (32u - 1u))
+public fun UInt.wrappingShl(rhs: UInt): UInt = (this shl (rhs and (32u - 1u)).toInt())
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`,
@@ -25250,7 +25247,7 @@ public fun UInt.wrappingShl(rhs: UInt): UInt = this.uncheckedShl(rhs and (32u - 
  * ```kotlin
  * ```
  */
-public fun UInt.wrappingShr(rhs: UInt): UInt = this.uncheckedShr(rhs and (32u - 1u))
+public fun UInt.wrappingShr(rhs: UInt): UInt = (this shr (rhs and (32u - 1u)).toInt())
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -25508,7 +25505,7 @@ public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
  * }
  * ```
  */
-public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.CarryingMulAdd(this, rhs, carry, 0)
+public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -25558,7 +25555,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.Car
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -27794,7 +27791,7 @@ public fun ULong.strictNeg(): ULong {
  */
 public fun ULong.checkedShl(rhs: UInt): ULong? =
     if (rhs < 64u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -27863,7 +27860,7 @@ public fun ULong.uncheckedShl(rhs: UInt): ULong {
  */
 public fun ULong.unboundedShl(rhs: UInt): ULong =
     if (rhs < 64u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         0uL
     }
@@ -27883,7 +27880,7 @@ public fun ULong.unboundedShl(rhs: UInt): ULong =
  */
 public fun ULong.shlExact(rhs: UInt): ULong? =
     if (rhs <= this.leadingZeros() && rhs < 64u) {
-        this.uncheckedShl(rhs)
+        (this shl rhs.toInt())
     } else {
         null
     }
@@ -27900,7 +27897,7 @@ public fun ULong.shlExact(rhs: UInt): ULong? =
  */
 public fun ULong.uncheckedShlExact(rhs: UInt): ULong {
     Unit
-    return this.uncheckedShl(rhs)
+    return (this shl rhs.toInt())
 }
 
 /**
@@ -27914,7 +27911,7 @@ public fun ULong.uncheckedShlExact(rhs: UInt): ULong {
  */
 public fun ULong.checkedShr(rhs: UInt): ULong? =
     if (rhs < 64u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -27983,7 +27980,7 @@ public fun ULong.uncheckedShr(rhs: UInt): ULong {
  */
 public fun ULong.unboundedShr(rhs: UInt): ULong =
     if (rhs < 64u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         0uL
     }
@@ -28003,7 +28000,7 @@ public fun ULong.unboundedShr(rhs: UInt): ULong =
  */
 public fun ULong.shrExact(rhs: UInt): ULong? =
     if (rhs <= this.trailingZeros() && rhs < 64u) {
-        this.uncheckedShr(rhs)
+        (this shr rhs.toInt())
     } else {
         null
     }
@@ -28020,7 +28017,7 @@ public fun ULong.shrExact(rhs: UInt): ULong? =
  */
 public fun ULong.uncheckedShrExact(rhs: UInt): ULong {
     Unit
-    return this.uncheckedShr(rhs)
+    return (this shr rhs.toInt())
 }
 
 /**
@@ -28418,7 +28415,7 @@ public fun ULong.wrappingNeg(): ULong = ((0.toULong()) - (this.toULong()))
  * ```kotlin
  * ```
  */
-public fun ULong.wrappingShl(rhs: UInt): ULong = this.uncheckedShl(rhs and (64u - 1u))
+public fun ULong.wrappingShl(rhs: UInt): ULong = (this shl (rhs and (64u - 1u)).toInt())
 
 /**
  * Panic-free bitwise shift-right; yields `self>> mask(rhs)`,
@@ -28444,7 +28441,7 @@ public fun ULong.wrappingShl(rhs: UInt): ULong = this.uncheckedShl(rhs and (64u 
  * ```kotlin
  * ```
  */
-public fun ULong.wrappingShr(rhs: UInt): ULong = this.uncheckedShr(rhs and (64u - 1u))
+public fun ULong.wrappingShr(rhs: UInt): ULong = (this shr (rhs and (64u - 1u)).toInt())
 
 /**
  * Wrapping (modular) exponentiation. Computes `self.pow(exp)`,
@@ -28702,7 +28699,7 @@ public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
  * }
  * ```
  */
-public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULong.CarryingMulAdd(this, rhs, carry, 0)
+public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULong.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -28752,7 +28749,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -31896,7 +31893,7 @@ public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
  * }
  * ```
  */
-public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.CarryingMulAdd(this, rhs, carry, 0)
+public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.carryingMulAdd(this, rhs, carry, 0)
 
 /**
  * Calculates the "full multiplication" `self * rhs + carry + add`.
@@ -31946,7 +31943,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.Car
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(List(3) { 0xFF }, List(3) { 0xFF }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }

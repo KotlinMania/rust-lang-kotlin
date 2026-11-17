@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32Cacop(JNIEnv* km_env, jclass km_clazz, jint a, jint b, jint c) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32ExternCacop(JNIEnv* km_env, jclass km_clazz, jint a, jint b, jint c) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(int32_t, int32_t, int32_t);
@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_
     }
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32Csrrd(JNIEnv* km_env, jclass km_clazz, jint a) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32ExternCsrrd(JNIEnv* km_env, jclass km_clazz, jint a) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t);
@@ -118,7 +118,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32Csrwr(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32ExternCsrwr(JNIEnv* km_env, jclass km_clazz, jint a, jint b) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t, int32_t);
@@ -151,7 +151,7 @@ JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_
     return (jint)km_res;
 }
 
-JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32Csrxchg(JNIEnv* km_env, jclass km_clazz, jint a, jint b, jint c) {
+JNIEXPORT jint JNICALL Java_io_github_kotlinmania_rustlang_corearch_loongarch32_Loongarch32JniBridge_corearchLoongarch32ExternCsrxchg(JNIEnv* km_env, jclass km_clazz, jint a, jint b, jint c) {
     (void)km_env;
     (void)km_clazz;
     typedef int32_t (*km_fn_t)(int32_t, int32_t, int32_t);

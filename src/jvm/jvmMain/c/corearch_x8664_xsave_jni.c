@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveXsave64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveExternXsave64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
@@ -90,7 +90,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664X
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveXrstor64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveExternXrstor64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
@@ -125,7 +125,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664X
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveXsaveopt64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveExternXsaveopt64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
@@ -160,7 +160,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664X
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveXsavec64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveExternXsavec64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
@@ -195,7 +195,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664X
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveXsaves64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveExternXsaves64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
@@ -230,7 +230,7 @@ JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664X
     }
 }
 
-JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveXrstors64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
+JNIEXPORT void JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664XsaveJniBridge_corearchX8664XsaveExternXrstors64(JNIEnv* km_env, jclass km_clazz, jlong p, jint hi, jint lo) {
     (void)km_env;
     (void)km_clazz;
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);

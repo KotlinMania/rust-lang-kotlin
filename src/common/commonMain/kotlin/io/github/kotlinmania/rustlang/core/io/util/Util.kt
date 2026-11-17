@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.io.util
 
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -68,7 +69,7 @@ public open class Empty : SizeHint, Write<Empty>, Seek {
 
     public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun writeFmt(args: fmt.Arguments): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeFmt(args: Arguments): Result<Unit> = RustResult.Ok(Unit)
 
     public override fun flush(): Result<Unit> = RustResult.Ok(Unit)
 
@@ -206,7 +207,7 @@ public open class Sink : Write<Sink> {
 
     public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok(Unit)
 
-    public override fun writeFmt(args: fmt.Arguments): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeFmt(args: Arguments): Result<Unit> = RustResult.Ok(Unit)
 
     public override fun flush(): Result<Unit> = RustResult.Ok(Unit)
 

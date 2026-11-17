@@ -501,7 +501,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.trailingZeros(): UInt = kmCttzU8(this.
  */
 public fun NonZero<UByte, NonZeroU8Inner>.isolateHighestOne(): NonZero<UByte, NonZeroU8Inner> =
     run {
-        val bit = ((((1.toUByte()).toUInt() shl ((8u - 1u).toInt())).toUByte()).uncheckedShr(this.leadingZeros()))
+        val bit = ((((((1.toUByte()).toUInt() shl ((8u - 1u).toInt())).toUByte())).toUInt() shr this.leadingZeros().toInt()).toUByte())
         NonZero.newUnchecked<NonZeroU8Inner, UByte>(bit.toUByte())
     }
 

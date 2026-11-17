@@ -1,7 +1,6 @@
 // port-lint: source task/poll.rs
 package io.github.kotlinmania.rustlang.core.task.poll
 
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
@@ -178,7 +177,7 @@ public fun <T, E, F> fromResidualPollResultTF(x: Result<Nothing, E>): Poll<Resul
     when (x) {
         is Result.Err<*, *> -> {
             val e = x.errValue()
-            Poll.Ready(Result.Err(From.From(e)))
+            Poll.Ready(Result.Err(From.from(e)))
         }
     }
 
@@ -188,6 +187,6 @@ public fun <T, E, F> fromResidualPollOptionResultTF(x: Result<Nothing, E>): Poll
     when (x) {
         is Result.Err<*, *> -> {
             val e = x.errValue()
-            Poll.Ready(Result.Err(From.From(e)))
+            Poll.Ready(Result.Err(From.from(e)))
         }
     }

@@ -2,8 +2,6 @@ package io.github.kotlinmania.rustlang.core.array
 
 import io.github.kotlinmania.rustlang.core.array.drain.Drain
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.clone.Clone
-import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
@@ -19,12 +17,12 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
-import io.github.kotlinmania.rustlang.core.ops.index.IndexMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
+import io.github.kotlinmania.rustlang.core.ops.trytrait.fromResidual
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -146,7 +144,7 @@ public fun <Output, Residual, R> tryFromFn(cb: (Int) -> R, n: Int): ChangeOutput
     return when (val matchVal = tryFromFnErased(array, cb)) {
         is ControlFlow.Break<*, *> -> {
             val r = matchVal.cfBreakValue()
-            FromResidual.FromResidual(r)
+            FromResidual.fromResidual(r)
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
@@ -407,7 +405,7 @@ public fun <T> List<T>.intoIter(n: Int): Iter<T> = this.iter()
 
 public fun <T, I> List<T>.indexIFromTArrayn(index: I, n: Int): Output = (((this as Any?) as List<T>)).index(index)
 
-public fun <T, I> List<T>.indexMutIFromTArrayn(index: I, n: Int): Output = IndexMut.IndexMut(((this as Any?) as MutableList<T>), index)
+public fun <T, I> List<T>.indexMutIFromTArrayn(index: I, n: Int): Output = (((this as Any?) as MutableList<T>)).indexMut(index)
 
 /**
  * Implements comparison of arrays [lexicographically](Ord#lexicographical-comparison).
@@ -431,7 +429,7 @@ public fun <T> List<T>.chainingGreaterFromTArrayn(other: List<T>, n: Int): Contr
  */
 public fun <T> List<T>.cmpFromTArrayn(other: List<T>, n: Int): Ordering = this.cmp(other)
 
-public fun <T> List<T>.cloneFromTArrayn(n: Int): List<T> = SpecArrayClone.Clone(this)
+public fun <T> List<T>.cloneFromTArrayn(n: Int): List<T> = SpecArrayClone.clone(this)
 
 public fun <T> List<T>.cloneFromFromTArrayn(other: List<T>, n: Int) {
     this.cloneFromSlice(other)

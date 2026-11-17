@@ -8,17 +8,17 @@ import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRisc
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkExternSha256sum1
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkExternSm3p0
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkExternSm3p1
-import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkSm4ed
-import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkSm4ks
+import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkExternSm4ed
+import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkExternSm4ks
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkXperm464
 import io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop.corearchRiscvsharedZkXperm864
 import kotlinx.cinterop.ExperimentalForeignApi
 
-public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
-    corearchRiscvsharedZkSm4ed(rs1, rs2, bs)
+public actual fun externSm4ed(rs1: Int, rs2: Int, bs: Int): Int =
+    corearchRiscvsharedZkExternSm4ed(rs1, rs2, bs)
 
-public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
-    corearchRiscvsharedZkSm4ks(rs1, rs2, bs)
+public actual fun externSm4ks(rs1: Int, rs2: Int, bs: Int): Int =
+    corearchRiscvsharedZkExternSm4ks(rs1, rs2, bs)
 
 public actual fun externSm3p0(rs1: Int): Int =
     corearchRiscvsharedZkExternSm3p0(rs1)

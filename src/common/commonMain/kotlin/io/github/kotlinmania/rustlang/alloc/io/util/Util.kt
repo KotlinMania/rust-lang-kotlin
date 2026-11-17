@@ -325,7 +325,7 @@ public open class Bytes<R>(
 
 // Not `@inline`. This function gets inlined even without it, but having
 // the inline annotation can result in worse code generation. See #116785.
-public fun <R : Read<R>> Bytes<R>.next(): Result<UByte>? = SpecReadByte.SpecReadByte(this.inner)
+public fun <R : Read<R>> Bytes<R>.next(): Result<UByte>? = this.inner.specReadByte()
 
 public fun <R : Read<R>> Bytes<R>.sizeHint(): Pair<Int, Int?> = SizeHint.sizeHint(this.inner)
 
