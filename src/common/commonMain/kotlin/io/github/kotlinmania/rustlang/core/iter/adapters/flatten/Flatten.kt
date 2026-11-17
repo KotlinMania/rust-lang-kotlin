@@ -48,7 +48,7 @@ public class DebugStruct(
  */
 public open class FlatMap<I, U, F> internal constructor(
     innerCtorArg: FlattenCompat<Map<I, F>, IntoIter>,
-) : TrustedLen<FlatMap<I, U, F>>, SourceIter<Source>, Iterable<Item> {
+) : TrustedLen, SourceIter<Source>, Iterable<Item> {
     public var inner: FlattenCompat<Map<I, F>, IntoIter> = innerCtorArg
         internal set
 
@@ -71,9 +71,9 @@ public open class FlatMap<I, U, F> internal constructor(
 
     public override fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.inner.fold(init, fold)
+    public override fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.fold(init, fold)
 
     public override fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
 
@@ -83,9 +83,9 @@ public open class FlatMap<I, U, F> internal constructor(
 
     public open fun nextBack(): Item? = this.inner.nextBack()
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryRfold(init, fold)
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
 
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.inner.rfold(init, fold)
+    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.rfold(init, fold)
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
 
@@ -101,7 +101,7 @@ public open class FlatMap<I, U, F> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <Item, IntoIter, I, U> new(iter: I, f: (I.Item) -> U): FlatMap<I, U, (I.Item) -> U> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
+        public fun <I, U> new(iter: I, f: (Item) -> U): FlatMap<I, U, (Item) -> U> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
     }
 }
 
@@ -116,7 +116,7 @@ public open class FlatMap<I, U, F> internal constructor(
  */
 public open class Flatten<I> internal constructor(
     innerCtorArg: FlattenCompat<I, IntoIter>,
-) : TrustedLen<Flatten<I>>, SourceIter<Source>, Iterable<U.Item> {
+) : TrustedLen, SourceIter<Source>, Iterable<U.Item> {
     public var inner: FlattenCompat<I, IntoIter> = innerCtorArg
         internal set
 
@@ -137,7 +137,7 @@ public open class Flatten<I> internal constructor(
 
     public override fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public override fun <Acc> fold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.inner.fold(init, fold)
 
@@ -149,7 +149,7 @@ public open class Flatten<I> internal constructor(
 
     public open fun nextBack(): Item? = this.inner.nextBack()
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryRfold(init, fold)
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.inner.rfold(init, fold)
 
@@ -213,7 +213,7 @@ public open class FlattenCompat<I, U>(
      */
     public open fun <Acc> iterFold(acc: Acc, fold: (Acc, U) -> Acc): Acc {
         var acc1 = acc
-        fun <Item, IntoIter, T, Acc> flatten(fold1: (Acc, IntoIter) -> Acc): (Acc, T) -> Acc = { acc2, iter -> fold1(acc2, iter.intoIter()) }
+        fun <T, Acc> flatten(fold1: (Acc, IntoIter) -> Acc): (Acc, T) -> Acc = { acc2, iter -> fold1(acc2, iter.intoIter()) }
         when (val matchVal = this.frontiter) {
             null -> {}
             else -> {
@@ -239,9 +239,9 @@ public open class FlattenCompat<I, U>(
      * Folds over the inner iterators, not over their elements. Is used by the `tryFold` and
      * `advanceBy` methods.
      */
-    public open fun <Acc, R> iterTryFold(acc: Acc, fold: (Acc, U) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> iterTryFold(acc: Acc, fold: (Acc, U) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
-        fun <Item, IntoIter, T, Acc, R : Try<R, Acc, Any?>> flatten(frontiter: IntoIter?, fold1: (Acc, IntoIter) -> R): (Acc, T) -> R = { acc2, iter -> fold1(acc2, frontiter.insert(iter.intoIter())) }
+        fun <Residual, T, Acc, R : Try<R, Acc, Residual>> flatten(frontiter: IntoIter?, fold1: (Acc, IntoIter) -> R): (Acc, T) -> R = { acc2, iter -> fold1(acc2, frontiter.insert(iter.intoIter())) }
         when (val matchVal = this.frontiter) {
             null -> {}
             else -> {
@@ -271,7 +271,7 @@ public open class FlattenCompat<I, U>(
      */
     public open fun <Acc> iterRfold(acc: Acc, fold: (Acc, U) -> Acc): Acc {
         var acc1 = acc
-        fun <Item, IntoIter, T, Acc> flatten(fold1: (Acc, IntoIter) -> Acc): (Acc, T) -> Acc = { acc2, iter -> fold1(acc2, iter.intoIter()) }
+        fun <T, Acc> flatten(fold1: (Acc, IntoIter) -> Acc): (Acc, T) -> Acc = { acc2, iter -> fold1(acc2, iter.intoIter()) }
         when (val matchVal = this.backiter) {
             null -> {}
             else -> {
@@ -297,9 +297,9 @@ public open class FlattenCompat<I, U>(
      * Folds over the inner iterators, not over their elements. Is used by the `tryRfold` and
      * `advanceBackBy` methods.
      */
-    public open fun <Acc, R> iterTryRfold(acc: Acc, fold: (Acc, U) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> iterTryRfold(acc: Acc, fold: (Acc, U) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
-        fun <Item, IntoIter, Output, Residual, T, Acc, R : Try<R, Any?, Any?>> flatten(backiter: IntoIter?, fold1: (Acc, IntoIter) -> R): (Acc, T) -> R = { acc2, iter -> fold1(acc2, backiter.insert(iter.intoIter())) }
+        fun <Output, Residual, T, Acc, R : Try<R, Output, Residual>> flatten(backiter: IntoIter?, fold1: (Acc, IntoIter) -> R): (Acc, T) -> R = { acc2, iter -> fold1(acc2, backiter.insert(iter.intoIter())) }
         when (val matchVal = this.backiter) {
             null -> {}
             else -> {
@@ -365,18 +365,18 @@ public open class FlattenCompat<I, U>(
         }
     }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> {
-        fun <Item, U, Acc, R : Try<R, Acc, Any?>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryFold(acc, fold1) }
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+        fun <Residual, U, Acc, R : Try<R, Acc, Residual>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryFold(acc, fold1) }
         return this.iterTryFold(init, flatten(fold))
     }
 
-    public open fun <Acc> fold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc {
-        fun <Item, U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.fold(acc, fold1) }
+    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
+        fun <U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.fold(acc, fold1) }
         return this.iterFold(init, flatten(fold))
     }
 
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
-        fun <Item, U> advance(n1: Int, iter: U): ControlFlow<Unit, Int> =
+        fun <U> advance(n1: Int, iter: U): ControlFlow<Unit, Int> =
             run {
                 val matchVal = iter.advanceBy(n1)
                 when (matchVal) { is Result.Ok -> {
@@ -396,12 +396,12 @@ public open class FlattenCompat<I, U>(
     }
 
     public open fun count(): Int {
-        fun <Item, U> count(acc: Int, iter: U): Int = acc + iter.count()
+        fun <U> count(acc: Int, iter: U): Int = acc + iter.count()
         return this.iterFold(0, ::count)
     }
 
     public open fun last(): Item? {
-        fun <Item, U> last(last: Item?, iter: U): Item? = (iter.last() ?: last)
+        fun <U> last(last: Item?, iter: U): Item? = (iter.last() ?: last)
         return this.iterFold(null, ::last)
     }
 
@@ -422,12 +422,12 @@ public open class FlattenCompat<I, U>(
         }
     }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> {
-        fun <U, Acc, R : Try<R, Acc, Any?>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryRfold(acc, fold1) }
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+        fun <Residual, U, Acc, R : Try<R, Acc, Residual>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryRfold(acc, fold1) }
         return this.iterTryRfold(init, flatten(fold))
     }
 
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, U.Item) -> Acc): Acc {
+    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
         fun <U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.rfold(acc, fold1) }
         return this.iterRfold(init, flatten(fold))
     }
@@ -486,9 +486,9 @@ public open class FlattenCompat<I, U>(
         }
     }
 
-    public open fun <Acc, R> tryFoldIterator(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryFold(init, tryFlattenOne(fold))
+    public open fun <Residual, Acc, R> tryFoldIterator(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, tryFlattenOne(fold))
 
-    public open fun <Acc> foldIterator(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.iter.fold(init, flattenOne(fold))
+    public open fun <Acc> foldIterator(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.fold(init, flattenOne(fold))
 
     public open fun advanceByIterator(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = NonZero.new<NonZeroUsizeInner, Int>(n)) {
@@ -521,9 +521,9 @@ public open class FlattenCompat<I, U>(
         return null
     }
 
-    public open fun <Acc, R> tryRfoldDoubleEndedIterator(init: Acc, fold: (Acc, U.Item) -> R): R where R : Try<R, Acc, Any?> = this.iter.tryRfold(init, tryFlattenOne(fold))
+    public open fun <Residual, Acc, R> tryRfoldDoubleEndedIterator(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, tryFlattenOne(fold))
 
-    public open fun <Acc> rfoldDoubleEndedIterator(init: Acc, fold: (Acc, U.Item) -> Acc): Acc = this.iter.rfold(init, flattenOne(fold))
+    public open fun <Acc> rfoldDoubleEndedIterator(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, flattenOne(fold))
 
     public open fun advanceBackByDoubleEndedIterator(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
         when (val matchVal = NonZero.new<NonZeroUsizeInner, Int>(n)) {
@@ -541,7 +541,7 @@ public open class FlattenCompat<I, U>(
         /**
          * Adapts an iterator by flattening it, for use in `flatten()` and `flatMap()`.
          */
-        public fun <Item, I, U> new(iter: I): FlattenCompat<I, U> = FlattenCompat(iter = iter.fuse(), frontiter = null, backiter = null)
+        public fun <I, U> new(iter: I): FlattenCompat<I, U> = FlattenCompat(iter = iter.fuse(), frontiter = null, backiter = null)
     }
 }
 
@@ -549,7 +549,7 @@ public interface ConstSizeIntoIterator {
     public fun size(): Int?
 }
 
-public fun <Item, IntoIter, T> constSizeIntoIteratorSizeT(): Int? = null
+public fun <T> constSizeIntoIteratorSizeT(): Int? = null
 
 public fun <T> constSizeIntoIteratorSizeTArrayn(n: Int): Int? = n
 
@@ -588,7 +588,7 @@ public fun <I, Acc> flattenOne(fold: (Acc, Item) -> Acc): (Acc, I) -> Acc =
         }
     } }
 
-public fun <I, Acc, R : Try<R, Acc, Any?>> tryFlattenOne(fold: (Acc, Item) -> R): (Acc, I) -> R =
+public fun <Residual, I, Acc, R : Try<R, Acc, Residual>> tryFlattenOne(fold: (Acc, Item) -> R): (Acc, I) -> R =
     { acc, inner -> when (val matchVal = inner.intoIter().next()) {
         null -> acc
         else -> {

@@ -444,7 +444,7 @@ public open class MaybeUninit<T>(
     // SAFETY: the clone implementation is a copy, see above.
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<{..}>").
+        // NB: there is no `.padFmt` so we can't use a simpler `formatArgs("MaybeUninit<(..)>").
         val fullName = "MaybeUninit"
         val prefixLen = (fullName.indexOf("MaybeUninit").takeIf { it >= 0 })!!
         return run { f.append(fullName.substring(prefixLen)); Result.Ok(Unit) }

@@ -1,6 +1,7 @@
 // port-lint: source detect/os/linux/auxvec.rs
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec
 
+import io.github.kotlinmania.libc.CUlong
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -10,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.chunks
-import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.readFile
 
 // Parses ELF auxiliary vectors.
@@ -91,7 +91,7 @@ public open class AuxVec(
  * Note that run-time feature detection is not invoked for features that can
  * be detected at compile-time.
  *
- *  Note: We always directly use `getauxval` on `* - linux - { gnu, musl, ohos } *` and
+ *  Note: We always directly use `getauxval` on `* - linux - ( gnu, musl, ohos ) *` and
  * `* - android *` targets rather than `dlsym` it because we can safely assume
  * `getauxval` is linked to the binary.
  * - `* - linux - gnu *` targets ([since Rust 1.64](https://blog.rust-lang.org/2022/08/01/Increasing-glibc-kernel-requirements.html))

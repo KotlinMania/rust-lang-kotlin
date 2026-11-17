@@ -522,7 +522,7 @@ public interface GlobalAllocator : StaticAllocator
  * copyable (such as by containing a `!Copy` field) or that copying them also respects allocator
  * equivalence as if it had been a clone.
  */
-public interface AllocatorClone<T> : Allocator
+public interface AllocatorClone : Allocator
 
 /**
  * Marks that an allocator and its supertypes will never invalidate currently allocated

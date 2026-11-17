@@ -49,7 +49,7 @@ public val MAX_THREE_B: UInt = 0x10000u
 //
 
 /**
- * The highest valid code point a `char` can have, `'\u{10FFFF}'`. Use [char.Max] instead.
+ * The highest valid code point a `char` can have, `'\u(10FFFF)'`. Use [char.Max] instead.
  */
 public val MAX: Char = Char.MAX_VALUE
 

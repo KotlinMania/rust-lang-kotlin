@@ -1,6 +1,9 @@
 // port-lint: source os/unix/net/ucred.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ucred.implapple
 
+import io.github.kotlinmania.libc.fuchsia.PidT
+import io.github.kotlinmania.libc.unix.bsd.apple.LOCAL_PEERPID
+import io.github.kotlinmania.libc.unix.bsd.apple.SOL_LOCAL
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -8,9 +11,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.getpeereid
 import io.github.kotlinmania.rustlang.libc.getsockopt
-import io.github.kotlinmania.rustlang.libc.unix.PidT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.LOCAL_PEERPID
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOL_LOCAL
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
 import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred

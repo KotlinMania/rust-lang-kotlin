@@ -331,7 +331,7 @@ public sealed class Cow<B> : Borrow<B> {
          * }
          * ```
          */
-        public fun <Owned, B> isBorrowed(c: Cow<B>): Boolean where B : ToOwned<Any?> =
+        public fun <Owned, B> isBorrowed(c: Cow<B>): Boolean where B : ToOwned<Owned> =
             when (c) {
                 is Borrowed -> true
                 is Owned -> false
@@ -358,12 +358,12 @@ public sealed class Cow<B> : Borrow<B> {
          * }
          * ```
          */
-        public fun <Owned, B> isOwned(c: Cow<B>): Boolean where B : ToOwned<Any?> = !Cow.isBorrowed(c)
+        public fun <Owned, B> isOwned(c: Cow<B>): Boolean where B : ToOwned<Owned> = !Cow.isBorrowed(c)
 
         /**
          * Creates an owned Cow<a, B> with the default value for the contained owned value.
          */
-        public fun <Owned, B> default(defaultBFn: () -> B): Cow<B> where B : ToOwned<Any?> = Owned(defaultBFn())
+        public fun <Owned, B> default(defaultBFn: () -> B): Cow<B> where B : ToOwned<Owned> = Owned(defaultBFn())
     }
 }
 
@@ -375,7 +375,7 @@ public sealed class Cow<B> : Borrow<B> {
 // Note(inference): const bounds removed due to inference regressions found by crater;
 // see https://github.com/rust-lang/rust/issues/147964
 // @rustcConstUnstable(feature = "constConvert", issue = "143773")
-public fun <Owned, T : ToOwned<Any?>> Cow<T>.asRef(): T = this
+public fun <Owned, T : ToOwned<Owned>> Cow<T>.asRef(): T = this
 
 public fun Cow<String>.add(rhs: String): Cow<String> {
     this += rhs

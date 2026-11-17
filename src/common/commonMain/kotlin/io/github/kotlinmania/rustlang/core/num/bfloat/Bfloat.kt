@@ -37,7 +37,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class F16b internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout(),
-) : fmt.LowerExp, fmt.UpperExp {
+) {
     public var field0: UShort
         get() = value
         set(v) {
@@ -83,11 +83,11 @@ public open class F16b internal constructor(
 
     public open fun partialCmp(other: F16b): Ordering? = widen(this).partialCmp(widen(other))
 
-    public override fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
+    public open fun fmt(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
 
-    public open fun fmtLowerExp(formatter: StringBuilder): Result<Unit, Unit> = widen(this).fmt(formatter)
+    public open fun fmtLowerExp(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
 
-    public open fun fmtUpperExp(formatter: StringBuilder): Result<Unit, Unit> = widen(this).fmt(formatter)
+    public open fun fmtUpperExp(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append((widen(this)).toString()); Result.Ok(Unit) }
 
     public companion object {
         public operator fun invoke(value: UShort, fieldLayout: TypeLayout<UShort> = UnresolvedTypeLayout()): F16b = F16b(value, fieldLayout)

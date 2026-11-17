@@ -172,7 +172,7 @@ public class MacrosInlineTests {
     @kotlin.test.Test
     public fun sNoExtraTraits2ZeroesUnion() {
         // A union field's default is supplied by
-        // `customDefault(unchecked { mem.zeroed })`.
+        // `customDefault(unchecked ( mem.zeroed ))`.
         sNoExtraTraits2(U, a, b, HasUnion, x, customDefault, core, mem, zeroed, U, u, U)
         val s = HasUnion.default()
         check(s.x == 0u.toUShort())

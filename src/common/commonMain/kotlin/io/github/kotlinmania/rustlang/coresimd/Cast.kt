@@ -8,7 +8,7 @@ package io.github.kotlinmania.rustlang.coresimd
  * Implementing this trait asserts that the type is a valid vector element for the `simdCast` or
  * `simdAs` intrinsics.
  */
-public interface SimdCast : SimdElement<Any?>
+public interface SimdCast<out Mask> : SimdElement<Mask>
 
 // Safety: primitive number types can be cast to other primitive number types
 

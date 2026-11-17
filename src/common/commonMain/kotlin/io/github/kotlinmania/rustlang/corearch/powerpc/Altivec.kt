@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -2444,7 +2445,7 @@ public fun VectorFloat.vecRound(): VectorFloat = vecVrfin(this)
  * For example, if c is out of range, the compiler uses c modulo the number of
  * elements in the vector to determine the element position.
  */
-public fun <Scalar, T> vecInsert(a: T, b: Scalar, idx: UInt): T where T : VectorInsert<T, Any?> = a.vecInsert(b)
+public fun <Scalar, T> vecInsert(a: T, b: Scalar, idx: UInt): T where T : VectorInsert<T, Scalar> = a.vecInsert(b)
 
 /**
  * Vector Extract
@@ -2456,57 +2457,57 @@ public fun <Scalar, T> vecInsert(a: T, b: Scalar, idx: UInt): T where T : Vector
  * The value of each element of r is the element of a at position b modulo the number of
  * elements of a.
  */
-public fun <Scalar, T> vecExtract(a: T, idx: UInt): Scalar where T : VectorExtract<T, Any?> = a.vecExtract()
+public fun <Scalar, T> vecExtract(a: T, idx: UInt): Scalar where T : VectorExtract<T, Scalar> = a.vecExtract()
 
 /**
  * Vector Merge Low
  */
-public fun <T, U> vecMergel(a: T, b: U): Result where T : VectorMergel<U, T, Any?> = a.vecMergel(b)
+public fun <Result, T, U> vecMergel(a: T, b: U): Result where T : VectorMergel<U, T, Result> = a.vecMergel(b)
 
 /**
  * Vector Merge High
  */
-public fun <T, U> vecMergeh(a: T, b: U): Result where T : VectorMergeh<U, T, Any?> = a.vecMergeh(b)
+public fun <Result, T, U> vecMergeh(a: T, b: U): Result where T : VectorMergeh<U, T, Result> = a.vecMergeh(b)
 
 /**
  * Vector Pack
  */
-public fun <T, U> vecPack(a: T, b: U): Result where T : VectorPack<U, Any?> = a.vecPack(b)
+public fun <Result, T, U> vecPack(a: T, b: U): Result where T : VectorPack<U, Result> = a.vecPack(b)
 
 /**
  * Vector Pack Saturated
  */
-public fun <T, U> vecPacks(a: T, b: U): Result where T : VectorPacks<U, Any?> = a.vecPacks(b)
+public fun <Result, T, U> vecPacks(a: T, b: U): Result where T : VectorPacks<U, Result> = a.vecPacks(b)
 
 /**
  * Vector Pack Saturated Unsigned
  */
-public fun <T, U> vecPacksu(a: T, b: U): Result where T : VectorPacksu<U, Any?> = a.vecPacksu(b)
+public fun <Result, T, U> vecPacksu(a: T, b: U): Result where T : VectorPacksu<U, Result> = a.vecPacksu(b)
 
 /**
  * Vector Unpack High
  */
-public fun <Result, T> vecUnpackh(a: T): Result where T : VectorUnpackh<Any?> = a.vecUnpackh()
+public fun <Result, T> vecUnpackh(a: T): Result where T : VectorUnpackh<Result> = a.vecUnpackh()
 
 /**
  * Vector Unpack Low
  */
-public fun <Result, T> vecUnpackl(a: T): Result where T : VectorUnpackl<Any?> = a.vecUnpackl()
+public fun <Result, T> vecUnpackl(a: T): Result where T : VectorUnpackl<Result> = a.vecUnpackl()
 
 /**
  * Vector Shift Left
  */
-public fun <T, U> vecSl(a: T, b: U): Result where T : VectorSl<U, Any?> = a.vecSl(b)
+public fun <Result, T, U> vecSl(a: T, b: U): Result where T : VectorSl<U, Result> = a.vecSl(b)
 
 /**
  * Vector Shift Right
  */
-public fun <T, U> vecSr(a: T, b: U): Result where T : VectorSr<U, Any?> = a.vecSr(b)
+public fun <Result, T, U> vecSr(a: T, b: U): Result where T : VectorSr<U, Result> = a.vecSr(b)
 
 /**
  * Vector Shift Right Algebraic
  */
-public fun <T, U> vecSra(a: T, b: U): Result where T : VectorSra<U, Any?> = a.vecSra(b)
+public fun <Result, T, U> vecSra(a: T, b: U): Result where T : VectorSra<U, Result> = a.vecSra(b)
 
 /**
  * Vector Shift Left Double
@@ -2545,7 +2546,7 @@ public fun <T> vecSldw(a: T, b: T, uimm2: Int): T where T : VectorSld<T> = a.vec
  * This intrinsic is not endian-neutral, so uses of vecSll in big-endian
  * code must be rewritten for little-endian targets.
  */
-public fun <T, U> vecSll(a: T, b: U): Result where T : VectorSll<U, Any?> = a.vecSll(b)
+public fun <Result, T, U> vecSll(a: T, b: U): Result where T : VectorSll<U, Result> = a.vecSll(b)
 
 /**
  * Vector Shift Right Long
@@ -2554,7 +2555,7 @@ public fun <T, U> vecSll(a: T, b: U): Result where T : VectorSll<U, Any?> = a.ve
  * This intrinsic is not endian-neutral, so uses of vecSrl in big-endian
  * code must be rewritten for little-endian targets.
  */
-public fun <T, U> vecSrl(a: T, b: U): Result where T : VectorSrl<U, Any?> = a.vecSrl(b)
+public fun <Result, T, U> vecSrl(a: T, b: U): Result where T : VectorSrl<U, Result> = a.vecSrl(b)
 
 /**
  * Vector Shift Left by Octets
@@ -2564,7 +2565,7 @@ public fun <T, U> vecSrl(a: T, b: U): Result where T : VectorSrl<U, Any?> = a.ve
  * for little-endian targets. The shift count is in element 15 of b for big-endian, but in element
  * 0 of b for little-endian.
  */
-public fun <T, U> vecSlo(a: T, b: U): Result where T : VectorSlo<U, Any?> = a.vecSlo(b)
+public fun <Result, T, U> vecSlo(a: T, b: U): Result where T : VectorSlo<U, Result> = a.vecSlo(b)
 
 /**
  * Vector Shift Right by Octets
@@ -2574,7 +2575,7 @@ public fun <T, U> vecSlo(a: T, b: U): Result where T : VectorSlo<U, Any?> = a.ve
  * for little-endian targets. The shift count is in element 15 of b for big-endian, but in element
  * 0 of b for little-endian.
  */
-public fun <T, U> vecSro(a: T, b: U): Result where T : VectorSro<U, Any?> = a.vecSro(b)
+public fun <Result, T, U> vecSro(a: T, b: U): Result where T : VectorSro<U, Result> = a.vecSro(b)
 
 /**
  * Vector Shift Left Variable
@@ -2609,17 +2610,17 @@ public fun vecSrv(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedC
 /**
  * Vector Load Indexed.
  */
-public fun <Result, T> vecLd(off: Int, p: T): Result where T : VectorLd<Any?> = p.vecLd(off)
+public fun <Result, T> vecLd(off: Int, p: T): Result where T : VectorLd<Result> = p.vecLd(off)
 
 /**
  * Vector Load Indexed Least Recently Used.
  */
-public fun <Result, T> vecLdl(off: Int, p: T): Result where T : VectorLd<Any?> = p.vecLdl(off)
+public fun <Result, T> vecLdl(off: Int, p: T): Result where T : VectorLd<Result> = p.vecLdl(off)
 
 /**
  * Vector Load Element Indexed.
  */
-public fun <Result, T> vecLde(off: Int, p: T): Result where T : VectorLde<Any?> = p.vecLde(off)
+public fun <Result, T> vecLde(off: Int, p: T): Result where T : VectorLde<Result> = p.vecLde(off)
 
 /**
  * Vector Store Indexed
@@ -2632,7 +2633,7 @@ public fun <Result, T> vecLde(off: Int, p: T): Result where T : VectorLde<Any?> 
  * A memory address is obtained by adding b and c, and masking off the four low-order
  * bits of the result. The 16-byte vector in a is stored to the resultant memory address.
  */
-public fun <Target, T> vecSt(a: T, off: Int, c: Target) where T : VectorSt<Any?> {
+public fun <Target, T> vecSt(a: T, off: Int, c: Target) where T : VectorSt<Target> {
     a.vecSt(off, c)
 }
 
@@ -2653,7 +2654,7 @@ public fun <Target, T> vecSt(a: T, off: Int, c: Target) where T : VectorSt<Any?>
  * This intrinsic can be used to indicate the last access to a portion of memory, as a hint to the
  * data cache controller that the associated cache line can be replaced without performance loss.
  */
-public fun <Target, T> vecStl(a: T, off: Int, c: Target) where T : VectorSt<Any?> {
+public fun <Target, T> vecStl(a: T, off: Int, c: Target) where T : VectorSt<Target> {
     a.vecStl(off, c)
 }
 
@@ -2675,19 +2676,19 @@ public fun <Target, T> vecStl(a: T, off: Int, c: Target) where T : VectorSt<Any?
  * Be careful to note that the address (b+c) is aligned to an element boundary. Do not attempt
  * to store unaligned data with this intrinsic.
  */
-public fun <Target, T> vecSte(a: T, off: Int, c: Target) where T : VectorSte<Any?> {
+public fun <Target, T> vecSte(a: T, off: Int, c: Target) where T : VectorSte<Target> {
     a.vecSte(off, c)
 }
 
 /**
  * VSX Unaligned Load
  */
-public fun <Result, T> vecXl(off: Int, p: T): Result where T : VectorXl<Any?> = p.vecXl(off)
+public fun <Result, T> vecXl(off: Int, p: T): Result where T : VectorXl<Result> = p.vecXl(off)
 
 /**
  * VSX Unaligned Store
  */
-public fun <Out, T> vecXst(v: T, off: Int, p: Out) where T : VectorXst<Any?> {
+public fun <Out, T> vecXst(v: T, off: Int, p: Out) where T : VectorXst<Out> {
     v.vecXst(off, p)
 }
 
@@ -2709,7 +2710,7 @@ public fun vecExpte(a: VectorFloat): VectorFloat = vecVexptefp(a)
 /**
  * Vector cmplt.
  */
-public fun <T, U> vecCmplt(a: U, b: T): Result where T : VectorCmpGt<U, Any?> = vecCmpgt(b, a)
+public fun <Result, T, U> vecCmplt(a: U, b: T): Result where T : VectorCmpGt<U, Result> = vecCmpgt(b, a)
 
 /**
  * Vector cmple.
@@ -2719,7 +2720,7 @@ public fun vecCmple(a: VectorFloat, b: VectorFloat): VectorBoolInt = vecCmpge(b,
 /**
  * Vector cmpgt.
  */
-public fun <T, U> vecCmpgt(a: T, b: U): Result where T : VectorCmpGt<U, Any?> = a.vecCmpgt(b)
+public fun <Result, T, U> vecCmpgt(a: T, b: U): Result where T : VectorCmpGt<U, Result> = a.vecCmpgt(b)
 
 /**
  * Vector cmpge.
@@ -2729,7 +2730,7 @@ public fun vecCmpge(a: VectorFloat, b: VectorFloat): VectorBoolInt = vecVcmpgefp
 /**
  * Vector cmpeq.
  */
-public fun <T, U> vecCmpeq(a: T, b: U): Result where T : VectorCmpEq<U, Any?> = a.vecCmpeq(b)
+public fun <Result, T, U> vecCmpeq(a: T, b: U): Result where T : VectorCmpEq<U, Result> = a.vecCmpeq(b)
 
 /**
  * Vector Compare Not Equal
@@ -2738,7 +2739,7 @@ public fun <T, U> vecCmpeq(a: T, b: U): Result where T : VectorCmpEq<U, Any?> = 
  * For each element of r, the value of each bit is 1 if the corresponding elements
  * of a and b are not equal. Otherwise, the value of each bit is 0.
  */
-public fun <T, U> vecCmpne(a: T, b: U): Result where T : VectorCmpNe<U, Any?> = a.vecCmpne(b)
+public fun <Result, T, U> vecCmpne(a: T, b: U): Result where T : VectorCmpNe<U, Result> = a.vecCmpne(b)
 
 /**
  * Vector cmpb.
@@ -2753,12 +2754,12 @@ public fun vecCeil(a: VectorFloat): VectorFloat = vecVceil(a)
 /**
  * Vector avg.
  */
-public fun <T, U> vecAvg(a: T, b: U): Result where T : VectorAvg<U, Any?> = a.vecAvg(b)
+public fun <Result, T, U> vecAvg(a: T, b: U): Result where T : VectorAvg<U, Result> = a.vecAvg(b)
 
 /**
  * Vector andc.
  */
-public fun <T, U> vecAndc(a: T, b: U): Result where T : VectorAndc<U, Any?> = a.vecAndc(b)
+public fun <Result, T, U> vecAndc(a: T, b: U): Result where T : VectorAndc<U, Result> = a.vecAndc(b)
 
 /**
  * Vector OR with Complement
@@ -2769,17 +2770,17 @@ public fun <T, U> vecAndc(a: T, b: U): Result where T : VectorAndc<U, Any?> = a.
  * ## Result value
  * r is the bitwise OR of a and the bitwise complement of b.
  */
-public fun <T, U> vecOrc(a: T, b: U): Result where T : VectorOrc<U, Any?> = a.vecOrc(b)
+public fun <Result, T, U> vecOrc(a: T, b: U): Result where T : VectorOrc<U, Result> = a.vecOrc(b)
 
 /**
  * Vector and.
  */
-public fun <T, U> vecAnd(a: T, b: U): Result where T : VectorAnd<U, Any?> = a.vecAnd(b)
+public fun <Result, T, U> vecAnd(a: T, b: U): Result where T : VectorAnd<U, Result> = a.vecAnd(b)
 
 /**
  * Vector or.
  */
-public fun <T, U> vecOr(a: T, b: U): Result where T : VectorOr<U, Any?> = a.vecOr(b)
+public fun <Result, T, U> vecOr(a: T, b: U): Result where T : VectorOr<U, Result> = a.vecOr(b)
 
 /**
  * Vector NAND
@@ -2790,22 +2791,22 @@ public fun <T, U> vecOr(a: T, b: U): Result where T : VectorOr<U, Any?> = a.vecO
  * ## Result value
  * r is the bitwise NAND of a and b.
  */
-public fun <T, U> vecNand(a: T, b: U): Result where T : VectorNand<U, Any?> = a.vecNand(b)
+public fun <Result, T, U> vecNand(a: T, b: U): Result where T : VectorNand<U, Result> = a.vecNand(b)
 
 /**
  * Vector nor.
  */
-public fun <T, U> vecNor(a: T, b: U): Result where T : VectorNor<U, Any?> = a.vecNor(b)
+public fun <Result, T, U> vecNor(a: T, b: U): Result where T : VectorNor<U, Result> = a.vecNor(b)
 
 /**
  * Vector xor.
  */
-public fun <T, U> vecXor(a: T, b: U): Result where T : VectorXor<U, Any?> = a.vecXor(b)
+public fun <Result, T, U> vecXor(a: T, b: U): Result where T : VectorXor<U, Result> = a.vecXor(b)
 
 /**
  * Vector adds.
  */
-public fun <T, U> vecAdds(a: T, b: U): Result where T : VectorAdds<U, Any?> = a.vecAdds(b)
+public fun <Result, T, U> vecAdds(a: T, b: U): Result where T : VectorAdds<U, Result> = a.vecAdds(b)
 
 /**
  * Vector addc.
@@ -2832,7 +2833,7 @@ public fun <T> vecAbss(a: T): T where T : VectorAbss<T> = a.vecAbss()
  * Each element of r is obtained by rotating the corresponding element of a left by
  * the number of bits specified by the corresponding element of b.
  */
-public fun <Shift, T> vecRl(a: T, b: Shift): T where T : VectorRl<T, Any?> = a.vecRl(b)
+public fun <Shift, T> vecRl(a: T, b: Shift): T where T : VectorRl<T, Shift> = a.vecRl(b)
 
 /**
  * Vector Round
@@ -2917,12 +2918,12 @@ public fun vecSplatS32(imm5: Byte): STL {
 /**
  * Vector splats.
  */
-public fun <Result, T> vecSplats(a: T): Result where T : VectorSplats<Any?> = a.vecSplats()
+public fun <Result, T> vecSplats(a: T): Result where T : VectorSplats<Result> = a.vecSplats()
 
 /**
  * Vector sub.
  */
-public fun <T, U> vecSub(a: T, b: U): Result where T : VectorSub<U, Any?> = a.vecSub(b)
+public fun <Result, T, U> vecSub(a: T, b: U): Result where T : VectorSub<U, Result> = a.vecSub(b)
 
 /**
  * Vector Subtract Carryout
@@ -2936,22 +2937,22 @@ public fun <T, U> vecSub(a: T, b: U): Result where T : VectorSub<U, Any?> = a.ve
  * value of the corresponding element of b from the value of the corresponding element of a. The
  * value is 0 if a borrow occurred, or 1 if no borrow occurred.
  */
-public fun <T, U> vecSubc(a: T, b: U): Result where T : VectorSubc<U, Any?> = a.vecSubc(b)
+public fun <Result, T, U> vecSubc(a: T, b: U): Result where T : VectorSubc<U, Result> = a.vecSubc(b)
 
 /**
  * Vector subs.
  */
-public fun <T, U> vecSubs(a: T, b: U): Result where T : VectorSubs<U, Any?> = a.vecSubs(b)
+public fun <Result, T, U> vecSubs(a: T, b: U): Result where T : VectorSubs<U, Result> = a.vecSubs(b)
 
 /**
  * Vector min.
  */
-public fun <T, U> vecMin(a: T, b: U): Result where T : VectorMin<U, Any?> = a.vecMin(b)
+public fun <Result, T, U> vecMin(a: T, b: U): Result where T : VectorMin<U, Result> = a.vecMin(b)
 
 /**
  * Vector max.
  */
-public fun <T, U> vecMax(a: T, b: U): Result where T : VectorMax<U, Any?> = a.vecMax(b)
+public fun <Result, T, U> vecMax(a: T, b: U): Result where T : VectorMax<U, Result> = a.vecMax(b)
 
 /**
  * Move From Vector Status and Control Register.
@@ -2966,7 +2967,7 @@ public fun <T : VectorNeg<T>> vecNeg(a: T): T = a.vecNeg()
 /**
  * Vector add.
  */
-public fun <T, U> vecAdd(a: T, b: U): Result where T : VectorAdd<U, Any?> = a.vecAdd(b)
+public fun <Result, T, U> vecAdd(a: T, b: U): Result where T : VectorAdd<U, Result> = a.vecAdd(b)
 
 /**
  * Vector Add Extended
@@ -3059,7 +3060,7 @@ public fun vecMadds(a: VectorSignedShort, b: VectorSignedShort, c: VectorSignedS
 /**
  * Vector Multiply Low and Add Unsigned Half Word
  */
-public fun <T, U> vecMladd(a: T, b: U, c: U): Result where T : VectorMladd<U, T, Any?> = a.vecMladd(b, c)
+public fun <Result, T, U> vecMladd(a: T, b: U, c: U): Result where T : VectorMladd<U, T, Result> = a.vecMladd(b, c)
 
 /**
  * Vector Multiply Round and Add Saturated
@@ -3107,32 +3108,32 @@ public fun <T, U> vecSum4s(a: T, b: U): U where T : VectorSum4s<U> = a.vecSum4s(
 /**
  * Vector All Elements Equal
  */
-public fun <T, U> vecAllEq(a: T, b: U): Result where T : VectorAllEq<U, Any?> = a.vecAllEq(b)
+public fun <Result, T, U> vecAllEq(a: T, b: U): Result where T : VectorAllEq<U, Result> = a.vecAllEq(b)
 
 /**
  * Vector All Elements Equal
  */
-public fun <T, U> vecAnyEq(a: T, b: U): Result where T : VectorAnyEq<U, Any?> = a.vecAnyEq(b)
+public fun <Result, T, U> vecAnyEq(a: T, b: U): Result where T : VectorAnyEq<U, Result> = a.vecAnyEq(b)
 
 /**
  * Vector All Elements Greater or Equal
  */
-public fun <T, U> vecAllGe(a: T, b: U): Result where T : VectorAllGe<U, Any?> = a.vecAllGe(b)
+public fun <Result, T, U> vecAllGe(a: T, b: U): Result where T : VectorAllGe<U, Result> = a.vecAllGe(b)
 
 /**
  * Vector Any Element Greater or Equal
  */
-public fun <T, U> vecAnyGe(a: T, b: U): Result where T : VectorAnyGe<U, Any?> = a.vecAnyGe(b)
+public fun <Result, T, U> vecAnyGe(a: T, b: U): Result where T : VectorAnyGe<U, Result> = a.vecAnyGe(b)
 
 /**
  * Vector All Elements Greater Than
  */
-public fun <T, U> vecAllGt(a: T, b: U): Result where T : VectorAllGt<U, Any?> = a.vecAllGt(b)
+public fun <Result, T, U> vecAllGt(a: T, b: U): Result where T : VectorAllGt<U, Result> = a.vecAllGt(b)
 
 /**
  * Vector Any Element Greater Than
  */
-public fun <T, U> vecAnyGt(a: T, b: U): Result where T : VectorAnyGt<U, Any?> = a.vecAnyGt(b)
+public fun <Result, T, U> vecAnyGt(a: T, b: U): Result where T : VectorAnyGt<U, Result> = a.vecAnyGt(b)
 
 /**
  * Vector All In
@@ -3142,22 +3143,22 @@ public fun vecAllIn(a: VectorFloat, b: VectorFloat): Boolean = vcmpbfpP(0, a, b)
 /**
  * Vector All Elements Less Than or Equal
  */
-public fun <T, U> vecAllLe(a: U, b: T): Result where T : VectorAllGe<U, Any?> = b.vecAllGe(a)
+public fun <Result, T, U> vecAllLe(a: U, b: T): Result where T : VectorAllGe<U, Result> = b.vecAllGe(a)
 
 /**
  * Vector Any Element Less Than or Equal
  */
-public fun <T, U> vecAnyLe(a: U, b: T): Result where T : VectorAnyGe<U, Any?> = b.vecAnyGe(a)
+public fun <Result, T, U> vecAnyLe(a: U, b: T): Result where T : VectorAnyGe<U, Result> = b.vecAnyGe(a)
 
 /**
  * Vector All Elements Less Than
  */
-public fun <T, U> vecAllLt(a: U, b: T): Result where T : VectorAllGt<U, Any?> = b.vecAllGt(a)
+public fun <Result, T, U> vecAllLt(a: U, b: T): Result where T : VectorAllGt<U, Result> = b.vecAllGt(a)
 
 /**
  * Vector Any Element Less Than
  */
-public fun <T, U> vecAnyLt(a: U, b: T): Result where T : VectorAnyGt<U, Any?> = b.vecAnyGt(a)
+public fun <Result, T, U> vecAnyLt(a: U, b: T): Result where T : VectorAnyGt<U, Result> = b.vecAnyGt(a)
 
 /**
  * All Elements Not a Number
@@ -3172,12 +3173,12 @@ public fun vecAnyNan(a: VectorFloat): Boolean = vcmpeqfpP(3, a, a) != 0
 /**
  * Vector All Elements Not Equal
  */
-public fun <T, U> vecAllNe(a: T, b: U): Result where T : VectorAllNe<U, Any?> = a.vecAllNe(b)
+public fun <Result, T, U> vecAllNe(a: T, b: U): Result where T : VectorAllNe<U, Result> = a.vecAllNe(b)
 
 /**
  * Vector Any Elements Not Equal
  */
-public fun <T, U> vecAnyNe(a: T, b: U): Result where T : VectorAnyNe<U, Any?> = a.vecAnyNe(b)
+public fun <Result, T, U> vecAnyNe(a: T, b: U): Result where T : VectorAnyNe<U, Result> = a.vecAnyNe(b)
 
 /**
  * All Elements Not Greater Than or Equal

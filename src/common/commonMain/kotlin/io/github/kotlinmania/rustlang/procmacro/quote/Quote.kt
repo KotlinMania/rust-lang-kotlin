@@ -115,7 +115,7 @@ public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int): Pair<ArrayDeque<T>, Has
 
 public fun <T> MutableSet<T>.quoteIntoIter(): Pair<Iter<T>, HasIter> = Pair(this.iter(), HasIter)
 
-public fun <T : RepAsIteratorExt<Any?>> RepInterp<T>.quoteIntoIter(): Pair<Iter, HasIter> = this.value.quoteIntoIter()
+public fun <Iter, T : RepAsIteratorExt<Iter>> RepInterp<T>.quoteIntoIter(): Pair<Iter, HasIter> = this.value.quoteIntoIter()
 
 // Helper type used within interpolations to allow for repeated binding names.
 // Implements the relevant traits, and exports a dummy `next()` method.
@@ -212,7 +212,7 @@ public fun quote(stream: TokenStream): TokenStream {
             when {
                 tree is TokenTree.Group -> {
                     val (tt) = tree
-                    // Handles repetition by expanding `$(CONTENTS) SEP_OPT *` to `{ REP_EXPANDED }`.
+                    // Handles repetition by expanding `$(CONTENTS) SEP_OPT *` to `( REP_EXPANDED )`.
                     val contents = tt.stream()
                     // The `*` token is also consumed here.
                     val sepOpt: Punct? =

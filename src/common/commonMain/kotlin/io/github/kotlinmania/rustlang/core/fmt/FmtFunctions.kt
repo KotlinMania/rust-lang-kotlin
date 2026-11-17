@@ -292,14 +292,14 @@ public fun <T> ConstPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = Unresolve
     }
 }
 
-public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result = (constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress))).fmt(f)
+public fun <T> MutPtr.fmt(f: Formatter, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result = f.append(((constPtrFromRustCast((typeLayoutT).readNative((this).rawAddress)))).toString())
 
-public fun <T> T.fmt(f: Formatter): Result = (constPtrFromRustCast(this)).fmt(f)
+public fun <T> T.fmt(f: Formatter): Result = f.append(((constPtrFromRustCast(this))).toString())
 
 // Implementation of Display/Debug for various core types
-public fun ConstPtr.fmt(f: Formatter): Result = this.fmt(f)
+public fun ConstPtr.fmt(f: Formatter): Result = f.append((this).toString())
 
-public fun MutPtr.fmt(f: Formatter): Result = this.fmt(f)
+public fun MutPtr.fmt(f: Formatter): Result = f.append((this).toString())
 
 public fun <E : Debug, D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmt(f: Formatter): Result {
     val builder = DebugTuple(f, "")

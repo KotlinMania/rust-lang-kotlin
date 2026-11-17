@@ -78,7 +78,7 @@ public fun escapeAscii(byte: UByte, n: Int): Pair<List<io.github.kotlinmania.rus
 }
 
 /**
- * Escapes a character with `\u{NNNN}` representation.
+ * Escapes a character with `\u(NNNN)` representation.
  *
  * Returns a buffer with the escaped representation and its corresponding range.
  */

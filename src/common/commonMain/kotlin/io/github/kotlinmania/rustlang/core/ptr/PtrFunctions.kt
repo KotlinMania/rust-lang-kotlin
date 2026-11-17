@@ -498,7 +498,7 @@ public fun danglingMut(): MutPtr = NonNull.dangling().asPtr()
 // this *is* the explicit provenance API one should use instead
 
 /**
- * Converts an address back to a pointer, picking up some previously 'exposed'
+ * Converts an address back to a pointer, picking up some previously `exposed`
  * [provenance][ptr#provenance].
  *
  * This is fully equivalent to `addr as * const T`. The provenance of the returned pointer is that
@@ -513,7 +513,7 @@ public fun danglingMut(): MutPtr = NonNull.dangling().asPtr()
  * guarantees about which provenance the resulting pointer will have -- and therefore there
  * is no definite specification for which memory the resulting pointer may access.
  *
- * If there is *no* previously 'exposed' provenance that justifies the way the returned pointer
+ * If there is *no* previously `exposed` provenance that justifies the way the returned pointer
  * will be used, the program has undefined behavior. In particular, the aliasing rules still apply:
  * pointers and references that have been invalidated due to aliasing accesses cannot be used
  * anymore, even if they have been exposed!
@@ -536,7 +536,7 @@ public fun withExposedProvenance(addr: Int): ConstPtr = ConstPtr(addr.toLong())
 // this *is* the explicit provenance API one should use instead
 
 /**
- * Converts an address back to a mutable pointer, picking up some previously 'exposed'
+ * Converts an address back to a mutable pointer, picking up some previously `exposed`
  * [provenance][ptr#provenance].
  *
  * This is fully equivalent to `addr as * T`. The provenance of the returned pointer is that
@@ -551,7 +551,7 @@ public fun withExposedProvenance(addr: Int): ConstPtr = ConstPtr(addr.toLong())
  * guarantees about which provenance the resulting pointer will have -- and therefore there
  * is no definite specification for which memory the resulting pointer may access.
  *
- * If there is *no* previously 'exposed' provenance that justifies the way the returned pointer
+ * If there is *no* previously `exposed` provenance that justifies the way the returned pointer
  * will be used, the program has undefined behavior. In particular, the aliasing rules still apply:
  * pointers and references that have been invalidated due to aliasing accesses cannot be used
  * anymore, even if they have been exposed!
@@ -1414,7 +1414,7 @@ public fun <T> write(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = Unresolve
  * val unaligned = addrOfMut(packed.unaligned)
  * writeUnaligned(unaligned, 42)
  * check(packed.unaligned == 42u)
- * // `{ ... }` forces copying the field instead of creating a reference.
+ * // `( ... )` forces copying the field instead of creating a reference.
  * ```
  *
  * Accessing unaligned fields directly with e.g. `packed.unaligned` is safe however
@@ -1743,7 +1743,7 @@ public fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T> = Unr
         // sufficiently for LLVM to be able to utilize the various optimizations it knows about.
         //
         // LLVM handles the branch here particularly nicely. If this branch needs to be evaluated
-        // at runtime, it will produce a mask `if addrModStride == 0 { 0 } else { Int.MAX }`
+        // at runtime, it will produce a mask `if addrModStride == 0 ( 0 ) else ( Int.MAX )`
         // in a branch-free way and then bitwise-OR it with whatever result the `- p mod a`
         // computation produces.
         val alignedAddress = wrappingAdd(addr, aMinusOne) and wrappingSub(0, a)

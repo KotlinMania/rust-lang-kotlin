@@ -228,7 +228,7 @@ public fun <Src, Dest> needsRealloc(srcCap: Int, dstCap: Int, typeLayoutSrc: Typ
  */
 public interface InPlaceCollect<out Src> : SourceIter, InPlaceIterable
 
-public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
+public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where I : Iterator<T>, I : InPlaceCollect<Src> {
     // Select the implementation in const eval to avoid codegen of the dead branch to improve compile times.
     val fn: (I) -> List<T> =
         if (inPlaceCollectible<T, Src>(I.MERGE_BY, I.EXPAND_BY, typeLayoutSrc = UnresolvedTypeLayout<Src>(), typeLayoutDest = typeLayoutT)) {
@@ -240,7 +240,7 @@ public fun <Src, Item, T, I> specFromIterFromIterVecT(iterator: I, typeLayoutT: 
     return fn(iterator)
 }
 
-public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where I : Iterator<T>, I : InPlaceCollect<Any?> {
+public fun <Src, Item, I, T> fromIterInPlace(iterator: I, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> where I : Iterator<T>, I : InPlaceCollect<Src> {
     // ignore-tidy-undocumented-unchecked
     var (srcBuf, srcPtr, srcCap, dstBuf, dstEnd, dstCap) =
         run {

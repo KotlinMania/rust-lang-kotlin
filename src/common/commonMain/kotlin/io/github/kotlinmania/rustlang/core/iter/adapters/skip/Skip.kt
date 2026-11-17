@@ -39,7 +39,7 @@ public typealias Source<I> = I.Source
 public open class Skip<I>(
     public var iter: I,
     public var n: Int,
-) : TrustedFused, SourceIter<Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen<Skip<I>>, Iterable<Item> {
+) : TrustedFused, SourceIter<Source>, InPlaceIterable, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedLen, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Skip.next()) {
@@ -115,7 +115,7 @@ public open class Skip<I>(
         return Pair(lower1, upper1)
     }
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         val n = this.n
         this.n = 0
         if (n > 0) {
@@ -217,8 +217,8 @@ public open class Skip<I>(
         }
     }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
-        fun <T, Acc, R : Try<R, Acc, Any?>> check(n: Int, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+        fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(n: Int, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
             var n1 = n
             return { acc, x ->
                 n1 -= 1

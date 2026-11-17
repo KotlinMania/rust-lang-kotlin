@@ -44,7 +44,7 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("foo.txt")?;
      *     let mut buffer = [0; 10];
      *
@@ -52,7 +52,7 @@ public interface FileExt {
      *     // start of the file.
      *     file.seekRead(buffer[..], 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekRead(buf: MutableList<UByte>, offset: ULong): Result<Int, Error>
@@ -89,7 +89,7 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("foo.txt")?;
      *     let mut buffer = [0; 10];
      *
@@ -97,7 +97,7 @@ public interface FileExt {
      *     // start of the file.
      *     file.seekReadExact(buffer[..], 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekReadExact(buf: MutableList<UByte>, offset: ULong): Result<Unit, Error> {
@@ -147,7 +147,7 @@ public interface FileExt {
      * use std.mem.MaybeUninit;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("pi.txt")?;
      *
      *     // Read some bytes starting from offset 2
@@ -158,7 +158,7 @@ public interface FileExt {
      *     assert(buf.filled().startsWith(b"1"));
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekReadBuf(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = defaultReadBuf({ b -> this.seekRead(b, offset) }, buf)
@@ -183,7 +183,7 @@ public interface FileExt {
      * use std.mem.MaybeUninit;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("pi.txt")?;
      *
      *     // Read some bytes starting from offset 2
@@ -194,7 +194,7 @@ public interface FileExt {
      *     assert(buf.filled().startsWith(b"1"));
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekReadBufExact(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
@@ -238,14 +238,14 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let mut buffer = File.create("foo.txt")?;
      *
      *     // Write a byte string starting 72 bytes from
      *     // the start of the file.
      *     buffer.seekWrite(b"some bytes", 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekWrite(buf: List<UByte>, offset: ULong): Result<Int, Error>
@@ -277,14 +277,14 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let mut buffer = File.create("foo.txt")?;
      *
      *     // Write a byte string starting 72 bytes from
      *     // the start of the file.
      *     buffer.seekWriteAll(b"some bytes", 72)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun seekWriteAll(buf: List<UByte>, offset: ULong): Result<Unit, Error> {
@@ -626,11 +626,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let attributes = metadata.fileAttributes();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      * [File Attribute Constants]: https:
      * ```
@@ -655,11 +655,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let creationTime = metadata.creationTime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Filetime]: https://docs.microsoft.com/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -691,11 +691,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let lastAccessTime = metadata.lastAccessTime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Filetime]: https://docs.microsoft.com/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -725,11 +725,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let lastWriteTime = metadata.lastWriteTime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [Filetime]: https://docs.microsoft.com/windows/win32/api/minwinbase/ns-minwinbase-filetime
@@ -749,11 +749,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.windows.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let metadata = fs.metadata("foo.txt")?;
      *     let fileSize = metadata.fileSize();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun fileSize(): ULong
@@ -874,10 +874,10 @@ public fun FileTimes.setCreated(t: SystemTime): FileTimes {
  *
  * use std.os.windows.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.symlinkFile("a.txt", "b.txt")?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  *
  * Windows treats symlink creation as a[privileged action][symlink - security],
@@ -910,10 +910,10 @@ public fun symlinkFile(original: Path, link: Path): Result<Unit, Error> = symlin
  *
  * use std.os.windows.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.symlinkDir("a", "b")?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  *
  * Windows treats symlink creation as a[privileged action][symlink - security],

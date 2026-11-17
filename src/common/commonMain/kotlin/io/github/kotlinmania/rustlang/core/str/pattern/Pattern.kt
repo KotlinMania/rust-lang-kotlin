@@ -86,7 +86,7 @@ public class DebugStruct(
  * A `Pattern` expresses that the implementing type
  * can be used as a string pattern for searching in a [`str`][str].
  *
- * For example, both `'a'` and `"aa"` are patterns that
+ * For example, both ``a`` and `"aa"` are patterns that
  * would match at index `1` in the string `"baaaab"`.
  *
  * The trait itself acts as a builder for an associated
@@ -1584,7 +1584,7 @@ public open class TwoWaySearcher(
     // left to right. If v matches, we try to match u by scanning right to left.
     // How far we can jump when we encounter a mismatch is all based on the fact
     // that (u, v) is a critical factorization for the needle.
-    public open fun <Output, S> next(haystack: List<UByte>, needle: List<UByte>, longPeriod: Boolean, rejectingSFn: (Int, Int) -> Output, useEarlyRejectSFn: () -> Boolean, matchingSFn: (Int, Int) -> Output): Output where S : TwoWayStrategy<Any?> {
+    public open fun <Output, S> next(haystack: List<UByte>, needle: List<UByte>, longPeriod: Boolean, rejectingSFn: (Int, Int) -> Output, useEarlyRejectSFn: () -> Boolean, matchingSFn: (Int, Int) -> Output): Output where S : TwoWayStrategy<Output> {
         // `next()` uses `self.position` as its cursor
         val oldPos = this.position
         val needleLast = needle.size - 1
@@ -1682,7 +1682,7 @@ public open class TwoWaySearcher(
     //
     // To search in reverse through the haystack, we search forward through
     // a reversed haystack with a reversed needle, matching first u' and then v'.
-    public open fun <Output, S> nextBack(haystack: List<UByte>, needle: List<UByte>, longPeriod: Boolean, rejectingSFn: (Int, Int) -> Output, useEarlyRejectSFn: () -> Boolean, matchingSFn: (Int, Int) -> Output): Output where S : TwoWayStrategy<Any?> {
+    public open fun <Output, S> nextBack(haystack: List<UByte>, needle: List<UByte>, longPeriod: Boolean, rejectingSFn: (Int, Int) -> Output, useEarlyRejectSFn: () -> Boolean, matchingSFn: (Int, Int) -> Output): Output where S : TwoWayStrategy<Output> {
         // `nextBack()` uses `self.end` as its cursor -- so that `next()` and `nextBack()`
         // are independent.
         val oldEnd = this.end

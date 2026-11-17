@@ -999,6 +999,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.base.insert(k, v)
     }
 
@@ -1011,6 +1012,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.base.insert(k, v)
     }
 

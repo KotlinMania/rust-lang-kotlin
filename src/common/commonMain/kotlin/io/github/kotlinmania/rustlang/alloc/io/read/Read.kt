@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.core.result.andThen
 /**
  * The `Read` trait allows for reading bytes from a source.
  *
- * Implementors of the `Read` trait are called 'readers'.
+ * Implementors of the `Read` trait are called `readers`.
  *
  * Readers are defined by one required method, [read]. Each call to [read]
  * will attempt to pull bytes from this source into a provided buffer. A

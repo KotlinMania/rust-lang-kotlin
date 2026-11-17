@@ -3,6 +3,8 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+
 // Streaming SIMD Extensions 4.2 (SSE4.2)
 //
 // Extends SSE4.1 with STTNI (String and Text New Instructions).

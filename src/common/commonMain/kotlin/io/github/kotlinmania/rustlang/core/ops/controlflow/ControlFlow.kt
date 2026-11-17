@@ -400,7 +400,7 @@ public fun <T> ControlFlow<T, T>.intoValue(): T =
 /**
  * Creates a `ControlFlow` from any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Output, Residual> =
     when (val matchVal = branchRFn(r)) {
         is ControlFlow.Continue -> {
             val (v) = matchVal
@@ -415,7 +415,7 @@ public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow.Companion.from
 /**
  * Converts a `ControlFlow` into any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Any?, Any?>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Any?, Any?> =
+public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R where R : Try<R, Output, Residual> =
     when (this) {
         is ControlFlow.Continue -> {
             val (v) = this

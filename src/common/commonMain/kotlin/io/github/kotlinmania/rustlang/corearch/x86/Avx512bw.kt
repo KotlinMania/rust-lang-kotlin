@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
@@ -4352,9 +4353,9 @@ public fun mm512MaddEpi16(a: M512i, b: M512i): M512i {
     //
     // `rust
     // @targetFeature(enable = "avx512bw")
-    // unchecked fn wideningAdd(mad: __m512i) -> __m512i {
+    // unchecked fn wideningAdd(mad: __m512i) -> __m512i (
     // _mm512_madd_epi16(mad, _mm512_set1_epi16(1))
-    // }
+    // )
     // `
     //
     // If we implement this using generic vector intrinsics, the optimizer

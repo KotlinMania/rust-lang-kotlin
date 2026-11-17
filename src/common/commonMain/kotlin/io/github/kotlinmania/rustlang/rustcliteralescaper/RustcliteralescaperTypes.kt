@@ -57,35 +57,35 @@ public sealed class EscapeError {
      */
     public data object OutOfRangeHexEscape : EscapeError()
     /**
-     * '\u' not followed by '{'.
+     * '\u' not followed by '('.
      */
     public data object NoBraceInUnicodeEscape : EscapeError()
     /**
-     * Non-hexadecimal value in '\u{..}'.
+     * Non-hexadecimal value in '\u(..)'.
      */
     public data object InvalidCharInUnicodeEscape : EscapeError()
     /**
-     * '\u{}'
+     * '\u()'
      */
     public data object EmptyUnicodeEscape : EscapeError()
     /**
-     * No closing brace in '\u{..}', e.g. '\u{12'.
+     * No closing brace in '\u(..)', e.g. '\u(12'.
      */
     public data object UnclosedUnicodeEscape : EscapeError()
     /**
-     * '\u{_12}'
+     * '\u(_12)'
      */
     public data object LeadingUnderscoreUnicodeEscape : EscapeError()
     /**
-     * More than 6 characters in '\u{..}', e.g. '\u{10FFFF_FF}'
+     * More than 6 characters in '\u(..)', e.g. '\u(10FFFF_FF)'
      */
     public data object OverlongUnicodeEscape : EscapeError()
     /**
-     * Invalid in-bound unicode character code, e.g. '\u{DFFF}'.
+     * Invalid in-bound unicode character code, e.g. '\u(DFFF)'.
      */
     public data object LoneSurrogateUnicodeEscape : EscapeError()
     /**
-     * Out of bounds unicode character code, e.g. '\u{FFFFFF}'.
+     * Out of bounds unicode character code, e.g. '\u(FFFFFF)'.
      */
     public data object OutOfRangeUnicodeEscape : EscapeError()
     /**
@@ -234,9 +234,9 @@ public sealed class MixedUnit {
                 MixedUnit.HighByte(byte)
             }
 
-        public fun tryFrom(c: Char): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroCharInner, Char>(c))?.let({ MixedUnit.Char(it) })?.let { Result.Ok(it) } ?: Result.Err(EscapeError.NulInCStr))
+        public fun tryFrom(c: Char): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroCharInner, Char>(c))?.let({ MixedUnit.Char(it) })?.let { Result.Ok<Any, EscapeError>(it) } ?: Result.Err<Any, EscapeError>(EscapeError.NulInCStr))
 
-        public fun tryFrom(byte: UByte): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroU8Inner, UByte>(byte))?.let(From::from)?.let { Result.Ok(it) } ?: Result.Err(EscapeError.NulInCStr))
+        public fun tryFrom(byte: UByte): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroU8Inner, UByte>(byte))?.let(From::from)?.let { Result.Ok<Any, EscapeError>(it) } ?: Result.Err<Any, EscapeError>(EscapeError.NulInCStr))
     }
 }
 
@@ -274,7 +274,7 @@ public interface Unescape<Unit> {
      */
     public fun unescapeSingle(chars: Chars): Result<Unit, EscapeError> {
         val res =
-            when (val tryResult = when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.ZeroChars))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }) {
+            when (val tryResult = when (val matchVal = when (val tryResult = (chars.next()?.let { Result.Ok<Char, EscapeError>(it) } ?: Result.Err<Char, EscapeError>(EscapeError.ZeroChars))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }) {
                 '\\' -> this.unescape1(chars)
                 '\n', '\t', '\'' -> Result.Err<Unit, EscapeError>(EscapeError.EscapeOnlyChar)
                 '\r' -> Result.Err<Unit, EscapeError>(EscapeError.BareCarriageReturn)
@@ -294,7 +294,7 @@ public interface Unescape<Unit> {
      */
     public fun unescape1(chars: Chars): Result<Unit, EscapeError> {
         // Previous character was '\\', unescape what follows.
-        val c = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.LoneSlash))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }
+        val c = when (val tryResult = (chars.next()?.let { Result.Ok<Char, EscapeError>(it) } ?: Result.Err<Char, EscapeError>(EscapeError.LoneSlash))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, EscapeError>(tryResult.error) }
         return if (c == '0') {
             Unescape.ZERO_RESULT
         } else {
@@ -362,7 +362,7 @@ public interface Unescape<Unit> {
  */
 public sealed class Mode {
     /**
-     * `'a'`
+     * ``a``
      */
     public data object Char : Mode()
     /**

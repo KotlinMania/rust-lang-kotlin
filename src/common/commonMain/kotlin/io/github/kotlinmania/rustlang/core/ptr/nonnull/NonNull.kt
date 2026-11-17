@@ -90,7 +90,7 @@ import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
  */
 public open class NonNull(
     public var pointer: ConstPtr,
-) : TrivialClone<NonNull>, fmt.Pointer {
+) : TrivialClone<NonNull> {
     public val rawAddress: Long
         get() = pointer.rawAddress
 
@@ -1131,9 +1131,9 @@ public open class NonNull(
 
     public override fun clone(): NonNull = NonNull(this.pointer)
 
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = this.asPtr().fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = this.asPtr().fmt(f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok(Unit) }
 
     public open fun eq(other: NonNull): Boolean = this.asPtr() == other.asPtr()
 
@@ -1207,7 +1207,7 @@ public open class NonNull(
         }
 
         /**
-         * Converts an address back to a mutable pointer, picking up some previously 'exposed'
+         * Converts an address back to a mutable pointer, picking up some previously `exposed`
          * [provenance][ptr#provenance].
          *
          * For more details, see the equivalent method on a raw pointer, [ptr.withExposedProvenanceMut].
@@ -1584,7 +1584,7 @@ public fun <T> NonNull.asUninitSliceMut(): MutableList<MaybeUninit<T>> {
  * }
  * ```
  */
-public fun <T, I> NonNull.getUncheckedMut(index: I): NonNull where I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> NonNull.getUncheckedMut(index: I): NonNull where I : SliceIndex<List<T>, Output> {
     // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
     // As a consequence, the resulting pointer cannot be null.
     return NonNull.newUnchecked(this.asPtr().getUncheckedMut(index))

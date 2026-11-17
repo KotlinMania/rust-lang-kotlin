@@ -1714,7 +1714,7 @@ public open class Metadata(
      * use std.path.Path;
      * use std.os.unix.fs.symlink;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let linkPath = Path.new("link");
      *     symlink("/originDoesNotExist/", linkPath)?;
      *
@@ -1722,7 +1722,7 @@ public open class Metadata(
      *
      *     assert(metadata.isSymlink());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun isSymlink(): Boolean = this.fileType().isSymlink()
@@ -3368,7 +3368,7 @@ public fun copy(from: Path, to: Path): Result<ULong, io.github.kotlinmania.rustl
  * limited to just these cases:
  *
  * * The `original` path is not a file or doesn't exist.
- * * The 'link' path already exists.
+ * * The `link` path already exists.
  *
  * # Examples
  *

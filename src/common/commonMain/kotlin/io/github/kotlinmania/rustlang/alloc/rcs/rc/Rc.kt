@@ -21,7 +21,6 @@ import io.github.kotlinmania.rustlang.core.clone.Share
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.fmt.Error
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -55,7 +54,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 
-// Single-threaded reference-counting pointers. 'Rc' stands for Reference
+// Single-threaded reference-counting pointers. `Rc` stands for Reference
 // Counted'.
 //
 // The type [`Rc.T`][Rc] provides shared ownership of a value of type `T`,
@@ -277,7 +276,7 @@ public fun rcInnerLayoutForValueLayout(layout: Layout): Layout {
 // as `Holder` is fundamental!
 
 /**
- * A single-threaded reference-counting pointer. 'Rc' stands for Reference
+ * A single-threaded reference-counting pointer. `Rc` stands for Reference
  * Counted'.
  *
  * See the [module-level documentation](./index.html) for more details.
@@ -292,7 +291,7 @@ public open class Rc<T, A : Allocator> internal constructor(
     ptrCtorArg: NonNull,
     public var phantom: Unit,
     public var alloc: A,
-) : PinSafePointer, DerefPure, UseCloned, Share, RcEqIdent<T, A>, Pointer, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
+) : PinSafePointer, DerefPure, UseCloned, Share, RcEqIdent<T, A>, AsRef<T>, Allocator, AllocatorNightly, AllocatorClone {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -537,7 +536,7 @@ public open class Rc<T, A : Allocator> internal constructor(
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = Pointer.fmt((this), f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok(Unit) }
 
     public open fun borrow(): T = this
 
@@ -950,7 +949,7 @@ public open class Rc<T, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Rc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Any?, Any?> {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: Rc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Output, Residual> {
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && Rc.isUnique(thisRef)) {
                 // ignore-tidy-undocumented-unchecked
                 run {
@@ -2535,7 +2534,7 @@ public fun <T, A : AllocatorNightly> fromRcTSliceA(v: List<T>): Rc<List<T>, A> {
  * check("eggplant" == shared)
  * ```
  */
-public fun <Owned, B> fromRcB(cow: B): Rc<B, Global> where B : ToOwned<Any?> =
+public fun <Owned, B> fromRcB(cow: B): Rc<B, Global> where B : ToOwned<Owned> =
     when (cow) {
         is Cow.Borrowed -> {
             val (s) = cow
@@ -2697,7 +2696,7 @@ public open class Weak<T, A : Allocator> internal constructor(
      * (strong).let { }
      * // But not any more. We can do weak.asPtr(), but accessing the pointer would lead to
      * // undefined behavior.
-     * // assertEq("hello", unchecked { &*weak.asPtr() });
+     * // assertEq("hello", unchecked ( &*weak.asPtr() ));
      * ```
      *
      * [nullVal]: ptr.nullVal
@@ -3310,7 +3309,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
     // references exist, we already have a form of shared mutability!
     public var marker2: Unit,
     public var alloc: A,
-) : PinSafePointer, DerefPure, Pointer, BorrowMut<T>, AsRef<T>, AsMut<T> {
+) : PinSafePointer, DerefPure, BorrowMut<T>, AsRef<T>, AsMut<T> {
     public var ptr: NonNull = ptrCtorArg
         internal set
 
@@ -3330,7 +3329,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
 
     public open fun fmtDebug(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = Pointer.fmt((this), f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Error> = run { f.append(((this)).toString()); Result.Ok(Unit) }
 
     public open fun borrow(): T = this
 
@@ -3651,7 +3650,7 @@ public open class UniqueRc<T, A : Allocator> internal constructor(
          * }
          * ```
          */
-        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: UniqueRc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Any?, Any?> {
+        public fun <Output, Residual, T, A : Allocator, R> tryMap(thisRef: UniqueRc<T, A>, f: (T) -> R, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): TryType where R : Try<Output, Residual> {
             return if (sizeOf<T>(typeLayoutT = typeLayoutT) == sizeOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && alignOf<T>(typeLayoutT = typeLayoutT) == alignOf<Output>(typeLayoutT = UnresolvedTypeLayout<Output>()) && UniqueRc.weakCount(thisRef) == 0) {
                 // ignore-tidy-undocumented-unchecked
                 run {

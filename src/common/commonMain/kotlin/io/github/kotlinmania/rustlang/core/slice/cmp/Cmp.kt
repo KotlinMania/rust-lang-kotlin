@@ -162,11 +162,11 @@ public fun <A, B, C> chainingImpl(left: List<A>, right: List<A>, elemChain: (A, 
 // impl<A> SlicePartialOrd for A
 // where
 // A: Ord,
-// {
-// default fn partialCompare(left: &[A], right: &[A]) -> Option<Ordering> {
+// (
+// default fn partialCompare(left: &[A], right: &[A]) -> Option<Ordering> (
 // Some(SliceOrd.compare(left, right))
-// }
-// }
+// )
+// )
 //
 
 public interface AlwaysApplicableOrd<T> : SliceOrd<T>
@@ -199,7 +199,7 @@ public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
  * * For every `x` and `y` of this type, `Ord(x, y)` must return the same
  *   value as `Ord.cmp(reinterpret<_, UByte>(x), reinterpret<_, UByte>(y))`.
  */
-public interface UnsignedBytewiseOrd<T>
+public interface UnsignedBytewiseOrd
 
 // `compareBytes` compares a sequence of unsigned bytes lexicographically, so
 // use it if the requirements for `UnsignedBytewiseOrd` are fulfilled.

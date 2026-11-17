@@ -52,7 +52,7 @@ public open class Zip<A, B>(
     // index, len and aLen are only used by the specialized version of zip
     public var index: Int,
     public var len: Int,
-) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Zip<A, B>>, SourceIter<Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold<Zip<A, B>>, Iterable<Pair<Item, Item>> {
+) : ZipImpl<A, B, Zip<A, B>, Pair<Item, Item>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen, SourceIter<Source>, InPlaceIterable, ZipFmt<A, B>, SpecFold, Iterable<Pair<Item, Item>> {
     override fun iterator(): Iterator<Pair<Item, Item>> = object : AbstractIterator<Pair<Item, Item>>() {
         override fun computeNext() {
             when (val v = this@Zip.next()) {
@@ -84,7 +84,7 @@ public open class Zip<A, B>(
 
     public override fun nth(n: Int): Pair<Item, Item>? = this.nth(n)
 
-    public override fun <Acc> fold(init: Acc, f: (Acc, Pair<A.Item, B.Item>) -> Acc): Acc = this.fold(init, f)
+    public override fun <Acc> fold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc = this.fold(init, f)
 
     public override fun iteratorGetUnchecked(idx: Int): Pair<Item, Item> {
         // SAFETY: `ZipImpl.__iterator_get_unchecked` has same safety
@@ -162,7 +162,7 @@ public open class Zip<A, B>(
         error("Always specialized")
     }
 
-    public open fun <Acc> foldAB(init: Acc, f: (Acc, Pair<A.Item, B.Item>) -> Acc): Acc = SpecFold.SpecFold(this, init, f)
+    public open fun <Acc> foldAB(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc = SpecFold.SpecFold(this, init, f)
 
     public open fun nextABAB(): Pair<Item, Item>? {
         val x = (this.a.next() ?: return null)
@@ -212,7 +212,7 @@ public open class Zip<A, B>(
         return Pair(this.a.iteratorGetUnchecked(idx1), this.b.iteratorGetUnchecked(idx1))
     }
 
-    public open fun <Acc> foldABAB(init: Acc, f: (Acc, Pair<A.Item, B.Item>) -> Acc): Acc {
+    public open fun <Acc> foldABAB(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
         var accum = init
         val len = this.sizeHint().first
         for (i in 0 until len) {
@@ -244,7 +244,7 @@ public open class Zip<A, B>(
     }
 
     // Adapted from default impl from the Iterator trait
-    public override fun <Acc> specFold(init: Acc, f: (Acc, Pair<A.Item, B.Item>) -> Acc): Acc {
+    public override fun <Acc> specFold(init: Acc, f: (Acc, Pair<Item, Item>) -> Acc): Acc {
         var accum = init
         while (true) {
             val matchVal = this.next()
@@ -291,11 +291,11 @@ public open class Zip<A, B>(
                 }
             }
 
-        public fun <Item, A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
+        public fun <A, B> new(a: A, b: B): Zip<A, B> = ZipImpl.new(a, b)
 
-        public fun <Item, A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
+        public fun <A, B> newAB(a: A, b: B): Zip<A, B> = Zip(a = a, b = b, index = 0, len = 0)
 
-        public fun <Item, A, B> newABAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
+        public fun <A, B> newABAB(a: A, b: B): Zip<A, B> where A : TrustedRandomAccessNoCoerce, B : TrustedRandomAccessNoCoerce = Zip(a = a, b = b, index = 0, len = 0)
 
         public val MAY_HAVE_SIDE_EFFECT: Boolean = A.MAY_HAVE_SIDE_EFFECT || B.MAY_HAVE_SIDE_EFFECT
 
@@ -332,7 +332,7 @@ public open class Zip<A, B>(
  * check(iter1.next() == null)
  * ```
  */
-public fun <Item, IntoIter, A, B> zip(a: A, b: B): Zip<IntoIter, IntoIter> = ZipImpl.new(a.iterator(), b.iterator())
+public fun <A, B> zip(a: A, b: B): Zip<IntoIter, IntoIter> = ZipImpl.new(a.iterator(), b.iterator())
 
 // Zip specialization trait
 public interface ZipImpl<A, B, T, Item> {
@@ -348,7 +348,7 @@ public interface ZipImpl<A, B, T, Item> {
 
     public fun <Acc> fold(init: Acc, f: (Acc, Item) -> Acc): Acc
 
-    public fun <Item> getUnchecked(idx: Int): Item
+    public fun getUnchecked(idx: Int): Item
 }
 
 public interface ZipFmt<A, B> {
@@ -424,7 +424,7 @@ public interface TrustedRandomAccess : TrustedRandomAccessNoCoerce
  * [TrustedRandomAccess] and `TrustedRandomAccessNoCoerce`.
  */
 public interface TrustedRandomAccessNoCoerce {
-    public fun <Item> size(): Int = this.sizeHint().first
+    public fun size(): Int = this.sizeHint().first
 
     /**
      * `true` if getting an iterator element may have side effects.
@@ -441,13 +441,13 @@ public interface TrustedRandomAccessNoCoerce {
  *
  * Same requirements calling `getUnchecked` directly.
  */
-public fun <Item, I> tryGetUnchecked(it: I, idx: Int): Item {
+public fun <I> tryGetUnchecked(it: I, idx: Int): Item {
     // SAFETY: the caller must uphold the contract for
     // `Iterator.__iterator_get_unchecked`.
     return it.tryGetUnchecked(idx)
 }
 
-public interface SpecTrustedRandomAccess<T> {
+public interface SpecTrustedRandomAccess {
     /**
      * If `Self: TrustedRandomAccess`, it must be safe to call
      * `Iterator.__iterator_get_unchecked(self, index)`.
@@ -455,10 +455,10 @@ public interface SpecTrustedRandomAccess<T> {
     public fun tryGetUnchecked(index: Int): Item
 }
 
-public fun <Item, I> I.tryGetUnchecked(arg0: Int): Item {
+public fun <I> I.tryGetUnchecked(arg0: Int): Item {
     error("Should only be called on TrustedRandomAccess iterators")
 }
 
-public interface SpecFold<T> {
+public interface SpecFold {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
 }

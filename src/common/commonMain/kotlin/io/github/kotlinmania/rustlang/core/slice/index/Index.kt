@@ -24,9 +24,9 @@ import io.github.kotlinmania.rustlang.core.result.Result
 
 // Indexing implementations for `[T]`.
 
-public fun <T, I> List<T>.index(index: I): Output where I : SliceIndex<List<T>, Any?> = index.index(this)
+public fun <Output, T, I> List<T>.index(index: I): Output where I : SliceIndex<List<T>, Output> = index.index(this)
 
-public fun <T, I> List<T>.indexMut(index: I): Output where I : SliceIndex<List<T>, Any?> = index.indexMut(this)
+public fun <Output, T, I> List<T>.indexMut(index: I): Output where I : SliceIndex<List<T>, Output> = index.indexMut(this)
 
 public fun sliceIndexFail(start: Int, end: Int, len: Int): Nothing {
     if (start > len) {
@@ -645,7 +645,8 @@ public fun <R> tryRange(range: R, bounds: RangeTo<Int>): Range<Int>? where R : R
  * bounds checking or (in debug) overflow checking.
  */
 public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>): Range<Int> {
-    val start =
+    val (start, end) = tupleArg1
+    val start1 =
         when (start) {
             is Bound.Included -> {
                 val (i) = start
@@ -657,7 +658,7 @@ public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>)
             }
             Bound.Unbounded -> 0
         }
-    val end =
+    val end1 =
         when (end) {
             is Bound.Included -> {
                 val (i2) = end
@@ -669,7 +670,7 @@ public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>)
             }
             Bound.Unbounded -> len
         }
-    return start until end
+    return start1 until end1
 }
 
 public sealed class RangeError {
@@ -695,49 +696,50 @@ public sealed class RangeError {
  * Returns `None` on overflowing indices.
  */
 public fun tryIntoSliceRange(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>): Result<Range<Int>, RangeError> {
-    val end4 =
+    val (start, end) = tupleArg1
+    val end5 =
         when {
-            end is Bound.Included && (end as Bound.Included).value >= len -> {
-                val (end) = end as Bound.Included
-                return Result.Err<Range<Int>, RangeError>(RangeError.EndPastLen(end = end))
+            end is Bound.Included && end >= len -> {
+                val (end1) = end
+                return Result.Err<Range<Int>, RangeError>(RangeError.EndPastLen(end = end1))
             }
             // Cannot overflow because `end<len` implies `end<Int.MAX`.
             end is Bound.Included -> {
-                val (end1) = end
-                end1 + 1
+                val (end2) = end
+                end2 + 1
             }
-            end is Bound.Excluded && (end as Bound.Excluded).value > len -> {
-                val (end2) = end as Bound.Excluded
-                return Result.Err<Range<Int>, RangeError>(RangeError.EndPastLen(end = end2))
+            end is Bound.Excluded && end > len -> {
+                val (end3) = end
+                return Result.Err<Range<Int>, RangeError>(RangeError.EndPastLen(end = end3))
             }
             end is Bound.Excluded -> {
-                val (end3) = end
-                end3
+                val (end4) = end
+                end4
             }
             else -> len
         }
-    val start4 =
+    val start5 =
         when {
-            start is Bound.Excluded && (start as Bound.Excluded).value >= end4 -> {
-                val (start) = start as Bound.Excluded
-                return Result.Err<Range<Int>, RangeError>(RangeError.StartPastEnd(start = start, end = end4))
+            start is Bound.Excluded && start >= end5 -> {
+                val (start1) = start
+                return Result.Err<Range<Int>, RangeError>(RangeError.StartPastEnd(start = start1, end = end5))
             }
             // Cannot overflow because `start<end` implies `start<Int.MAX`.
             start is Bound.Excluded -> {
-                val (start1) = start
-                start1 + 1
+                val (start2) = start
+                start2 + 1
             }
-            start is Bound.Included && (start as Bound.Included).value > end4 -> {
-                val (start2) = start as Bound.Included
-                return Result.Err<Range<Int>, RangeError>(RangeError.StartPastEnd(start = start2, end = end4))
+            start is Bound.Included && start > end5 -> {
+                val (start3) = start
+                return Result.Err<Range<Int>, RangeError>(RangeError.StartPastEnd(start = start3, end = end5))
             }
             start is Bound.Included -> {
-                val (start3) = start
-                start3
+                val (start4) = start
+                start4
             }
             else -> 0
         }
-    return Result.Ok<Range<Int>, RangeError>(start4 until end4)
+    return Result.Ok<Range<Int>, RangeError>(start5 until end5)
 }
 
 /**

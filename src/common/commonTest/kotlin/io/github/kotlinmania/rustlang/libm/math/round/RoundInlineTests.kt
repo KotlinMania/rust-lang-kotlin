@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf16
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf32
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> check(f: (F) -> F, cases: List<Pair<F, F>>) {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> check(f: (F) -> F, cases: List<Pair<F, F>>) {
     for ((x, expRes) in cases) {
         val value = io.github.kotlinmania.rustlang.libm.math.generic.round.round(x)
         run {

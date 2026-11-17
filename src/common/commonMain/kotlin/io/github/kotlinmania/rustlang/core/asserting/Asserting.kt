@@ -76,7 +76,7 @@ public interface TryCapturePrintable<E, M> {
     public fun tryCapture(to: Capture<E, M>)
 }
 
-public fun <E> Wrapper<E>.tryCaptureETryCaptureWithDebug(to: Capture<E, TryCaptureWithDebug>) where E : Printable<E> {
+public fun <E> Wrapper<E>.tryCaptureETryCaptureWithDebug(to: Capture<E, TryCaptureWithDebug>) where E : Printable {
     to.elem = this.value
 }
 
@@ -141,4 +141,4 @@ public open class Wrapper<T>(
 /**
  * Tells which elements can be copied and displayed
  */
-public interface Printable<T>
+public interface Printable

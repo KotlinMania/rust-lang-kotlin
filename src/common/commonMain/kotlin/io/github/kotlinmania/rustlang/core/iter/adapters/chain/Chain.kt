@@ -35,7 +35,7 @@ public open class Chain<A, B>(
     // iterate forward or backward. If you mix directions, then both sides may be `None`.
     public var a: A?,
     public var b: B?,
-) : TrustedLen<Chain<A, B>>, Iterable<Item> {
+) : TrustedLen, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Chain.next()) {
@@ -71,7 +71,7 @@ public open class Chain<A, B>(
         return aCount + bCount
     }
 
-    public override fun <Acc, R> tryFold(acc: Acc, f: (Acc, A.Item) -> R): R where R : Try<R, Acc, Any?> {
+    public override fun <Residual, Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.a) {
             null -> {}
@@ -92,7 +92,7 @@ public open class Chain<A, B>(
         return acc1
     }
 
-    public override fun <Acc> fold(acc: Acc, f: (Acc, A.Item) -> Acc): Acc {
+    public override fun <Acc> fold(acc: Acc, f: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
         when (val matchVal = this.a) {
             null -> {}
@@ -167,7 +167,7 @@ public open class Chain<A, B>(
         return (this.b ?: return null).nth(n1)
     }
 
-    public override fun find(predicate: (A.Item) -> Boolean): Item? {
+    public override fun find(predicate: (Item) -> Boolean): Item? {
         return (andThenOrClear(this.a, { a -> a.indexOf(predicate).takeIf { it >= 0 } }) ?: closure1@{ when (val tryResult = this.b) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }.indexOf(predicate).takeIf { it >= 0 } }())
     }
 
@@ -271,11 +271,11 @@ public open class Chain<A, B>(
         return (this.a ?: return null).nthBack(n1)
     }
 
-    public open fun rfind(predicate: (A.Item) -> Boolean): Item? {
+    public open fun rfind(predicate: (Item) -> Boolean): Item? {
         return (andThenOrClear(this.b, { b -> b.rfind(predicate) }) ?: closure3@{ when (val tryResult = this.a) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure3 Result.Err(tryResult.error) }.rfind(predicate) }())
     }
 
-    public open fun <Acc, R> tryRfold(acc: Acc, f: (Acc, A.Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryRfold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.b) {
             null -> {}
@@ -296,7 +296,7 @@ public open class Chain<A, B>(
         return acc1
     }
 
-    public open fun <Acc> rfold(acc: Acc, f: (Acc, A.Item) -> Acc): Acc {
+    public open fun <Acc> rfold(acc: Acc, f: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
         when (val matchVal = this.b) {
             null -> {}
@@ -366,7 +366,7 @@ public open class Chain<A, B>(
  * check(iter.next() == null)
  * ```
  */
-public fun <Item, IntoIter, A, B> chain(a: A, b: B): Chain<IntoIter, IntoIter> where B : Iterable<Item> = Chain.new(a.iterator(), b.iterator())
+public fun <A, B> chain(a: A, b: B): Chain<IntoIter, IntoIter> where B : Iterable<Item> = Chain.new(a.iterator(), b.iterator())
 
 public fun <T, U> andThenOrClear(opt: T?, f: (T) -> U?): U? {
     var opt1 = opt

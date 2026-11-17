@@ -99,7 +99,7 @@ public fun <A> repeatWith(repeater: () -> A): RepeatWith<() -> A> = RepeatWith(r
  */
 public open class RepeatWith<F>(
     public var repeater: F,
-) : TrustedLen<RepeatWith<F>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RepeatWith.next()) {
@@ -117,7 +117,7 @@ public open class RepeatWith<F>(
 
     public override fun sizeHint(): Pair<Int, Int?> = Pair(Int.MAX_VALUE, null)
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, A) -> R): R where R : Try<R, Acc, Any?> {
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, A) -> R): R where R : Try<R, Acc, Residual> {
         var init1 = init
         // This override isn't strictly needed, but avoids the need to optimize
         // away the `next`-always-returns-`Some` and emphasizes that the `?`

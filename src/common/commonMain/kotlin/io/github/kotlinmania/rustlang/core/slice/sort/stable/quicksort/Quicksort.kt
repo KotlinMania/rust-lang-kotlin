@@ -115,7 +115,7 @@ public fun <T> stablePartition(v: MutableList<T>, scratch: MutableList<MaybeUnin
             // Ideally the outer loop won't be unrolled, to save binary size,
             // but we do want the inner loop to be unrolled for small types, as
             // this gave significant performance boosts in benchmarks. Unrolling
-            // through for _ in 0..UNROLL_LEN { .. } instead of manually improves
+            // through for _ in 0..UNROLL_LEN ( .. ) instead of manually improves
             // compile times but has a ~10-20% performance penalty on opt-level=s.
             if (sizeOf<T>(typeLayoutT = typeLayoutT) <= 16) {
                 val UNROLL_LEN: Int = 4

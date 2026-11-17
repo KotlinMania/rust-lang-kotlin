@@ -14,10 +14,10 @@ public interface StdioExt {
      * will not be aware of this change.
      *
      * @file:feature(stdioSwap)
-     * use std.io::{self, Read, Write};
+     * use std.io::(self, Read, Write);
      * use std.os.windows.io.StdioExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *    let (reader, mut writer) = io.pipe()?;
      *    let mut stdin = io.stdin();
      *    stdin.setHandle(Some(reader))?;
@@ -26,7 +26,7 @@ public interface StdioExt {
      *    assertEq(stdin.read(buffer)?, 13);
      *    assertEq(&buffer, b"Hello, world!");
      *    Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun setHandle(handle: OwnedHandle?): Result<Unit, Error>

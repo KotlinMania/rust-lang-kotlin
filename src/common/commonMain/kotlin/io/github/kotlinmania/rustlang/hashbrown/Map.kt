@@ -1545,6 +1545,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.put(k, v)
     }
 
@@ -1604,6 +1605,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.put(k, v)
     }
 
@@ -1649,6 +1651,7 @@ public open class HashMap<K, V, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneKVKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.put(k, v)
     }
 

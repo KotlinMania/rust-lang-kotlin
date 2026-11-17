@@ -3387,7 +3387,7 @@ public open class NormalizeError {
 }
 
 /**
- * Helper struct for safely printing paths with [format] and `{}`.
+ * Helper struct for safely printing paths with [format] and `()`.
  *
  * A [Path] might contain non-Unicode data. This `class` implements the
  * [Display] trait in a way that mitigates that. It is created by the

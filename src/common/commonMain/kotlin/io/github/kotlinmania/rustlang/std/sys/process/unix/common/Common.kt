@@ -1,6 +1,19 @@
 // port-lint: source sys/process/unix/common.rs
 package io.github.kotlinmania.rustlang.std.sys.process.unix.common
 
+import io.github.kotlinmania.libc.CInt
+import io.github.kotlinmania.libc.CUlong
+import io.github.kotlinmania.libc.fuchsia.EAGAIN
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.EWOULDBLOCK
+import io.github.kotlinmania.libc.fuchsia.GidT
+import io.github.kotlinmania.libc.fuchsia.POLLIN
+import io.github.kotlinmania.libc.fuchsia.PidT
+import io.github.kotlinmania.libc.fuchsia.Pollfd
+import io.github.kotlinmania.libc.fuchsia.SigsetT
+import io.github.kotlinmania.libc.fuchsia.UidT
+import io.github.kotlinmania.libc.hermit.STDERR_FILENO
+import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
@@ -14,20 +27,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.libc.CInt
-import io.github.kotlinmania.rustlang.libc.CUlong
 import io.github.kotlinmania.rustlang.libc.Poll
-import io.github.kotlinmania.rustlang.libc.unix.GidT
-import io.github.kotlinmania.rustlang.libc.unix.PidT
-import io.github.kotlinmania.rustlang.libc.unix.Pollfd
-import io.github.kotlinmania.rustlang.libc.unix.UidT
-import io.github.kotlinmania.rustlang.libc.wasi.EAGAIN
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.EWOULDBLOCK
-import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
-import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
-import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.libc.wasi.SigsetT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error

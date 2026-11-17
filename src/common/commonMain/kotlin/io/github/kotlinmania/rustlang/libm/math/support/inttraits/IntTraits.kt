@@ -62,7 +62,7 @@ public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<
 /**
  * Trait for some basic operations on integers
  */
-public interface Int<T> : DisplayHex, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign<Int<T>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T>>, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Shl<Int<T>, T>, Shl<UInt, T>, Shr<Int<T>, T>, Shr<UInt, T>, BitXor<T>, BitAnd<T>, CastFrom<Int<T>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
+public interface Int<T, out OtherSign, Unsigned> : DisplayHex, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign<Int<T, OtherSign, Unsigned>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T, OtherSign, Unsigned>>, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Shl<Int<T, OtherSign, Unsigned>, T>, Shl<UInt, T>, Shr<Int<T, OtherSign, Unsigned>, T>, Shr<UInt, T>, BitXor<T>, BitAnd<T>, CastFrom<Int<T, OtherSign, Unsigned>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T, OtherSign, Unsigned>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
     public fun signed(): OtherSign<Unsigned>
 
     public fun unsigned(): Unsigned
@@ -900,7 +900,7 @@ public fun I128.borrowingSub(other: I128, borrow: Boolean): Pair<I128, Boolean> 
  * Trait for integers twice the bit width of another integer. This is implemented for all
  * primitives except for `UByte`, because there is not a smaller primitive.
  */
-public interface DInt<T, H> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
+public interface DInt<T, H, out OtherSign, out Unsigned> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
     /**
      * Returns the low half of `self`
      */
@@ -926,7 +926,7 @@ public interface DInt<T, H> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
  * Trait for integers half the bit width of another integer. This is implemented for all
  * primitives except for `ULong`, because it there is not a larger primitive.
  */
-public interface HInt<T, out D> : Int<T> {
+public interface HInt<T, out D, out OtherSign, Unsigned> {
     /**
      * Widens (using default extension) the integer to have double bit width
      */

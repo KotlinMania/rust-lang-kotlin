@@ -2,6 +2,12 @@
 
 package io.github.kotlinmania.rustlang.procmacro
 
+import io.github.kotlinmania.rustcliteralescaper.MixedUnit
+import io.github.kotlinmania.rustcliteralescaper.unescapeByte
+import io.github.kotlinmania.rustcliteralescaper.unescapeByteStr
+import io.github.kotlinmania.rustcliteralescaper.unescapeCStr
+import io.github.kotlinmania.rustcliteralescaper.unescapeChar
+import io.github.kotlinmania.rustcliteralescaper.unescapeStr
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
@@ -22,15 +28,9 @@ import io.github.kotlinmania.rustlang.procmacro.diagnostic.Diagnostic
 import io.github.kotlinmania.rustlang.procmacro.diagnostic.Level
 import io.github.kotlinmania.rustlang.procmacro.escape.EscapeOptions
 import io.github.kotlinmania.rustlang.procmacro.escape.escapeBytes
-import io.github.kotlinmania.rustlang.rustcliteralescaper.MixedUnit
-import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeByte
-import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeByteStr
-import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeCStr
-import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeChar
-import io.github.kotlinmania.rustlang.rustcliteralescaper.unescapeStr
 import io.github.kotlinmania.rustlang.std.path.PathBuf
+import io.github.kotlinmania.rustcliteralescaper.EscapeError as EE
 import io.github.kotlinmania.rustlang.procmacro.bridge.Methods as BridgeMethods
-import io.github.kotlinmania.rustlang.rustcliteralescaper.EscapeError as EE
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -66,7 +66,7 @@ public open class EscapeError(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this.kind).toString()); Result.Ok(Unit) }
 
     public companion object {
-        public fun from(value: io.github.kotlinmania.rustlang.rustcliteralescaper.EscapeError): EscapeError {
+        public fun from(value: io.github.kotlinmania.rustcliteralescaper.EscapeError): EscapeError {
             val kind =
                 when (value) {
                     EE.ZeroChars -> EscapeErrorKind.ZeroChars
@@ -136,7 +136,7 @@ public open class TokenStream(
      * considered errors, is unspecified and may change in the future.
      */
     public open fun expandExpr(): Result<TokenStream, ExpandError> {
-        val stream = when (val tryResult = (this.value?.let { Result.Ok(it) } ?: Result.Err(ExpandError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
+        val stream = when (val tryResult = (this.value?.let { Result.Ok<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(it) } ?: Result.Err<io.github.kotlinmania.rustlang.procmacro.bridge.client.TokenStream, ExpandError>(ExpandError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TokenStream, ExpandError>(tryResult.error) }
         return run {
             val matchVal = BridgeMethods.tsExpandExpr(stream)
             when (matchVal) { is Result.Ok -> {
@@ -824,7 +824,7 @@ public open class Ident internal constructor(
 
 /**
  * A literal string (`"hello"`), byte string (`b"hello"`), C string (`c"hello"`),
- * character (`'a'`), byte character (`b'a'`), an integer or floating point number
+ * character (``a``), byte character (`b'a'`), an integer or floating point number
  * with or without a suffix (`1`, `1u8`, `2.3`, `2.3f32`).
  * Boolean literals like `true` and `false` do not belong here, they are `Ident`s.
  */
@@ -859,9 +859,9 @@ public open class Literal internal constructor(
     // occur elsewhere when the source text is printed.
     // Note(SergioBenitez): there is no way for the user to know what
     // `self.span()` actually maps to, so this method can currently only be
-    // called blindly. For example, `toString()` for the character 'c' returns
-    // "'\u{63}'"; there is no way for the user to know whether the source text
-    // was 'c' or whether it was '\u{63}'.
+    // called blindly. For example, `toString()` for the character `c` returns
+    // "'\u(63)'"; there is no way for the user to know whether the source text
+    // was `c` or whether it was '\u(63)'.
 
     /**
      * Returns a `Span` that is a subset of `self.span()` containing only the

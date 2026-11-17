@@ -63,8 +63,8 @@ public fun vec(elem: String = "", n: String = "", x: String = ""): String =
  * Creates a `String` using interpolation of runtime expressions.
  *
  * The first argument `format` receives is a format string. This must be a string
- * literal. The power of the formatting string is in the `{}`s contained.
- * Additional parameters passed to `format` replace the `{}`s within the
+ * literal. The power of the formatting string is in the `()`s contained.
+ * Additional parameters passed to `format` replace the `()`s within the
  * formatting string in the order given unless named or positional parameters
  * are used.
  *

@@ -41,12 +41,12 @@ public open class ByRefSized<I>(
 
     public open fun nth(n: Int, nthIFn: (I, Int) -> Item?): Item? = nthIFn(this.value, n)
 
-    public open fun <B> fold(init: B, f: (B, I.Item) -> B, tryFoldIFn: (I, B, (B, I.Item) -> B) -> R): B {
+    public open fun <B> fold(init: B, f: (B, Item) -> B, tryFoldIFn: (I, B, (B, Item) -> B) -> R): B {
         // `fold` needs ownership, so this can't forward directly.
         return tryFoldIFn(this.value, init, NeverShortCircuit.wrapMut2(f)).first
     }
 
-    public open fun <B, R> tryFold(init: B, f: (B, I.Item) -> R, tryFoldIFn: (I, B, (B, I.Item) -> R) -> R): R where R : Try<R, B, Any?> = tryFoldIFn(this.value, init, f)
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, Item) -> R, tryFoldIFn: (I, B, (B, Item) -> R) -> R): R where R : Try<R, B, Residual> = tryFoldIFn(this.value, init, f)
 
     public open fun nextBack(nextBackIFn: (I) -> Item?): Item? = nextBackIFn(this.value)
 
@@ -54,10 +54,10 @@ public open class ByRefSized<I>(
 
     public open fun nthBack(n: Int, nthBackIFn: (I, Int) -> Item?): Item? = nthBackIFn(this.value, n)
 
-    public open fun <B> rfold(init: B, f: (B, I.Item) -> B, tryRfoldIFn: (I, B, (B, I.Item) -> B) -> R): B {
+    public open fun <B> rfold(init: B, f: (B, Item) -> B, tryRfoldIFn: (I, B, (B, Item) -> B) -> R): B {
         // `rfold` needs ownership, so this can't forward directly.
         return tryRfoldIFn(this.value, init, NeverShortCircuit.wrapMut2(f)).first
     }
 
-    public open fun <B, R> tryRfold(init: B, f: (B, I.Item) -> R, tryRfoldIFn: (I, B, (B, I.Item) -> R) -> R): R where R : Try<R, B, Any?> = tryRfoldIFn(this.value, init, f)
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, Item) -> R, tryRfoldIFn: (I, B, (B, Item) -> R) -> R): R where R : Try<R, B, Residual> = tryRfoldIFn(this.value, init, f)
 }

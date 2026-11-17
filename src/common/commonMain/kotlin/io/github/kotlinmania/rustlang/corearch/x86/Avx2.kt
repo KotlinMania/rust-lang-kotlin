@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
 import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -1348,9 +1349,9 @@ public fun mm256MaddEpi16(a: M256i, b: M256i): M256i {
     //
     // `rust
     // @targetFeature(enable = "avx2")
-    // unchecked fn wideningAdd(mad: __m256i) -> __m256i {
+    // unchecked fn wideningAdd(mad: __m256i) -> __m256i (
     // _mm256_madd_epi16(mad, _mm256_set1_epi16(1))
-    // }
+    // )
     // `
     //
     // If we implement this using generic vector intrinsics, the optimizer

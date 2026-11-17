@@ -159,7 +159,7 @@ public fun <T> medianOfMedians(v: MutableList<T>, isLess: (T, T) -> Boolean, k: 
             }
             return
         }
-        // `median_of_ { minima, maxima }` can't handle the extreme cases of the first/last element,
+        // `median_of_ ( minima, maxima )` can't handle the extreme cases of the first/last element,
         // so we catch them here and just do a linear search.
         if (k1 == v1.size - 1) {
             // Find max element and place it in the last position of the array. We're free to use

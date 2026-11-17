@@ -847,7 +847,7 @@ public fun f64ToBits(x: Double): ULong {
 /**
  * Trait for floats that are wider than a `NFloat` type.
  */
-public interface WideFloat<T, out H> : Float<T, Any?, Any?> {
+public interface WideFloat<T, out H, Int, SignedInt> : Float<T, Int, SignedInt> {
     /**
      * Narrow the float type.
      */
@@ -857,7 +857,7 @@ public interface WideFloat<T, out H> : Float<T, Any?, Any?> {
 /**
  * Trait for floats narrower than a `WFloat` type.
  */
-public interface NarrowFloat<T, out D> : Float<T, Any?, Any?> {
+public interface NarrowFloat<T, out D, Int, SignedInt> : Float<T, Int, SignedInt> {
     /**
      * Widen the float type.
      */

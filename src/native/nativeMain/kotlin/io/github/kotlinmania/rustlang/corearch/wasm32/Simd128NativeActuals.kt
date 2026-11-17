@@ -2,6 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.wasm32
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import kotlinx.cinterop.ExperimentalForeignApi
 
 public actual fun llvmSwizzle(a: I8x16, b: I8x16): I8x16 =

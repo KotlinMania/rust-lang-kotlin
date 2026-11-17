@@ -185,7 +185,7 @@ public interface StructuralPartialEq
  * val x = Foo()
  * val y = x
  * // `x` has moved into `y`, and so cannot be used
- * // println("{x:?}"); // error: use of moved value
+ * // println("(x:?)"); // error: use of moved value
  * ```
  *
  * However, if a type implements `Copy`, it instead has copy semantics':
@@ -337,7 +337,7 @@ public interface StructuralPartialEq
  * [sizeOf.T]: sizeOf
  * [impls]: #implementors
  */
-public interface Copy<T>
+public interface Copy
 
 /**
  * Shared references can be copied, but mutable references *cannot*!
@@ -542,7 +542,7 @@ public interface Sync
  *
  * [drop check]: Drop#drop-check
  */
-public open class PhantomData<T> : Copy<PhantomData<T>>, TrivialClone<PhantomData<T>>, StructuralPartialEq, Freeze, UnsafeUnpin, Move {
+public open class PhantomData<T> : Copy, TrivialClone<PhantomData<T>>, StructuralPartialEq, Freeze, UnsafeUnpin, Move {
     public override fun hashCode(): Int = 0
 
     public open fun eq(other: PhantomData<T>): Boolean = true
@@ -774,7 +774,7 @@ public interface Reborrow
  * Allows reborrowable value to be reborrowed as shared, creating a copy
  * that disables the source for writes for the scope of the copy.
  */
-public interface CoerceShared<Target : Copy<Target>> : Reborrow
+public interface CoerceShared<Target : Copy> : Reborrow
 
 /**
  * Marks a type as "forgettable", giving it the ability to be passed to

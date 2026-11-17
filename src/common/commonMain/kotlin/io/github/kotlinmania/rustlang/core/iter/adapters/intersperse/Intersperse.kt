@@ -77,13 +77,13 @@ public open class Intersperse<I>(
 
     public open fun sizeHint(): Pair<Int, Int?> = intersperseSizeHint(this.iter, this.started, this.nextItem != null)
 
-    public open fun <B> fold(init: B, f: (B, I.Item) -> B): B {
+    public open fun <B> fold(init: B, f: (B, Item) -> B): B {
         val separator = this.separator
         return intersperseFold(this.iter, init, f, { separator.clone() }, this.started, this.nextItem)
     }
 
     public companion object {
-        public fun <Item, I> new(iter: I, separator: Item): Intersperse<I> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <I> new(iter: I, separator: Item): Intersperse<I> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 
@@ -137,21 +137,21 @@ public open class IntersperseWith<I, G>(
 
     public open fun sizeHint(): Pair<Int, Int?> = intersperseSizeHint(this.iter, this.started, this.nextItem != null)
 
-    public open fun <B> fold(init: B, f: (B, I.Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
+    public open fun <B> fold(init: B, f: (B, Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
 
     public companion object {
-        public fun <Item, I> new(iter: I, separator: () -> I.Item): IntersperseWith<I, G> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <I> new(iter: I, separator: () -> Item): IntersperseWith<I, G> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 
-public fun <Item, I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> {
+public fun <I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> {
     val (lo, hi) = iter.sizeHint()
     return Pair(lo.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).saturatingAdd(lo), hi.andThen({ hi1 ->
         hi1.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).checkedAdd(hi1)
     }))
 }
 
-public fun <Item, I, B> intersperseFold(iter: I, init: B, f: (B, I.Item) -> B, separator: () -> I.Item, started: Boolean, nextItem: Item?): B {
+public fun <I, B> intersperseFold(iter: I, init: B, f: (B, I.Item) -> B, separator: () -> I.Item, started: Boolean, nextItem: Item?): B {
     var accum = init
     val first =
         if (started) {

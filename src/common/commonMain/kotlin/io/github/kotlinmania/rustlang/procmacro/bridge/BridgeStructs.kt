@@ -37,7 +37,7 @@ public open class Methods {
  * client.  The server creates the bridge config (`runServer` in `server.rs`),
  * then passes it to the client through the function pointer in the `run` field
  * of `client.Client`. The client constructs a local `Bridge` from the config
- * in TLS during its execution (`Bridge.{ enter, with }` in `client.rs`).
+ * in TLS during its execution (`Bridge.( enter, with )` in `client.rs`).
  */
 public open class BridgeConfig(
     /**
@@ -49,7 +49,7 @@ public open class BridgeConfig(
      */
     public var dispatch: Closure,
     /**
-     * If 'true', always invoke the default panic hook
+     * If `true`, always invoke the default panic hook
      */
     public var forceShowPanics: Boolean,
 )

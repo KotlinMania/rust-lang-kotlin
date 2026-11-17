@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.libm.math.expo2.expo2
  * The hyperbolic sine of `x` (f64).
  */
 public fun sinh(x: Double): Double {
-    // union {double f; uint64T i;} u = {.f = x};
+    // union (double f; uint64T i;) u = (.f = x);
     // uint32T w;
     // double t, h, absx;
     var uf: Double = x

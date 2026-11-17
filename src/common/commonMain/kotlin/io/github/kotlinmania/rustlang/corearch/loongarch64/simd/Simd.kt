@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.corearch.loongarch64.simd
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -102,7 +103,7 @@ public fun simdExtSplatI128x4(v: Long): I128x4 = run { val _simdArg0 = I128.from
 
 public fun simdExtSplatU128x4(v: Long): U128x4 = run { val _simdArg0 = U128.fromLong(v); _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtAbs(a: T): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtAbs(a: T): T {
     val m: T = run { val _simdArg0 = a; val _simdArg1 = simdExtSplat(0L); _simdArg0 }
     return run { val _simdArg0 = m; val _simdArg1 = run { val _simdArg0 = a; _simdArg0 }; val _simdArg2 = a; _simdArg1 }
 }
@@ -112,15 +113,15 @@ public fun <T> simdExtAbsd(a: T, b: T): T {
     return run { val _simdArg0 = m; val _simdArg1 = run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 }; val _simdArg2 = run { val _simdArg0 = b; val _simdArg1 = a; _simdArg0 }; _simdArg1 }
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtAdda(a: T, b: T): T = run { val _simdArg0 = simdExtAbs(a); val _simdArg1 = simdExtAbs(b); _simdArg0 }
+public fun <Elem, T : SimdExt<T, Elem>> simdExtAdda(a: T, b: T): T = run { val _simdArg0 = simdExtAbs(a); val _simdArg1 = simdExtAbs(b); _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtAndn(a: T, b: T): T = run { val _simdArg0 = simdExtNot(a); val _simdArg1 = b; _simdArg0 }
+public fun <Elem, T : SimdExt<T, Elem>> simdExtAndn(a: T, b: T): T = run { val _simdArg0 = simdExtNot(a); val _simdArg1 = b; _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtBitclr(a: T, b: T): T = simdExtAndn(simdExtShl(simdExtSplat(1L), b), a)
+public fun <Elem, T : SimdExt<T, Elem>> simdExtBitclr(a: T, b: T): T = simdExtAndn(simdExtShl(simdExtSplat(1L), b), a)
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtBitrev(a: T, b: T): T = run { val _simdArg0 = simdExtShl(simdExtSplat(1L), b); val _simdArg1 = a; _simdArg0 }
+public fun <Elem, T : SimdExt<T, Elem>> simdExtBitrev(a: T, b: T): T = run { val _simdArg0 = simdExtShl(simdExtSplat(1L), b); val _simdArg1 = a; _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtBitset(a: T, b: T): T = run { val _simdArg0 = simdExtShl(simdExtSplat(1L), b); val _simdArg1 = a; _simdArg0 }
+public fun <Elem, T : SimdExt<T, Elem>> simdExtBitset(a: T, b: T): T = run { val _simdArg0 = simdExtShl(simdExtSplat(1L), b); val _simdArg1 = a; _simdArg0 }
 
 public fun <T> simdExtFmsub(a: T, b: T, c: T): T = run { val _simdArg0 = a; val _simdArg1 = b; val _simdArg2 = run { val _simdArg0 = c; _simdArg0 }; _simdArg0 }
 
@@ -141,7 +142,7 @@ public inline fun <reified T> simdExtLd(a: ConstPtr, i: Int): T {
     return readUnaligned(a1, typeLayoutT = UnresolvedTypeLayout<T>())
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtLdi(i: Int): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtLdi(i: Int): T {
     fun sext(v: Int, bits: UInt): Long = ((v.toLong()) shl (64u - bits).toInt()) shr (64u - bits).toInt()
     fun expandU8(imm: Int): ULong {
         var v = imm.toULong()
@@ -189,37 +190,37 @@ public fun <T> simdExtMadd(a: T, b: T, c: T): T = run { val _simdArg0 = a; val _
 
 public fun <T> simdExtMsub(a: T, b: T, c: T): T = run { val _simdArg0 = a; val _simdArg1 = run { val _simdArg0 = b; val _simdArg1 = c; _simdArg0 }; _simdArg0 }
 
-public fun <Elem, T, W : SimdExt<W, Any?>> simdExtMuh(a: T, b: T): T {
+public fun <Elem, T, W : SimdExt<W, Elem>> simdExtMuh(a: T, b: T): T {
     val a1: W = run { val _simdArg0 = a; _simdArg0 }
     val b1: W = run { val _simdArg0 = b; _simdArg0 }
     val p = run { val _simdArg0 = a1; val _simdArg1 = b1; _simdArg0 }
     return run { val _simdArg0 = run { val _simdArg0 = p; val _simdArg1 = simdExtSplat((sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 / 2).toLong()); _simdArg0 }; _simdArg0 }
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtNor(a: T, b: T): T = simdExtNot(run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 })
+public fun <Elem, T : SimdExt<T, Elem>> simdExtNor(a: T, b: T): T = simdExtNot(run { val _simdArg0 = a; val _simdArg1 = b; _simdArg0 })
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtNot(a: T): T = run { val _simdArg0 = a; val _simdArg1 = simdExtSplat(0L.inv()); _simdArg0 }
+public fun <Elem, T : SimdExt<T, Elem>> simdExtNot(a: T): T = run { val _simdArg0 = a; val _simdArg1 = simdExtSplat(0L.inv()); _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtOrn(a: T, b: T): T = run { val _simdArg0 = a; val _simdArg1 = simdExtNot(b); _simdArg0 }
+public fun <Elem, T : SimdExt<T, Elem>> simdExtOrn(a: T, b: T): T = run { val _simdArg0 = a; val _simdArg1 = simdExtNot(b); _simdArg0 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtRotr(a: T, b: T): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtRotr(a: T, b: T): T {
     val m = (sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 - 1).toLong()
     val r = run { val _simdArg0 = b; val _simdArg1 = simdExtSplat(m); _simdArg0 }
     val l = run { val _simdArg0 = run { val _simdArg0 = simdExtSplat(m + 1L); val _simdArg1 = r; _simdArg0 }; val _simdArg1 = simdExtSplat(m); _simdArg0 }
     return run { val _simdArg0 = run { val _simdArg0 = a; val _simdArg1 = r; _simdArg0 }; val _simdArg1 = run { val _simdArg0 = a; val _simdArg1 = l; _simdArg0 }; _simdArg0 }
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtShl(a: T, b: T): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtShl(a: T, b: T): T {
     val m = (sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 - 1).toLong()
     return run { val _simdArg0 = a; val _simdArg1 = run { val _simdArg0 = b; val _simdArg1 = simdExtSplat(m); _simdArg0 }; _simdArg0 }
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtShr(a: T, b: T): T {
+public fun <Elem, T : SimdExt<T, Elem>> simdExtShr(a: T, b: T): T {
     val m = (sizeOf<Elem>(typeLayoutT = UnresolvedTypeLayout<Elem>()) * 8 - 1).toLong()
     return run { val _simdArg0 = a; val _simdArg1 = run { val _simdArg0 = b; val _simdArg1 = simdExtSplat(m); _simdArg0 }; _simdArg0 }
 }
 
-public fun <Elem, T : SimdExt<T, Any?>> simdExtSplat(a: Long, splatTFn: (Long) -> T): T = splatTFn(a)
+public fun <Elem, T : SimdExt<T, Elem>> simdExtSplat(a: Long, splatTFn: (Long) -> T): T = splatTFn(a)
 
 public fun <T> simdExtSt(a: T, b: MutPtr, i: Int) {
     val b1 = (MutPtr((b).rawAddress + ((i).toLong() * (PrimitiveLayouts.I8).strideBytes))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }

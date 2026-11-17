@@ -146,7 +146,7 @@ public fun testMainEnvArgs(tests: List<TestDescAndFn>): ExitCode {
     // This is supposed to be reasonably fast even in Miri. In particular, when invoked via `--exact
     // test`, we want the entire invocation to be`O(log n)` in the number of tests: never iterate
     // the entire test list (as that list could be big)!
-    val args = Env.args().collect<Vec>()
+    val args = args().collect<Vec>()
     // Tests are sorted by name at compile time by mkTestsSlice.
     val tests1 = TestList.new(tests, TestListOrder.Sorted)
     return testMainInner(args, tests1, null)
@@ -165,7 +165,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
     val tests1 = tests
     // If we're being run in SpawnedSecondary mode, run the test here. runTest
     // will then exit the process.
-    when (val matchVal = Env.variable(SECONDARY_TEST_INVOKER_VAR)) {
+    when (val matchVal = variable(SECONDARY_TEST_INVOKER_VAR)) {
         is Ok -> {
             val name = matchVal.value
             // SAFETY: Technically, this is a racy access that we probably shouldn't do?
@@ -177,14 +177,14 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
             // If we ever grow an actual story for libtest and start documenting custom harness reqs,
             // we should either fix this being racy or say "write it in Rust, please".
             run {
-                Env.removeVar(SECONDARY_TEST_INVOKER_VAR)
+                removeVar(SECONDARY_TEST_INVOKER_VAR)
             }
             // Convert benchmarks to tests if we're not benchmarking.
             var tests2 = tests1.iter().copied().cloned().collect<Vec>()
-            if (Env.variable(SECONDARY_TEST_BENCH_BENCHMARKS_VAR).isOk()) {
+            if (variable(SECONDARY_TEST_BENCH_BENCHMARKS_VAR).isOk()) {
                 // SAFETY: Same as for SECONDARY_TEST_INVOKER_VAR
                 run {
-                    Env.removeVar(SECONDARY_TEST_BENCH_BENCHMARKS_VAR)
+                    removeVar(SECONDARY_TEST_BENCH_BENCHMARKS_VAR)
                 }
             } else {
                 tests2 = convertBenchmarksToTests(tests2)
@@ -208,7 +208,7 @@ public fun testMainEnvArgsAbort(tests: List<TestDescAndFn>): ExitCode {
         }
         else -> {}
     }
-    val args = Env.args().collect<Vec>()
+    val args = args().collect<Vec>()
     // Tests are sorted by name at compile time by mkTestsSlice.
     val tests3 = TestList.new(tests1, TestListOrder.Sorted)
     return testMainInner(args, tests3, Options.new().panicAbort(true))
@@ -670,7 +670,7 @@ public fun <T, E> foldErr(result: Result<Result<T, E>, RustAny>): Result<T, Rust
 public fun spawnTestSubprocess(id: TestId, desc: TestDesc, nocapture: Boolean, reportTime: Boolean, monitorCh: Sender<CompletedTest>, timeOpts: TestTimeOptions?, benchBenchmarks: Boolean) {
     val (result, testOutput, execTime) =
         (closure@{
-            val args = Env.args().collect<Vec>()
+            val args = args().collect<Vec>()
             val currentExe = args[0]
             var command = Command.new(currentExe)
             command.env(SECONDARY_TEST_INVOKER_VAR, desc.name.asSlice())

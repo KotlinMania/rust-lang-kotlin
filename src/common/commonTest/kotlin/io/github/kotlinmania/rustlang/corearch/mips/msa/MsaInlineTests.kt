@@ -789,19 +789,19 @@ public fun testMsaCeqiW() {
 // If target type is i64, negative immediate loses the sign
 // Test passes if 4294967293 is used instead -3 in vector `a`
 // @simdTest(enable = "msa")
-// unchecked fn testMsaCeqiD() {
+// unchecked fn testMsaCeqiD() (
 // #[rustfmt.skip]
 // let a = i64x2.new(-3, 2);
 // #[rustfmt.skip]
 // let r = i64x2.new(-1, 0);
 // assertEq(r, mem.transmute(__msa_ceqi_d(mem.transmute(a), -3)));
-// }
+// )
 // Can not be tested in user mode
 // @simdTest(enable = "msa")
-// unchecked fn testMsaCfcmsa() {
+// unchecked fn testMsaCfcmsa() (
 // let r = 5;
 // assertEq(r, mem.transmute(__msa_cfcmsa(5));
-// }
+// )
 public fun testMsaCleSB() {
     val a = i8x16.new(-128, 127, 55, 2, -128, 127, 55, 2, -128, 127, 55, 2, -128, 127, 55, 2)
     val b = i8x16.new(-128, 126, 55, 1, -128, 126, 55, 1, -128, 126, 55, 1, -128, 126, 55, 1)
@@ -880,13 +880,13 @@ public fun testMsaCleiSW() {
 // If target type is i64, negative immediate loses the sign
 // -3 is represented as 4294967293
 // @simdTest(enable = "msa")
-// unchecked fn testMsaCleiSD() {
+// unchecked fn testMsaCleiSD() (
 // #[rustfmt.skip]
 // let a = i64x2.new(-3, 11);
 // #[rustfmt.skip]
 // let r = i64x2.new(-1, 0);
 // assertEq(r, mem.transmute(__msa_clei_s_d(mem.transmute(a), -3)));
-// }
+// )
 public fun testMsaCleiUB() {
     val a = u8x16.new(2, 127, 100, 127, 2, 127, 100, 127, 2, 127, 100, 127, 2, 127, 100, 127)
     val r = i8x16.new(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
@@ -989,13 +989,13 @@ public fun testMsaCltiSW() {
 // If target type is i64, negative immediate loses the sign
 // -3 is represented as 4294967293
 // @simdTest(enable = "msa")
-// unchecked fn testMsaCltiSD() {
+// unchecked fn testMsaCltiSD() (
 // #[rustfmt.skip]
 // let a = i64x2.new(-5, -2);
 // #[rustfmt.skip]
 // let r = i64x2.new(-1, 0);
 // assertEq(r, mem.transmute(__msa_clti_s_d(mem.transmute(a), -3)));
-// }
+// )
 public fun testMsaCltiUB() {
     val a = u8x16.new(2, 127, 49, 127, 2, 127, 49, 127, 2, 127, 49, 127, 2, 127, 49, 127)
     val r = i8x16.new(-1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0)
@@ -1070,8 +1070,8 @@ public fun testMsaCopyUD() {
 
 // Can not be tested in user mode
 // @simdTest(enable = "msa")
-// unchecked fn testMsaCtcmsa() {
-// }
+// unchecked fn testMsaCtcmsa() (
+// )
 public fun testMsaDivSB() {
     val a = i8x16.new(-6, -7, -8, -9, -6, -7, -8, -9, -6, -7, -8, -9, -6, -7, -8, -9)
     val b = i8x16.new(-1, -2, -3, -4, -1, -2, -3, -4, -1, -2, -3, -4, -1, -2, -3, -4)
@@ -1466,7 +1466,7 @@ public fun testMsaFdivD() {
 
 // // Note: 16-bit floats
 // @simdTest(enable = "msa")
-// unchecked fn testMsaFexdoH() {
+// unchecked fn testMsaFexdoH() (
 // #[rustfmt.skip]
 // let a = f32x4.new(20.5, 2.3, 4.5, 5.4);
 // #[rustfmt.skip]
@@ -1474,7 +1474,7 @@ public fun testMsaFdivD() {
 // let r = i16x8.new(1, 9, 30, 51, 1, 9, 30, 51);
 //
 // assertEq(r, mem.transmute(__msa_fexdo_h(mem.transmute(a), mem.transmute(b))));
-// }
+// )
 public fun testMsaFexdoW() {
     val a = f64x2.new(2000005.5, 2.3)
     val b = f64x2.new(1235689784512.1, 2147483649998.5)
@@ -1498,13 +1498,13 @@ public fun testMsaFexp2D() {
 
 // Note: 16-bit floats
 // @simdTest(enable = "msa")
-// unchecked fn testMsaFexuplW() {
+// unchecked fn testMsaFexuplW() (
 // #[rustfmt.skip]
 // let a = f16x8(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5);
 // #[rustfmt.skip]
 // let r = f32x4.new(5.5, 6.5, 7.5, 8.5);
 // assertEq(r, mem.transmute(__msa_fexupl_w(mem.transmute(a))));
-// }
+// )
 public fun testMsaFexuplD() {
     val a = f32x4.new(5.5, 6.5, 7.5, 8.5)
     val r = f64x2.new(7.5, 8.5)
@@ -1513,13 +1513,13 @@ public fun testMsaFexuplD() {
 
 // Note: 16-bit floats
 // @simdTest(enable = "msa")
-// unchecked fn testMsaFexuprW() {
+// unchecked fn testMsaFexuprW() (
 // #[rustfmt.skip]
 // let a = f16x8(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5);
 // #[rustfmt.skip]
 // let r = f32x4.new(1.5, 2.5, 3.5, 4.5);
 // assertEq(r, mem.transmute(__msa_fexupr_w(mem.transmute(a))));
-// }
+// )
 public fun testMsaFexuprD() {
     val a = f32x4.new(5.5, 6.5, 7.5, 8.5)
     val r = f64x2.new(5.5, 6.5)
@@ -2281,10 +2281,10 @@ public fun testMsaLdiW() {
 // If target type is i64, negative immediate loses the sign
 // Test passes if 4294967185 is used instead -111 in vector `r`
 // @simdTest(enable = "msa")
-// unchecked fn testMsaLdiD() {
+// unchecked fn testMsaLdiD() (
 // let r = i64x2.new(-111, -111);
 // assertEq(r, mem.transmute(__msa_ldi_d(-111)));
-// }
+// )
 public fun testMsaMaddQH() {
     val a = i16x8.new(Short.MAX_VALUE, 1024, Short.MIN_VALUE, -1024, 1, 2, 3, 4)
     val b = i16x8.new(1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024)
@@ -2455,13 +2455,13 @@ public fun testMsaMaxiSW() {
 // If target type is i64, negative immediate loses the sign
 // Test passes if 4294967293 is used instead -3 in vector `r`
 // @simdTest(enable = "msa")
-// unchecked fn testMsaMaxiSD() {
+// unchecked fn testMsaMaxiSD() (
 // #[rustfmt.skip]
 // let a = i64x2.new(1, -8);
 // #[rustfmt.skip]
 // let r = i64x2.new(-3, -3);
 // assertEq(r, mem.transmute(__msa_maxi_s_d(mem.transmute(a), -3)));
-// }
+// )
 public fun testMsaMaxiUB() {
     val a = u8x16.new(1, 3, 6, 8, 1, 3, 6, 8, 1, 3, 6, 8, 1, 3, 6, 8)
     val r = u8x16.new(5, 5, 6, 8, 5, 5, 6, 8, 5, 5, 6, 8, 5, 5, 6, 8)
@@ -2564,13 +2564,13 @@ public fun testMsaMiniSW() {
 // If target type is i64, negative immediate loses the sign
 // -3 is represented as 4294967293
 // @simdTest(enable = "msa")
-// unchecked fn testMsaMiniSD() {
+// unchecked fn testMsaMiniSD() (
 // #[rustfmt.skip]
 // let a = i64x2.new(-3, 2);
 // #[rustfmt.skip]
 // let r = i64x2.new(-1, -3);
 // assertEq(r, mem.transmute(__msa_mini_s_d(mem.transmute(a), -3)));
-// }
+// )
 public fun testMsaMinUB() {
     val a = u8x16.new(1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4)
     val b = u8x16.new(6, 7, 8, 9, 6, 7, 8, 9, 6, 7, 8, 9, 6, 7, 8, 9)

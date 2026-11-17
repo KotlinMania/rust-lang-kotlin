@@ -126,7 +126,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
     check(d.mant.checkedAdd(d.plus) != null)
     check(d.mant.checkedSub(d.minus) != null)
     check(buf.size >= MAX_SIG_DIGITS)
-    // `a.cmp(b)<rounding` is `if d.inclusive { a <= b } else { a<b }`
+    // `a.cmp(b)<rounding` is `if d.inclusive ( a <= b ) else ( a<b )`
     val rounding =
         if (d.inclusive) {
             Ordering.Greater
@@ -136,7 +136,7 @@ public fun formatShortest(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): Pai
     // estimate `k0` from original inputs satisfying `10 ^(k0 - 1)<high <= 10 ^(k0 + 1)`.
     // the tight bound `k` satisfying `10 ^(k - 1)<high <= 10 ^ k` is calculated later.
     var k = estimateScalingFactor(d.mant + d.plus, d.exp)
-    // convert `{ mant, plus, minus } * 2 ^ exp` into the fractional form so that:
+    // convert `( mant, plus, minus ) * 2 ^ exp` into the fractional form so that:
     // - `v = mant / scale`
     // - `low = (mant - minus) / scale`
     // - `high = (mant + plus) / scale`

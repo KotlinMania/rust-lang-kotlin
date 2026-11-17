@@ -189,7 +189,7 @@ public open class IterMut<T>(
         return this.i2.fold(accum1, f)
     }
 
-    public open fun <B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
+    public open fun <Residual, B, R> tryFold(init: B, f: (B, T) -> R): R where R : Try<B> {
         val acc = when (val tryResult = this.i1.tryFold(init, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return this.i2.tryFold(acc, f)
     }
@@ -243,7 +243,7 @@ public open class IterMut<T>(
         return this.i1.rfold(accum1, f)
     }
 
-    public open fun <B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, T) -> R): R where R : Try<B> {
         val acc = when (val tryResult = this.i2.tryRfold(init, f)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
         return this.i1.tryRfold(acc, f)
     }

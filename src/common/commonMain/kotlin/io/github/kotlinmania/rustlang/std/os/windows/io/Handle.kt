@@ -104,9 +104,9 @@ public open class BorrowedHandle internal constructor(
      * # use std.io;
      * # use std.os.windows.io.AsHandle;
      * let meta = io.stdout().asHandle().toView::<File>().metadata().unwrap();
-     * if meta.isFile() {
+     * if meta.isFile() (
      *     println("stdout is a regular file");
-     * }
+     * )
      * ```kotlin
      */
     public open fun <T> toView(): T = this.asRef()
@@ -562,7 +562,7 @@ public interface AsHandle {
      *
      * use std.fs.File;
      * # use std.io;
-     * use std.os.windows.io::{AsHandle, BorrowedHandle};
+     * use std.os.windows.io::(AsHandle, BorrowedHandle);
      *
      * let mut f = File.open("foo.txt")?;
      * let borrowedHandle: BorrowedHandle<_> = f.asHandle();

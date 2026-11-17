@@ -20,10 +20,10 @@ public interface StdioExt {
      * - `dup2` on most unixes
      *
      * @file:feature(stdioSwap)
-     * use std.io::{self, Read, Write};
+     * use std.io::(self, Read, Write);
      * use std.os.unix.io.StdioExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *    let (reader, mut writer) = io.pipe()?;
      *    let mut stdin = io.stdin();
      *    stdin.setFd(reader)?;
@@ -32,7 +32,7 @@ public interface StdioExt {
      *    assertEq(stdin.read(buffer)?, 13);
      *    assertEq(&buffer, b"Hello, world!");
      *    Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun setFd(fd: OwnedFd): Result<Unit, Error>

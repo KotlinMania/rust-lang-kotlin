@@ -47,7 +47,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * check(null == iter.removeLastOrNull())
  * ```
  */
-public interface DoubleEndedIterator<T> {
+public interface DoubleEndedIterator {
     /**
      * Removes and returns an element from the end of the iterator.
      *
@@ -191,7 +191,7 @@ public interface DoubleEndedIterator<T> {
         interface SpecAdvanceBackBy {
             public fun specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
         }
-        fun <I : DoubleEndedIterator<I>> I.specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+        fun <I : DoubleEndedIterator> I.specAdvanceBackBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
             for (i in 0 until n1) {
                 if (this.nextBack() == null) {
                     // SAFETY: `i` is always less than `n`.
@@ -275,7 +275,7 @@ public interface DoubleEndedIterator<T> {
      * check(it.nextBack() == "1")
      * ```
      */
-    public fun <B, R> tryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?> {
+    public fun <Residual, B, R> tryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
         var accum = init
         while (true) {
             val matchVal = this.nextBack()
@@ -294,7 +294,7 @@ public interface DoubleEndedIterator<T> {
      * starting from the back of the iterator.
      *
      * `rfold()` takes two arguments: an initial value, and a closure with two
-     * arguments: an 'accumulator', and an element. The closure returns the value that
+     * arguments: an `accumulator`, and an element. The closure returns the value that
      * the accumulator should have for the next iteration.
      *
      * The initial value is the value the accumulator will have on the first
@@ -303,7 +303,7 @@ public interface DoubleEndedIterator<T> {
      * After applying this closure to every element of the iterator, `rfold()`
      * returns the accumulator.
      *
-     * This operation is sometimes called 'reduce' or 'inject'.
+     * This operation is sometimes called `reduce` or `inject`.
      *
      * Folding is useful whenever you have a collection of something, and want
      * to produce a single value from it.
@@ -412,13 +412,13 @@ public interface DoubleEndedIterator<T> {
 /**
  * Helper trait to specialize `rfold` and `rtryFold` for `I where I: Sized`
  */
-public interface DoubleEndedIteratorRefSpec<T> : DoubleEndedIterator<T> {
+public interface DoubleEndedIteratorRefSpec : DoubleEndedIterator {
     public fun <B> specRfold(init: B, f: (B, Item) -> B): B
 
-    public fun <B, R> specTryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?>
+    public fun <Residual, B, R> specTryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual>
 }
 
-public fun <I : DoubleEndedIterator<I>, B> I.specRfold(init: B, f: (B, Item) -> B): B {
+public fun <I : DoubleEndedIterator, B> I.specRfold(init: B, f: (B, Item) -> B): B {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -429,7 +429,7 @@ public fun <I : DoubleEndedIterator<I>, B> I.specRfold(init: B, f: (B, Item) -> 
     return accum
 }
 
-public fun <I : DoubleEndedIterator<I>, B, R> I.specTryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?> {
+public fun <Residual, I : DoubleEndedIterator, B, R> I.specTryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -440,4 +440,4 @@ public fun <I : DoubleEndedIterator<I>, B, R> I.specTryRfold(init: B, f: (B, Ite
     return accum
 }
 
-public fun <I : DoubleEndedIterator<I>, Aaa> I.specRfold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.specTryRfold(init, NeverShortCircuit.wrapMut2(fold)).first
+public fun <I : DoubleEndedIterator, Aaa> I.specRfold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.specTryRfold(init, NeverShortCircuit.wrapMut2(fold)).first

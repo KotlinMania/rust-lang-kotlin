@@ -176,7 +176,7 @@ public fun benchmark(id: TestId, desc: TestDesc, monitorCh: Sender<CompletedTest
     setOutputCapture(null)
     val testResult =
         when {
-            // bs.bench(f) {
+            // bs.bench(f) (
             result is Result.Ok && result.value is Result.Ok && (result.value as Result.Ok).value != null -> {
                 val nsIter = max(nsIterSumm.median.toULong(), 1)
                 val mbS = bs.bytes * 1000uL / nsIter

@@ -306,7 +306,7 @@ public fun tryBlock(expr: String = ""): String =
 /**
  * Writes formatted data into a buffer.
  *
- * This macro accepts a 'writer', a format string, and a list of arguments. Arguments will be
+ * This macro accepts a `writer`, a format string, and a list of arguments. Arguments will be
  * formatted according to the specified format string and the result will be passed to the writer.
  * The writer may be any value with a `writeFmt` method; generally this comes from an
  * implementation of either the [fmt.Write] or the [io.Write] trait. The macro
@@ -519,7 +519,7 @@ public fun unreachable(arg: String = ""): String =
  * }
  * ```
  *
- * We want to implement `Foo` for 'MyStruct', but for some reason it only makes sense
+ * We want to implement `Foo` for `MyStruct`, but for some reason it only makes sense
  * to implement the `bar()` function. `baz()` and `qux()` will still need to be defined
  * in our implementation of `Foo`, but we can use `unsupportedBranch` in their definitions
  * to allow our code to compile.
@@ -536,7 +536,7 @@ public fun unreachable(arg: String = ""): String =
  *     public open fun baz() {
  *         // It makes no sense to `baz` a `MyStruct`, so we have no logic here
  *         // at all.
- *         // This will display "thread 'main' panicked at not implemented'".
+ *         // This will display "thread `main` panicked at not implemented'".
  *         error("unsupported")
  *     }
  *
@@ -544,7 +544,7 @@ public fun unreachable(arg: String = ""): String =
  *         // We have some logic here,
  *         // We can add a message to unsupportedBranch to display our omission.
  *         // This will display:
- *         // "thread 'main' panicked at not implemented: MyStruct isn't quxable'".
+ *         // "thread `main` panicked at not implemented: MyStruct isn't quxable'".
  *         error("MyStruct isn't quxable")
  *     }
  * }
@@ -612,7 +612,7 @@ public fun unsupportedBranch(arg: String = ""): String =
  *     public open fun qux(): Result<ULong> {
  *         // We can add a message to pendingTask to display our omission.
  *         // This will display:
- *         // "thread 'main' panicked at not yet implemented: MyStruct is not yet quxable'".
+ *         // "thread `main` panicked at not yet implemented: MyStruct is not yet quxable'".
  *         error("MyStruct is not yet quxable")
  *     }
  * }

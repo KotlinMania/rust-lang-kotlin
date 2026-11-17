@@ -52,7 +52,7 @@ import io.github.kotlinmania.rustlang.core.unicode.XidContinue
 import io.github.kotlinmania.rustlang.core.unicode.XidStart
 import io.github.kotlinmania.rustlang.core.unicode.conversions
 
-// impl char {}
+// impl char ()
 
 /**
  * The lowest valid code point a `char` can have, `'\0'`.
@@ -85,7 +85,7 @@ import io.github.kotlinmania.rustlang.core.unicode.conversions
 public val MIN: Char = '\u0000'
 
 /**
- * The highest valid code point a `char` can have, `'\u{10FFFF}'`.
+ * The highest valid code point a `char` can have, `'\u(10FFFF)'`.
  *
  * Unlike integer types, `char` actually has a gap in the middle,
  * meaning that the range of possible `char`s is smaller than you
@@ -259,7 +259,7 @@ public fun Char.Companion.fromU32Unchecked(i: UInt): Char {
 /**
  * Converts a digit in the given radix to a `char`.
  *
- * A 'radix' here is sometimes also called a 'base'. A radix of two
+ * A `radix` here is sometimes also called a `base`. A radix of two
  * indicates a binary number, a radix of ten, decimal, and a radix of
  * sixteen, hexadecimal, to give some common values. Arbitrary
  * radices are supported.
@@ -302,7 +302,7 @@ public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? = io.github.k
 /**
  * Checks if a `char` is a digit in the given radix.
  *
- * A 'radix' here is sometimes also called a 'base'. A radix of two
+ * A `radix` here is sometimes also called a `base`. A radix of two
  * indicates a binary number, a radix of ten, decimal, and a radix of
  * sixteen, hexadecimal, to give some common values. Arbitrary
  * radices are supported.
@@ -310,13 +310,13 @@ public fun Char.Companion.fromDigit(num: UInt, radix: UInt): Char? = io.github.k
  * Compared to [isNumeric], this function only recognizes the characters
  * `0 - 9`, `a - z` and `A - Z`.
  *
- * 'Digit' is defined to be only the following characters:
+ * `Digit` is defined to be only the following characters:
  *
  * * `0 - 9`
  * * `a - z`
  * * `A - Z`
  *
- * For a more comprehensive understanding of 'digit', see [isNumeric].
+ * For a more comprehensive understanding of `digit`, see [isNumeric].
  *
  * [isNumeric]: #method.isNumeric
  *
@@ -353,12 +353,12 @@ public fun Char.isDigit(radix: UInt): Boolean = this.toDigit(radix) != null
 /**
  * Converts a `char` to a digit in the given radix.
  *
- * A 'radix' here is sometimes also called a 'base'. A radix of two
+ * A `radix` here is sometimes also called a `base`. A radix of two
  * indicates a binary number, a radix of ten, decimal, and a radix of
  * sixteen, hexadecimal, to give some common values. Arbitrary
  * radices are supported.
  *
- * 'Digit' is defined to be only the following characters:
+ * `Digit` is defined to be only the following characters:
  *
  * * `0 - 9`
  * * `a - z`
@@ -432,7 +432,7 @@ public fun Char.toDigit(radix: UInt): UInt? {
  * character as `char`s.
  *
  * This will escape characters with the Rust syntax of the form
- * `\u{NNNNNN}` where `NNNNNN` is a hexadecimal representation.
+ * `\u(NNNNNN)` where `NNNNNN` is a hexadecimal representation.
  *
  * # Examples
  *
@@ -665,7 +665,7 @@ public fun Char.lenUtf16(): Int = lenUtf16(this.toUInt())
  *
  * # Examples
  *
- * In both of these examples, 'ß' takes two bytes to encode.
+ * In both of these examples, `ß` takes two bytes to encode.
  *
  * ```kotlin
  * var b = MutableList(2) { 0 }
@@ -927,7 +927,7 @@ public fun Char.isUppercase(): Boolean =
  * characters, and `No` for other numeric characters) are [specified] in the Unicode Character
  * Database [UnicodeData.txt].
  *
- * This method doesn't cover everything that could be considered a number, e.g. ideographic numbers like '三'.
+ * This method doesn't cover everything that could be considered a number, e.g. ideographic numbers like `三`.
  * If you want everything including characters with overlapping purposes, then you might want to use
  * a Unicode or language-processing library that exposes the appropriate character properties
  * (e.g. [NumericType]) instead of looking at the Unicode categories.
@@ -1094,7 +1094,7 @@ public fun Char.isXidStart(): Boolean =
  * Control codes (code points with the general category of `Cc`) are [described] in Chapter 23
  * (Special Areas and Format Characters) of the Unicode Standard, and [specified] in the Unicode Character
  * Database [UnicodeData.txt]. The full set of Unicode control codes is
- * `'\0' ..= '\x1f' | '\x7f' ..= '\u{9f}'`, and will never change.
+ * `'\0' ..= '\x1f' | '\x7f' ..= '\u(9f)'`, and will never change.
  *
  * [described]: https://www.unicode.org/versions/latest/core-spec/chapter-23/#G20365
  * [specified]: https://www.unicode.org/reports/tr44/#GcValuesTable
@@ -1128,7 +1128,7 @@ public fun Char.isControl(): Boolean =
  * Private-use characters (code points with the general category of `Co`) are [described] in Chapter 23
  * (Special Areas and Format Characters) of the Unicode Standard, and [specified] in the
  * Unicode Character Database [UnicodeData.txt]. The full set of private-use characters is
- * `'\u{E000}' ..= '\u{F8FF}' | '\u{F0000}' ..= '\u{FFFFD}' | '\u{100000}' ..= '\u{10FFFD}'`,
+ * `'\u(E000)' ..= '\u(F8FF)' | '\u(F0000)' ..= '\u(FFFFD)' | '\u(100000)' ..= '\u(10FFFD)'`,
  * and will never change.
  *
  * [described]: https://www.unicode.org/versions/latest/core-spec/chapter-23/#G19184
@@ -1208,7 +1208,7 @@ public fun Char.isFormatControl(): Boolean = this > '\u00ac' && Cf(this)
  *     // noncharacter, will never be assigned
  *     // Not currently assigned, but may be in the future,
  *     // so we shouldn't rely on the current status
- *     // assert(!'\u{7AAAA}'.isAssigned());
+ *     // assert(!'\u(7AAAA)'.isAssigned());
  * }
  * ```
  */
@@ -1275,7 +1275,7 @@ public fun Char.isGraphemeExtender(): Boolean = this > '\u02ff' && GraphemeExten
 
 /**
  * Returns `true` if this `char` has the `CaseIgnorable` property. This narrow-use property
- * is used to implement context-dependent casing for the Greek letter sigma (uppercase 'Σ'),
+ * is used to implement context-dependent casing for the Greek letter sigma (uppercase `Σ`),
  * which has two lowercase forms.
  *
  * `CaseIgnorable` is [described] in Chapter 3 (Conformance) of the Unicode Core Specification,
@@ -1364,8 +1364,8 @@ public fun Char.isCaseIgnorable(): Boolean =
  *
  * ## Greek sigma
  *
- * In Greek, the letter sigma (uppercase 'Σ') has two lowercase forms:
- * 'σ' which is used in most situations, and 'ς' which appears only
+ * In Greek, the letter sigma (uppercase `Σ`) has two lowercase forms:
+ * `σ` which is used in most situations, and `ς` which appears only
  * at the end of a word. [char.toLowercase] always uses the first form:
  *
  * ```kotlin
@@ -1385,18 +1385,18 @@ public fun Char.isCaseIgnorable(): Boolean =
  *
  * ## Turkish and Azeri I/ı/İ/i
  *
- * In Turkish and Azeri, the equivalent of 'i' in Latin has five forms instead of two:
+ * In Turkish and Azeri, the equivalent of `i` in Latin has five forms instead of two:
  *
- * * 'Dotless': I / ı, sometimes written ï
- * * 'Dotted': İ / i
+ * * `Dotless`: I / ı, sometimes written ï
+ * * `Dotted`: İ / i
  *
- * Note that the uppercase undotted 'I' is the same codepoint as the Latin. Therefore:
+ * Note that the uppercase undotted `I` is the same codepoint as the Latin. Therefore:
  *
  * ```kotlin
  * val lowerI = 'I'.lowercase().toString()
  * ```
  *
- * `'I'`s correct lowercase relies on the language of the text: if we're
+ * ``I``s correct lowercase relies on the language of the text: if we're
  * in `en - US`, it should be `"i"`, but if we're in `tr - TR` or `az - AZ`, it should
  * be `"ı"`. `toLowercase()` does not take this into account, and so:
  *
@@ -1525,12 +1525,12 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(con
  * Unicode includes single-character versions of these digraphs.
  * Each has a uppercase, titlecase, and lowercase version:
  *
- * - `'Ǆ'`, `'ǅ'`, `'ǆ'`
- * - `'Ǉ'`, `'ǈ'`, `'ǉ'`
- * - `'Ǌ'`, `'ǋ'`, `'ǌ'`
+ * - ``Ǆ``, ``ǅ``, ``ǆ``
+ * - ``Ǉ``, ``ǈ``, ``ǉ``
+ * - ``Ǌ``, ``ǋ``, ``ǌ``
  *
  * Unicode additionally encodes a casing triad for the Dz digraph
- * without the caron: `'Ǳ'`, `'ǲ'`, `'ǳ'`.
+ * without the caron: ``Ǳ``, ``ǲ``, ``ǳ``.
  *
  * ## Iota-subscritped Greek vowels
  *
@@ -1548,8 +1548,8 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(con
  * The interaction of mute ι symbols with casing also varies.
  *
  * The Unicode Standard, for its default casing rules, chose to make lowercase
- * Greek vowels with iota subscipt (e.g. `'ᾠ'`) titlecase to the uppercase vowel
- * with iota subscript (`'ᾨ'`) but uppercase to the uppercase vowel followed by
+ * Greek vowels with iota subscipt (e.g. ``ᾠ``) titlecase to the uppercase vowel
+ * with iota subscript (``ᾨ``) but uppercase to the uppercase vowel followed by
  * full-size uppercase iota (`"ὨΙ"`). This is just one convention among many
  * in common use, but it is the one Unicode settled on,
  * so it is what this method does also.
@@ -1562,12 +1562,12 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(con
  * which is developed by Unicode. A description of one common
  * locale-dependent casing issue follows (there are others):
  *
- * In Turkish and Azeri, the equivalent of 'i' in Latin has five forms instead of two:
+ * In Turkish and Azeri, the equivalent of `i` in Latin has five forms instead of two:
  *
- * * 'Dotless': I / ı, sometimes written ï
- * * 'Dotted': İ / i
+ * * `Dotless`: I / ı, sometimes written ï
+ * * `Dotted`: İ / i
  *
- * Note that the lowercase dotted 'i' is the same codepoint as the Latin. Therefore:
+ * Note that the lowercase dotted `i` is the same codepoint as the Latin. Therefore:
  *
  * ```kotlin
  * @feature(titlecase)
@@ -1576,7 +1576,7 @@ public fun Char.toLowercase(): ToLowercase = ToLowercase(CaseMappingIter.new(con
  * }
  * ```
  *
- * `'i'`s correct titlecase relies on the language of the text: if we're
+ * ``i``s correct titlecase relies on the language of the text: if we're
  * in `en - US`, it should be `"I"`, but if we're in `tr - TR` or `az - AZ`, it should
  * be `"İ"`. `toTitlecase()` does not take this into account, and so:
  *
@@ -1626,7 +1626,7 @@ public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(con
  *
  * # Examples
  *
- * `'ﬅ'` (U+FB05) is a single Unicode code point (a ligature) that maps to "ST" in uppercase.
+ * ``ﬅ`` (U+FB05) is a single Unicode code point (a ligature) that maps to "ST" in uppercase.
  *
  * As an iterator:
  *
@@ -1671,18 +1671,18 @@ public fun Char.toTitlecase(): ToTitlecase = ToTitlecase(CaseMappingIter.new(con
  * which is developed by Unicode. A description of one common
  * locale-dependent casing issue follows (there are others):
  *
- * In Turkish and Azeri, the equivalent of 'i' in Latin has five forms instead of two:
+ * In Turkish and Azeri, the equivalent of `i` in Latin has five forms instead of two:
  *
- * * 'Dotless': I / ı, sometimes written ï
- * * 'Dotted': İ / i
+ * * `Dotless`: I / ı, sometimes written ï
+ * * `Dotted`: İ / i
  *
- * Note that the lowercase dotted 'i' is the same codepoint as the Latin. Therefore:
+ * Note that the lowercase dotted `i` is the same codepoint as the Latin. Therefore:
  *
  * ```kotlin
  * val upperI = 'i'.uppercase().toString()
  * ```
  *
- * `'i'`s correct uppercase relies on the language of the text: if we're
+ * ``i``s correct uppercase relies on the language of the text: if we're
  * in `en - US`, it should be `"I"`, but if we're in `tr - TR` or `az - AZ`, it should
  * be `"İ"`. `toUppercase()` does not take this into account, and so:
  *
@@ -1713,8 +1713,8 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(con
  * [CaseFolding.txt]: https://www.unicode.org/Public/UCD/latest/ucd/CaseFolding.txt
  *
  * No [normalization] (e.g. NFC) is performed, so visually and semantically identical characters
- * might still casefold differently. For example, `'ά'` (U+03AC GREEK SMALL LETTER ALPHA WITH TONOS)
- * is considered distinct from `'ά'` (U+1F71 GREEK SMALL LETTER ALPHA WITH OXIA),
+ * might still casefold differently. For example, ``ά`` (U+03AC GREEK SMALL LETTER ALPHA WITH TONOS)
+ * is considered distinct from ``ά`` (U+1F71 GREEK SMALL LETTER ALPHA WITH OXIA),
  * even though Unicode considers them canonically equivalent.
  *
  * In addition, this method is independent of language/locale,
@@ -1727,7 +1727,7 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(con
  *
  * # Examples
  *
- * The German sharp S `'ß'` (U+DF) is a single Unicode code point
+ * The German sharp S ``ß`` (U+DF) is a single Unicode code point
  * that casefolds to `"ss"`. Its uppercase variant '`ẞ`' (U+1E9E)
  * has the same case-folding.
  *
@@ -1771,12 +1771,12 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(con
  *
  * # Note on locale
  *
- * In Turkish and Azeri, the equivalent of 'i' in Latin has five forms instead of two:
+ * In Turkish and Azeri, the equivalent of `i` in Latin has five forms instead of two:
  *
- * * 'Dotless': I / ı, sometimes written ï
- * * 'Dotted': İ / i
+ * * `Dotless`: I / ı, sometimes written ï
+ * * `Dotted`: İ / i
  *
- * Note that the uppercase undotted 'I' is the same codepoint as the Latin. Therefore:
+ * Note that the uppercase undotted `I` is the same codepoint as the Latin. Therefore:
  *
  * ```kotlin
  * @feature(casefold)
@@ -1785,7 +1785,7 @@ public fun Char.toUppercase(): ToUppercase = ToUppercase(CaseMappingIter.new(con
  * }
  * ```
  *
- * `'I'`s correct case folding relies on the language of the text: if we're
+ * ``I``s correct case folding relies on the language of the text: if we're
  * in `en - US`, it should be `"i"`, but if we're in `tr - TR` or `az - AZ`, it should
  * be `"ı"`. `toCasefoldUnnormalized()` does not take this into account, and so:
  *
@@ -1867,7 +1867,7 @@ public fun Char.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Ch
 /**
  * Makes a copy of the value in its ASCII upper case equivalent.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To uppercase the value in-place, use [makeAsciiUppercase].
@@ -1897,7 +1897,7 @@ public fun Char.toAsciiUppercase(): Char =
 /**
  * Makes a copy of the value in its ASCII lower case equivalent.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To lowercase the value in-place, use [makeAsciiLowercase].
@@ -1947,7 +1947,7 @@ public fun Char.eqIgnoreAsciiCase(other: Char): Boolean = this.toAsciiLowercase(
 /**
  * Converts this type to its ASCII upper case equivalent in-place.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To return a new uppercased value without modifying the existing one, use
@@ -1970,7 +1970,7 @@ public fun Char.makeAsciiUppercase() {
 /**
  * Converts this type to its ASCII lower case equivalent in-place.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To return a new lowercased value without modifying the existing one, use
@@ -1993,8 +1993,8 @@ public fun Char.makeAsciiLowercase() {
 /**
  * Checks if the value is an ASCII alphabetic character:
  *
- * - U+0041 'A' ..= U+005A 'Z', or
- * - U+0061 'a' ..= U+007A 'z'.
+ * - U+0041 `A` ..= U+005A `Z`, or
+ * - U+0061 `a` ..= U+007A `z`.
  *
  * # Examples
  *
@@ -2027,7 +2027,7 @@ public fun Char.isAsciiAlphabetic(): Boolean =
 
 /**
  * Checks if the value is an ASCII uppercase character:
- * U+0041 'A' ..= U+005A 'Z'.
+ * U+0041 `A` ..= U+005A `Z`.
  *
  * # Examples
  *
@@ -2060,7 +2060,7 @@ public fun Char.isAsciiUppercase(): Boolean =
 
 /**
  * Checks if the value is an ASCII lowercase character:
- * U+0061 'a' ..= U+007A 'z'.
+ * U+0061 `a` ..= U+007A `z`.
  *
  * # Examples
  *
@@ -2094,8 +2094,8 @@ public fun Char.isAsciiLowercase(): Boolean =
 /**
  * Checks if the value is an ASCII alphanumeric character:
  *
- * - U+0041 'A' ..= U+005A 'Z', or
- * - U+0061 'a' ..= U+007A 'z', or
+ * - U+0041 `A` ..= U+005A `Z`, or
+ * - U+0061 `a` ..= U+007A `z`, or
  * - U+0030 '0' ..= U+0039 '9'.
  *
  * # Examples
@@ -2204,8 +2204,8 @@ public fun Char.isAsciiOctdigit(): Boolean =
  * Checks if the value is an ASCII hexadecimal digit:
  *
  * - U+0030 '0' ..= U+0039 '9', or
- * - U+0041 'A' ..= U+0046 'F', or
- * - U+0061 'a' ..= U+0066 'f'.
+ * - U+0041 `A` ..= U+0046 `F`, or
+ * - U+0061 `a` ..= U+0066 `f`.
  *
  * # Examples
  *
@@ -2251,7 +2251,7 @@ public fun Char.isAsciiHexdigit(): Boolean =
  * - U+0021 ..= U+002F `! " # $ % & ' ( ) * + , - . /`, or
  * - U+003A ..= U+0040 `:; < = > ? @`, or
  * - U+005B ..= U+0060 [ \ ] ^ _ `, or
- * - U+007B ..= U+007E `{ | } ~`
+ * - U+007B ..= U+007E `( | ) ~`
  *
  * # Examples
  *

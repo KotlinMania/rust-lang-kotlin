@@ -221,7 +221,7 @@ public fun determineSign(sign: Sign, decoded: FullDecoded, negative: Boolean): S
  * There should be at least 4 parts available, due to the worst case like
  * `[+][0.][0000][2][0000]` with `fracDigits = 10`.
  */
-public fun <T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUninit<UByte>>) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T> {
+public fun <Int, T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUninit<UByte>>) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 4)
     check(buf.size >= MAX_SIG_DIGITS)
     val (negative, fullDecoded) = decode(v)
@@ -278,7 +278,7 @@ public fun <T> toShortestStr(formatShortest: (Decoded, MutableList<MaybeUninit<U
  * There should be at least 6 parts available, due to the worst case like
  * `[+][1][.][2345][e][-][6]`.
  */
-public fun <T> toShortestExpStr(formatShortest: (Decoded, MutableList<MaybeUninit<UByte>>) -> Pair<List<UByte>, Short>, v: T, sign: Sign, decBounds: Pair<Short, Short>, upper: Boolean, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T> {
+public fun <Int, T> toShortestExpStr(formatShortest: (Decoded, MutableList<MaybeUninit<UByte>>) -> Pair<List<UByte>, Short>, v: T, sign: Sign, decBounds: Pair<Short, Short>, upper: Boolean, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 6)
     check(buf.size >= MAX_SIG_DIGITS)
     check(decBounds.first <= decBounds.second)
@@ -373,7 +373,7 @@ public fun estimateMaxBufLen(exp: Short): Int =
  * There should be at least 6 parts available, due to the worst case like
  * `[+][1][.][2345][e][-][6]`.
  */
-public fun <T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, upper: Boolean, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T> {
+public fun <Int, T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, upper: Boolean, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 6)
     val (negative, fullDecoded) = decode(v)
     val sign1 = determineSign(sign, fullDecoded, negative)
@@ -445,7 +445,7 @@ public fun <T> toExactExpStr(formatExact: (Decoded, MutableList<MaybeUninit<UByt
  * There should be at least 4 parts available, due to the worst case like
  * `[+][0.][0000][2][0000]` with `fracDigits = 10`.
  */
-public fun <T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T> {
+public fun <Int, T> toExactFixedStr(formatExact: (Decoded, MutableList<MaybeUninit<UByte>>, Short) -> Pair<List<UByte>, Short>, v: T, sign: Sign, fracDigits: Int, buf: MutableList<MaybeUninit<UByte>>, parts: MutableList<MaybeUninit<Part>>): Formatted where T : DecodableFloat<T, Int> {
     check(parts.size >= 4)
     val (negative, fullDecoded) = decode(v)
     val sign1 = determineSign(sign, fullDecoded, negative)

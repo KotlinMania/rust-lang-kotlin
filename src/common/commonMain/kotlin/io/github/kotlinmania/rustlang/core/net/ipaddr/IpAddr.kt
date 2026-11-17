@@ -53,7 +53,7 @@ public sealed class IpAddr {
     public fun rustEquals(other: IpAddr): Boolean = this == other
 
     /**
-     * Returns [trueVal] for the special 'unspecified' address.
+     * Returns [trueVal] for the special `unspecified` address.
      *
      * See the documentation for [Ipv4Addr.isUnspecified] and
      * [Ipv6Addr.isUnspecified] for more details.
@@ -618,7 +618,7 @@ public open class Ipv4Addr(
     public open fun asOctets(): UByteArray = this.octets
 
     /**
-     * Returns [trueVal] for the special 'unspecified' address (`0.0.0.0`).
+     * Returns [trueVal] for the special `unspecified` address (`0.0.0.0`).
      *
      * This property is defined in _UNIX Network Programming, Second Edition_,
      * W. Richard Stevens, p. 891; see also [ip7].
@@ -1374,7 +1374,7 @@ public open class Ipv6Addr(
     }
 
     /**
-     * Returns [trueVal] for the special 'unspecified' address (`.`).
+     * Returns [trueVal] for the special `unspecified` address (`.`).
      *
      * This property is defined in [IETF RFC 4291].
      *

@@ -69,7 +69,7 @@ public fun TTL.vecXstLen(a: MutPtr, l: ULong) {
  * ## Notes
  * vecXlLen should not be used to load from cache-inhibited memory.
  */
-public fun <Result, T> vecXlLen(p: T, len: Int): Result where T : VectorXloads<Any?> = p.vecXlLen(len)
+public fun <Result, T> vecXlLen(p: T, len: Int): Result where T : VectorXloads<Result> = p.vecXlLen(len)
 
 /**
  * Vector Store with Length
@@ -92,6 +92,6 @@ public fun <Result, T> vecXlLen(p: T, len: Int): Result where T : VectorXloads<A
  * ## Notes
  * vecXstLen should not be used to store to cache-inhibited memory.
  */
-public fun <Out, T> vecXstLen(v: T, a: Out, l: Int) where T : VectorXstores<Any?> {
+public fun <Out, T> vecXstLen(v: T, a: Out, l: Int) where T : VectorXstores<Out> {
     v.vecXstLen(a, l)
 }

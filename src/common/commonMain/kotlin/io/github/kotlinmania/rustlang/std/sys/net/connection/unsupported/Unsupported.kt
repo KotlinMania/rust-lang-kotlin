@@ -82,7 +82,7 @@ public open class TcpStream(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
 
         public fun connectTimeout(arg0: SocketAddr, arg1: Duration): Result<TcpStream, Error> = unsupported()
     }
@@ -122,7 +122,7 @@ public open class TcpListener(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
     }
 }
 
@@ -201,12 +201,12 @@ public open class UdpSocket(
 
     public open fun send(arg0: List<UByte>): Result<Int, Error> = this.value
 
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(arg0: A): Result<Unit, Error> = this.value
+    public open fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<Unit, Error> = this.value
 
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = this.value
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()
     }
 }
 

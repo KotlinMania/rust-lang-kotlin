@@ -1,12 +1,12 @@
 // port-lint: source os/unix/fs.rs
 package io.github.kotlinmania.rustlang.std.os.unix.fs
 
+import io.github.kotlinmania.libc.fuchsia.S_IFBLK
+import io.github.kotlinmania.libc.fuchsia.S_IFCHR
+import io.github.kotlinmania.libc.fuchsia.S_IFIFO
+import io.github.kotlinmania.libc.fuchsia.S_IFSOCK
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFIFO
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.fs.DirBuilder
 import io.github.kotlinmania.rustlang.std.fs.DirEntry
@@ -52,15 +52,15 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.unix.prelude.FileExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut buf = [0u8; 8];
      *     let file = File.open("foo.txt")?;
      *
      *     // We now read 8 bytes from the offset 10.
      *     let numBytesRead = file.readAt(buf, 10)?;
-     *     println("read {numBytesRead} bytes: {buf:?}");
+     *     println("read (numBytesRead) bytes: (buf:?)");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun readAt(buf: MutableList<UByte>, offset: ULong): Result<Int, Error>
@@ -109,15 +109,15 @@ public interface FileExt {
      * use std.fs.File;
      * use std.os.unix.prelude.FileExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut buf = [0u8; 8];
      *     let file = File.open("foo.txt")?;
      *
      *     // We now read exactly 8 bytes from the offset 10.
      *     file.readExactAt(buf, 10)?;
-     *     println("read {} bytes: {:?}", buf.len(), buf);
+     *     println("read () bytes: (:?)", buf.len(), buf);
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun readExactAt(buf: MutableList<UByte>, offset: ULong): Result<Unit, Error> {
@@ -169,7 +169,7 @@ public interface FileExt {
      * use std.mem.MaybeUninit;
      * use std.os.unix.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("pi.txt")?;
      *
      *     // Read some bytes starting from offset 2
@@ -180,7 +180,7 @@ public interface FileExt {
      *     assert(buf.filled().startsWith(b"1"));
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun readBufAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> = defaultReadBuf({ b -> this.readAt(b, offset) }, buf)
@@ -203,7 +203,7 @@ public interface FileExt {
      * use std.mem.MaybeUninit;
      * use std.os.unix.prelude::*;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut file = File.open("pi.txt")?;
      *
      *     // Read exactly 10 bytes starting from offset 2
@@ -214,7 +214,7 @@ public interface FileExt {
      *     assertEq(buf.filled(), b"1415926535");
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun readBufExactAt(buf: BorrowedCursor<UByte>, offset: ULong): Result<Unit, Error> {
@@ -274,7 +274,7 @@ public interface FileExt {
      * use std.io;
      * use std.os.unix.prelude.FileExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     // Open a file with the append option (sets the `O_APPEND` flag)
      *     let file = File.options().append(true).open("foo.txt")?;
      *
@@ -283,7 +283,7 @@ public interface FileExt {
      *
      *     // foo.txt is 5 bytes long instead of 15
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * [File.write]: fs.File.write
@@ -294,12 +294,12 @@ public interface FileExt {
      * import std.io;
      * import std.os.unix.prelude.FileExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      * val file = File.create("foo.txt");
      *
      * file.writeAt(b"sushi", 10);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public fun writeAt(buf: List<UByte>, offset: ULong): Result<Int, Error>
@@ -341,13 +341,13 @@ public interface FileExt {
      * use std.io;
      * use std.os.unix.prelude.FileExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let file = File.open("foo.txt")?;
      *
      *     // We now write at the offset 10.
      *     file.writeAllAt(b"sushi", 10)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun writeAllAt(buf: List<UByte>, offset: ULong): Result<Unit, Error> {
@@ -394,11 +394,11 @@ public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int,
  *
  * # Examples
  *
- * use std.fs::{File, Permissions};
- * use std.io::{ErrorKind, Result as IoResult};
+ * use std.fs::(File, Permissions);
+ * use std.io::(ErrorKind, Result as IoResult);
  * use std.os.unix.fs.PermissionsExt;
  *
- * fn main() -> IoResult<()> {
+ * fn main() -> IoResult<()> (
  *     let name = "testFileForPermissions";
  *
  *     // make sure file does not exist
@@ -414,10 +414,10 @@ public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int,
  *     let myMode = 0o700;
  *
  *     // create new file with specified permissions
- *     {
+ *     (
  *         let file = File.create(name)?;
  *         let mut permissions = file.metadata()?.permissions();
- *         eprintln("Current permissions: {:o}", permissions.mode());
+ *         eprintln("Current permissions: (:o)", permissions.mode());
  *
  *         // make sure new permissions are not already set
  *         assert(
@@ -433,10 +433,10 @@ public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int,
  *
  *         // write new permissions to file
  *         file.setPermissions(permissions)?;
- *     }
+ *     )
  *
  *     let permissions = File.open(name)?.metadata()?.permissions();
- *     eprintln("New permissions: {:o}", permissions.mode());
+ *     eprintln("New permissions: (:o)", permissions.mode());
  *
  *     // assert new permissions were set
  *     assertEq(
@@ -445,7 +445,7 @@ public fun File.writeVectoredAt(bufs: List<IoSlice>, offset: ULong): Result<Int,
  *         "new permissions not set"
  *     );
  *     Ok(())
- * }
+ * )
  * ```kotlin
  * import std.fs.Permissions
  * import std.os.unix.fs.PermissionsExt
@@ -510,11 +510,11 @@ public interface OpenOptionsExt<T> {
      * use std.fs.OpenOptions;
      * use std.os.unix.fs.OpenOptionsExt;
      *
-     * # fn main() {
+     * # fn main() (
      * let mut options = OpenOptions.new();
      * options.mode(0o644); // Give read/write for owner and read for others.
      * let file = options.open("foo.txt");
-     * # }
+     * # )
      * ```kotlin
      */
     public fun mode(mode: UInt): T
@@ -530,16 +530,16 @@ public interface OpenOptionsExt<T> {
      *
      * # Examples
      *
-     * # mod libc { pub const O_NOFOLLOW: i32 = 0; }
+     * # mod libc ( pub const O_NOFOLLOW: i32 = 0; )
      * use std.fs.OpenOptions;
      * use std.os.unix.fs.OpenOptionsExt;
      *
-     * # fn main() {
+     * # fn main() (
      * let mut options = OpenOptions.new();
      * options.write(true);
      * options.customFlags(libc.ONofollow);
      * let file = options.open("foo.txt");
-     * # }
+     * # )
      * ```kotlin
      */
     public fun customFlags(flags: Int): T
@@ -568,11 +568,11 @@ public interface MetadataExt {
      * use std.fs;
      * use std.os.unix.fs.MetadataExt;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let devId = meta.dev();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun dev(): ULong
@@ -586,11 +586,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let inode = meta.ino();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun ino(): ULong
@@ -604,7 +604,7 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let mode = meta.mode();
      *     let userHasWriteAccess      = mode & 0o200;
@@ -612,7 +612,7 @@ public interface MetadataExt {
      *     let groupHasReadAccess      = mode & 0o040;
      *     let othersHaveExecAccess    = mode & 0o001;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun mode(): UInt
@@ -626,11 +626,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let nbHardLinks = meta.nlink();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun nlink(): ULong
@@ -644,11 +644,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let userId = meta.uid();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun uid(): UInt
@@ -662,11 +662,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let groupId = meta.gid();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun gid(): UInt
@@ -680,11 +680,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let deviceId = meta.rdev();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun rdev(): ULong
@@ -698,11 +698,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let fileSize = meta.size();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun size(): ULong
@@ -716,11 +716,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let lastAccessTime = meta.atime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun atime(): Long
@@ -736,11 +736,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let nanoLastAccessTime = meta.atimeNsec();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun atimeNsec(): Long
@@ -754,11 +754,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let lastModificationTime = meta.mtime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun mtime(): Long
@@ -774,11 +774,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let nanoLastModificationTime = meta.mtimeNsec();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun mtimeNsec(): Long
@@ -792,11 +792,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let lastStatusChangeTime = meta.ctime();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun ctime(): Long
@@ -812,11 +812,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let nanoLastStatusChangeTime = meta.ctimeNsec();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun ctimeNsec(): Long
@@ -830,11 +830,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let blockSize = meta.blksize();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun blksize(): ULong
@@ -850,11 +850,11 @@ public interface MetadataExt {
      * use std.os.unix.fs.MetadataExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("someFile")?;
      *     let blocks = meta.blocks();
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun blocks(): ULong
@@ -908,12 +908,12 @@ public interface FileTypeExt {
      * use std.os.unix.fs.FileTypeExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("blockDeviceFile")?;
      *     let fileType = meta.fileType();
      *     assert(fileType.isBlockDevice());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun isBlockDevice(): Boolean
@@ -927,12 +927,12 @@ public interface FileTypeExt {
      * use std.os.unix.fs.FileTypeExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("charDeviceFile")?;
      *     let fileType = meta.fileType();
      *     assert(fileType.isCharDevice());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun isCharDevice(): Boolean
@@ -946,12 +946,12 @@ public interface FileTypeExt {
      * use std.os.unix.fs.FileTypeExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("fifoFile")?;
      *     let fileType = meta.fileType();
      *     assert(fileType.isFifo());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun isFifo(): Boolean
@@ -965,12 +965,12 @@ public interface FileTypeExt {
      * use std.os.unix.fs.FileTypeExt;
      * use std.io;
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let meta = fs.metadata("unix.socket")?;
      *     let fileType = meta.fileType();
      *     assert(fileType.isSocket());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun isSocket(): Boolean
@@ -997,14 +997,14 @@ public interface DirEntryExt {
      * use std.fs;
      * use std.os.unix.fs.DirEntryExt;
      *
-     * if let Ok(entries) = fs.readDir(".") {
-     *     for entry in entries {
-     *         if let Ok(entry) = entry {
+     * if let Ok(entries) = fs.readDir(".") (
+     *     for entry in entries (
+     *         if let Ok(entry) = entry (
      *             // Here, `entry` is a `DirEntry`.
-     *             println("{:?}: {}", entry.fileName(), entry.ino());
-     *         }
-     *     }
-     * }
+     *             println("(:?): ()", entry.fileName(), entry.ino());
+     *         )
+     *     )
+     * )
      * ```kotlin
      */
     public fun ino(): ULong
@@ -1023,18 +1023,18 @@ public interface DirEntryExt2 {
      *
      * @file:feature(dirEntryExt2)
      * use std.os.unix.fs.DirEntryExt2;
-     * use std::{fs, io};
+     * use std::(fs, io);
      *
-     * fn main() -> io.Result<()> {
+     * fn main() -> io.Result<()> (
      *     let mut entries = fs.readDir(".")?.collect::<Result<Vec<_>, io.Error>>()?;
      *     entries.sortUnstableBy(|a, b| a.fileNameRef().cmp(b.fileNameRef()));
      *
-     *     for p in entries {
-     *         println("{p:?}");
-     *     }
+     *     for p in entries (
+     *         println("(p:?)");
+     *     )
      *
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public fun fileNameRef(): OsStr
@@ -1051,10 +1051,10 @@ public fun DirEntry.fileNameRef(): OsStr = this.asInner().fileNameOsStr()
  *
  * use std.os.unix.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.symlink("a.txt", "b.txt")?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public fun symlink(original: Path, link: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.symlink(original, link)
@@ -1105,10 +1105,10 @@ public fun DirBuilder.mode(mode: UInt): DirBuilder {
  *
  * use std.os.unix.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.chown("/sandbox", Some(0), Some(0))?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
@@ -1122,11 +1122,11 @@ public fun chown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.gi
  *
  * use std.os.unix.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let f = std.fs.File.open("/file")?;
  *     fs.fchown(&f, Some(0), Some(0))?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.fchown(fd.asFd().asRawFd(), (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
@@ -1141,10 +1141,10 @@ public fun <F : AsFd> fchown(fd: F, uid: UInt?, gid: UInt?): Result<Unit, Error>
  *
  * use std.os.unix.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.lchown("/symlink", Some(0), Some(0))?;
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.lchown(dir, (uid ?: UInt.MAX_VALUE), (gid ?: UInt.MAX_VALUE))
@@ -1161,12 +1161,12 @@ public fun lchown(dir: Path, uid: UInt?, gid: UInt?): Result<Unit, Error> = io.g
  *
  * use std.os.unix.fs;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     fs.chroot("/sandbox")?;
  *     std.env.setCurrentDir("/")?;
  *     // continue working in sandbox
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.chroot(dir)
@@ -1178,14 +1178,14 @@ public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustla
  *
  * # @file:feature(unixMkfifo)
  * # @cfg(not(unix))
- * # fn main() {}
+ * # fn main() ()
  * # @cfg(unix)
- * # fn main() -> std.io.Result<()> {
- * # use std::{
- * #     os.unix.fs::{mkfifo, PermissionsExt},
- * #     fs::{File, Permissions, removeFile},
- * #     io::{Write, Read},
- * # };
+ * # fn main() -> std.io.Result<()> (
+ * # use std::(
+ * #     os.unix.fs::(mkfifo, PermissionsExt),
+ * #     fs::(File, Permissions, removeFile),
+ * #     io::(Write, Read),
+ * # );
  * # let _ = removeFile("/tmp/fifo");
  * mkfifo("/tmp/fifo", Permissions.fromMode(0o774))?;
  *
@@ -1200,7 +1200,7 @@ public fun chroot(dir: Path): Result<Unit, Error> = io.github.kotlinmania.rustla
  *
  * assertEq(s, "hello, world!");
  * # Ok(())
- * # }
+ * # )
  * ```kotlin
  */
 public fun mkfifo(path: Path, permissions: Permissions): Result<Unit, Error> = io.github.kotlinmania.rustlang.std.sys.fs.unix.mkfifo(path, permissions.mode())

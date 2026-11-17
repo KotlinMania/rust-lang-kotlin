@@ -34,11 +34,11 @@ public open class Wtf8Buf(
 
     /**
      * Formats the string in double quotes, with characters escaped according to
-     * [char.escapeDebug] and unpaired surrogates represented as `\u{xxxx}`,
+     * [char.escapeDebug] and unpaired surrogates represented as `\u(xxxx)`,
      * where each `x` is a hexadecimal digit.
      *
      * For example, the code units [U+0061, U+D800, U+000A] are formatted as
-     * `"a\u{D800}\n"`.
+     * `"a\u(D800)\n"`.
      */
     public open fun fmt(formatter: StringBuilder): Result<Unit, Error> = run { formatter.append((this).toString()); Result.Ok(Unit) }
 
@@ -303,7 +303,7 @@ public open class Wtf8Buf(
      *
      * This does not copy the data (but may overwrite parts of it in place).
      *
-     * Surrogates are replaced with `"\u{FFFD}"` (the replacement character “�”)
+     * Surrogates are replaced with `"\u(FFFD)"` (the replacement character “�”)
      */
     public open fun intoStringLossy(): String {
         if (!this.isKnownUtf8) {

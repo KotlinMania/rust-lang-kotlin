@@ -157,7 +157,7 @@ public fun isNightly(): Boolean {
     // Whether the current rustc version should allow unstable features
     val enableUnstableFeatures = false
     // The runtime override for unstable features
-    val bootstrap = Env.variable("RUSTC_BOOTSTRAP").isOk()
+    val bootstrap = variable("RUSTC_BOOTSTRAP").isOk()
     return bootstrap || enableUnstableFeatures
 }
 
@@ -198,7 +198,7 @@ public fun getShuffle(matches: Matches, allowUnstable: Boolean): OptPartRes<Bool
     }
     if (!shuffle && allowUnstable) {
         shuffle = run {
-            val matchVal = Env.variable("RUST_TEST_SHUFFLE")
+            val matchVal = variable("RUST_TEST_SHUFFLE")
             when (matchVal) { is Result.Ok -> {
                 val value = matchVal.value
                 value != "0"
@@ -223,7 +223,7 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
             else -> {
                 val nStr = matchVal
                 run {
-                    val matchVal1 = (nStr.toULongOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse ULong"))
+                    val matchVal1 = (nStr.toULongOrNull()?.let { Result.Ok<ULong, String>(it) } ?: Result.Err<ULong, String>("failed to parse ULong"))
                     when (matchVal1) { is Result.Ok -> {
                         val n = matchVal1.value
                         n
@@ -236,11 +236,11 @@ public fun getShuffleSeed(matches: Matches, allowUnstable: Boolean): OptPartRes<
         }
     if (shuffleSeed == null && allowUnstable) {
         shuffleSeed = run {
-            val matchVal2 = Env.variable("RUST_TEST_SHUFFLE_SEED")
+            val matchVal2 = variable("RUST_TEST_SHUFFLE_SEED")
             when (matchVal2) { is Result.Ok -> {
                 val value = matchVal2.value
                 run {
-                    val matchVal3 = (value.toULongOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse ULong"))
+                    val matchVal3 = (value.toULongOrNull()?.let { Result.Ok<ULong, String>(it) } ?: Result.Err<ULong, String>("failed to parse ULong"))
                     when (matchVal3) { is Result.Ok -> {
                         val n1 = matchVal3.value
                         n1
@@ -260,7 +260,7 @@ public fun getTestThreads(matches: Matches): OptPartRes<Int?> {
     var lastTestThreads = null
     for (nStr in matches.optStrs("test-threads")) {
         lastTestThreads = run {
-            val matchVal = (nStr.toIntOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse Int"))
+            val matchVal = (nStr.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int"))
             when {
                 matchVal is Result.Ok && matchVal.value == 0 -> { return Result.Err("argument for --test-threads must not be 0".toString()) }
                 matchVal is Result.Ok -> {
@@ -327,7 +327,7 @@ public fun getNocapture(matches: Matches): OptPartRes<Boolean> {
     var nocapture = matches.optPresent("nocapture") || matches.optPresent("no-capture")
     if (!nocapture) {
         nocapture = run {
-            val matchVal = Env.variable("RUST_TEST_NOCAPTURE")
+            val matchVal = variable("RUST_TEST_NOCAPTURE")
             when (matchVal) { is Result.Ok -> {
                 val value = matchVal.value
                 value != "0"

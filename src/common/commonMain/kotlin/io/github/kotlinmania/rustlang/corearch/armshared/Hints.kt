@@ -105,7 +105,7 @@ public fun nop() {
 
 public expect fun hint(arg0: Int)
 
-// from LLVM 7.0.1's lib/Target/ARM/{ARMInstrThumb,ARMInstrInfo,ARMInstrThumb2}.td
+// from LLVM 7.0.1's lib/Target/ARM/(ARMInstrThumb,ARMInstrInfo,ARMInstrThumb2).td
 public val HINT_NOP: Int = 0
 
 public val HINT_YIELD: Int = 1

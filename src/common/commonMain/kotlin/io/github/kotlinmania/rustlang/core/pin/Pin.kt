@@ -746,7 +746,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // }
 // ```
 //
-// You may also in this situation <code>impl [Unpin] for Struct {}</code> *even if* the type of
+// You may also in this situation <code>impl [Unpin] for Struct ()</code> *even if* the type of
 // `field` is not [Unpin]. Since we have explicitly chosen not to care about pinning guarantees
 // for `field`, the way `field`s type interacts with pinning is no longer relevant in the
 // context of its use in `Struct`.
@@ -771,7 +771,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // 1.  *Structural [Unpin].* A struct can be [Unpin] only if all of its
 //     structurally-pinned fields are, too. This is [Unpin]s behavior by default.
 //     However, as a library author, it is your responsibility not to write something like
-//     <code>impl\<T> [Unpin] for Struct\<T> {}</code> and then offer a method that provides
+//     <code>impl\<T> [Unpin] for Struct\<T> ()</code> and then offer a method that provides
 //     structural pinning to an inner field of `T`, which may not be [Unpin]! (Adding *any*
 //     projection operation requires unchecked code, so the fact that [Unpin] is a safe trait does
 //     not break the principle that you only have to worry about any of this if you use
@@ -1027,7 +1027,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class Pin<Ptr>(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout(),
-) : DerefPure, LegacyReceiver, fmt.Pointer {
+) : DerefPure, LegacyReceiver {
     public var pointer: Ptr
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
         set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
@@ -1075,7 +1075,7 @@ public open class Pin<Ptr>(
      * "Malicious" implementations of `Pointer.Deref` are likewise
      * ruled out by the contract of `Pin.newUnchecked`.
      */
-    public open fun <Target> asRef(): Pin<Target> {
+    public open fun asRef(): Pin<Target> {
         // SAFETY: see documentation on this function
         return Pin.newUnchecked(this.pointer, fieldLayout = this.fieldLayout)
     }
@@ -1199,11 +1199,11 @@ public open class Pin<Ptr>(
     // The following implementations allow untrusted trait implementations to access
     // `self.pointer`, which is only sound because these traits are mentioned in
     // the safety requirements of `PinSafePointer`.
-    public override fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = this.pointer.fmt(f)
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.pointer).toString()); Result.Ok(Unit) }
 
     // Note: this means that any impl of `CoerceUnsized` that allows coercing from
     // a type that impls `Deref<Target = impl Unpin>` to a type that impls
@@ -1396,7 +1396,7 @@ public open class Pin<Ptr>(
          * }
          * ```
          */
-        public fun <Target, Ptr> newUnchecked(pointer: Ptr, fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout()): Pin<Ptr> = Pin(pointer = pointer, fieldLayout = fieldLayout)
+        public fun <Ptr> newUnchecked(pointer: Ptr, fieldLayout: TypeLayout<Ptr> = UnresolvedTypeLayout()): Pin<Ptr> = Pin(pointer = pointer, fieldLayout = fieldLayout)
 
         /**
          * Unwraps this `Pin<Ptr>`, returning the underlying `Ptr`.
@@ -1418,7 +1418,7 @@ public open class Pin<Ptr>(
          * If the underlying data is [Unpin], [Pin.intoInner] should be used
          * instead.
          */
-        public fun <Target, Ptr> intoInnerUnchecked(pin: Pin<Ptr>): Ptr = pin.pointer
+        public fun <Ptr> intoInnerUnchecked(pin: Pin<Ptr>): Ptr = pin.pointer
     }
 }
 

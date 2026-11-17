@@ -181,7 +181,7 @@ public fun MutPtr.addr(): Int {
  *
  * This is equivalent to `self as Int`, which semantically discards provenance information.
  * Furthermore, this (like the `as` cast) has the implicit side-effect of marking the
- * provenance as 'exposed', so on platforms that support it you can later call
+ * provenance as `exposed`, so on platforms that support it you can later call
  * [withExposedProvenanceMut] to reconstitute the original pointer including its provenance.
  *
  * Due to its inherent ambiguity, [withExposedProvenanceMut] may not be supported by tools
@@ -191,7 +191,7 @@ public fun MutPtr.addr(): Int {
  *
  * On most platforms this will produce a value with the same bytes as the original pointer,
  * because all the bytes are dedicated to describing the address. Platforms which need to store
- * additional information in the pointer may not support this operation, since the 'expose'
+ * additional information in the pointer may not support this operation, since the `expose`
  * side-effect which is required for [withExposedProvenanceMut] to work is typically not
  * available.
  *
@@ -1774,7 +1774,7 @@ public fun MutPtr.asMutPtr(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
  * }
  * ```
  */
-public fun <T, I> MutPtr.getUncheckedMut(index: I): MutPtr where I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> MutPtr.getUncheckedMut(index: I): MutPtr where I : SliceIndex<List<T>, Output> {
     // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
     return index.getUncheckedMut(this)
 }

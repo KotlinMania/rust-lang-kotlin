@@ -70,11 +70,11 @@ import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.lookupHost
  * import std.net.SocketAddr
  * import std.net.ToSocketAddrs
  *
- * // assuming 'localhost' resolves to 127.0.0.1
+ * // assuming `localhost` resolves to 127.0.0.1
  * var addrsIter = "localhost:443".toSocketAddrs().unwrap()
  * check(addrsIter.next() == SocketAddr.from(Pair(listOf(127, 0, 0, 1), 443)))
  * check(addrsIter.next() == null)
- * // assuming 'foo' does not resolve
+ * // assuming `foo` does not resolve
  * check("foo:443".toSocketAddrs().isErr())
  * ```
  *

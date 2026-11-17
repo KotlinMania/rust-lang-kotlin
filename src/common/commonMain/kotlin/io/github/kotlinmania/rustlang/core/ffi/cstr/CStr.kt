@@ -772,7 +772,7 @@ public open class Bytes internal constructor(
 }
 
 /**
- * Helper struct for safely printing a [CStr] with [format] and `{}`.
+ * Helper struct for safely printing a [CStr] with [format] and `()`.
  *
  * A [CStr] might contain non-Unicode data. This `class` implements the
  * [Display] trait in a way that mitigates that. It is created by the

@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.getopts.Optval.*
 // including `argv[0]`).
 //
 // You'll either get a failure code back, or a match. You'll have to verify
-// whether the amount of 'free' arguments in the match is what you expect. Use
+// whether the amount of `free` arguments in the match is what you expect. Use
 // `opt_ *` accessors to get argument values out of the matches object.
 //
 // Single-character options are expected to appear on the command line with a
@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.getopts.Optval.*
 // proceeded by two dashes. Options that expect an argument accept their
 // argument following either a space or an equals sign. Single-character
 // options don't require the space. Everything after double-dash "--"  argument
-// is considered to be a 'free' argument, even if it starts with dash.
+// is considered to be a `free` argument, even if it starts with dash.
 //
 // # Usage
 //

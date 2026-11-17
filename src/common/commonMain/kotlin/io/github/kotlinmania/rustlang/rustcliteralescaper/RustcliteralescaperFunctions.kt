@@ -134,9 +134,9 @@ public fun simpleEscape(c: Char): Result<NonZero<UByte, NonZeroU8Inner>, Char> {
  * Parses the two hexadecimal characters of a hexadecimal escape without the leading r"\x".
  */
 public fun hexEscape(chars: Any): Result<UByte, EscapeError> {
-    val hi = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.TooShortHexEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
+    val hi = when (val tryResult = (chars.next()?.let { Result.Ok<UByte, EscapeError>(it) } ?: Result.Err<UByte, EscapeError>(EscapeError.TooShortHexEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
     val hi1 = when (val tryResult = hi.toDigit(16u).okOr(EscapeError.InvalidCharInHexEscape)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
-    val lo = when (val tryResult = (chars.next()?.let { Result.Ok(it) } ?: Result.Err(EscapeError.TooShortHexEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
+    val lo = when (val tryResult = (chars.next()?.let { Result.Ok<UByte, EscapeError>(it) } ?: Result.Err<UByte, EscapeError>(EscapeError.TooShortHexEscape))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
     val lo1 = when (val tryResult = lo.toDigit(16u).okOr(EscapeError.InvalidCharInHexEscape)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UByte, EscapeError>(tryResult.error) }
     return Result.Ok<UByte, EscapeError>((hi1 * 16 + lo1).toUByte())
 }
@@ -147,7 +147,7 @@ public fun hexEscape(chars: Any): Result<UByte, EscapeError> {
  * Interpret a unicode escape
  *
  * Parse the braces with hexadecimal characters (and underscores) part of a unicode escape.
- * This r"{...}" normally comes after r"\u" and cannot start with an underscore.
+ * This r"(...)" normally comes after r"\u" and cannot start with an underscore.
  */
 public fun unicodeEscape(chars: Any): Result<UInt, EscapeError> {
     if (chars.next() != '{') {
@@ -299,7 +299,7 @@ public fun checkRawChar2rawUnitString(c: Char): Result<Char, EscapeError> = Resu
 
 public fun checkRawChar2rawUnitUByteSlice(c: Char): Result<UByte, EscapeError> = char2byte(c)
 
-public fun checkRawChar2rawUnitCStr(c: Char): Result<NonZero<Char, NonZeroCharInner>, EscapeError> = ((NonZero.new<NonZeroCharInner, Char>(c))?.let { Result.Ok(it) } ?: Result.Err(EscapeError.NulInCStr))
+public fun checkRawChar2rawUnitCStr(c: Char): Result<NonZero<Char, NonZeroCharInner>, EscapeError> = ((NonZero.new<NonZeroCharInner, Char>(c))?.let { Result.Ok<NonZero<Char, NonZeroCharInner>, EscapeError>(it) } ?: Result.Err<NonZero<Char, NonZeroCharInner>, EscapeError>(EscapeError.NulInCStr))
 
 public val ZERO_RESULT: Result<Char, EscapeError> = Result.Ok('\u0000')
 

@@ -26,7 +26,7 @@ public sealed class Feature {
      */
     public data object Fp : Feature()
     /**
-     * FEAT_AES (AES SIMD instructions) & FEAT_PMULL (PMULL{2}, 64-bit operand variants)
+     * FEAT_AES (AES SIMD instructions) & FEAT_PMULL (PMULL(2), 64-bit operand variants)
      */
     public data object Aes : Feature()
     /**

@@ -70,7 +70,7 @@ public open class IntoInnerError<W>(
      *         val e = matchVal.exceptionOrNull()!!
      *         // Here, e is an IntoInnerError, let's log the inner error.
      *         //
-     *         // We'll just 'log' to stdout for this example.
+     *         // We'll just `log` to stdout for this example.
      *         println("${e.error()}")
      *         error("An unexpected error occurred.")
      *     }

@@ -14,7 +14,7 @@ public interface SimdUint<SelfType, out Scalar, out Cast> {
      * This follows the semantics of Rust's `as` conversion for casting integers (wrapping to
      * other integer types, and saturating to float types).
      */
-    public fun <T : SimdCast> cast(): Cast
+    public fun <Mask, T : SimdCast<Mask>> cast(): Cast
 
     /**
      * Wrapping negation.
@@ -156,7 +156,7 @@ public interface SimdUint<SelfType, out Scalar, out Cast> {
     public fun trailingOnes(): SelfType
 }
 
-public fun <T : SimdCast> Simd<UByte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
+public fun <Mask, T : SimdCast<Mask>> Simd<UByte>.cast(n: Int): Simd<T> = run { val _simdArg0 = this; _simdArg0 }
 
 public fun Simd<UByte>.wrappingNeg(n: Int): Simd<UByte> = (-this.cast()).cast()
 

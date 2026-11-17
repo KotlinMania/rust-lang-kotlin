@@ -226,8 +226,8 @@ public val ALIGN_UNKNOWN: UInt = 3u shl 29
  * [module]: ../../std/fmt/index.html
  *
  * This trait can be used with `@derive` if all fields implement `Debug`. When
- * `derive`d for structs, it will use the name of the `class`, then `{`, then a
- * comma-separated list of each field's name and `Debug` value, then `}`. For
+ * `derive`d for structs, it will use the name of the `class`, then `(`, then a
+ * comma-separated list of each field's name and `Debug` value, then `)`. For
  * `sealed class`s, it will use the name of the variant and, if applicable, `(`, then the
  * `Debug` values of the fields, then `)`.
  *
@@ -279,7 +279,7 @@ public val ALIGN_UNKNOWN: UInt = 3u shl 29
  * ```
  *
  * `Debug` implementations using either `derive` or the debug builder API
- * on [Formatter] support pretty-printing using the alternate flag: `{ : # ? }`.
+ * on [Formatter] support pretty-printing using the alternate flag: `( : # ? )`.
  *
  * Pretty-printing with `# ?`:
  *
@@ -335,7 +335,7 @@ public interface Debug {
 }
 
 /**
- * Format trait for an empty format, `{}`.
+ * Format trait for an empty format, `()`.
  *
  * Implementing this trait for a type will automatically implement the
  * [`ToString`][tostring] trait for the type, allowing the usage
@@ -665,7 +665,7 @@ public interface UpperHex {
  * import io.github.kotlinmania.rustlang.core.mem.get
  * import std.fmt
  *
- * open class Length(public var value: Int) : fmt.Pointer {
+ * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
  *         set(v) {
@@ -675,7 +675,7 @@ public interface UpperHex {
  *     public open fun fmt(f: StringBuilder): Result<Unit> {
  *         // use `as` to convert to a `* const T`, which implements Pointer, which we can use
  *         val ptr = constPtrFromRustCast(this)
- *         return ptr.fmt(f)
+ *         return run { f.append((ptr).toString()); Result.success(Unit) }
  *     }
  * }
  * val l = Length(42)
@@ -713,7 +713,7 @@ public interface Pointer {
  * ```kotlin
  * import std.fmt
  *
- * open class Length(public var value: Int) : fmt.LowerExp {
+ * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
  *         set(v) {
@@ -722,7 +722,7 @@ public interface Pointer {
  *
  *     public open fun fmt(f: StringBuilder): Result<Unit> {
  *         val value = Double.from(this.value)
- *         return value.fmt(f)
+ *         return run { f.append((value).toString()); Result.success(Unit) }
  *         // delegate to f64's implementation
  *     }
  * }
@@ -759,7 +759,7 @@ public interface LowerExp {
  * ```kotlin
  * import std.fmt
  *
- * open class Length(public var value: Int) : fmt.UpperExp {
+ * open class Length(public var value: Int) {
  *     public var field0: Int
  *         get() = value
  *         set(v) {
@@ -768,7 +768,7 @@ public interface LowerExp {
  *
  *     public open fun fmt(f: StringBuilder): Result<Unit> {
  *         val value = Double.from(this.value)
- *         return value.fmt(f)
+ *         return run { f.append((value).toString()); Result.success(Unit) }
  *         // delegate to f64's implementation
  *     }
  * }

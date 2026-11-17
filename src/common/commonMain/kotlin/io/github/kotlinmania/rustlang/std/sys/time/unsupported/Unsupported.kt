@@ -43,7 +43,7 @@ public open class SystemTime(
 
     public open fun clone(): SystemTime = SystemTime(value)
 
-    public open fun subTime(other: SystemTime): Result<Duration, Duration> = (this.value.checkedSub(other.value)?.let { Result.Ok(it) } ?: Result.Err(other.value - this.value))
+    public open fun subTime(other: SystemTime): Result<Duration, Duration> = (this.value.checkedSub(other.value)?.let { Result.Ok<Duration, Duration>(it) } ?: Result.Err<Duration, Duration>(other.value - this.value))
 
     public open fun checkedAddDuration(other: Duration): SystemTime? {
         return SystemTime((this.value.checkedAdd(other) ?: return null))

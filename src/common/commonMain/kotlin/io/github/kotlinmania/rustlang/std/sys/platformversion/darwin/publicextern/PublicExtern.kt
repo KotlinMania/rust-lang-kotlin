@@ -113,9 +113,9 @@ public fun isPlatformVersionAtLeast(platform: Int, major: Int, minor: Int, submi
     // But once it does, we need the pre-compiled `std` shipped with rustup to be zippered, and thus
     // we also need to handle the `platform` difference here:
     //
-    // if cfg(targetOs = "macos") && platform == 2 // PLATFORM_IOS && cfg(zippered) {
+    // if cfg(targetOs = "macos") && platform == 2 // PLATFORM_IOS && cfg(zippered) (
     // return (version.toU32() <= currentIosVersion()) as i32;
-    // }
+    // )
     //
     // `__isPlatformOrVariantPlatformVersionAtLeast` would also need to be implemented.
     // The base Mach-O platform for the current target.

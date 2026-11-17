@@ -1,7 +1,7 @@
 // port-lint: source hint.rs
 package io.github.kotlinmania.rustlang.core.hint
 
-import io.github.kotlinmania.rustlang.core.X8664
+import io.github.kotlinmania.rustlang.core.cfgSelect
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
@@ -131,7 +131,7 @@ public fun unreachableUnchecked(): Nothing {
  * compiler already knows the range of `countOnes`, so there is no benefit to
  * `val n = UInt.countOnes(x); assertUnchecked(n <= UInt.BITS);`.
  *
- * `assertUnchecked` is logically equivalent to `ifBranch cond { unreachableUnchecked(); }`. If
+ * `assertUnchecked` is logically equivalent to `ifBranch cond ( unreachableUnchecked(); )`. If
  * ever you are tempted to write `assertUnchecked(false)`, you should instead use
  * [unreachableUnchecked] directly.
  *
@@ -245,8 +245,7 @@ public fun assertUnchecked(cond: Boolean) {
  * [thread.yieldNow]: ../../std/thread/fn.yieldNow.html
  */
 public fun spinLoop() {
-    // SAFETY: the `cfg` attr ensures that we only execute this on x8664 targets.
-    X8664.mmPause()
+    cfgSelect(miri, extern, "Rust", safe, miriSpinLoop, miriSpinLoop, targetArch, "x86", arch, x86, mmPause, targetArch, "x86_64", arch, x8664, mmPause, targetArch, "riscv32", arch, riscv32, pause, targetArch, "riscv64", arch, riscv64, pause, any, targetArch, "aarch64", targetArch, "arm64ec", arch, aarch64, isb, arch, aarch64, SY, all, targetArch, "arm", any, all, targetFeature, "v6k", not, targetFeature, "thumb-mode", targetFeature, "v6t2", all, targetFeature, "v6", targetFeature, "mclass", arch, arm, yield, targetArch, "loongarch32", arch, loongarch32, ibar, 0, targetArch, "loongarch64", arch, loongarch64, ibar, 0)
 }
 
 /**

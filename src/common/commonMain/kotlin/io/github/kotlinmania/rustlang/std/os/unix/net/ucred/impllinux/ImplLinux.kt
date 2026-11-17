@@ -1,6 +1,9 @@
 // port-lint: source os/unix/net/ucred.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ucred.impllinux
 
+import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
+import io.github.kotlinmania.libc.fuchsia.SO_PEERCRED
+import io.github.kotlinmania.libc.fuchsia.Ucred
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -8,9 +11,6 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.getsockopt
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SO_PEERCRED
-import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
 import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred

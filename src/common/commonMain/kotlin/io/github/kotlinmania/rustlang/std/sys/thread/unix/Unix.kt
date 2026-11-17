@@ -3,6 +3,16 @@
 
 package io.github.kotlinmania.rustlang.std.sys.thread.unix
 
+import io.github.kotlinmania.libc.CInt
+import io.github.kotlinmania.libc.fuchsia.CpuSetT
+import io.github.kotlinmania.libc.fuchsia.EINTR
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.PTHREAD_STACK_MIN
+import io.github.kotlinmania.libc.fuchsia.PidT
+import io.github.kotlinmania.libc.fuchsia.PthreadT
+import io.github.kotlinmania.libc.fuchsia.SC_NPROCESSORS_ONLN
+import io.github.kotlinmania.libc.fuchsia.TIMER_ABSTIME
+import io.github.kotlinmania.libc.fuchsia.TimeT
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -21,7 +31,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CPU_COUNT
 import io.github.kotlinmania.rustlang.libc.clockNanosleep
 import io.github.kotlinmania.rustlang.libc.prctl
@@ -35,15 +44,6 @@ import io.github.kotlinmania.rustlang.libc.schedGetaffinity
 import io.github.kotlinmania.rustlang.libc.schedYield
 import io.github.kotlinmania.rustlang.libc.sysconf
 import io.github.kotlinmania.rustlang.libc.timespec.default
-import io.github.kotlinmania.rustlang.libc.unix.PidT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.CpuSetT
-import io.github.kotlinmania.rustlang.libc.wasi.EINTR
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_STACK_MIN
-import io.github.kotlinmania.rustlang.libc.wasi.PthreadT
-import io.github.kotlinmania.rustlang.libc.wasi.SC_NPROCESSORS_ONLN
-import io.github.kotlinmania.rustlang.libc.wasi.TIMER_ABSTIME
-import io.github.kotlinmania.rustlang.libc.wasi.TimeT
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.exists
@@ -404,7 +404,7 @@ public fun quotaV2(groupPath: PathBuf): Int {
                 val limit = when (val tryResult = rawQuota1.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 val period = when (val tryResult = rawQuota1.next()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err(tryResult.error) }
                 run {
-                    val matchVal1 = Pair((limit.toIntOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse Int")), (period.toIntOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse Int")))
+                    val matchVal1 = Pair((limit.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")), (period.toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")))
                     when {
                         matchVal1.first is Result.Ok && matchVal1.second is Result.Ok && period > 0 -> {
                             val limit1 = (matchVal1.first as Result.Ok).value
@@ -455,7 +455,7 @@ public fun quotaV1(groupPath: PathBuf): Int {
                     path.pop()
                     // restore buffer before any early returns
                     when (val tryResult = when (val tryResult = f.ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }.readToString(readBuf).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
-                    val parsed = when (val tryResult = (readBuf.trim().toIntOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse Int")).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
+                    val parsed = when (val tryResult = (readBuf.trim().toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")).ok()) { is Result.Ok -> tryResult.value; is Result.Err -> return@closure1 Result.Err(tryResult.error) }
                     parsed
                 }
             val limit = parseFile("cpu.cfs_quota_us")

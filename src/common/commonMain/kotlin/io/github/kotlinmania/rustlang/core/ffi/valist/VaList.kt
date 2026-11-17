@@ -11,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -38,118 +37,6 @@ public class DebugTuple(
         } else {
             out.append("$name(${fields.joinToString(", ")})")
         }
-    }
-}
-
-// There are currently three flavors of how a C `vaList` is implemented for
-// targets that Rust supports:
-//
-// - `vaList` is an opaque pointer
-// - `vaList` is a struct
-// - `vaList` is a single-element array, containing a struct
-//
-// The opaque pointer approach is the simplest to implement: the pointer just
-// points to an array of arguments on the caller's stack.
-//
-// The struct and single-element array variants are more complex, but
-// potentially more efficient because the additional state makes it
-// possible to pass variadic arguments via registers.
-//
-// The Rust `VaList` type is ABI-compatible with the C `vaList`.
-// The struct and pointer cases straightforwardly map to their Rust equivalents,
-// but the single-element array case is special: in C, this type is subject to
-// array-to-pointer decay.
-//
-// The `@rustcPassIndirectlyInNonRusticAbis` attribute is used to match
-// the pointer decay behavior in Rust, while otherwise matching Rust semantics.
-// This attribute ensures that the compiler uses the correct ABI for functions
-// like `extern "C" fun takesVaList(va: VaList<>)` by passing `va` indirectly.
-//
-// The Clang `BuiltinVaListKind` enumerates the `vaList` variations that Clang supports,
-// and we mirror these here.
-//
-// For all current LLVM targets, `vaCopy` lowers to `memcpy`. Hence the inner structs below all
-// derive `Copy`. However, in the future we might want to support a target where `vaCopy`
-// allocates, or otherwise violates the requirements of `Copy`. Therefore `VaList` is only `Clone`.
-
-/**
- * AArch64 ABI implementation of a `vaList`.
- *
- * See the [AArch64 Procedure Call Standard] for more details.
- *
- * `vaCopy` is `memcpy`: <https://github.com/llvm/llvm-project/blob/5aee01a3df011e660f26660bc30a8c94a1651d8e/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp#L12682-L12700>
- *
- * [AArch64 Procedure Call Standard]:
- * http://infocenter.arm.com/help/topic/com.arm.doc.ihi0055b/Ihi0055bAapcs64.pdf
- */
-public open class VaListInner internal constructor(
-    stackCtorArg: ConstPtr,
-    grTopCtorArg: ConstPtr,
-    vrTopCtorArg: ConstPtr,
-    public var grOffs: Int,
-    public var vrOffs: Int,
-) {
-    public var stack: ConstPtr = stackCtorArg
-        internal set
-
-    public var grTop: ConstPtr = grTopCtorArg
-        internal set
-
-    public var vrTop: ConstPtr = vrTopCtorArg
-        internal set
-
-    public open fun clone(): VaListInner = VaListInner(stack, grTop, vrTop, grOffs, vrOffs)
-
-    public companion object {
-        public fun typeLayout(): TypeLayout<VaListInner> =
-            object : TypeLayout<VaListInner> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 32L
-                override fun readNative(addr: Long): VaListInner =
-                    VaListInner(
-                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr),
-                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr + 8L),
-                        (PrimitiveLayouts.constPtrLayout(64)).readNative(addr + 16L),
-                        (PrimitiveLayouts.I32).readNative(addr + 24L),
-                        (PrimitiveLayouts.I32).readNative(addr + 28L),
-                    )
-                override fun writeNative(addr: Long, value: VaListInner) {
-                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr, value.stack)
-                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr + 8L, value.grTop)
-                    (PrimitiveLayouts.constPtrLayout(64)).writeNative(addr + 16L, value.vrTop)
-                    (PrimitiveLayouts.I32).writeNative(addr + 24L, value.grOffs)
-                    (PrimitiveLayouts.I32).writeNative(addr + 28L, value.vrOffs)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): VaListInner =
-                    VaListInner(
-                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset),
-                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.constPtrLayout(64)).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 24),
-                        (PrimitiveLayouts.I32).readBytes(buf, offset + 28),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: VaListInner) {
-                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset, value.stack)
-                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset + 8, value.grTop)
-                    (PrimitiveLayouts.constPtrLayout(64)).writeBytes(buf, offset + 16, value.vrTop)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 24, value.grOffs)
-                    (PrimitiveLayouts.I32).writeBytes(buf, offset + 28, value.vrOffs)
-                }
-            }
-
-        public operator fun invoke(
-            stack: ConstPtr,
-            grTop: ConstPtr,
-            vrTop: ConstPtr,
-            grOffs: Int,
-            vrOffs: Int,
-        ): VaListInner = VaListInner(
-            stackCtorArg = stack,
-            grTopCtorArg = grTop,
-            vrTopCtorArg = vrTop,
-            grOffs = grOffs,
-            vrOffs = vrOffs,
-        )
     }
 }
 

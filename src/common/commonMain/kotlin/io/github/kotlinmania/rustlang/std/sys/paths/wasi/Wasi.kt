@@ -1,13 +1,13 @@
 // port-lint: source sys/paths/wasi.rs
 package io.github.kotlinmania.rustlang.std.sys.paths.wasi
 
+import io.github.kotlinmania.libc.fuchsia.ERANGE
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.wasi.ERANGE
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec

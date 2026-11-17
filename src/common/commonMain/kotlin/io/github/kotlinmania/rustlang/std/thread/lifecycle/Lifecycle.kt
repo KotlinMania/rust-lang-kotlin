@@ -20,7 +20,6 @@ import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
-import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.DEFAULT_MIN_STACK_SIZE
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
@@ -46,7 +45,7 @@ public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, 
                     return@closure1 n - 1
                 }
             }
-            val amt = Env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
+            val amt = env.varOs("RUST_MIN_STACK").andThen({ s -> s.toStr().andThen({ s1 -> s1.parse().ok() }) }).unwrapOr(DEFAULT_MIN_STACK_SIZE)
             MIN.store(amt + 1, Ordering.Relaxed)
             amt
         }())
@@ -218,7 +217,7 @@ public open class Packet<T> internal constructor(
             else -> {
                 val scope = matchVal3
                 // Now that there will be no more user code running on this thread
-                // that can use scope, mark the thread as 'finished'.
+                // that can use scope, mark the thread as `finished`.
                 // It's important we only do this after the `result` has been dropped,
                 // since dropping it might still use things it borrowed from scope.
                 scope.decrementNumRunningThreads(unhandledPanic)

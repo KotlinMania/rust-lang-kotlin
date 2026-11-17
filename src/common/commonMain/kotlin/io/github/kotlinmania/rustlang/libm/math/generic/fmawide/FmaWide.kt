@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
  * Fma implementation when a hardware-backed larger float type is available. For `Float` and `Double`,
  * `Double` has enough precision to represent the `Float` in its entirety, except for double rounding.
  */
-public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, fromBitsBFn: (Int) -> B): FpResult<F> where F : Float<F, Any?, Any?>, F : NarrowFloat<F, B>, B : Float<B, Any?, Any?>, B : WideFloat<B, F>, Int : CastFrom<Int<Int>, Int> {
+public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, fromBitsBFn: (Int) -> B): FpResult<F> where F : Float<F, Int, SignedInt>, F : NarrowFloat<F, B, Int, SignedInt>, B : Float<B, Int, SignedInt>, B : WideFloat<B, F, Int, SignedInt>, Int : CastFrom<Int<Int, Any?, Any?>, Int> {
     val one = IntTy.ONE
     val xy: B = x.widen() * y.widen()
     var result: B = xy + z.widen()

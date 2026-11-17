@@ -2,7 +2,7 @@
 
 package io.github.kotlinmania.rustlang.std.sys.exit
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 @kotlin.wasm.WasmImport("kmcore", "stdSysExitExit")

@@ -69,12 +69,12 @@ public open class SocketAddr(
      * use std.os.windows.net.UnixListener;
      * use std.path.Path;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixListener.bind("/tmp/sock")?;
      *     let addr = socket.localAddr().expect("Couldn't get local address");
      *     assertEq(addr.asPathname(), Some(Path.new("/tmp/sock")));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun asPathname(): Path? =
@@ -110,12 +110,12 @@ public open class SocketAddr(
      * @file:feature(windowsUnixDomainSockets)
      * use std.os.windows.net.UnixListener;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixListener.bind("/tmp/sock")?;
      *     let addr = socket.localAddr().expect("Couldn't get local address");
      *     assertEq(addr.isUnnamed(), false);
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun isUnnamed(): Boolean =
@@ -159,11 +159,11 @@ public open class SocketAddr(
          * use std.os.windows.net.SocketAddr;
          * use std.path.Path;
          *
-         * # fn main() -> std.io.Result<()> {
+         * # fn main() -> std.io.Result<()> (
          * let address = SocketAddr.fromPathname("/path/to/socket")?;
          * assertEq(address.asPathname(), Some(Path.new("/path/to/socket")));
          * # Ok(())
-         * # }
+         * # )
          * ```kotlin
          *
          * Creating a `SocketAddr` with a NULL byte results in an error.

@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts

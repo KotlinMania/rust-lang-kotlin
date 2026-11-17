@@ -1,6 +1,8 @@
 // port-lint: source sys/paths/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.paths.unix
 
+import io.github.kotlinmania.libc.fuchsia.ERANGE
+import io.github.kotlinmania.libc.unix.bsd.apple.CS_DARWIN_USER_TEMP_DIR
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -9,8 +11,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.CS_DARWIN_USER_TEMP_DIR
-import io.github.kotlinmania.rustlang.libc.wasi.ERANGE
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString

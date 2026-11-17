@@ -734,7 +734,7 @@ public fun d(): Boolean = checkFor(::d)
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun q(): Boolean = checkFor(Feature::q)
+public fun q(): Boolean = checkFor(::q)
 
 /**
  * PLEASE: do not use this, it is an implementation detail
@@ -1094,4 +1094,4 @@ public fun j(): Boolean = checkFor(::j)
  * PLEASE: do not use this, it is an implementation detail
  * subject to change.
  */
-public fun p(): Boolean = checkFor(Feature::p)
+public fun p(): Boolean = checkFor(::p)

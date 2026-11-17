@@ -16,13 +16,13 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
 //
 // |                  | LLVM | Rust
 // | :--------------: | :--- | :----------
-// | N {/,%} 0        | UB   | panic()
+// | N (/,%) 0        | UB   | panic()
 // | <$int>::MIN / -1 | UB   | <$int>::MIN
 // | <$int>::MIN % -1 | UB   | 0
 
-public fun <Mask, I, T> Simd<T>.index(index: I, n: Int): Output where I : SliceIndex<List<T>> = this.asArray()[index]
+public fun <Mask, Output, I, T> Simd<T>.index(index: I, n: Int): Output where I : SliceIndex<List<T>> = this.asArray()[index]
 
-public fun <Mask, I, T> Simd<T>.indexMut(index: I, n: Int): Output where I : SliceIndex<List<T>> = this.asMutArray()[index]
+public fun <Mask, Output, I, T> Simd<T>.indexMut(index: I, n: Int): Output where I : SliceIndex<List<T>> = this.asMutArray()[index]
 
 // Integers can always accept add, mul, sub, bitand, bitor, and bitxor.
 // For all of these operations, simd_* intrinsics apply wrapping logic.

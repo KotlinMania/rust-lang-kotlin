@@ -92,8 +92,8 @@ public open class TakeWhile<I, P>(
             // can't know a lower bound, due to the predicate
         }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> {
-        fun <T, Acc, R : Try<R, Acc, Any?>> check(flag: RustMutableReference<Boolean>, p: (T) -> Boolean, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
+        fun <Residual, T, Acc, R : Try<R, Acc, Residual>> check(flag: RustMutableReference<Boolean>, p: (T) -> Boolean, fold1: (Acc, T) -> R): (Acc, T) -> ControlFlow<R, Acc> {
             val flag1 = flag
             return { acc, x ->
                 if (p(x)) {
@@ -113,7 +113,7 @@ public open class TakeWhile<I, P>(
         }
     }
 
-    public open fun <Aaa> fold(init: Aaa, fold: (Aaa, I.Item) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+    public open fun <Aaa> fold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
 
     public override fun asInner(): Source {
         // SAFETY: unchecked function forwarding to unchecked function with the same requirements

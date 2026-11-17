@@ -1,10 +1,10 @@
 // port-lint: source sys/pipe/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.pipe.unix
 
+import io.github.kotlinmania.libc.fuchsia.O_CLOEXEC
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.pipe2
-import io.github.kotlinmania.rustlang.libc.wasi.O_CLOEXEC
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt

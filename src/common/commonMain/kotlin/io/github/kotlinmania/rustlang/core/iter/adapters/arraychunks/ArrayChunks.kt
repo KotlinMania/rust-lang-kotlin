@@ -42,7 +42,7 @@ public open class ArrayChunks<I> internal constructor(
     }
 }
 
-public fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I> {
+public fun <I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I> {
     check(n != 0) { "chunk size must be non-zero" }
     return ArrayChunks(iter = iter, remainder = null)
 }
@@ -60,7 +60,7 @@ public fun <Item, I> ArrayChunks.Companion.new(iter: I, n: Int): ArrayChunks<I> 
  * check(rem.next() == null)
  * ```
  */
-public fun <Item, I> ArrayChunks<I>.intoRemainder(n: Int): IntoIter<Item> {
+public fun <I> ArrayChunks<I>.intoRemainder(n: Int): IntoIter<Item> {
     if (this.remainder == null) {
         while (true) {
             val matchVal = this.next()
@@ -70,16 +70,16 @@ public fun <Item, I> ArrayChunks<I>.intoRemainder(n: Int): IntoIter<Item> {
     return this.remainder.unwrapOrDefault()
 }
 
-public fun <Item, I> ArrayChunks<I>.next(n: Int): List<Item>? = this.tryForEach(ControlFlow.Break).breakValue()
+public fun <I> ArrayChunks<I>.next(n: Int): List<Item>? = this.tryForEach(ControlFlow.Break).breakValue()
 
-public fun <Item, I> ArrayChunks<I>.sizeHint(n: Int): Pair<Int, Int?> {
+public fun <I> ArrayChunks<I>.sizeHint(n: Int): Pair<Int, Int?> {
     val (lower, upper) = this.iter.sizeHint()
     return Pair(lower / n, upper.map({ n -> n / n }))
 }
 
-public fun <Item, I> ArrayChunks<I>.count(n: Int): Int = this.iter.count() / n
+public fun <I> ArrayChunks<I>.count(n: Int): Int = this.iter.count() / n
 
-public fun <Item, I, B, R> ArrayChunks<I>.tryFold(init: B, f: (B, List<Item>) -> R, n: Int): R where R : Try<R, B, Any?> {
+public fun <Residual, I, B, R> ArrayChunks<I>.tryFold(init: B, f: (B, List<Item>) -> R, n: Int): R where R : Try<R, B, Residual> {
     var acc = init
     while (true) {
         run {
@@ -98,11 +98,11 @@ public fun <Item, I, B, R> ArrayChunks<I>.tryFold(init: B, f: (B, List<Item>) ->
     }
 }
 
-public fun <Item, I, B> ArrayChunks<I>.fold(init: B, f: (B, List<Item>) -> B, n: Int): B = ArrayChunks.fold(this, init, f)
+public fun <I, B> ArrayChunks<I>.fold(init: B, f: (B, List<Item>) -> B, n: Int): B = ArrayChunks.fold(this, init, f)
 
 public fun <I> ArrayChunks<I>.nextBack(n: Int): Item? = this.tryRfold({ x -> ControlFlow.Break(x) }).breakValue()
 
-public fun <I, B, R> ArrayChunks<I>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> {
+public fun <Residual, I, B, R> ArrayChunks<I>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Residual> {
     // We are iterating from the back we need to first handle the remainder.
     this.nextBackRemainder()
     var acc = init
@@ -143,13 +143,13 @@ public fun <I> ArrayChunks<I>.len(n: Int): Int = this.iter.len() / n
 
 public fun <I> ArrayChunks<I>.isEmpty(n: Int): Boolean = this.iter.len() < n
 
-public interface SpecFold<T> {
+public interface SpecFold {
     public fun <B> fold(init: B, f: (B, Item) -> B): B
 }
 
-public fun <Item, I, B> ArrayChunks<I>.fold(init: B, f: (B, Item) -> B, n: Int): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
+public fun <I, B> ArrayChunks<I>.fold(init: B, f: (B, Item) -> B, n: Int): B = this.tryFold(init, NeverShortCircuit.wrapMut2(f)).first
 
-public fun <Source, Item, I> ArrayChunks<I>.asInner(n: Int): Source where I : SourceIter<Any?> {
+public fun <Source, I> ArrayChunks<I>.asInner(n: Int): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
     return this.iter.asInner()
 }

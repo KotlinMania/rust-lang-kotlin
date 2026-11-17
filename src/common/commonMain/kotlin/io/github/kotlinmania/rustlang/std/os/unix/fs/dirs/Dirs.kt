@@ -256,11 +256,11 @@ public interface MediaDirsExt<T> {
      * loading an unspecified path or `None` for that directory. To be more
      * specific:
      *
-     * - Any line not in the format of `XDG_ { NAME } _DIR = { path }` where `{ NAME }`
+     * - Any line not in the format of `XDG_ ( NAME ) _DIR = ( path )` where `( NAME )`
      *   is one of `DESKTOP`, `DOWNLOAD`, `TEMPLATES`, `PUBLICSHARE`,
      *   `DOCUMENTS`, `MUSIC`, `PICTURES`, or `VIDEOS` is ignored.
-     * - `{ path }` must be a `"`-quoted shell-escaped path.
-     * - `{ path }` may only start with `/` or `$ HOME /`. A home-relative path
+     * - `( path )` must be a `"`-quoted shell-escaped path.
+     * - `( path )` may only start with `/` or `$ HOME /`. A home-relative path
      *   is returned relative to [env.homeDir]; shell expansion is not
      *   performed.
      * - A directory set to just `$ HOME` marks it as removed, and results in
@@ -315,11 +315,11 @@ public interface MediaDirsExt<T> {
          * loading an unspecified path or `None` for that directory. To be more
          * specific:
          *
-         * - Any line not in the format of `XDG_ { NAME } _DIR = { path }` where `{ NAME }`
+         * - Any line not in the format of `XDG_ ( NAME ) _DIR = ( path )` where `( NAME )`
          *   is one of `DESKTOP`, `DOWNLOAD`, `TEMPLATES`, `PUBLICSHARE`,
          *   `DOCUMENTS`, `MUSIC`, `PICTURES`, or `VIDEOS` is ignored.
-         * - `{ path }` must be a `"`-quoted shell-escaped path.
-         * - `{ path }` may only start with `/` or `$ HOME /`. A home-relative path
+         * - `( path )` must be a `"`-quoted shell-escaped path.
+         * - `( path )` may only start with `/` or `$ HOME /`. A home-relative path
          *   is returned relative to [env.homeDir]; shell expansion is not
          *   performed.
          * - A directory set to just `$ HOME` marks it as removed, and results in

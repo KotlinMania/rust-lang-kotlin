@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 
 public typealias Source<I> = I.Source
@@ -41,7 +42,7 @@ public open class GenericShunt<I, R>(
             Pair(0, upper)
         }
 
-    public open fun <B, T> tryFold(init: B, f: (B, Output) -> T): T where T : Try<T, B, Any?> =
+    public open fun <Residual, B, T> tryFold(init: B, f: (B, Output) -> T): T where T : Try<T, B, Residual> =
         this.iter.tryFold(init, { acc, x -> when (val matchVal = x.branch()) {
             is ControlFlow.Continue -> {
                 val (x1) = matchVal

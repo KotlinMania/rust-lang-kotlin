@@ -59,7 +59,7 @@ public open class Cycle<I>(
         }
     }
 
-    public open fun <Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         // fully iterate the current iterator. this is necessary because
         // `self.iter` may be empty even when `self.orig` isn't

@@ -752,7 +752,7 @@ public open class Duration(
      *
      * Unlike [Duration.asSecsF32] or [Duration.asSecsF64], which convert
      * to floating-point numbers and may lose precision, this method displays a precise
-     * value. If the formatting precision `{ :.N }` is explicitly specified:
+     * value. If the formatting precision `( :.N )` is explicitly specified:
      *
      * - `N` < 9: it rounds the subsecond part with tie resolution to even.
      * - `N` = 9: it displays the precise 9-digit subsecond part.

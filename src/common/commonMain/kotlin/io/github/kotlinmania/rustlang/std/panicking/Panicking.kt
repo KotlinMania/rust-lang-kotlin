@@ -237,10 +237,10 @@ public fun takeHook(): (PanicHookInfo) -> Unit {
  * public fun doctestEntry() {
  *     // Equivalent to
  *     // let prev = panic.takeHook();
- *     // panic.setHook(Holder.new(move |info| {
+ *     // panic.setHook(Holder.new(move |info| (
  *     // println("...");
  *     // prev(info);
- *     // }));
+ *     // )));
  *     panic.updateHook({ prev, info ->
  *         println("Print custom message and execute panic handler as usual")
  *         prev(info)

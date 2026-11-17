@@ -30,7 +30,7 @@ public open class StepBy<I>(
     /**
      * This field is guaranteed to be preprocessed by the specialized `SpecRangeSetup.setup`
      * in the constructor.
-     * For most iterators that processing is a no-op, but for Range<{integer}> types it is lossy
+     * For most iterators that processing is a no-op, but for Range<(integer)> types it is lossy
      * which means the inner iterator cannot be returned to user code.
      * Additionally this type-dependent preprocessing means specialized implementations
      * cannot be used interchangeably.
@@ -44,7 +44,7 @@ public open class StepBy<I>(
      */
     public var stepMinusOne: Int,
     public var firstTake: Boolean,
-) : TrustedLen<StepBy<I>>, StepByImpl<I, Item>, StepByBackImpl<I, Item>, Iterable<Item> {
+) : TrustedLen, StepByImpl<I, Item>, StepByBackImpl<I, Item>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@StepBy.next()) {
@@ -72,9 +72,9 @@ public open class StepBy<I>(
 
     public override fun nth(n: Int): Item? = this.specNth(n)
 
-    public override fun <Acc, R> tryFold(acc: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> = this.specTryFold(acc, f)
+    public override fun <Residual, Acc, R> tryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.specTryFold(acc, f)
 
-    public override fun <Acc> fold(acc: Acc, f: (Acc, I.Item) -> Acc): Acc = this.specFold(acc, f)
+    public override fun <Acc> fold(acc: Acc, f: (Acc, Item) -> Acc): Acc = this.specFold(acc, f)
 
     // The zero-based index starting from the end of the iterator of the
     // last element. Used in the `DoubleEndedIterator` implementation.
@@ -95,9 +95,9 @@ public open class StepBy<I>(
 
     public open fun nthBack(n: Int): Item? = this.specNthBack(n)
 
-    public open fun <Acc, R> tryRfold(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> = this.specTryRfold(init, f)
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.specTryRfold(init, f)
 
-    public open fun <Acc> rfold(init: Acc, f: (Acc, I.Item) -> Acc): Acc = this.specRfold(init, f)
+    public open fun <Acc> rfold(init: Acc, f: (Acc, Item) -> Acc): Acc = this.specRfold(init, f)
 
     // StepBy can only make the iterator shorter, so the len will still fit.
 
@@ -181,9 +181,9 @@ public open class StepBy<I>(
         }
     }
 
-    public override fun <Acc, R> specTryFold(acc: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> {
+    public override fun <Residual, Acc, R> specTryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
-        fun <Item, I> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
+        fun <I> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
         if (this.firstTake) {
             this.firstTake = false
             when (val matchVal = this.iter.next()) {
@@ -197,9 +197,9 @@ public open class StepBy<I>(
         return fromFn(nth(this.iter, this.stepMinusOne)).tryFold(acc1, f)
     }
 
-    public override fun <Acc> specFold(acc: Acc, f: (Acc, I.Item) -> Acc): Acc {
+    public override fun <Acc> specFold(acc: Acc, f: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
-        fun <Item, I> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
+        fun <I> nth(iter: I, stepMinusOne: Int): () -> Item? = { iter.nth(stepMinusOne) }
         if (this.firstTake) {
             this.firstTake = false
             when (val matchVal = this.iter.next()) {
@@ -224,7 +224,7 @@ public open class StepBy<I>(
         return this.iter.nthBack(n1)
     }
 
-    public override fun <Acc, R> specTryRfold(init: Acc, f: (Acc, I.Item) -> R): R where R : Try<R, Acc, Any?> {
+    public override fun <Residual, Acc, R> specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         fun <I> nthBack(iter: I, stepMinusOne: Int): () -> Item? = { iter.nthBack(stepMinusOne) }
         return when (val matchVal = this.nextBack()) {
             null -> init
@@ -236,7 +236,7 @@ public open class StepBy<I>(
         }
     }
 
-    public override fun <Acc> specRfold(init: Acc, f: (Acc, I.Item) -> Acc): Acc {
+    public override fun <Acc> specRfold(init: Acc, f: (Acc, Item) -> Acc): Acc {
         fun <I> nthBack(iter: I, stepMinusOne: Int): () -> Item? = { iter.nthBack(stepMinusOne) }
         return when (val matchVal = this.nextBack()) {
             null -> init
@@ -294,7 +294,7 @@ public interface SpecRangeSetup<T> {
 public fun <T> specRangeSetupSetupT(inner: T, step: Int): T = inner
 
 /**
- * Specialization trait to optimize `StepBy<Range<{ integer }>>` iteration.
+ * Specialization trait to optimize `StepBy<Range<( integer )>>` iteration.
  *
  * # Safety
  *
@@ -312,7 +312,7 @@ public interface StepByImpl<I, Item> {
 
     public fun specNth(n: Int): Item?
 
-    public fun <Acc, R> specTryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?>
+    public fun <Residual, Acc, R> specTryFold(acc: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
     public fun <Acc> specFold(acc: Acc, f: (Acc, Item) -> Acc): Acc
 }
@@ -334,7 +334,7 @@ public interface StepByBackImpl<I, Item> {
 
     public fun specNthBack(n: Int): Item?
 
-    public fun <Acc, R> specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?>
+    public fun <Residual, Acc, R> specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
     public fun <Acc> specRfold(init: Acc, f: (Acc, Item) -> Acc): Acc
 }
@@ -407,7 +407,7 @@ public fun StepBy<Range<UByte>>.specNth(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<Range<UByte>>.specTryFold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<UByte>>.specTryFold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -462,7 +462,7 @@ public fun StepBy<Range<UShort>>.specNthRangeUShort(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<Range<UShort>>.specTryFoldRangeUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<UShort>>.specTryFoldRangeUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -517,7 +517,7 @@ public fun StepBy<Range<UInt>>.specNthRangeUInt(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<Range<UInt>>.specTryFoldRangeUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<UInt>>.specTryFoldRangeUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -572,7 +572,7 @@ public fun StepBy<Range<ULong>>.specNthRangeULong(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<Range<ULong>>.specTryFoldRangeULong(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<ULong>>.specTryFoldRangeULong(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -627,7 +627,7 @@ public fun StepBy<IntRange>.specNthRangeInt(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<IntRange>.specTryFoldRangeInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<IntRange>.specTryFoldRangeInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -682,7 +682,7 @@ public fun StepBy<RangeIter<UByte>>.specNthRangeIterUByte(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<RangeIter<UByte>>.specTryFoldRangeIterUByte(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UByte>>.specTryFoldRangeIterUByte(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -737,7 +737,7 @@ public fun StepBy<RangeIter<UShort>>.specNthRangeIterUShort(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<RangeIter<UShort>>.specTryFoldRangeIterUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UShort>>.specTryFoldRangeIterUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -792,7 +792,7 @@ public fun StepBy<RangeIter<UInt>>.specNthRangeIterUInt(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<RangeIter<UInt>>.specTryFoldRangeIterUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UInt>>.specTryFoldRangeIterUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -847,7 +847,7 @@ public fun StepBy<RangeIter<ULong>>.specNthRangeIterULong(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<RangeIter<ULong>>.specTryFoldRangeIterULong(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<ULong>>.specTryFoldRangeIterULong(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -902,7 +902,7 @@ public fun StepBy<RangeIter<Int>>.specNthRangeIterInt(n: Int): Item? {
     return this.next()
 }
 
-public fun <Acc, R> StepBy<RangeIter<Int>>.specTryFoldRangeIterInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<Int>>.specTryFoldRangeIterInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -946,7 +946,7 @@ public fun StepBy<Range<UByte>>.specNthBack(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<Range<UByte>>.specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<UByte>>.specTryRfold(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -988,7 +988,7 @@ public fun StepBy<Range<UShort>>.specNthBackRangeUShort(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<Range<UShort>>.specTryRfoldRangeUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<UShort>>.specTryRfoldRangeUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1030,7 +1030,7 @@ public fun StepBy<Range<UInt>>.specNthBackRangeUInt(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<Range<UInt>>.specTryRfoldRangeUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<Range<UInt>>.specTryRfoldRangeUInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1072,7 +1072,7 @@ public fun StepBy<IntRange>.specNthBackRangeInt(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<IntRange>.specTryRfoldRangeInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<IntRange>.specTryRfoldRangeInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1114,7 +1114,7 @@ public fun StepBy<RangeIter<UByte>>.specNthBackRangeIterUByte(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<RangeIter<UByte>>.specTryRfoldRangeIterUByte(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UByte>>.specTryRfoldRangeIterUByte(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1156,7 +1156,7 @@ public fun StepBy<RangeIter<UShort>>.specNthBackRangeIterUShort(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<RangeIter<UShort>>.specTryRfoldRangeIterUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<UShort>>.specTryRfoldRangeIterUShort(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()
@@ -1198,7 +1198,7 @@ public fun StepBy<RangeIter<Int>>.specNthBackRangeIterInt(n: Int): Item? {
     return this.nextBack()
 }
 
-public fun <Acc, R> StepBy<RangeIter<Int>>.specTryRfoldRangeIterInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+public fun <Residual, Acc, R> StepBy<RangeIter<Int>>.specTryRfoldRangeIterInt(init: Acc, f: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.nextBack()

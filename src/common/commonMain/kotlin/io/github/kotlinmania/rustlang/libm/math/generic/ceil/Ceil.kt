@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 // performance seems to be better (based on icount) and it does not seem to experience rounding
 // errors on i386.
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> ceilStatus(x: F, fromBitsFFn: (Int) -> F): FpResult<F> {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> ceilStatus(x: F, fromBitsFFn: (Int) -> F): FpResult<F> {
     val zero = IntTy.ZERO
     var ix = x.toBits()
     val e = x.expUnbiased()

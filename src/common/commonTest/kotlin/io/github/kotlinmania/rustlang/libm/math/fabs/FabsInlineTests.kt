@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 /**
  * Based on https://en.cppreference.com/w/cpp/numeric/math/fabs
  */
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> specTest(f: (F) -> F) {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> specTest(f: (F) -> F) {
     run {
         val l = f(F.ZERO)
         val r = F.ZERO

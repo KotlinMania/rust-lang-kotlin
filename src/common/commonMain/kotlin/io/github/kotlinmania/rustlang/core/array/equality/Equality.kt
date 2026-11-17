@@ -65,8 +65,8 @@ public fun <T, U> MutableList<T>.eq(other: List<U>, n: Int): Boolean = this == o
 public fun <T, U> MutableList<T>.ne(other: List<U>, n: Int): Boolean = this != other
 
 // NOTE: some less important impls are omitted to reduce code bloat
-// implSliceEq2 { [A; $N], &b [B; $N] }
-// implSliceEq2 { [A; $N], &b mut [B; $N] }
+// implSliceEq2 ( [A; $N], &b [B; $N] )
+// implSliceEq2 ( [A; $N], &b mut [B; $N] )
 
 public interface SpecArrayEq<Other, T> {
     public fun specEq(a: List<T>, b: List<Other>): Boolean

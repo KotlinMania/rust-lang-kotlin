@@ -1,6 +1,12 @@
 // port-lint: tests map.rs
 package io.github.kotlinmania.rustlang.hashbrown
 
+import io.github.kotlinmania.libc.fuchsia.MAP_ANON
+import io.github.kotlinmania.libc.fuchsia.MAP_FAILED
+import io.github.kotlinmania.libc.fuchsia.MAP_PRIVATE
+import io.github.kotlinmania.libc.fuchsia.PROT_READ
+import io.github.kotlinmania.libc.fuchsia.PROT_WRITE
+import io.github.kotlinmania.libc.fuchsia.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.alloc.vec.Vec
 import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
@@ -29,12 +35,6 @@ import io.github.kotlinmania.rustlang.hashbrown.raw.prevPow2
 import io.github.kotlinmania.rustlang.libc.mmap
 import io.github.kotlinmania.rustlang.libc.munmap
 import io.github.kotlinmania.rustlang.libc.sysconf
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.MAP_ANON
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_FAILED
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_PRIVATE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
-import io.github.kotlinmania.rustlang.libc.wasi.SC_PAGESIZE
 import io.github.kotlinmania.rustlang.std.hash.random.DefaultHasher
 import io.github.kotlinmania.rustlang.std.thread.lifecycle.scope
 import io.github.kotlinmania.rustlang.std.thread.scoped.ScopedJoinHandle
@@ -43,7 +43,7 @@ public typealias HM = HashMap<Int, Int, DefaultHashBuilder, Global>
 
 public typealias Hasher = DefaultHasher
 
-// Omitted quickcheck/rand property test items pending quickcheck-kotlin / rand-kotlin port (Hermes Kanban t_19971811).
+// Omitted quickcheck/rand property test items pending quickcheck-kotlin / rand-kotlin port (Hermes Kanban card 19971811).
 
 public open class Droppable(
     public var k: Int,
@@ -1598,7 +1598,7 @@ public open class MmapAllocator(
             0 -> Result.Ok<Int, AllocError>(n1)
             else -> {
                 val rem = matchVal
-                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))
+                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok<Int, AllocError>(it) } ?: Result.Err<Int, AllocError>(AllocError()))
             }
         }
     }

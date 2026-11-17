@@ -1,21 +1,21 @@
 // port-lint: source sys/random/linux.rs
 package io.github.kotlinmania.rustlang.std.sys.random.linux
 
+import io.github.kotlinmania.libc.fuchsia.EAGAIN
+import io.github.kotlinmania.libc.fuchsia.EINTR
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.ENOSYS
+import io.github.kotlinmania.libc.fuchsia.EPERM
+import io.github.kotlinmania.libc.fuchsia.POLLIN
+import io.github.kotlinmania.libc.fuchsia.Pollfd
+import io.github.kotlinmania.libc.unix.cygwin.GRND_NONBLOCK
+import io.github.kotlinmania.libc.unix.hurd.GRND_INSECURE
 import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.libc.Poll
-import io.github.kotlinmania.rustlang.libc.unix.Pollfd
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.GRND_INSECURE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.GRND_NONBLOCK
-import io.github.kotlinmania.rustlang.libc.wasi.EAGAIN
-import io.github.kotlinmania.rustlang.libc.wasi.EINTR
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
-import io.github.kotlinmania.rustlang.libc.wasi.EPERM
-import io.github.kotlinmania.rustlang.libc.wasi.POLLIN
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed

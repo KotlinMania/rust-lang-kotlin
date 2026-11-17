@@ -38,7 +38,6 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
 import io.github.kotlinmania.rustlang.std.sys.args.windows.Arg
-import io.github.kotlinmania.rustlang.std.sys.env.windows.Env
 import io.github.kotlinmania.rustlang.std.sys.env.windows.env
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.File
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
@@ -247,7 +246,7 @@ public open class Command(
             } else {
                 null
             }
-        val program = when (val tryResult = resolveExe(this.program, { Env.varOs("PATH") }, childPaths)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
+        val program = when (val tryResult = resolveExe(this.program, { env.varOs("PATH") }, childPaths)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.error) }
         val hasBatExtension =
             { program1: List<UShort> ->
                 run {
@@ -593,7 +592,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
     // This is for consistency with Rust's historic behavior.
     if (childPaths != null) {
         val paths = childPaths
-        for (path in Env.splitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
+        for (path in env.splitPaths(paths).filter({ p -> !p.asOsStr().isEmpty() })) {
             when (val matchVal = exists(path)) {
                 null -> {}
                 else -> {
@@ -604,7 +603,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         }
     }
     // 2. Application path
-    when (val matchVal1 = Env.currentExe()) {
+    when (val matchVal1 = env.currentExe()) {
         is Ok -> {
             val appPath = matchVal1.value
             appPath.pop()
@@ -639,7 +638,7 @@ public fun searchPaths(parentPaths: () -> OsString?, childPaths: OsStr?, exists:
         null -> {}
         else -> {
             val parentPaths1 = matchVal5
-            for (path3 in Env.splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
+            for (path3 in env.splitPaths(parentPaths1).filter({ p -> !p.asOsStr().isEmpty() })) {
                 when (val matchVal6 = exists(path3)) {
                     null -> {}
                     else -> {

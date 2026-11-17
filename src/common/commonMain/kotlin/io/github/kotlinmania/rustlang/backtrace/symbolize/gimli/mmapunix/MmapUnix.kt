@@ -1,15 +1,15 @@
 // port-lint: source symbolize/gimli/mmap_unix.rs
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapunix
 
+import io.github.kotlinmania.libc.fuchsia.MAP_FAILED
+import io.github.kotlinmania.libc.fuchsia.MAP_PRIVATE
+import io.github.kotlinmania.libc.fuchsia.PROT_READ
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.fs.File
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.munmap
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_FAILED
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MAP_PRIVATE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.mmap as mmap64
 
 public open class Mmap internal constructor(

@@ -1,6 +1,8 @@
 // port-lint: tests x86/ssse3.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+
 // Supplemental Streaming SIMD Extensions 3 (SSSE3)
 
 public fun testMmAbsEpi8() {

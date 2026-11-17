@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
-// Note: this file is currently reused in other `std.os.{ platform }.ffi` modules to reduce duplication.
+// Note: this file is currently reused in other `std.os.( platform ).ffi` modules to reduce duplication.
 // Keep this in mind when applying changes to this file that only apply to `unix`.
 
 /**

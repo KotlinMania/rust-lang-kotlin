@@ -17,7 +17,7 @@ public val USE_LZ: Boolean =
         // LZD or LZCNT on SPARC only exists for the VIS 3 extension and later.
         false
     } else if (false) {
-        // The 'Zbb' Basic Bit-Manipulation extension on RISC-V
+        // The `Zbb` Basic Bit-Manipulation extension on RISC-V
         // determines if a CLZ assembly instruction exists
         false
     } else if (false) {

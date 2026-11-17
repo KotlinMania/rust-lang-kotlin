@@ -3989,9 +3989,9 @@ public fun msaFdivD(a: V2f64, b: V2f64): V2f64 = msaFdivD(a, transmuteWithLayout
 // @inline
 // @targetFeature(enable = "msa")
 // @cfgAttr(test, assertInstr(fexdo.h))
-// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexdo_h(a: v4f32, b: v4f32) -> f16x8 {
+// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexdo_h(a: v4f32, b: v4f32) -> f16x8 (
 // msaFexdoH(a, mem.transmute(b))
-// }
+// )
 
 /**
  * Vector Floating-Point Down-Convert Interchange Format
@@ -4034,9 +4034,9 @@ public fun msaFexp2D(a: V2f64, b: V2i64): V2f64 = msaFexp2D(a, transmuteWithLayo
 // @inline
 // @targetFeature(enable = "msa")
 // @cfgAttr(test, assertInstr(fexupl.w))
-// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupl_w(a: f16x8) -> v4f32 {
+// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupl_w(a: f16x8) -> v4f32 (
 // msaFexuplW(a)
-// }
+// )
 
 /**
  * Vector Floating-Point Up-Convert Interchange Format Left
@@ -4059,9 +4059,9 @@ public fun msaFexuplD(a: V4f32): V2f64 = msaFexuplD(a)
 // @inline
 // @targetFeature(enable = "msa")
 // @cfgAttr(test, assertInstr(fexupr.w))
-// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupr_w(a: f16x8) -> v4f32 {
+// @unstable(feature = "stdarchMips", issue = "111198") pub unchecked fn __msa_fexupr_w(a: f16x8) -> v4f32 (
 // msaFexuprW(a)
-// }
+// )
 
 /**
  * Vector Floating-Point Up-Convert Interchange Format Left

@@ -65,7 +65,7 @@ public open class Operation(
         public fun <T> hook(r: T): Operation {
             val value = ((mutPtrFromRustCast(r))).rawAddress.toInt()
             // Make sure that the pointer address doesn't equal the numerical representation of
-            // `Selected.{ Waiting, Aborted, Disconnected }`.
+            // `Selected.( Waiting, Aborted, Disconnected )`.
             check(value > 2)
             return Operation(value)
         }

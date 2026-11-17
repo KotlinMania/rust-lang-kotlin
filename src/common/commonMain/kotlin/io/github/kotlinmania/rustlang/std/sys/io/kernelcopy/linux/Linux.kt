@@ -1,6 +1,14 @@
 // port-lint: source sys/io/kernel_copy/linux.rs
 package io.github.kotlinmania.rustlang.std.sys.io.kernelcopy.linux
 
+import io.github.kotlinmania.libc.fuchsia.EBADF
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.ENOSYS
+import io.github.kotlinmania.libc.fuchsia.EOPNOTSUPP
+import io.github.kotlinmania.libc.fuchsia.EOVERFLOW
+import io.github.kotlinmania.libc.fuchsia.EPERM
+import io.github.kotlinmania.libc.fuchsia.EXDEV
+import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.Splice
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufreader.BufReader
 import io.github.kotlinmania.rustlang.alloc.io.buffered.bufwriter.BufWriter
 import io.github.kotlinmania.rustlang.alloc.io.copy.CopyState
@@ -16,14 +24,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.libc.Splice
-import io.github.kotlinmania.rustlang.libc.wasi.EBADF
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.ENOSYS
-import io.github.kotlinmania.rustlang.libc.wasi.EOPNOTSUPP
-import io.github.kotlinmania.rustlang.libc.wasi.EOVERFLOW
-import io.github.kotlinmania.rustlang.libc.wasi.EPERM
-import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.fs.Metadata
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader

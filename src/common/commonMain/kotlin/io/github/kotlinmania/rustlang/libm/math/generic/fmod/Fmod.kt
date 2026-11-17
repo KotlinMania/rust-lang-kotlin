@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 import io.github.kotlinmania.rustlang.libm.math.support.modular.linearMulReduction
 
-public fun <Int, SignedInt, D, F : Float<F, Any?, Any?>> fmod(x: F, y: F, fromBitsFFn: (Int) -> F): F {
+public fun <Int, SignedInt, D, OtherSign, Unsigned, H, F : Float<F, Int, SignedInt>> fmod(x: F, y: F, fromBitsFFn: (Int) -> F): F {
     val v1 = F.Int.ONE
     val sx = x.toBits() and F.SIGN_MASK
     val ux = x.toBits() and F.SIGN_MASK.inv()
@@ -47,7 +47,7 @@ public fun <Int, SignedInt, D, F : Float<F, Any?, Any?>> fmod(x: F, y: F, fromBi
  *  - the mantissa with the implicit bit (0 if subnormal, 1 otherwise)
  *  - the additional exponent past 1, (0 for subnormal, 0 or more otherwise)
  */
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> intoSigExp(bits: Int): Pair<Int, UInt> {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> intoSigExp(bits: Int): Pair<Int, UInt> {
     var bits1 = bits
     bits1 = bits1 and F.SIGN_MASK.inv()
     // Subtract 1 from the exponent, clamping at 0
@@ -58,7 +58,7 @@ public fun <Int, SignedInt, F : Float<F, Any?, Any?>> intoSigExp(bits: Int): Pai
 /**
  * Compute the remainder `(x * 2.pow(e)) % y` without overflow.
  */
-public fun <Int, SignedInt, D, F> reduction(x: Int, e: UInt, y: Int): Int where F : Float<F, Any?, Any?> {
+public fun <Int, SignedInt, D, OtherSign, Unsigned, H, F> reduction(x: Int, e: UInt, y: Int): Int where F : Float<F, Int, SignedInt> {
     var x1 = x
     // `f16` only has 5 exponent bits, so even `f16.MAX = 65504.0` is only
     // a 40-bit integer multiple of the smallest subnormal.

@@ -795,7 +795,7 @@ public open class OsStr internal constructor(
      * // sequences simply through collecting user command line arguments, for
      * // example.
      * run {
-     *     // Here, the values 0x66 and 0x6f correspond to 'f' and 'o'
+     *     // Here, the values 0x66 and 0x6f correspond to `f` and `o`
      *     // respectively. The value 0x80 is a lone continuation byte, invalid
      *     // in a UTF-8 sequence.
      *     val source = listOf(0x66, 0x6f, 0x80, 0x6f)
@@ -803,7 +803,7 @@ public open class OsStr internal constructor(
      *     check(osStr.toStringLossy() == "fo�o")
      * }
      * run {
-     *     // Here the values 0x0066 and 0x006f correspond to 'f' and 'o'
+     *     // Here the values 0x0066 and 0x006f correspond to `f` and `o`
      *     // respectively. The value 0xD800 is a lone surrogate half, invalid
      *     // in a UTF-16 sequence.
      *     val source1 = listOf(0x0066, 0x006f, 0xD800, 0x006f)
@@ -1017,7 +1017,7 @@ public open class OsStr internal constructor(
     /**
      * Converts this string to its ASCII lower case equivalent in-place.
      *
-     * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+     * ASCII letters `A` to `Z` are mapped to `a` to `z`,
      * but non-ASCII letters are unchanged.
      *
      * To return a new lowercased value without modifying the existing one, use
@@ -1040,7 +1040,7 @@ public open class OsStr internal constructor(
     /**
      * Converts this string to its ASCII upper case equivalent in-place.
      *
-     * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+     * ASCII letters `a` to `z` are mapped to `A` to `Z`,
      * but non-ASCII letters are unchanged.
      *
      * To return a new uppercased value without modifying the existing one, use
@@ -1064,7 +1064,7 @@ public open class OsStr internal constructor(
      * Returns a copy of this string where each character is mapped to its
      * ASCII lower case equivalent.
      *
-     * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+     * ASCII letters `A` to `Z` are mapped to `a` to `z`,
      * but non-ASCII letters are unchanged.
      *
      * To lowercase the value in-place, use [OsStr.makeAsciiLowercase].
@@ -1084,7 +1084,7 @@ public open class OsStr internal constructor(
      * Returns a copy of this string where each character is mapped to its
      * ASCII upper case equivalent.
      *
-     * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+     * ASCII letters `a` to `z` are mapped to `A` to `Z`,
      * but non-ASCII letters are unchanged.
      *
      * To uppercase the value in-place, use [OsStr.makeAsciiUppercase].
@@ -1416,7 +1416,7 @@ public fun OsStr.eq(other: OsString): Boolean = OsStr.eq(this, other)
 public fun OsStr.partialCmp(other: OsString): Ordering? = OsStr.partialCmp(this, other)
 
 /**
- * Helper struct for safely printing an [OsStr] with [format] and `{}`.
+ * Helper struct for safely printing an [OsStr] with [format] and `()`.
  *
  * An [OsStr] might contain non-Unicode data. This `class` implements the
  * [Display] trait in a way that mitigates that. It is created by the

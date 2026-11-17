@@ -20,13 +20,13 @@ import io.github.kotlinmania.rustlang.core.intrinsics.CodeViewAnnotationArgs
  * specified in `CodeViewAnnotationArgs.ARGS`.
  *
  * @file:feature(codeviewAnnotation, coreOs)
- * use core.os.windows::{codeviewAnnotation, CodeViewAnnotationArgs};
+ * use core.os.windows::(codeviewAnnotation, CodeViewAnnotationArgs);
  *
  * struct Args;
  *
- * impl CodeViewAnnotationArgs for Args {
+ * impl CodeViewAnnotationArgs for Args (
  *     const ARGS: &[&str] = &["Hello", "World"];
- * }
+ * )
  *
  * codeviewAnnotation::<Args>();
  * ```kotlin

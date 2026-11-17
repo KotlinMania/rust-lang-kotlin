@@ -1,9 +1,9 @@
 // port-lint: source sys/pal/windows/winsock.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.io.Error
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSAGetLastError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.WSAStartup

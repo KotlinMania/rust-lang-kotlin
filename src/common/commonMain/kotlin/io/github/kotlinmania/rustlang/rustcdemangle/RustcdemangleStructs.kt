@@ -116,7 +116,7 @@ public open class SizeLimitedFmtAdapter<F> internal constructor(
         internal set
 
     public open fun writeStr(s: String): Result<Unit, Error> {
-        this.remaining = this.remaining.andThen({ r -> (r.checkedSub(s.length)?.let { Result.Ok(it) } ?: Result.Err(SizeLimitExhausted())) })
+        this.remaining = this.remaining.andThen({ r -> (r.checkedSub(s.length)?.let { Result.Ok<Int, SizeLimitExhausted>(it) } ?: Result.Err<Int, SizeLimitExhausted>(SizeLimitExhausted())) })
         return run {
             val matchVal = this.remaining
             when {

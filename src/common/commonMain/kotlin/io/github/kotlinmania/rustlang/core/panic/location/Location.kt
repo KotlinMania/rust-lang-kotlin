@@ -250,10 +250,10 @@ public open class Location internal constructor(
          * fun main() {
          *     // |1  |5    |11       |21       |31       |41       |51
          *     // +-|---|-----|---------|---------|---------|---------|---
-         *     // 29 | fn constantLocation() -> &static Location<static> {
+         *     // 29 | fn constantLocation() -> &static Location<static> (
          *     // 30 |     newLocation()
          *     // |     ^ `val constant` points here
-         *     // 31 | }
+         *     // 31 | )
          *     val constant = constantLocation()
          *     check(constant.file() == "")
          *     check(Pair(constant.line(), constant.column()) == Pair(30, 5))

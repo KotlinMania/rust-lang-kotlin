@@ -213,7 +213,7 @@ public fun <T> T.deref(): T = this
  * check('b' == x.value)
  * ```
  */
-public interface DerefMut : Deref<Any?> {
+public interface DerefMut<Target> : Deref<Target> {
     /**
      * Mutably dereferences the value.
      */

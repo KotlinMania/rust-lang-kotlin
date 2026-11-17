@@ -77,7 +77,7 @@ public open class MapWhile<I, P>(
         // can't know a lower bound, due to the predicate
     }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
         val iter = this.iter
         val predicate = this.predicate
         return iter.tryFold(init, { acc, x -> when (val matchVal = predicate(x)) {

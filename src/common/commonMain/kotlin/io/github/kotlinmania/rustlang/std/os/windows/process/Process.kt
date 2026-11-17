@@ -236,7 +236,7 @@ public interface CommandExt {
      *
      * @file:feature(windowsProcessExtensionsAsyncPipes)
      * use std.os.windows.process.CommandExt;
-     * use std.process::{Command, Stdio};
+     * use std.process::(Command, Stdio);
      *
      * # let program = "";
      *
@@ -267,15 +267,15 @@ public interface CommandExt {
      *
      * @file:feature(windowsProcessExtensionsRawAttribute)
      * use std.os.windows.io.AsRawHandle;
-     * use std.os.windows.process::{CommandExt, ProcThreadAttributeList};
+     * use std.os.windows.process::(CommandExt, ProcThreadAttributeList);
      * use std.process.Command;
      *
      * # struct ProcessDropGuard(std.process.Child);
-     * # impl Drop for ProcessDropGuard {
-     * #     fn drop(self) {
+     * # impl Drop for ProcessDropGuard (
+     * #     fn drop(self) (
      * #         let _ = self.0.kill();
-     * #     }
-     * # }
+     * #     )
+     * # )
      * #
      * let parent = Command.new("cmd").spawn()?;
      * let parentProcessHandle = parent.asRawHandle();
@@ -515,17 +515,17 @@ public open class ProcThreadAttributeListBuilder(
      *
      * @file:feature(windowsProcessExtensionsRawAttribute)
      * use std.ffi.cVoid;
-     * use std.os.windows.process::{CommandExt, ProcThreadAttributeList};
+     * use std.os.windows.process::(CommandExt, ProcThreadAttributeList);
      * use std.os.windows.raw.Handle;
      * use std.process.Command;
      *
      * @repr(C)
-     * pub struct COORD {
+     * pub struct COORD (
      *     pub X: i16,
      *     pub Y: i16,
-     * }
+     * )
      *
-     * unchecked extern "system" {
+     * unchecked extern "system" (
      *     fn CreatePipe(
      *         hreadpipe: *mut HANDLE,
      *         hwritepipe: *mut HANDLE,
@@ -540,26 +540,26 @@ public open class ProcThreadAttributeListBuilder(
      *         phpc: *mut isize,
      *     ) -> i32;
      *     fn CloseHandle(hobject: HANDLE) -> i32;
-     * }
+     * )
      *
      * let [mut inputReadSide, mut outputWriteSide, mut outputReadSide, mut inputWriteSide] =
-     *     [unchecked { std.mem.zeroed::<HANDLE>() }; 4];
+     *     [unchecked ( std.mem.zeroed::<HANDLE>() ); 4];
      *
-     * unchecked {
+     * unchecked (
      *     CreatePipe(inputReadSide, inputWriteSide, std.ptr.nullVal(), 0);
      *     CreatePipe(outputReadSide, outputWriteSide, std.ptr.nullVal(), 0);
-     * }
+     * )
      *
-     * let size = COORD { X: 60, Y: 40 };
-     * let mut hPc = unchecked { std.mem.zeroed() };
-     * unchecked { CreatePseudoConsole(size, inputReadSide, outputWriteSide, 0, hPc) };
+     * let size = COORD ( X: 60, Y: 40 );
+     * let mut hPc = unchecked ( std.mem.zeroed() );
+     * unchecked ( CreatePseudoConsole(size, inputReadSide, outputWriteSide, 0, hPc) );
      *
-     * unchecked { CloseHandle(inputReadSide) };
-     * unchecked { CloseHandle(outputWriteSide) };
+     * unchecked ( CloseHandle(inputReadSide) );
+     * unchecked ( CloseHandle(outputWriteSide) );
      *
      * const PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE: Int = 131094;
      *
-     * let attributeList = unchecked {
+     * let attributeList = unchecked (
      *     ProcThreadAttributeList.build()
      *         .rawAttribute(
      *             PROC_THREAD_ATTRIBUTE_PSEUDOCONSOLE,
@@ -567,7 +567,7 @@ public open class ProcThreadAttributeListBuilder(
      *             sizeOf::<isize>(),
      *         )
      *         .finish()?
-     * };
+     * );
      *
      * let mut child = Command.new("cmd").spawnWithAttributes(&attributeList)?;
      * #

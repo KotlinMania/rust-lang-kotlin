@@ -1,6 +1,8 @@
 // port-lint: source sys/platform_version/darwin/core_foundation.rs
 package io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.corefoundation
 
+import io.github.kotlinmania.libc.fuchsia.RTLD_LAZY
+import io.github.kotlinmania.libc.fuchsia.RTLD_LOCAL
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -13,8 +15,6 @@ import io.github.kotlinmania.rustlang.libc.dlclose
 import io.github.kotlinmania.rustlang.libc.dlerror
 import io.github.kotlinmania.rustlang.libc.dlopen
 import io.github.kotlinmania.rustlang.libc.dlsym
-import io.github.kotlinmania.rustlang.libc.unix.bsd.RTLD_LAZY
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.RTLD_LOCAL
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runPathWithCstr
 import io.github.kotlinmania.rustlang.std.sys.platformversion.darwin.rootRelative
 

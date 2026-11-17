@@ -42,29 +42,29 @@ public fun zeroDivFn(): Nothing {
  * long division step with the dividend `duo`. NOTE: This function assumes that these edge
  * cases have been handled before reaching it:
  * `
- * if div == 0 {
+ * if div == 0 (
  *     panic("attempt to divide by zero")
- * }
- * if duo < div {
+ * )
+ * if duo < div (
  *     return (0, duo)
- * }
+ * )
  * `
  *
  * Normalization is defined as (where `shl` is the output of this function):
  * `
- * if duo.leadingZeros() != (div << shl).leadingZeros() {
+ * if duo.leadingZeros() != (div << shl).leadingZeros() (
  *     // If the most significant bits of `duo` and `div<<shl` are not in the same place,
  *     // then `div<<shl` has one more leading zero than `duo`.
  *     assertEq(duo.leadingZeros() + 1, (div << shl).leadingZeros());
  *     // Also, `2 * (div<<shl)` is not more than `duo` (otherwise the first division step
  *     // would not be able to clear the msb of `duo`)
  *     assert(duo < (div << (shl + 1)));
- * }
- * if fullNormalization {
+ * )
+ * if fullNormalization (
  *     // Some algorithms do not need "full" normalization, which means that `duo` is
  *     // larger than `div<<shl` when the most significant bits are aligned.
  *     assert((div << shl) <= duo);
- * }
+ * )
  * `
  *
  * Note: If the software bisection algorithm is being used in this function, it happens
@@ -104,29 +104,29 @@ public fun u32NormalizationShift(duo: UInt, div: UInt, fullNormalization: Boolea
  * long division step with the dividend `duo`. NOTE: This function assumes that these edge
  * cases have been handled before reaching it:
  * `
- * if div == 0 {
+ * if div == 0 (
  *     panic("attempt to divide by zero")
- * }
- * if duo < div {
+ * )
+ * if duo < div (
  *     return (0, duo)
- * }
+ * )
  * `
  *
  * Normalization is defined as (where `shl` is the output of this function):
  * `
- * if duo.leadingZeros() != (div << shl).leadingZeros() {
+ * if duo.leadingZeros() != (div << shl).leadingZeros() (
  *     // If the most significant bits of `duo` and `div<<shl` are not in the same place,
  *     // then `div<<shl` has one more leading zero than `duo`.
  *     assertEq(duo.leadingZeros() + 1, (div << shl).leadingZeros());
  *     // Also, `2 * (div<<shl)` is not more than `duo` (otherwise the first division step
  *     // would not be able to clear the msb of `duo`)
  *     assert(duo < (div << (shl + 1)));
- * }
- * if fullNormalization {
+ * )
+ * if fullNormalization (
  *     // Some algorithms do not need "full" normalization, which means that `duo` is
  *     // larger than `div<<shl` when the most significant bits are aligned.
  *     assert((div << shl) <= duo);
- * }
+ * )
  * `
  *
  * Note: If the software bisection algorithm is being used in this function, it happens

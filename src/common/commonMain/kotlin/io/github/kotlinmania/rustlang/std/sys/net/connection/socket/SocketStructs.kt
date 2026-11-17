@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -25,6 +24,7 @@ import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.eachAddr
@@ -265,7 +265,7 @@ public open class TcpStream(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> {
+        public fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<TcpStream, Error> {
             fun inner(addr1: SocketAddr): Result<TcpStream, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), c.SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpStream, Error>(tryResult.error) }
                 when (val tryResult = sock.connect(addr1)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpStream, Error>(tryResult.error) }
@@ -379,7 +379,7 @@ public open class TcpListener(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> {
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(addr: A): Result<TcpListener, Error> {
             fun inner(addr1: SocketAddr): Result<TcpListener, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), c.SOCK_STREAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<TcpListener, Error>(tryResult.error) }
                 // On platforms with Berkeley-derived sockets, this allows to quickly
@@ -544,7 +544,7 @@ public open class UdpSocket(
         return Result.Ok<Int, Error>(ret.toInt())
     }
 
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<Unit, Error> {
+    public open fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<Unit, Error> {
         fun inner(thisRef: UdpSocket, addr1: SocketAddr): Result<Unit, Error> {
             val (addr2, len) = socketAddrToC(addr1)
             return cvtR({ c.connect(thisRef.inner.asRaw(), addr2.asPtr(), len) }).map({ Unit })
@@ -571,7 +571,7 @@ public open class UdpSocket(
     }
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<UdpSocket, Error> {
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(addr: A): Result<UdpSocket, Error> {
             fun inner(addr1: SocketAddr): Result<UdpSocket, Error> {
                 val sock = when (val tryResult = Socket.new(addrFamily(addr1), c.SOCK_DGRAM)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<UdpSocket, Error>(tryResult.error) }
                 val (addr2, len) = socketAddrToC(addr1)

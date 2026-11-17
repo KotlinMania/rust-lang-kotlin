@@ -1,10 +1,10 @@
 // port-lint: source test_result.rs
 package io.github.kotlinmania.rustlang.test.testresult
 
+import io.github.kotlinmania.libc.fuchsia.SIGABRT
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.libc.windows.SIGABRT
 import io.github.kotlinmania.rustlang.std.process.ExitStatus
 import io.github.kotlinmania.rustlang.test.bench.BenchSamples
 import io.github.kotlinmania.rustlang.test.options.ShouldPanic

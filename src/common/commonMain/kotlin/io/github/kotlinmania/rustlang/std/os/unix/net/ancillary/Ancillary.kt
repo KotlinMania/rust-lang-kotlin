@@ -1,6 +1,18 @@
 // port-lint: source os/unix/net/ancillary.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 
+import io.github.kotlinmania.libc.CInt
+import io.github.kotlinmania.libc.fuchsia.Cmsghdr
+import io.github.kotlinmania.libc.fuchsia.GidT
+import io.github.kotlinmania.libc.fuchsia.MSG_CTRUNC
+import io.github.kotlinmania.libc.fuchsia.MSG_TRUNC
+import io.github.kotlinmania.libc.fuchsia.Msghdr
+import io.github.kotlinmania.libc.fuchsia.PidT
+import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
+import io.github.kotlinmania.libc.fuchsia.Ucred
+import io.github.kotlinmania.libc.fuchsia.UidT
+import io.github.kotlinmania.libc.unix.bsd.freebsdlike.freebsd.SCM_CREDS2
+import io.github.kotlinmania.libc.unix.hurd.SCM_CREDS
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -21,24 +33,12 @@ import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.CMSG_DATA
 import io.github.kotlinmania.rustlang.libc.CMSG_FIRSTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_LEN
 import io.github.kotlinmania.rustlang.libc.CMSG_NXTHDR
 import io.github.kotlinmania.rustlang.libc.CMSG_SPACE
-import io.github.kotlinmania.rustlang.libc.SCM_CREDS2
 import io.github.kotlinmania.rustlang.libc.memcpy
-import io.github.kotlinmania.rustlang.libc.unix.GidT
-import io.github.kotlinmania.rustlang.libc.unix.PidT
-import io.github.kotlinmania.rustlang.libc.unix.UidT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
-import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SCM_CREDS
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CTRUNC
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
-import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.io.error.Error
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
@@ -453,10 +453,10 @@ public open class Messages(
  * # Example
  *
  * @file:feature(unixSocketAncillaryData)
- * use std.os.unix.net::{UnixStream, SocketAncillary, AncillaryData};
+ * use std.os.unix.net::(UnixStream, SocketAncillary, AncillaryData);
  * use std.io.IoSliceMut;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let sock = UnixStream.connect("/tmp/sock")?;
  *
  *     let mut fds = [0; 8];
@@ -467,15 +467,15 @@ public open class Messages(
  *     let mut bufs = [IoSliceMut.new(buf[..])][..];
  *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
  *
- *     for ancillaryResult in ancillary.messages() {
- *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
- *             for fd in scmRights {
- *                 println("receive file descriptor: {fd}");
- *             }
- *         }
- *     }
+ *     for ancillaryResult in ancillary.messages() (
+ *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+ *             for fd in scmRights (
+ *                 println("receive file descriptor: (fd)");
+ *             )
+ *         )
+ *     )
  *     Ok(())
- * }
+ * )
  * ```kotlin
  */
 public open class SocketAncillary(
@@ -509,10 +509,10 @@ public open class SocketAncillary(
      * # Example
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary};
+     * use std.os.unix.net::(UnixStream, SocketAncillary);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *
      *     let mut ancillaryBuffer = [0; 128];
@@ -522,9 +522,9 @@ public open class SocketAncillary(
      *     let mut bufs = [IoSliceMut.new(buf[..])][..];
      *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
      *
-     *     println("Is truncated: {}", ancillary.truncated());
+     *     println("Is truncated: ()", ancillary.truncated());
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun truncated(): Boolean = this.truncated
@@ -540,11 +540,11 @@ public open class SocketAncillary(
      * # Example
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary};
+     * use std.os.unix.net::(UnixStream, SocketAncillary);
      * use std.os.unix.io.AsRawFd;
      * use std.io.IoSlice;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *
      *     let mut ancillaryBuffer = [0; 128];
@@ -555,7 +555,7 @@ public open class SocketAncillary(
      *     let mut bufs = [IoSlice.new(&buf[..])][..];
      *     sock.sendVectoredWithAncillary(bufs, ancillary)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun addFds(fds: List<RawFd>): Boolean {
@@ -582,10 +582,10 @@ public open class SocketAncillary(
      * # Example
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary, AncillaryData};
+     * use std.os.unix.net::(UnixStream, SocketAncillary, AncillaryData);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *
      *     let mut fds1 = [0; 8];
@@ -597,26 +597,26 @@ public open class SocketAncillary(
      *     let mut bufs = [IoSliceMut.new(buf[..])][..];
      *
      *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *
      *     ancillary.clear();
      *
      *     sock.recvVectoredWithAncillary(bufs, ancillary)?;
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun clear() {

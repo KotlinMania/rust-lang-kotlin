@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.core.U128
  */
 public interface BuiltinDeref<out Pointee>
 
-public interface ChangePointee<U, out Output> : BuiltinDeref<Any?>
+public interface ChangePointee<U, out Output, out Pointee> : BuiltinDeref<Pointee>
 
 /**
  * Built-in float types (f16, f32, f64 and f128).
@@ -64,4 +64,4 @@ public fun floatPrimitiveFromBitsF128(bits: U128): F128 = F128.fromBits(bits)
  * # Safety
  * Must actually *be* such a type.
  */
-public interface IntegerPrimitive<T>
+public interface IntegerPrimitive

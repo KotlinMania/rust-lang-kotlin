@@ -130,7 +130,7 @@ public val IFLA_TSO_MAX_SIZE: CUshort = IFLA_GRO_MAX_SIZE + 1u
 
 public val IFLA_TSO_MAX_SEGS: CUshort = IFLA_TSO_MAX_SIZE + 1u
 
-public val IFLA_ALLMULTI: CUshort = IFLA_TSO_MAX_SEGS + 1u
+public val IFLA_ALLMULTI: CEnum = IFLA_TSO_MAX_SEGS + 1u
 
 public val IFLA_INFO_UNSPEC: CUshort = 0u
 

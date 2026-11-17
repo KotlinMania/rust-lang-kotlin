@@ -28,7 +28,7 @@ public open class LaunchError(
 /**
  * A memory region bound to a partitioning strategy.
  */
-public open class Region<T, S : PartitioningStrategy<Any?, Any?>, View, ViewMut>(
+public open class Region<T, S : PartitioningStrategy<View, ViewMut>, View, ViewMut>(
     public var ptr: NonNull,
     public var len: Int,
     public var marker: Unit,
@@ -77,7 +77,7 @@ public open class Region<T, S : PartitioningStrategy<Any?, Any?>, View, ViewMut>
         /**
          * Creates a new partitioned region from data convertible into a [RawRegion].
          */
-        public fun <View, ViewMut, T, S : PartitioningStrategy<Any?, Any?>> new(data: RawRegion<T>): Region<T, S, View, ViewMut> {
+        public fun <View, ViewMut, T, S : PartitioningStrategy<View, ViewMut>> new(data: RawRegion<T>): Region<T, S, View, ViewMut> {
             val raw = data
             return Region(ptr = raw.ptr, len = raw.len, marker = Unit)
         }

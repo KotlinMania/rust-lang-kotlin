@@ -2,8 +2,8 @@
 
 package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 private object SysIoErrorUnixJniBridge {
     init {
@@ -20,7 +20,7 @@ private object SysIoErrorUnixJniBridge {
     external fun stdSysIoErrorUnixErrnoLocation(): Long
 }
 
-public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
+public actual var LIBC_ERRNO: io.github.kotlinmania.libc.CInt
     get() = SysIoErrorUnixJniBridge.stdSysIoErrorUnixGetLIBCERRNO()
     set(value) {
         SysIoErrorUnixJniBridge.stdSysIoErrorUnixSetLIBCERRNO(value)

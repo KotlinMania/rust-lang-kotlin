@@ -50,6 +50,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.ChangeOutputType
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
+import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -293,7 +294,7 @@ public interface Iterator<SelfType, Item> {
         interface SpecAdvanceBy {
             public fun specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>>
         }
-        fun <Item, I : Iterator<I, Any?>> I.specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
+        fun <Item, I : Iterator<I, Item>> I.specAdvanceBy(n1: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
             for (i in 0 until n1) {
                 if (this.next() == null) {
                     // SAFETY: `i` is always less than `n`.
@@ -366,7 +367,7 @@ public interface Iterator<SelfType, Item> {
      *
      * `advanceNAndReturnFirst` is the equivalent of:
      * ```kotlin
-     * fun <Item, I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
+     * fun <I> advanceNAndReturnFirst(iter: I, n: Int): Item? {
      *     val next = iter.next()
      *     if (n > 1) {
      *         iter.nth(n - 2)
@@ -468,7 +469,7 @@ public interface Iterator<SelfType, Item> {
      * it will first try to advance the first iterator at most one time and if it still yielded an item
      * try to advance the second iterator at most one time.
      *
-     * To 'undo' the result of zipping up two iterators, see [unzip].
+     * To `undo` the result of zipping up two iterators, see [unzip].
      *
      * [unzip]: Iterator.unzip
      *
@@ -538,7 +539,7 @@ public interface Iterator<SelfType, Item> {
      * [enumerate]: Iterator.enumerate
      * [next]: Iterator.next
      */
-    public fun <Item, IntoIter, U> zip(other: U): Zip<SelfType, IntoIter> = Zip.new(this, other.iterator())
+    public fun <U> zip(other: U): Zip<SelfType, IntoIter> = Zip.new(this, other.iterator())
 
     /**
      * Creates a new iterator which places a copy of `separator` between items
@@ -1295,7 +1296,7 @@ public interface Iterator<SelfType, Item> {
      * check(merged == "alphabetagamma")
      * ```
      */
-    public fun <Item, IntoIter, U> flatMap(f: (Item) -> U): FlatMap<SelfType, U, (Item) -> U> = FlatMap.new(this, f)
+    public fun <U> flatMap(f: (Item) -> U): FlatMap<SelfType, U, (Item) -> U> = FlatMap.new(this, f)
 
     /**
      * Creates an iterator that flattens nested structure.
@@ -1362,7 +1363,7 @@ public interface Iterator<SelfType, Item> {
      *
      * [flatMap]: Iterator.flatMap
      */
-    public fun <Item, IntoIter> flatten(): Flatten<SelfType> = Flatten.new(this)
+    public fun flatten(): Flatten<SelfType> = Flatten.new(this)
 
     /**
      * Calls the given function `f` for each contiguous window of size `N` over
@@ -1370,7 +1371,7 @@ public interface Iterator<SelfType, Item> {
      * the windows during mapping overlap as well.
      *
      * In the following example, the closure is called three times with the
-     * arguments `['a', 'b']`, `['b', 'c']` and `['c', 'd']` respectively.
+     * arguments `[`a`, `b`]`, `[`b`, `c`]` and `[`c`, `d`]` respectively.
      *
      * ```kotlin
      * @feature(iterMapWindows)
@@ -1673,7 +1674,7 @@ public interface Iterator<SelfType, Item> {
      *
      * Because `collect()` is so general, it can cause problems with type
      * inference. As such, `collect()` is one of the few times you'll see
-     * the syntax affectionately known as the 'turbofish': `<>`. This
+     * the syntax affectionately known as the `turbofish`: `<>`. This
      * helps the inference algorithm understand specifically which collection
      * you're trying to collect into.
      *
@@ -1700,7 +1701,7 @@ public interface Iterator<SelfType, Item> {
      * check(6 == doubled[2])
      * ```
      *
-     * Using the 'turbofish' instead of annotating `doubled`:
+     * Using the `turbofish` instead of annotating `doubled`:
      *
      * ```kotlin
      * val a = listOf(1, 2, 3)
@@ -1828,7 +1829,7 @@ public interface Iterator<SelfType, Item> {
      *
      * [collect]: Iterator.collect
      */
-    public fun <B> tryCollect(): ChangeOutputType<Item, B> = tryProcess(ByRefSized(this), { i -> i.collect() })
+    public fun <Output, Residual, B> tryCollect(): ChangeOutputType<Item, B> = tryProcess(ByRefSized(this), { i -> i.collect() })
 
     /**
      * Collects all the items from an iterator into a collection.
@@ -2011,7 +2012,7 @@ public interface Iterator<SelfType, Item> {
      * successfully, producing a single, final value.
      *
      * `tryFold()` takes two arguments: an initial value, and a closure with
-     * two arguments: an 'accumulator', and an element. The closure either
+     * two arguments: an `accumulator`, and an element. The closure either
      * returns successfully, with the value that the accumulator should have
      * for the next iteration, or it returns failure, with an error value that
      * is propagated back to the caller immediately (short-circuiting).
@@ -2093,7 +2094,7 @@ public interface Iterator<SelfType, Item> {
      * check(triangular1 == ControlFlow.Continue(435))
      * ```
      */
-    public fun <B, R> tryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?> {
+    public fun <Residual, B, R> tryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
         var accum = init
         while (true) {
             val matchVal = this.next()
@@ -2147,7 +2148,7 @@ public interface Iterator<SelfType, Item> {
      * check(r == ControlFlow.Break(17))
      * ```
      */
-    public fun <R> tryForEach(f: (Item) -> R): R where R : Try<R, Unit, Any?> {
+    public fun <Residual, R> tryForEach(f: (Item) -> R): R where R : Try<R, Unit, Residual> {
         fun <T, R> call(f1: (T) -> R): (Unit, T) -> R = { x -> f1(x) }
         return this.tryFold(call(f))
     }
@@ -2157,7 +2158,7 @@ public interface Iterator<SelfType, Item> {
      * returning the final result.
      *
      * `fold()` takes two arguments: an initial value, and a closure with two
-     * arguments: an 'accumulator', and an element. The closure returns the value that
+     * arguments: an `accumulator`, and an element. The closure returns the value that
      * the accumulator should have for the next iteration.
      *
      * The initial value is the value the accumulator will have on the first
@@ -2166,7 +2167,7 @@ public interface Iterator<SelfType, Item> {
      * After applying this closure to every element of the iterator, `fold()`
      * returns the accumulator.
      *
-     * This operation is sometimes called 'reduce' or 'inject'.
+     * This operation is sometimes called `reduce` or `inject`.
      *
      * Folding is useful whenever you have a collection of something, and want
      * to produce a single value from it.
@@ -2265,7 +2266,7 @@ public interface Iterator<SelfType, Item> {
      * If the iterator is empty, returns [None]; otherwise, returns the
      * result of the reduction.
      *
-     * The reducing function is a closure with two arguments: an 'accumulator', and an element.
+     * The reducing function is a closure with two arguments: an `accumulator`, and an element.
      * For iterators with at least one element, this is the same as [fold]
      * with the first element of the iterator as the initial accumulator value, folding
      * every subsequent element into it.
@@ -2357,7 +2358,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <R> tryReduce(f: (Item, Item) -> R): ChangeOutputType<R, Output?> where R : Try<R, Item, Any?>
+    public fun <Residual, R> tryReduce(f: (Item, Item) -> R): ChangeOutputType<R, Output?> where R : Try<R, Item, Residual>
 
     /**
      * Tests if every element of the iterator matches a predicate.
@@ -2586,7 +2587,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <R> tryFind(f: (Item) -> R): ChangeOutputType<R, Item?> where R : Try<R, Boolean, Any?>
+    public fun <Residual, R> tryFind(f: (Item) -> R): ChangeOutputType<R, Item?> where R : Try<R, Boolean, Residual>
 
     /**
      * Searches for an element in an iterator, returning its index.
@@ -3104,7 +3105,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <Item, IntoIter, I> cmpBy(other: I, cmp: (Item, I.Item) -> Ordering): Ordering {
+    public fun <I> cmpBy(other: I, cmp: (Item, I.Item) -> Ordering): Ordering {
         fun <X, Y> compare(cmp1: (Item, I.Item) -> Ordering): (X, Y) -> ControlFlow<Ordering, Unit> =
             { x, y -> when (val matchVal = cmp1(x, y)) {
                 Ordering.Equal -> ControlFlow.Continue()
@@ -3158,7 +3159,7 @@ public interface Iterator<SelfType, Item> {
      * check(doubleArrayOf(Double.NaN, 1.0).iter().partialCmp(doubleArrayOf(Double.NaN, 2.0).iter()) == null)
      * ```
      */
-    public fun <Item, IntoIter, I> partialCmp(other: I): Ordering? = this.partialCmpBy(other, { x, y -> x.partialCmp(y) })
+    public fun <I> partialCmp(other: I): Ordering? = this.partialCmpBy(other, { x, y -> x.partialCmp(y) })
 
     /**
      * [Lexicographically](Ord#lexicographical-comparison) compares the elements of this [Iterator] with those
@@ -3179,7 +3180,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <Item, IntoIter, I> partialCmpBy(other: I, partialCmp: (Item, I.Item) -> Ordering?): Ordering? {
+    public fun <I> partialCmpBy(other: I, partialCmp: (Item, I.Item) -> Ordering?): Ordering? {
         fun <X, Y> compare(partialCmp1: (Item, I.Item) -> Ordering?): (X, Y) -> ControlFlow<Ordering?, Unit> =
             { x, y -> when (val matchVal = partialCmp1(x, y)) {
                 Ordering.Equal -> ControlFlow.Continue()
@@ -3211,7 +3212,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1).iter().eq(listOf(1, 2).iter()) == false)
      * ```
      */
-    public fun <Item, IntoIter, I> eq(other: I): Boolean = this.eqBy(other, { x, y -> x == y })
+    public fun <I> eq(other: I): Boolean = this.eqBy(other, { x, y -> x == y })
 
     /**
      * Determines if the elements of this [Iterator] are equal to those of
@@ -3228,7 +3229,7 @@ public interface Iterator<SelfType, Item> {
      * }
      * ```
      */
-    public fun <Item, IntoIter, I> eqBy(other: I, eq: (Item, I.Item) -> Boolean): Boolean {
+    public fun <I> eqBy(other: I, eq: (Item, I.Item) -> Boolean): Boolean {
         fun <X, Y> compare(eq1: (Item, I.Item) -> Boolean): (X, Y) -> ControlFlow<Unit, Unit> =
             { x, y ->
                 if (eq1(x, y)) {
@@ -3251,7 +3252,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1).iter().ne(listOf(1, 2).iter()) == true)
      * ```
      */
-    public fun <Item, IntoIter, I> ne(other: I): Boolean
+    public fun <I> ne(other: I): Boolean
 
     /**
      * Determines if the elements of this [Iterator] are [lexicographically](Ord#lexicographical-comparison)
@@ -3266,7 +3267,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1, 2).iter().lt(listOf(1, 2).iter()) == false)
      * ```
      */
-    public fun <Item, IntoIter, I> lt(other: I): Boolean = this.partialCmp(other) == Ordering.Less
+    public fun <I> lt(other: I): Boolean = this.partialCmp(other) == Ordering.Less
 
     /**
      * Determines if the elements of this [Iterator] are [lexicographically](Ord#lexicographical-comparison)
@@ -3281,7 +3282,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1, 2).iter().le(listOf(1, 2).iter()) == true)
      * ```
      */
-    public fun <Item, IntoIter, I> le(other: I): Boolean =
+    public fun <I> le(other: I): Boolean =
         when (val matchVal = this.partialCmp(other)) {
             Ordering.Less, Ordering.Equal -> true
             else -> false
@@ -3300,7 +3301,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1, 2).iter().gt(listOf(1, 2).iter()) == false)
      * ```
      */
-    public fun <Item, IntoIter, I> gt(other: I): Boolean = this.partialCmp(other) == Ordering.Greater
+    public fun <I> gt(other: I): Boolean = this.partialCmp(other) == Ordering.Greater
 
     /**
      * Determines if the elements of this [Iterator] are [lexicographically](Ord#lexicographical-comparison)
@@ -3315,7 +3316,7 @@ public interface Iterator<SelfType, Item> {
      * check(listOf(1, 2).iter().ge(listOf(1, 2).iter()) == true)
      * ```
      */
-    public fun <Item, IntoIter, I> ge(other: I): Boolean =
+    public fun <I> ge(other: I): Boolean =
         when (val matchVal = this.partialCmp(other)) {
             Ordering.Greater, Ordering.Equal -> true
             else -> false
@@ -3410,13 +3411,13 @@ public interface Iterator<SelfType, Item> {
     }
 }
 
-public interface SpecIterEq<B : Iterator<B, Any?>, Item, T> : Iterator<T, Any?> {
+public interface SpecIterEq<B : Iterator<B, Item>, Item, T, Item> : Iterator<T, Item> {
     public fun specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean
 }
 
-public fun <Item, A : Iterator<A, Any?>, B : Iterator<B, Any?>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean = iterEq(this, b, f)
+public fun <Item, A : Iterator<A, Item>, B : Iterator<B, Item>> A.specIterEq(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean = iterEq(this, b, f)
 
-public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Any?>, A : TrustedLen<A>, B : Iterator<B, Any?>, B : TrustedLen<B> {
+public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Item>, A : TrustedLen, B : Iterator<B, Item>, B : TrustedLen {
     // we *can't* short-circuit if:
     run {
         val matchVal = Pair(this.sizeHint(), b.sizeHint())
@@ -3444,11 +3445,11 @@ public fun <Item, A, B> A.specIterEqB(b: B, f: (Item, Item) -> ControlFlow<Unit,
  * `ControlFlow.Continue(ord)` is returned where `ord` is the result of comparing the lengths of
  * the iterators.
  *
- * Isolates the logic shared by ['cmpBy'](Iterator.cmpBy),
- * ['partialCmpBy'](Iterator.partialCmpBy), and ['eqBy'](Iterator.eqBy).
+ * Isolates the logic shared by [`cmpBy`](Iterator.cmpBy),
+ * [`partialCmpBy`](Iterator.partialCmpBy), and [`eqBy`](Iterator.eqBy).
  */
-public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T, Unit>): ControlFlow<T, Ordering> where A : Iterator<A, Any?>, B : Iterator<B, Any?> {
-    fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T, Unit>): (X) -> ControlFlow<ControlFlow<T, Ordering>, Unit> where B : Iterator<B, Any?> =
+public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<T, Unit>): ControlFlow<T, Ordering> where A : Iterator<A, Item>, B : Iterator<B, Item> {
+    fun <Item, B, X, T> compare(b1: B, f1: (X, Item) -> ControlFlow<T, Unit>): (X) -> ControlFlow<ControlFlow<T, Ordering>, Unit> where B : Iterator<B, Item> =
         { x -> when (val matchVal = b1.next()) {
             null -> ControlFlow.Break(ControlFlow.Continue(Ordering.Greater))
             else -> {
@@ -3468,18 +3469,18 @@ public fun <Item, A, B, T> iterCompare(a: A, b: B, f: (A.Item, B.Item) -> Contro
     }
 }
 
-public fun <Item, A, B> iterEq(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Any?>, B : Iterator<B, Any?> = iterCompare(a, b, f).continueValue().isSomeAnd({ ord -> ord == Ordering.Equal })
+public fun <Item, A, B> iterEq(a: A, b: B, f: (A.Item, B.Item) -> ControlFlow<Unit, Unit>): Boolean where A : Iterator<A, Item>, B : Iterator<B, Item> = iterCompare(a, b, f).continueValue().isSomeAnd({ ord -> ord == Ordering.Equal })
 
 /**
  * Helper trait to specialize `fold` and `tryFold` for `I where I: Sized`
  */
-public interface IteratorRefSpec<T> : Iterator<T, Any?> {
+public interface IteratorRefSpec<T, Item> : Iterator<T, Item> {
     public fun <B> specFold(init: B, f: (B, Item) -> B): B
 
-    public fun <B, R> specTryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?>
+    public fun <Residual, B, R> specTryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual>
 }
 
-public fun <Item, I : Iterator<I, Any?>, B> I.specFold(init: B, f: (B, Item) -> B): B {
+public fun <Item, I : Iterator<I, Item>, B> I.specFold(init: B, f: (B, Item) -> B): B {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -3490,7 +3491,7 @@ public fun <Item, I : Iterator<I, Any?>, B> I.specFold(init: B, f: (B, Item) -> 
     return accum
 }
 
-public fun <Item, I : Iterator<I, Any?>, B, R> I.specTryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Any?> {
+public fun <Item, Residual, I : Iterator<I, Item>, B, R> I.specTryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
     var accum = init
     while (true) {
         val matchVal = this.next()
@@ -3501,4 +3502,4 @@ public fun <Item, I : Iterator<I, Any?>, B, R> I.specTryFold(init: B, f: (B, Ite
     return accum
 }
 
-public fun <Item, I : Iterator<I, Any?>, Aaa> I.specFold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.specTryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+public fun <Item, I : Iterator<I, Item>, Aaa> I.specFold(init: Aaa, fold: (Aaa, Item) -> Aaa): Aaa = this.specTryFold(init, NeverShortCircuit.wrapMut2(fold)).first

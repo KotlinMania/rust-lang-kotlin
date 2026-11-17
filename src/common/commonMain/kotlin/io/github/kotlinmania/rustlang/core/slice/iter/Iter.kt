@@ -366,7 +366,7 @@ public open class IterMut<T>(
  * An internal abstraction over the splitting iterators, so that
  * splitn, splitnMut etc can be implemented once.
  */
-public interface SplitIter<T> {
+public interface SplitIter {
     /**
      * Marks the underlying iterator as complete, extracting the remaining
      * portion of the slice.
@@ -399,7 +399,7 @@ public open class Split<T, P>(
     public var pred: P,
     // Used for `SplitAsciiWhitespace` `asStr` method
     public var finished: Boolean,
-) : SplitIter<Split<T, P>>, Iterable<List<T>> {
+) : SplitIter, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Split.next()) {
@@ -601,7 +601,7 @@ public open class SplitMut<T, P>(
     public var v: MutableList<T>,
     public var pred: P,
     public var finished: Boolean,
-) : SplitIter<SplitMut<T, P>>, Iterable<MutableList<T>> {
+) : SplitIter, Iterable<MutableList<T>> {
     override fun iterator(): Iterator<MutableList<T>> = object : AbstractIterator<MutableList<T>>() {
         override fun computeNext() {
             when (val v = this@SplitMut.next()) {
@@ -793,7 +793,7 @@ public open class SplitInclusiveMut<T, P>(
  */
 public open class RSplit<T, P> internal constructor(
     innerCtorArg: Split<T, P>,
-) : SplitIter<RSplit<T, P>>, Iterable<List<T>> {
+) : SplitIter, Iterable<List<T>> {
     public var inner: Split<T, P> = innerCtorArg
         internal set
 
@@ -848,7 +848,7 @@ public open class RSplit<T, P> internal constructor(
  */
 public open class RSplitMut<T, P> internal constructor(
     innerCtorArg: SplitMut<T, P>,
-) : SplitIter<RSplitMut<T, P>>, Iterable<MutableList<T>> {
+) : SplitIter, Iterable<MutableList<T>> {
     public var inner: SplitMut<T, P> = innerCtorArg
         internal set
 
@@ -1116,7 +1116,7 @@ public open class RSplitNMut<T, P> internal constructor(
 public open class Windows<T> internal constructor(
     public var v: List<T>,
     sizeCtorArg: NonZero<Int, NonZeroUsizeInner>,
-) : TrustedLen<Windows<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     public var size: NonZero<Int, NonZeroUsizeInner> = sizeCtorArg
         internal set
 
@@ -1234,7 +1234,7 @@ public open class Windows<T> internal constructor(
 public open class Chunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Chunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Chunks.next()) {
@@ -1378,7 +1378,7 @@ public open class ChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<ChunksMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1547,7 +1547,7 @@ public open class ChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<ChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ChunksExact.next()) {
@@ -1678,7 +1678,7 @@ public open class ChunksExactMut<T> internal constructor(
     // The iterator never yields from here, so this can be unique
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<ChunksExactMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1899,7 +1899,7 @@ public val MAY_HAVE_SIDE_EFFECT: Boolean = false
 public open class RChunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunks<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunks.next()) {
@@ -2031,7 +2031,7 @@ public open class RChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<RChunksMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -2196,7 +2196,7 @@ public open class RChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunksExact<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunksExact.next()) {
@@ -2331,7 +2331,7 @@ public open class RChunksExactMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var rem: MutableList<T>,
     public var chunkSize: Int,
-) : TrustedLen<RChunksExactMut<T>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,

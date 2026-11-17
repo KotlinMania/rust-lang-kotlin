@@ -836,7 +836,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserveExact(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
             when (val tryResult = this.buf.tryReserveExact(this.len, additional)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
@@ -879,7 +879,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
      * ```
      */
     public open fun tryReserve(additional: Int): Result<Unit, TryReserveError> {
-        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok(it) } ?: Result.Err(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
+        val newCap = when (val tryResult = (this.len.checkedAdd(additional)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(TryReserveErrorKind.CapacityOverflow))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
         val oldCap = this.capacity()
         if (newCap > oldCap) {
             when (val tryResult = this.buf.tryReserve(this.len, additional)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, TryReserveError>(tryResult.error) }
@@ -1134,8 +1134,8 @@ public open class VecDeque<T, A : Allocator> internal constructor(
         val (front, back) = this.asMutSlices()
         // ignore-tidy-undocumented-unchecked
         if (len > back.len()) {
-            // The 'back' slice remains unchanged.
-            // front.len() + back.len() == self.len, so 'end' is non-negative
+            // The `back` slice remains unchanged.
+            // front.len() + back.len() == self.len, so `end` is non-negative
             // and end < front.len()
             val end = front.len() - (len - back.len())
             val dropFront = mutPtrFromRustCast(front.getUncheckedMut(0 until end))
@@ -1144,7 +1144,7 @@ public open class VecDeque<T, A : Allocator> internal constructor(
             dropInPlace(dropFront)
         } else {
             val dropFront1 = mutPtrFromRustCast(front)
-            // 'end' is non-negative by the condition above
+            // `end` is non-negative by the condition above
             this.head = this.toWrappedIndex(this.len - len)
             this.len = len
             // Make sure the second half is dropped even when a destructor

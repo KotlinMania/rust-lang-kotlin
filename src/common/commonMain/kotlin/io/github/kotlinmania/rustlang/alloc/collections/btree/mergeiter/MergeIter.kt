@@ -55,7 +55,7 @@ public open class MergeIterInner<I> internal constructor(
      * contains a value, iteration has finished and subsequent calls will
      * return the same empty pair.
      */
-    public open fun nexts(cmp: (I.Item, I.Item) -> Ordering): Pair<Item?, Item?> {
+    public open fun nexts(cmp: (Item, Item) -> Ordering): Pair<Item?, Item?> {
         var aNext: Any?
         var bNext: Any?
         when (val matchVal = this.peeked.also { this.peeked = null }) {
@@ -110,7 +110,7 @@ public open class MergeIterInner<I> internal constructor(
         /**
          * Creates a new core for an iterator merging a pair of sources.
          */
-        public fun <Item, I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
+        public fun <I> new(a: I, b: I): MergeIterInner<I> = MergeIterInner(a = a, b = b, peeked = null)
     }
 }
 

@@ -1,22 +1,22 @@
 // port-lint: source sys/pal/unix/sync/mutex.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex
 
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.PTHREAD_MUTEX_INITIALIZER
+import io.github.kotlinmania.libc.fuchsia.PTHREAD_MUTEX_NORMAL
+import io.github.kotlinmania.libc.fuchsia.PthreadMutexT
+import io.github.kotlinmania.libc.fuchsia.PthreadMutexattrT
+import io.github.kotlinmania.libc.unix.solarish.pthreadMutexLock
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.libc.pthreadMutexDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadMutexInit
-import io.github.kotlinmania.rustlang.libc.pthreadMutexLock
 import io.github.kotlinmania.rustlang.libc.pthreadMutexTrylock
 import io.github.kotlinmania.rustlang.libc.pthreadMutexUnlock
 import io.github.kotlinmania.rustlang.libc.pthreadMutexattrDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadMutexattrInit
 import io.github.kotlinmania.rustlang.libc.pthreadMutexattrSettype
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_MUTEX_INITIALIZER
-import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_MUTEX_NORMAL
-import io.github.kotlinmania.rustlang.libc.wasi.PthreadMutexT
-import io.github.kotlinmania.rustlang.libc.wasi.PthreadMutexattrT
 import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtNz
 

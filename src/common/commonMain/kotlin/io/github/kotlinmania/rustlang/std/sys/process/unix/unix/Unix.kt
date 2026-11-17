@@ -3,6 +3,67 @@
 
 package io.github.kotlinmania.rustlang.std.sys.process.unix.unix
 
+import io.github.kotlinmania.libc.CInt
+import io.github.kotlinmania.libc.fuchsia.AF_UNIX
+import io.github.kotlinmania.libc.fuchsia.CLD_CONTINUED
+import io.github.kotlinmania.libc.fuchsia.CLD_DUMPED
+import io.github.kotlinmania.libc.fuchsia.CLD_EXITED
+import io.github.kotlinmania.libc.fuchsia.CLD_KILLED
+import io.github.kotlinmania.libc.fuchsia.CLD_STOPPED
+import io.github.kotlinmania.libc.fuchsia.CLD_TRAPPED
+import io.github.kotlinmania.libc.fuchsia.CLOCK_MONOTONIC
+import io.github.kotlinmania.libc.fuchsia.Cmsghdr
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.EPERM
+import io.github.kotlinmania.libc.fuchsia.MSG_CMSG_CLOEXEC
+import io.github.kotlinmania.libc.fuchsia.MSG_EOR
+import io.github.kotlinmania.libc.fuchsia.Msghdr
+import io.github.kotlinmania.libc.fuchsia.PidT
+import io.github.kotlinmania.libc.fuchsia.SIGABRT
+import io.github.kotlinmania.libc.fuchsia.SIGALRM
+import io.github.kotlinmania.libc.fuchsia.SIGBUS
+import io.github.kotlinmania.libc.fuchsia.SIGCHLD
+import io.github.kotlinmania.libc.fuchsia.SIGCONT
+import io.github.kotlinmania.libc.fuchsia.SIGFPE
+import io.github.kotlinmania.libc.fuchsia.SIGHUP
+import io.github.kotlinmania.libc.fuchsia.SIGILL
+import io.github.kotlinmania.libc.fuchsia.SIGINT
+import io.github.kotlinmania.libc.fuchsia.SIGIO
+import io.github.kotlinmania.libc.fuchsia.SIGKILL
+import io.github.kotlinmania.libc.fuchsia.SIGPIPE
+import io.github.kotlinmania.libc.fuchsia.SIGPROF
+import io.github.kotlinmania.libc.fuchsia.SIGPWR
+import io.github.kotlinmania.libc.fuchsia.SIGQUIT
+import io.github.kotlinmania.libc.fuchsia.SIGSEGV
+import io.github.kotlinmania.libc.fuchsia.SIGSTKFLT
+import io.github.kotlinmania.libc.fuchsia.SIGSTOP
+import io.github.kotlinmania.libc.fuchsia.SIGSYS
+import io.github.kotlinmania.libc.fuchsia.SIGTERM
+import io.github.kotlinmania.libc.fuchsia.SIGTRAP
+import io.github.kotlinmania.libc.fuchsia.SIGTSTP
+import io.github.kotlinmania.libc.fuchsia.SIGTTIN
+import io.github.kotlinmania.libc.fuchsia.SIGTTOU
+import io.github.kotlinmania.libc.fuchsia.SIGURG
+import io.github.kotlinmania.libc.fuchsia.SIGUSR1
+import io.github.kotlinmania.libc.fuchsia.SIGUSR2
+import io.github.kotlinmania.libc.fuchsia.SIGVTALRM
+import io.github.kotlinmania.libc.fuchsia.SIGWINCH
+import io.github.kotlinmania.libc.fuchsia.SIGXCPU
+import io.github.kotlinmania.libc.fuchsia.SIGXFSZ
+import io.github.kotlinmania.libc.fuchsia.SIG_DFL
+import io.github.kotlinmania.libc.fuchsia.SOCK_SEQPACKET
+import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
+import io.github.kotlinmania.libc.fuchsia.Sigaction
+import io.github.kotlinmania.libc.fuchsia.SiginfoT
+import io.github.kotlinmania.libc.fuchsia.Timespec
+import io.github.kotlinmania.libc.fuchsia.WNOHANG
+import io.github.kotlinmania.libc.hermit.STDERR_FILENO
+import io.github.kotlinmania.libc.hermit.STDIN_FILENO
+import io.github.kotlinmania.libc.hermit.STDOUT_FILENO
+import io.github.kotlinmania.libc.solid.SIGEMT
+import io.github.kotlinmania.libc.solid.SIGINFO
+import io.github.kotlinmania.libc.unix.bsd.netbsdlike.netbsd.dup2
+import io.github.kotlinmania.libc.unix.linuxlike.linux.gnu.exit
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
@@ -29,7 +90,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.SysPidfdOpen
 import io.github.kotlinmania.rustlang.libc.WCOREDUMP
 import io.github.kotlinmania.rustlang.libc.WEXITSTATUS
@@ -42,13 +102,10 @@ import io.github.kotlinmania.rustlang.libc.WTERMSIG
 import io.github.kotlinmania.rustlang.libc.chdir
 import io.github.kotlinmania.rustlang.libc.chroot
 import io.github.kotlinmania.rustlang.libc.clockGetres
-import io.github.kotlinmania.rustlang.libc.dup2
 import io.github.kotlinmania.rustlang.libc.execvp
 import io.github.kotlinmania.rustlang.libc.getpid
+import io.github.kotlinmania.rustlang.libc.kill
 import io.github.kotlinmania.rustlang.libc.killpg
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.kill
-import io.github.kotlinmania.rustlang.libc.new.glibc.sysdeps.unix.linux.bits.types.siginfot.syscall
-import io.github.kotlinmania.rustlang.libc.new.musl.signal.SiginfoT
 import io.github.kotlinmania.rustlang.libc.recvmsg
 import io.github.kotlinmania.rustlang.libc.sendmsg
 import io.github.kotlinmania.rustlang.libc.setgid
@@ -56,65 +113,8 @@ import io.github.kotlinmania.rustlang.libc.setgroups
 import io.github.kotlinmania.rustlang.libc.setpgid
 import io.github.kotlinmania.rustlang.libc.setsid
 import io.github.kotlinmania.rustlang.libc.setuid
-import io.github.kotlinmania.rustlang.libc.unix.PidT
-import io.github.kotlinmania.rustlang.libc.unix.SIG_DFL
-import io.github.kotlinmania.rustlang.libc.unix.Timespec
-import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_CONTINUED
-import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_DUMPED
-import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_EXITED
-import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_KILLED
-import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_STOPPED
-import io.github.kotlinmania.rustlang.libc.unix.bsd.CLD_TRAPPED
-import io.github.kotlinmania.rustlang.libc.unix.bsd.Cmsghdr
-import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGBUS
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGCHLD
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGCONT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGINFO
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGIO
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGPROF
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGSTOP
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGSYS
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGTSTP
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGTTIN
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGTTOU
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGURG
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGUSR1
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGUSR2
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGVTALRM
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGWINCH
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGXCPU
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SIGXFSZ
-import io.github.kotlinmania.rustlang.libc.unix.bsd.WNOHANG
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SIGEMT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_SEQPACKET
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.Sigaction
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CMSG_CLOEXEC
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_EOR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGALRM
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGHUP
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGKILL
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGPIPE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGQUIT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SIGTRAP
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SIGPWR
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SIGSTKFLT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.exit
+import io.github.kotlinmania.rustlang.libc.syscall
 import io.github.kotlinmania.rustlang.libc.waitpid
-import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.EPERM
-import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
-import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
-import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
-import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
-import io.github.kotlinmania.rustlang.libc.windows.SIGABRT
-import io.github.kotlinmania.rustlang.libc.windows.SIGFPE
-import io.github.kotlinmania.rustlang.libc.windows.SIGILL
-import io.github.kotlinmania.rustlang.libc.windows.SIGINT
-import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
-import io.github.kotlinmania.rustlang.libc.windows.SIGTERM
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.panic.alwaysAbort
 import io.github.kotlinmania.rustlang.std.process.Child
@@ -137,7 +137,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 public fun interface FnCallback {
-    public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): io.github.kotlinmania.rustlang.libc.CInt
+    public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): io.github.kotlinmania.libc.CInt
 }
 
 public fun interface FnCallback1 {
@@ -916,6 +916,6 @@ public open class ExitStatusError internal constructor(
     }
 }
 
-public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmute(fd) })?.let { Result.Ok(it) } ?: Result.Err(constError(ErrorKind.Uncategorized, "no pidfd was created.")))
+public fun Child.pidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Error> = (this.handle.pidfd?.let({ fd -> transmute(fd) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(constError(ErrorKind.Uncategorized, "no pidfd was created.")))
 
-public fun Child.intoPidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Child> = ((this.handle.pidfd.also { this.handle.pidfd = null })?.let(io.github.kotlinmania.rustlang.std.os.linux.process.PidFd.fromInner)?.let { Result.Ok(it) } ?: Result.Err(this))
+public fun Child.intoPidfd(): Result<io.github.kotlinmania.rustlang.std.os.linux.process.PidFd, Child> = ((this.handle.pidfd.also { this.handle.pidfd = null })?.let(io.github.kotlinmania.rustlang.std.os.linux.process.PidFd.fromInner)?.let { Result.Ok<Any, Child>(it) } ?: Result.Err<Any, Child>(this))

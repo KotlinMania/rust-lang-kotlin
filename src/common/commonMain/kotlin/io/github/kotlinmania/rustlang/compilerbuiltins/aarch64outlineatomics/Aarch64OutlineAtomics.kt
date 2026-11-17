@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 //  __aarch64_ldclrN_ORDER
 //  __aarch64_ldeorN_ORDER
 //  __aarch64_ldsetN_ORDER
-// for N = {1, 2, 4, 8}, M = {1, 2, 4, 8, 16}, ORDER = { relax, acq, rel, acqRel }
+// for N = (1, 2, 4, 8), M = (1, 2, 4, 8, 16), ORDER = ( relax, acq, rel, acqRel )
 //
 // The original `lse.S` has some truly horrifying code that expects to be compiled multiple times with different constants.
 // We do something similar, but with macro arguments.

@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.traits.FloatExt
  *
  * Not intended for use outside of the `dec2flt` module.
  */
-public interface Lemire<T> : FloatExt<T> {
+public interface Lemire<T, out Int> : FloatExt<T, Int> {
     /**
      * Maximum exponent for a fast path case, or `⌊(SIG_BITS+1)/log2(5)⌋`
      */

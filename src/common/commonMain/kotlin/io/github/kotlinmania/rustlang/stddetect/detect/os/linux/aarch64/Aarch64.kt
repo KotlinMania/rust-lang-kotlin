@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.stddetect.detect.os.linux.aarch64
 
+import io.github.kotlinmania.libc.unix.linuxlike.android.PROP_VALUE_MAX
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -10,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.libc.systemPropertyGet
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.PROP_VALUE_MAX
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
 import io.github.kotlinmania.rustlang.stddetect.detect.cache.cache

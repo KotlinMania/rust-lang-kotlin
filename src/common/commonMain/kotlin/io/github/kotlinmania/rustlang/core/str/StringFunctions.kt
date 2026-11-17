@@ -526,7 +526,7 @@ public fun String.asMutPtr(): MutPtr = (mutPtrFromRustCast(this)).let { ptrSrc -
  * check(v.get(0 until 42) == null)
  * ```
  */
-public fun <I : SliceIndex<String, Any?>> String.get(i: I): Output? = i.get(this)
+public fun <Output, I : SliceIndex<String, Output>> String.get(i: I): Output? = i.get(this)
 
 /**
  * Returns a mutable subslice of `String`.
@@ -555,7 +555,7 @@ public fun <I : SliceIndex<String, Any?>> String.get(i: I): Output? = i.get(this
  * check("HEllo" == v)
  * ```
  */
-public fun <I : SliceIndex<String, Any?>> String.getMut(i: I): Output? = i.getMut(this)
+public fun <Output, I : SliceIndex<String, Output>> String.getMut(i: I): Output? = i.getMut(this)
 
 /**
  * Returns an unchecked subslice of `String`.
@@ -585,7 +585,7 @@ public fun <I : SliceIndex<String, Any?>> String.getMut(i: I): Output? = i.getMu
  * }
  * ```
  */
-public fun <I : SliceIndex<String, Any?>> String.getUnchecked(i: I): Output {
+public fun <Output, I : SliceIndex<String, Output>> String.getUnchecked(i: I): Output {
     // SAFETY: the caller must uphold the safety contract for `getUnchecked`;
     // the slice is dereferenceable because `self` is a safe reference.
     // The returned pointer is safe because impls of `SliceIndex` have to guarantee that it is.
@@ -620,7 +620,7 @@ public fun <I : SliceIndex<String, Any?>> String.getUnchecked(i: I): Output {
  * }
  * ```
  */
-public fun <I : SliceIndex<String, Any?>> String.getUncheckedMut(i: I): Output {
+public fun <Output, I : SliceIndex<String, Output>> String.getUncheckedMut(i: I): Output {
     // SAFETY: the caller must uphold the safety contract for `getUncheckedMut`;
     // the slice is dereferenceable because `self` is a safe reference.
     // The returned pointer is safe because impls of `SliceIndex` have to guarantee that it is.
@@ -904,7 +904,7 @@ public fun String.splitAtMutUnchecked(mid: Int): Pair<String, String> {
  * string slice by [char]. This method returns such an iterator.
  *
  * It's important to remember that [char] represents a Unicode Scalar
- * Value, and might not match your idea of what a 'character' is. Iteration
+ * Value, and might not match your idea of what a `character` is. Iteration
  * over grapheme clusters may be what you actually want. This functionality
  * is not provided by Rust's standard library, check crates.io instead.
  *
@@ -1015,7 +1015,7 @@ public fun String.bytes(): Bytes = Bytes(this.encodeToByteArray().map { it.toUBy
  * The iterator returned will return string slices that are sub-slices of
  * the original string slice, separated by any amount of whitespace.
  *
- * 'Whitespace' is defined according to the terms of the Unicode Derived
+ * `Whitespace` is defined according to the terms of the Unicode Derived
  * Core Property `WhiteSpace`. If you only want to split on ASCII whitespace
  * instead, use [splitAsciiWhitespace].
  *
@@ -1197,7 +1197,7 @@ public fun String.encodeUtf16(): EncodeUtf16 = EncodeUtf16(chars = this.chars(),
  * check(!bananas.contains("apples"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.contains(pat: P): Boolean = pat.isContainedIn(this)
+public fun <Searcher, P : Pattern<Searcher>> String.contains(pat: P): Boolean = pat.isContainedIn(this)
 
 /**
  * Returns `true` if the given pattern matches a prefix of this
@@ -1230,7 +1230,7 @@ public fun <Searcher, P : Pattern<Any?>> String.contains(pat: P): Boolean = pat.
  * check(bananas.startsWith(listOf('a', 'b', 'c', 'd')))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.startsWith(pat: P): Boolean = pat.isPrefixOf(this)
+public fun <Searcher, P : Pattern<Searcher>> String.startsWith(pat: P): Boolean = pat.isPrefixOf(this)
 
 /**
  * Returns `true` if the given pattern matches a suffix of this
@@ -1251,7 +1251,7 @@ public fun <Searcher, P : Pattern<Any?>> String.startsWith(pat: P): Boolean = pa
  * check(!bananas.endsWith("nana"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.endsWith(pat: P): Boolean = pat.isSuffixOf(this)
+public fun <Searcher, P : Pattern<Searcher>> String.endsWith(pat: P): Boolean = pat.isSuffixOf(this)
 
 /**
  * Returns the byte index of the first character of this string slice that
@@ -1293,7 +1293,7 @@ public fun <Searcher, P : Pattern<Any?>> String.endsWith(pat: P): Boolean = pat.
  * check(s.indexOf(x).takeIf { it >= 0 } == null)
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.find(pat: P): Int? = pat.intoSearcher(this).nextMatch().map({ (i, _) -> i })
+public fun <Searcher, P : Pattern<Searcher>> String.find(pat: P): Int? = pat.intoSearcher(this).nextMatch().map({ (i, _) -> i })
 
 /**
  * Returns the byte index for the first character of the last match of the pattern in
@@ -1333,7 +1333,7 @@ public fun <Searcher, P : Pattern<Any?>> String.find(pat: P): Int? = pat.intoSea
  * check(s.rfind(x) == null)
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rfind(pat: P): Int? = pat.intoSearcher(this).nextMatchBack().map({ (i, _) -> i })
+public fun <Searcher, P : Pattern<Searcher>> String.rfind(pat: P): Int? = pat.intoSearcher(this).nextMatchBack().map({ (i, _) -> i })
 
 /**
  * Returns an iterator over substrings of this string slice, separated by
@@ -1446,7 +1446,7 @@ public fun <Searcher, P : Pattern<Any?>> String.rfind(pat: P): Int? = pat.intoSe
  *
  * [splitWhitespace]: str.splitWhitespace
  */
-public fun <Searcher, P : Pattern<Any?>> String.split(pat: P): Split<P> = Split(SplitInternal(start = 0, end = this.length, matcher = pat.intoSearcher(this), allowTrailingEmpty = true, finished = false))
+public fun <Searcher, P : Pattern<Searcher>> String.split(pat: P): Split<P> = Split(SplitInternal(start = 0, end = this.length, matcher = pat.intoSearcher(this), allowTrailingEmpty = true, finished = false))
 
 /**
  * Returns an iterator over substrings of this string slice, separated by
@@ -1476,7 +1476,7 @@ public fun <Searcher, P : Pattern<Any?>> String.split(pat: P): Split<P> = Split(
  * check(v == listOf("Mary had a little lamb\n", "little lamb\n", "little lamb.\n"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.splitInclusive(pat: P): SplitInclusive<P> = SplitInclusive(SplitInternal(start = 0, end = this.length, matcher = pat.intoSearcher(this), allowTrailingEmpty = false, finished = false))
+public fun <Searcher, P : Pattern<Searcher>> String.splitInclusive(pat: P): SplitInclusive<P> = SplitInclusive(SplitInternal(start = 0, end = this.length, matcher = pat.intoSearcher(this), allowTrailingEmpty = false, finished = false))
 
 /**
  * Returns an iterator over substrings of the given string slice, separated
@@ -1519,7 +1519,7 @@ public fun <Searcher, P : Pattern<Any?>> String.splitInclusive(pat: P): SplitInc
  * check(v == listOf("ghi", "def", "abc"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rsplit(pat: P): RSplit<P> = RSplit(this.split(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rsplit(pat: P): RSplit<P> = RSplit(this.split(pat).first)
 
 /**
  * Returns an iterator over substrings of the given string slice, separated
@@ -1560,7 +1560,7 @@ public fun <Searcher, P : Pattern<Any?>> String.rsplit(pat: P): RSplit<P> = RSpl
  * check(v2 == listOf("A", "B", "C", "D"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.splitTerminator(pat: P): SplitTerminator<P> = SplitTerminator(this.split(pat).first.copy(allowTrailingEmpty = false))
+public fun <Searcher, P : Pattern<Searcher>> String.splitTerminator(pat: P): SplitTerminator<P> = SplitTerminator(this.split(pat).first.copy(allowTrailingEmpty = false))
 
 /**
  * Returns an iterator over substrings of `self`, separated by characters
@@ -1601,7 +1601,7 @@ public fun <Searcher, P : Pattern<Any?>> String.splitTerminator(pat: P): SplitTe
  * check(v2 == listOf("D", "C", "B", "A"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rsplitTerminator(pat: P): RSplitTerminator<P> = RSplitTerminator(this.splitTerminator(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rsplitTerminator(pat: P): RSplitTerminator<P> = RSplitTerminator(this.splitTerminator(pat).first)
 
 /**
  * Returns an iterator over substrings of the given string slice, separated
@@ -1647,7 +1647,7 @@ public fun <Searcher, P : Pattern<Any?>> String.rsplitTerminator(pat: P): RSplit
  * check(v == listOf("abc", "defXghi"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.splitn(n: Int, pat: P): SplitN<P> = SplitN(SplitNInternal(iter = this.split(pat).first, count = n))
+public fun <Searcher, P : Pattern<Searcher>> String.splitn(n: Int, pat: P): SplitN<P> = SplitN(SplitNInternal(iter = this.split(pat).first, count = n))
 
 /**
  * Returns an iterator over substrings of this string slice, separated by a
@@ -1691,7 +1691,7 @@ public fun <Searcher, P : Pattern<Any?>> String.splitn(n: Int, pat: P): SplitN<P
  * check(v == listOf("ghi", "abc1def"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rsplitn(n: Int, pat: P): RSplitN<P> = RSplitN(this.splitn(n, pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rsplitn(n: Int, pat: P): RSplitN<P> = RSplitN(this.splitn(n, pat).first)
 
 /**
  * Splits the string on the first occurrence of the specified delimiter and
@@ -1706,7 +1706,7 @@ public fun <Searcher, P : Pattern<Any?>> String.rsplitn(n: Int, pat: P): RSplitN
  * check(("cfg=foo=bar").let { s -> val idx = s.indexOf('='); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) } == Pair("cfg", "foo=bar"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.splitOnce(delimiter: P): Pair<String, String>? {
+public fun <Searcher, P : Pattern<Searcher>> String.splitOnce(delimiter: P): Pair<String, String>? {
     val (start, end) = (delimiter.intoSearcher(this).nextMatch() ?: return null)
     // SAFETY: `Searcher` is known to return valid indices.
     return Pair(this.getUnchecked(0 until start), this.getUnchecked(end until Int.MAX_VALUE))
@@ -1725,7 +1725,7 @@ public fun <Searcher, P : Pattern<Any?>> String.splitOnce(delimiter: P): Pair<St
  * check(("cfg=foo=bar").let { s -> val idx = s.lastIndexOf('='); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + 1)) } == Pair("cfg=foo", "bar"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rsplitOnce(delimiter: P): Pair<String, String>? {
+public fun <Searcher, P : Pattern<Searcher>> String.rsplitOnce(delimiter: P): Pair<String, String>? {
     val (start, end) = (delimiter.intoSearcher(this).nextMatchBack() ?: return null)
     // SAFETY: `Searcher` is known to return valid indices.
     return Pair(this.getUnchecked(0 until start), this.getUnchecked(end until Int.MAX_VALUE))
@@ -1760,7 +1760,7 @@ public fun <Searcher, P : Pattern<Any?>> String.rsplitOnce(delimiter: P): Pair<S
  * check(v1 == listOf("1", "2", "3"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.matches(pat: P): Matches<P> = Matches(MatchesInternal(pat.intoSearcher(this)))
+public fun <Searcher, P : Pattern<Searcher>> String.matches(pat: P): Matches<P> = Matches(MatchesInternal(pat.intoSearcher(this)))
 
 /**
  * Returns an iterator over the disjoint matches of a pattern within this
@@ -1790,7 +1790,7 @@ public fun <Searcher, P : Pattern<Any?>> String.matches(pat: P): Matches<P> = Ma
  * check(v1 == listOf("3", "2", "1"))
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rmatches(pat: P): RMatches<P> = RMatches(this.matches(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rmatches(pat: P): RMatches<P> = RMatches(this.matches(pat).first)
 
 /**
  * Returns an iterator over the disjoint matches of a pattern within this string
@@ -1827,7 +1827,7 @@ public fun <Searcher, P : Pattern<Any?>> String.rmatches(pat: P): RMatches<P> = 
  * // only the first `aba`
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.matchIndices(pat: P): MatchIndices<P> = MatchIndices(MatchIndicesInternal(pat.intoSearcher(this)))
+public fun <Searcher, P : Pattern<Searcher>> String.matchIndices(pat: P): MatchIndices<P> = MatchIndices(MatchIndicesInternal(pat.intoSearcher(this)))
 
 /**
  * Returns an iterator over the disjoint matches of a pattern within `self`,
@@ -1863,12 +1863,12 @@ public fun <Searcher, P : Pattern<Any?>> String.matchIndices(pat: P): MatchIndic
  * // only the last `aba`
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.rmatchIndices(pat: P): RMatchIndices<P> = RMatchIndices(this.matchIndices(pat).first)
+public fun <Searcher, P : Pattern<Searcher>> String.rmatchIndices(pat: P): RMatchIndices<P> = RMatchIndices(this.matchIndices(pat).first)
 
 /**
  * Returns a string slice with leading and trailing whitespace removed.
  *
- * 'Whitespace' is defined according to the terms of the Unicode Derived
+ * `Whitespace` is defined according to the terms of the Unicode Derived
  * Core Property `WhiteSpace`, which includes newlines.
  *
  * # Examples
@@ -1883,7 +1883,7 @@ public fun String.trim(): String = this.trimMatches(Char::isWhitespace)
 /**
  * Returns a string slice with leading whitespace removed.
  *
- * 'Whitespace' is defined according to the terms of the Unicode Derived
+ * `Whitespace` is defined according to the terms of the Unicode Derived
  * Core Property `WhiteSpace`, which includes newlines.
  *
  * # Text directionality
@@ -1916,7 +1916,7 @@ public fun String.trimStart(): String = this.trimStartMatches(Char::isWhitespace
 /**
  * Returns a string slice with trailing whitespace removed.
  *
- * 'Whitespace' is defined according to the terms of the Unicode Derived
+ * `Whitespace` is defined according to the terms of the Unicode Derived
  * Core Property `WhiteSpace`, which includes newlines.
  *
  * # Text directionality
@@ -1949,12 +1949,12 @@ public fun String.trimEnd(): String = this.trimEndMatches(Char::isWhitespace)
 /**
  * Returns a string slice with leading whitespace removed.
  *
- * 'Whitespace' is defined according to the terms of the Unicode Derived
+ * `Whitespace` is defined according to the terms of the Unicode Derived
  * Core Property `WhiteSpace`.
  *
  * # Text directionality
  *
- * A string is a sequence of bytes. 'Left' in this context means the first
+ * A string is a sequence of bytes. `Left` in this context means the first
  * position of that byte string; for a language like Arabic or Hebrew
  * which are right to left' rather than left to right', this will be
  * the _right_ side, not the left.
@@ -1982,12 +1982,12 @@ public fun String.trimLeft(): String = this.trimStart()
 /**
  * Returns a string slice with trailing whitespace removed.
  *
- * 'Whitespace' is defined according to the terms of the Unicode Derived
+ * `Whitespace` is defined according to the terms of the Unicode Derived
  * Core Property `WhiteSpace`.
  *
  * # Text directionality
  *
- * A string is a sequence of bytes. 'Right' in this context means the last
+ * A string is a sequence of bytes. `Right` in this context means the last
  * position of that byte string; for a language like Arabic or Hebrew
  * which are right to left' rather than left to right', this will be
  * the _left_ side, not the right.
@@ -2038,7 +2038,7 @@ public fun String.trimRight(): String = this.trimEnd()
  * check("1foo1barXX".trimMatches({ c -> c == '1' || c == 'X' }) == "foo1bar")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimMatches(pat: P): String {
+public fun <Searcher, P : Pattern<Searcher>> String.trimMatches(pat: P): String {
     var i = 0
     var j = 0
     val matcher = pat.intoSearcher(this)
@@ -2089,7 +2089,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimMatches(pat: P): String {
  * check("12foo1bar12".trimStartMatches(x) == "foo1bar12")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimStartMatches(pat: P): String {
+public fun <Searcher, P : Pattern<Searcher>> String.trimStartMatches(pat: P): String {
     var i = this.length
     val matcher = pat.intoSearcher(this)
     when (val matchVal = matcher.nextReject()) {
@@ -2125,7 +2125,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimStartMatches(pat: P): String
  * check("foofoo".takeIf { it.startsWith("foo") }?.removePrefix("foo") == "foo")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.stripPrefix(prefix: P): String? = prefix.stripPrefixOf(this)
+public fun <Searcher, P : Pattern<Searcher>> String.stripPrefix(prefix: P): String? = prefix.stripPrefixOf(this)
 
 /**
  * Returns a string slice with the suffix removed.
@@ -2149,7 +2149,7 @@ public fun <Searcher, P : Pattern<Any?>> String.stripPrefix(prefix: P): String? 
  * check("foofoo".takeIf { it.endsWith("foo") }?.removeSuffix("foo") == "foo")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.stripSuffix(suffix: P): String? = suffix.stripSuffixOf(this)
+public fun <Searcher, P : Pattern<Searcher>> String.stripSuffix(suffix: P): String? = suffix.stripSuffixOf(this)
 
 /**
  * Returns a string slice with the prefix and suffix removed.
@@ -2179,7 +2179,7 @@ public fun <Searcher, P : Pattern<Any?>> String.stripSuffix(suffix: P): String? 
  * check("foo:bar:baz".stripCircumfix("foo:bar:", ":bar:baz") == null)
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>, S : Pattern<Any?>> String.stripCircumfix(prefix: P, suffix: S): String? {
+public fun <Searcher, P : Pattern<Searcher>, S : Pattern<Searcher>> String.stripCircumfix(prefix: P, suffix: S): String? {
     return ((this.takeIf { it.startsWith(prefix) }?.removePrefix(prefix) ?: return null)).takeIf { it.endsWith(suffix) }?.removeSuffix(suffix)
 }
 
@@ -2210,7 +2210,7 @@ public fun <Searcher, P : Pattern<Any?>, S : Pattern<Any?>> String.stripCircumfi
  * check("<https://example.com/>".trimPrefix('<').trimSuffix('>') == "https://example.com/")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimPrefix(prefix: P): String = prefix.stripPrefixOf(this).unwrapOr(this)
+public fun <Searcher, P : Pattern<Searcher>> String.trimPrefix(prefix: P): String = prefix.stripPrefixOf(this).unwrapOr(this)
 
 /**
  * Returns a string slice with the optional suffix removed.
@@ -2239,7 +2239,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimPrefix(prefix: P): String = 
  * check("<https://example.com/>".trimPrefix('<').trimSuffix('>') == "https://example.com/")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimSuffix(suffix: P): String = suffix.stripSuffixOf(this).unwrapOr(this)
+public fun <Searcher, P : Pattern<Searcher>> String.trimSuffix(suffix: P): String = suffix.stripSuffixOf(this).unwrapOr(this)
 
 /**
  * Returns a string slice with all suffixes that match a pattern
@@ -2274,7 +2274,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimSuffix(suffix: P): String = 
  * check("1fooX".trimEndMatches({ c -> c == '1' || c == 'X' }) == "1foo")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimEndMatches(pat: P): String {
+public fun <Searcher, P : Pattern<Searcher>> String.trimEndMatches(pat: P): String {
     var j = 0
     val matcher = pat.intoSearcher(this)
     when (val matchVal = matcher.nextRejectBack()) {
@@ -2299,7 +2299,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimEndMatches(pat: P): String {
  *
  * # Text directionality
  *
- * A string is a sequence of bytes. 'Left' in this context means the first
+ * A string is a sequence of bytes. `Left` in this context means the first
  * position of that byte string; for a language like Arabic or Hebrew
  * which are right to left' rather than left to right', this will be
  * the _right_ side, not the left.
@@ -2313,7 +2313,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimEndMatches(pat: P): String {
  * check("12foo1bar12".trimLeftMatches(x) == "foo1bar12")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimLeftMatches(pat: P): String = this.trimStartMatches(pat)
+public fun <Searcher, P : Pattern<Searcher>> String.trimLeftMatches(pat: P): String = this.trimStartMatches(pat)
 
 /**
  * Returns a string slice with all suffixes that match a pattern
@@ -2326,7 +2326,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimLeftMatches(pat: P): String 
  *
  * # Text directionality
  *
- * A string is a sequence of bytes. 'Right' in this context means the last
+ * A string is a sequence of bytes. `Right` in this context means the last
  * position of that byte string; for a language like Arabic or Hebrew
  * which are right to left' rather than left to right', this will be
  * the _left_ side, not the right.
@@ -2348,14 +2348,14 @@ public fun <Searcher, P : Pattern<Any?>> String.trimLeftMatches(pat: P): String 
  * check("1fooX".trimRightMatches({ c -> c == '1' || c == 'X' }) == "1foo")
  * ```
  */
-public fun <Searcher, P : Pattern<Any?>> String.trimRightMatches(pat: P): String = this.trimEndMatches(pat)
+public fun <Searcher, P : Pattern<Searcher>> String.trimRightMatches(pat: P): String = this.trimEndMatches(pat)
 
 /**
  * Parses this string slice into another type.
  *
  * Because `parse` is so general, it can cause problems with type
  * inference. As such, `parse` is one of the few times you'll see
- * the syntax affectionately known as the 'turbofish': `<>`. This
+ * the syntax affectionately known as the `turbofish`: `<>`. This
  * helps the inference algorithm understand specifically which type
  * you're trying to parse into.
  *
@@ -2377,7 +2377,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimRightMatches(pat: P): String
  * check(4u == four)
  * ```
  *
- * Using the 'turbofish' instead of annotating `four`:
+ * Using the `turbofish` instead of annotating `four`:
  *
  * ```kotlin
  * val four = "4".parse<UInt>()
@@ -2391,7 +2391,7 @@ public fun <Searcher, P : Pattern<Any?>> String.trimRightMatches(pat: P): String
  * check(nope.isErr())
  * ```
  */
-public fun <Err, F : FromStr<F, Any?>> String.parse(): Result<F, Err> = FromStr.fromStr(this)
+public fun <Err, F : FromStr<F, Err>> String.parse(): Result<F, Err> = FromStr.fromStr(this)
 
 /**
  * Checks if all characters in this string are within the ASCII range.
@@ -2512,7 +2512,7 @@ public fun String.eqIgnoreCaseUnnormalized(other: String): Boolean = this.chars(
 /**
  * Converts this string to its ASCII upper case equivalent in-place.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but all other characters are unchanged.
  *
  * To return a new uppercased value without modifying the existing one, use
@@ -2537,7 +2537,7 @@ public fun String.makeAsciiUppercase() {
 /**
  * Converts this string to its ASCII lower case equivalent in-place.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but all other characters are unchanged.
  *
  * To return a new lowercased value without modifying the existing one, use
@@ -2623,7 +2623,7 @@ public fun String.copyFromStr(src: String) {
 /**
  * Returns a string slice with leading ASCII whitespace removed.
  *
- * 'Whitespace' refers to the definition used by
+ * `Whitespace` refers to the definition used by
  * [u8.isAsciiWhitespace]. Importantly, this definition excludes
  * the U+000B code point even though it has the Unicode [WhiteSpace] property
  * and is removed by [str.trimStart].
@@ -2648,7 +2648,7 @@ public fun String.trimAsciiStart(): String {
 /**
  * Returns a string slice with trailing ASCII whitespace removed.
  *
- * 'Whitespace' refers to the definition used by
+ * `Whitespace` refers to the definition used by
  * [u8.isAsciiWhitespace]. Importantly, this definition excludes
  * the U+000B code point even though it has the Unicode [WhiteSpace] property
  * and is removed by [str.trimEnd].
@@ -2674,7 +2674,7 @@ public fun String.trimAsciiEnd(): String {
  * Returns a string slice with leading and trailing ASCII whitespace
  * removed.
  *
- * 'Whitespace' refers to the definition used by
+ * `Whitespace` refers to the definition used by
  * [u8.isAsciiWhitespace]. Importantly, this definition excludes
  * the U+000B code point even though it has the Unicode [WhiteSpace] property
  * and is removed by [str.trim].

@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 /**
  * A trait for objects which are byte-oriented sinks.
  *
- * Implementors of the `Write` trait are sometimes called 'writers'.
+ * Implementors of the `Write` trait are sometimes called `writers`.
  *
  * Writers are defined by two required methods, [write] and [flush]:
  *

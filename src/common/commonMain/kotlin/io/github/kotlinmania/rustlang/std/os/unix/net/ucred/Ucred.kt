@@ -1,9 +1,9 @@
 // port-lint: source os/unix/net/ucred.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ucred
 
-import io.github.kotlinmania.rustlang.libc.unix.GidT
-import io.github.kotlinmania.rustlang.libc.unix.PidT
-import io.github.kotlinmania.rustlang.libc.unix.UidT
+import io.github.kotlinmania.libc.fuchsia.GidT
+import io.github.kotlinmania.libc.fuchsia.PidT
+import io.github.kotlinmania.libc.fuchsia.UidT
 
 /**
  * Credentials for a UNIX process for credentials passing.

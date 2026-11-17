@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.std.sync.lazylock.LazyLock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.outputFilename
 import io.github.kotlinmania.rustlang.std.sys.backtrace.setImageBase
-import io.github.kotlinmania.rustlang.std.sys.env.common.Env
 
 // Support for capturing a stack backtrace of an OS thread
 //
@@ -206,13 +205,13 @@ public open class Backtrace(
             }
             val enabled =
                 run {
-                    val matchVal = Env.variable("RUST_LIB_BACKTRACE")
+                    val matchVal = env.variable("RUST_LIB_BACKTRACE")
                     when (matchVal) { is Result.Ok -> {
                         val s = matchVal.value
                         s != "0"
                     }; is Result.Err -> {
                         run {
-                            val matchVal1 = Env.variable("RUST_BACKTRACE")
+                            val matchVal1 = env.variable("RUST_BACKTRACE")
                             when (matchVal1) { is Result.Ok -> {
                                 val s1 = matchVal1.value
                                 s1 != "0"

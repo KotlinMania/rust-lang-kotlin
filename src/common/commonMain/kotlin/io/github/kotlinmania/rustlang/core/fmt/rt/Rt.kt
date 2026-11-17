@@ -2,9 +2,6 @@
 package io.github.kotlinmania.rustlang.core.fmt.rt
 
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.fmt.LowerExp
-import io.github.kotlinmania.rustlang.core.fmt.Pointer
-import io.github.kotlinmania.rustlang.core.fmt.UpperExp
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.AlignedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -172,7 +169,7 @@ public open class Argument internal constructor(
                 transmute(f)
             }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T : Pointer> newPointer(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newPointer(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
                 transmute(f)
@@ -184,13 +181,13 @@ public open class Argument internal constructor(
                 transmute(f)
             }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T : LowerExp> newLowerExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newLowerExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
                 transmute(f)
             }, lifetime = Unit), fieldLayout = fieldLayout)
 
-        public fun <T : UpperExp> newUpperExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
+        public fun <T> newUpperExp(x: T, fieldLayout: TypeLayout<ArgumentType> = UnresolvedTypeLayout(), fmtTFn: (T, Formatter) -> Result): Argument =
             Argument(ty = ArgumentType.sampleValue(value = NonNull.fromRef(x).cast(), formatter = run {
                 val f: (T, Formatter) -> Result = fmtTFn
                 transmute(f)

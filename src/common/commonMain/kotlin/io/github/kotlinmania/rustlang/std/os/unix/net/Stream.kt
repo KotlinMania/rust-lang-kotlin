@@ -1,6 +1,10 @@
 // port-lint: source os/unix/net/stream.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net
 
+import io.github.kotlinmania.libc.fuchsia.AF_UNIX
+import io.github.kotlinmania.libc.fuchsia.SOCK_STREAM
+import io.github.kotlinmania.libc.fuchsia.SO_RCVTIMEO
+import io.github.kotlinmania.libc.fuchsia.SO_SNDTIMEO
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -10,10 +14,6 @@ import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.libc.connect
 import io.github.kotlinmania.rustlang.libc.getpeername
 import io.github.kotlinmania.rustlang.libc.getsockname
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SOCK_STREAM
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_RCVTIMEO
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_SNDTIMEO
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.AF_UNIX
 import io.github.kotlinmania.rustlang.std.io.BorrowedCursor
 import io.github.kotlinmania.rustlang.std.io.Read
 import io.github.kotlinmania.rustlang.std.io.Write
@@ -72,14 +72,14 @@ public val MSG_NOSIGNAL: CInt = 0x0
  * use std.os.unix.net.UnixStream;
  * use std.io.prelude::*;
  *
- * fn main() -> std.io.Result<()> {
+ * fn main() -> std.io.Result<()> (
  *     let mut stream = UnixStream.connect("/path/to/my/socket")?;
  *     stream.writeAll(b"hello world")?;
  *     let mut response = String.new();
  *     stream.readToString(response)?;
- *     println("{response}");
+ *     println("(response)");
  *     Ok(())
- * }
+ * )
  * ```kotlin
  *
  * On platforms that support it, we pass the close - on - exec flag to atomically create the socket and
@@ -133,11 +133,11 @@ public open class UnixStream(
      *
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let sockCopy = socket.tryClone().expect("`UnixStream.tryClone` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun tryClone(): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.duplicate().map({ UnixStream(it) })
@@ -149,11 +149,11 @@ public open class UnixStream(
      *
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let addr = socket.localAddr().expect("`UnixStream.localAddr` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun localAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getsockname(this.asRawFd(), addr, len) })
@@ -165,11 +165,11 @@ public open class UnixStream(
      *
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let addr = socket.peerAddr().expect("`UnixStream.peerAddr` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peerAddr(): Result<SocketAddr, io.github.kotlinmania.rustlang.std.io.error.Error> = SocketAddr.new({ addr, len -> getpeername(this.asRawFd(), addr, len) })
@@ -182,11 +182,11 @@ public open class UnixStream(
      * @file:feature(peerCredentialsUnixSocket)
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let peerCred = socket.peerCred().expect("`UnixStream.peerCred` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peerCred(): Result<UCred, io.github.kotlinmania.rustlang.std.io.error.Error> = peerCred(this)
@@ -205,11 +205,11 @@ public open class UnixStream(
      * use std.os.unix.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setReadTimeout(Some(Duration.new(1, 0))).expect("`UnixStream.setReadTimeout` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * An [Err] is returned if the zero [Duration] is passed to this
@@ -219,13 +219,13 @@ public open class UnixStream(
      * import std.os.unix.net.UnixStream;
      * import std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      * val socket = UnixStream.connect("/tmp/sock");
      * val result = socket.setReadTimeout(Some(Duration.new(0, 0)));
      * val err = result.unwrapErr();
      * assertEq(err.kind(), io.ErrorKind.InvalidInput);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public open fun setReadTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_RCVTIMEO)
@@ -244,12 +244,12 @@ public open class UnixStream(
      * use std.os.unix.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setWriteTimeout(Some(Duration.new(1, 0)))
      *         .expect("`UnixStream.connect` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * An [Err] is returned if the zero [Duration] is passed to this
@@ -259,13 +259,13 @@ public open class UnixStream(
      * import std.os.unix.net.UnixStream;
      * import std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      * val socket = UnixStream.connect("/tmp/sock");
      * val result = socket.setWriteTimeout(Some(Duration.new(0, 0)));
      * val err = result.unwrapErr();
      * assertEq(err.kind(), io.ErrorKind.InvalidInput);
      * Ok(())
-     * }
+     * )
      * ```
      */
     public open fun setWriteTimeout(timeout: Duration?): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setTimeout(timeout, SO_SNDTIMEO)
@@ -278,12 +278,12 @@ public open class UnixStream(
      * use std.os.unix.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setReadTimeout(Some(Duration.new(1, 0))).expect("`UnixStream.setReadTimeout` should not fail");
      *     assertEq(socket.readTimeout()?, Some(Duration.new(1, 0)));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun readTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_RCVTIMEO)
@@ -296,13 +296,13 @@ public open class UnixStream(
      * use std.os.unix.net.UnixStream;
      * use std.time.Duration;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setWriteTimeout(Some(Duration.new(1, 0)))
      *         .expect("`UnixStream.setWriteTimeout` should not fail");
      *     assertEq(socket.writeTimeout()?, Some(Duration.new(1, 0)));
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun writeTimeout(): Result<Duration?, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.timeout(SO_SNDTIMEO)
@@ -314,11 +314,11 @@ public open class UnixStream(
      *
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.setNonblocking(true).expect("`UnixStream.setNonblocking` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setNonblocking(nonblocking)
@@ -329,11 +329,11 @@ public open class UnixStream(
      * @file:feature(unixSetMark)
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let sock = UnixStream.connect("/tmp/sock")?;
      *     sock.setMark(32)?;
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun setMark(mark: UInt): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.setMark(mark)
@@ -345,13 +345,13 @@ public open class UnixStream(
      *
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
-     *     if let Ok(Some(err)) = socket.takeError() {
-     *         println("Got error: {err:?}");
-     *     }
+     *     if let Ok(Some(err)) = socket.takeError() (
+     *         println("Got error: (err:?)");
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      *
      * On Redox this always returns `None`.
@@ -371,11 +371,11 @@ public open class UnixStream(
      * use std.os.unix.net.UnixStream;
      * use std.net.Shutdown;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     socket.shutdown(Shutdown.Both).expect("`UnixStream.shutdown` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun shutdown(how: Shutdown): Result<Unit, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.shutdown(how)
@@ -394,12 +394,12 @@ public open class UnixStream(
      *
      * use std.os.unix.net.UnixStream;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let mut buf = [0; 10];
      *     let len = socket.peek(buf).expect("`UnixStream.peek` should not fail");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun peek(buf: MutableList<UByte>): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = this.value.peek(buf)
@@ -412,10 +412,10 @@ public open class UnixStream(
      * # Examples
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary, AncillaryData};
+     * use std.os.unix.net::(UnixStream, SocketAncillary, AncillaryData);
      * use std.io.IoSliceMut;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let mut buf1 = [1; 8];
      *     let mut buf2 = [2; 16];
@@ -429,16 +429,16 @@ public open class UnixStream(
      *     let mut ancillaryBuffer = [0; 128];
      *     let mut ancillary = SocketAncillary.new(ancillaryBuffer[..]);
      *     let size = socket.recvVectoredWithAncillary(bufs, ancillary)?;
-     *     println("received {size}");
-     *     for ancillaryResult in ancillary.messages() {
-     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() {
-     *             for fd in scmRights {
-     *                 println("receive file descriptor: {fd}");
-     *             }
-     *         }
-     *     }
+     *     println("received (size)");
+     *     for ancillaryResult in ancillary.messages() (
+     *         if let AncillaryData.ScmRights(scmRights) = ancillaryResult.unwrap() (
+     *             for fd in scmRights (
+     *                 println("receive file descriptor: (fd)");
+     *             )
+     *         )
+     *     )
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun recvVectoredWithAncillary(bufs: MutableList<IoSliceMut>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -454,10 +454,10 @@ public open class UnixStream(
      * # Examples
      *
      * @file:feature(unixSocketAncillaryData)
-     * use std.os.unix.net::{UnixStream, SocketAncillary};
+     * use std.os.unix.net::(UnixStream, SocketAncillary);
      * use std.io.IoSlice;
      *
-     * fn main() -> std.io.Result<()> {
+     * fn main() -> std.io.Result<()> (
      *     let socket = UnixStream.connect("/tmp/sock")?;
      *     let buf1 = [1; 8];
      *     let buf2 = [2; 16];
@@ -474,7 +474,7 @@ public open class UnixStream(
      *     socket.sendVectoredWithAncillary(bufs, ancillary)
      *         .expect("sendVectoredWithAncillary function failed");
      *     Ok(())
-     * }
+     * )
      * ```kotlin
      */
     public open fun sendVectoredWithAncillary(bufs: List<IoSlice>, ancillary: SocketAncillary): Result<Int, io.github.kotlinmania.rustlang.std.io.error.Error> = sendVectoredWithAncillaryTo(this.value, null, bufs, ancillary)
@@ -511,13 +511,13 @@ public open class UnixStream(
          *
          * use std.os.unix.net.UnixStream;
          *
-         * let socket = match UnixStream.connect("/tmp/sock") {
+         * let socket = match UnixStream.connect("/tmp/sock") (
          *     Ok(sock) => sock,
-         *     Err(e) => {
-         *         println("Couldn't connect: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't connect: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun connect(path: Path): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -534,21 +534,21 @@ public open class UnixStream(
          *
          * # Examples
          *
-         * use std.os.unix.net::{UnixListener, UnixStream};
+         * use std.os.unix.net::(UnixListener, UnixStream);
          *
-         * fn main() -> std.io.Result<()> {
+         * fn main() -> std.io.Result<()> (
          *     let listener = UnixListener.bind("/path/to/the/socket")?;
          *     let addr = listener.localAddr()?;
          *
-         *     let sock = match UnixStream.connectAddr(&addr) {
+         *     let sock = match UnixStream.connectAddr(&addr) (
          *         Ok(sock) => sock,
-         *         Err(e) => {
-         *             println("Couldn't connect: {e:?}");
+         *         Err(e) => (
+         *             println("Couldn't connect: (e:?)");
          *             return Err(e)
-         *         }
-         *     };
+         *         )
+         *     );
          *     Ok(())
-         * }
+         * )
          * ```kotlin
          */
         public fun connectAddr(socketAddr: SocketAddr): Result<UnixStream, io.github.kotlinmania.rustlang.std.io.error.Error> {
@@ -568,13 +568,13 @@ public open class UnixStream(
          *
          * use std.os.unix.net.UnixStream;
          *
-         * let (sock1, sock2) = match UnixStream.pair() {
+         * let (sock1, sock2) = match UnixStream.pair() (
          *     Ok((sock1, sock2)) => (sock1, sock2),
-         *     Err(e) => {
-         *         println("Couldn't create a pair of sockets: {e:?}");
+         *     Err(e) => (
+         *         println("Couldn't create a pair of sockets: (e:?)");
          *         return
-         *     }
-         * };
+         *     )
+         * );
          * ```kotlin
          */
         public fun pair(): Result<Pair<UnixStream, UnixStream>, io.github.kotlinmania.rustlang.std.io.error.Error> {

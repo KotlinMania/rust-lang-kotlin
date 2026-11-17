@@ -412,7 +412,7 @@ public fun fromWideToUserPath(path: List<UShort>): Result<List<UShort>, Error> {
                     path1.push(0)
                     path1
                 } else {
-                    // Restore the 'C' in "UNC".
+                    // Restore the `C` in "UNC".
                     path[6] = 67u.toUShort()
                     path
                 }

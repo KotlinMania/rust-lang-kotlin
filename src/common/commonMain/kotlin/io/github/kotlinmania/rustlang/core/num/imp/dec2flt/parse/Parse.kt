@@ -251,7 +251,7 @@ public fun parseNumber(s: List<UByte>): Decimal? {
 /**
  * Try to parse a special, non-finite float.
  */
-public fun <Int, F : Float<F, Any?>> parseInfNan(s: List<UByte>, negative: Boolean): F? {
+public fun <Int, F : Float<F, Int>> parseInfNan(s: List<UByte>, negative: Boolean): F? {
     // u64 values corresponding to relevant cases
     val INF_3: ULong = 0x464E49uL
     // "INF"

@@ -1,6 +1,39 @@
 // port-lint: source sys/net/connection/socket/unix.rs
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix
 
+import io.github.kotlinmania.libc.CInt
+import io.github.kotlinmania.libc.fuchsia.EAI_SYSTEM
+import io.github.kotlinmania.libc.fuchsia.EINTR
+import io.github.kotlinmania.libc.fuchsia.EISCONN
+import io.github.kotlinmania.libc.fuchsia.FIONBIO
+import io.github.kotlinmania.libc.fuchsia.IPPROTO_TCP
+import io.github.kotlinmania.libc.fuchsia.Linger
+import io.github.kotlinmania.libc.fuchsia.MSG_CMSG_CLOEXEC
+import io.github.kotlinmania.libc.fuchsia.MSG_PEEK
+import io.github.kotlinmania.libc.fuchsia.Msghdr
+import io.github.kotlinmania.libc.fuchsia.POLLERR
+import io.github.kotlinmania.libc.fuchsia.POLLHUP
+import io.github.kotlinmania.libc.fuchsia.POLLOUT
+import io.github.kotlinmania.libc.fuchsia.Pollfd
+import io.github.kotlinmania.libc.fuchsia.SHUT_RD
+import io.github.kotlinmania.libc.fuchsia.SHUT_RDWR
+import io.github.kotlinmania.libc.fuchsia.SHUT_WR
+import io.github.kotlinmania.libc.fuchsia.SOCK_CLOEXEC
+import io.github.kotlinmania.libc.fuchsia.SOL_SOCKET
+import io.github.kotlinmania.libc.fuchsia.SO_ERROR
+import io.github.kotlinmania.libc.fuchsia.SO_KEEPALIVE
+import io.github.kotlinmania.libc.fuchsia.SO_MARK
+import io.github.kotlinmania.libc.fuchsia.SO_PASSCRED
+import io.github.kotlinmania.libc.fuchsia.SizeT
+import io.github.kotlinmania.libc.fuchsia.SockaddrStorage
+import io.github.kotlinmania.libc.fuchsia.SocklenT
+import io.github.kotlinmania.libc.fuchsia.TCP_DEFER_ACCEPT
+import io.github.kotlinmania.libc.fuchsia.TCP_NODELAY
+import io.github.kotlinmania.libc.fuchsia.TCP_QUICKACK
+import io.github.kotlinmania.libc.fuchsia.TimeT
+import io.github.kotlinmania.libc.fuchsia.Timeval
+import io.github.kotlinmania.libc.unix.linuxlike.android.Ioctl
+import io.github.kotlinmania.libc.unix.linuxlike.android.b64.accept4
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
@@ -20,7 +53,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
-import io.github.kotlinmania.rustlang.libc.CInt
 import io.github.kotlinmania.rustlang.libc.Poll
 import io.github.kotlinmania.rustlang.libc.Send
 import io.github.kotlinmania.rustlang.libc.gaiStrerror
@@ -30,38 +62,6 @@ import io.github.kotlinmania.rustlang.libc.recvmsg
 import io.github.kotlinmania.rustlang.libc.resInit
 import io.github.kotlinmania.rustlang.libc.sendmsg
 import io.github.kotlinmania.rustlang.libc.socketpair
-import io.github.kotlinmania.rustlang.libc.unix.IPPROTO_TCP
-import io.github.kotlinmania.rustlang.libc.unix.Linger
-import io.github.kotlinmania.rustlang.libc.unix.Pollfd
-import io.github.kotlinmania.rustlang.libc.unix.SizeT
-import io.github.kotlinmania.rustlang.libc.unix.Timeval
-import io.github.kotlinmania.rustlang.libc.unix.bsd.Msghdr
-import io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT
-import io.github.kotlinmania.rustlang.libc.unix.bsd.TCP_NODELAY
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SHUT_RD
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SHUT_RDWR
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SHUT_WR
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_ERROR
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_KEEPALIVE
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.EAI_SYSTEM
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_CMSG_CLOEXEC
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_PEEK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrStorage
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TCP_DEFER_ACCEPT
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.TCP_QUICKACK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.Ioctl
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SO_MARK
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.SO_PASSCRED
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.accept4
-import io.github.kotlinmania.rustlang.libc.wasi.EINTR
-import io.github.kotlinmania.rustlang.libc.wasi.EISCONN
-import io.github.kotlinmania.rustlang.libc.wasi.FIONBIO
-import io.github.kotlinmania.rustlang.libc.wasi.POLLERR
-import io.github.kotlinmania.rustlang.libc.wasi.POLLHUP
-import io.github.kotlinmania.rustlang.libc.wasi.POLLOUT
-import io.github.kotlinmania.rustlang.libc.wasi.SOCK_CLOEXEC
-import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
-import io.github.kotlinmania.rustlang.libc.wasi.TimeT
 import io.github.kotlinmania.rustlang.std.io.ErrorKind
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.io.error.Error
@@ -86,7 +86,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.Conf
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvtR
 import io.github.kotlinmania.rustlang.std.time.Instant
-import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.SO_LINGER_SEC as SO_LINGER
+import io.github.kotlinmania.libc.unix.bsd.apple.SO_LINGER_SEC as SO_LINGER
 
 public typealias WrlenT = SizeT
 
@@ -217,7 +217,7 @@ public open class Socket(
         // reference: https://linux.die.net/man/2/recvfrom
         val localStorageL330C8 = AddressableLocal(MaybeUninit.uninit(UnresolvedTypeLayout<SockaddrStorage>()), UnresolvedTypeLayout<MaybeUninit<SockaddrStorage>>())
         val storage by localStorageL330C8
-        val localStorageL331C8 = AddressableLocal(sizeOfVal(storage, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<SockaddrStorage>>()).toInt(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.libc.unix.bsd.SocklenT>())
+        val localStorageL331C8 = AddressableLocal(sizeOfVal(storage, typeLayoutT = UnresolvedTypeLayout<MaybeUninit<SockaddrStorage>>()).toInt(), UnresolvedTypeLayout<io.github.kotlinmania.libc.fuchsia.SocklenT>())
         val addrlen by localStorageL331C8
         val n = when (val tryResult = cvt(recvfrom(this.asRawFd(), (buf.asMutPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, buf.size, flags, (localStorageL330C8.asMutPtr()), RustMutableReference(localStorageL331C8.asMutPtr(), localStorageL331C8.layout)))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }
         return Result.Ok<Pair<Int, SocketAddr>, Error>(Pair(n.toInt(), when (val tryResult = socketAddrFromC(storage.asPtr(), addrlen)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Pair<Int, SocketAddr>, Error>(tryResult.error) }))
@@ -243,7 +243,7 @@ public open class Socket(
         return Result.Ok<Int, Error>(n.toInt())
     }
 
-    public open fun setTimeout(dur: Duration?, kind: io.github.kotlinmania.rustlang.libc.CInt): Result<Unit, Error> {
+    public open fun setTimeout(dur: Duration?, kind: io.github.kotlinmania.libc.CInt): Result<Unit, Error> {
         val timeout1 =
             when (dur) {
                 null -> Timeval(tvSec = 0, tvUsec = 0)
@@ -268,7 +268,7 @@ public open class Socket(
         return setsockopt(this, SOL_SOCKET, kind, timeout1)
     }
 
-    public open fun timeout(kind: io.github.kotlinmania.rustlang.libc.CInt): Result<Duration?, Error> {
+    public open fun timeout(kind: io.github.kotlinmania.libc.CInt): Result<Duration?, Error> {
         val raw: Timeval = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Duration?, Error>(tryResult.error) }
         return if (raw.tvSec == 0 && raw.tvUsec == 0) {
             Result.Ok<Duration?, Error>(null)
@@ -335,12 +335,12 @@ public open class Socket(
     public open fun setPasscred(passcred: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_PASSCRED, passcred.toInt())
 
     public open fun passcred(): Result<Boolean, Error> {
-        val passcred: io.github.kotlinmania.rustlang.libc.CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_PASSCRED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
+        val passcred: io.github.kotlinmania.libc.CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_PASSCRED)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Boolean, Error>(tryResult.error) }
         return Result.Ok<Boolean, Error>((passcred != 0).toUByte())
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
-        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.libc.CInt>())
+        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), UnresolvedTypeLayout<io.github.kotlinmania.libc.CInt>())
         return cvt(Ioctl(this.asRawFd(), FIONBIO, RustMutableReference(localStorageL586C8.asMutPtr(), localStorageL586C8.layout))).map({ Unit })
     }
 
@@ -375,7 +375,7 @@ public open class Socket(
             // On platforms that support it we pass the SOCK_CLOEXEC
             // flag to atomically create the socket and set it as
             // CLOEXEC. On Linux this was added in 2.6.27.
-            val fd = when (val tryResult = cvt(io.github.kotlinmania.rustlang.libc.windows.Socket(family, ty or SOCK_CLOEXEC, 0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Socket, Error>(tryResult.error) }
+            val fd = when (val tryResult = cvt(io.github.kotlinmania.libc.windows.Socket(family, ty or SOCK_CLOEXEC, 0))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Socket, Error>(tryResult.error) }
             val socket = Socket(FileDesc.fromRawFd(fd))
             return Result.Ok<Socket, Error>(socket)
         }

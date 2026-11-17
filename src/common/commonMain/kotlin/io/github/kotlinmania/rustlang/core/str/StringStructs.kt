@@ -2,7 +2,6 @@ package io.github.kotlinmania.rustlang.core.str
 
 import io.github.kotlinmania.rustlang.core.char.isAsciiWhitespace
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
-import io.github.kotlinmania.rustlang.core.macros.builtin.line
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ops.function.Fn
 import io.github.kotlinmania.rustlang.core.ops.function.FnMut
@@ -15,20 +14,27 @@ import io.github.kotlinmania.rustlang.core.str.iter.EscapeUnicode
 /**
  * A nameable, cloneable fn type
  */
-public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, String> {
+public open class LinesMap : Fn<String, Any>, FnMut<String, Any>, FnOnce<String, String> {
     public open fun clone(): LinesMap = LinesMap()
 
     public override fun call(tupleArg0: String): String {
+        val line = tupleArg0
         return run {
-            val line = line.takeIf { it.endsWith('\n') }?.removeSuffix('\n') ?: return line
-            val line1 = line.takeIf { it.endsWith('\r') }?.removeSuffix('\r') ?: return line
-            line1
+            val line1 = line.takeIf { it.endsWith('\n') }?.removeSuffix('\n') ?: return line
+            val line2 = line1.takeIf { it.endsWith('\r') }?.removeSuffix('\r') ?: return line1
+            line2
         }
     }
 
-    public override fun callMut(tupleArg0: String): String = this.call(line)
+    public override fun callMut(tupleArg0: String): String {
+        val line = tupleArg0
+        return this.call(line)
+    }
 
-    public override fun callOnce(tupleArg0: String): String = this.call(line)
+    public override fun callOnce(tupleArg0: String): String {
+        val line = tupleArg0
+        return this.call(line)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<LinesMap> =
@@ -47,14 +53,23 @@ public open class LinesMap : Fn<String>, FnMut<String>, FnOnce<String, String> {
     }
 }
 
-public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeDebug> {
+public open class CharEscapeDebug : Fn<Char, Any>, FnMut<Char, Any>, FnOnce<Char, EscapeDebug> {
     public open fun clone(): CharEscapeDebug = CharEscapeDebug()
 
-    public override fun call(tupleArg0: Char): EscapeDebug = c.escapeDebugExt(EscapeDebugExtArgs.ESCAPE_ALL)
+    public override fun call(tupleArg0: Char): EscapeDebug {
+        val c = tupleArg0
+        return c.escapeDebugExt(EscapeDebugExtArgs.ESCAPE_ALL)
+    }
 
-    public override fun callMut(tupleArg0: Char): EscapeDebug = this.call(c)
+    public override fun callMut(tupleArg0: Char): EscapeDebug {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
-    public override fun callOnce(tupleArg0: Char): EscapeDebug = this.call(c)
+    public override fun callOnce(tupleArg0: Char): EscapeDebug {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<CharEscapeDebug> =
@@ -73,14 +88,23 @@ public open class CharEscapeDebug : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeDe
     }
 }
 
-public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeUnicode> {
+public open class CharEscapeUnicode : Fn<Char, Any>, FnMut<Char, Any>, FnOnce<Char, EscapeUnicode> {
     public open fun clone(): CharEscapeUnicode = CharEscapeUnicode()
 
-    public override fun call(tupleArg0: Char): EscapeUnicode = c.escapeUnicode()
+    public override fun call(tupleArg0: Char): EscapeUnicode {
+        val c = tupleArg0
+        return c.escapeUnicode()
+    }
 
-    public override fun callMut(tupleArg0: Char): EscapeUnicode = this.call(c)
+    public override fun callMut(tupleArg0: Char): EscapeUnicode {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
-    public override fun callOnce(tupleArg0: Char): EscapeUnicode = this.call(c)
+    public override fun callOnce(tupleArg0: Char): EscapeUnicode {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<CharEscapeUnicode> =
@@ -99,14 +123,23 @@ public open class CharEscapeUnicode : Fn<Char>, FnMut<Char>, FnOnce<Char, Escape
     }
 }
 
-public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, EscapeDefault> {
+public open class CharEscapeDefault : Fn<Char, Any>, FnMut<Char, Any>, FnOnce<Char, EscapeDefault> {
     public open fun clone(): CharEscapeDefault = CharEscapeDefault()
 
-    public override fun call(tupleArg0: Char): EscapeDefault = c.escapeDefault()
+    public override fun call(tupleArg0: Char): EscapeDefault {
+        val c = tupleArg0
+        return c.escapeDefault()
+    }
 
-    public override fun callMut(tupleArg0: Char): EscapeDefault = this.call(c)
+    public override fun callMut(tupleArg0: Char): EscapeDefault {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
-    public override fun callOnce(tupleArg0: Char): EscapeDefault = this.call(c)
+    public override fun callOnce(tupleArg0: Char): EscapeDefault {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<CharEscapeDefault> =
@@ -125,14 +158,23 @@ public open class CharEscapeDefault : Fn<Char>, FnMut<Char>, FnOnce<Char, Escape
     }
 }
 
-public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Boolean> {
+public open class IsWhitespace : Fn<Char, Any>, FnMut<Char, Any>, FnOnce<Char, Boolean> {
     public open fun clone(): IsWhitespace = IsWhitespace()
 
-    public override fun call(tupleArg0: Char): Boolean = c.isWhitespace()
+    public override fun call(tupleArg0: Char): Boolean {
+        val c = tupleArg0
+        return c.isWhitespace()
+    }
 
-    public override fun callMut(tupleArg0: Char): Boolean = this.call(c)
+    public override fun callMut(tupleArg0: Char): Boolean {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
-    public override fun callOnce(tupleArg0: Char): Boolean = this.call(c)
+    public override fun callOnce(tupleArg0: Char): Boolean {
+        val c = tupleArg0
+        return this.call(c)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<IsWhitespace> =
@@ -151,14 +193,23 @@ public open class IsWhitespace : Fn<Char>, FnMut<Char>, FnOnce<Char, Boolean> {
     }
 }
 
-public open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Boolean> {
+public open class IsAsciiWhitespace : Fn<UByte, Any>, FnMut<UByte, Any>, FnOnce<UByte, Boolean> {
     public open fun clone(): IsAsciiWhitespace = IsAsciiWhitespace()
 
-    public override fun call(tupleArg0: UByte): Boolean = byte.isAsciiWhitespace()
+    public override fun call(tupleArg0: UByte): Boolean {
+        val byte = tupleArg0
+        return byte.isAsciiWhitespace()
+    }
 
-    public override fun callMut(tupleArg0: UByte): Boolean = this.call(byte)
+    public override fun callMut(tupleArg0: UByte): Boolean {
+        val byte = tupleArg0
+        return this.call(byte)
+    }
 
-    public override fun callOnce(tupleArg0: UByte): Boolean = this.call(byte)
+    public override fun callOnce(tupleArg0: UByte): Boolean {
+        val byte = tupleArg0
+        return this.call(byte)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<IsAsciiWhitespace> =
@@ -177,14 +228,23 @@ public open class IsAsciiWhitespace : Fn<UByte>, FnMut<UByte>, FnOnce<UByte, Boo
     }
 }
 
-public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Boolean> {
+public open class IsNotEmpty : Fn<String, Any>, FnMut<String, Any>, FnOnce<String, Boolean> {
     public open fun clone(): IsNotEmpty = IsNotEmpty()
 
-    public override fun call(tupleArg0: String): Boolean = !s.isEmpty()
+    public override fun call(tupleArg0: String): Boolean {
+        val s = tupleArg0
+        return !s.isEmpty()
+    }
 
-    public override fun callMut(tupleArg0: String): Boolean = this.call(s)
+    public override fun callMut(tupleArg0: String): Boolean {
+        val s = tupleArg0
+        return this.call(s)
+    }
 
-    public override fun callOnce(tupleArg0: String): Boolean = this.call(s)
+    public override fun callOnce(tupleArg0: String): Boolean {
+        val s = tupleArg0
+        return this.call(s)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<IsNotEmpty> =
@@ -203,14 +263,23 @@ public open class IsNotEmpty : Fn<String>, FnMut<String>, FnOnce<String, Boolean
     }
 }
 
-public open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, Boolean> {
+public open class BytesIsNotEmpty : Fn<List<UByte>, Any>, FnMut<List<UByte>, Any>, FnOnce<List<UByte>, Boolean> {
     public open fun clone(): BytesIsNotEmpty = BytesIsNotEmpty()
 
-    public override fun call(tupleArg0: List<UByte>): Boolean = !s.isEmpty()
+    public override fun call(tupleArg0: List<UByte>): Boolean {
+        val s = tupleArg0
+        return !s.isEmpty()
+    }
 
-    public override fun callMut(tupleArg0: List<UByte>): Boolean = this.call(s)
+    public override fun callMut(tupleArg0: List<UByte>): Boolean {
+        val s = tupleArg0
+        return this.call(s)
+    }
 
-    public override fun callOnce(tupleArg0: List<UByte>): Boolean = this.call(s)
+    public override fun callOnce(tupleArg0: List<UByte>): Boolean {
+        val s = tupleArg0
+        return this.call(s)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<BytesIsNotEmpty> =
@@ -229,14 +298,23 @@ public open class BytesIsNotEmpty : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<
     }
 }
 
-public open class UnsafeBytesToStr : Fn<List<UByte>>, FnMut<List<UByte>>, FnOnce<List<UByte>, String> {
+public open class UnsafeBytesToStr : Fn<List<UByte>, Any>, FnMut<List<UByte>, Any>, FnOnce<List<UByte>, String> {
     public open fun clone(): UnsafeBytesToStr = UnsafeBytesToStr()
 
-    public override fun call(tupleArg0: List<UByte>): String = fromUtf8Unchecked(bytes)
+    public override fun call(tupleArg0: List<UByte>): String {
+        val bytes = tupleArg0
+        return fromUtf8Unchecked(bytes)
+    }
 
-    public override fun callMut(tupleArg0: List<UByte>): String = this.call(bytes)
+    public override fun callMut(tupleArg0: List<UByte>): String {
+        val bytes = tupleArg0
+        return this.call(bytes)
+    }
 
-    public override fun callOnce(tupleArg0: List<UByte>): String = this.call(bytes)
+    public override fun callOnce(tupleArg0: List<UByte>): String {
+        val bytes = tupleArg0
+        return this.call(bytes)
+    }
 
     public companion object {
         public fun typeLayout(): TypeLayout<UnsafeBytesToStr> =

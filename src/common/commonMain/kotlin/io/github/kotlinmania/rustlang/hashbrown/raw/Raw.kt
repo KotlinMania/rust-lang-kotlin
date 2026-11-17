@@ -161,7 +161,7 @@ public fun capacityToBuckets(cap: Int, tableLayout: TableLayout): Int? {
     // For small tables we require at least 1 empty bucket so that lookups are
     // guaranteed to terminate if an element doesn't exist in the table.
     if (cap < 15) {
-        // Consider a small TableLayout like { size: 1, ctrlAlign: 16 } on a
+        // Consider a small TableLayout like ( size: 1, ctrlAlign: 16 ) on a
         // platform with Group.Width of 16 (like x8664 with SSE2). For small
         // bucket sizes, this ends up wasting quite a few bytes just to pad to
         // the relatively larger ctrlAlign:
@@ -3133,7 +3133,7 @@ public open class RawTableInner internal constructor(
                 // SAFETY: We checked that we could successfully allocate the new table, and then
                 // initialized all control bytes with the constant `Tag.EMPTY` byte.
                 run {
-                    val buckets = when (val tryResult = (capacityToBuckets(capacity, tableLayout)?.let { Result.Ok(it) } ?: Result.Err(fallibility.capacityOverflow()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
+                    val buckets = when (val tryResult = (capacityToBuckets(capacity, tableLayout)?.let { Result.Ok<Int, TryReserveError>(it) } ?: Result.Err<Int, TryReserveError>(fallibility.capacityOverflow()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
                     val result = when (val tryResult = RawTableInner.newUninitialized(alloc, tableLayout, buckets, fallibility)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<RawTableInner, TryReserveError>(tryResult.error) }
                     // SAFETY: We checked that the table is allocated and therefore the table already has
                     // `self.bucketMask + 1 + Group.WIDTH` number of control bytes (see TableLayout.calculateLayoutFor)
@@ -3325,7 +3325,7 @@ public open class RawIterRange<T> internal constructor(
      *
      * `foldImpl()` takes three arguments: the number of items remaining in
      * the iterator, an initial value, and a closure with two arguments: an
-     * 'accumulator', and an element. The closure returns the value that the
+     * `accumulator`, and an element. The closure returns the value that the
      * accumulator should have for the next iteration.
      *
      * The initial value is the value the accumulator will have on the first call.

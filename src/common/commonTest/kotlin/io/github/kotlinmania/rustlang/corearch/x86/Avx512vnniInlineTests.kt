@@ -1,6 +1,8 @@
 // port-lint: tests x86/avx512vnni.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
+
 public fun testMm512DpwssdEpi32() {
     val src = mm512Set1Epi32(1)
     val a = mm512Set1Epi32(1 shl 16 or 1 shl 0)

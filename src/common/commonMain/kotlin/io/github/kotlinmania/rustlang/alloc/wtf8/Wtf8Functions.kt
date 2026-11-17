@@ -17,7 +17,7 @@ public fun toOwned(slice: Wtf8): Wtf8Buf = Wtf8Buf(bytes = slice.asBytes().toMut
  * Lossily converts the string to UTF-8.
  * Returns a UTF-8 `String` slice if the contents are well-formed in UTF-8.
  *
- * Surrogates are replaced with `"\u{FFFD}"` (the replacement character “�”).
+ * Surrogates are replaced with `"\u(FFFD)"` (the replacement character “�”).
  *
  * This only copies the data if necessary (if it contains any surrogate).
  */
@@ -34,7 +34,7 @@ return String.fromUtf8Unchecked(slice.asBytes())
         when (val matchVal = slice.nextSurrogate(pos)) {
             null -> {
                 utf8Bytes.addAll(((wtf8Bytes).subList(pos, (wtf8Bytes).size)))
-                // SAFETY: Every surrogate was replaced with `"\u{FFFD}"`,
+                // SAFETY: Every surrogate was replaced with `"\u(FFFD)"`,
                 // and the remaining bytes are valid UTF-8, so `utf8Bytes` is valid UTF-8.
                 return String.fromUtf8Unchecked(utf8Bytes)
             }

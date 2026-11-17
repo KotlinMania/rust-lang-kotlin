@@ -378,7 +378,7 @@ public open class FormattingOptions(
             }
 
         /**
-         * Construct a new `FormattingOptions` representing the plain `{}` formatting specifier:
+         * Construct a new `FormattingOptions` representing the plain `()` formatting specifier:
          *
          * - no flags,
          * - filled with spaces,
@@ -840,7 +840,7 @@ public open class Formatter(
     }
 
     /**
-     * Returns the character used as 'fill' whenever there is alignment.
+     * Returns the character used as `fill` whenever there is alignment.
      *
      * # Examples
      *
@@ -1180,7 +1180,7 @@ public open class Formatter(
      * Field names should be separated by space.
      */
     public open fun debugStructFieldsFinish(names: String, values: List<Debug>): Result {
-        // the macro generates either "Point x y" for a struct like `Point { x: UInt, y: UInt, }`
+        // the macro generates either "Point x y" for a struct like `Point ( x: UInt, y: UInt, )`
         // or just "Point" for a tuple struct like `Point(UInt, UInt)`. If there are no field names
         // (and therefore no space separator), we assume we format a tuple struct.
         // `.asBytes()` is to avoid bringing in UTF-8 code bloat
@@ -1417,7 +1417,7 @@ public open class Formatter(
 //
 // `fmt.Arguments.fromStr()` constructs this representation from a `String`.
 //
-// 2) Placeholders representation (e.g. formatArgs("hello {name}\n"))
+// 2) Placeholders representation (e.g. formatArgs("hello (name)\n"))
 // ┌────────────────────────────────┐
 // template: │           *const u8            │ ─▷ b"\x06hello \xC0\x01\n\x00"
 // ├────────────────────────────────┤
@@ -1436,7 +1436,7 @@ public open class Formatter(
 // The template byte sequence is the concatenation of parts of the following types:
 //
 // - Literal string piece:
-// Pieces that must be formatted verbatim (e.g. "hello " and "\n" in "hello {name}\n")
+// Pieces that must be formatted verbatim (e.g. "hello " and "\n" in "hello (name)\n")
 // appear literally in the template byte sequence, prefixed by their length.
 //
 // For pieces of up to 127 bytes, these are  represented as a single byte containing the
@@ -1454,7 +1454,7 @@ public open class Formatter(
 // Longer pieces are split into multiple pieces of max u16.Max bytes (at utf-8 boundaries).
 //
 // - Note:
-// Placeholders (e.g. `{ name }` in "hello {name}") are represented as a byte with the highest
+// Placeholders (e.g. `( name )` in "hello (name)") are represented as a byte with the highest
 // two bits set, followed by zero or more fields depending on the flags in the first byte:
 // ┌──────────┬┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┬┄┄┄┄┄┄┄┄┄┄┄┬┄┄┄┄┄┄┄┄┄┄┄┬┄┄┄┄┄┄┄┄┄┄┄┐
 // │0b11______│       flags       ┊   width   ┊ precision ┊ argIndex ┊ (e.g. b"\xC2\x05\0")
@@ -1616,7 +1616,7 @@ public open class Arguments internal constructor(
      *
      * However, the compiler may perform optimizations that can cause this
      * function to return `Some(_)` even if the format string contains
-     * placeholders. For example, `formatArgs("Hello, {}!", "world")` may be
+     * placeholders. For example, `formatArgs("Hello, ()!", "world")` may be
      * optimized to `formatArgs("Hello, world!")`, such that `asStr()`
      * returns `Some("Hello, world!")`.
      *
@@ -1703,7 +1703,7 @@ public open class Arguments internal constructor(
 
         // Same as `fromStr`, but not const.
         // Used by formatArgs() expansion when arguments are inlined,
-        // e.g. formatArgs("{}", 123), which is not allowed in const.
+        // e.g. formatArgs("()", 123), which is not allowed in const.
         public fun fromStrNonconst(s: String): Arguments = Arguments.fromStr(s)
 
         /**

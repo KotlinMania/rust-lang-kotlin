@@ -47,19 +47,19 @@ import io.github.kotlinmania.rustlang.core.slice.iter.Split as SliceSplit
 // struct $reverseIterator($internalIterator);
 //
 // impl Iterator for $forwardIterator
-// { // internal ends up calling Searcher.nextMatch() }
+// ( // internal ends up calling Searcher.nextMatch() )
 //
 // impl DoubleEndedIterator for $forwardIterator
 //       where P.Searcher: DoubleEndedSearcher
-// { // internal ends up calling Searcher.nextMatchBack() }
+// ( // internal ends up calling Searcher.nextMatchBack() )
 //
 // impl Iterator for $reverseIterator
 //       where P.Searcher: ReverseSearcher
-// { // internal ends up calling Searcher.nextMatchBack() }
+// ( // internal ends up calling Searcher.nextMatchBack() )
 //
 // impl DoubleEndedIterator for $reverseIterator
 //       where P.Searcher: DoubleEndedSearcher
-// { // internal ends up calling Searcher.nextMatch() }
+// ( // internal ends up calling Searcher.nextMatch() )
 //
 // The internal one is defined outside the macro, and has almost the same
 // semantic as a DoubleEndedIterator by delegating to `pattern.Searcher` and
@@ -341,7 +341,7 @@ public open class CharIndices(
  */
 public open class Bytes internal constructor(
     valueCtorArg: Copied<ArrayDeque<UByte>>,
-) : TrustedLen<Bytes>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
     public var value: Copied<ArrayDeque<UByte>> = valueCtorArg
         internal set
 
@@ -1022,7 +1022,7 @@ public open class RSplitN<P : Pattern<Any?>> internal constructor(
 public open class MatchIndicesInternal<P : Pattern<Any?>>(
     public var value: Searcher,
 ) {
-    public var field0: P.Searcher
+    public var field0: Searcher
         get() = value
         set(v) {
             value = v
@@ -1129,7 +1129,7 @@ public open class RMatchIndices<P : Pattern<Any?>> internal constructor(
 public open class MatchesInternal<P : Pattern<Any?>>(
     public var value: Searcher,
 ) {
-    public var field0: P.Searcher
+    public var field0: Searcher
         get() = value
         set(v) {
             value = v
@@ -1664,7 +1664,7 @@ public open class EscapeDebug internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
 
@@ -1709,7 +1709,7 @@ public open class EscapeDefault internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
 
@@ -1748,7 +1748,7 @@ public open class EscapeUnicode internal constructor(
 
     public open fun sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Any?> = this.inner.tryFold(init, fold)
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Char) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Char) -> Acc): Acc = this.inner.fold(init, fold)
 

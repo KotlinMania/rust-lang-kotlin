@@ -424,7 +424,7 @@ public fun hexDigit(c: UByte): UByte? =
     }
 
 // Adapted from https://github.com/ericseppanen/hexfloat2/blob/a5c27932f0ff/src/format.rs
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> fmtAnyHex(x: F, f: StringBuilder): Result<Unit, Error> {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmtAnyHex(x: F, f: StringBuilder): Result<Unit, Error> {
     if (x.isSignNegative()) {
         f.append("-")
     } else {
@@ -513,7 +513,7 @@ public open class Hex<T>(
     }
 }
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> F.fmt(f: StringBuilder): Result<Unit, Error> =
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> F.fmt(f: StringBuilder): Result<Unit, Error> =
     if (f.signMinus()) {
         this.toBits().fmt(f)
     } else {

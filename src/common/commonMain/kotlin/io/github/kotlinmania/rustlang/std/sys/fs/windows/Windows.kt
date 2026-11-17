@@ -1488,7 +1488,7 @@ public fun getPath(f: AsRawHandle): Result<PathBuf, Error> {
         when {
             matchVal is Result.Err && (matchVal as Result.Err).error.rawOsError() == invalidFunction -> {
                 val e = matchVal.error
-                (getPathFallback(h)?.let { Result.Ok(it) } ?: Result.Err(e))
+                (getPathFallback(h)?.let { Result.Ok<PathBuf, Error>(it) } ?: Result.Err<PathBuf, Error>(e))
             }
             else -> {
                 val result = matchVal
@@ -1513,7 +1513,7 @@ public fun getPathCanonical(handle: c.Handle): Result<PathBuf, Error> = fillUtf1
  *
  * It's implemented by first getting the NT path, which should always succeed.
  * Then we use [GetLogicalDrives] to get a bit array of win32 drive letters
- * from 'A' to 'Z'. If the corresponding bit is set then it means that drive exists.
+ * from `A` to `Z`. If the corresponding bit is set then it means that drive exists.
  * E.g. bit 2 being set means there's a `C:` drive.
  *
  * Then for each drive we use [QueryDosDeviceW] to see the NT path that drive resolves to.

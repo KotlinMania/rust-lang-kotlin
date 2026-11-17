@@ -345,9 +345,9 @@ public fun <T> swapIfLess(vBase: MutPtr, aPos: Int, bPos: Int, isLess: (T, T) ->
         // This is a branchless version of swap if.
         // The equivalent code with a branch would be:
         //
-        // if shouldSwap {
+        // if shouldSwap (
         // ptr.swap(vA, vB, 1);
-        // }
+        // )
         // The goal is to generate cmov instructions here.
         val vASwap = selectUnpredictable(shouldSwap, vB, vA)
         val vBSwap = selectUnpredictable(shouldSwap, vA, vB)
@@ -602,13 +602,13 @@ public fun <T> mergeUp(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLes
     // This is a branchless merge utility function.
     // The equivalent code with a branch would be:
     //
-    // if !isLess(&*rightSrc, &*leftSrc) {
+    // if !isLess(&*rightSrc, &*leftSrc) (
     // ptr.copyNonoverlapping(leftSrc, dst, 1);
     // leftSrc = leftSrc.add(1);
-    // } else {
+    // ) else (
     // ptr.copyNonoverlapping(rightSrc, dst, 1);
     // rightSrc = rightSrc.add(1);
-    // }
+    // )
     // dst = dst.add(1);
     // SAFETY: The caller must guarantee that `leftSrc`, `rightSrc` are valid
     // to read and `dst` is valid to write, while not aliasing.
@@ -635,13 +635,13 @@ public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isL
     // This is a branchless merge utility function.
     // The equivalent code with a branch would be:
     //
-    // if !isLess(&*rightSrc, &*leftSrc) {
+    // if !isLess(&*rightSrc, &*leftSrc) (
     // ptr.copyNonoverlapping(rightSrc, dst, 1);
     // rightSrc = rightSrc.wrappingSub(1);
-    // } else {
+    // ) else (
     // ptr.copyNonoverlapping(leftSrc, dst, 1);
     // leftSrc = leftSrc.wrappingSub(1);
-    // }
+    // )
     // dst = dst.sub(1);
     // SAFETY: The caller must guarantee that `leftSrc`, `rightSrc` are valid
     // to read and `dst` is valid to write, while not aliasing.
@@ -673,7 +673,7 @@ public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isL
  * Also `v.asPtr()` and `dst` must not alias and v.len() must be >= 2.
  *
  * Note that T must be Freeze, the comparison function is evaluated on outdated
- * temporary 'copies' that may not end up in the final array.
+ * temporary `copies` that may not end up in the final array.
  */
 public fun <T : FreezeMarker> bidirectionalMerge(v: List<T>, dst: MutPtr, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // It helps to visualize the merge:

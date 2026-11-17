@@ -1,6 +1,14 @@
 // port-lint: source sys/pal/unix/sync/condvar.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar
 
+import io.github.kotlinmania.libc.fuchsia.CLOCK_MONOTONIC
+import io.github.kotlinmania.libc.fuchsia.CLOCK_REALTIME
+import io.github.kotlinmania.libc.fuchsia.ClockidT
+import io.github.kotlinmania.libc.fuchsia.EINVAL
+import io.github.kotlinmania.libc.fuchsia.ETIMEDOUT
+import io.github.kotlinmania.libc.fuchsia.PTHREAD_COND_INITIALIZER
+import io.github.kotlinmania.libc.fuchsia.PthreadCondT
+import io.github.kotlinmania.libc.fuchsia.PthreadCondattrT
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.andThen
@@ -15,14 +23,6 @@ import io.github.kotlinmania.rustlang.libc.pthreadCondWait
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrDestroy
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrInit
 import io.github.kotlinmania.rustlang.libc.pthreadCondattrSetclock
-import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_MONOTONIC
-import io.github.kotlinmania.rustlang.libc.wasi.CLOCK_REALTIME
-import io.github.kotlinmania.rustlang.libc.wasi.ClockidT
-import io.github.kotlinmania.rustlang.libc.wasi.EINVAL
-import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
-import io.github.kotlinmania.rustlang.libc.wasi.PTHREAD_COND_INITIALIZER
-import io.github.kotlinmania.rustlang.libc.wasi.PthreadCondT
-import io.github.kotlinmania.rustlang.libc.wasi.PthreadCondattrT
 import io.github.kotlinmania.rustlang.std.sys.helpers.copaque.COpaque
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.AttrGuard
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.mutex.Mutex

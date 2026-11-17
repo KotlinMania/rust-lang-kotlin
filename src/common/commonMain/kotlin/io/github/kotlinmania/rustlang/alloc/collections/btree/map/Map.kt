@@ -892,7 +892,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                                 val v = matchVal1.second
                                 val v1 = conflict(k, v, firstOtherVal)
                                 // SAFETY: we remove the K, V out of the next entry,
-                                // apply 'f' to get a new (K, V), and insert it back
+                                // apply `f` to get a new (K, V), and insert it back
                                 // into the next entry that the cursor is pointing at
                                 selfCursor.insertAfterUnchecked(k, v1)
                             }
@@ -938,7 +938,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
                                         val v2 = matchVal3.second
                                         val v3 = conflict(k1, v2, otherVal)
                                         // SAFETY: we remove the K, V out of the next entry,
-                                        // apply 'f' to get a new (K, V), and insert it back
+                                        // apply `f` to get a new (K, V), and insert it back
                                         // into the next entry that the cursor is pointing at
                                         selfCursor.insertAfterUnchecked(k1, v3)
                                     }
@@ -1230,6 +1230,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
     }
 
     public open fun extendOne(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.insert(k, v)
     }
 
@@ -1238,6 +1239,7 @@ public open class BTreeMap<K, V, A : AllocatorClone>(
     }
 
     public open fun extendOneKV(tupleArg0: Pair<K, V>) {
+        val (k, v) = tupleArg0
         this.insert(k, v)
     }
 

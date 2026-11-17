@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class RangeIter<A>(
     public var value: Range<A>,
-) : TrustedLen<RangeIter<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     public var field0: Range<A>
         get() = value
         set(v) {
@@ -120,7 +120,7 @@ public fun <A : Step<A>> io.github.kotlinmania.rustlang.core.range.Range<A>.into
  */
 public open class RangeInclusiveIter<A>(
     public var value: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>,
-) : TrustedLen<RangeInclusiveIter<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     public var field0: io.github.kotlinmania.rustlang.core.range.legacy.RangeInclusive<A>
         get() = value
         set(v) {
@@ -202,7 +202,7 @@ public open class RangeFromIter<A>(
      * Only used when overflow checks are enabled.
      */
     public var exhausted: Boolean,
-) : TrustedLen<RangeFromIter<A>>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RangeFromIter.next()) {

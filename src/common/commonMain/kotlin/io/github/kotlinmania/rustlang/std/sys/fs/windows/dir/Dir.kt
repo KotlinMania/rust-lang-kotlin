@@ -110,7 +110,7 @@ public open class Dir internal constructor(
         val opts = OpenOptions.new()
         opts.accessMode(c.DELETE)
         val handle = when (val tryResult = this.openFileNative(from, opts, c.FILE_OPEN_REPARSE_POINT)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
-        val structSize = when (val tryResult = (to.size.checkedMul(2)?.let({ x -> x.checkedAdd(0) })?.let { Result.Ok(it) } ?: Result.Err(tooLongErr))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
+        val structSize = when (val tryResult = (to.size.checkedMul(2)?.let({ x -> x.checkedAdd(0) })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(tooLongErr))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val layout = when (val tryResult = Layout.fromSizeAlign(structSize, alignOf<c.FileRenameInformation>(typeLayoutT = UnresolvedTypeLayout<c.FileRenameInformation>())).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val structSize1 = when (val tryResult = UInt.tryFrom(structSize).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
         val toByteLen = when (val tryResult = UInt.tryFrom(to.size * 2).mapErr({ tooLongErr })) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Unit, Error>(tryResult.error) }
@@ -247,7 +247,7 @@ public fun ntCreateFile(opts: OpenOptions, objectAttributes: c.ObjectAttributes,
     val ioStatus = c.IoStatusBlock.PENDING
     // SYNCHRONIZE is included in FILE_GENERIC_READ, but not GENERIC_READ, so we add it manually
     val access = when (val tryResult = opts.getAccessMode()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) } or c.SYNCHRONIZE
-    // one of FILE_SYNCHRONOUS_IO_{,NON}ALERT is required for later operations to succeed.
+    // one of FILE_SYNCHRONOUS_IO_(,NON)ALERT is required for later operations to succeed.
     val options = createOptions or c.FILE_SYNCHRONOUS_IO_NONALERT
     val status = c.NtCreateFile(handle, access, objectAttributes, ioStatus, ConstPtr(0L), c.FILE_ATTRIBUTE_NORMAL, opts.shareMode, when (val tryResult = opts.getDisposition()) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<Handle, Error>(tryResult.error) }, options, ConstPtr(0L), 0)
     return if (c.ntSuccess(status)) {

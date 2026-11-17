@@ -2,6 +2,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
 // The host must provide the C companion wrapper exports in import module kmcore.

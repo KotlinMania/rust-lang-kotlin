@@ -396,7 +396,7 @@ public inline fun <reified T> requestRef(err: Error): T? = requestByTypeTag<Ref<
 /**
  * Request a specific value by tag from the `Error`.
  */
-public fun <I> requestByTypeTag(err: Error): Reified? where I : Type<Any?> {
+public fun <Reified, I> requestByTypeTag(err: Error): Reified? where I : Type<Reified> {
     val tagged = Tagged(tagId = RustTypeId.of<I>(), value = TaggedOption(null, fieldLayout = UnresolvedTypeLayout<Reified?>()))
     err.provide(tagged.asRequest())
     return tagged.value.first
@@ -618,7 +618,7 @@ public open class Request internal constructor(
     /**
      * Provides a value with the given `Type` tag.
      */
-    public open fun <I> provide(value: Reified): RustMutableReference<Request> where I : Type<Any?> {
+    public open fun <Reified, I> provide(value: Reified): RustMutableReference<Request> where I : Type<Reified> {
         run {
             val matchVal = this.value.downcastMut<I>()
             if (matchVal != null && matchVal is TaggedOption && matchVal.value == null) {
@@ -633,7 +633,7 @@ public open class Request internal constructor(
     /**
      * Provides a value with the given `Type` tag, using a closure to prevent unnecessary work.
      */
-    public open fun <I> provideWith(fulfil: () -> Reified): RustMutableReference<Request> where I : Type<Any?> {
+    public open fun <Reified, I> provideWith(fulfil: () -> Reified): RustMutableReference<Request> where I : Type<Reified> {
         run {
             val matchVal = this.value.downcastMut<I>()
             if (matchVal != null && matchVal is TaggedOption && matchVal.value == null) {
@@ -802,7 +802,7 @@ public open class Request internal constructor(
      */
     public open fun <T> wouldBeSatisfiedByRefOf(): Boolean = this.wouldBeSatisfiedBy<Ref<MaybeSizedValue<T>>>()
 
-    public open fun <I> wouldBeSatisfiedBy(): Boolean where I : Type<Any?> =
+    public open fun <Reified, I> wouldBeSatisfiedBy(): Boolean where I : Type<Reified> =
         run {
             val matchVal = this.value.downcast<I>()
             when {
@@ -886,11 +886,11 @@ public open class Ref<I>(
  * option. The type can be checked dynamically using `Tagged.tagId` and since this is statically
  * checked for the concrete type, there is some degree of type safety.
  */
-public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
+public open class TaggedOption<I : Type<Reified>, Reified> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout(),
 ) : Erased {
-    public var field0: I.Reified?
+    public var field0: Reified?
         get() = value
         set(v) {
             value = v
@@ -905,13 +905,13 @@ public open class TaggedOption<I : Type<Any?>, Reified> internal constructor(
     public fun pointerLayout(): TypeLayout<TaggedOption<I, Reified>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> TaggedOption<I, Reified>(ptr, layout) }, { it.value })
 
     public companion object {
-        public operator fun <I : Type<Any?>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
+        public operator fun <I : Type<Reified>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
 
-        public fun <I : Type<Any?>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
+        public fun <I : Type<Reified>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
     }
 }
 
-public fun <I : Type<Any?>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
+public fun <Reified, I : Type<Reified>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
     val erased = ((this as Any?) as Tagged<Erased>)
     // SAFETY: transmuting `Tagged<dynamic Erased<> + >` to `Request<>` is safe since
     // `Request` is repr(transparent).
@@ -934,7 +934,7 @@ public open class Tagged<E>(
  * Returns some reference to the dynamic value if it is tagged with `I`,
  * or `None` otherwise.
  */
-public fun <I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Type<Any?> =
+public fun <Reified, I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Type<Reified> =
     if (this.tagId == RustTypeId.of<I>()) {
         // SAFETY: Just checked whether we're pointing to an I.
         (UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).value
@@ -946,7 +946,7 @@ public fun <I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Ty
  * Returns some mutable reference to the dynamic value if it is tagged with `I`,
  * or `None` otherwise.
  */
-public fun <I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I, Reified>>? where I : Type<Any?> =
+public fun <Reified, I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I, Reified>>? where I : Type<Reified> =
     if (this.tagId == RustTypeId.of<I>()) {
         RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress)).rawAddress), UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).value
     } else {

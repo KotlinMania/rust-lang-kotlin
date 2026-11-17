@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.core.bool
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.result.Result
 
-// impl bool {}
+// impl bool ()
 
 /**
  * Returns `Some(t)` if the `Boolean` is [`trueVal`](../std/keyword.true.html),

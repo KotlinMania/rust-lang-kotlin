@@ -1,13 +1,13 @@
 // port-lint: source os/wasi/fs.rs
 package io.github.kotlinmania.rustlang.std.os.wasi.fs
 
+import io.github.kotlinmania.libc.fuchsia.S_IFBLK
+import io.github.kotlinmania.libc.fuchsia.S_IFCHR
+import io.github.kotlinmania.libc.fuchsia.S_IFSOCK
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFBLK
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFCHR
-import io.github.kotlinmania.rustlang.libc.wasi.S_IFSOCK
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.fs.DirEntry
 import io.github.kotlinmania.rustlang.std.fs.File

@@ -106,7 +106,7 @@ public interface Index<Idx, out Output> {
  * balance[Side.Left] = Weight.Kilogram(3.0)
  * ```
  */
-public interface IndexMut<Idx> : Index<Idx, Any?> {
+public interface IndexMut<Idx, Output> : Index<Idx, Output> {
     /**
      * Performs the mutable indexing (`container[index]`) operation.
      *

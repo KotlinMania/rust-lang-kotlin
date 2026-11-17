@@ -82,7 +82,7 @@ public class DebugStruct(
  * import std.cell.Cell
  * import std.thread
  *
- * // explicit `const {}` block enables more efficient initialization
+ * // explicit `const ()` block enables more efficient initialization
  * threadLocal(FOO, Cell, Cell, new, 1)
  * check(FOO.get() == 1)
  * FOO.set(2)
@@ -475,7 +475,7 @@ private const val THREAD_LOCAL_TEMPLATE_1: String = "thread.localImpl.threadLoca
  * Note that only shared references (`T`) to the inner data may be obtained, so a
  * type such as [Cell] or [RefCell] is typically used to allow mutating access.
  *
- * This macro supports a special `const {}` syntax that can be used
+ * This macro supports a special `const ()` syntax that can be used
  * when the initialization expression can be evaluated as a constant.
  * This can enable a more efficient thread local implementation that
  * can avoid lazy initialization. For types that do not

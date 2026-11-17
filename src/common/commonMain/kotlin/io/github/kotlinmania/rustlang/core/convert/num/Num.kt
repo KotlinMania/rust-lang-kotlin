@@ -71,7 +71,7 @@ public interface FloatToInt<Int> {
 // signed integer -> float
 // unsigned integer -> float
 // float -> float
-// Note(f16): adding the additional `From<{ float }>` impl to `Float` would break inference in cases
+// Note(f16): adding the additional `From<( float )>` impl to `Float` would break inference in cases
 // like `Float.from(1.0)`. The type checker has a custom workaround to keep that and similar code
 // compiling even with the second `From<16> for Float` instance. We keep this instance unstable for
 // now so that we can later remove the workaround.
@@ -2954,25 +2954,25 @@ public fun fromNonZeroLong(small: NonZero<Byte, NonZeroI8Inner>): NonZero<Long, 
 
 public fun fromNonZeroI128(small: NonZero<Byte, NonZeroI8Inner>): NonZero<I128, NonZeroI128Inner> = NonZero.newUnchecked<NonZeroI128Inner, I128>(From.from(small.get()))
 
-public fun tryFromNonZeroUByte(value: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = ((NonZero.new<NonZeroU8Inner, UByte>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUByte(value: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = ((NonZero.new<NonZeroU8Inner, UByte>(value))?.let { Result.Ok<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroUShort(value: UShort): Result<NonZero<UShort, NonZeroU16Inner>, TryFromIntError> = ((NonZero.new<NonZeroU16Inner, UShort>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUShort(value: UShort): Result<NonZero<UShort, NonZeroU16Inner>, TryFromIntError> = ((NonZero.new<NonZeroU16Inner, UShort>(value))?.let { Result.Ok<NonZero<UShort, NonZeroU16Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UShort, NonZeroU16Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroUInt(value: UInt): Result<NonZero<UInt, NonZeroU32Inner>, TryFromIntError> = ((NonZero.new<NonZeroU32Inner, UInt>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUInt(value: UInt): Result<NonZero<UInt, NonZeroU32Inner>, TryFromIntError> = ((NonZero.new<NonZeroU32Inner, UInt>(value))?.let { Result.Ok<NonZero<UInt, NonZeroU32Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UInt, NonZeroU32Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroULong(value: ULong): Result<NonZero<ULong, NonZeroU64Inner>, TryFromIntError> = ((NonZero.new<NonZeroU64Inner, ULong>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroULong(value: ULong): Result<NonZero<ULong, NonZeroU64Inner>, TryFromIntError> = ((NonZero.new<NonZeroU64Inner, ULong>(value))?.let { Result.Ok<NonZero<ULong, NonZeroU64Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<ULong, NonZeroU64Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroU128(value: U128): Result<NonZero<U128, NonZeroU128Inner>, TryFromIntError> = ((NonZero.new<NonZeroU128Inner, U128>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroU128(value: U128): Result<NonZero<U128, NonZeroU128Inner>, TryFromIntError> = ((NonZero.new<NonZeroU128Inner, U128>(value))?.let { Result.Ok<NonZero<U128, NonZeroU128Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<U128, NonZeroU128Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroInt(value: Int): Result<NonZero<Int, NonZeroUsizeInner>, TryFromIntError> = ((NonZero.new<NonZeroUsizeInner, Int>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroInt(value: Int): Result<NonZero<Int, NonZeroUsizeInner>, TryFromIntError> = ((NonZero.new<NonZeroUsizeInner, Int>(value))?.let { Result.Ok<NonZero<Int, NonZeroUsizeInner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Int, NonZeroUsizeInner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroByte(value: Byte): Result<NonZero<Byte, NonZeroI8Inner>, TryFromIntError> = ((NonZero.new<NonZeroI8Inner, Byte>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroByte(value: Byte): Result<NonZero<Byte, NonZeroI8Inner>, TryFromIntError> = ((NonZero.new<NonZeroI8Inner, Byte>(value))?.let { Result.Ok<NonZero<Byte, NonZeroI8Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Byte, NonZeroI8Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroShort(value: Short): Result<NonZero<Short, NonZeroI16Inner>, TryFromIntError> = ((NonZero.new<NonZeroI16Inner, Short>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroShort(value: Short): Result<NonZero<Short, NonZeroI16Inner>, TryFromIntError> = ((NonZero.new<NonZeroI16Inner, Short>(value))?.let { Result.Ok<NonZero<Short, NonZeroI16Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Short, NonZeroI16Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroLong(value: Long): Result<NonZero<Long, NonZeroI64Inner>, TryFromIntError> = ((NonZero.new<NonZeroI64Inner, Long>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroLong(value: Long): Result<NonZero<Long, NonZeroI64Inner>, TryFromIntError> = ((NonZero.new<NonZeroI64Inner, Long>(value))?.let { Result.Ok<NonZero<Long, NonZeroI64Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Long, NonZeroI64Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroI128(value: I128): Result<NonZero<I128, NonZeroI128Inner>, TryFromIntError> = ((NonZero.new<NonZeroI128Inner, I128>(value))?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroI128(value: I128): Result<NonZero<I128, NonZeroI128Inner>, TryFromIntError> = ((NonZero.new<NonZeroI128Inner, I128>(value))?.let { Result.Ok<NonZero<I128, NonZeroI128Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<I128, NonZeroI128Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
 public fun tryFromNonZeroUByte(value: NonZero<UShort, NonZeroU16Inner>): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> {
     return Result.Ok<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(NonZero.newUnchecked<NonZeroU8Inner, UByte>(when (val tryResult = UByte.tryFrom(value.get())) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(tryResult.error) }))

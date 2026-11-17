@@ -167,7 +167,7 @@ public open class TcpStream(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "TcpStream").field("fd", this.inner.asRawFd()).finish()
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<TcpStream, Error> = unsupported()
 
         public fun connectTimeout(arg0: SocketAddr, arg1: Duration): Result<TcpStream, Error> = unsupported()
 
@@ -223,7 +223,7 @@ public open class TcpListener(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "TcpListener").field("fd", this.inner.asRawFd()).finish()
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<TcpListener, Error> = unsupported()
 
         public fun fromInner(inner: Socket): TcpListener = TcpListener(inner = inner)
     }
@@ -298,7 +298,7 @@ public open class UdpSocket(
 
     public open fun send(arg0: List<UByte>): Result<Int, Error> = unsupported()
 
-    public open fun <Iter, A : ToSocketAddrs<Any?>> connect(arg0: A): Result<Unit, Error> = unsupported()
+    public open fun <Iter, A : ToSocketAddrs<Iter>> connect(arg0: A): Result<Unit, Error> = unsupported()
 
     public open fun socket(): Socket = this.inner
 
@@ -311,7 +311,7 @@ public open class UdpSocket(
     public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = DebugStruct(f, "UdpSocket").field("fd", this.inner.asRawFd()).finish()
 
     public companion object {
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(arg0: A): Result<UdpSocket, Error> = unsupported()
 
         public fun fromInner(inner: Socket): UdpSocket = UdpSocket(inner = inner)
     }

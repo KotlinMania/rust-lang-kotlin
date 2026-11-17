@@ -3063,7 +3063,7 @@ public fun Byte.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Byte.Companion.fromBeBytes(bytes: UByteArray): Byte = Byte.fromNeBytes(bytes)
@@ -3086,7 +3086,7 @@ public fun Byte.Companion.fromBeBytes(bytes: UByteArray): Byte = Byte.fromNeByte
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Byte.Companion.fromLeBytes(bytes: UByteArray): Byte = Byte.fromNeBytes(bytes)
@@ -3110,15 +3110,15 @@ public fun Byte.Companion.fromLeBytes(bytes: UByteArray): Byte = Byte.fromNeByte
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Byte.Companion.fromNeBytes(bytes: UByteArray): Byte = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Byte>(typeLayoutT = PrimitiveLayouts.I8)).toInt()), PrimitiveLayouts.I8)
@@ -6205,7 +6205,7 @@ public fun Short.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Short.Companion.fromBeBytes(bytes: UByteArray): Short = run { val swapVal0 = (Short.fromNeBytes(bytes)); (((((swapVal0).toInt() and 0xFF) shl 8) or (((swapVal0).toInt() ushr 8) and 0xFF)).toShort()) }
@@ -6223,7 +6223,7 @@ public fun Short.Companion.fromBeBytes(bytes: UByteArray): Short = run { val swa
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Short.Companion.fromLeBytes(bytes: UByteArray): Short = Short.fromNeBytes(bytes)
@@ -6242,15 +6242,15 @@ public fun Short.Companion.fromLeBytes(bytes: UByteArray): Short = Short.fromNeB
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Short.Companion.fromNeBytes(bytes: UByteArray): Short = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()), PrimitiveLayouts.I16)
@@ -9337,7 +9337,7 @@ public fun Int.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Int.Companion.fromBeBytes(bytes: UByteArray): Int = run { val swapVal0 = (Int.fromNeBytes(bytes)); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) }
@@ -9355,7 +9355,7 @@ public fun Int.Companion.fromBeBytes(bytes: UByteArray): Int = run { val swapVal
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Int.Companion.fromLeBytes(bytes: UByteArray): Int = Int.fromNeBytes(bytes)
@@ -9374,15 +9374,15 @@ public fun Int.Companion.fromLeBytes(bytes: UByteArray): Int = Int.fromNeBytes(b
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Int.Companion.fromNeBytes(bytes: UByteArray): Int = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()), PrimitiveLayouts.I32)
@@ -12469,7 +12469,7 @@ public fun Long.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Long.Companion.fromBeBytes(bytes: UByteArray): Long = run { val swapVal0 = (Long.fromNeBytes(bytes)); (((((swapVal0).toULong() shl 56)) or (((swapVal0).toULong() and 0x000000000000FF00uL) shl 40) or (((swapVal0).toULong() and 0x0000000000FF0000uL) shl 24) or (((swapVal0).toULong() and 0x00000000FF000000uL) shl 8) or ((((swapVal0).toULong() shr 8) and 0x00000000FF000000uL)) or ((((swapVal0).toULong() shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0).toULong() shr 40) and 0x000000000000FF00uL)) or ((swapVal0).toULong() shr 56)).toLong()) }
@@ -12487,7 +12487,7 @@ public fun Long.Companion.fromBeBytes(bytes: UByteArray): Long = run { val swapV
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Long.Companion.fromLeBytes(bytes: UByteArray): Long = Long.fromNeBytes(bytes)
@@ -12506,15 +12506,15 @@ public fun Long.Companion.fromLeBytes(bytes: UByteArray): Long = Long.fromNeByte
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun Long.Companion.fromNeBytes(bytes: UByteArray): Long = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<Long>(typeLayoutT = PrimitiveLayouts.I64)).toInt()), PrimitiveLayouts.I64)
@@ -15609,7 +15609,7 @@ public fun I128.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun I128.Companion.fromBeBytes(bytes: UByteArray): I128 = I128.fromBe(I128.fromNeBytes(bytes))
@@ -15627,7 +15627,7 @@ public fun I128.Companion.fromBeBytes(bytes: UByteArray): I128 = I128.fromBe(I12
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun I128.Companion.fromLeBytes(bytes: UByteArray): I128 = I128.fromLe(I128.fromNeBytes(bytes))
@@ -15646,15 +15646,15 @@ public fun I128.Companion.fromLeBytes(bytes: UByteArray): I128 = I128.fromLe(I12
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun I128.Companion.fromNeBytes(bytes: UByteArray): I128 = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<I128>(typeLayoutT = PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))).toInt()), PrimitiveLayouts.i128Layout(::I128, { it.high }, { it.low }))
@@ -16600,13 +16600,13 @@ public fun UByte.uncheckedFunnelShr(right: UByte, n: UInt): UByte {
  *
  * ```kotlin
  * val retval = 0;
- *         if (rhs >> i) & 1 != 0 {
+ *         if (rhs >> i) & 1 != 0 (
  *
  * retval ^ = lhs<<i;
- *         }
- *     }
+ *         )
+ *     )
  * retval
- * }
+ * )
  * ```
  *
  * The actual implementation is more efficient, and on some platforms lowers directly to a
@@ -19040,7 +19040,7 @@ public fun UByte.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UByte.Companion.fromBeBytes(bytes: UByteArray): UByte = UByte.fromNeBytes(bytes)
@@ -19062,7 +19062,7 @@ public fun UByte.Companion.fromBeBytes(bytes: UByteArray): UByte = UByte.fromNeB
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UByte.Companion.fromLeBytes(bytes: UByteArray): UByte = UByte.fromNeBytes(bytes)
@@ -19085,15 +19085,15 @@ public fun UByte.Companion.fromLeBytes(bytes: UByteArray): UByte = UByte.fromNeB
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UByte.Companion.fromNeBytes(bytes: UByteArray): UByte = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), PrimitiveLayouts.U8)
@@ -19358,7 +19358,7 @@ public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.C
 /**
  * Makes a copy of the value in its ASCII upper case equivalent.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To uppercase the value in-place, use [makeAsciiUppercase].
@@ -19380,7 +19380,7 @@ public fun UByte.toAsciiUppercase(): UByte {
 /**
  * Makes a copy of the value in its ASCII lower case equivalent.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To lowercase the value in-place, use [makeAsciiLowercase].
@@ -19422,7 +19422,7 @@ public fun UByte.eqIgnoreAsciiCase(other: UByte): Boolean = this.toAsciiLowercas
 /**
  * Converts this value to its ASCII upper case equivalent in-place.
  *
- * ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+ * ASCII letters `a` to `z` are mapped to `A` to `Z`,
  * but non-ASCII letters are unchanged.
  *
  * To return a new uppercased value without modifying the existing one, use
@@ -19445,7 +19445,7 @@ public fun UByte.makeAsciiUppercase() {
 /**
  * Converts this value to its ASCII lower case equivalent in-place.
  *
- * ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+ * ASCII letters `A` to `Z` are mapped to `a` to `z`,
  * but non-ASCII letters are unchanged.
  *
  * To return a new lowercased value without modifying the existing one, use
@@ -19468,8 +19468,8 @@ public fun UByte.makeAsciiLowercase() {
 /**
  * Checks if the value is an ASCII alphabetic character:
  *
- * - U+0041 'A' ..= U+005A 'Z', or
- * - U+0061 'a' ..= U+007A 'z'.
+ * - U+0041 `A` ..= U+005A `Z`, or
+ * - U+0061 `a` ..= U+007A `z`.
  *
  * # Examples
  *
@@ -19502,7 +19502,7 @@ public fun UByte.isAsciiAlphabetic(): Boolean =
 
 /**
  * Checks if the value is an ASCII uppercase character:
- * U+0041 'A' ..= U+005A 'Z'.
+ * U+0041 `A` ..= U+005A `Z`.
  *
  * # Examples
  *
@@ -19535,7 +19535,7 @@ public fun UByte.isAsciiUppercase(): Boolean =
 
 /**
  * Checks if the value is an ASCII lowercase character:
- * U+0061 'a' ..= U+007A 'z'.
+ * U+0061 `a` ..= U+007A `z`.
  *
  * # Examples
  *
@@ -19569,8 +19569,8 @@ public fun UByte.isAsciiLowercase(): Boolean =
 /**
  * Checks if the value is an ASCII alphanumeric character:
  *
- * - U+0041 'A' ..= U+005A 'Z', or
- * - U+0061 'a' ..= U+007A 'z', or
+ * - U+0041 `A` ..= U+005A `Z`, or
+ * - U+0061 `a` ..= U+007A `z`, or
  * - U+0030 '0' ..= U+0039 '9'.
  *
  * # Examples
@@ -19679,8 +19679,8 @@ public fun UByte.isAsciiOctdigit(): Boolean =
  * Checks if the value is an ASCII hexadecimal digit:
  *
  * - U+0030 '0' ..= U+0039 '9', or
- * - U+0041 'A' ..= U+0046 'F', or
- * - U+0061 'a' ..= U+0066 'f'.
+ * - U+0041 `A` ..= U+0046 `F`, or
+ * - U+0061 `a` ..= U+0066 `f`.
  *
  * # Examples
  *
@@ -19726,7 +19726,7 @@ public fun UByte.isAsciiHexdigit(): Boolean =
  * - U+0021 ..= U+002F `! " # $ % & ' ( ) * + , - . /`, or
  * - U+003A ..= U+0040 `:; < = > ? @`, or
  * - U+005B ..= U+0060  [ \ ] ^ _ `, or
- * - U+007B ..= U+007E `{ | } ~`
+ * - U+007B ..= U+007E `( | ) ~`
  *
  * # Examples
  *
@@ -20409,13 +20409,13 @@ public fun UShort.uncheckedFunnelShr(right: UShort, n: UInt): UShort {
  *
  * ```kotlin
  * val retval = 0;
- *         if (rhs >> i) & 1 != 0 {
+ *         if (rhs >> i) & 1 != 0 (
  *
  * retval ^ = lhs<<i;
- *         }
- *     }
+ *         )
+ *     )
  * retval
- * }
+ * )
  * ```
  *
  * The actual implementation is more efficient, and on some platforms lowers directly to a
@@ -22833,7 +22833,7 @@ public fun UShort.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UShort.Companion.fromBeBytes(bytes: UByteArray): UShort = run { val swapVal0 = (UShort.fromNeBytes(bytes)); (((((swapVal0).toUInt() and 0xFFu) shl 8) or (((swapVal0).toUInt() shr 8) and 0xFFu)).toUShort()) }
@@ -22851,7 +22851,7 @@ public fun UShort.Companion.fromBeBytes(bytes: UByteArray): UShort = run { val s
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UShort.Companion.fromLeBytes(bytes: UByteArray): UShort = UShort.fromNeBytes(bytes)
@@ -22870,15 +22870,15 @@ public fun UShort.Companion.fromLeBytes(bytes: UByteArray): UShort = UShort.from
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UShort.Companion.fromNeBytes(bytes: UByteArray): UShort = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), PrimitiveLayouts.U16)
@@ -23628,13 +23628,13 @@ public fun UInt.uncheckedFunnelShr(right: UInt, n: UInt): UInt {
  *
  * ```kotlin
  * val retval = 0;
- *         if (rhs >> i) & 1 != 0 {
+ *         if (rhs >> i) & 1 != 0 (
  *
  * retval ^ = lhs<<i;
- *         }
- *     }
+ *         )
+ *     )
  * retval
- * }
+ * )
  * ```
  *
  * The actual implementation is more efficient, and on some platforms lowers directly to a
@@ -26052,7 +26052,7 @@ public fun UInt.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UInt.Companion.fromBeBytes(bytes: UByteArray): UInt = run { val swapVal0 = (UInt.fromNeBytes(bytes)); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00u) shl 8) or (((swapVal0) shr 8) and 0x0000FF00u) or ((swapVal0) shr 24)) }
@@ -26070,7 +26070,7 @@ public fun UInt.Companion.fromBeBytes(bytes: UByteArray): UInt = run { val swapV
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UInt.Companion.fromLeBytes(bytes: UByteArray): UInt = UInt.fromNeBytes(bytes)
@@ -26089,15 +26089,15 @@ public fun UInt.Companion.fromLeBytes(bytes: UByteArray): UInt = UInt.fromNeByte
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun UInt.Companion.fromNeBytes(bytes: UByteArray): UInt = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()), PrimitiveLayouts.U32)
@@ -26822,13 +26822,13 @@ public fun ULong.uncheckedFunnelShr(right: ULong, n: UInt): ULong {
  *
  * ```kotlin
  * val retval = 0;
- *         if (rhs >> i) & 1 != 0 {
+ *         if (rhs >> i) & 1 != 0 (
  *
  * retval ^ = lhs<<i;
- *         }
- *     }
+ *         )
+ *     )
  * retval
- * }
+ * )
  * ```
  *
  * The actual implementation is more efficient, and on some platforms lowers directly to a
@@ -29246,7 +29246,7 @@ public fun ULong.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun ULong.Companion.fromBeBytes(bytes: UByteArray): ULong = run { val swapVal0 = (ULong.fromNeBytes(bytes)); ((((swapVal0) shl 56)) or (((swapVal0) and 0x000000000000FF00uL) shl 40) or (((swapVal0) and 0x0000000000FF0000uL) shl 24) or (((swapVal0) and 0x00000000FF000000uL) shl 8) or ((((swapVal0) shr 8) and 0x00000000FF000000uL)) or ((((swapVal0) shr 24) and 0x0000000000FF0000uL)) or ((((swapVal0) shr 40) and 0x000000000000FF00uL)) or ((swapVal0) shr 56)) }
@@ -29264,7 +29264,7 @@ public fun ULong.Companion.fromBeBytes(bytes: UByteArray): ULong = run { val swa
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun ULong.Companion.fromLeBytes(bytes: UByteArray): ULong = ULong.fromNeBytes(bytes)
@@ -29283,15 +29283,15 @@ public fun ULong.Companion.fromLeBytes(bytes: UByteArray): ULong = ULong.fromNeB
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun ULong.Companion.fromNeBytes(bytes: UByteArray): ULong = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<ULong>(typeLayoutT = PrimitiveLayouts.U64)).toInt()), PrimitiveLayouts.U64)
@@ -30016,13 +30016,13 @@ public fun U128.uncheckedFunnelShr(right: U128, n: UInt): U128 {
  *
  * ```kotlin
  * val retval = 0;
- *         if (rhs >> i) & 1 != 0 {
+ *         if (rhs >> i) & 1 != 0 (
  *
  * retval ^ = lhs<<i;
- *         }
- *     }
+ *         )
+ *     )
  * retval
- * }
+ * )
  * ```
  *
  * The actual implementation is more efficient, and on some platforms lowers directly to a
@@ -32440,7 +32440,7 @@ public fun U128.toNeBytes(): UByteArray = transmute(this)
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun U128.Companion.fromBeBytes(bytes: UByteArray): U128 = U128.fromBe(U128.fromNeBytes(bytes))
@@ -32458,7 +32458,7 @@ public fun U128.Companion.fromBeBytes(bytes: UByteArray): U128 = U128.fromBe(U12
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun U128.Companion.fromLeBytes(bytes: UByteArray): U128 = U128.fromLe(U128.fromNeBytes(bytes))
@@ -32477,15 +32477,15 @@ public fun U128.Companion.fromLeBytes(bytes: UByteArray): U128 = U128.fromLe(U12
  * # Examples
  *
  * ```kotlin
- * } else {
- * });
+ * ) else (
+ * ));
  * ```
  *
  * When starting from a slice rather than an array, fallible conversion APIs can be used:
  *
  * ```kotlin
  * * input = rest;
- * }
+ * )
  * ```
  */
 public fun U128.Companion.fromNeBytes(bytes: UByteArray): U128 = transmuteWithLayouts(bytes, PrimitiveArrayLayouts.uByteArray((sizeOf<U128>(typeLayoutT = PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))).toInt()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }))
@@ -32932,13 +32932,13 @@ public fun Int.uncheckedFunnelShr(right: Int, n: UInt): Int {
  *
  * ```kotlin
  * val retval = 0;
- *         if (rhs >> i) & 1 != 0 {
+ *         if (rhs >> i) & 1 != 0 (
  *
  * retval ^ = lhs<<i;
- *         }
- *     }
+ *         )
+ *     )
  * retval
- * }
+ * )
  * ```
  *
  * The actual implementation is more efficient, and on some platforms lowers directly to a

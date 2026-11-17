@@ -342,7 +342,7 @@ public open class Alignment internal constructor(
 
         public fun tryFrom(align: NonZero<Int, NonZeroUsizeInner>): Result<Alignment, TryFromIntError> = align.get().tryInto()
 
-        public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok(it) } ?: Result.Err(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
+        public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok<Alignment, TryFromIntError>(it) } ?: Result.Err<Alignment, TryFromIntError>(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
 
         /**
          * Returns [Alignment.Min], which is valid for any type.

@@ -26,7 +26,7 @@ public open class Fuse<I>(
     // we still have to be prepared for that state due to variance.
     // See rust-lang/rust#85863
     public var iter: I?,
-) : TrustedFused, TrustedLen<Fuse<I>>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Item>, SourceIter<Source>, Iterable<Item> {
+) : TrustedFused, TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, FuseImpl<I, Item>, SourceIter<Source>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Fuse.next()) {
@@ -75,7 +75,7 @@ public open class Fuse<I>(
             }
         }
 
-    public override fun <Acc, R> tryFold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> = this.tryFold(acc, fold)
+    public override fun <Residual, Acc, R> tryFold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.tryFold(acc, fold)
 
     public override fun <Acc> fold(acc: Acc, fold: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
@@ -109,7 +109,7 @@ public open class Fuse<I>(
 
     public override fun nthBack(n: Int): Item? = this.nthBack(n)
 
-    public override fun <Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> = this.tryRfold(acc, fold)
+    public override fun <Residual, Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.tryRfold(acc, fold)
 
     public open fun <Acc> rfold(acc: Acc, fold: (Acc, Item) -> Acc): Acc {
         var acc1 = acc
@@ -175,7 +175,7 @@ public open class Fuse<I>(
 
     public open fun nthI(n: Int): Item? = andThenOrClear(this.iter, { iter -> iter.nth(n) })
 
-    public open fun <Acc, R> tryFoldI(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryFoldI(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -209,7 +209,7 @@ public open class Fuse<I>(
 
     public open fun nthBackI(n: Int): Item? = andThenOrClear(this.iter, { iter -> iter.nthBack(n) })
 
-    public open fun <Acc, R> tryRfoldI(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryRfoldI(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -251,7 +251,7 @@ public open class Fuse<I>(
         return (this.iter ?: return null).nth(n)
     }
 
-    public open fun <Acc, R> tryFoldII(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryFoldII(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -290,7 +290,7 @@ public open class Fuse<I>(
         return (this.iter ?: return null).nthBack(n)
     }
 
-    public open fun <Acc, R> tryRfoldII(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryRfoldII(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
         var acc1 = acc
         when (val matchVal = this.iter) {
             null -> {}
@@ -369,7 +369,7 @@ public interface FuseImpl<I, Item> {
 
     public fun nth(n: Int): Item?
 
-    public fun <Acc, R> tryFold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?>
+    public fun <Residual, Acc, R> tryFold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
     public fun find(predicate: (Item) -> Boolean): Item?
 
@@ -379,7 +379,7 @@ public interface FuseImpl<I, Item> {
 
     public fun nthBack(n: Int): Item?
 
-    public fun <Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Any?>
+    public fun <Residual, Acc, R> tryRfold(acc: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual>
 
     public fun rfind(predicate: (Item) -> Boolean): Item?
 }

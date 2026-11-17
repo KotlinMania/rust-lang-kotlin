@@ -909,7 +909,7 @@ public fun laneIndices(n: Int): Simd<Int> {
     return Simd.fromArray(index)
 }
 
-public fun <M> maskUpTo(len: Int, n: Int, maxUnsignedMFn: () -> ULong): Mask<M> where M : MaskElement<M> {
+public fun <Mask, Unsigned, M> maskUpTo(len: Int, n: Int, maxUnsignedMFn: () -> ULong): Mask<M> where M : MaskElement<M, Mask, Unsigned> {
     val index = laneIndices(n)
     val maxValue: ULong = maxUnsignedMFn()
     if (n < UByte.MAX_VALUE.toInt() && (maxValue.toUByte()).toULong() == maxValue) {

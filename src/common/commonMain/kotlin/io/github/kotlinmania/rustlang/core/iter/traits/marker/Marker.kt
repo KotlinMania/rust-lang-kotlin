@@ -30,7 +30,7 @@ public interface TrustedFused
  * on the iterator. If the iterator is already fused, the additional [Fuse]
  * wrapper will be a no-op with no performance penalty.
  */
-public interface FusedIterator<T>
+public interface FusedIterator
 
 /**
  * An iterator that reports an accurate length using sizeHint.
@@ -61,7 +61,7 @@ public interface FusedIterator<T>
  * This trait must only be implemented when the contract is upheld. Consumers
  * of this trait must inspect [Iterator.sizeHint]’s upper bound.
  */
-public interface TrustedLen<T>
+public interface TrustedLen
 
 /**
  * An iterator that when yielding an item will have taken at least one element

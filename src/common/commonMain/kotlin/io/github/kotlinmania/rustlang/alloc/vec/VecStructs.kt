@@ -51,7 +51,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 
 /**
- * A contiguous growable array type, written as `List<T>`, short for 'vector'.
+ * A contiguous growable array type, written as `List<T>`, short for `vector`.
  *
  * # Examples
  *
@@ -184,7 +184,7 @@ import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
  * the general case, and can be correctly manipulated in primitive ways
  * by unchecked code.
  *
- * A vector containing the elements `'a'` and `'b'` with capacity 4 can be
+ * A vector containing the elements ``a`` and ``b`` with capacity 4 can be
  * visualized as below. The top part is the `List` struct, it contains a
  * pointer to the head of the allocation in the heap, length and capacity.
  * The bottom part is the allocation on the heap, a contiguous memory block.
@@ -2121,7 +2121,7 @@ public open class Vec<T, A : Allocator> internal constructor(
 
     /**
      * Returns the number of elements in the vector, also referred to
-     * as its 'length'.
+     * as its `length`.
      *
      * # Examples
      *
@@ -2822,9 +2822,9 @@ public open class Vec<T, A : Allocator> internal constructor(
         //
         // This function should be the moral equivalent of:
         //
-        // for item in iterator {
+        // for item in iterator (
         // self.push(item);
-        // }
+        // )
         while (true) {
             val matchVal = iterator.next()
             if (matchVal == null) break

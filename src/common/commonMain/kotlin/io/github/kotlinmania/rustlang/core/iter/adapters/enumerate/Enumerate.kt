@@ -31,7 +31,7 @@ public typealias Source<I> = I.Source
 public open class Enumerate<I>(
     public var iter: I,
     public var count: Int,
-) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen<Enumerate<I>>, SourceIter<Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
+) : TrustedRandomAccess, TrustedRandomAccessNoCoerce, TrustedFused, TrustedLen, SourceIter<Source>, InPlaceIterable, Iterable<Pair<Int, Item>> {
     override fun iterator(): Iterator<Pair<Int, Item>> = object : AbstractIterator<Pair<Int, Item>>() {
         override fun computeNext() {
             when (val v = this@Enumerate.next()) {
@@ -100,7 +100,7 @@ public open class Enumerate<I>(
 
     public override fun count(): Int = this.iter.count()
 
-    public override fun <Acc, R> tryFold(init: Acc, fold: (Acc, Pair<Int, Item>) -> R): R where R : Try<R, Acc, Any?> {
+    public override fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Pair<Int, Item>) -> R): R where R : Try<R, Acc, Residual> {
         fun <T, Acc, R> enumerate(count: RustMutableReference<Int>, fold1: (Acc, Pair<Int, T>) -> R): (Acc, T) -> R {
             val count1 = count
             return { acc, item ->
@@ -160,7 +160,7 @@ public open class Enumerate<I>(
         return Pair(this.count + len, a)
     }
 
-    public open fun <Acc, R> tryRfold(init: Acc, fold: (Acc, Pair<Int, Item>) -> R): R where R : Try<R, Acc, Any?> {
+    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Pair<Int, Item>) -> R): R where R : Try<R, Acc, Residual> {
         // Can safely add and subtract the count, as `ExactSizeIterator` promises
         // that the number of elements fits into a `Int`.
         fun <T, Acc, R> enumerate(count: Int, fold1: (Acc, Pair<Int, T>) -> R): (Acc, T) -> R {

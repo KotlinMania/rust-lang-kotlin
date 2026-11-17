@@ -616,7 +616,7 @@ public sealed class AsciiChar(
     /**
      * Makes a copy of the value in its upper case equivalent.
      *
-     * Letters 'a' to 'z' are mapped to 'A' to 'Z'.
+     * Letters `a` to `z` are mapped to `A` to `Z`.
      *
      * To uppercase the value in-place, use [makeUppercase].
      *
@@ -643,7 +643,7 @@ public sealed class AsciiChar(
     /**
      * Makes a copy of the value in its lower case equivalent.
      *
-     * Letters 'A' to 'Z' are mapped to 'a' to 'z'.
+     * Letters `A` to `Z` are mapped to `a` to `z`.
      *
      * To lowercase the value in-place, use [makeLowercase].
      *
@@ -694,7 +694,7 @@ public sealed class AsciiChar(
     /**
      * Converts this value to its upper case equivalent in-place.
      *
-     * Letters 'a' to 'z' are mapped to 'A' to 'Z'.
+     * Letters `a` to `z` are mapped to `A` to `Z`.
      *
      * To return a new uppercased value without modifying the existing one, use
      * [toUppercase].
@@ -721,7 +721,7 @@ public sealed class AsciiChar(
     /**
      * Converts this value to its lower case equivalent in-place.
      *
-     * Letters 'A' to 'Z' are mapped to 'a' to 'z'.
+     * Letters `A` to `Z` are mapped to `a` to `z`.
      *
      * To return a new lowercased value without modifying the existing one, use
      * [toLowercase].
@@ -748,8 +748,8 @@ public sealed class AsciiChar(
     /**
      * Checks if the value is an alphabetic character:
      *
-     * - 0x41 'A' ..= 0x5A 'Z', or
-     * - 0x61 'a' ..= 0x7A 'z'.
+     * - 0x41 `A` ..= 0x5A `Z`, or
+     * - 0x61 `a` ..= 0x7A `z`.
      *
      * # Examples
      *
@@ -783,7 +783,7 @@ public sealed class AsciiChar(
 
     /**
      * Checks if the value is an uppercase character:
-     * 0x41 'A' ..= 0x5A 'Z'.
+     * 0x41 `A` ..= 0x5A `Z`.
      *
      * # Examples
      *
@@ -817,7 +817,7 @@ public sealed class AsciiChar(
 
     /**
      * Checks if the value is a lowercase character:
-     * 0x61 'a' ..= 0x7A 'z'.
+     * 0x61 `a` ..= 0x7A `z`.
      *
      * # Examples
      *
@@ -852,8 +852,8 @@ public sealed class AsciiChar(
     /**
      * Checks if the value is an alphanumeric character:
      *
-     * - 0x41 'A' ..= 0x5A 'Z', or
-     * - 0x61 'a' ..= 0x7A 'z', or
+     * - 0x41 `A` ..= 0x5A `Z`, or
+     * - 0x61 `a` ..= 0x7A `z`, or
      * - 0x30 '0' ..= 0x39 '9'.
      *
      * # Examples
@@ -960,8 +960,8 @@ public sealed class AsciiChar(
      * Checks if the value is a hexadecimal digit:
      *
      * - 0x30 '0' ..= 0x39 '9', or
-     * - 0x41 'A' ..= 0x46 'F', or
-     * - 0x61 'a' ..= 0x66 'f'.
+     * - 0x41 `A` ..= 0x46 `F`, or
+     * - 0x61 `a` ..= 0x66 `f`.
      *
      * # Examples
      *
@@ -1000,7 +1000,7 @@ public sealed class AsciiChar(
      * - 0x21 ..= 0x2F `! " # $ % & ' ( ) * + , - . /`, or
      * - 0x3A ..= 0x40 `:; < = > ? @`, or
      * - 0x5B ..= 0x60  [ \ ] ^ _ `, or
-     * - 0x7B ..= 0x7E `{ | } ~`
+     * - 0x7B ..= 0x7E `( | ) ~`
      *
      * # Examples
      *

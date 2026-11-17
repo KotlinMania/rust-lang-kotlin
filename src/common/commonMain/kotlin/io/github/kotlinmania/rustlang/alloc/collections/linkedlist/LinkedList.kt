@@ -2247,7 +2247,7 @@ public fun <T, I : Iterable<T>> fromIteratorFromIterLinkedListT(iter: I): Linked
     return list
 }
 
-public fun <Item, IntoIter, I, A : Allocator> LinkedList<Item, A>.specExtend(iter: I) {
+public fun <I, A : Allocator> LinkedList<Item, A>.specExtend(iter: I) {
     iter.iterator().forEach({ elt -> this.addLast(elt) })
 }
 

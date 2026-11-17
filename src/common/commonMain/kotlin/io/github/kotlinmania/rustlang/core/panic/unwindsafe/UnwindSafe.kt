@@ -148,9 +148,9 @@ public interface RefUnwindSafe
  * var variable = 4
  * // This code will not compile because the closure captures `variable`
  * // which is not considered unwind safe by default.
- * // panic.catchUnwind(|| {
+ * // panic.catchUnwind(|| (
  * // variable += 3;
- * // });
+ * // ));
  * // This, however, will compile due to the `AssertUnwindSafe` wrapper
  * val result = panic.catchUnwind(AssertUnwindSafe({
  *     variable += 3
@@ -244,15 +244,15 @@ public open class AssertUnwindSafe<T>(
 
 public fun <R> AssertUnwindSafe<F>.callOnce(args: Unit): R = (this.value)()
 
-public fun <Output, F : Future<Any?>> AssertUnwindSafe<F>.poll(cx: Context, pollFFn: (F, Context) -> Poll<Output>): Poll<Output> {
+public fun <Output, F : Future<Output>> AssertUnwindSafe<F>.poll(cx: Context, pollFFn: (F, Context) -> Poll<Output>): Poll<Output> {
     // SAFETY: pin projection. AssertUnwindSafe follows structural pinning.
     val pinnedField = Pin.mapUncheckedMut(this, { x -> x.value })
     return pollFFn(pinnedField, cx)
 }
 
-public fun <Item, S : AsyncIterator<Any?>> AssertUnwindSafe<S>.pollNext(cx: Context): Poll<Item?> {
+public fun <Item, S : AsyncIterator<Item>> AssertUnwindSafe<S>.pollNext(cx: Context): Poll<Item?> {
     // SAFETY: pin projection. AssertUnwindSafe follows structural pinning.
     return this.mapUncheckedMut({ x -> x.value }).pollNext(cx)
 }
 
-public fun <Item, S : AsyncIterator<Any?>> AssertUnwindSafe<S>.sizeHint(): Pair<Int, Int?> = this.value.sizeHint()
+public fun <Item, S : AsyncIterator<Item>> AssertUnwindSafe<S>.sizeHint(): Pair<Int, Int?> = this.value.sizeHint()

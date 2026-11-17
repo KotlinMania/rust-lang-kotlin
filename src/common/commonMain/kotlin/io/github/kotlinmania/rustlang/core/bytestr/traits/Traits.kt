@@ -97,9 +97,9 @@ public fun UByteArray.eq(other: ByteStr, n: Int): Boolean {
     return thisRef.eq(other.asBytes())
 }
 
-public fun <I> ByteStr.index(index: I): Output where I : SliceIndex<ByteStr, Any?> = index.index(this)
+public fun <Output, I> ByteStr.index(index: I): Output where I : SliceIndex<ByteStr, Output> = index.index(this)
 
-public fun <I> ByteStr.indexMut(index: I): Output where I : SliceIndex<ByteStr, Any?> = index.indexMut(this)
+public fun <Output, I> ByteStr.indexMut(index: I): Output where I : SliceIndex<ByteStr, Output> = index.indexMut(this)
 
 public fun RangeFull.get(slice: ByteStr): ByteStr? = slice
 

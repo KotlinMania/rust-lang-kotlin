@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.corearch.aarch64.neon
 
+import io.github.kotlinmania.rustlang.core.intrinsics.*
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts

@@ -2,15 +2,15 @@
 
 package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
-import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.cinterop.stdSysIoErrorUnixErrnoLocation
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.cinterop.stdSysIoErrorUnixGetLIBCERRNO
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.cinterop.stdSysIoErrorUnixSetLIBCERRNO
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toLong
 
-public actual var LIBC_ERRNO: io.github.kotlinmania.rustlang.libc.CInt
+public actual var LIBC_ERRNO: io.github.kotlinmania.libc.CInt
     get() = stdSysIoErrorUnixGetLIBCERRNO()
     set(value) {
         stdSysIoErrorUnixSetLIBCERRNO(value)

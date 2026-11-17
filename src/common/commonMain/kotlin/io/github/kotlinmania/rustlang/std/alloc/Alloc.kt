@@ -183,7 +183,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         } else {
                             imp.alloc(layout)
                         }
-                    val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                    val ptr = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                     Result.Ok<NonNull, AllocError>(ptr.castSlice(size))
                 }
             }
@@ -207,7 +207,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         // `realloc` probably checks for `newSize >= oldLayout.size()` or something similar.
                         assertUnchecked(newSize >= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         if (zeroed) {
                             rawPtr.add(oldSize).writeBytes(0, newSize - oldSize)
                         }
@@ -273,7 +273,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                         // `realloc` probably checks for `newSize <= oldLayout.size()` or something similar.
                         assertUnchecked(newSize <= oldLayout.size())
                         val rawPtr = imp.realloc(ptr.asPtr(), oldLayout, newSize)
-                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok(it) } ?: Result.Err(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
+                        val ptr1 = when (val tryResult = (NonNull.new(rawPtr)?.let { Result.Ok<NonNull, AllocError>(it) } ?: Result.Err<NonNull, AllocError>(AllocError()))) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<NonNull, AllocError>(tryResult.error) }
                         Result.Ok<NonNull, AllocError>(ptr1.castSlice(newSize))
                     }
                 }

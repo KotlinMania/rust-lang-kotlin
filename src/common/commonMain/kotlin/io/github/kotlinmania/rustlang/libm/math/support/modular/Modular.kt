@@ -18,7 +18,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
  * Compute the remainder `(x<<e) % y` with unbounded integers.
  * Requires `x<2y` and `y.leadingZeros() >= 2`
  */
-public fun <D, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, Any?>, U : Int<U> {
+public fun <D, OtherSign, Unsigned, H, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
     var e1 = e
     var y1 = y
     check((kmCompareValues(y1, U.MAX shr 2) <= 0))
@@ -68,7 +68,7 @@ public fun <D, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, A
  * The value of `n` is fixed for a given `Reducer`,
  * but the value of `x` is modified by the methods.
  */
-public open class Reducer<U : HInt<U, Any?>>(
+public open class Reducer<U : HInt<U, Any?, Any?, Any?>>(
     // m = 2n
     public var m: U,
     // q = (RR/2) / m
@@ -189,7 +189,7 @@ public open class Reducer<U : HInt<U, Any?>>(
          *
          * Requires `R / 8<n<R / 4` and `x<2n`.
          */
-        public fun <D, U : HInt<U, Any?>> new(x: U, n: U): Reducer<U> where U : HInt<U, Any?>, U : Int<U> {
+        public fun <D, OtherSign, Unsigned, H, U : HInt<U, D, OtherSign, Unsigned>> new(x: U, n: U): Reducer<U> where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
             val v1 = U.ONE
             check(n > (v1 shl (U.BITS - 3).toInt()))
             check(n < (v1 shl (U.BITS - 2).toInt()))

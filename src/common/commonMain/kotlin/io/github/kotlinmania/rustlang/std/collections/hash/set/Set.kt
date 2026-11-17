@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.chain.Chain
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.collections.hash.map.mapTryReserveError
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
-import io.github.kotlinmania.rustlang.hashbrown.HashSet as Base
+import io.github.kotlinmania.rustlang.hashbrown.hashSet as base
 
 public class DebugStruct(
     private val out: StringBuilder,
@@ -148,9 +148,9 @@ public class DebugTuple(
  * ```
  */
 public open class HashSet<T, S, A : Allocator> internal constructor(
-    baseCtorArg: HashSet<T, S, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.HashSet<T, S, A>,
 ) : Iterable<T> {
-    public var base: HashSet<T, S, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.HashSet<T, S, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<T> = this.intoIter().iterator()
@@ -722,7 +722,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
      * check(set.size == 1)
      * ```
      */
-    public open fun insert(value: T): Boolean = this.base.add(value)
+    public open fun insert(value: T): Boolean = this.base.insert(value)
 
     /**
      * Adds a value to the set, replacing the existing value, if any, that is equal to the given
@@ -776,7 +776,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
      */
     public open fun <Q> take(value: Q): T? = this.base.take(value)
 
-    public open fun clone(): HashSet<T, S, A> = HashSet(base = this.base.toMutableSet())
+    public open fun clone(): HashSet<T, S, A> = HashSet(base = this.base.clone())
 
     /**
      * Overwrites the contents of `self` with a clone of the contents of `source`.
@@ -802,7 +802,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOne(item: T) {
-        this.base.add(item)
+        this.base.insert(item)
     }
 
     public open fun extendReserve(additional: Int) {
@@ -814,7 +814,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
     }
 
     public open fun extendOneT(item: T) {
-        this.base.add(item)
+        this.base.insert(item)
     }
 
     public open fun extendReserveT(additional: Int) {
@@ -846,7 +846,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            base: HashSet<T, S, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.HashSet<T, S, A>,
         ): HashSet<T, S, A> = HashSet<T, S, A>(
             baseCtorArg = base,
         )
@@ -875,7 +875,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
          * val set: MutableSet<Int> = HashSet.withHasherIn(s, Global)
          * ```
          */
-        public fun <T, S, A : Allocator> withHasherIn(hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = Base.HashSet.withHasherIn(hasher, alloc))
+        public fun <T, S, A : Allocator> withHasherIn(hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = io.github.kotlinmania.rustlang.hashbrown.HashSet.withHasherIn(hasher, alloc))
 
         /**
          * Creates an empty `HashSet` with at least the specified capacity, using
@@ -903,7 +903,7 @@ public open class HashSet<T, S, A : Allocator> internal constructor(
          * val set: MutableSet<Int> = HashSet.withCapacityAndHasherIn(10, s, Global)
          * ```
          */
-        public fun <T, S, A : Allocator> withCapacityAndHasherIn(capacity: Int, hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = Base.HashSet.withCapacityAndHasherIn(capacity, hasher, alloc))
+        public fun <T, S, A : Allocator> withCapacityAndHasherIn(capacity: Int, hasher: S, alloc: A): HashSet<T, S, A> = HashSet(base = io.github.kotlinmania.rustlang.hashbrown.HashSet.withCapacityAndHasherIn(capacity, hasher, alloc))
     }
 }
 
@@ -993,7 +993,7 @@ public fun <T, A : Allocator> HashSet.Companion.withCapacityIn(capacity: Int, al
  * set.insert(2)
  * ```
  */
-public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S, Global> = HashSet(base = Base.HashSet.withHasher(hasher))
+public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S, Global> = HashSet(base = io.github.kotlinmania.rustlang.hashbrown.HashSet.withHasher(hasher))
 
 /**
  * Creates an empty `HashSet` with at least the specified capacity, using
@@ -1021,15 +1021,15 @@ public fun <T, S> HashSet.Companion.withHasher(hasher: S): HashSet<T, S, Global>
  * set.insert(1)
  * ```
  */
-public fun <T, S> HashSet.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashSet<T, S, Global> = HashSet(base = Base.HashSet.withCapacityAndHasher(capacity, hasher))
+public fun <T, S> HashSet.Companion.withCapacityAndHasher(capacity: Int, hasher: S): HashSet<T, S, Global> = HashSet(base = io.github.kotlinmania.rustlang.hashbrown.HashSet.withCapacityAndHasher(capacity, hasher))
 
-public fun <K, V, A : Allocator> mapEntry(raw: Entry<K, V, A>): Entry<K, V, A> =
+public fun <K, V, A : Allocator> mapEntry(raw: io.github.kotlinmania.rustlang.hashbrown.Entry<K, V, A>): Entry<K, V, A> =
     when (raw) {
-        is Entry.Occupied -> {
+        is io.github.kotlinmania.rustlang.hashbrown.Entry.Occupied -> {
             val (base) = raw
             Entry.Occupied(OccupiedEntry(base = base))
         }
-        is Entry.Vacant -> {
+        is io.github.kotlinmania.rustlang.hashbrown.Entry.Vacant -> {
             val (base1) = raw
             Entry.Vacant(VacantEntry(base = base1))
         }
@@ -1073,7 +1073,7 @@ public fun <T> fromHashSetTRandomState(arr: List<T>, n: Int): HashSet<T, RandomS
 /**
  * Creates an empty `HashSet<T, S>` with the `Default` value for the hasher.
  */
-public fun <T, S> defaultHashSetTS(defaultSFn: () -> S): HashSet<T, S, Global> = HashSet(base = Base.HashSet.withHasher(defaultSFn()))
+public fun <T, S> defaultHashSetTS(defaultSFn: () -> S): HashSet<T, S, Global> = HashSet(base = io.github.kotlinmania.rustlang.hashbrown.HashSet.withHasher(defaultSFn()))
 
 /**
  * Returns the union of `self` and `rhs` as a new `HashSet<T, S>`.
@@ -1171,7 +1171,7 @@ public fun <T, S> HashSet<T, S, Global>.sub(rhs: HashSet<T, S, Global>): HashSet
  * ```
  */
 public open class Iter<K>(
-    public var base: Iter<K>,
+    public var base: io.github.kotlinmania.rustlang.hashbrown.Iter<K>,
 ) : Iterable<K> {
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
@@ -1217,9 +1217,9 @@ public open class Iter<K>(
  * ```
  */
 public open class IntoIter<K, A : Allocator> internal constructor(
-    baseCtorArg: IntoIter<K, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.IntoIter<K, A>,
 ) : Iterable<K> {
-    public var base: IntoIter<K, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.IntoIter<K, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1245,7 +1245,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            base: IntoIter<K, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.IntoIter<K, A>,
         ): IntoIter<K, A> = IntoIter<K, A>(
             baseCtorArg = base,
         )
@@ -1270,9 +1270,9 @@ public fun <K> defaultIntoIterK(): IntoIter<K, Global> = IntoIter(base = Default
  * ```
  */
 public open class Drain<K, A : Allocator> internal constructor(
-    baseCtorArg: Drain<K, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.Drain<K, A>,
 ) : Iterable<K> {
-    public var base: Drain<K, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.Drain<K, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1296,7 +1296,7 @@ public open class Drain<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            base: Drain<K, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.Drain<K, A>,
         ): Drain<K, A> = Drain<K, A>(
             baseCtorArg = base,
         )
@@ -1318,9 +1318,9 @@ public open class Drain<K, A : Allocator> internal constructor(
  * ```
  */
 public open class ExtractIf<K, F, A : Allocator> internal constructor(
-    baseCtorArg: ExtractIf<K, F, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, F, A>,
 ) : Iterable<K> {
-    public var base: ExtractIf<K, F, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, F, A> = baseCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1340,7 +1340,7 @@ public open class ExtractIf<K, F, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, F, A : Allocator> invoke(
-            base: ExtractIf<K, F, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.ExtractIf<K, F, A>,
         ): ExtractIf<K, F, A> = ExtractIf<K, F, A>(
             baseCtorArg = base,
         )
@@ -1846,9 +1846,9 @@ public sealed class Entry<T, S, A : Allocator> {
  * ```
  */
 public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
-    baseCtorArg: OccupiedEntry<T, S, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.OccupiedEntry<T, S, A>,
 ) {
-    public var base: OccupiedEntry<T, S, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.OccupiedEntry<T, S, A> = baseCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish()
@@ -1910,7 +1910,7 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            base: OccupiedEntry<T, S, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.OccupiedEntry<T, S, A>,
         ): OccupiedEntry<T, S, A> = OccupiedEntry<T, S, A>(
             baseCtorArg = base,
         )
@@ -1953,9 +1953,9 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
  * ```
  */
 public open class VacantEntry<T, S, A : Allocator> internal constructor(
-    baseCtorArg: VacantEntry<T, S, A>,
+    baseCtorArg: io.github.kotlinmania.rustlang.hashbrown.VacantEntry<T, S, A>,
 ) {
-    public var base: VacantEntry<T, S, A> = baseCtorArg
+    public var base: io.github.kotlinmania.rustlang.hashbrown.VacantEntry<T, S, A> = baseCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = DebugTuple(f, "VacantEntry").field(this.get()).finish()
@@ -2029,7 +2029,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            base: VacantEntry<T, S, A>,
+            base: io.github.kotlinmania.rustlang.hashbrown.VacantEntry<T, S, A>,
         ): VacantEntry<T, S, A> = VacantEntry<T, S, A>(
             baseCtorArg = base,
         )

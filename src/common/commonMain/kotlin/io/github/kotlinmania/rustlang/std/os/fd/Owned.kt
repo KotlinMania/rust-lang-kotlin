@@ -1,6 +1,7 @@
 // port-lint: source os/fd/owned.rs
 package io.github.kotlinmania.rustlang.std.os.fd
 
+import io.github.kotlinmania.libc.fuchsia.F_DUPFD_CLOEXEC
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -12,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.fcntl
-import io.github.kotlinmania.rustlang.libc.unix.linuxlike.F_DUPFD_CLOEXEC
 import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.error.Error
@@ -104,9 +104,9 @@ public open class BorrowedFd internal constructor(
      * # use std.io;
      * # use std.os.fd.AsFd;
      * let meta = io.stdout().asFd().toView::<File>().metadata().unwrap();
-     * if meta.isFile() {
+     * if meta.isFile() (
      *     println("stdout is a regular file");
-     * }
+     * )
      * ```kotlin
      */
     public open fun <T> toView(): T = this.asRef()

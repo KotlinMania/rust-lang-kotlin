@@ -42,7 +42,7 @@ public open class TermInfo(
         public fun fromEnv(): Result<TermInfo, Error> {
             val term =
                 run {
-                    val matchVal = Env.variable("TERM")
+                    val matchVal = variable("TERM")
                     when (matchVal) { is Result.Ok -> {
                         val name = matchVal.value
                         TermInfo.fromName(name)
@@ -50,7 +50,7 @@ public open class TermInfo(
                         return Result.Err<TermInfo, Error>(Error.TermUnset)
                     } }
                 }
-            return if (term.isErr() && Env.variable("MSYSCON").isOkAnd({ s -> "mintty.exe" == s })) {
+            return if (term.isErr() && variable("MSYSCON").isOkAnd({ s -> "mintty.exe" == s })) {
                 // msys terminal
                 Result.Ok<TermInfo, Error>(msysTerminfo())
             } else {
@@ -64,10 +64,10 @@ public open class TermInfo(
         public fun fromName(name: String): Result<TermInfo, Error> {
             if (false) {
                 // Avoid all the work of parsing the terminfo (it's pretty slow under Miri), and just
-                // assume that the standard color codes work (like e.g. the 'colored' crate).
+                // assume that the standard color codes work (like e.g. the `colored` crate).
                 return Result.Ok<TermInfo, Error>(TermInfo(names = Default.default(), bools = Default.default(), numbers = Default.default(), strings = Default.default()))
             }
-            return (getDbpathForTerm(name)?.let { Result.Ok(it) } ?: Result.Err(Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found")))).andThen({ p -> TermInfo.fromPath(p) })
+            return (getDbpathForTerm(name)?.let { Result.Ok<Option, Error>(it) } ?: Result.Err<Option, Error>(Error.IoError(io.constError(ErrorKind.NotFound, "terminfo file not found")))).andThen({ p -> TermInfo.fromPath(p) })
         }
 
         /**

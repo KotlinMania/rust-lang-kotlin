@@ -18,14 +18,14 @@ import io.github.kotlinmania.rustlang.core.ops.bit.Shr
 /**
  * Lossy `as` casting between two types.
  */
-public interface CastInto<T, SelfType> {
+public interface CastInto<T> {
     public fun cast(): T
 }
 
 /**
  * Collection of traits that allow us to be generic over integer size.
  */
-public interface Int<T> : Shr<UInt, T>, Shl<UInt, T>, BitAnd<T, T>, BitOr<T, T>, CastInto<Short, T> {
+public interface Int<T> : Shr<UInt, T>, Shl<UInt, T>, BitAnd<T, T>, BitOr<T, T>, CastInto<Short> {
     public val ZERO: T
 
     public val ONE: T
@@ -179,7 +179,7 @@ public interface Float<T, out Int> : Div<T, T>, Neg<T>, Mul<T, T>, Add<T, T> {
  * Items that ideally would be on `Float`, but don't apply to all float types because they
  * rely on the mantissa fitting into a `ULong` (which isn't true for `f128`).
  */
-public interface FloatExt<T> : Float<T, Any?> {
+public interface FloatExt<T, out Int> : Float<T, Int> {
     /**
      * Performs a raw transmutation from an integer.
      */

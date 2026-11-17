@@ -219,7 +219,7 @@ public fun <T> IntoIter<T>.sizeHint(n: Int): Pair<Int, Int?> = this.unsize().siz
 
 public fun <T, Acc> IntoIter<T>.fold(init: Acc, fold: (Acc, T) -> Acc, n: Int): Acc = this.unsizeMut().fold(init, fold)
 
-public fun <T, B, R> IntoIter<T>.tryFold(init: B, f: (B, T) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryFold(init, f)
+public fun <Residual, T, B, R> IntoIter<T>.tryFold(init: B, f: (B, T) -> R, n: Int): R where R : Try<R, B, Residual> = this.unsizeMut().tryFold(init, f)
 
 public fun <T> IntoIter<T>.count(n: Int): Int = this.len()
 
@@ -239,7 +239,7 @@ public fun <T> IntoIter<T>.nextBack(n: Int): Item? = this.unsizeMut().nextBack()
 
 public fun <T, Acc> IntoIter<T>.rfold(init: Acc, rfold: (Acc, Item) -> Acc, n: Int): Acc = this.unsizeMut().rfold(init, rfold)
 
-public fun <T, B, R> IntoIter<T>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Any?> = this.unsizeMut().tryRfold(init, f)
+public fun <Residual, T, B, R> IntoIter<T>.tryRfold(init: B, f: (B, Item) -> R, n: Int): R where R : Try<R, B, Residual> = this.unsizeMut().tryRfold(init, f)
 
 public fun <T> IntoIter<T>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.unsizeMut().advanceBackBy(n)
 

@@ -78,8 +78,8 @@ public open class Scan<I, St, F>(
         // can't know a lower bound, due to the scan function
     }
 
-    public open fun <Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Any?> {
-        fun <T, St, B, Acc, R : Try<R, Acc, Any?>> scan(state: St, f: (St, T) -> B?, fold1: (Acc, B) -> R): (Acc, T) -> ControlFlow<R, Acc> =
+    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
+        fun <Residual, T, St, B, Acc, R : Try<R, Acc, Residual>> scan(state: St, f: (St, T) -> B?, fold1: (Acc, B) -> R): (Acc, T) -> ControlFlow<R, Acc> =
             { acc, x -> when (val matchVal = f(state, x)) {
                 null -> ControlFlow.Break(acc)
                 else -> {

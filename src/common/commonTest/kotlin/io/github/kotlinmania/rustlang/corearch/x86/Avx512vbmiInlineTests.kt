@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.transmute
 
 public fun testMm512Permutex2varEpi8() {

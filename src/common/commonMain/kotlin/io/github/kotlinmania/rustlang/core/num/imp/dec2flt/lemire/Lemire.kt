@@ -31,7 +31,7 @@ import io.github.kotlinmania.rustlang.core.num.leadingZeros
  * section 6, "Exact Numbers And Ties", available online:
  * <https://arxiv.org/abs/2101.11408.pdf>.
  */
-public fun <Int, F : Float<F, Any?>> computeFloat(q: Long, w: ULong): BiasedFp {
+public fun <Int, F : Float<F, Int>> computeFloat(q: Long, w: ULong): BiasedFp {
     var w1 = w
     val fpZero = BiasedFp.zeroPow2(0)
     val fpInf = BiasedFp.zeroPow2(F.INFINITE_POWER)

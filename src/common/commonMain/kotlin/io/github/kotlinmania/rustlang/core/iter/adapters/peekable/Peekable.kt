@@ -27,7 +27,7 @@ public open class Peekable<I>(
      * Remember a peeked value, even if it was None.
      */
     public var peeked: Item?,
-) : TrustedLen<Peekable<I>>, SourceIter<Source>, Iterable<Item> {
+) : TrustedLen, SourceIter<Source>, Iterable<Item> {
     override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
         override fun computeNext() {
             when (val v = this@Peekable.next()) {
@@ -109,7 +109,7 @@ public open class Peekable<I>(
         return Pair(lo1, hi1)
     }
 
-    public override fun <B, R> tryFold(init: B, f: (B, I.Item) -> R): R where R : Try<R, B, Any?> {
+    public override fun <Residual, B, R> tryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> {
         val acc =
             when (val matchVal = this.peeked.also { this.peeked = null }) {
                 null -> { return init }
@@ -122,7 +122,7 @@ public open class Peekable<I>(
         return this.iter.tryFold(acc, f)
     }
 
-    public override fun <Acc> fold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc {
+    public override fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
         val acc =
             when (val matchVal = this.peeked) {
                 null -> { return init }
@@ -145,7 +145,7 @@ public open class Peekable<I>(
             null -> this.iter.nextBack()
         }
 
-    public open fun <B, R> tryRfold(init: B, f: (B, I.Item) -> R, fromResidualRFn: (R) -> R): R where R : Try<R, B, Any?> =
+    public open fun <Residual, B, R> tryRfold(init: B, f: (B, Item) -> R, fromResidualRFn: (R) -> R): R where R : Try<R, B, Residual> =
         when (val matchVal = this.peeked.also { this.peeked = null }) {
             null -> init
             else -> {
@@ -165,7 +165,7 @@ public open class Peekable<I>(
             null -> this.iter.tryRfold(init, f)
         }
 
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, I.Item) -> Acc): Acc =
+    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
         when (val matchVal = this.peeked) {
             null -> init
             else -> {
@@ -485,6 +485,6 @@ public open class Peekable<I>(
     }
 
     public companion object {
-        public fun <Item, I> new(iter: I): Peekable<I> = Peekable(iter = iter, peeked = null)
+        public fun <I> new(iter: I): Peekable<I> = Peekable(iter = iter, peeked = null)
     }
 }

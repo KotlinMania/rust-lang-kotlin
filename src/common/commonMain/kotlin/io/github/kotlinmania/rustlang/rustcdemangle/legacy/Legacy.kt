@@ -26,7 +26,7 @@ public open class Demangle(
             while (rest.chars().next()!!.isDigit(10)) {
                 rest = rest.substring(1)
             }
-            val i: Int = (inner.substring(0 until (inner.length - rest.length)).toIntOrNull()?.let { Result.Ok(it) } ?: Result.Err("failed to parse Int")).unwrap()
+            val i: Int = (inner.substring(0 until (inner.length - rest.length)).toIntOrNull()?.let { Result.Ok<Int, String>(it) } ?: Result.Err<Int, String>("failed to parse Int")).unwrap()
             inner = rest.substring(i)
             rest = rest.substring(0 until i)
             // Skip printing the hash if alternate formatting

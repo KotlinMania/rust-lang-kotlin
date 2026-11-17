@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
  * IEEE 754-2019 `roundToIntegralExact`, which respects rounding mode and raises inexact if
  * applicable.
  */
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> rintStatus(x: F): FpResult<F> {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> rintStatus(x: F): FpResult<F> {
     val toint = F.ONE / F.EPSILON
     val e = x.ex()
     val positive = x.isSignPositive()

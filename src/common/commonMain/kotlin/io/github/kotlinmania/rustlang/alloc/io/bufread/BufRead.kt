@@ -183,12 +183,12 @@ public interface BufRead<T> : Read<T> {
      *
      * var cursor = io.Cursor.new("lorem-ipsum".encodeToByteArray())
      * var buf = mutableListOf()
-     * // cursor is at 'l'
+     * // cursor is at `l`
      * val numBytes = cursor.readUntil(45u, buf).expect("reading from cursor won't fail")
      * check(numBytes == 6)
      * check(buf == "lorem-".encodeToByteArray())
      * buf.clear()
-     * // cursor is at 'i'
+     * // cursor is at `i`
      * val numBytes1 = cursor.readUntil(45u, buf).expect("reading from cursor won't fail")
      * check(numBytes1 == 5)
      * check(buf == "ipsum".encodeToByteArray())
@@ -299,12 +299,12 @@ public interface BufRead<T> : Read<T> {
      *
      * var cursor = io.Cursor.new("foo\nbar".encodeToByteArray())
      * var buf = ""
-     * // cursor is at 'f'
+     * // cursor is at `f`
      * val numBytes = cursor.readLine(buf).expect("reading from cursor won't fail")
      * check(numBytes == 4)
      * check(buf == "foo\n")
      * buf = ""
-     * // cursor is at 'b'
+     * // cursor is at `b`
      * val numBytes1 = cursor.readLine(buf).expect("reading from cursor won't fail")
      * check(numBytes1 == 3)
      * check(buf == "bar")

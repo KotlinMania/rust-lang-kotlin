@@ -135,7 +135,7 @@ public open class Channel<T> internal constructor(
      */
     public var cap: Int,
     /**
-     * A stamp with the value of `{ lap: 1, mark: 0, index: 0 }`.
+     * A stamp with the value of `( lap: 1, mark: 0, index: 0 )`.
      */
     public var oneLap: Int,
     /**
@@ -200,11 +200,11 @@ public open class Channel<T> internal constructor(
                 val newTail =
                     if (index + 1 < this.cap) {
                         // Same lap, incremented index.
-                        // Set to `{ lap: lap, mark: 0, index: index + 1 }`.
+                        // Set to `( lap: lap, mark: 0, index: index + 1 )`.
                         tail + 1
                     } else {
                         // One lap forward, index wraps around to zero.
-                        // Set to `{ lap: lap.wrappingAdd(1), mark: 0, index: 0 }`.
+                        // Set to `( lap: lap.wrappingAdd(1), mark: 0, index: 0 )`.
                         (lap + (this.oneLap.toInt()))
                     }
                 // Try moving the tail.
@@ -276,11 +276,11 @@ public open class Channel<T> internal constructor(
                 val new =
                     if (index + 1 < this.cap) {
                         // Same lap, incremented index.
-                        // Set to `{ lap: lap, mark: 0, index: index + 1 }`.
+                        // Set to `( lap: lap, mark: 0, index: index + 1 )`.
                         head + 1
                     } else {
                         // One lap forward, index wraps around to zero.
-                        // Set to `{ lap: lap.wrappingAdd(1), mark: 0, index: 0 }`.
+                        // Set to `( lap: lap.wrappingAdd(1), mark: 0, index: 0 )`.
                         (lap + (this.oneLap.toInt()))
                     }
                 // Try moving the head.
@@ -551,11 +551,11 @@ public open class Channel<T> internal constructor(
             if (head + 1 == stamp) {
                 head = if (index + 1 < this.cap) {
                     // Same lap, incremented index.
-                    // Set to `{ lap: lap, mark: 0, index: index + 1 }`.
+                    // Set to `( lap: lap, mark: 0, index: index + 1 )`.
                     head + 1
                 } else {
                     // One lap forward, index wraps around to zero.
-                    // Set to `{ lap: lap.wrappingAdd(1), mark: 0, index: 0 }`.
+                    // Set to `( lap: lap.wrappingAdd(1), mark: 0, index: 0 )`.
                     (lap + (this.oneLap.toInt()))
                 }
                 run {
@@ -632,15 +632,15 @@ public open class Channel<T> internal constructor(
             // Compute constants `markBit` and `oneLap`.
             val markBit = (cap + 1).nextPowerOfTwo()
             val oneLap = markBit * 2
-            // Head is initialized to `{ lap: 0, mark: 0, index: 0 }`.
+            // Head is initialized to `( lap: 0, mark: 0, index: 0 )`.
             val head = 0
-            // Tail is initialized to `{ lap: 0, mark: 0, index: 0 }`.
+            // Tail is initialized to `( lap: 0, mark: 0, index: 0 )`.
             val tail = 0
             // Allocate a buffer of `cap` slots initialized
             // with stamps.
             val buffer: List<Slot<T>> =
                 (0 until cap).map({ i ->
-                    // Set the stamp to `{ lap: 0, mark: 0, index: i }`.
+                    // Set the stamp to `( lap: 0, mark: 0, index: i )`.
                     Slot(stamp = AtomicUsize.new(i), msg = UnsafeCell.new(MaybeUninit.uninit(PrimitiveLayouts.U8)))
                 }).toMutableList()
             return Channel(buffer = buffer, cap = cap, oneLap = oneLap, markBit = markBit, head = CachePadded.new(AtomicUsize.new(head)), tail = CachePadded.new(AtomicUsize.new(tail)), senders = SyncWaker.new(), receivers = SyncWaker.new())

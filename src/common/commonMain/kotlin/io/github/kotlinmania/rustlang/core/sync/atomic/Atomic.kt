@@ -373,7 +373,7 @@ public open class Align16<T>(
  *
  * This is an implementation detail for <code>[Atomic]\<T></code> which may disappear or be replaced at any time.
  */
-public interface AtomicPrimitive<T, out Storage>
+public interface AtomicPrimitive<out Storage>
 
 /**
  * A memory location which can be safely modified from multiple threads.
@@ -2734,19 +2734,19 @@ public fun AtomicI8.Companion.new(v: Byte): AtomicI8 = transmuteWithLayouts(v, P
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -2807,14 +2807,14 @@ public fun AtomicI8.Companion.fromMut(v: RustMutableReference<Byte>): AtomicI8 =
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): MutableList<Byte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Byte>>())
@@ -2823,14 +2823,14 @@ public fun AtomicI8.Companion.getMutSlice(thisRef: MutableList<AtomicI8>): Mutab
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI8.Companion.fromMutSlice(v: MutableList<Byte>): MutableList<AtomicI8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI8>>())
@@ -3086,13 +3086,13 @@ public fun AtomicI8.compareExchange(current: Byte, new: Byte, success: Ordering,
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -3491,19 +3491,19 @@ public fun AtomicU8.Companion.new(v: UByte): AtomicU8 = transmuteWithLayouts(v, 
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -3564,14 +3564,14 @@ public fun AtomicU8.Companion.fromMut(v: RustMutableReference<UByte>): AtomicU8 
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): MutableList<UByte> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UByte>>())
@@ -3580,14 +3580,14 @@ public fun AtomicU8.Companion.getMutSlice(thisRef: MutableList<AtomicU8>): Mutab
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU8.Companion.fromMutSlice(v: MutableList<UByte>): MutableList<AtomicU8> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU8>>())
@@ -3843,13 +3843,13 @@ public fun AtomicU8.compareExchange(current: UByte, new: UByte, success: Orderin
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -4248,19 +4248,19 @@ public fun AtomicI16.Companion.new(v: Short): AtomicI16 = transmuteWithLayouts(v
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -4321,14 +4321,14 @@ public fun AtomicI16.Companion.fromMut(v: RustMutableReference<Short>): AtomicI1
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): MutableList<Short> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Short>>())
@@ -4337,14 +4337,14 @@ public fun AtomicI16.Companion.getMutSlice(thisRef: MutableList<AtomicI16>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI16.Companion.fromMutSlice(v: MutableList<Short>): MutableList<AtomicI16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI16>>())
@@ -4600,13 +4600,13 @@ public fun AtomicI16.compareExchange(current: Short, new: Short, success: Orderi
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -5005,19 +5005,19 @@ public fun AtomicU16.Companion.new(v: UShort): AtomicU16 = transmuteWithLayouts(
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -5078,14 +5078,14 @@ public fun AtomicU16.Companion.fromMut(v: RustMutableReference<UShort>): AtomicU
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): MutableList<UShort> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UShort>>())
@@ -5094,14 +5094,14 @@ public fun AtomicU16.Companion.getMutSlice(thisRef: MutableList<AtomicU16>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU16.Companion.fromMutSlice(v: MutableList<UShort>): MutableList<AtomicU16> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU16>>())
@@ -5357,13 +5357,13 @@ public fun AtomicU16.compareExchange(current: UShort, new: UShort, success: Orde
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -5762,19 +5762,19 @@ public fun AtomicI32.Companion.new(v: Int): AtomicI32 = transmuteWithLayouts(v, 
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -5835,14 +5835,14 @@ public fun AtomicI32.Companion.fromMut(v: RustMutableReference<Int>): AtomicI32 
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
@@ -5851,14 +5851,14 @@ public fun AtomicI32.Companion.getMutSlice(thisRef: MutableList<AtomicI32>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI32.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicI32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI32>>())
@@ -6114,13 +6114,13 @@ public fun AtomicI32.compareExchange(current: Int, new: Int, success: Ordering, 
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -6519,19 +6519,19 @@ public fun AtomicU32.Companion.new(v: UInt): AtomicU32 = transmuteWithLayouts(v,
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -6592,14 +6592,14 @@ public fun AtomicU32.Companion.fromMut(v: RustMutableReference<UInt>): AtomicU32
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): MutableList<UInt> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<UInt>>())
@@ -6608,14 +6608,14 @@ public fun AtomicU32.Companion.getMutSlice(thisRef: MutableList<AtomicU32>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU32.Companion.fromMutSlice(v: MutableList<UInt>): MutableList<AtomicU32> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU32>>())
@@ -6871,13 +6871,13 @@ public fun AtomicU32.compareExchange(current: UInt, new: UInt, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -7276,19 +7276,19 @@ public fun AtomicI64.Companion.new(v: Long): AtomicI64 = transmuteWithLayouts(v,
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -7349,14 +7349,14 @@ public fun AtomicI64.Companion.fromMut(v: RustMutableReference<Long>): AtomicI64
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): MutableList<Long> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Long>>())
@@ -7365,14 +7365,14 @@ public fun AtomicI64.Companion.getMutSlice(thisRef: MutableList<AtomicI64>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI64.Companion.fromMutSlice(v: MutableList<Long>): MutableList<AtomicI64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI64>>())
@@ -7628,13 +7628,13 @@ public fun AtomicI64.compareExchange(current: Long, new: Long, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -8033,19 +8033,19 @@ public fun AtomicU64.Companion.new(v: ULong): AtomicU64 = transmuteWithLayouts(v
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -8106,14 +8106,14 @@ public fun AtomicU64.Companion.fromMut(v: RustMutableReference<ULong>): AtomicU6
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): MutableList<ULong> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<ULong>>())
@@ -8122,14 +8122,14 @@ public fun AtomicU64.Companion.getMutSlice(thisRef: MutableList<AtomicU64>): Mut
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU64.Companion.fromMutSlice(v: MutableList<ULong>): MutableList<AtomicU64> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU64>>())
@@ -8385,13 +8385,13 @@ public fun AtomicU64.compareExchange(current: ULong, new: ULong, success: Orderi
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -8790,19 +8790,19 @@ public fun AtomicI128.Companion.new(v: I128): AtomicI128 = transmuteWithLayouts(
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -8863,14 +8863,14 @@ public fun AtomicI128.Companion.fromMut(v: RustMutableReference<I128>): AtomicI1
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): MutableList<I128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<I128>>())
@@ -8879,14 +8879,14 @@ public fun AtomicI128.Companion.getMutSlice(thisRef: MutableList<AtomicI128>): M
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicI128.Companion.fromMutSlice(v: MutableList<I128>): MutableList<AtomicI128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicI128>>())
@@ -9142,13 +9142,13 @@ public fun AtomicI128.compareExchange(current: I128, new: I128, success: Orderin
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -9547,19 +9547,19 @@ public fun AtomicU128.Companion.new(v: U128): AtomicU128 = transmuteWithLayouts(
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -9620,14 +9620,14 @@ public fun AtomicU128.Companion.fromMut(v: RustMutableReference<U128>): AtomicU1
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): MutableList<U128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<U128>>())
@@ -9636,14 +9636,14 @@ public fun AtomicU128.Companion.getMutSlice(thisRef: MutableList<AtomicU128>): M
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicU128.Companion.fromMutSlice(v: MutableList<U128>): MutableList<AtomicU128> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicU128>>())
@@ -9899,13 +9899,13 @@ public fun AtomicU128.compareExchange(current: U128, new: U128, success: Orderin
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -10304,19 +10304,19 @@ public fun AtomicIsize.Companion.new(v: Int): AtomicIsize = transmuteWithLayouts
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -10377,14 +10377,14 @@ public fun AtomicIsize.Companion.fromMut(v: RustMutableReference<Int>): AtomicIs
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
@@ -10393,14 +10393,14 @@ public fun AtomicIsize.Companion.getMutSlice(thisRef: MutableList<AtomicIsize>):
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicIsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicIsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicIsize>>())
@@ -10656,13 +10656,13 @@ public fun AtomicIsize.compareExchange(current: Int, new: Int, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -11061,19 +11061,19 @@ public fun AtomicUsize.Companion.new(v: Int): AtomicUsize = transmuteWithLayouts
  *
  * // Get a pointer to an allocated value
  *
- * {
+ * (
  *     // Create an atomic view of the allocated value
  *
  *     // Use `atomic` for atomic operations, possibly share it with other threads
  *     atomic.store(1, atomic.Ordering.Relaxed);
- * }
+ * )
  *
  * // It's ok to non-atomically access the value behind `ptr`,
  * // since the reference to the atomic ended its scope in the block above
- * assertEq(unchecked { *ptr }, 1);
+ * assertEq(unchecked ( *ptr ), 1);
  *
  * // Deallocate the value
- * unchecked { drop(Box.fromRaw(ptr)) }
+ * unchecked ( drop(Box.fromRaw(ptr)) )
  * ```kotlin
  *
  * * `ptr` must be aligned to
@@ -11134,14 +11134,14 @@ public fun AtomicUsize.Companion.fromMut(v: RustMutableReference<Int>): AtomicUs
  *     .enumerate()
  *     .forEach(|(idx, int)| *int = idx as _);
  *
- * std.thread.scope(|s| {
+ * std.thread.scope(|s| (
  *     someInts
  *         .iter()
  *         .enumerate()
- *         .forEach(|(idx, int)| {
+ *         .forEach(|(idx, int)| (
  *             s.spawn(move || assertEq(int.load(Ordering.Relaxed), idx as _));
- *         })
- * });
+ *         ))
+ * ));
  * ```kotlin
  */
 public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>): MutableList<Int> = RustMutableReference(MutPtr((((mutPtrFromRustCast(thisRef)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<Int>>())
@@ -11150,14 +11150,14 @@ public fun AtomicUsize.Companion.getMutSlice(thisRef: MutableList<AtomicUsize>):
  * # Examples
  *
  * let mut someInts = [0; 10];
- * std.thread.scope(|s| {
- *     for i in 0..a.len() {
+ * std.thread.scope(|s| (
+ *     for i in 0..a.len() (
  *         s.spawn(move || a[i].store(i as _, Ordering.Relaxed));
- *     }
- * });
- * for (i, n) in someInts.intoIter().enumerate() {
+ *     )
+ * ));
+ * for (i, n) in someInts.intoIter().enumerate() (
  *     assertEq(i, n as Int);
- * }
+ * )
  * ```kotlin
  */
 public fun AtomicUsize.Companion.fromMutSlice(v: MutableList<Int>): MutableList<AtomicUsize> = RustMutableReference(MutPtr((((mutPtrFromRustCast(v)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<List<AtomicUsize>>())
@@ -11413,13 +11413,13 @@ public fun AtomicUsize.compareExchange(current: Int, new: Int, success: Ordering
  * # Examples
  *
  * let mut old = val.load(Ordering.Relaxed);
- * loop {
+ * loop (
  *     let new = old * 2;
- *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) {
+ *     match val.compareExchangeWeak(old, new, Ordering.SeqCst, Ordering.Relaxed) (
  *         Ok(_) => break,
  *         Err(x) => old = x,
- *     }
- * }
+ *     )
+ * )
  * ```kotlin
  *
  * `compareExchange` is a [compare-and-swap operation] and thus exhibits the usual downsides
@@ -12129,12 +12129,12 @@ public fun <T> atomicUmin(dst: MutPtr, value: T, order: Ordering, typeLayoutT: T
  * An atomic operation on one thread will synchronize with a fence on another thread when:
  *
  * -   on thread 1:
- *     -   an atomic operation 'X' with (at least) [Release] ordering semantics on some atomic
- *         object 'm',
+ *     -   an atomic operation `X` with (at least) [Release] ordering semantics on some atomic
+ *         object `m`,
  *
  * -   is paired on thread 2 with:
- *     -   an atomic read 'Y' with any order on 'm',
- *     -   followed by a fence 'B' with (at least) [Acquire] ordering semantics.
+ *     -   an atomic read `Y` with any order on `m`,
+ *     -   followed by a fence `B` with (at least) [Acquire] ordering semantics.
  *
  * This provides a happens-before dependence between X and B.
  *
@@ -12155,11 +12155,11 @@ public fun <T> atomicUmin(dst: MutPtr, value: T, order: Ordering, typeLayoutT: T
  * A fence on one thread will synchronize with an atomic operation on another thread when:
  *
  * -   on thread:
- *     -   a fence 'A' with (at least) [Release] ordering semantics,
- *     -   followed by an atomic write 'X' with any ordering on some atomic object 'm',
+ *     -   a fence `A` with (at least) [Release] ordering semantics,
+ *     -   followed by an atomic write `X` with any ordering on some atomic object `m`,
  *
  * -   is paired on thread 2 with:
- *     -   an atomic operation 'Y' with (at least) [Acquire] ordering semantics.
+ *     -   an atomic operation `Y` with (at least) [Acquire] ordering semantics.
  *
  * This provides a happens-before dependence between A and Y.
  *
@@ -12180,12 +12180,12 @@ public fun <T> atomicUmin(dst: MutPtr, value: T, order: Ordering, typeLayoutT: T
  * A fence on one thread will synchronize with a fence on another thread when:
  *
  * -   on thread 1:
- *     -   a fence 'A' which has (at least) [Release] ordering semantics,
- *     -   followed by an atomic write 'X' with any ordering on some atomic object 'm',
+ *     -   a fence `A` which has (at least) [Release] ordering semantics,
+ *     -   followed by an atomic write `X` with any ordering on some atomic object `m`,
  *
  * -   is paired on thread 2 with:
- *     -   an atomic read 'Y' with any ordering on 'm',
- *     -   followed by a fence 'B' with (at least) [Acquire] ordering semantics.
+ *     -   an atomic read `Y` with any ordering on `m`,
+ *     -   followed by a fence `B` with (at least) [Acquire] ordering semantics.
  *
  * This provides a happens-before dependence between A and B.
  *

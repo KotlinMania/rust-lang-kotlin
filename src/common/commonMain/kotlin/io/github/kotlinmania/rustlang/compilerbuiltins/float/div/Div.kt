@@ -37,7 +37,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 // process is as follows:
 //
 // - Rearange the exponent and significand to simplify the operations:
-//   `res = (mA / mB) * 2 ^ { pA - pB }`.
+//   `res = (mA / mB) * 2 ^ ( pA - pB )`.
 // - Check for early exits (infinity, zero, etc).
 // - If `a` or `b` are subnormal, normalize by shifting the mantissa and adjusting the exponent.
 // - Set the implicit bit so math is correct.
@@ -45,7 +45,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 //   or UQ0 numbers can be used for mantissa math. These will have greater precision than the
 //   actual mantissa, which is important for correct rounding.
 // - Calculate the reciprocal of `mB`, `x`.
-// - Use the reciprocal to multiply rather than divide: `res = mA * xB * 2 ^ { pA - pB }`.
+// - Use the reciprocal to multiply rather than divide: `res = mA * xB * 2 ^ ( pA - pB )`.
 // - Reapply rounding.
 //
 // # Reciprocal calculation
@@ -204,7 +204,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
     //
     // Then, refine the reciprocal estimate using a quadratically converging
     // Newton-Raphson iteration:
-    // x_{n+1} = xN * (2 - xN * b)
+    // x_(n+1) = xN * (2 - xN * b)
     //
     // Let b be the original divisor considered "in infinite precision" and
     // obtained from IEEE754 representation of function argument (with the
@@ -297,16 +297,16 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
                 // xUq0Hw = (1/bHw + eN) * (1 - eN*bHw + 2*eps1) - eps2
                 // = 1/bHw - eN + 2*eps1/bHw + eN - eN^2*bHw + 2*eN*eps1 - eps2
                 // = 1/bHw + 2*eps1/bHw - eN^2*bHw + 2*eN*eps1 - eps2
-                // e_{n+1} = -eN^2*bHw + 2*eps1/bHw + 2*eN*eps1 - eps2
+                // e_(n+1) = -eN^2*bHw + 2*eps1/bHw + 2*eN*eps1 - eps2
                 // = 2*eN*eps1 - (eN^2*bHw + eps2) + 2*eps1/bHw
                 // \------ >0 -------/   \-- >0 ---/
-                // abs(e_{n+1}) <= 2*abs(eN)*U + max(2*eN^2 + U, 2 * U)
+                // abs(e_(n+1)) <= 2*abs(eN)*U + max(2*eN^2 + U, 2 * U)
                 xUq0Hw = nextGuess(xUq0Hw, bUq1Hw)
             }
             // For initial half-width iterations, U = 2^-HW
             // Let  abs(eN)     <= uN * U,
-            // then abs(e_{n+1}) <= 2 * uN * U^2 + max(2 * uN^2 * U^2 + U, 2 * U)
-            // u_{n+1} <= 2 * uN * U + max(2 * uN^2 * U + 1, 2)
+            // then abs(e_(n+1)) <= 2 * uN * U^2 + max(2 * uN^2 * U^2 + U, 2 * U)
+            // u_(n+1) <= 2 * uN * U + max(2 * uN^2 * U + 1, 2)
             //
             // Account for possible overflow (see above). For an overflow to occur for the
             // first time, for "ideal" corrUq1Hw (that is, without intermediate
@@ -341,15 +341,15 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
             xUq0 -= one
             // ... and then traditional fixup by 2 should work
             // On error estimation:
-            // abs(E_{N-1}) <=   (u_{N-1} + 2 // due to conversion eN -> EN) * 2^-HW
+            // abs(E_(N-1)) <=   (u_(N-1) + 2 // due to conversion eN -> EN) * 2^-HW
             // + (2^-HW + 2^-W))
-            // abs(E_{N-1}) <= (u_{N-1} + 3.01) * 2^-HW
+            // abs(E_(N-1)) <= (u_(N-1) + 3.01) * 2^-HW
             //
             // Then like for the half-width iterations:
             // With 0 <= eps1, eps2 < 2^-W
-            // E_N  = 4 * E_{N-1} * eps1 - (E_{N-1}^2 * b + 4 * eps2) + 4 * eps1 / b
-            // abs(E_N) <= 2^-W * [ 4 * abs(E_{N-1}) + max(2 * abs(E_{N-1})^2 * 2^W + 4, 8)) ]
-            // abs(E_N) <= 2^-W * [ 4 * (u_{N-1} + 3.01) * 2^-HW + max(4 + 2 * (u_{N-1} + 3.01)^2, 8) ]
+            // E_N  = 4 * E_(N-1) * eps1 - (E_(N-1)^2 * b + 4 * eps2) + 4 * eps1 / b
+            // abs(E_N) <= 2^-W * [ 4 * abs(E_(N-1)) + max(2 * abs(E_(N-1))^2 * 2^W + 4, 8)) ]
+            // abs(E_N) <= 2^-W * [ 4 * (u_(N-1) + 3.01) * 2^-HW + max(4 + 2 * (u_(N-1) + 3.01)^2, 8) ]
             xUq0
         } else {
             // C is (3/4 + 1/sqrt(2)) - 1 truncated to 64 fractional bits as UQ0.n
@@ -532,7 +532,7 @@ public fun <F : Float> cHw(): HalfRep<F> {
  * Perform one iteration at any width to approach `1 / b`, given previous guess `x`. Returns
  * the next `x` as a UQ0 number.
  *
- * This is the `x_ { n + 1 } = 2 * xN - b * xN ^ 2` algorithm, implemented as `xN * (2 - b * xN)`. It
+ * This is the `x_ ( n + 1 ) = 2 * xN - b * xN ^ 2` algorithm, implemented as `xN * (2 - b * xN)`. It
  * uses widening multiplication to calculate the result with necessary precision.
  */
 public fun <I> nextGuess(xUq0: I, bUq1: I): I where I : Int, I : HInt {

@@ -637,7 +637,7 @@ public fun <T> List<T>.lastChunkMut(n: Int): List<T>? {
  * check(null == v.get(0 until 4))
  * ```
  */
-public fun <T, I> List<T>.get(index: I): Output? where I : SliceIndex<List<T>, Any?> = index.get(this)
+public fun <Output, T, I> List<T>.get(index: I): Output? where I : SliceIndex<List<T>, Output> = index.get(this)
 
 /**
  * Returns a mutable reference to an element or subslice depending on the
@@ -659,7 +659,7 @@ public fun <T, I> List<T>.get(index: I): Output? where I : SliceIndex<List<T>, A
  * check((x).contentEquals(listOf(0, 42, 2)))
  * ```
  */
-public fun <T, I> List<T>.getMut(index: I): Output? where I : SliceIndex<List<T>, Any?> = index.getMut(this)
+public fun <Output, T, I> List<T>.getMut(index: I): Output? where I : SliceIndex<List<T>, Output> = index.getMut(this)
 
 /**
  * Returns a reference to an element or subslice, without doing bounds
@@ -689,7 +689,7 @@ public fun <T, I> List<T>.getMut(index: I): Output? where I : SliceIndex<List<T>
  * }
  * ```
  */
-public fun <T, I> List<T>.getUnchecked(index: I): Output where I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> List<T>.getUnchecked(index: I): Output where I : SliceIndex<List<T>, Output> {
     // SAFETY: the caller must uphold most of the safety requirements for `getUnchecked`;
     // the slice is dereferenceable because `self` is a safe reference.
     // The returned pointer is safe because impls of `SliceIndex` have to guarantee that it is.
@@ -726,7 +726,7 @@ public fun <T, I> List<T>.getUnchecked(index: I): Output where I : SliceIndex<Li
  * check((x).contentEquals(listOf(1, 13, 4)))
  * ```
  */
-public fun <T, I> List<T>.getUncheckedMut(index: I): Output where I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> List<T>.getUncheckedMut(index: I): Output where I : SliceIndex<List<T>, Output> {
     // SAFETY: the caller must uphold the safety requirements for `getUncheckedMut`;
     // the slice is dereferenceable because `self` is a safe reference.
     // The returned pointer is safe because impls of `SliceIndex` have to guarantee that it is.
@@ -1287,7 +1287,7 @@ public fun <T> List<T>.chunksExactMut(chunkSize: Int): ChunksExactMut<T> {
  * As this is `unchecked`, consider whether you could use [asChunks] or
  * [asRchunks] instead, perhaps via something like
  * `if val (chunks, []) = slice.asChunks()` or
- * `val (chunks, []) = slice.asChunks() else { unreachable() };`.
+ * `val (chunks, []) = slice.asChunks() else ( unreachable() );`.
  *
  * [asChunks]: slice.asChunks
  * [asRchunks]: slice.asRchunks
@@ -1433,7 +1433,7 @@ public fun <T> List<T>.asRchunks(n: Int): Pair<List<T>, List<List<T>>> {
  * As this is `unchecked`, consider whether you could use [asChunksMut] or
  * [asRchunksMut] instead, perhaps via something like
  * `if val (chunks, []) = slice.asChunksMut()` or
- * `val (chunks, []) = slice.asChunksMut() else { unreachable() };`.
+ * `val (chunks, []) = slice.asChunksMut() else ( unreachable() );`.
  *
  * [asChunksMut]: slice.asChunksMut
  * [asRchunksMut]: slice.asRchunksMut
@@ -3671,7 +3671,7 @@ public fun <T> List<T>.rotateRight(k: Int) {
  *     a3.shiftLeft(List(3) { 0 })
  *     check(a3 == listOf(1, 0, 1, 1, 0, 0, 0, 0))
  *     // Remember you can sub-slice to affect less that the whole slice.
- *     // For example, this is similar to `.remove(1)` + `.insert(4, 'Z')`
+ *     // For example, this is similar to `.remove(1)` + `.insert(4, `Z`)`
  *     var a4 = mutableListOf('a', 'b', 'c', 'd', 'e', 'f')
  *     check(a4[1..4].shiftLeft(listOf('Z')) == listOf('b'))
  *     check(a4 == listOf('a', 'c', 'd', 'e', 'Z', 'f'))
@@ -3777,7 +3777,7 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int): List<T> {
  *     a2.shiftRight(List(3) { 0 })
  *     check(a2 == listOf(0, 0, 0, 1, 0, 0, 1, 0))
  *     // Remember you can sub-slice to affect less that the whole slice.
- *     // For example, this is similar to `.remove(4)` + `.insert(1, 'Z')`
+ *     // For example, this is similar to `.remove(4)` + `.insert(1, `Z`)`
  *     var a3 = mutableListOf('a', 'b', 'c', 'd', 'e', 'f')
  *     check(a3[1..4].shiftRight(listOf('Z')) == listOf('e'))
  *     check(a3 == listOf('a', 'Z', 'b', 'c', 'd', 'f'))
@@ -4098,7 +4098,7 @@ public fun <T> List<T>.swapWithSlice(other: MutableList<T>) {
 }
 
 /**
- * Function to calculate lengths of the middle and trailing slice for `alignTo { , _mut }`.
+ * Function to calculate lengths of the middle and trailing slice for `alignTo ( , _mut )`.
  */
 public fun <T, U> List<T>.alignToOffsets(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout()): Pair<Int, Int> {
     // What we gonna do about `rest` is figure out what multiple of `U`s we can put in a
@@ -4762,7 +4762,7 @@ public fun <T> List<T>.splitOffLastMut(): T? {
  * [getDisjointMut]: slice.getDisjointMut
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
-public fun <T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int): List<Output> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int): List<Output> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
     // NB: This implementation is written as it is because any variation of
     // `indices.map(| i | self.getUncheckedMut(i))` would make miri unhappy,
     // or generate worse code otherwise. This is also why we need to go
@@ -4835,7 +4835,7 @@ public fun <T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int): Lis
  * check((v).contentEquals(listOf(1, 11, 111)))
  * ```
  */
-public fun <T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Any?> {
+public fun <Output, T, I> List<T>.getDisjointMut(indices: List<I>, n: Int): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
     when (val tryResult = getDisjointCheckValid(indices, this.size)) { is Result.Ok -> tryResult.value; is Result.Err -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.error) }
     // SAFETY: The `getDisjointCheckValid()` call checked that all indices
     // are disjunct and in bounds.

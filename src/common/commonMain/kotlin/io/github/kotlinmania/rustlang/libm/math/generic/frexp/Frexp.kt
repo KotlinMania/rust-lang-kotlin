@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.libm.math.generic.frexp
 
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
-public fun <Int, SignedInt, F : Float<F, Any?, Any?>> frexp(x: F, normalizeFFn: (Int) -> Pair<Int, Int>, fromBitsFFn: (Int) -> F): Pair<F, Int> {
+public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> frexp(x: F, normalizeFFn: (Int) -> Pair<Int, Int>, fromBitsFFn: (Int) -> F): Pair<F, Int> {
     var ix = x.toBits()
     val ee = x.ex().toInt()
     if (ee == 0) {

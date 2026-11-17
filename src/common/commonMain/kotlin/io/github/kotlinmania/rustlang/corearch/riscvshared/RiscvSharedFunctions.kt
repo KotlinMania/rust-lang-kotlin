@@ -111,7 +111,7 @@ public fun sfenceVmaAll() {
  * `SFENCE.VMA` instruction with the same values of `vaddr` and `asid` would invalidate.
  */
 public fun sinvalVma(vaddr: Int, asid: Int) {
-    // asm("sinval.vma {}, {}", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
+    // asm("sinval.vma (), ()", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
     Unit
 }
 
@@ -332,7 +332,7 @@ public fun hsvW(dst: MutPtr, src: Int) {
  * This fence specifies a single guest virtual address, and a single guest address-space identifier.
  */
 public fun hfenceVvma(vaddr: Int, asid: Int) {
-    // asm("hfence.vvma {}, {}", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
+    // asm("hfence.vvma (), ()", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
     Unit
 }
 
@@ -388,7 +388,7 @@ public fun hfenceVvmaAll() {
  * by virtual machine identifier (VMID).
  */
 public fun hfenceGvma(gaddr: Int, vmid: Int) {
-    // asm("hfence.gvma {}, {}", in(reg) gaddr, in(reg) vmid, options(nostack, preservesFlags));
+    // asm("hfence.gvma (), ()", in(reg) gaddr, in(reg) vmid, options(nostack, preservesFlags));
     Unit
 }
 
@@ -437,7 +437,7 @@ public fun hfenceGvmaAll() {
  * This fence specifies a single guest virtual address, and a single guest address-space identifier.
  */
 public fun hinvalVvma(vaddr: Int, asid: Int) {
-    // asm("hinval.vvma {}, {}", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
+    // asm("hinval.vvma (), ()", in(reg) vaddr, in(reg) asid, options(nostack, preservesFlags));
     Unit
 }
 
@@ -487,7 +487,7 @@ public fun hinvalVvmaAll() {
  * by virtual machine identifier (VMID).
  */
 public fun hinvalGvma(gaddr: Int, vmid: Int) {
-    // asm("hinval.gvma {}, {}", in(reg) gaddr, in(reg) vmid, options(nostack, preservesFlags));
+    // asm("hinval.gvma (), ()", in(reg) gaddr, in(reg) vmid, options(nostack, preservesFlags));
     Unit
 }
 

@@ -131,11 +131,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // would otherwise be disallowed though, there are occasions when interior mutability might be
 // appropriate, or even *must* be used, e.g.
 //
-// * Introducing mutability 'inside' of something immutable
+// * Introducing mutability `inside` of something immutable
 // * Implementation details of logically-immutable methods.
 // * Mutating implementations of [Clone].
 //
-// ## Introducing mutability 'inside' of something immutable
+// ## Introducing mutability `inside` of something immutable
 //
 // Many shared smart pointer types, including [Rc.T] and [Arc.T], provide containers that can
 // be cloned and shared between multiple parties. Because the contained values may be
@@ -664,10 +664,10 @@ public fun <T> Cell<List<T>>.asArrayOfCells(n: Int, typeLayoutT: TypeLayout<T> =
  *     }
  * }
  * // this is not sound
- * // unchecked impl CloneFromCell for Bad<_> {}
+ * // unchecked impl CloneFromCell for Bad<_> ()
  * ```
  */
-public interface CloneFromCell<T>
+public interface CloneFromCell
 
 // `CloneFromCell` can be implemented for types that don't have indirection and which don't access
 // `Cell`s in their `Clone` implementation. A commonly-used subset is covered here.
@@ -2191,7 +2191,7 @@ public open class UnsafeCell<T>(
          *     UnsafeCell.rawGet(m.asPtr()).write(5)
          * }
          * // avoid below which references to uninitialized data
-         * // unchecked { UnsafeCell.get(&*m.asPtr()).write(5); }
+         * // unchecked ( UnsafeCell.get(&*m.asPtr()).write(5); )
          * val uc = m.assumeInit()
          * check(uc.intoInner() == 5)
          * ```

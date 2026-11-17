@@ -34,13 +34,13 @@ public class DebugTuple(
     }
 }
 
-public fun <Item, I, A : Allocator> I.next(): Item? = this.next()
+public fun <I, A : Allocator> I.next(): Item? = this.next()
 
-public fun <Item, I, A : Allocator> I.sizeHint(): Pair<Int, Int?> = this.sizeHint()
+public fun <I, A : Allocator> I.sizeHint(): Pair<Int, Int?> = this.sizeHint()
 
-public fun <Item, I, A : Allocator> I.nth(n: Int): Item? = this.nth(n)
+public fun <I, A : Allocator> I.nth(n: Int): Item? = this.nth(n)
 
-public fun <Item, I, A : Allocator> I.last(): Item? = this.last()
+public fun <I, A : Allocator> I.last(): Item? = this.last()
 
 public interface BoxIter<out Item> {
     public fun last(): Item?

@@ -87,7 +87,7 @@ public fun escapeSingleChar(ch: Char, opt: EscapeOptions, repr: String) {
     if ((ch == '\'' && !opt.escapeSingleQuote) || (ch == '"' && !opt.escapeDoubleQuote)) {
         repr += ch
     } else {
-        // Escapes \0, \t, \r, \n, \\, \', \", and uses \u{...} for
+        // Escapes \0, \t, \r, \n, \\, \', \", and uses \u(...) for
         // non-printable characters and for GraphemeExtend characters, which
         // includes things like U+0300 "Combining Grave Accent".
         repr.extend(ch.escapeDebug())

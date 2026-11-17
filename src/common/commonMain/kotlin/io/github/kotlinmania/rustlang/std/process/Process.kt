@@ -452,7 +452,10 @@ public open class Child(
     }
 
     public companion object {
-        public fun fromInner(tupleArg0: Pair<Process, StdioPipes>): Child = Child(handle = handle, stdin = io.stdin.map(ChildStdin::fromInner), stdout = io.stdout.map(ChildStdout::fromInner), stderr = io.stderr.map(ChildStderr::fromInner))
+        public fun fromInner(tupleArg0: Pair<Process, StdioPipes>): Child {
+            val (handle, io) = tupleArg0
+            return Child(handle = handle, stdin = io.stdin.map(ChildStdin::fromInner), stdout = io.stdout.map(ChildStdout::fromInner), stderr = io.stderr.map(ChildStderr::fromInner))
+        }
     }
 }
 

@@ -1,9 +1,9 @@
 // port-lint: source math/arch/loongarch/rounding.rs
 package io.github.kotlinmania.rustlang.libm.math.arch.loongarch.rounding
 
-// NB: `frint.{ s.d }` is technically the correct instruction for C's `rint`.
+// NB: `frint.( s.d )` is technically the correct instruction for C's `rint`.
 // However, in Rust (and LLVM by default), `rint` is identical to `roundeven`
-// (no fpenv interaction) so we use the side-effect-free `vfrintrne.{ s, d }`.
+// (no fpenv interaction) so we use the side-effect-free `vfrintrne.( s, d )`.
 //
 // In general, C code that calls Rust's libm should assume that fpenv is ignored.
 

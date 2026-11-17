@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
  * type instead. Any `Try.Residual`s encountered will stop the inner iterator
  * and be propagated back to the overall result.
  */
-public fun <I, T, R, U> tryProcess(iter: I, f: (GenericShunt<I, R>) -> U): ChangeOutputType<Item, U> where R : Residual<U, Any?> {
+public fun <TryType, I, T, R, U> tryProcess(iter: I, f: (GenericShunt<I, R>) -> U): ChangeOutputType<Item, U> where R : Residual<U, TryType> {
     // Note(#11084): we might be able to get rid of GenericShunt in favor of
     // Iterator.scan, as performance should be comparable
     var residual = null

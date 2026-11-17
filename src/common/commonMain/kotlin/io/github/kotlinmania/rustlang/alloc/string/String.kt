@@ -190,7 +190,7 @@ public class DebugTuple(
  * [asBytes]:
  *
  * ```kotlin
- * // The first byte is 104 - the byte value of `'h'`
+ * // The first byte is 104 - the byte value of ``h``
  * val s = "hello"
  * check(s.encodeToByteArray().map { it.toUByte() }[0] == 104u.toUByte())
  * // or
@@ -887,7 +887,7 @@ public open class RustAllocString(
      * }
      * ```
      */
-    public open fun <Searcher, P : Pattern<Any?>> removeMatches(pat: P) {
+    public open fun <Searcher, P : Pattern<Searcher>> removeMatches(pat: P) {
         val rejections1 = run {
             val searcher = pat.intoSearcher(this)
             // Per Searcher.next:
@@ -1274,7 +1274,7 @@ public open class RustAllocString(
      * by [char]. This method returns such an iterator.
      *
      * It's important to remember that [char] represents a Unicode Scalar
-     * Value, and might not match your idea of what a 'character' is. Iteration
+     * Value, and might not match your idea of what a `character` is. Iteration
      * over grapheme clusters may be what you actually want. That functionality
      * is not provided by Rust's standard library, check crates.io instead.
      *
@@ -1369,7 +1369,7 @@ public open class RustAllocString(
      *
      * [replacen]: ../../std/primitive.str.html#method.replacen
      */
-    public open fun <Searcher, P : Pattern<Any?>> replaceFirst(from: P, to: String) {
+    public open fun <Searcher, P : Pattern<Searcher>> replaceFirst(from: P, to: String) {
         val range =
             when (val matchVal = this.matchIndices(from).next()) {
                 null -> { return }
@@ -1399,7 +1399,7 @@ public open class RustAllocString(
      * }
      * ```
      */
-    public open fun <Searcher, P : Pattern<Any?>> replaceLast(from: P, to: String) {
+    public open fun <Searcher, P : Pattern<Searcher>> replaceLast(from: P, to: String) {
         val range =
             when (val matchVal = this.rmatchIndices(from).next()) {
                 null -> { return }

@@ -641,7 +641,7 @@ public open class TcpStream(
          * }
          * ```
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> connect(addr: A): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.connect(addr).map({ TcpStream(it) })
+        public fun <Iter, A : ToSocketAddrs<Iter>> connect(addr: A): Result<TcpStream, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.connect(addr).map({ TcpStream(it) })
 
         /**
          * Opens a TCP connection to a remote host with a timeout.
@@ -1070,7 +1070,7 @@ public open class TcpListener(
          * val socket = TcpListener.bind("127.0.0.1:0").unwrap()
          * ```
          */
-        public fun <Iter, A : ToSocketAddrs<Any?>> bind(addr: A): Result<TcpListener, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.bind(addr).map({ TcpListener(it) })
+        public fun <Iter, A : ToSocketAddrs<Iter>> bind(addr: A): Result<TcpListener, Error> = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.bind(addr).map({ TcpListener(it) })
 
         public fun fromInner(inner: io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener): TcpListener = TcpListener(inner)
     }

@@ -54,7 +54,7 @@ public class DebugStruct(
  * }
  * ```
  */
-public fun <G : Coroutine<Unit, Any?, Unit>> fromCoroutine(coroutine: G): FromCoroutine<G> = FromCoroutine(coroutine)
+public fun <Yield, G : Coroutine<Unit, Yield, Unit>> fromCoroutine(coroutine: G): FromCoroutine<G> = FromCoroutine(coroutine)
 
 /**
  * An iterator over the values yielded by an underlying coroutine.

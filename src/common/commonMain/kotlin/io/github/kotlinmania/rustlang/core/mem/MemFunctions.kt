@@ -985,14 +985,14 @@ public fun <T> copy(x: T): T = x
  *     open class Foo(public var bar: UByte)
  *     val fooArray = ubyteArrayOf(10u.toUByte())
  *     run {
- *         // Copy the data from 'fooArray' and treat it as a 'Foo'
+ *         // Copy the data from `fooArray` and treat it as a `Foo`
  *         var fooStruct: Foo = mem.transmuteCopy(fooArray)
  *         check(fooStruct.bar == 10u.toUByte())
  *         // Modify the copied data
  *         fooStruct.bar = 20u
  *         check(fooStruct.bar == 20u.toUByte())
  *     }
- *     // The contents of 'fooArray' should not have changed
+ *     // The contents of `fooArray` should not have changed
  *     check(fooArray == ubyteArrayOf(10u))
  *     val bytes: List<UByte> = listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())
  *     check(mem.transmuteCopy<List<UByte>, UInt>(bytes) == run { val bytesTmp0 = bytes.firstChunk().unwrap(); ((bytesTmp0[3].toUInt() shl 24) or (bytesTmp0[2].toUInt() shl 16) or (bytesTmp0[1].toUInt() shl 8) or bytesTmp0[0].toUInt()) })
@@ -1215,7 +1215,7 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = Un
  * check(1 == tupleLike.discriminant())
  * check(2 == structLike.discriminant())
  * // ⚠️ This is undefined behavior. Don't do this. ⚠️
- * // assertEq(0, unchecked { std.mem.reinterpret::<_, u8>(std.mem.discriminant(&unitLike)) });
+ * // assertEq(0, unchecked ( std.mem.reinterpret::<_, u8>(std.mem.discriminant(&unitLike)) ));
  * ```
  */
 public fun <T> discriminant(v: T): Discriminant<T> = Discriminant(discriminantValue(v))
