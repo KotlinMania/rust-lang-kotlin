@@ -55,7 +55,7 @@ struct JNINativeInterface_ {
 #endif
 #endif
 
-JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664TbmJniBridge_corearchX8664TbmBextriU64(JNIEnv* km_env, jclass km_clazz, jlong a, jlong control) {
+JNIEXPORT jlong JNICALL Java_io_github_kotlinmania_rustlang_corearch_x8664_X8664TbmJniBridge_corearchX8664TbmExternBextriU64(JNIEnv* km_env, jclass km_clazz, jlong a, jlong control) {
     (void)km_env;
     (void)km_clazz;
     typedef uint64_t (*km_fn_t)(uint64_t, uint64_t);

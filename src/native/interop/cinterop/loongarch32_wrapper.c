@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void corearchLoongarch32Cacop(int32_t a, int32_t b, int32_t c) {
+void corearchLoongarch32ExternCacop(int32_t a, int32_t b, int32_t c) {
     typedef void (*km_fn_t)(int32_t, int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -43,7 +43,7 @@ void corearchLoongarch32Cacop(int32_t a, int32_t b, int32_t c) {
     errno = ENOSYS;
 }
 
-int32_t corearchLoongarch32Csrrd(int32_t a) {
+int32_t corearchLoongarch32ExternCsrrd(int32_t a) {
     typedef int32_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -71,7 +71,7 @@ int32_t corearchLoongarch32Csrrd(int32_t a) {
     return -1;
 }
 
-int32_t corearchLoongarch32Csrwr(int32_t a, int32_t b) {
+int32_t corearchLoongarch32ExternCsrwr(int32_t a, int32_t b) {
     typedef int32_t (*km_fn_t)(int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -99,7 +99,7 @@ int32_t corearchLoongarch32Csrwr(int32_t a, int32_t b) {
     return -1;
 }
 
-int32_t corearchLoongarch32Csrxchg(int32_t a, int32_t b, int32_t c) {
+int32_t corearchLoongarch32ExternCsrxchg(int32_t a, int32_t b, int32_t c) {
     typedef int32_t (*km_fn_t)(int32_t, int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

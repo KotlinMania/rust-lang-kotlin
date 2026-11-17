@@ -1070,7 +1070,7 @@ public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src> =
         public var a: A? = null,
         public var b: B? = null,
     )
-    return when (((typeLayoutSrc).sizeBytes.toInt()).cmp((typeLayoutDst).sizeBytes.toInt())) {
+    return when (kmCompareValues((typeLayoutSrc).sizeBytes.toInt(), (typeLayoutDst).sizeBytes.toInt()).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
         // SAFETY: When Dst is bigger, the union is the size of Dst
         Ordering.Less -> run {
             val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
@@ -1178,6 +1178,29 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = Un
  *     public data object Foo : Enum()
  *     public data object Bar : Enum()
  *     public data object Baz : Enum()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Foo -> 0
+ *         Bar -> 1
+ *         Baz -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * check(0 == Enum.Foo.value.toInt())
  * check(1 == Enum.Bar.value.toInt())

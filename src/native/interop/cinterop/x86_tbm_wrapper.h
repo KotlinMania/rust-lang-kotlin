@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-uint32_t corearchX86TbmBextriU32(uint32_t a, uint32_t control);
+uint32_t corearchX86TbmExternBextriU32(uint32_t a, uint32_t control);
 
 #ifdef __cplusplus
 }

@@ -8,5 +8,5 @@ import kotlinx.cinterop.ExperimentalForeignApi
 public actual fun externRdtsc(): ULong =
     corearchX86RdtscExternRdtsc()
 
-public actual fun rdtscp(): Pair<ULong, UInt> =
+public actual fun externRdtscp(): Pair<ULong, UInt> =
     Pair<ULong, UInt>(0uL, 0u)

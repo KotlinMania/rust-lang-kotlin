@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -12,7 +13,6 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpListener
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.net.udp.UdpSocket
@@ -87,7 +87,7 @@ public open class BorrowedSocket internal constructor(
         when (val tryResult = cvt(result)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.errValue()) }
         val socket = C.WSASocketW(info.iAddressFamily, info.iSocketType, info.iProtocol, info, 0, C.WSA_FLAG_OVERLAPPED or C.WSA_FLAG_NO_HANDLE_INHERIT)
         return if (socket != C.INVALID_SOCKET) {
-            Result.Ok<OwnedSocket, Error>(OwnedSocket.FromRawSocket(((socket as Any?) as RawSocket)))
+            Result.Ok<OwnedSocket, Error>(OwnedSocket.fromRawSocket(((socket as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>()))
         } else {
             val error = C.WSAGetLastError()
             if (error != C.WSAEPROTOTYPE && error != C.WSAEINVAL) {
@@ -98,7 +98,7 @@ public open class BorrowedSocket internal constructor(
                 return Result.Err<OwnedSocket, Error>(lastError())
             }
             run {
-                val socket2 = OwnedSocket.FromRawSocket(((socket1 as Any?) as RawSocket))
+                val socket2 = OwnedSocket.fromRawSocket(((socket1 as Any?) as RawSocket), fieldLayout = UnresolvedTypeLayout<NotAllOnes<RawSocket>>())
                 when (val tryResult = socket2.setNoInherit()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedSocket, Error>(tryResult.errValue()) }
                 Result.Ok<OwnedSocket, Error>(socket2)
             }
@@ -193,17 +193,17 @@ public open class OwnedSocket internal constructor(
         /**
          * Takes ownership of a [`TcpStream`](net.TcpStream)'s socket.
          */
-        public fun from(tcpStream: TcpStream, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.FromRawSocket(tcpStream.intoRawSocket())
+        public fun from(tcpStream: TcpStream, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.fromRawSocket(tcpStream.intoRawSocket(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`TcpListener`](net.TcpListener)'s socket.
          */
-        public fun from(tcpListener: TcpListener, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.FromRawSocket(tcpListener.intoRawSocket())
+        public fun from(tcpListener: TcpListener, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.fromRawSocket(tcpListener.intoRawSocket(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`UdpSocket`](net.UdpSocket)'s underlying socket.
          */
-        public fun from(udpSocket: UdpSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.FromRawSocket(udpSocket.intoRawSocket())
+        public fun from(udpSocket: UdpSocket, fieldLayout: TypeLayout<NotAllOnes<RawSocket>> = UnresolvedTypeLayout()): OwnedSocket = OwnedSocket.fromRawSocket(udpSocket.intoRawSocket(), fieldLayout = fieldLayout)
     }
 }
 
@@ -238,12 +238,12 @@ public fun <T : AsSocket> Rc.UniqueRc<T>.asSocket(): BorrowedSocket = this.asSoc
 
 public fun TcpStream.asSocket(): BorrowedSocket = BorrowedSocket.borrowRaw(this.asRawSocket())
 
-public fun fromTcpStream(owned: OwnedSocket): TcpStream = TcpStream.FromRawSocket(owned.intoRawSocket())
+public fun fromTcpStream(owned: OwnedSocket): TcpStream = TcpStream.fromRawSocket(owned.intoRawSocket())
 
 public fun TcpListener.asSocket(): BorrowedSocket = BorrowedSocket.borrowRaw(this.asRawSocket())
 
-public fun fromTcpListener(owned: OwnedSocket): TcpListener = TcpListener.FromRawSocket(owned.intoRawSocket())
+public fun fromTcpListener(owned: OwnedSocket): TcpListener = TcpListener.fromRawSocket(owned.intoRawSocket())
 
 public fun UdpSocket.asSocket(): BorrowedSocket = BorrowedSocket.borrowRaw(this.asRawSocket())
 
-public fun fromUdpSocket(owned: OwnedSocket): UdpSocket = UdpSocket.FromRawSocket(owned.intoRawSocket())
+public fun fromUdpSocket(owned: OwnedSocket): UdpSocket = UdpSocket.fromRawSocket(owned.intoRawSocket())

@@ -141,4 +141,30 @@ public sealed class IntErrorKind {
     public data object NotAPowerOfTwo : IntErrorKind()
 
     public fun rustEquals(other: IntErrorKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Empty -> 0
+        InvalidDigit -> 1
+        PosOverflow -> 2
+        NegOverflow -> 3
+        Zero -> 4
+        NotAPowerOfTwo -> 5
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }

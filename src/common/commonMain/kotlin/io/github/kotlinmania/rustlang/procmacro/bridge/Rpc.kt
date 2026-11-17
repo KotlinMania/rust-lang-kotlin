@@ -65,7 +65,7 @@ public fun <S> Boolean.encode(w: Buffer, s: S) {
 }
 
 public fun <S> decodeBoolean(r: List<UByte>, s: S): Boolean =
-    when (UByte.Decode(r, s)) {
+    when (UByte.decode(r, s)) {
         0 -> false
         1 -> true
         else -> error("unreachable")
@@ -75,14 +75,14 @@ public fun <S> NonZero<UInt, NonZeroU32Inner>.encode(w: Buffer, s: S) {
     this.get().encode(w, s)
 }
 
-public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(UInt.Decode(r, s)))!!
+public fun <S> decodeNonZeroUInt(r: List<UByte>, s: S): NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(UInt.decode(r, s)))!!
 
 public fun <S, A : Encode<S>, B : Encode<S>> Pair<A, B>.encode(w: Buffer, s: S) {
     this.first.encode(w, s)
     this.second.encode(w, s)
 }
 
-public fun <S, A : Decode<S, A>, B : Decode<S, B>> decodeAB(r: List<UByte>, s: S): Pair<A, B> = Pair(Decode.Decode(r, s), Decode.Decode(r, s))
+public fun <S, A : Decode<S, A>, B : Decode<S, B>> decodeAB(r: List<UByte>, s: S): Pair<A, B> = Pair(Decode.decode(r, s), Decode.decode(r, s))
 
 public fun <S> String.encode(w: Buffer, s: S) {
     val bytes = this.encodeToByteArray().map { it.toUByte() }
@@ -92,7 +92,7 @@ public fun <S> String.encode(w: Buffer, s: S) {
 
 public fun <S> decodeString(r: List<UByte>, s: S): String {
     var r1 = r
-    val len = Int.Decode(r1, s)
+    val len = Int.decode(r1, s)
     val xs = ((r1).subList(0, len))
     r1 = ((r1).subList(len, (r1).size))
     return String.fromUtf8(xs).unwrap()
@@ -110,7 +110,7 @@ public fun <S, T : Encode<S>> List<T>.encode(w: Buffer, s: S) {
 }
 
 public fun <S, T : Decode<S, T>> decodeVecT(r: List<UByte>, s: S, decodeTFn: (List<UByte>, S) -> T): List<T> {
-    val len = Int.Decode(r, s)
+    val len = Int.decode(r, s)
     val vec = ArrayList<T>(len)
     for (unused in 0 until len) {
         vec.add(decodeTFn(r, s))

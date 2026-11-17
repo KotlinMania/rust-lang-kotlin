@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void corearchAarch64PrefetchPrefetch(void* p, int32_t rw, int32_t loc, int32_t ty) {
+void corearchAarch64PrefetchExternPrefetch(void* p, int32_t rw, int32_t loc, int32_t ty) {
     typedef void (*km_fn_t)(void*, int32_t, int32_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

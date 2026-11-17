@@ -58,9 +58,9 @@ private object Aarch64PrefetchJniBridge {
     }
 
     @JvmStatic
-    external fun corearchAarch64PrefetchPrefetch(p: Long, rw: Int, loc: Int, ty: Int)
+    external fun corearchAarch64PrefetchExternPrefetch(p: Long, rw: Int, loc: Int, ty: Int)
 }
 
-public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
-    Aarch64PrefetchJniBridge.corearchAarch64PrefetchPrefetch(p.rawAddress, rw, loc, ty)
+public actual fun externPrefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
+    Aarch64PrefetchJniBridge.corearchAarch64PrefetchExternPrefetch(p.rawAddress, rw, loc, ty)
 }

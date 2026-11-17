@@ -3,17 +3,17 @@
 package io.github.kotlinmania.rustlang.corearch.riscvshared
 
 // The host must provide the C companion wrapper exports in import module kmcore.
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSm4ed")
-private external fun wasiCorearchRiscvsharedZkSm4ed(rs1: Int, rs2: Int, bs: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSm4ed")
+private external fun wasiCorearchRiscvsharedZkExternSm4ed(rs1: Int, rs2: Int, bs: Int): Int
 
-public actual fun sm4ed(rs1: Int, rs2: Int, bs: Int): Int =
-    wasiCorearchRiscvsharedZkSm4ed(rs1, rs2, bs).toInt()
+public actual fun externSm4ed(rs1: Int, rs2: Int, bs: Int): Int =
+    wasiCorearchRiscvsharedZkExternSm4ed(rs1, rs2, bs).toInt()
 
-@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkSm4ks")
-private external fun wasiCorearchRiscvsharedZkSm4ks(rs1: Int, rs2: Int, bs: Int): Int
+@kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSm4ks")
+private external fun wasiCorearchRiscvsharedZkExternSm4ks(rs1: Int, rs2: Int, bs: Int): Int
 
-public actual fun sm4ks(rs1: Int, rs2: Int, bs: Int): Int =
-    wasiCorearchRiscvsharedZkSm4ks(rs1, rs2, bs).toInt()
+public actual fun externSm4ks(rs1: Int, rs2: Int, bs: Int): Int =
+    wasiCorearchRiscvsharedZkExternSm4ks(rs1, rs2, bs).toInt()
 
 @kotlin.wasm.WasmImport("kmcore", "corearchRiscvsharedZkExternSm3p0")
 private external fun wasiCorearchRiscvsharedZkExternSm3p0(rs1: Int): Int

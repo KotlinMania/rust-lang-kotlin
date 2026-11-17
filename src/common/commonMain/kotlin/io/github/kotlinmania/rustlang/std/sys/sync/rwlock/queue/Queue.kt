@@ -27,6 +27,7 @@ import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Relaxed
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 // Efficient read-write locking without `pthreadRwlockT`.
@@ -234,7 +235,7 @@ public open class Node internal constructor(
      */
     public open fun prepare() {
         // Fall back to creating an unnamed `Thread` handle to allow locking in TLS destructors.
-        this.thread.getOrInit(thread.currentOrUnnamed)
+        this.thread.getOrInit(currentOrUnnamed)
         this.completed = AtomicBool.new(false)
     }
 

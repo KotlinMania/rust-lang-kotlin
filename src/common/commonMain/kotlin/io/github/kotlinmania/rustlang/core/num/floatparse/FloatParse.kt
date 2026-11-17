@@ -56,7 +56,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * by `src` (following the same rules for rounding as for the
  * results of primitive operations).
  */
-public fun fromStrF16(src: String): Result<F16, ParseFloatError> = dec2flt.dec2flt(src)
+public fun fromStrF16(src: String): Result<F16, ParseFloatError> = dec2flt(src)
 
 /**
  * Converts a string in base 10 to a float.
@@ -107,7 +107,7 @@ public fun fromStrF16(src: String): Result<F16, ParseFloatError> = dec2flt.dec2f
  * by `src` (following the same rules for rounding as for the
  * results of primitive operations).
  */
-public fun fromStrFloat(src: String): Result<kotlin.Float, ParseFloatError> = dec2flt.dec2flt(src)
+public fun fromStrFloat(src: String): Result<kotlin.Float, ParseFloatError> = dec2flt(src)
 
 /**
  * Converts a string in base 10 to a float.
@@ -158,7 +158,7 @@ public fun fromStrFloat(src: String): Result<kotlin.Float, ParseFloatError> = de
  * by `src` (following the same rules for rounding as for the
  * results of primitive operations).
  */
-public fun fromStrDouble(src: String): Result<Double, ParseFloatError> = dec2flt.dec2flt(src)
+public fun fromStrDouble(src: String): Result<Double, ParseFloatError> = dec2flt(src)
 
 // Note(f16): A fallback is used when the backend+target does not support f16 well, in order
 // to avoid ICEs.
@@ -234,4 +234,26 @@ public sealed class FloatErrorKind {
     public data object Invalid : FloatErrorKind()
 
     public fun rustEquals(other: FloatErrorKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Empty -> 0
+        Invalid -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }

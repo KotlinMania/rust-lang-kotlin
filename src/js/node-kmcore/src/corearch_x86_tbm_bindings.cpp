@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchX86TbmBextriU32_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchX86TbmExternBextriU32_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     uint32_t a = static_cast<uint32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     uint32_t control = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -86,7 +86,7 @@ static Napi::Value corearchX86TbmBextriU32_napi(const Napi::CallbackInfo& km_inf
 }
 
 static void register_x86_tbm_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchX86TbmBextriU32", Napi::Function::New(env, corearchX86TbmBextriU32_napi));
+    exports.Set("corearchX86TbmExternBextriU32", Napi::Function::New(env, corearchX86TbmExternBextriU32_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_x86_tbm_napi, nullptr };

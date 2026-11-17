@@ -43,18 +43,18 @@ public fun cabiRealloc(oldPtr: MutPtr, oldLen: Int, align: Int, newLen: Int): Mu
                 return ptr.withoutProvenanceMut(align)
             }
             layout = Layout.fromSizeAlignUnchecked(newLen, align)
-            alloc.alloc(layout)
+            alloc(layout)
         } else {
             check(newLen != 0)
             layout = Layout.fromSizeAlignUnchecked(oldLen, align)
-            alloc.realloc(oldPtr, layout, newLen)
+            realloc(oldPtr, layout, newLen)
         }
     if (ptr.isNull()) {
         // Print a nice message in debug mode, but in release mode don't
         // pull in so many dependencies related to printing so just emit an
         // `unreachable` instruction.
         if (false) {
-            alloc.handleAllocError(layout)
+            handleAllocError(layout)
         } else {
             abortInternal()
         }

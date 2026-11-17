@@ -66,7 +66,7 @@ public fun <Unmarked, T> markOptionT(unmarked: Unmarked?): T? =
         }
         else -> {
             val t = unmarked
-            Option.Some(Mark.Mark(t))
+            Option.Some(Mark.mark(t))
         }
     }
 
@@ -84,10 +84,10 @@ public fun <Unmarked, T> T?.unmark(): Unmarked? =
 public fun <Unmarked, T, E> markResultTE(unmarked: Result<Unmarked, Unmarked>): Result<T, E> =
     when (unmarked) { is Result.Ok<*, *> -> {
         val t = unmarked.okValue()
-        Result.Ok<T, E>(Mark.Mark(t))
+        Result.Ok<T, E>(Mark.mark(t))
     }; is Result.Err<*, *> -> {
         val e = unmarked.errValue()
-        Result.Err<T, E>(Mark.Mark(e))
+        Result.Err<T, E>(Mark.mark(e))
     } }
 
 public fun <Unmarked, T, E> Result<T, E>.unmark(): Result<Unmarked, Unmarked> =
@@ -104,4 +104,4 @@ public fun <S, T : Encode<S>> Range<T>.encode(w: Buffer, s: S) {
     this.end.encode(w, s)
 }
 
-public fun <S, T : Decode<S, T>> decodeRangeT(r: List<UByte>, s: S): Range<T> = Range(start = Decode.Decode(r, s), end = Decode.Decode(r, s))
+public fun <S, T : Decode<S, T>> decodeRangeT(r: List<UByte>, s: S): Range<T> = Range(start = Decode.decode(r, s), end = Decode.decode(r, s))

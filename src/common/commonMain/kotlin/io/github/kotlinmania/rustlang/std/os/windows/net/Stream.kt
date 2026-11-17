@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.asRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.asSocket
+import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawSocket
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket
@@ -434,6 +435,6 @@ public open class UnixStream(
             return Result.Ok<UnixStream, io.github.kotlinmania.rustlang.core.io.error.Error>(UnixStream(inner))
         }
 
-        public fun fromRawSocket(sock: RawSocket): UnixStream = UnixStream(Socket.FromRawSocket(sock))
+        public fun fromRawSocket(sock: RawSocket): UnixStream = UnixStream(Socket.fromRawSocket(sock))
     }
 }

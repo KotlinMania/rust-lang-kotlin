@@ -10,9 +10,9 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 //
 // [ACLE documentation](https://arm-software.github.io/acle/main/acle.html#random-number-generation-intrinsics)
 
-public expect fun rndr(): Tuple
+public expect fun externRndr(): Tuple
 
-public expect fun rndrrs(): Tuple
+public expect fun externRndrrs(): Tuple
 
 public open class Tuple(
     public var bits: ULong,
@@ -53,7 +53,7 @@ public open class Tuple(
  */
 public fun rndr(value: MutPtr): Int {
     val value1 = value
-    val structVal = rndr()
+    val structVal = externRndr()
     val bits = structVal.bits
     val status = structVal.status
     (PrimitiveLayouts.U64).writeNative((value1).rawAddress, bits)
@@ -68,7 +68,7 @@ public fun rndr(value: MutPtr): Int {
  */
 public fun rndrrs(value: MutPtr): Int {
     val value1 = value
-    val structVal = rndrrs()
+    val structVal = externRndrrs()
     val bits = structVal.bits
     val status = structVal.status
     (PrimitiveLayouts.U64).writeNative((value1).rawAddress, bits)

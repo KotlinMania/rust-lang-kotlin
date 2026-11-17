@@ -32,16 +32,16 @@ private object Loongarch64JniBridge {
     external fun corearchLoongarch64ExternCrccWDW(a: Long, b: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarch64Cacop(a: Long, b: Long, c: Long)
+    external fun corearchLoongarch64ExternCacop(a: Long, b: Long, c: Long)
 
     @JvmStatic
-    external fun corearchLoongarch64Csrrd(a: Int): Long
+    external fun corearchLoongarch64ExternCsrrd(a: Int): Long
 
     @JvmStatic
-    external fun corearchLoongarch64Csrwr(a: Long, b: Int): Long
+    external fun corearchLoongarch64ExternCsrwr(a: Long, b: Int): Long
 
     @JvmStatic
-    external fun corearchLoongarch64Csrxchg(a: Long, b: Long, c: Int): Long
+    external fun corearchLoongarch64ExternCsrxchg(a: Long, b: Long, c: Int): Long
 
     @JvmStatic
     external fun corearchLoongarch64ExternIocsrrdD(a: Int): Long
@@ -56,10 +56,10 @@ private object Loongarch64JniBridge {
     external fun corearchLoongarch64ExternAsrtgt(a: Long, b: Long)
 
     @JvmStatic
-    external fun corearchLoongarch64Lddir(a: Long, b: Long): Long
+    external fun corearchLoongarch64ExternLddir(a: Long, b: Long): Long
 
     @JvmStatic
-    external fun corearchLoongarch64Ldpte(a: Long, b: Long)
+    external fun corearchLoongarch64ExternLdpte(a: Long, b: Long)
 }
 
 public actual fun externCrcWBW(a: Int, b: Int): Int =
@@ -86,18 +86,18 @@ public actual fun externCrccWWW(a: Int, b: Int): Int =
 public actual fun externCrccWDW(a: Long, b: Int): Int =
     Loongarch64JniBridge.corearchLoongarch64ExternCrccWDW(a, b)
 
-public actual fun cacop(a: Long, b: Long, c: Long) {
-    Loongarch64JniBridge.corearchLoongarch64Cacop(a, b, c)
+public actual fun externCacop(a: Long, b: Long, c: Long) {
+    Loongarch64JniBridge.corearchLoongarch64ExternCacop(a, b, c)
 }
 
-public actual fun csrrd(a: Int): Long =
-    Loongarch64JniBridge.corearchLoongarch64Csrrd(a)
+public actual fun externCsrrd(a: Int): Long =
+    Loongarch64JniBridge.corearchLoongarch64ExternCsrrd(a)
 
-public actual fun csrwr(a: Long, b: Int): Long =
-    Loongarch64JniBridge.corearchLoongarch64Csrwr(a, b)
+public actual fun externCsrwr(a: Long, b: Int): Long =
+    Loongarch64JniBridge.corearchLoongarch64ExternCsrwr(a, b)
 
-public actual fun csrxchg(a: Long, b: Long, c: Int): Long =
-    Loongarch64JniBridge.corearchLoongarch64Csrxchg(a, b, c)
+public actual fun externCsrxchg(a: Long, b: Long, c: Int): Long =
+    Loongarch64JniBridge.corearchLoongarch64ExternCsrxchg(a, b, c)
 
 public actual fun externIocsrrdD(a: Int): Long =
     Loongarch64JniBridge.corearchLoongarch64ExternIocsrrdD(a)
@@ -114,9 +114,9 @@ public actual fun externAsrtgt(a: Long, b: Long) {
     Loongarch64JniBridge.corearchLoongarch64ExternAsrtgt(a, b)
 }
 
-public actual fun lddir(a: Long, b: Long): Long =
-    Loongarch64JniBridge.corearchLoongarch64Lddir(a, b)
+public actual fun externLddir(a: Long, b: Long): Long =
+    Loongarch64JniBridge.corearchLoongarch64ExternLddir(a, b)
 
-public actual fun ldpte(a: Long, b: Long) {
-    Loongarch64JniBridge.corearchLoongarch64Ldpte(a, b)
+public actual fun externLdpte(a: Long, b: Long) {
+    Loongarch64JniBridge.corearchLoongarch64ExternLdpte(a, b)
 }

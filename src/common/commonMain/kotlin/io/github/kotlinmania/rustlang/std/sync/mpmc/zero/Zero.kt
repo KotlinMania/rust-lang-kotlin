@@ -17,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
-import io.github.kotlinmania.rustlang.std.panicking.Hook
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
@@ -265,7 +264,7 @@ public open class Channel<T> internal constructor(
         }
         return Context.with({ cx ->
             // Prepare for blocking until a receiver wakes us up.
-            val oper = Operation.Hook(token)
+            val oper = Operation.hook(token)
             var packet = Packet.messageOnStack(msg)
             inner.senders.registerWithPacket(oper, ((addrOfMut(packet))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, cx)
             inner.receivers.notify()
@@ -341,7 +340,7 @@ public open class Channel<T> internal constructor(
         }
         return Context.with({ cx ->
             // Prepare for blocking until a sender wakes us up.
-            val oper = Operation.Hook(token)
+            val oper = Operation.hook(token)
             var packet = Packet.emptyOnStack()
             inner.receivers.registerWithPacket(oper, ((addrOfMut(packet))).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, cx)
             inner.senders.notify()

@@ -5,7 +5,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.windows.DTORS
 
@@ -17,7 +16,7 @@ public fun enable() {
     fun run(arg0: MutPtr) {
         run {
             // Rust thread-local destructors should run *before* `rt.threadCleanup`.
-            destructors.run()
+            io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list.run()
             // On platforms with `__cxa_thread_atexit_impl`, `destructors.run` does nothing as the
             // TLS destructors are registered with the system. But because all of those platforms
             // call the destructors of TLS keys *after* the registered "atexit" ones, this function

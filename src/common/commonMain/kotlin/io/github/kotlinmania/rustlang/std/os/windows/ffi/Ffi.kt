@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Buf
 
 // Windows-specific extensions to primitives in the [std.ffi] module.
@@ -89,7 +90,7 @@ public interface OsStringExt<T> {
     }
 }
 
-public fun osStringExtFromWideOsString(wide: List<UShort>): OsString = FromInner.FromInner(Buf(inner = Wtf8Buf.fromWide(wide)))
+public fun osStringExtFromWideOsString(wide: List<UShort>): OsString = FromInner.fromInner(Buf(inner = Wtf8Buf.fromWide(wide)))
 
 /**
  * Windows-specific extensions to [OsStr].

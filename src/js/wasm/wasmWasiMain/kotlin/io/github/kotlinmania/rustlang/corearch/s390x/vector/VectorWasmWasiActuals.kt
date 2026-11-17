@@ -149,8 +149,8 @@ public actual fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr) {
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchS390xVectorVstrl")
 }
 
-public actual fun lcbb(a: ConstPtr, b: UInt): UInt =
-    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchS390xVectorLcbb")
+public actual fun externLcbb(a: ConstPtr, b: UInt): UInt =
+    throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchS390xVectorExternLcbb")
 
 public actual fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar> =
     throw UnsupportedOperationException("WasmWasi FFI requires a host memory/callback/aggregate or variadic ABI adapter for corearchS390xVectorVlbb")

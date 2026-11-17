@@ -13,5 +13,5 @@ private external fun wasmCorearchX86RdtscExternRdtsc(): String
 public actual fun externRdtsc(): ULong =
     if (x86RdtscNapiAvailable) wasmCorearchX86RdtscExternRdtsc().toULong() else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun rdtscp(): Pair<ULong, UInt> =
+public actual fun externRdtscp(): Pair<ULong, UInt> =
     throw UnsupportedOperationException("Native FFI addon is not available")

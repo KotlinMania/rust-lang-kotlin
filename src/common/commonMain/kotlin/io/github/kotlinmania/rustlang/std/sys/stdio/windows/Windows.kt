@@ -28,7 +28,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 import io.github.kotlinmania.rustlang.std.alloc.System
-import io.github.kotlinmania.rustlang.std.os.windows.io.FromRawHandle
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.CP_UTF8
@@ -61,7 +60,7 @@ public open class Stdin(
         val handle = when (val tryResult = getHandle(STD_INPUT_HANDLE)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Int, Error>(tryResult.errValue()) }
         if (!isConsole(handle)) {
             run {
-                val handle1 = Handle.FromRawHandle(handle)
+                val handle1 = Handle.fromRawHandle(handle)
                 val ret = handle1.read(buf)
                 handle1.intoRawHandle()
                 // Don't close the handle
@@ -303,7 +302,7 @@ public fun write(handleId: UInt, data: List<UByte>, incompleteUtf8: IncompleteUt
     // our UTF16 conversion, it handily beats doing 2 (or more) costly RPC round-trips.
     return if (!isConsole(handle)) {
         run {
-            val handle1 = Handle.FromRawHandle(handle)
+            val handle1 = Handle.fromRawHandle(handle)
             val ret = handle1.write(data)
             handle1.intoRawHandle()
             // Don't close the handle

@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.fs.dirs.HomeDirs
 import io.github.kotlinmania.rustlang.std.fs.dirs.MediaDirs
 import io.github.kotlinmania.rustlang.std.io.constError
@@ -331,8 +332,8 @@ public interface MediaDirsExt<T> {
 }
 
 public fun homeDirsExtAppdataEnvHomeDirs(): Result<HomeDirs, Error> {
-    val roamingAppData = when (val tryResult = env.varOs("APPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%"))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
-    val localAppData = when (val tryResult = env.varOs("LOCALAPPDATA").map(PathBuf::from).filter({ p -> p.isAbsolute() }).okOr(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%"))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
+    val roamingAppData = when (val tryResult = (varOs("APPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(constError(ErrorKind.InvalidData, "non-absolute %APPDATA%")))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
+    val localAppData = when (val tryResult = (varOs("LOCALAPPDATA")?.let(PathBuf::from).filter({ p -> p.isAbsolute() })?.let { Result.Ok<Any, Error>(it) } ?: Result.Err<Any, Error>(constError(ErrorKind.InvalidData, "non-absolute %LOCALAPPDATA%")))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<HomeDirs, Error>(tryResult.errValue()) }
     // AppData/Local -- system-local, doesn't make sense to sync to another
     // AppData/Roaming -- data that makes sense to sync across machines
     val dirs = HomeDirs.empty()

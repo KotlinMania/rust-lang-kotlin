@@ -14,16 +14,16 @@ import io.github.kotlinmania.rustlang.libc.systemPropertyGet
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.PROP_VALUE_MAX
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.AuxVec
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 
 // Run-time feature detection for Aarch64 on Linux.
 
 /**
  * Try to read the features from the auxiliary vector.
  */
-public fun detectFeatures(): cache.Initializer {
+public fun detectFeatures(): Initializer {
     val isExynos9810 = run {
         // Samsung Exynos 9810 has a bug that big and little cores have different
         // ISAs. And on older Android (pre-9), the kernel incorrectly reports
@@ -44,7 +44,7 @@ public fun detectFeatures(): cache.Initializer {
         }
         else -> {}
     }
-    return cache.Initializer.default()
+    return Initializer.default()
 }
 
 /**
@@ -159,8 +159,8 @@ public open class AtHwcap(
      * The feature dependencies here come directly from LLVM's feature definitions:
      * <https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/AArch64/AArch64.td>
      */
-    public open fun cache(isExynos9810: Boolean): cache.Initializer {
-        val value = cache.Initializer.default()
+    public open fun cache(isExynos9810: Boolean): Initializer {
+        val value = Initializer.default()
         run {
             var enableFeature =
                 { f, enable ->

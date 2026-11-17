@@ -11,6 +11,30 @@ public sealed class Result {
     public data object Greater : Result()
     public data object Unordered : Result()
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Less -> 0
+        Equal -> 1
+        Greater -> 2
+        Unordered -> 3
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     /**
      * Conversions to match GCC intrinsics [1].
      *

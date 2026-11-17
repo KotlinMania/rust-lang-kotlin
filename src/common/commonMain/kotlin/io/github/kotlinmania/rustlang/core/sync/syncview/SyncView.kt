@@ -7,8 +7,8 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.convert.AsMut
 import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.future.future.Future
-import io.github.kotlinmania.rustlang.core.hash.Hash
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -169,7 +169,7 @@ public open class SyncView<T>(
 
     // See `SyncView`s docs for justification.
 
-    public open fun fmt(f: StringBuilder): Result<Unit, fmt.Error> = run { DebugStruct(f, "SyncView").finishNonExhaustive(); Result.Ok<Unit, fmt.Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "SyncView").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Unwrap the value contained in the `SyncView`
@@ -218,7 +218,7 @@ public open class SyncView<T>(
 
     public override fun hashCode(): Int {
         var state = 0
-        Hash.Hash(this.inner, state)
+        this.inner.hash(state)
         return state
     }
 

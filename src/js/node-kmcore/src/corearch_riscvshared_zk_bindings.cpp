@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchRiscvsharedZkSm4ed_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSm4ed_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t rs2 = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -86,7 +86,7 @@ static Napi::Value corearchRiscvsharedZkSm4ed_napi(const Napi::CallbackInfo& km_
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchRiscvsharedZkSm4ks_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchRiscvsharedZkExternSm4ks_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t rs1 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t rs2 = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -398,8 +398,8 @@ static Napi::Value corearchRiscvsharedZkXperm464_napi(const Napi::CallbackInfo& 
 }
 
 static void register_riscvshared_zk_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchRiscvsharedZkSm4ed", Napi::Function::New(env, corearchRiscvsharedZkSm4ed_napi));
-    exports.Set("corearchRiscvsharedZkSm4ks", Napi::Function::New(env, corearchRiscvsharedZkSm4ks_napi));
+    exports.Set("corearchRiscvsharedZkExternSm4ed", Napi::Function::New(env, corearchRiscvsharedZkExternSm4ed_napi));
+    exports.Set("corearchRiscvsharedZkExternSm4ks", Napi::Function::New(env, corearchRiscvsharedZkExternSm4ks_napi));
     exports.Set("corearchRiscvsharedZkExternSm3p0", Napi::Function::New(env, corearchRiscvsharedZkExternSm3p0_napi));
     exports.Set("corearchRiscvsharedZkExternSm3p1", Napi::Function::New(env, corearchRiscvsharedZkExternSm3p1_napi));
     exports.Set("corearchRiscvsharedZkExternSha256sig0", Napi::Function::New(env, corearchRiscvsharedZkExternSha256sig0_napi));

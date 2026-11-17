@@ -1130,8 +1130,8 @@ public interface IntoBounds<T> : RangeBounds<T> {
      * ```
      */
     public fun <R> intersect(other: R): Pair<Bound<T>, Bound<T>> where R : IntoBounds<T> {
-        val (selfStart, selfEnd) = IntoBounds.IntoBounds(this)
-        val (otherStart, otherEnd) = IntoBounds.IntoBounds(other)
+        val (selfStart, selfEnd) = this.intoBounds()
+        val (otherStart, otherEnd) = other.intoBounds()
         val start =
             run {
                 val matchVal = Pair(selfStart, otherStart)
@@ -1385,6 +1385,29 @@ public sealed class OneSidedRangeBound {
      * The range is bounded inclusively from above and is unbounded below.
      */
     public data object EndInclusive : OneSidedRangeBound()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        StartInclusive -> 0
+        End -> 1
+        EndInclusive -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

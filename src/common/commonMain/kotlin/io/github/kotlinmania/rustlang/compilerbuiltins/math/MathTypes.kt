@@ -260,13 +260,13 @@ public fun tgammaf(x: Float): Float = tgammaf(x)
 public fun lgammaR(x: Double, s: RustMutableReference<Int>): Double {
     val s1 = s
     val r = lgammaR(x)
-    (s1).write(r.second)
+    (s1).write(r.field1)
     return r.first
 }
 
 public fun lgammafR(x: Float, s: RustMutableReference<Int>): Float {
     val s1 = s
     val r = lgammafR(x)
-    (s1).write(r.second)
+    (s1).write(r.field1)
     return r.first
 }

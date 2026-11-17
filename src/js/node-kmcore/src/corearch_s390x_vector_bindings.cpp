@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchS390xVectorLcbb_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchS390xVectorExternLcbb_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* a = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     uint32_t b = static_cast<uint32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -86,7 +86,7 @@ static Napi::Value corearchS390xVectorLcbb_napi(const Napi::CallbackInfo& km_inf
 }
 
 static void register_s390x_vector_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchS390xVectorLcbb", Napi::Function::New(env, corearchS390xVectorLcbb_napi));
+    exports.Set("corearchS390xVectorExternLcbb", Napi::Function::New(env, corearchS390xVectorExternLcbb_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_s390x_vector_napi, nullptr };

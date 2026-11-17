@@ -5,44 +5,44 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXgetbv
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXrstor
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXrstors
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsave
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsavec
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsaveopt
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsaves
-import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveXsetbv
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXrstor
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXrstors
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXsave
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXsavec
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXsaveopt
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXsaves
+import io.github.kotlinmania.rustlang.corearch.x86.cinterop.corearchX86XsaveExternXsetbv
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toCPointer
 
-public actual fun xsave(p: MutPtr, hi: UInt, lo: UInt) {
-    corearchX86XsaveXsave(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
+public actual fun externXsave(p: MutPtr, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXsave(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
 }
 
-public actual fun xrstor(p: ConstPtr, hi: UInt, lo: UInt) {
-    corearchX86XsaveXrstor(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
+public actual fun externXrstor(p: ConstPtr, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXrstor(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
 }
 
-public actual fun xsetbv(v: UInt, hi: UInt, lo: UInt) {
-    corearchX86XsaveXsetbv(v, hi, lo)
+public actual fun externXsetbv(v: UInt, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXsetbv(v, hi, lo)
 }
 
 public actual fun externXgetbv(v: UInt): Long =
     corearchX86XsaveExternXgetbv(v)
 
-public actual fun xsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
-    corearchX86XsaveXsaveopt(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
+public actual fun externXsaveopt(p: MutPtr, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXsaveopt(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
 }
 
-public actual fun xsavec(p: MutPtr, hi: UInt, lo: UInt) {
-    corearchX86XsaveXsavec(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
+public actual fun externXsavec(p: MutPtr, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXsavec(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
 }
 
-public actual fun xsaves(p: MutPtr, hi: UInt, lo: UInt) {
-    corearchX86XsaveXsaves(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
+public actual fun externXsaves(p: MutPtr, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXsaves(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
 }
 
-public actual fun xrstors(p: ConstPtr, hi: UInt, lo: UInt) {
-    corearchX86XsaveXrstors(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
+public actual fun externXrstors(p: ConstPtr, hi: UInt, lo: UInt) {
+    corearchX86XsaveExternXrstors(p.rawAddress.toCPointer<ByteVar>(), hi, lo)
 }

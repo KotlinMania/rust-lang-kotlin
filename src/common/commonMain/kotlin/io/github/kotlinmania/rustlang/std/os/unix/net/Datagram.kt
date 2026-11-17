@@ -33,6 +33,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.SocketAncillary
@@ -42,6 +43,7 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.asInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -870,13 +872,13 @@ public open class UnixDatagram(
             return Result.Ok<Pair<UnixDatagram, UnixDatagram>, io.github.kotlinmania.rustlang.core.io.error.Error>(Pair(UnixDatagram(i1), UnixDatagram(i2)))
         }
 
-        public fun fromRawFd(fd: RawFd): UnixDatagram = UnixDatagram(Socket.FromInner(FromInner.FromInner(OwnedFd.FromRawFd(fd))))
+        public fun fromRawFd(fd: RawFd): UnixDatagram = UnixDatagram(Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd))))
 
-        public fun from(owned: OwnedFd): UnixDatagram = UnixDatagram.FromRawFd(owned.intoRawFd())
+        public fun from(owned: OwnedFd): UnixDatagram = UnixDatagram.fromRawFd(owned.intoRawFd())
     }
 }
 
 /**
  * Takes ownership of a [UnixDatagram]s socket file descriptor.
  */
-public fun fromOwnedFd(unixDatagram: UnixDatagram): OwnedFd = OwnedFd.FromRawFd(unixDatagram.intoRawFd())
+public fun fromOwnedFd(unixDatagram: UnixDatagram): OwnedFd = OwnedFd.fromRawFd(unixDatagram.intoRawFd())

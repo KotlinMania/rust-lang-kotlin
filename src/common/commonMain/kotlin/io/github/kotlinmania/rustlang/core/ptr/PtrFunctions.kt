@@ -3,6 +3,7 @@
 package io.github.kotlinmania.rustlang.core.ptr
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.fmt.pointerFmtInner
 import io.github.kotlinmania.rustlang.core.intrinsics.assume
 import io.github.kotlinmania.rustlang.core.intrinsics.cttzNonzero
 import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
@@ -1084,9 +1085,6 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = Unresol
  * Manually implement [mem.swap]:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
- * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.ptr
  *
  * fun <T> swap(a: T, b: T) {
@@ -1108,11 +1106,9 @@ public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = Unresol
  *         // so nothing is dropped implicitly here.
  *     }
  * }
- * val localStorageL30C0 = AddressableLocal("foo".toOwned(), UnresolvedTypeLayout<Any?>())
- * var foo by localStorageL30C0
- * val localStorageL31C0 = AddressableLocal("bar".toOwned(), UnresolvedTypeLayout<Any?>())
- * var bar by localStorageL31C0
- * swap(RustMutableReference(localStorageL30C0.asMutPtr(), localStorageL30C0.layout), RustMutableReference(localStorageL31C0.asMutPtr(), localStorageL31C0.layout))
+ * var foo = "foo".toOwned()
+ * var bar = "bar".toOwned()
+ * swap(foo, bar)
  * check(foo == "bar")
  * check(bar == "foo")
  * ```
@@ -1315,9 +1311,6 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T> = Unresol
  * Manually implement [mem.swap]:
  *
  * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
- * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
  * import std.ptr
  *
  * fun <T> swap(a: T, b: T) {
@@ -1339,11 +1332,9 @@ public fun <T> readUnaligned(src: ConstPtr, typeLayoutT: TypeLayout<T> = Unresol
  *         // so nothing is dropped implicitly here.
  *     }
  * }
- * val localStorageL30C0 = AddressableLocal("foo".toOwned(), UnresolvedTypeLayout<Any?>())
- * var foo by localStorageL30C0
- * val localStorageL31C0 = AddressableLocal("bar".toOwned(), UnresolvedTypeLayout<Any?>())
- * var bar by localStorageL31C0
- * swap(RustMutableReference(localStorageL30C0.asMutPtr(), localStorageL30C0.layout), RustMutableReference(localStorageL31C0.asMutPtr(), localStorageL31C0.layout))
+ * var foo = "foo".toOwned()
+ * var bar = "bar".toOwned()
+ * swap(foo, bar)
  * check(foo == "bar")
  * check(bar == "foo")
  * ```
@@ -1995,4 +1986,4 @@ public fun <F : FnPtr<F>, HH> F.hash(state: HH) {
     state.writeUsize(this.addr())
 }
 
-public fun <F : FnPtr<F>> F.fmt(f: StringBuilder): Result<Unit, Unit> = fmt.pointerFmtInner(this.addr(), f)
+public fun <F : FnPtr<F>> F.fmt(f: StringBuilder): Result<Unit, Unit> = pointerFmtInner(this.addr(), f)

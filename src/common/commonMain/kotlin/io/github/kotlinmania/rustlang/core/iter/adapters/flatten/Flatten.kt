@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.flatten
 
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
-import io.github.kotlinmania.rustlang.core.fmt.Result
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
 import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
@@ -14,7 +13,7 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
-import io.github.kotlinmania.rustlang.core.result.Result as RustResult
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public class DebugStruct(
     private val out: StringBuilder,

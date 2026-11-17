@@ -362,6 +362,29 @@ public sealed class OnceExclusiveState {
     public data object Incomplete : OnceExclusiveState()
     public data object Poisoned : OnceExclusiveState()
     public data object Complete : OnceExclusiveState()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Incomplete -> 0
+        Poisoned -> 1
+        Complete -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

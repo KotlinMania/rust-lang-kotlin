@@ -6,6 +6,13 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.*
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.mem.component10
+import io.github.kotlinmania.rustlang.core.mem.component11
+import io.github.kotlinmania.rustlang.core.mem.component12
+import io.github.kotlinmania.rustlang.core.mem.component6
+import io.github.kotlinmania.rustlang.core.mem.component7
+import io.github.kotlinmania.rustlang.core.mem.component8
+import io.github.kotlinmania.rustlang.core.mem.component9
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
@@ -42,61 +49,61 @@ public fun <U, T> Pair<U, T>.partialCmp(other: Pair<U, T>): Ordering? =
     }
 
 public fun <U, T> Pair<U, T>.lt(other: Pair<U, T>): Boolean =
-    when (val matchVal = this.first.chainingLess(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            this.second.lt(other.second)
+            (kmPartialCompareValues(this.second, other.second)?.let { cmpSign -> cmpSign < 0 } == true)
         }
     }
 
 public fun <U, T> Pair<U, T>.le(other: Pair<U, T>): Boolean =
-    when (val matchVal = this.first.chainingLess(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            this.second.le(other.second)
+            (kmPartialCompareValues(this.second, other.second)?.let { cmpSign -> cmpSign <= 0 } == true)
         }
     }
 
 public fun <U, T> Pair<U, T>.ge(other: Pair<U, T>): Boolean =
-    when (val matchVal = this.first.chainingGreater(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            this.second.ge(other.second)
+            (kmPartialCompareValues(this.second, other.second)?.let { cmpSign -> cmpSign >= 0 } == true)
         }
     }
 
 public fun <U, T> Pair<U, T>.gt(other: Pair<U, T>): Boolean =
-    when (val matchVal = this.first.chainingGreater(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            this.second.gt(other.second)
+            (kmPartialCompareValues(this.second, other.second)?.let { cmpSign -> cmpSign > 0 } == true)
         }
     }
 
 public fun <U, T> Pair<U, T>.chainingLess(other: Pair<U, T>): ControlFlow<Boolean, Unit> {
     return run {
-        if (this.first.chainingLess(other.first) is ControlFlow.Break<*, *>) {
-            val r = this.first.chainingLess(other.first)
+        if (kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (this.second.chainingLess(other.second) is ControlFlow.Break<*, *>) {
-            val r1 = this.second.chainingLess(other.second)
+        if (kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
         Continue(Unit)
@@ -105,12 +112,12 @@ public fun <U, T> Pair<U, T>.chainingLess(other: Pair<U, T>): ControlFlow<Boolea
 
 public fun <U, T> Pair<U, T>.chainingGreater(other: Pair<U, T>): ControlFlow<Boolean, Unit> {
     return run {
-        if (this.first.chainingGreater(other.first) is ControlFlow.Break<*, *>) {
-            val r = this.first.chainingGreater(other.first)
+        if (kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (this.second.chainingGreater(other.second) is ControlFlow.Break<*, *>) {
-            val r1 = this.second.chainingGreater(other.second)
+        if (kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
         Continue(Unit)
@@ -161,84 +168,84 @@ public fun <V, U, T> Triple<V, U, T>.partialCmp(other: Triple<V, U, T>): Orderin
     }
 
 public fun <V, U, T> Triple<V, U, T>.lt(other: Triple<V, U, T>): Boolean =
-    when (val matchVal = this.first.chainingLess(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = this.second.chainingLess(other.second)) {
+            when (val matchVal1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    this.third.lt(other.third)
+                    (kmPartialCompareValues(this.third, other.third)?.let { cmpSign -> cmpSign < 0 } == true)
                 }
             }
         }
     }
 
 public fun <V, U, T> Triple<V, U, T>.le(other: Triple<V, U, T>): Boolean =
-    when (val matchVal = this.first.chainingLess(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = this.second.chainingLess(other.second)) {
+            when (val matchVal1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    this.third.le(other.third)
+                    (kmPartialCompareValues(this.third, other.third)?.let { cmpSign -> cmpSign <= 0 } == true)
                 }
             }
         }
     }
 
 public fun <V, U, T> Triple<V, U, T>.ge(other: Triple<V, U, T>): Boolean =
-    when (val matchVal = this.first.chainingGreater(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = this.second.chainingGreater(other.second)) {
+            when (val matchVal1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    this.third.ge(other.third)
+                    (kmPartialCompareValues(this.third, other.third)?.let { cmpSign -> cmpSign >= 0 } == true)
                 }
             }
         }
     }
 
 public fun <V, U, T> Triple<V, U, T>.gt(other: Triple<V, U, T>): Boolean =
-    when (val matchVal = this.first.chainingGreater(other.first)) {
+    when (val matchVal = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = this.second.chainingGreater(other.second)) {
+            when (val matchVal1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    this.third.gt(other.third)
+                    (kmPartialCompareValues(this.third, other.third)?.let { cmpSign -> cmpSign > 0 } == true)
                 }
             }
         }
@@ -246,16 +253,16 @@ public fun <V, U, T> Triple<V, U, T>.gt(other: Triple<V, U, T>): Boolean =
 
 public fun <V, U, T> Triple<V, U, T>.chainingLess(other: Triple<V, U, T>): ControlFlow<Boolean, Unit> {
     return run {
-        if (this.first.chainingLess(other.first) is ControlFlow.Break<*, *>) {
-            val r = this.first.chainingLess(other.first)
+        if (kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (this.second.chainingLess(other.second) is ControlFlow.Break<*, *>) {
-            val r1 = this.second.chainingLess(other.second)
+        if (kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (this.third.chainingLess(other.third) is ControlFlow.Break<*, *>) {
-            val r2 = this.third.chainingLess(other.third)
+        if (kmPartialCompareValues(this.third, other.third).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues(this.third, other.third).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
         Continue(Unit)
@@ -264,16 +271,16 @@ public fun <V, U, T> Triple<V, U, T>.chainingLess(other: Triple<V, U, T>): Contr
 
 public fun <V, U, T> Triple<V, U, T>.chainingGreater(other: Triple<V, U, T>): ControlFlow<Boolean, Unit> {
     return run {
-        if (this.first.chainingGreater(other.first) is ControlFlow.Break<*, *>) {
-            val r = this.first.chainingGreater(other.first)
+        if (kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues(this.first, other.first).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (this.second.chainingGreater(other.second) is ControlFlow.Break<*, *>) {
-            val r1 = this.second.chainingGreater(other.second)
+        if (kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues(this.second, other.second).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (this.third.chainingGreater(other.third) is ControlFlow.Break<*, *>) {
-            val r2 = this.third.chainingGreater(other.third)
+        if (kmPartialCompareValues(this.third, other.third).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues(this.third, other.third).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
         Continue(Unit)
@@ -339,28 +346,28 @@ public fun <W, V, U, T> List<Any?>.partialCmp(other: List<Any?>): Ordering? =
     }
 
 public fun <W, V, U, T> List<Any?>.lt(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as W)).chainingLess((other[0] as W))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as V)).chainingLess((other[1] as V))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as U)).chainingLess((other[2] as U))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            ((this[3] as T)).lt((other[3] as T))
+                            (kmPartialCompareValues((this[3] as T), (other[3] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                         }
                     }
                 }
@@ -369,28 +376,28 @@ public fun <W, V, U, T> List<Any?>.lt(other: List<Any?>): Boolean =
     }
 
 public fun <W, V, U, T> List<Any?>.le(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as W)).chainingLess((other[0] as W))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as V)).chainingLess((other[1] as V))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as U)).chainingLess((other[2] as U))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            ((this[3] as T)).le((other[3] as T))
+                            (kmPartialCompareValues((this[3] as T), (other[3] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                         }
                     }
                 }
@@ -399,28 +406,28 @@ public fun <W, V, U, T> List<Any?>.le(other: List<Any?>): Boolean =
     }
 
 public fun <W, V, U, T> List<Any?>.ge(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as W)).chainingGreater((other[0] as W))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as V)).chainingGreater((other[1] as V))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as U)).chainingGreater((other[2] as U))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            ((this[3] as T)).ge((other[3] as T))
+                            (kmPartialCompareValues((this[3] as T), (other[3] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                         }
                     }
                 }
@@ -429,28 +436,28 @@ public fun <W, V, U, T> List<Any?>.ge(other: List<Any?>): Boolean =
     }
 
 public fun <W, V, U, T> List<Any?>.gt(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as W)).chainingGreater((other[0] as W))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as V)).chainingGreater((other[1] as V))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as U)).chainingGreater((other[2] as U))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            ((this[3] as T)).gt((other[3] as T))
+                            (kmPartialCompareValues((this[3] as T), (other[3] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                         }
                     }
                 }
@@ -460,20 +467,20 @@ public fun <W, V, U, T> List<Any?>.gt(other: List<Any?>): Boolean =
 
 public fun <W, V, U, T> List<Any?>.chainingLess(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as W)).chainingLess((other[0] as W)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as W)).chainingLess((other[0] as W))
+        if (kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as V)).chainingLess((other[1] as V)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as V)).chainingLess((other[1] as V))
+        if (kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as U)).chainingLess((other[2] as U)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as U)).chainingLess((other[2] as U))
+        if (kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as T)).chainingLess((other[3] as T)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as T)).chainingLess((other[3] as T))
+        if (kmPartialCompareValues((this[3] as T), (other[3] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as T), (other[3] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
         Continue(Unit)
@@ -482,20 +489,20 @@ public fun <W, V, U, T> List<Any?>.chainingLess(other: List<Any?>): ControlFlow<
 
 public fun <W, V, U, T> List<Any?>.chainingGreater(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as W)).chainingGreater((other[0] as W)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as W)).chainingGreater((other[0] as W))
+        if (kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as W), (other[0] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as V)).chainingGreater((other[1] as V)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as V)).chainingGreater((other[1] as V))
+        if (kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as V), (other[1] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as U)).chainingGreater((other[2] as U)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as U)).chainingGreater((other[2] as U))
+        if (kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as U), (other[2] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as T)).chainingGreater((other[3] as T)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as T)).chainingGreater((other[3] as T))
+        if (kmPartialCompareValues((this[3] as T), (other[3] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as T), (other[3] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
         Continue(Unit)
@@ -576,35 +583,35 @@ public fun <X, W, V, U, T> List<Any?>.partialCmpFromXWVUT(other: List<Any?>): Or
     }
 
 public fun <X, W, V, U, T> List<Any?>.ltFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as X)).chainingLess((other[0] as X))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as W)).chainingLess((other[1] as W))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as V)).chainingLess((other[2] as V))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as U)).chainingLess((other[3] as U))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    ((this[4] as T)).lt((other[4] as T))
+                                    (kmPartialCompareValues((this[4] as T), (other[4] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                 }
                             }
                         }
@@ -615,35 +622,35 @@ public fun <X, W, V, U, T> List<Any?>.ltFromXWVUT(other: List<Any?>): Boolean =
     }
 
 public fun <X, W, V, U, T> List<Any?>.leFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as X)).chainingLess((other[0] as X))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as W)).chainingLess((other[1] as W))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as V)).chainingLess((other[2] as V))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as U)).chainingLess((other[3] as U))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    ((this[4] as T)).le((other[4] as T))
+                                    (kmPartialCompareValues((this[4] as T), (other[4] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                 }
                             }
                         }
@@ -654,35 +661,35 @@ public fun <X, W, V, U, T> List<Any?>.leFromXWVUT(other: List<Any?>): Boolean =
     }
 
 public fun <X, W, V, U, T> List<Any?>.geFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as X)).chainingGreater((other[0] as X))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as W)).chainingGreater((other[1] as W))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as V)).chainingGreater((other[2] as V))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as U)).chainingGreater((other[3] as U))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    ((this[4] as T)).ge((other[4] as T))
+                                    (kmPartialCompareValues((this[4] as T), (other[4] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                 }
                             }
                         }
@@ -693,35 +700,35 @@ public fun <X, W, V, U, T> List<Any?>.geFromXWVUT(other: List<Any?>): Boolean =
     }
 
 public fun <X, W, V, U, T> List<Any?>.gtFromXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as X)).chainingGreater((other[0] as X))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as W)).chainingGreater((other[1] as W))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as V)).chainingGreater((other[2] as V))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as U)).chainingGreater((other[3] as U))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    ((this[4] as T)).gt((other[4] as T))
+                                    (kmPartialCompareValues((this[4] as T), (other[4] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                 }
                             }
                         }
@@ -733,24 +740,24 @@ public fun <X, W, V, U, T> List<Any?>.gtFromXWVUT(other: List<Any?>): Boolean =
 
 public fun <X, W, V, U, T> List<Any?>.chainingLessFromXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as X)).chainingLess((other[0] as X)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as X)).chainingLess((other[0] as X))
+        if (kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as W)).chainingLess((other[1] as W)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as W)).chainingLess((other[1] as W))
+        if (kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as V)).chainingLess((other[2] as V)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as V)).chainingLess((other[2] as V))
+        if (kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as U)).chainingLess((other[3] as U)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as U)).chainingLess((other[3] as U))
+        if (kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as T)).chainingLess((other[4] as T)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as T)).chainingLess((other[4] as T))
+        if (kmPartialCompareValues((this[4] as T), (other[4] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as T), (other[4] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
         Continue(Unit)
@@ -759,24 +766,24 @@ public fun <X, W, V, U, T> List<Any?>.chainingLessFromXWVUT(other: List<Any?>): 
 
 public fun <X, W, V, U, T> List<Any?>.chainingGreaterFromXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as X)).chainingGreater((other[0] as X)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as X)).chainingGreater((other[0] as X))
+        if (kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as X), (other[0] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as W)).chainingGreater((other[1] as W)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as W)).chainingGreater((other[1] as W))
+        if (kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as W), (other[1] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as V)).chainingGreater((other[2] as V)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as V)).chainingGreater((other[2] as V))
+        if (kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as V), (other[2] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as U)).chainingGreater((other[3] as U)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as U)).chainingGreater((other[3] as U))
+        if (kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as U), (other[3] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as T)).chainingGreater((other[4] as T)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as T)).chainingGreater((other[4] as T))
+        if (kmPartialCompareValues((this[4] as T), (other[4] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as T), (other[4] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
         Continue(Unit)
@@ -872,42 +879,42 @@ public fun <Y, X, W, V, U, T> List<Any?>.partialCmpFromYXWVUT(other: List<Any?>)
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.ltFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Y)).chainingLess((other[0] as Y))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as X)).chainingLess((other[1] as X))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as W)).chainingLess((other[2] as W))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as V)).chainingLess((other[3] as V))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as U)).chainingLess((other[4] as U))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            ((this[5] as T)).lt((other[5] as T))
+                                            (kmPartialCompareValues((this[5] as T), (other[5] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                         }
                                     }
                                 }
@@ -920,42 +927,42 @@ public fun <Y, X, W, V, U, T> List<Any?>.ltFromYXWVUT(other: List<Any?>): Boolea
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.leFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Y)).chainingLess((other[0] as Y))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as X)).chainingLess((other[1] as X))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as W)).chainingLess((other[2] as W))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as V)).chainingLess((other[3] as V))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as U)).chainingLess((other[4] as U))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            ((this[5] as T)).le((other[5] as T))
+                                            (kmPartialCompareValues((this[5] as T), (other[5] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                         }
                                     }
                                 }
@@ -968,42 +975,42 @@ public fun <Y, X, W, V, U, T> List<Any?>.leFromYXWVUT(other: List<Any?>): Boolea
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.geFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Y)).chainingGreater((other[0] as Y))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as X)).chainingGreater((other[1] as X))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as W)).chainingGreater((other[2] as W))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as V)).chainingGreater((other[3] as V))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as U)).chainingGreater((other[4] as U))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            ((this[5] as T)).ge((other[5] as T))
+                                            (kmPartialCompareValues((this[5] as T), (other[5] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                         }
                                     }
                                 }
@@ -1016,42 +1023,42 @@ public fun <Y, X, W, V, U, T> List<Any?>.geFromYXWVUT(other: List<Any?>): Boolea
     }
 
 public fun <Y, X, W, V, U, T> List<Any?>.gtFromYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Y)).chainingGreater((other[0] as Y))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as X)).chainingGreater((other[1] as X))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as W)).chainingGreater((other[2] as W))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as V)).chainingGreater((other[3] as V))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as U)).chainingGreater((other[4] as U))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            ((this[5] as T)).gt((other[5] as T))
+                                            (kmPartialCompareValues((this[5] as T), (other[5] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                         }
                                     }
                                 }
@@ -1065,28 +1072,28 @@ public fun <Y, X, W, V, U, T> List<Any?>.gtFromYXWVUT(other: List<Any?>): Boolea
 
 public fun <Y, X, W, V, U, T> List<Any?>.chainingLessFromYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as Y)).chainingLess((other[0] as Y)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as Y)).chainingLess((other[0] as Y))
+        if (kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as X)).chainingLess((other[1] as X)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as X)).chainingLess((other[1] as X))
+        if (kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as W)).chainingLess((other[2] as W)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as W)).chainingLess((other[2] as W))
+        if (kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as V)).chainingLess((other[3] as V)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as V)).chainingLess((other[3] as V))
+        if (kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as U)).chainingLess((other[4] as U)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as U)).chainingLess((other[4] as U))
+        if (kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as T)).chainingLess((other[5] as T)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as T)).chainingLess((other[5] as T))
+        if (kmPartialCompareValues((this[5] as T), (other[5] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as T), (other[5] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
         Continue(Unit)
@@ -1095,28 +1102,28 @@ public fun <Y, X, W, V, U, T> List<Any?>.chainingLessFromYXWVUT(other: List<Any?
 
 public fun <Y, X, W, V, U, T> List<Any?>.chainingGreaterFromYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as Y)).chainingGreater((other[0] as Y)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as Y)).chainingGreater((other[0] as Y))
+        if (kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as Y), (other[0] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as X)).chainingGreater((other[1] as X)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as X)).chainingGreater((other[1] as X))
+        if (kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as X), (other[1] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as W)).chainingGreater((other[2] as W)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as W)).chainingGreater((other[2] as W))
+        if (kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as W), (other[2] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as V)).chainingGreater((other[3] as V)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as V)).chainingGreater((other[3] as V))
+        if (kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as V), (other[3] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as U)).chainingGreater((other[4] as U)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as U)).chainingGreater((other[4] as U))
+        if (kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as U), (other[4] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as T)).chainingGreater((other[5] as T)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as T)).chainingGreater((other[5] as T))
+        if (kmPartialCompareValues((this[5] as T), (other[5] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as T), (other[5] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
         Continue(Unit)
@@ -1227,49 +1234,49 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromZYXWVUT(other: List<An
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.ltFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Z)).chainingLess((other[0] as Z))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Y)).chainingLess((other[1] as Y))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as X)).chainingLess((other[2] as X))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as W)).chainingLess((other[3] as W))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as V)).chainingLess((other[4] as V))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as U)).chainingLess((other[5] as U))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    ((this[6] as T)).lt((other[6] as T))
+                                                    (kmPartialCompareValues((this[6] as T), (other[6] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                                 }
                                             }
                                         }
@@ -1284,49 +1291,49 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.ltFromZYXWVUT(other: List<Any?>): Bo
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.leFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Z)).chainingLess((other[0] as Z))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Y)).chainingLess((other[1] as Y))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as X)).chainingLess((other[2] as X))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as W)).chainingLess((other[3] as W))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as V)).chainingLess((other[4] as V))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as U)).chainingLess((other[5] as U))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    ((this[6] as T)).le((other[6] as T))
+                                                    (kmPartialCompareValues((this[6] as T), (other[6] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                                 }
                                             }
                                         }
@@ -1341,49 +1348,49 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.leFromZYXWVUT(other: List<Any?>): Bo
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.geFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Z)).chainingGreater((other[0] as Z))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Y)).chainingGreater((other[1] as Y))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as X)).chainingGreater((other[2] as X))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as W)).chainingGreater((other[3] as W))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as V)).chainingGreater((other[4] as V))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as U)).chainingGreater((other[5] as U))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    ((this[6] as T)).ge((other[6] as T))
+                                                    (kmPartialCompareValues((this[6] as T), (other[6] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                                 }
                                             }
                                         }
@@ -1398,49 +1405,49 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.geFromZYXWVUT(other: List<Any?>): Bo
     }
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.gtFromZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as Z)).chainingGreater((other[0] as Z))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Y)).chainingGreater((other[1] as Y))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as X)).chainingGreater((other[2] as X))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as W)).chainingGreater((other[3] as W))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as V)).chainingGreater((other[4] as V))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as U)).chainingGreater((other[5] as U))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    ((this[6] as T)).gt((other[6] as T))
+                                                    (kmPartialCompareValues((this[6] as T), (other[6] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                                 }
                                             }
                                         }
@@ -1456,32 +1463,32 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.gtFromZYXWVUT(other: List<Any?>): Bo
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as Z)).chainingLess((other[0] as Z)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as Z)).chainingLess((other[0] as Z))
+        if (kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as Y)).chainingLess((other[1] as Y)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as Y)).chainingLess((other[1] as Y))
+        if (kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as X)).chainingLess((other[2] as X)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as X)).chainingLess((other[2] as X))
+        if (kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as W)).chainingLess((other[3] as W)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as W)).chainingLess((other[3] as W))
+        if (kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as V)).chainingLess((other[4] as V)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as V)).chainingLess((other[4] as V))
+        if (kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as U)).chainingLess((other[5] as U)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as U)).chainingLess((other[5] as U))
+        if (kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
-        if (((this[6] as T)).chainingLess((other[6] as T)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as T)).chainingLess((other[6] as T))
+        if (kmPartialCompareValues((this[6] as T), (other[6] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as T), (other[6] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r6
         }
         Continue(Unit)
@@ -1490,32 +1497,32 @@ public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromZYXWVUT(other: List<
 
 public fun <Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as Z)).chainingGreater((other[0] as Z)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as Z)).chainingGreater((other[0] as Z))
+        if (kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as Z), (other[0] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as Y)).chainingGreater((other[1] as Y)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as Y)).chainingGreater((other[1] as Y))
+        if (kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as Y), (other[1] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as X)).chainingGreater((other[2] as X)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as X)).chainingGreater((other[2] as X))
+        if (kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as X), (other[2] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as W)).chainingGreater((other[3] as W)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as W)).chainingGreater((other[3] as W))
+        if (kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as W), (other[3] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as V)).chainingGreater((other[4] as V)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as V)).chainingGreater((other[4] as V))
+        if (kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as V), (other[4] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as U)).chainingGreater((other[5] as U)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as U)).chainingGreater((other[5] as U))
+        if (kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as U), (other[5] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
-        if (((this[6] as T)).chainingGreater((other[6] as T)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as T)).chainingGreater((other[6] as T))
+        if (kmPartialCompareValues((this[6] as T), (other[6] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as T), (other[6] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r6
         }
         Continue(Unit)
@@ -1641,56 +1648,56 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromAZYXWVUT(other: Lis
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.ltFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as A)).chainingLess((other[0] as A))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Z)).chainingLess((other[1] as Z))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Y)).chainingLess((other[2] as Y))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as X)).chainingLess((other[3] as X))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as W)).chainingLess((other[4] as W))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as V)).chainingLess((other[5] as V))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as U)).chainingLess((other[6] as U))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            ((this[7] as T)).lt((other[7] as T))
+                                                            (kmPartialCompareValues((this[7] as T), (other[7] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                                         }
                                                     }
                                                 }
@@ -1707,56 +1714,56 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.ltFromAZYXWVUT(other: List<Any?>)
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.leFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as A)).chainingLess((other[0] as A))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Z)).chainingLess((other[1] as Z))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Y)).chainingLess((other[2] as Y))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as X)).chainingLess((other[3] as X))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as W)).chainingLess((other[4] as W))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as V)).chainingLess((other[5] as V))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as U)).chainingLess((other[6] as U))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            ((this[7] as T)).le((other[7] as T))
+                                                            (kmPartialCompareValues((this[7] as T), (other[7] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                                         }
                                                     }
                                                 }
@@ -1773,56 +1780,56 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.leFromAZYXWVUT(other: List<Any?>)
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.geFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as A)).chainingGreater((other[0] as A))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Z)).chainingGreater((other[1] as Z))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Y)).chainingGreater((other[2] as Y))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as X)).chainingGreater((other[3] as X))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as W)).chainingGreater((other[4] as W))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as V)).chainingGreater((other[5] as V))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as U)).chainingGreater((other[6] as U))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            ((this[7] as T)).ge((other[7] as T))
+                                                            (kmPartialCompareValues((this[7] as T), (other[7] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                                         }
                                                     }
                                                 }
@@ -1839,56 +1846,56 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.geFromAZYXWVUT(other: List<Any?>)
     }
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.gtFromAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as A)).chainingGreater((other[0] as A))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as Z)).chainingGreater((other[1] as Z))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Y)).chainingGreater((other[2] as Y))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as X)).chainingGreater((other[3] as X))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as W)).chainingGreater((other[4] as W))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as V)).chainingGreater((other[5] as V))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as U)).chainingGreater((other[6] as U))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            ((this[7] as T)).gt((other[7] as T))
+                                                            (kmPartialCompareValues((this[7] as T), (other[7] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                                         }
                                                     }
                                                 }
@@ -1906,36 +1913,36 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.gtFromAZYXWVUT(other: List<Any?>)
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as A)).chainingLess((other[0] as A)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as A)).chainingLess((other[0] as A))
+        if (kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as Z)).chainingLess((other[1] as Z)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as Z)).chainingLess((other[1] as Z))
+        if (kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as Y)).chainingLess((other[2] as Y)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as Y)).chainingLess((other[2] as Y))
+        if (kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as X)).chainingLess((other[3] as X)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as X)).chainingLess((other[3] as X))
+        if (kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as W)).chainingLess((other[4] as W)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as W)).chainingLess((other[4] as W))
+        if (kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as V)).chainingLess((other[5] as V)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as V)).chainingLess((other[5] as V))
+        if (kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
-        if (((this[6] as U)).chainingLess((other[6] as U)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as U)).chainingLess((other[6] as U))
+        if (kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r6
         }
-        if (((this[7] as T)).chainingLess((other[7] as T)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as T)).chainingLess((other[7] as T))
+        if (kmPartialCompareValues((this[7] as T), (other[7] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as T), (other[7] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r7
         }
         Continue(Unit)
@@ -1944,36 +1951,36 @@ public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromAZYXWVUT(other: L
 
 public fun <A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as A)).chainingGreater((other[0] as A)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as A)).chainingGreater((other[0] as A))
+        if (kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as A), (other[0] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as Z)).chainingGreater((other[1] as Z)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as Z)).chainingGreater((other[1] as Z))
+        if (kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as Z), (other[1] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as Y)).chainingGreater((other[2] as Y)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as Y)).chainingGreater((other[2] as Y))
+        if (kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as Y), (other[2] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as X)).chainingGreater((other[3] as X)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as X)).chainingGreater((other[3] as X))
+        if (kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as X), (other[3] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as W)).chainingGreater((other[4] as W)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as W)).chainingGreater((other[4] as W))
+        if (kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as W), (other[4] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as V)).chainingGreater((other[5] as V)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as V)).chainingGreater((other[5] as V))
+        if (kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as V), (other[5] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
-        if (((this[6] as U)).chainingGreater((other[6] as U)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as U)).chainingGreater((other[6] as U))
+        if (kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as U), (other[6] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r6
         }
-        if (((this[7] as T)).chainingGreater((other[7] as T)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as T)).chainingGreater((other[7] as T))
+        if (kmPartialCompareValues((this[7] as T), (other[7] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as T), (other[7] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r7
         }
         Continue(Unit)
@@ -2114,63 +2121,63 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromBAZYXWVUT(other:
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as B)).chainingLess((other[0] as B))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as A)).chainingLess((other[1] as A))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Z)).chainingLess((other[2] as Z))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Y)).chainingLess((other[3] as Y))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as X)).chainingLess((other[4] as X))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as W)).chainingLess((other[5] as W))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as V)).chainingLess((other[6] as V))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as U)).chainingLess((other[7] as U))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    ((this[8] as T)).lt((other[8] as T))
+                                                                    (kmPartialCompareValues((this[8] as T), (other[8] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                                                 }
                                                             }
                                                         }
@@ -2189,63 +2196,63 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromBAZYXWVUT(other: List<An
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as B)).chainingLess((other[0] as B))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as A)).chainingLess((other[1] as A))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Z)).chainingLess((other[2] as Z))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Y)).chainingLess((other[3] as Y))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as X)).chainingLess((other[4] as X))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as W)).chainingLess((other[5] as W))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as V)).chainingLess((other[6] as V))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as U)).chainingLess((other[7] as U))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    ((this[8] as T)).le((other[8] as T))
+                                                                    (kmPartialCompareValues((this[8] as T), (other[8] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                                                 }
                                                             }
                                                         }
@@ -2264,63 +2271,63 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromBAZYXWVUT(other: List<An
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as B)).chainingGreater((other[0] as B))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as A)).chainingGreater((other[1] as A))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Z)).chainingGreater((other[2] as Z))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Y)).chainingGreater((other[3] as Y))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as X)).chainingGreater((other[4] as X))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as W)).chainingGreater((other[5] as W))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as V)).chainingGreater((other[6] as V))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as U)).chainingGreater((other[7] as U))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    ((this[8] as T)).ge((other[8] as T))
+                                                                    (kmPartialCompareValues((this[8] as T), (other[8] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                                                 }
                                                             }
                                                         }
@@ -2339,63 +2346,63 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromBAZYXWVUT(other: List<An
     }
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as B)).chainingGreater((other[0] as B))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as A)).chainingGreater((other[1] as A))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as Z)).chainingGreater((other[2] as Z))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Y)).chainingGreater((other[3] as Y))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as X)).chainingGreater((other[4] as X))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as W)).chainingGreater((other[5] as W))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as V)).chainingGreater((other[6] as V))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as U)).chainingGreater((other[7] as U))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    ((this[8] as T)).gt((other[8] as T))
+                                                                    (kmPartialCompareValues((this[8] as T), (other[8] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                                                 }
                                                             }
                                                         }
@@ -2415,40 +2422,40 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromBAZYXWVUT(other: List<An
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as B)).chainingLess((other[0] as B)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as B)).chainingLess((other[0] as B))
+        if (kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as A)).chainingLess((other[1] as A)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as A)).chainingLess((other[1] as A))
+        if (kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as Z)).chainingLess((other[2] as Z)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as Z)).chainingLess((other[2] as Z))
+        if (kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as Y)).chainingLess((other[3] as Y)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as Y)).chainingLess((other[3] as Y))
+        if (kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as X)).chainingLess((other[4] as X)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as X)).chainingLess((other[4] as X))
+        if (kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as W)).chainingLess((other[5] as W)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as W)).chainingLess((other[5] as W))
+        if (kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
-        if (((this[6] as V)).chainingLess((other[6] as V)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as V)).chainingLess((other[6] as V))
+        if (kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r6
         }
-        if (((this[7] as U)).chainingLess((other[7] as U)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as U)).chainingLess((other[7] as U))
+        if (kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r7
         }
-        if (((this[8] as T)).chainingLess((other[8] as T)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as T)).chainingLess((other[8] as T))
+        if (kmPartialCompareValues((this[8] as T), (other[8] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as T), (other[8] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r8
         }
         Continue(Unit)
@@ -2457,40 +2464,40 @@ public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromBAZYXWVUT(othe
 
 public fun <B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as B)).chainingGreater((other[0] as B)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as B)).chainingGreater((other[0] as B))
+        if (kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as B), (other[0] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as A)).chainingGreater((other[1] as A)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as A)).chainingGreater((other[1] as A))
+        if (kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as A), (other[1] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as Z)).chainingGreater((other[2] as Z)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as Z)).chainingGreater((other[2] as Z))
+        if (kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as Z), (other[2] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as Y)).chainingGreater((other[3] as Y)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as Y)).chainingGreater((other[3] as Y))
+        if (kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as Y), (other[3] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as X)).chainingGreater((other[4] as X)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as X)).chainingGreater((other[4] as X))
+        if (kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as X), (other[4] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as W)).chainingGreater((other[5] as W)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as W)).chainingGreater((other[5] as W))
+        if (kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as W), (other[5] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
-        if (((this[6] as V)).chainingGreater((other[6] as V)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as V)).chainingGreater((other[6] as V))
+        if (kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as V), (other[6] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r6
         }
-        if (((this[7] as U)).chainingGreater((other[7] as U)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as U)).chainingGreater((other[7] as U))
+        if (kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as U), (other[7] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r7
         }
-        if (((this[8] as T)).chainingGreater((other[8] as T)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as T)).chainingGreater((other[8] as T))
+        if (kmPartialCompareValues((this[8] as T), (other[8] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as T), (other[8] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r8
         }
         Continue(Unit)
@@ -2646,70 +2653,70 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromCBAZYXWVUT(ot
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as C)).chainingLess((other[0] as C))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as B)).chainingLess((other[1] as B))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as A)).chainingLess((other[2] as A))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Z)).chainingLess((other[3] as Z))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Y)).chainingLess((other[4] as Y))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as X)).chainingLess((other[5] as X))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as W)).chainingLess((other[6] as W))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as V)).chainingLess((other[7] as V))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as U)).chainingLess((other[8] as U))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            ((this[9] as T)).lt((other[9] as T))
+                                                                            (kmPartialCompareValues((this[9] as T), (other[9] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                                                         }
                                                                     }
                                                                 }
@@ -2730,70 +2737,70 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromCBAZYXWVUT(other: Lis
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as C)).chainingLess((other[0] as C))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as B)).chainingLess((other[1] as B))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as A)).chainingLess((other[2] as A))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Z)).chainingLess((other[3] as Z))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Y)).chainingLess((other[4] as Y))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as X)).chainingLess((other[5] as X))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as W)).chainingLess((other[6] as W))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as V)).chainingLess((other[7] as V))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as U)).chainingLess((other[8] as U))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            ((this[9] as T)).le((other[9] as T))
+                                                                            (kmPartialCompareValues((this[9] as T), (other[9] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                                                         }
                                                                     }
                                                                 }
@@ -2814,70 +2821,70 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromCBAZYXWVUT(other: Lis
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as C)).chainingGreater((other[0] as C))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as B)).chainingGreater((other[1] as B))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as A)).chainingGreater((other[2] as A))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Z)).chainingGreater((other[3] as Z))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Y)).chainingGreater((other[4] as Y))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as X)).chainingGreater((other[5] as X))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as W)).chainingGreater((other[6] as W))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as V)).chainingGreater((other[7] as V))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as U)).chainingGreater((other[8] as U))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            ((this[9] as T)).ge((other[9] as T))
+                                                                            (kmPartialCompareValues((this[9] as T), (other[9] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                                                         }
                                                                     }
                                                                 }
@@ -2898,70 +2905,70 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromCBAZYXWVUT(other: Lis
     }
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as C)).chainingGreater((other[0] as C))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as B)).chainingGreater((other[1] as B))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as A)).chainingGreater((other[2] as A))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as Z)).chainingGreater((other[3] as Z))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Y)).chainingGreater((other[4] as Y))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as X)).chainingGreater((other[5] as X))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as W)).chainingGreater((other[6] as W))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as V)).chainingGreater((other[7] as V))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as U)).chainingGreater((other[8] as U))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            ((this[9] as T)).gt((other[9] as T))
+                                                                            (kmPartialCompareValues((this[9] as T), (other[9] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                                                         }
                                                                     }
                                                                 }
@@ -2983,44 +2990,44 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromCBAZYXWVUT(other: Lis
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as C)).chainingLess((other[0] as C)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as C)).chainingLess((other[0] as C))
+        if (kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as B)).chainingLess((other[1] as B)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as B)).chainingLess((other[1] as B))
+        if (kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as A)).chainingLess((other[2] as A)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as A)).chainingLess((other[2] as A))
+        if (kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as Z)).chainingLess((other[3] as Z)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as Z)).chainingLess((other[3] as Z))
+        if (kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as Y)).chainingLess((other[4] as Y)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as Y)).chainingLess((other[4] as Y))
+        if (kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as X)).chainingLess((other[5] as X)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as X)).chainingLess((other[5] as X))
+        if (kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
-        if (((this[6] as W)).chainingLess((other[6] as W)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as W)).chainingLess((other[6] as W))
+        if (kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r6
         }
-        if (((this[7] as V)).chainingLess((other[7] as V)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as V)).chainingLess((other[7] as V))
+        if (kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r7
         }
-        if (((this[8] as U)).chainingLess((other[8] as U)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as U)).chainingLess((other[8] as U))
+        if (kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r8
         }
-        if (((this[9] as T)).chainingLess((other[9] as T)) is ControlFlow.Break<*, *>) {
-            val r9 = ((this[9] as T)).chainingLess((other[9] as T))
+        if (kmPartialCompareValues((this[9] as T), (other[9] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r9 = kmPartialCompareValues((this[9] as T), (other[9] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r9
         }
         Continue(Unit)
@@ -3029,44 +3036,44 @@ public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromCBAZYXWVUT(
 
 public fun <C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as C)).chainingGreater((other[0] as C)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as C)).chainingGreater((other[0] as C))
+        if (kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as C), (other[0] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as B)).chainingGreater((other[1] as B)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as B)).chainingGreater((other[1] as B))
+        if (kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as B), (other[1] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as A)).chainingGreater((other[2] as A)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as A)).chainingGreater((other[2] as A))
+        if (kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as A), (other[2] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as Z)).chainingGreater((other[3] as Z)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as Z)).chainingGreater((other[3] as Z))
+        if (kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as Z), (other[3] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as Y)).chainingGreater((other[4] as Y)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as Y)).chainingGreater((other[4] as Y))
+        if (kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as Y), (other[4] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as X)).chainingGreater((other[5] as X)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as X)).chainingGreater((other[5] as X))
+        if (kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as X), (other[5] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
-        if (((this[6] as W)).chainingGreater((other[6] as W)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as W)).chainingGreater((other[6] as W))
+        if (kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as W), (other[6] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r6
         }
-        if (((this[7] as V)).chainingGreater((other[7] as V)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as V)).chainingGreater((other[7] as V))
+        if (kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as V), (other[7] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r7
         }
-        if (((this[8] as U)).chainingGreater((other[8] as U)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as U)).chainingGreater((other[8] as U))
+        if (kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as U), (other[8] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r8
         }
-        if (((this[9] as T)).chainingGreater((other[9] as T)) is ControlFlow.Break<*, *>) {
-            val r9 = ((this[9] as T)).chainingGreater((other[9] as T))
+        if (kmPartialCompareValues((this[9] as T), (other[9] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r9 = kmPartialCompareValues((this[9] as T), (other[9] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r9
         }
         Continue(Unit)
@@ -3237,77 +3244,77 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromDCBAZYXWVU
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as D)).chainingLess((other[0] as D))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as C)).chainingLess((other[1] as C))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as B)).chainingLess((other[2] as B))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as A)).chainingLess((other[3] as A))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Z)).chainingLess((other[4] as Z))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Y)).chainingLess((other[5] as Y))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as X)).chainingLess((other[6] as X))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as W)).chainingLess((other[7] as W))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as V)).chainingLess((other[8] as V))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as U)).chainingLess((other[9] as U))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    ((this[10] as T)).lt((other[10] as T))
+                                                                                    (kmPartialCompareValues((this[10] as T), (other[10] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                                                                 }
                                                                             }
                                                                         }
@@ -3330,77 +3337,77 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromDCBAZYXWVUT(other:
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as D)).chainingLess((other[0] as D))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as C)).chainingLess((other[1] as C))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as B)).chainingLess((other[2] as B))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as A)).chainingLess((other[3] as A))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Z)).chainingLess((other[4] as Z))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Y)).chainingLess((other[5] as Y))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as X)).chainingLess((other[6] as X))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as W)).chainingLess((other[7] as W))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as V)).chainingLess((other[8] as V))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as U)).chainingLess((other[9] as U))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    ((this[10] as T)).le((other[10] as T))
+                                                                                    (kmPartialCompareValues((this[10] as T), (other[10] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                                                                 }
                                                                             }
                                                                         }
@@ -3423,77 +3430,77 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromDCBAZYXWVUT(other:
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as D)).chainingGreater((other[0] as D))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as C)).chainingGreater((other[1] as C))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as B)).chainingGreater((other[2] as B))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as A)).chainingGreater((other[3] as A))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Z)).chainingGreater((other[4] as Z))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Y)).chainingGreater((other[5] as Y))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as X)).chainingGreater((other[6] as X))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as W)).chainingGreater((other[7] as W))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as V)).chainingGreater((other[8] as V))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as U)).chainingGreater((other[9] as U))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    ((this[10] as T)).ge((other[10] as T))
+                                                                                    (kmPartialCompareValues((this[10] as T), (other[10] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                                                                 }
                                                                             }
                                                                         }
@@ -3516,77 +3523,77 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromDCBAZYXWVUT(other:
     }
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as D)).chainingGreater((other[0] as D))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as C)).chainingGreater((other[1] as C))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as B)).chainingGreater((other[2] as B))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as A)).chainingGreater((other[3] as A))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as Z)).chainingGreater((other[4] as Z))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Y)).chainingGreater((other[5] as Y))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as X)).chainingGreater((other[6] as X))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as W)).chainingGreater((other[7] as W))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as V)).chainingGreater((other[8] as V))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as U)).chainingGreater((other[9] as U))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    ((this[10] as T)).gt((other[10] as T))
+                                                                                    (kmPartialCompareValues((this[10] as T), (other[10] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                                                                 }
                                                                             }
                                                                         }
@@ -3610,48 +3617,48 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromDCBAZYXWVUT(other:
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as D)).chainingLess((other[0] as D)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as D)).chainingLess((other[0] as D))
+        if (kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as C)).chainingLess((other[1] as C)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as C)).chainingLess((other[1] as C))
+        if (kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as B)).chainingLess((other[2] as B)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as B)).chainingLess((other[2] as B))
+        if (kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as A)).chainingLess((other[3] as A)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as A)).chainingLess((other[3] as A))
+        if (kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as Z)).chainingLess((other[4] as Z)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as Z)).chainingLess((other[4] as Z))
+        if (kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as Y)).chainingLess((other[5] as Y)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as Y)).chainingLess((other[5] as Y))
+        if (kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
-        if (((this[6] as X)).chainingLess((other[6] as X)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as X)).chainingLess((other[6] as X))
+        if (kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r6
         }
-        if (((this[7] as W)).chainingLess((other[7] as W)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as W)).chainingLess((other[7] as W))
+        if (kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r7
         }
-        if (((this[8] as V)).chainingLess((other[8] as V)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as V)).chainingLess((other[8] as V))
+        if (kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r8
         }
-        if (((this[9] as U)).chainingLess((other[9] as U)) is ControlFlow.Break<*, *>) {
-            val r9 = ((this[9] as U)).chainingLess((other[9] as U))
+        if (kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r9 = kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r9
         }
-        if (((this[10] as T)).chainingLess((other[10] as T)) is ControlFlow.Break<*, *>) {
-            val r10 = ((this[10] as T)).chainingLess((other[10] as T))
+        if (kmPartialCompareValues((this[10] as T), (other[10] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r10 = kmPartialCompareValues((this[10] as T), (other[10] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r10
         }
         Continue(Unit)
@@ -3660,48 +3667,48 @@ public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromDCBAZYXW
 
 public fun <D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as D)).chainingGreater((other[0] as D)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as D)).chainingGreater((other[0] as D))
+        if (kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as D), (other[0] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as C)).chainingGreater((other[1] as C)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as C)).chainingGreater((other[1] as C))
+        if (kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as C), (other[1] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as B)).chainingGreater((other[2] as B)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as B)).chainingGreater((other[2] as B))
+        if (kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as B), (other[2] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as A)).chainingGreater((other[3] as A)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as A)).chainingGreater((other[3] as A))
+        if (kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as A), (other[3] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as Z)).chainingGreater((other[4] as Z)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as Z)).chainingGreater((other[4] as Z))
+        if (kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as Z), (other[4] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as Y)).chainingGreater((other[5] as Y)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as Y)).chainingGreater((other[5] as Y))
+        if (kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as Y), (other[5] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
-        if (((this[6] as X)).chainingGreater((other[6] as X)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as X)).chainingGreater((other[6] as X))
+        if (kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as X), (other[6] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r6
         }
-        if (((this[7] as W)).chainingGreater((other[7] as W)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as W)).chainingGreater((other[7] as W))
+        if (kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as W), (other[7] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r7
         }
-        if (((this[8] as V)).chainingGreater((other[8] as V)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as V)).chainingGreater((other[8] as V))
+        if (kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as V), (other[8] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r8
         }
-        if (((this[9] as U)).chainingGreater((other[9] as U)) is ControlFlow.Break<*, *>) {
-            val r9 = ((this[9] as U)).chainingGreater((other[9] as U))
+        if (kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r9 = kmPartialCompareValues((this[9] as U), (other[9] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r9
         }
-        if (((this[10] as T)).chainingGreater((other[10] as T)) is ControlFlow.Break<*, *>) {
-            val r10 = ((this[10] as T)).chainingGreater((other[10] as T))
+        if (kmPartialCompareValues((this[10] as T), (other[10] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r10 = kmPartialCompareValues((this[10] as T), (other[10] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r10
         }
         Continue(Unit)
@@ -3887,84 +3894,84 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.partialCmpFromEDCBAZY
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as E)).chainingLess((other[0] as E))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as D)).chainingLess((other[1] as D))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as C)).chainingLess((other[2] as C))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as B)).chainingLess((other[3] as B))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as A)).chainingLess((other[4] as A))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Z)).chainingLess((other[5] as Z))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as Y)).chainingLess((other[6] as Y))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as X)).chainingLess((other[7] as X))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as W)).chainingLess((other[8] as W))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as V)).chainingLess((other[9] as V))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    when (val matchVal10 = ((this[10] as U)).chainingLess((other[10] as U))) {
+                                                                                    when (val matchVal10 = kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                                         is ControlFlow.Break<*, *> -> {
                                                                                             val value10 = matchVal10.cfBreakValue()
                                                                                             value10
                                                                                         }
                                                                                         is ControlFlow.Continue<*, *> -> {
                                                                                             val cfContinueValueVal10 = matchVal10.cfContinueValue()
-                                                                                            ((this[11] as T)).lt((other[11] as T))
+                                                                                            (kmPartialCompareValues((this[11] as T), (other[11] as T))?.let { cmpSign -> cmpSign < 0 } == true)
                                                                                         }
                                                                                     }
                                                                                 }
@@ -3989,84 +3996,84 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.ltFromEDCBAZYXWVUT(ot
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as E)).chainingLess((other[0] as E))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as D)).chainingLess((other[1] as D))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as C)).chainingLess((other[2] as C))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as B)).chainingLess((other[3] as B))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as A)).chainingLess((other[4] as A))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Z)).chainingLess((other[5] as Z))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as Y)).chainingLess((other[6] as Y))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as X)).chainingLess((other[7] as X))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as W)).chainingLess((other[8] as W))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as V)).chainingLess((other[9] as V))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    when (val matchVal10 = ((this[10] as U)).chainingLess((other[10] as U))) {
+                                                                                    when (val matchVal10 = kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }) {
                                                                                         is ControlFlow.Break<*, *> -> {
                                                                                             val value10 = matchVal10.cfBreakValue()
                                                                                             value10
                                                                                         }
                                                                                         is ControlFlow.Continue<*, *> -> {
                                                                                             val cfContinueValueVal10 = matchVal10.cfContinueValue()
-                                                                                            ((this[11] as T)).le((other[11] as T))
+                                                                                            (kmPartialCompareValues((this[11] as T), (other[11] as T))?.let { cmpSign -> cmpSign <= 0 } == true)
                                                                                         }
                                                                                     }
                                                                                 }
@@ -4091,84 +4098,84 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.leFromEDCBAZYXWVUT(ot
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as E)).chainingGreater((other[0] as E))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as D)).chainingGreater((other[1] as D))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as C)).chainingGreater((other[2] as C))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as B)).chainingGreater((other[3] as B))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as A)).chainingGreater((other[4] as A))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Z)).chainingGreater((other[5] as Z))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as Y)).chainingGreater((other[6] as Y))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as X)).chainingGreater((other[7] as X))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as W)).chainingGreater((other[8] as W))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as V)).chainingGreater((other[9] as V))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    when (val matchVal10 = ((this[10] as U)).chainingGreater((other[10] as U))) {
+                                                                                    when (val matchVal10 = kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                                         is ControlFlow.Break<*, *> -> {
                                                                                             val value10 = matchVal10.cfBreakValue()
                                                                                             value10
                                                                                         }
                                                                                         is ControlFlow.Continue<*, *> -> {
                                                                                             val cfContinueValueVal10 = matchVal10.cfContinueValue()
-                                                                                            ((this[11] as T)).ge((other[11] as T))
+                                                                                            (kmPartialCompareValues((this[11] as T), (other[11] as T))?.let { cmpSign -> cmpSign >= 0 } == true)
                                                                                         }
                                                                                     }
                                                                                 }
@@ -4193,84 +4200,84 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.geFromEDCBAZYXWVUT(ot
     }
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromEDCBAZYXWVUT(other: List<Any?>): Boolean =
-    when (val matchVal = ((this[0] as E)).chainingGreater((other[0] as E))) {
+    when (val matchVal = kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
         is ControlFlow.Break<*, *> -> {
             val value = matchVal.cfBreakValue()
             value
         }
         is ControlFlow.Continue<*, *> -> {
             val cfContinueValueVal = matchVal.cfContinueValue()
-            when (val matchVal1 = ((this[1] as D)).chainingGreater((other[1] as D))) {
+            when (val matchVal1 = kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                 is ControlFlow.Break<*, *> -> {
                     val value1 = matchVal1.cfBreakValue()
                     value1
                 }
                 is ControlFlow.Continue<*, *> -> {
                     val cfContinueValueVal1 = matchVal1.cfContinueValue()
-                    when (val matchVal2 = ((this[2] as C)).chainingGreater((other[2] as C))) {
+                    when (val matchVal2 = kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                         is ControlFlow.Break<*, *> -> {
                             val value2 = matchVal2.cfBreakValue()
                             value2
                         }
                         is ControlFlow.Continue<*, *> -> {
                             val cfContinueValueVal2 = matchVal2.cfContinueValue()
-                            when (val matchVal3 = ((this[3] as B)).chainingGreater((other[3] as B))) {
+                            when (val matchVal3 = kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                 is ControlFlow.Break<*, *> -> {
                                     val value3 = matchVal3.cfBreakValue()
                                     value3
                                 }
                                 is ControlFlow.Continue<*, *> -> {
                                     val cfContinueValueVal3 = matchVal3.cfContinueValue()
-                                    when (val matchVal4 = ((this[4] as A)).chainingGreater((other[4] as A))) {
+                                    when (val matchVal4 = kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                         is ControlFlow.Break<*, *> -> {
                                             val value4 = matchVal4.cfBreakValue()
                                             value4
                                         }
                                         is ControlFlow.Continue<*, *> -> {
                                             val cfContinueValueVal4 = matchVal4.cfContinueValue()
-                                            when (val matchVal5 = ((this[5] as Z)).chainingGreater((other[5] as Z))) {
+                                            when (val matchVal5 = kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                 is ControlFlow.Break<*, *> -> {
                                                     val value5 = matchVal5.cfBreakValue()
                                                     value5
                                                 }
                                                 is ControlFlow.Continue<*, *> -> {
                                                     val cfContinueValueVal5 = matchVal5.cfContinueValue()
-                                                    when (val matchVal6 = ((this[6] as Y)).chainingGreater((other[6] as Y))) {
+                                                    when (val matchVal6 = kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                         is ControlFlow.Break<*, *> -> {
                                                             val value6 = matchVal6.cfBreakValue()
                                                             value6
                                                         }
                                                         is ControlFlow.Continue<*, *> -> {
                                                             val cfContinueValueVal6 = matchVal6.cfContinueValue()
-                                                            when (val matchVal7 = ((this[7] as X)).chainingGreater((other[7] as X))) {
+                                                            when (val matchVal7 = kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                 is ControlFlow.Break<*, *> -> {
                                                                     val value7 = matchVal7.cfBreakValue()
                                                                     value7
                                                                 }
                                                                 is ControlFlow.Continue<*, *> -> {
                                                                     val cfContinueValueVal7 = matchVal7.cfContinueValue()
-                                                                    when (val matchVal8 = ((this[8] as W)).chainingGreater((other[8] as W))) {
+                                                                    when (val matchVal8 = kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                         is ControlFlow.Break<*, *> -> {
                                                                             val value8 = matchVal8.cfBreakValue()
                                                                             value8
                                                                         }
                                                                         is ControlFlow.Continue<*, *> -> {
                                                                             val cfContinueValueVal8 = matchVal8.cfContinueValue()
-                                                                            when (val matchVal9 = ((this[9] as V)).chainingGreater((other[9] as V))) {
+                                                                            when (val matchVal9 = kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                                 is ControlFlow.Break<*, *> -> {
                                                                                     val value9 = matchVal9.cfBreakValue()
                                                                                     value9
                                                                                 }
                                                                                 is ControlFlow.Continue<*, *> -> {
                                                                                     val cfContinueValueVal9 = matchVal9.cfContinueValue()
-                                                                                    when (val matchVal10 = ((this[10] as U)).chainingGreater((other[10] as U))) {
+                                                                                    when (val matchVal10 = kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }) {
                                                                                         is ControlFlow.Break<*, *> -> {
                                                                                             val value10 = matchVal10.cfBreakValue()
                                                                                             value10
                                                                                         }
                                                                                         is ControlFlow.Continue<*, *> -> {
                                                                                             val cfContinueValueVal10 = matchVal10.cfContinueValue()
-                                                                                            ((this[11] as T)).gt((other[11] as T))
+                                                                                            (kmPartialCompareValues((this[11] as T), (other[11] as T))?.let { cmpSign -> cmpSign > 0 } == true)
                                                                                         }
                                                                                     }
                                                                                 }
@@ -4296,52 +4303,52 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.gtFromEDCBAZYXWVUT(ot
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromEDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as E)).chainingLess((other[0] as E)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as E)).chainingLess((other[0] as E))
+        if (kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r
         }
-        if (((this[1] as D)).chainingLess((other[1] as D)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as D)).chainingLess((other[1] as D))
+        if (kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r1
         }
-        if (((this[2] as C)).chainingLess((other[2] as C)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as C)).chainingLess((other[2] as C))
+        if (kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r2
         }
-        if (((this[3] as B)).chainingLess((other[3] as B)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as B)).chainingLess((other[3] as B))
+        if (kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r3
         }
-        if (((this[4] as A)).chainingLess((other[4] as A)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as A)).chainingLess((other[4] as A))
+        if (kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r4
         }
-        if (((this[5] as Z)).chainingLess((other[5] as Z)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as Z)).chainingLess((other[5] as Z))
+        if (kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r5
         }
-        if (((this[6] as Y)).chainingLess((other[6] as Y)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as Y)).chainingLess((other[6] as Y))
+        if (kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r6
         }
-        if (((this[7] as X)).chainingLess((other[7] as X)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as X)).chainingLess((other[7] as X))
+        if (kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r7
         }
-        if (((this[8] as W)).chainingLess((other[8] as W)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as W)).chainingLess((other[8] as W))
+        if (kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r8
         }
-        if (((this[9] as V)).chainingLess((other[9] as V)) is ControlFlow.Break<*, *>) {
-            val r9 = ((this[9] as V)).chainingLess((other[9] as V))
+        if (kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r9 = kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r9
         }
-        if (((this[10] as U)).chainingLess((other[10] as U)) is ControlFlow.Break<*, *>) {
-            val r10 = ((this[10] as U)).chainingLess((other[10] as U))
+        if (kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r10 = kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r10
         }
-        if (((this[11] as T)).chainingLess((other[11] as T)) is ControlFlow.Break<*, *>) {
-            val r11 = ((this[11] as T)).chainingLess((other[11] as T))
+        if (kmPartialCompareValues((this[11] as T), (other[11] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) } is ControlFlow.Break<*, *>) {
+            val r11 = kmPartialCompareValues((this[11] as T), (other[11] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign < 0) }
             return r11
         }
         Continue(Unit)
@@ -4350,52 +4357,52 @@ public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingLessFromEDCBA
 
 public fun <E, D, C, B, A, Z, Y, X, W, V, U, T> List<Any?>.chainingGreaterFromEDCBAZYXWVUT(other: List<Any?>): ControlFlow<Boolean, Unit> {
     return run {
-        if (((this[0] as E)).chainingGreater((other[0] as E)) is ControlFlow.Break<*, *>) {
-            val r = ((this[0] as E)).chainingGreater((other[0] as E))
+        if (kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r = kmPartialCompareValues((this[0] as E), (other[0] as E)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r
         }
-        if (((this[1] as D)).chainingGreater((other[1] as D)) is ControlFlow.Break<*, *>) {
-            val r1 = ((this[1] as D)).chainingGreater((other[1] as D))
+        if (kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r1 = kmPartialCompareValues((this[1] as D), (other[1] as D)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r1
         }
-        if (((this[2] as C)).chainingGreater((other[2] as C)) is ControlFlow.Break<*, *>) {
-            val r2 = ((this[2] as C)).chainingGreater((other[2] as C))
+        if (kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r2 = kmPartialCompareValues((this[2] as C), (other[2] as C)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r2
         }
-        if (((this[3] as B)).chainingGreater((other[3] as B)) is ControlFlow.Break<*, *>) {
-            val r3 = ((this[3] as B)).chainingGreater((other[3] as B))
+        if (kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r3 = kmPartialCompareValues((this[3] as B), (other[3] as B)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r3
         }
-        if (((this[4] as A)).chainingGreater((other[4] as A)) is ControlFlow.Break<*, *>) {
-            val r4 = ((this[4] as A)).chainingGreater((other[4] as A))
+        if (kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r4 = kmPartialCompareValues((this[4] as A), (other[4] as A)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r4
         }
-        if (((this[5] as Z)).chainingGreater((other[5] as Z)) is ControlFlow.Break<*, *>) {
-            val r5 = ((this[5] as Z)).chainingGreater((other[5] as Z))
+        if (kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r5 = kmPartialCompareValues((this[5] as Z), (other[5] as Z)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r5
         }
-        if (((this[6] as Y)).chainingGreater((other[6] as Y)) is ControlFlow.Break<*, *>) {
-            val r6 = ((this[6] as Y)).chainingGreater((other[6] as Y))
+        if (kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r6 = kmPartialCompareValues((this[6] as Y), (other[6] as Y)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r6
         }
-        if (((this[7] as X)).chainingGreater((other[7] as X)) is ControlFlow.Break<*, *>) {
-            val r7 = ((this[7] as X)).chainingGreater((other[7] as X))
+        if (kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r7 = kmPartialCompareValues((this[7] as X), (other[7] as X)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r7
         }
-        if (((this[8] as W)).chainingGreater((other[8] as W)) is ControlFlow.Break<*, *>) {
-            val r8 = ((this[8] as W)).chainingGreater((other[8] as W))
+        if (kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r8 = kmPartialCompareValues((this[8] as W), (other[8] as W)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r8
         }
-        if (((this[9] as V)).chainingGreater((other[9] as V)) is ControlFlow.Break<*, *>) {
-            val r9 = ((this[9] as V)).chainingGreater((other[9] as V))
+        if (kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r9 = kmPartialCompareValues((this[9] as V), (other[9] as V)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r9
         }
-        if (((this[10] as U)).chainingGreater((other[10] as U)) is ControlFlow.Break<*, *>) {
-            val r10 = ((this[10] as U)).chainingGreater((other[10] as U))
+        if (kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r10 = kmPartialCompareValues((this[10] as U), (other[10] as U)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r10
         }
-        if (((this[11] as T)).chainingGreater((other[11] as T)) is ControlFlow.Break<*, *>) {
-            val r11 = ((this[11] as T)).chainingGreater((other[11] as T))
+        if (kmPartialCompareValues((this[11] as T), (other[11] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) } is ControlFlow.Break<*, *>) {
+            val r11 = kmPartialCompareValues((this[11] as T), (other[11] as T)).let { cmpSign -> if (cmpSign == 0) ControlFlow.Continue<Boolean, Unit>(Unit) else ControlFlow.Break<Boolean, Unit>(cmpSign != null && cmpSign > 0) }
             return r11
         }
         Continue(Unit)

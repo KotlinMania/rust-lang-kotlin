@@ -3,12 +3,16 @@ package io.github.kotlinmania.rustlang.core.slice.cmp
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
+import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.bytewise.BytewiseEq
 import io.github.kotlinmania.rustlang.core.intrinsics.compareBytes
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmuteCopy
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
@@ -127,7 +131,7 @@ public typealias AlwaysBreak<B> = ControlFlow<B, Nothing>
 
 public fun <A> slicePartialOrdPartialCompareA(left: List<A>, right: List<A>): Ordering? {
     val elemChain =
-        { a, b -> when (val matchVal = a.partialCmp(b)) {
+        { a, b -> when (val matchVal = kmPartialCompareValues(a, b)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
             Ordering.Equal -> ControlFlow.Continue(Unit)
             else -> {
                 val nonEq = matchVal
@@ -177,7 +181,7 @@ public interface SliceOrd<T> {
 
 public fun <A> sliceOrdCompareA(left: List<A>, right: List<A>): Ordering {
     val elemChain =
-        { a, b -> when (val matchVal = a.cmp(b)) {
+        { a, b -> when (val matchVal = kmCompareValues(a, b).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
             Ordering.Equal -> ControlFlow.Continue(Unit)
             else -> {
                 val nonEq = matchVal

@@ -48,7 +48,7 @@ public interface VectorXstores<Out> {
 }
 
 public fun TTL.vecXstLen(a: MutPtr, l: ULong) {
-    stxvl(transmuteWithLayouts<TTL, Unit>(this, UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<Unit>()), MutPtr(a.rawAddress, a.rawMeta), l)
+    stxvl(transmuteWithLayouts<TTL, VectorSignedInt>(this, UnresolvedTypeLayout<TTL>(), UnresolvedTypeLayout<VectorSignedInt>()), MutPtr(a.rawAddress, a.rawMeta), l)
 }
 
 /**

@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows.KEY
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
+import io.github.kotlinmania.rustlang.std.thread.functions.spawn
 
 public class TestsInlineTests {
     @kotlin.test.Test
@@ -44,7 +45,7 @@ public class TestsInlineTests {
             check(((get(key)).rawAddress == 0L))
             set(key, mutPtrFromRustCast(Arc.intoRaw(shared1)))
         }
-        thread.spawn({ run {
+        spawn({ run {
             val key1 = KEY.force()
             check(((get(key1)).rawAddress == 0L))
             set(key1, mutPtrFromRustCast(Arc.intoRaw(shared2)))

@@ -297,7 +297,7 @@ public open class Context internal constructor(
     public open fun ext(): RustAny {
         // Note: this field makes Context extra-weird about unwind safety
         // can we justify AssertUnwindSafe if we stabilize this? do we care?
-        return when (val matchVal = this.ext.first) {
+        return when (val matchVal = this.ext.value) {
             is ExtData.Some -> {
                 val (data) = matchVal
                 data
@@ -411,7 +411,7 @@ public open class ContextBuilder(
          */
         public fun from(cx: Context): ContextBuilder {
             val ext1 =
-                when (val matchVal = cx.ext.first) {
+                when (val matchVal = cx.ext.value) {
                     is ExtData.Some -> {
                         val (ext) = matchVal
                         ExtData.Some(ext)

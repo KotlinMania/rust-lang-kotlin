@@ -380,12 +380,12 @@ public fun <Owned, B, C> Cow<B, B>.eq(other: Cow<C, C>): Boolean where B : ToOwn
 public fun <Owned, T : ToOwned<Owned>> Cow<T, T>.asRef(): T = this
 
 public fun Cow<String, String>.add(rhs: String): Cow<String, String> {
-    (this + rhs).let {}
+    this.addAssign(rhs)
     return this
 }
 
 public fun Cow<String, String>.add(rhs: Cow<String, String>): Cow<String, String> {
-    (this + rhs).let {}
+    this.addAssign(rhs)
     return this
 }
 

@@ -167,9 +167,9 @@ public open class Alignment internal constructor(
 
     public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> = f.writeFmt("${this.asNonzeroUsize()} (1 << ${this.log2()})")
 
-    public open fun cmp(other: Alignment): cmp.Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
+    public open fun cmp(other: Alignment): Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
 
-    public open fun partialCmp(other: Alignment): cmp.Ordering? = this.cmp(other)
+    public open fun partialCmp(other: Alignment): Ordering? = this.cmp(other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -433,4 +433,20 @@ public sealed class AlignmentEnum(
     public data object Align1Shl63 : AlignmentEnum(1 shl 63)
 
     public fun rustEquals(other: AlignmentEnum): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }

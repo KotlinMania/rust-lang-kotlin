@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingSub
@@ -1107,7 +1108,7 @@ public expect fun vlrl(a: UInt, b: ConstPtr): VectorUnsignedChar
 
 public expect fun vstrl(a: VectorUnsignedChar, b: UInt, c: MutPtr)
 
-public expect fun lcbb(a: ConstPtr, b: UInt): UInt
+public expect fun externLcbb(a: ConstPtr, b: UInt): UInt
 
 public expect fun vlbb(a: ConstPtr, b: UInt): MaybeUninit<VectorSignedChar>
 
@@ -1518,12 +1519,28 @@ public sealed class FindImm(
     public data object Ne : FindImm(12)
     public data object EqIdx : FindImm(0)
     public data object NeIdx : FindImm(8)
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }
 
 /**
  * Load Count to Block Boundary
  */
-public fun lcbb(ptr: ConstPtr, blockBoundary: UShort): UInt = lcbb(ptr, validateBlockBoundary(blockBoundary))
+public fun lcbb(ptr: ConstPtr, blockBoundary: UShort): UInt = externLcbb(ptr, validateBlockBoundary(blockBoundary))
 
 /**
  * Vector Negate
@@ -2033,7 +2050,7 @@ public fun vecAddecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorU
  *
  * Note: Only the borrow indication bit (127-bit) of c is used, and the other bits are ignored.
  */
-public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbiq(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
+public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbiq(transmute(a), transmute(b), transmute(c)), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Subtract with Carryout, Carryout
@@ -2046,7 +2063,7 @@ public fun vecSubeU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUn
  *
  * Note: Only the borrow indication bit (127-bit) of c is used, and the other bits are ignored.
  */
-public fun vecSubecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbcbiq(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
+public fun vecSubecU128(a: VectorUnsignedChar, b: VectorUnsignedChar, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vsbcbiq(transmute(a), transmute(b), transmute(c)), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Splat Signed Byte
@@ -2262,7 +2279,7 @@ public fun vecGfmsum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong): V
 /**
  * Vector Galois Field Multiply Sum and Accumulate 128-bits
  */
-public fun vecGfmsumAccum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vgfmag(a, b, c), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
+public fun vecGfmsumAccum128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: VectorUnsignedChar): VectorUnsignedChar = transmuteWithLayouts<U128, VectorUnsignedChar>(vgfmag(a, b, transmute(c)), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 
 /**
  * Vector Bit Permute
@@ -2432,7 +2449,7 @@ public fun vecMsumU128(a: VectorUnsignedLongLong, b: VectorUnsignedLongLong, c: 
     }) {
         error("D needs to be one of 0, 4, 8, 12")
     }
-    return transmuteWithLayouts<U128, VectorUnsignedChar>(vmslg(a, b, c, d), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>(vmslg(a, b, transmute(c), d), UnresolvedTypeLayout<U128>(), VectorUnsignedChar.typeLayout())
 }
 
 /**

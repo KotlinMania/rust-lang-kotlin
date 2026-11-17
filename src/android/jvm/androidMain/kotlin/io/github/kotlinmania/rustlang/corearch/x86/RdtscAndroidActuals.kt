@@ -14,5 +14,5 @@ private object X86RdtscJniBridge {
 public actual fun externRdtsc(): ULong =
     X86RdtscJniBridge.corearchX86RdtscExternRdtsc().toULong()
 
-public actual fun rdtscp(): Pair<ULong, UInt> =
+public actual fun externRdtscp(): Pair<ULong, UInt> =
     Pair<ULong, UInt>(0uL, 0u)

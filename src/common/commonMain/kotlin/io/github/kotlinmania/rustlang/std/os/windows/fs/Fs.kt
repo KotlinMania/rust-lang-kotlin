@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.std.fs.OpenOptions
 import io.github.kotlinmania.rustlang.std.fs.Permissions
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.windows.symlinkInner
 import io.github.kotlinmania.rustlang.std.time.SystemTime
 
@@ -603,10 +604,10 @@ public fun Permissions.fileAttributes(): UInt = this.asInner().fileAttributes()
 
 public fun Permissions.setFileAttributes(mask: UInt) {
     var selfMut = this
-    selfMut = Permissions.FromInner(FromInner.FromInner(mask))
+    selfMut = Permissions.fromInner(FromInner.fromInner(mask))
 }
 
-public fun permissionsExtFromFileAttributesPermissions(mask: UInt): Permissions = Permissions.FromInner(FromInner.FromInner(mask))
+public fun permissionsExtFromFileAttributesPermissions(mask: UInt): Permissions = Permissions.fromInner(FromInner.fromInner(mask))
 
 /**
  * Windows-specific extensions to [fs.Metadata].

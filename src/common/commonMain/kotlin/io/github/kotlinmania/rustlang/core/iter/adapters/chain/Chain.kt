@@ -1,7 +1,6 @@
 // port-lint: source iter/adapters/chain.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.chain
 
-import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
@@ -340,7 +339,7 @@ public open class Chain<A, B>(
          * val unused: Chain = take(foo.first)
          * ```
          */
-        public fun <A, B> default(): Chain<A, B> = Chain.new(Default.Default(), Default.Default())
+        public fun <A, B> default(): Chain<A, B> = Chain.new(Chain.default(), Chain.default())
     }
 }
 

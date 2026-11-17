@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage
 
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 
 /**
@@ -83,7 +82,7 @@ public fun <S> PanicMessage.encode(w: Buffer, s: S) {
 }
 
 public fun <S> decodePanicMessage(r: List<UByte>, s: S): PanicMessage =
-    when (val matchVal = Option.Decode(r, s)) {
+    when (val matchVal = Option.decode(r, s)) {
         null -> PanicMessage.Unknown
         else -> {
             val s1 = matchVal

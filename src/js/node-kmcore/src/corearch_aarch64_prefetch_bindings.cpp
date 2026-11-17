@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchAarch64PrefetchPrefetch_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchAarch64PrefetchExternPrefetch_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     void* p = reinterpret_cast<void*>(static_cast<uintptr_t>(km_info.Length() > 0 ? km_napi_arg_u64(km_info[0]) : 0));
     int32_t rw = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -86,7 +86,7 @@ static Napi::Value corearchAarch64PrefetchPrefetch_napi(const Napi::CallbackInfo
 }
 
 static void register_aarch64_prefetch_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchAarch64PrefetchPrefetch", Napi::Function::New(env, corearchAarch64PrefetchPrefetch_napi));
+    exports.Set("corearchAarch64PrefetchExternPrefetch", Napi::Function::New(env, corearchAarch64PrefetchExternPrefetch_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_aarch64_prefetch_napi, nullptr };

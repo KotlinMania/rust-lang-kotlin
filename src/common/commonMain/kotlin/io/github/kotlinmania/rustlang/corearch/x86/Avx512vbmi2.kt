@@ -105,7 +105,7 @@ public fun mmMaskzExpandloaduEpi8(k: Mmask16, memAddr: ConstPtr): M128i = mmMask
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compressstoreu_epi16)
  */
 public fun mm512MaskCompressstoreuEpi16(baseAddr: MutPtr, k: Mmask32, a: M512i) {
-    vcompressstorew(baseAddr, a.asI16x32(), k)
+    vcompressstorew(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI16x32(), k)
 }
 
 /**
@@ -114,7 +114,7 @@ public fun mm512MaskCompressstoreuEpi16(baseAddr: MutPtr, k: Mmask32, a: M512i) 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compressstoreu_epi16)
  */
 public fun mm256MaskCompressstoreuEpi16(baseAddr: MutPtr, k: Mmask16, a: M256i) {
-    vcompressstorew256(baseAddr, a.asI16x16(), k)
+    vcompressstorew256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI16x16(), k)
 }
 
 /**
@@ -123,7 +123,7 @@ public fun mm256MaskCompressstoreuEpi16(baseAddr: MutPtr, k: Mmask16, a: M256i) 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compressstoreu_epi16)
  */
 public fun mmMaskCompressstoreuEpi16(baseAddr: MutPtr, k: Mmask8, a: M128i) {
-    vcompressstorew128(baseAddr, a.asI16x8(), k)
+    vcompressstorew128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI16x8(), k)
 }
 
 /**

@@ -189,6 +189,29 @@ public sealed class Quote {
     public data object Auto : Quote()
     // Arg appended without any changes (#29494)
     public data object Never : Quote()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Always -> 0
+        Auto -> 1
+        Never -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public fun appendArg(cmd: List<UShort>, arg: Arg, forceQuotes: Boolean): Result<Unit, Error> {

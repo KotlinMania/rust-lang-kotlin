@@ -15,7 +15,7 @@
 #endif
 #endif
 
-void corearchX8664XsaveXsave64(void* p, uint32_t hi, uint32_t lo) {
+void corearchX8664XsaveExternXsave64(void* p, uint32_t hi, uint32_t lo) {
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -48,7 +48,7 @@ void corearchX8664XsaveXsave64(void* p, uint32_t hi, uint32_t lo) {
     errno = ENOSYS;
 }
 
-void corearchX8664XsaveXrstor64(void* p, uint32_t hi, uint32_t lo) {
+void corearchX8664XsaveExternXrstor64(void* p, uint32_t hi, uint32_t lo) {
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -81,7 +81,7 @@ void corearchX8664XsaveXrstor64(void* p, uint32_t hi, uint32_t lo) {
     errno = ENOSYS;
 }
 
-void corearchX8664XsaveXsaveopt64(void* p, uint32_t hi, uint32_t lo) {
+void corearchX8664XsaveExternXsaveopt64(void* p, uint32_t hi, uint32_t lo) {
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -114,7 +114,7 @@ void corearchX8664XsaveXsaveopt64(void* p, uint32_t hi, uint32_t lo) {
     errno = ENOSYS;
 }
 
-void corearchX8664XsaveXsavec64(void* p, uint32_t hi, uint32_t lo) {
+void corearchX8664XsaveExternXsavec64(void* p, uint32_t hi, uint32_t lo) {
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -147,7 +147,7 @@ void corearchX8664XsaveXsavec64(void* p, uint32_t hi, uint32_t lo) {
     errno = ENOSYS;
 }
 
-void corearchX8664XsaveXsaves64(void* p, uint32_t hi, uint32_t lo) {
+void corearchX8664XsaveExternXsaves64(void* p, uint32_t hi, uint32_t lo) {
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -180,7 +180,7 @@ void corearchX8664XsaveXsaves64(void* p, uint32_t hi, uint32_t lo) {
     errno = ENOSYS;
 }
 
-void corearchX8664XsaveXrstors64(void* p, uint32_t hi, uint32_t lo) {
+void corearchX8664XsaveExternXrstors64(void* p, uint32_t hi, uint32_t lo) {
     typedef void (*km_fn_t)(void*, uint32_t, uint32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

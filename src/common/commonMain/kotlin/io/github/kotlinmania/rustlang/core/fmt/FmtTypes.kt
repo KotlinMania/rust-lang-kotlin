@@ -18,6 +18,29 @@ public sealed class Alignment {
     public data object Center : Alignment()
 
     public fun rustEquals(other: Alignment): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Left -> 0
+        Right -> 1
+        Center -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -167,6 +190,28 @@ public sealed class Sign {
     public data object Minus : Sign()
 
     public fun rustEquals(other: Sign): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Plus -> 0
+        Minus -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -184,6 +229,28 @@ public sealed class DebugAsHex {
     public data object Upper : DebugAsHex()
 
     public fun rustEquals(other: DebugAsHex): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Lower -> 0
+        Upper -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public val SIGN_PLUS_FLAG: UInt = 1u shl 21

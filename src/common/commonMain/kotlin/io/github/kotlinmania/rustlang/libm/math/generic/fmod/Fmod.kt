@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.libm.math.generic.fmod
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 import io.github.kotlinmania.rustlang.libm.math.support.modular.linearMulReduction
 
@@ -40,7 +39,7 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, H, F : Float<F, Int, SignedI
     // We would shift `rem` up by `ey`, but have to stop at `F.SIG_BITS`
     val shift = ey.min(F.SIG_BITS - rem.ilog2())
     // Anything past that is added to the exponent field
-    val bits = (rem shl shift.toInt()) + (F.Int.CastFrom(ey - shift) shl F.SIG_BITS.toInt())
+    val bits = (rem shl shift.toInt()) + (F.Int.castFrom(ey - shift) shl F.SIG_BITS.toInt())
     return fromBitsFFn(sx + bits.toULong())
 }
 
@@ -54,7 +53,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> intoSigExp(bits: Int):
     bits1 = bits1 and F.SIGN_MASK.inv()
     // Subtract 1 from the exponent, clamping at 0
     val sat = (bits1.checkedSub(F.IMPLICIT_BIT.toInt()) ?: F.Int.ZERO)
-    return Pair(bits1 - (sat and F.EXP_MASK), UInt.CastFrom(sat shr F.SIG_BITS.toInt()))
+    return Pair(bits1 - (sat and F.EXP_MASK), UInt.castFrom(sat shr F.SIG_BITS.toInt()))
 }
 
 /**
@@ -71,7 +70,7 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, H, F> reduction(x: Int, e: U
         val v: UShort = y.cast().toUShort()
         val u1 = (u.toULong()) shl e.toInt()
         val v1 = v.toULong()
-        return F.Int.CastFrom((u1 % v1).toUShort())
+        return F.Int.castFrom((u1 % v1).toUShort())
     }
     // Ensure `x<2y` for later steps
     if (x1 >= (y shl 1)) {

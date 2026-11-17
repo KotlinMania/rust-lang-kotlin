@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.core.clone.uninit
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -120,7 +119,7 @@ public open class InitializingSlice<T>(
      * Panics if the slice is already fully initialized.
      */
     public open fun push(value: T) {
-        MaybeUninit.Write(this.data[this.initializedLen], value)
+        MaybeUninit.write(this.data[this.initializedLen], value)
         this.initializedLen += 1
     }
 

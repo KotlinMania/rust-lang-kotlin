@@ -709,6 +709,29 @@ public sealed class TpacketVersions {
     public data object TpacketV1 : TpacketVersions()
     public data object TpacketV2 : TpacketVersions()
     public data object TpacketV3 : TpacketVersions()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        TpacketV1 -> 0
+        TpacketV2 -> 1
+        TpacketV3 -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public open class TpacketReq(

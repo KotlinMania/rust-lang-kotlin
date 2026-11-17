@@ -9,13 +9,14 @@ import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.checkedPow
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Formatted
+import io.github.kotlinmania.rustlang.core.num.imp.fmt.Part
 import io.github.kotlinmania.rustlang.core.num.pow
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.fmt.fmt as numfmt
 
 public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: UByte): Result<Unit, Error> {
     val MAX_DEC_N: Int = ULong.MAX_VALUE.ilog10().toInt() + 1
@@ -147,7 +148,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
         val asStr = String.fromUtf8Unchecked(text)
         f.padIntegral(isNonnegative, "", asStr)
     } else {
-        val parts = listOf(numfmt.Part.Copy(text[0 until coefLen]), numfmt.Part.Zero(morePrec), numfmt.Part.Copy(text[coefLen until text.size]))
+        val parts = listOf(Part.Copy(text[0 until coefLen]), Part.Zero(morePrec), Part.Copy(text[coefLen until text.size]))
         val sign =
             if (!isNonnegative) {
                 "-"
@@ -156,7 +157,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
             } else {
                 ""
             }
-        f.padFormattedParts(numfmt.Formatted(sign = sign, parts = parts))
+        f.padFormattedParts(Formatted(sign = sign, parts = parts))
     }
 }
 

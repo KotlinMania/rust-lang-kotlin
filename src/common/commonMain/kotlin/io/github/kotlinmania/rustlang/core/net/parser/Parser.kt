@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.core.net.parser
 
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -94,7 +93,7 @@ public open class Parser(
     public open fun readChar(): Char? =
         this.state.splitFirst().map({ (b, tail) ->
             this.state = tail
-            Char.From(b)
+            Char.from(b)
         })
 
     /**
@@ -451,6 +450,32 @@ public sealed class AddrKind {
     public data object SocketV6 : AddrKind()
 
     public fun rustEquals(other: AddrKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Ip -> 0
+        Ipv4 -> 1
+        Ipv6 -> 2
+        Socket -> 3
+        SocketV4 -> 4
+        SocketV6 -> 5
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

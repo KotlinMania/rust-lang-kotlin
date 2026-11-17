@@ -34,7 +34,6 @@ import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
 import io.github.kotlinmania.rustlang.std.net.tcp.TcpStream
 import io.github.kotlinmania.rustlang.std.os.fd.AsRawFd
-import io.github.kotlinmania.rustlang.std.os.fd.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
 import io.github.kotlinmania.rustlang.std.os.unix.net.UnixStream
@@ -167,6 +166,28 @@ public sealed class FdHandle {
     public data object Output : FdHandle()
 
     public fun rustEquals(other: FdHandle): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Input -> 0
+        Output -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -426,7 +447,7 @@ public fun CachedFileMetadata.properties(): CopyParams = CopyParams(FdMeta.Metad
 
 public fun <T : AsRawFd> fdToMeta(fd: T): FdMeta {
     val fd1 = fd.asRawFd()
-    val file: File = File.FromRawFd(fd1)
+    val file: File = File.fromRawFd(fd1)
     return run {
         val matchVal = file.metadata()
         when (matchVal) { is RustResult.Ok<*, *> -> {
@@ -607,6 +628,28 @@ public sealed class SpliceMode {
     public data object Splice : SpliceMode()
 
     public fun rustEquals(other: SpliceMode): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Sendfile -> 0
+        Splice -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

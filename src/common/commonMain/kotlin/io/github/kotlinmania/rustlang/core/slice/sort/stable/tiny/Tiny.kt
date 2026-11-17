@@ -25,7 +25,7 @@ public fun <T> mergesort(v: MutableList<T>, scratch: MutableList<MaybeUninit<T>>
             // Sort the right half recursively.
             mergesort(v.getUncheckedMut(mid until Int.MAX_VALUE), scratch, isLess)
         }
-        merge.merge(v, scratch, mid, isLess)
+        merge(v, scratch, mid, isLess)
     } else if (len == 2) {
         // SAFETY: We checked the len, the pointers we create are valid and don't overlap.
         run {

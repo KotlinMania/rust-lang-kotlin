@@ -163,6 +163,27 @@ public interface Error {
      * public fun doctestEntry() {
      *     sealed class MyLittleTeaPot {
      *         public data object Empty : MyLittleTeaPot()
+     *
+     *         private fun kmDiscriminant(): Int =
+     *             when (this) {
+     *             Empty -> 0
+     *             }
+     *
+     *         public fun toByte(): Byte = kmDiscriminant().toByte()
+     *
+     *         public fun toUByte(): UByte = kmDiscriminant().toUByte()
+     *
+     *         public fun toShort(): Short = kmDiscriminant().toShort()
+     *
+     *         public fun toUShort(): UShort = kmDiscriminant().toUShort()
+     *
+     *         public fun toInt(): Int = kmDiscriminant()
+     *
+     *         public fun toUInt(): UInt = kmDiscriminant().toUInt()
+     *
+     *         public fun toLong(): Long = kmDiscriminant().toLong()
+     *
+     *         public fun toULong(): ULong = kmDiscriminant().toULong()
      *     }
      *     open class MyBacktrace {
      *         public open fun new(): MyBacktrace {
@@ -458,6 +479,27 @@ public fun <Reified, I> requestByTypeTag(err: Error): Reified? where I : Type<Re
  * public fun doctestEntry() {
  *     sealed class MyLittleTeaPot {
  *         public data object Empty : MyLittleTeaPot()
+ *
+ *         private fun kmDiscriminant(): Int =
+ *             when (this) {
+ *             Empty -> 0
+ *             }
+ *
+ *         public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *         public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *         public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *         public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *         public fun toInt(): Int = kmDiscriminant()
+ *
+ *         public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *         public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *         public fun toULong(): ULong = kmDiscriminant().toULong()
  *     }
  *     open class MyBacktrace {
  *         public open fun new(): MyBacktrace {

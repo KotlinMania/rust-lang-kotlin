@@ -55,6 +55,29 @@ import io.github.kotlinmania.rustlang.core.ascii.Char as AsciiChar
  *     public data object A : Kind()
  *     public data object B : Kind()
  *     public data object C : Kind()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         A -> 0
+ *         B -> 1
+ *         C -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * ```
  *
@@ -72,6 +95,29 @@ import io.github.kotlinmania.rustlang.core.ascii.Char as AsciiChar
  *     public data object A : Kind()
  *     public data object B : Kind()
  *     public data object C : Kind()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         A -> 0
+ *         B -> 1
+ *         C -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  *
  *     public open fun default(): Kind {
  *         return Kind.A
@@ -109,6 +155,29 @@ public interface Default<T> {
      *     public data object A : Kind()
      *     public data object B : Kind()
      *     public data object C : Kind()
+     *
+     *     private fun kmDiscriminant(): Int =
+     *         when (this) {
+     *         A -> 0
+     *         B -> 1
+     *         C -> 2
+     *         }
+     *
+     *     public fun toByte(): Byte = kmDiscriminant().toByte()
+     *
+     *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+     *
+     *     public fun toShort(): Short = kmDiscriminant().toShort()
+     *
+     *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+     *
+     *     public fun toInt(): Int = kmDiscriminant()
+     *
+     *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+     *
+     *     public fun toLong(): Long = kmDiscriminant().toLong()
+     *
+     *     public fun toULong(): ULong = kmDiscriminant().toULong()
      *
      *     public open fun default(): Kind {
      *         return Kind.A

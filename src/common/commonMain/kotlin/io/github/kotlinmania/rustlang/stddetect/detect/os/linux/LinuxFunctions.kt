@@ -8,7 +8,7 @@ import io.github.kotlinmania.rustlang.libc.Read
 import io.github.kotlinmania.rustlang.libc.close
 import io.github.kotlinmania.rustlang.libc.open
 import io.github.kotlinmania.rustlang.libc.wasi.O_RDONLY
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 
 public fun readFile(origPath: CStr): Result<List<UByte>, String> {
     return run {
@@ -40,4 +40,4 @@ public fun readFile(origPath: CStr): Result<List<UByte>, String> {
 /**
  * Performs run-time feature detection.
  */
-public fun detectFeatures(): cache.Initializer = cache.Initializer.default()
+public fun detectFeatures(): Initializer = Initializer.default()

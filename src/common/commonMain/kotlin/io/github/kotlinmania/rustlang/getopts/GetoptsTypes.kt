@@ -23,6 +23,28 @@ public sealed class ParsingStyle {
     public data object StopAtFirstFree : ParsingStyle()
 
     public fun rustEquals(other: ParsingStyle): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        FloatingFrees -> 0
+        StopAtFirstFree -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -82,6 +104,29 @@ public sealed class HasArg {
     public data object Maybe : HasArg()
 
     public fun rustEquals(other: HasArg): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Yes -> 0
+        No -> 1
+        Maybe -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -102,6 +147,29 @@ public sealed class Occur {
     public data object Multi : Occur()
 
     public fun rustEquals(other: Occur): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Req -> 0
+        Optional -> 1
+        Multi -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

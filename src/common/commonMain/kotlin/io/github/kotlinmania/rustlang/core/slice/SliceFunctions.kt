@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
 import io.github.kotlinmania.rustlang.core.intrinsics.alignOf
@@ -5220,11 +5219,11 @@ public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.start < othe
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.Range<Int>.isInBounds(len: Int): Boolean = Range.From(this).isInBounds(len)
+public fun range.Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
 
-public fun range.Range<Int>.isOverlapping(other: range.Range<Int>): Boolean = Range.From(this).isOverlapping(Range.From(other))
+public fun range.Range<Int>.isOverlapping(other: range.Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
 
 // SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun range.RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.From(this).isInBounds(len)
+public fun range.RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)
 
-public fun range.RangeInclusive<Int>.isOverlapping(other: range.RangeInclusive<Int>): Boolean = RangeInclusive.From(this).isOverlapping(RangeInclusive.From(other))
+public fun range.RangeInclusive<Int>.isOverlapping(other: range.RangeInclusive<Int>): Boolean = RangeInclusive.from(this).isOverlapping(RangeInclusive.from(other))

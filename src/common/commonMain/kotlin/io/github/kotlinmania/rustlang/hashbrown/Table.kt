@@ -1778,7 +1778,7 @@ public open class OccupiedEntry<T, A> internal constructor(
      *     }
      *     is Entry.Vacant -> error("panic")
      * }
-     * value.second += 10
+     * value.second += 10u
      * check(table.find(hasher1("poneyland"), { (x, _) -> x == "poneyland" }) == Pair("poneyland", 22))
      * ```
      */

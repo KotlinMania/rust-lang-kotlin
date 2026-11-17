@@ -71,6 +71,28 @@ public sealed class Fallibility {
     public data object Fallible : Fallibility()
     public data object Nothing : Fallibility()
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Fallible -> 0
+        Nothing -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     /**
      * Error to return on capacity overflow.
      */
@@ -1477,7 +1499,7 @@ public open class RawTable<T, A : Allocator>(
             })
         for (from in source.iter()) {
             val index = source.bucketIndex(from)
-            val to = guard.second.bucket(index)
+            val to = guard.field1.bucket(index)
             to.write(from.asRef().clone())
             // Update the index in case we need to unwind.
             guard.first = index + 1

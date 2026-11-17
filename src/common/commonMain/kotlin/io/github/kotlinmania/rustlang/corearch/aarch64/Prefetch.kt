@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.corearch.aarch64
 
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 
-public expect fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int)
+public expect fun externPrefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int)
 
 /**
  * See [`prefetch`](fn._prefetch.html).
@@ -75,5 +75,5 @@ public fun prefetch(p: ConstPtr, rw: Int, locality: Int) {
     run {
         check(0 <= locality && locality < (1 shl 2)) { "LOCALITY doesn't fit in 2 bits (unsigned)" }
     }
-    prefetch(p, rw, locality, 1)
+    externPrefetch(p, rw, locality, 1)
 }

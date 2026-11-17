@@ -112,6 +112,49 @@ public sealed class EscapeError {
 
     public fun rustEquals(other: EscapeError): Boolean = this == other
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        ZeroChars -> 0
+        MoreThanOneChar -> 1
+        LoneSlash -> 2
+        InvalidEscape -> 3
+        BareCarriageReturn -> 4
+        BareCarriageReturnInRawString -> 5
+        EscapeOnlyChar -> 6
+        TooShortHexEscape -> 7
+        InvalidCharInHexEscape -> 8
+        OutOfRangeHexEscape -> 9
+        NoBraceInUnicodeEscape -> 10
+        InvalidCharInUnicodeEscape -> 11
+        EmptyUnicodeEscape -> 12
+        UnclosedUnicodeEscape -> 13
+        LeadingUnderscoreUnicodeEscape -> 14
+        OverlongUnicodeEscape -> 15
+        LoneSurrogateUnicodeEscape -> 16
+        OutOfRangeUnicodeEscape -> 17
+        UnicodeEscapeInByte -> 18
+        NonAsciiCharInByte -> 19
+        NulInCStr -> 20
+        UnskippedWhitespaceWarning -> 21
+        MultipleSkippedLinesWarning -> 22
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     /**
      * Returns true for actual errors, as opposed to warnings.
      */
@@ -395,6 +438,34 @@ public sealed class Mode {
     public data object RawCStr : Mode()
 
     public fun rustEquals(other: Mode): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Char -> 0
+        Byte -> 1
+        Str -> 2
+        RawStr -> 3
+        ByteStr -> 4
+        RawByteStr -> 5
+        CStr -> 6
+        RawCStr -> 7
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public open fun inDoubleQuotes(): Boolean =
         when (this) {

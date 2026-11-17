@@ -774,14 +774,37 @@ public sealed class Locality {
 
     public fun rustEquals(other: Locality): Boolean = this == other
 
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        L3 -> 0
+        L2 -> 1
+        L1 -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
+
     /**
      * Convert to the constant that LLVM associates with a locality.
      */
     public open fun toLlvm(): Int =
         when (this) {
-            Locality.l3 -> 1
-            Locality.l2 -> 2
-            Locality.l1 -> 3
+            Locality.L3 -> 1
+            Locality.L2 -> 2
+            Locality.L1 -> 3
         }
 }
 
@@ -819,9 +842,9 @@ public sealed class Locality {
  */
 public fun prefetchRead(ptr: ConstPtr, locality: Locality) {
     when (locality) {
-        Locality.l3 -> Unit
-        Locality.l2 -> Unit
-        Locality.l1 -> Unit
+        Locality.L3 -> Unit
+        Locality.L2 -> Unit
+        Locality.L1 -> Unit
     }
 }
 
@@ -854,9 +877,9 @@ public fun prefetchReadNonTemporal(ptr: ConstPtr, locality: Locality) {
  */
 public fun prefetchWrite(ptr: MutPtr, locality: Locality) {
     when (locality) {
-        Locality.l3 -> Unit
-        Locality.l2 -> Unit
-        Locality.l1 -> Unit
+        Locality.L3 -> Unit
+        Locality.L2 -> Unit
+        Locality.L1 -> Unit
     }
 }
 
@@ -889,8 +912,8 @@ public fun prefetchWriteNonTemporal(ptr: ConstPtr, locality: Locality) {
  */
 public fun prefetchReadInstruction(ptr: ConstPtr, locality: Locality) {
     when (locality) {
-        Locality.l3 -> Unit
-        Locality.l2 -> Unit
-        Locality.l1 -> Unit
+        Locality.L3 -> Unit
+        Locality.L2 -> Unit
+        Locality.L1 -> Unit
     }
 }

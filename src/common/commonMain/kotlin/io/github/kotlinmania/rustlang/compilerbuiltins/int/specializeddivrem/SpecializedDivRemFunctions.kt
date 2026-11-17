@@ -226,9 +226,9 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
         val (tmpHi, overflow) = carryingMulAdd(quo1, divHi, carry)
         val tmp = (U128.fromLong(tmpLo.toLong())) or ((U128.fromLong(tmpHi.toLong())) shl n.toInt())
         if ((overflow != 0) || (duo1 < tmp)) {
-            return Pair(U128.fromLong((quo1 - 1).toLong()), duo1.wrappingAdd(div).wrappingSub(tmp))
+            return Pair(U128.fromULong((quo1 - 1uL)), duo1.wrappingAdd(div).wrappingSub(tmp))
         } else {
-            return Pair(U128.fromLong(quo1.toLong()), duo1 - tmp)
+            return Pair(U128.fromULong(quo1), duo1 - tmp)
         }
     }
     var duo2 = duo1
@@ -240,7 +240,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
         val duoExtra = n - duoLz
         val duoSigN1 = (duo2 shr duoExtra.toInt()).toULong()
         if (divExtra <= duoExtra) {
-            val quoPart = U128.fromLong((u64ByU64DivRem(duoSigN1, divSigNHAdd1).first).toLong())
+            val quoPart = U128.fromULong((u64ByU64DivRem(duoSigN1, divSigNHAdd1).first))
             val extraShl = duoExtra - divExtra
             quo2 += (quoPart shl extraShl.toInt())
             duo2 -= (div.wrappingMul(quoPart) shl extraShl.toInt())
@@ -255,9 +255,9 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
             val (tmpHi1, _) = carryingMulAdd(quoPart1, divHi1, carry1)
             val tmp1 = (U128.fromLong(tmpLo1.toLong())) or ((U128.fromLong(tmpHi1.toLong())) shl n.toInt())
             if (duo2 < tmp1) {
-                return Pair(quo2 + (U128.fromLong((quoPart1 - 1).toLong())), duo2.wrappingAdd(div).wrappingSub(tmp1))
+                return Pair(quo2 + (U128.fromULong((quoPart1 - 1uL))), duo2.wrappingAdd(div).wrappingSub(tmp1))
             } else {
-                return Pair(quo2 + (U128.fromLong(quoPart1.toLong())), duo2 - tmp1)
+                return Pair(quo2 + (U128.fromULong(quoPart1)), duo2 - tmp1)
             }
         }
         duoLz = duo2.leadingZeros()
@@ -270,7 +270,7 @@ public fun u128DivRem(duo: U128, div: U128): Pair<U128, U128> {
         }
         if (n <= duoLz) {
             val tmp2 = u64ByU64DivRem(duo2.toULong(), div.toULong())
-            return Pair(quo2 + (U128.fromLong(tmp2.first.toLong())), U128.fromLong(tmp2.second.toLong()))
+            return Pair(quo2 + (U128.fromULong(tmp2.first)), U128.fromULong(tmp2.second))
         }
     }
 }

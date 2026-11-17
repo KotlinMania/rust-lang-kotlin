@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.convert.AsMut
-import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -1114,6 +1112,22 @@ public open class MaybeUninit<T>(
          * sealed class NotZero(public val value: Int) {
          *     public data object One : NotZero(1)
          *     public data object Two : NotZero(2)
+         *
+         *     public fun toByte(): Byte = value.toByte()
+         *
+         *     public fun toUByte(): UByte = value.toUByte()
+         *
+         *     public fun toShort(): Short = value.toShort()
+         *
+         *     public fun toUShort(): UShort = value.toUShort()
+         *
+         *     public fun toInt(): Int = value
+         *
+         *     public fun toUInt(): UInt = value.toUInt()
+         *
+         *     public fun toLong(): Long = value.toLong()
+         *
+         *     public fun toULong(): ULong = value.toULong()
          * }
          * val x = MaybeUninit.zeroed(UnresolvedTypeLayout<Pair<UByte, NotZero>>())
          * val x1 = x.assumeInit()
@@ -1341,7 +1355,7 @@ public fun <T> List<MaybeUninit<T>>.writeCloneOfSlice(src: List<T>): MutableList
  * ```
  */
 public fun <T> List<MaybeUninit<T>>.writeFilled(value: T): MutableList<T> {
-    SpecFill.SpecFill(this, value)
+    this.specFill(value)
     // SAFETY: Valid elements have just been filled into `self` so it is initialized
     return this.assumeInitMut()
 }
@@ -1732,14 +1746,14 @@ public fun <T> MaybeUninit<List<T>>.asRef(n: Int): List<MaybeUninit<T>> {
     return ConstPtr((this).rawAddress)
 }
 
-public fun <T> MaybeUninit<List<T>>.asRefMaybeUninitTSlice(n: Int): List<MaybeUninit<T>> = AsRef.AsRef(this)
+public fun <T> MaybeUninit<List<T>>.asRefMaybeUninitTSlice(n: Int): List<MaybeUninit<T>> = this.asRef()
 
 public fun <T> MaybeUninit<List<T>>.asMut(n: Int): List<MaybeUninit<T>> {
     // SAFETY: T and MaybeUninit<T> have the same layout
     return MutPtr((this).rawAddress)
 }
 
-public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int): MutableList<MaybeUninit<T>> = AsMut.AsMut(this)
+public fun <T> MaybeUninit<List<T>>.asMutMaybeUninitTSlice(n: Int): MutableList<MaybeUninit<T>> = this.asMut()
 
 public fun <T> fromMaybeUninitTArrayn(arr: MaybeUninit<List<T>>, n: Int): List<MaybeUninit<T>> = arr.transpose(n)
 

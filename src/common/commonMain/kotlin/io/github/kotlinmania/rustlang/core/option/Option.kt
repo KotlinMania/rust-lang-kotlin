@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
+import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -2015,7 +2016,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * See [the documentation](https://doc.rust-lang.org/std/option/#comparison-operators) for details.
      * [None] always compares less than any [Some]
      */
-    public open fun partialCmp(other: Option<T>): Option<cmp.Ordering> =
+    public open fun partialCmp(other: Option<T>): Option<Ordering> =
         run {
             val matchVal = Pair(this, other)
             when {
@@ -2024,13 +2025,13 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val (r) = matchVal.second as Some<T>
                     kmPartialCompareValues(l, r)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
                 }
-                matchVal.first is Some<*> && matchVal.second == null -> Some(cmp.Ordering.Greater)
-                matchVal.first == null && matchVal.second is Some<*> -> Some(cmp.Ordering.Less)
-                else -> Some(cmp.Ordering.Equal)
+                matchVal.first is Some<*> && matchVal.second == null -> Some(Ordering.Greater)
+                matchVal.first == null && matchVal.second is Some<*> -> Some(Ordering.Less)
+                else -> Some(Ordering.Equal)
             }
         }
 
-    public open fun cmp(other: Option<T>): cmp.Ordering =
+    public open fun cmp(other: Option<T>): Ordering =
         run {
             val matchVal = Pair(this, other)
             when {
@@ -2039,9 +2040,9 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val (r) = matchVal.second as Some<T>
                     kmCompareValues(l, r).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
                 }
-                matchVal.first is Some<*> && matchVal.second == null -> cmp.Ordering.Greater
-                matchVal.first == null && matchVal.second is Some<*> -> cmp.Ordering.Less
-                else -> cmp.Ordering.Equal
+                matchVal.first is Some<*> && matchVal.second == null -> Ordering.Greater
+                matchVal.first == null && matchVal.second is Some<*> -> Ordering.Less
+                else -> Ordering.Equal
             }
         }
 
@@ -2533,7 +2534,7 @@ public open class OptionFlatten<A>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = Iter.tryProcess(iter.iterator(), { i -> i.collect() })
+public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = tryProcess(iter.iterator(), { i -> i.collect() })
 
 /**
  * Converts from `Option<Option<T>>` to `Option<T>`.

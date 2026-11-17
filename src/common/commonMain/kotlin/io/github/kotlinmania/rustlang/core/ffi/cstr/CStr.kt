@@ -498,7 +498,7 @@ public open class CStr internal constructor(
          * ```
          */
         public fun fromBytesUntilNul(bytes: List<UByte>): Result<CStr, FromBytesUntilNulError> {
-            val nulPos = memchr.memchr(0, bytes)
+            val nulPos = memchr(0u, bytes)
             return when (nulPos) {
                 null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError(Unit))
                 else -> {
@@ -554,7 +554,7 @@ public open class CStr internal constructor(
          * ```
          */
         public fun fromBytesWithNul(bytes: List<UByte>): Result<CStr, FromBytesWithNulError> {
-            val nulPos = memchr.memchr(0, bytes)
+            val nulPos = memchr(0u, bytes)
             return when {
                 nulPos != null && nulPos + 1 == bytes.size -> {
                     val nulPos1 = nulPos

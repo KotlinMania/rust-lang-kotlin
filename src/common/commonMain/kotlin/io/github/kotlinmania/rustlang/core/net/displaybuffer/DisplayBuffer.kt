@@ -1,6 +1,7 @@
 // port-lint: source net/display_buffer.rs
 package io.github.kotlinmania.rustlang.core.net.displaybuffer
 
+import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -28,7 +29,7 @@ public open class DisplayBuffer internal constructor(
         val bytes = s.encodeToByteArray().map { it.toUByte() }
         return when (val matchVal = this.buf.getMut(this.len until (this.len + bytes.size))) {
             null -> {
-                Result.Err<Unit, Unit>(fmt.Error)
+                Result.Err<Unit, Unit>(Error())
             }
             else -> {
                 val buf = matchVal

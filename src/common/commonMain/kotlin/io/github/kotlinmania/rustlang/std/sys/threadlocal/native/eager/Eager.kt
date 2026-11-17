@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests.destructors
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike.register
 
 public sealed class State(
     public val value: Int,
@@ -19,6 +19,22 @@ public sealed class State(
     public data object Alive : State(0)
     public data object Unregistered : State(Alive.value + 1)
     public data object Destroyed : State(Unregistered.value + 1)
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }
 
 public open class Storage<T> internal constructor(
@@ -56,7 +72,7 @@ public open class Storage<T> internal constructor(
         // SAFETY:
         // The caller guarantees that `self` will be valid until thread destruction.
         run {
-            destructors.register(this.castMut().cast(), destroy<T>)
+            register(this.castMut().cast(), destroy<T>)
         }
         this.state.set(State.Alive)
         return this.value.get()

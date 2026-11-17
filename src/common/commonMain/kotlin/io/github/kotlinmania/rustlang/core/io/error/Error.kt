@@ -1,7 +1,7 @@
 // port-lint: source io/error.rs
 package io.github.kotlinmania.rustlang.core.io.error
 
-import io.github.kotlinmania.rustlang.core.fmt.builders.FromFn
+import io.github.kotlinmania.rustlang.core.fmt.builders.fromFn
 import io.github.kotlinmania.rustlang.core.fmt.fmt
 import io.github.kotlinmania.rustlang.core.hint.mustUse
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
@@ -393,7 +393,7 @@ unreachableUnchecked()
         when (val matchVal = this.repr.data()) {
             is ErrorData.Os<*> -> {
                 val (code) = matchVal
-                val detail = fmt.FromFn({ fmt1 -> formatOsError(code, fmt1) })
+                val detail = fromFn({ fmt1 -> formatOsError(code, fmt1) })
                 fmt.writeFmt("$detail (os error $code)")
             }
             is ErrorData.Custom<*> -> {
@@ -542,8 +542,8 @@ public fun Repr.fmt(fmt: StringBuilder): RustResult<Unit, Unit> =
         is ErrorData.Os<*> -> {
             val (code) = matchVal
             run {
-DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fmt.FromFn({ fmt1 ->
-                fmt1.writeFmt("\"${fmt.FromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
+DebugStruct(fmt, "Os").field("code", code).field("kind", decodeErrorKind(code)).field("message", fromFn({ fmt1 ->
+                fmt1.writeFmt("\"${fromFn({ fmt2 -> formatOsError(code, fmt2) })}\"")
             })).finish()
 RustResult.Ok<Unit, Unit>(Unit)
 }
@@ -1031,6 +1031,70 @@ public sealed class ErrorKind {
     public data object Uncategorized : ErrorKind()
 
     public fun rustEquals(other: ErrorKind): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        NotFound -> 0
+        PermissionDenied -> 1
+        ConnectionRefused -> 2
+        ConnectionReset -> 3
+        HostUnreachable -> 4
+        NetworkUnreachable -> 5
+        ConnectionAborted -> 6
+        NotConnected -> 7
+        AddrInUse -> 8
+        AddrNotAvailable -> 9
+        NetworkDown -> 10
+        BrokenPipe -> 11
+        AlreadyExists -> 12
+        WouldBlock -> 13
+        NotADirectory -> 14
+        IsADirectory -> 15
+        DirectoryNotEmpty -> 16
+        ReadOnlyFilesystem -> 17
+        FilesystemLoop -> 18
+        StaleNetworkFileHandle -> 19
+        InvalidInput -> 20
+        InvalidData -> 21
+        TimedOut -> 22
+        WriteZero -> 23
+        StorageFull -> 24
+        NotSeekable -> 25
+        QuotaExceeded -> 26
+        FileTooLarge -> 27
+        ResourceBusy -> 28
+        ExecutableFileBusy -> 29
+        Deadlock -> 30
+        CrossesDevices -> 31
+        TooManyLinks -> 32
+        InvalidFilename -> 33
+        ArgumentListTooLong -> 34
+        Interrupted -> 35
+        Unsupported -> 36
+        UnexpectedEof -> 37
+        OutOfMemory -> 38
+        InProgress -> 39
+        TooManyOpenFiles -> 40
+        InputOutputError -> 41
+        Other -> 42
+        Uncategorized -> 43
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public open fun asStr(): String =
         when (this) {

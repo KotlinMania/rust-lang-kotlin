@@ -41,7 +41,7 @@ public fun <T> quicksort(v: MutableList<T>, ancestorPivot: T?, limit: UInt, isLe
         // If too many bad pivot choices were made, simply fall back to heapsort in order to
         // guarantee `O(N x log(N))` worst-case.
         if (limit1 == 0u) {
-            heapsort.heapsort(v1, isLess)
+            heapsort(v1, isLess)
             return
         }
         limit1 -= 1u

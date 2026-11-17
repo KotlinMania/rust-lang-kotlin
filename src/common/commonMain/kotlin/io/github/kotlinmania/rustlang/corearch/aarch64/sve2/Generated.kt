@@ -3989,7 +3989,7 @@ public fun svldnt1GatherU64baseU64(pg: SvboolT, bases: Svuint64T): Svuint64T = s
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svldnt1GatherU32baseOffsetF32(pg, bases, index.uncheckedShl(2))
+public fun svldnt1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long): Svfloat32T = svldnt1GatherU32baseOffsetF32(pg, bases, (index shl 2))
 
 /**
  * Unextended load, non-temporal
@@ -4000,7 +4000,7 @@ public fun svldnt1GatherU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1GatherU32baseOffsetS32(pg, bases, index.uncheckedShl(2))
+public fun svldnt1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1GatherU32baseOffsetS32(pg, bases, (index shl 2))
 
 /**
  * Unextended load, non-temporal
@@ -4011,7 +4011,7 @@ public fun svldnt1GatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1GatherU32baseOffsetU32(pg, bases, index.uncheckedShl(2))
+public fun svldnt1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1GatherU32baseOffsetU32(pg, bases, (index shl 2))
 
 /**
  * Unextended load, non-temporal
@@ -4022,7 +4022,7 @@ public fun svldnt1GatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svldnt1GatherU64baseOffsetF64(pg, bases, index.uncheckedShl(3))
+public fun svldnt1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long): Svfloat64T = svldnt1GatherU64baseOffsetF64(pg, bases, (index shl 3))
 
 /**
  * Unextended load, non-temporal
@@ -4033,7 +4033,7 @@ public fun svldnt1GatherU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1GatherU64baseOffsetS64(pg, bases, index.uncheckedShl(3))
+public fun svldnt1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1GatherU64baseOffsetS64(pg, bases, (index shl 3))
 
 /**
  * Unextended load, non-temporal
@@ -4044,7 +4044,7 @@ public fun svldnt1GatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Lo
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1GatherU64baseOffsetU64(pg, bases, index.uncheckedShl(3))
+public fun svldnt1GatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1GatherU64baseOffsetU64(pg, bases, (index shl 3))
 
 /**
  * Unextended load, non-temporal
@@ -4629,7 +4629,7 @@ public fun svldnt1swGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svui
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1shGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+public fun svldnt1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1shGatherU32baseOffsetS32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and sign-extend, non-temporal
@@ -4640,7 +4640,7 @@ public fun svldnt1shGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1shGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+public fun svldnt1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1shGatherU32baseOffsetU32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and sign-extend, non-temporal
@@ -4651,7 +4651,7 @@ public fun svldnt1shGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1shGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+public fun svldnt1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1shGatherU64baseOffsetS64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and sign-extend, non-temporal
@@ -4662,7 +4662,7 @@ public fun svldnt1shGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1swGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+public fun svldnt1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1swGatherU64baseOffsetS64(pg, bases, (index shl 2))
 
 /**
  * Load 16-bit data and sign-extend, non-temporal
@@ -4673,7 +4673,7 @@ public fun svldnt1swGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1shGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+public fun svldnt1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1shGatherU64baseOffsetU64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and sign-extend, non-temporal
@@ -4684,7 +4684,7 @@ public fun svldnt1shGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1swGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+public fun svldnt1swGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1swGatherU64baseOffsetU64(pg, bases, (index shl 2))
 
 /**
  * Load 8-bit data and zero-extend, non-temporal
@@ -5191,7 +5191,7 @@ public fun svldnt1uwGatherU64indexU64(pg: SvboolT, base: ConstPtr, indices: Svui
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1uhGatherU32baseOffsetS32(pg, bases, index.uncheckedShl(1))
+public fun svldnt1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long): Svint32T = svldnt1uhGatherU32baseOffsetS32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and zero-extend, non-temporal
@@ -5202,7 +5202,7 @@ public fun svldnt1uhGatherU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1uhGatherU32baseOffsetU32(pg, bases, index.uncheckedShl(1))
+public fun svldnt1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long): Svuint32T = svldnt1uhGatherU32baseOffsetU32(pg, bases, (index shl 1))
 
 /**
  * Load 16-bit data and zero-extend, non-temporal
@@ -5213,7 +5213,7 @@ public fun svldnt1uhGatherU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1uhGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(1))
+public fun svldnt1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1uhGatherU64baseOffsetS64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and zero-extend, non-temporal
@@ -5224,7 +5224,7 @@ public fun svldnt1uhGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1uwGatherU64baseOffsetS64(pg, bases, index.uncheckedShl(2))
+public fun svldnt1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long): Svint64T = svldnt1uwGatherU64baseOffsetS64(pg, bases, (index shl 2))
 
 /**
  * Load 16-bit data and zero-extend, non-temporal
@@ -5235,7 +5235,7 @@ public fun svldnt1uwGatherU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1uhGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(1))
+public fun svldnt1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1uhGatherU64baseOffsetU64(pg, bases, (index shl 1))
 
 /**
  * Load 32-bit data and zero-extend, non-temporal
@@ -5246,7 +5246,7 @@ public fun svldnt1uhGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Addresses passed in `bases` lack provenance, so this is similar to using a `Int as ptr` cast (or [core.ptr.withExposedProvenance]) on each lane before  using it.
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
-public fun svldnt1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1uwGatherU64baseOffsetU64(pg, bases, index.uncheckedShl(2))
+public fun svldnt1uwGatherU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long): Svuint64T = svldnt1uwGatherU64baseOffsetU64(pg, bases, (index shl 2))
 
 /**
  * Base 2 logarithm as integer
@@ -13035,7 +13035,7 @@ public fun svstnt1ScatterU64baseU64(pg: SvboolT, bases: Svuint64T, data: Svuint6
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1ScatterU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svfloat32T) {
-    svstnt1ScatterU32baseOffsetF32(pg, bases, index.uncheckedShl(2), data)
+    svstnt1ScatterU32baseOffsetF32(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -13048,7 +13048,7 @@ public fun svstnt1ScatterU32baseIndexF32(pg: SvboolT, bases: Svuint32T, index: L
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1ScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svint32T) {
-    svstnt1ScatterU32baseOffsetS32(pg, bases, index.uncheckedShl(2), data)
+    svstnt1ScatterU32baseOffsetS32(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -13061,7 +13061,7 @@ public fun svstnt1ScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: L
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1ScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svuint32T) {
-    svstnt1ScatterU32baseOffsetU32(pg, bases, index.uncheckedShl(2), data)
+    svstnt1ScatterU32baseOffsetU32(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -13074,7 +13074,7 @@ public fun svstnt1ScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: L
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1ScatterU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svfloat64T) {
-    svstnt1ScatterU64baseOffsetF64(pg, bases, index.uncheckedShl(3), data)
+    svstnt1ScatterU64baseOffsetF64(pg, bases, (index shl 3), data)
 }
 
 /**
@@ -13087,7 +13087,7 @@ public fun svstnt1ScatterU64baseIndexF64(pg: SvboolT, bases: Svuint64T, index: L
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1ScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
-    svstnt1ScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(3), data)
+    svstnt1ScatterU64baseOffsetS64(pg, bases, (index shl 3), data)
 }
 
 /**
@@ -13100,7 +13100,7 @@ public fun svstnt1ScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: L
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1ScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
-    svstnt1ScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(3), data)
+    svstnt1ScatterU64baseOffsetU64(pg, bases, (index shl 3), data)
 }
 
 /**
@@ -13755,7 +13755,7 @@ public fun svstnt1wScatterU64indexU64(pg: SvboolT, base: MutPtr, indices: Svuint
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1hScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svint32T) {
-    svstnt1hScatterU32baseOffsetS32(pg, bases, index.uncheckedShl(1), data)
+    svstnt1hScatterU32baseOffsetS32(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -13768,7 +13768,7 @@ public fun svstnt1hScatterU32baseIndexS32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1hScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: Long, data: Svuint32T) {
-    svstnt1hScatterU32baseOffsetU32(pg, bases, index.uncheckedShl(1), data)
+    svstnt1hScatterU32baseOffsetU32(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -13781,7 +13781,7 @@ public fun svstnt1hScatterU32baseIndexU32(pg: SvboolT, bases: Svuint32T, index: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1hScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
-    svstnt1hScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(1), data)
+    svstnt1hScatterU64baseOffsetS64(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -13794,7 +13794,7 @@ public fun svstnt1hScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1wScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svint64T) {
-    svstnt1wScatterU64baseOffsetS64(pg, bases, index.uncheckedShl(2), data)
+    svstnt1wScatterU64baseOffsetS64(pg, bases, (index shl 2), data)
 }
 
 /**
@@ -13807,7 +13807,7 @@ public fun svstnt1wScatterU64baseIndexS64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1hScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
-    svstnt1hScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(1), data)
+    svstnt1hScatterU64baseOffsetU64(pg, bases, (index shl 1), data)
 }
 
 /**
@@ -13820,7 +13820,7 @@ public fun svstnt1hScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: 
  *  * Non-temporal accesses have special memory ordering rules, and [explicit barriers may be required for some applications](https://developer.arm.com/documentation/den0024/a/Memory-Ordering/Barriers/Non-temporal-load-and-store-pair?lang=en).
  */
 public fun svstnt1wScatterU64baseIndexU64(pg: SvboolT, bases: Svuint64T, index: Long, data: Svuint64T) {
-    svstnt1wScatterU64baseOffsetU64(pg, bases, index.uncheckedShl(2), data)
+    svstnt1wScatterU64baseOffsetU64(pg, bases, (index shl 2), data)
 }
 
 /**

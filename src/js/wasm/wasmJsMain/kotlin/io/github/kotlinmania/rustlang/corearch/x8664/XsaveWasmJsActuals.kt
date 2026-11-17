@@ -10,67 +10,67 @@ private external fun initX8664XsaveNapiAddon(): Boolean
 
 private val x8664XsaveNapiAvailable: Boolean = initX8664XsaveNapiAddon()
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveXsave64(p0, p1, p2)")
-private external fun wasmCorearchX8664XsaveXsave64(p0: String, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveExternXsave64(p0, p1, p2)")
+private external fun wasmCorearchX8664XsaveExternXsave64(p0: String, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveXrstor64(p0, p1, p2)")
-private external fun wasmCorearchX8664XsaveXrstor64(p0: String, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveExternXrstor64(p0, p1, p2)")
+private external fun wasmCorearchX8664XsaveExternXrstor64(p0: String, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveXsaveopt64(p0, p1, p2)")
-private external fun wasmCorearchX8664XsaveXsaveopt64(p0: String, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveExternXsaveopt64(p0, p1, p2)")
+private external fun wasmCorearchX8664XsaveExternXsaveopt64(p0: String, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveXsavec64(p0, p1, p2)")
-private external fun wasmCorearchX8664XsaveXsavec64(p0: String, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveExternXsavec64(p0, p1, p2)")
+private external fun wasmCorearchX8664XsaveExternXsavec64(p0: String, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveXsaves64(p0, p1, p2)")
-private external fun wasmCorearchX8664XsaveXsaves64(p0: String, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveExternXsaves64(p0, p1, p2)")
+private external fun wasmCorearchX8664XsaveExternXsaves64(p0: String, p1: Int, p2: Int)
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveXrstors64(p0, p1, p2)")
-private external fun wasmCorearchX8664XsaveXrstors64(p0: String, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchX8664XsaveExternXrstors64(p0, p1, p2)")
+private external fun wasmCorearchX8664XsaveExternXrstors64(p0: String, p1: Int, p2: Int)
 
-public actual fun xsave64(p: MutPtr, hi: UInt, lo: UInt) {
+public actual fun externXsave64(p: MutPtr, hi: UInt, lo: UInt) {
     if (x8664XsaveNapiAvailable) {
-        wasmCorearchX8664XsaveXsave64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
+        wasmCorearchX8664XsaveExternXsave64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun xrstor64(p: ConstPtr, hi: UInt, lo: UInt) {
+public actual fun externXrstor64(p: ConstPtr, hi: UInt, lo: UInt) {
     if (x8664XsaveNapiAvailable) {
-        wasmCorearchX8664XsaveXrstor64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
+        wasmCorearchX8664XsaveExternXrstor64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun xsaveopt64(p: MutPtr, hi: UInt, lo: UInt) {
+public actual fun externXsaveopt64(p: MutPtr, hi: UInt, lo: UInt) {
     if (x8664XsaveNapiAvailable) {
-        wasmCorearchX8664XsaveXsaveopt64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
+        wasmCorearchX8664XsaveExternXsaveopt64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun xsavec64(p: MutPtr, hi: UInt, lo: UInt) {
+public actual fun externXsavec64(p: MutPtr, hi: UInt, lo: UInt) {
     if (x8664XsaveNapiAvailable) {
-        wasmCorearchX8664XsaveXsavec64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
+        wasmCorearchX8664XsaveExternXsavec64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun xsaves64(p: MutPtr, hi: UInt, lo: UInt) {
+public actual fun externXsaves64(p: MutPtr, hi: UInt, lo: UInt) {
     if (x8664XsaveNapiAvailable) {
-        wasmCorearchX8664XsaveXsaves64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
+        wasmCorearchX8664XsaveExternXsaves64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun xrstors64(p: ConstPtr, hi: UInt, lo: UInt) {
+public actual fun externXrstors64(p: ConstPtr, hi: UInt, lo: UInt) {
     if (x8664XsaveNapiAvailable) {
-        wasmCorearchX8664XsaveXrstors64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
+        wasmCorearchX8664XsaveExternXrstors64(p.rawAddress.toString(), hi.toInt(), lo.toInt())
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

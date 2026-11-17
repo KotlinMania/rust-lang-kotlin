@@ -13,7 +13,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 // [wikipediaBmi]:
 // https://en.wikipedia.org/wiki/BitManipulationInstructionSets#ABM_.28AdvancedBitManipulation.29
 
-public expect fun bextriU32(a: UInt, control: UInt): UInt
+public expect fun externBextriU32(a: UInt, control: UInt): UInt
 
 /**
  * Extracts bits of `a` specified by `control` into
@@ -28,7 +28,7 @@ public fun bextriU32(a: UInt, control: UInt): UInt {
     run {
         check(0u <= control && control < (1u shl 16)) { "CONTROL doesn't fit in 16 bits (unsigned)" }
     }
-    return bextriU32(a, control)
+    return externBextriU32(a, control)
 }
 
 /**

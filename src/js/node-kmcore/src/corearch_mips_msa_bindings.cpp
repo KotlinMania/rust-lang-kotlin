@@ -51,7 +51,7 @@ static uint64_t km_napi_arg_u64(const Napi::Value& v) {
     return 0;
 }
 
-static Napi::Value corearchMipsMsaMsaCfcmsa_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchMipsMsaExternMsaCfcmsa_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t a = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     typedef int32_t (*km_fn_t)(int32_t);
@@ -84,7 +84,7 @@ static Napi::Value corearchMipsMsaMsaCfcmsa_napi(const Napi::CallbackInfo& km_in
     return Napi::Number::New(km_env, static_cast<int32_t>(km_res));
 }
 
-static Napi::Value corearchMipsMsaMsaCtcmsa_napi(const Napi::CallbackInfo& km_info) {
+static Napi::Value corearchMipsMsaExternMsaCtcmsa_napi(const Napi::CallbackInfo& km_info) {
     Napi::Env km_env = km_info.Env();
     int32_t imm5 = static_cast<int32_t>(km_info.Length() > 0 ? km_info[0].ToNumber().Int32Value() : 0);
     int32_t a = static_cast<int32_t>(km_info.Length() > 1 ? km_info[1].ToNumber().Int32Value() : 0);
@@ -117,8 +117,8 @@ static Napi::Value corearchMipsMsaMsaCtcmsa_napi(const Napi::CallbackInfo& km_in
 }
 
 static void register_mips_msa_napi(Napi::Env env, Napi::Object exports) {
-    exports.Set("corearchMipsMsaMsaCfcmsa", Napi::Function::New(env, corearchMipsMsaMsaCfcmsa_napi));
-    exports.Set("corearchMipsMsaMsaCtcmsa", Napi::Function::New(env, corearchMipsMsaMsaCtcmsa_napi));
+    exports.Set("corearchMipsMsaExternMsaCfcmsa", Napi::Function::New(env, corearchMipsMsaExternMsaCfcmsa_napi));
+    exports.Set("corearchMipsMsaExternMsaCtcmsa", Napi::Function::New(env, corearchMipsMsaExternMsaCtcmsa_napi));
 }
 
 static KmNapiRegistrarNode registrar_node = { &register_mips_msa_napi, nullptr };

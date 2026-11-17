@@ -25,9 +25,11 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -321,9 +323,9 @@ public open class UnixListener(
             }
         }
 
-        public fun fromRawFd(fd: RawFd): UnixListener = UnixListener(Socket.FromInner(FromInner.FromInner(OwnedFd.FromRawFd(fd))))
+        public fun fromRawFd(fd: RawFd): UnixListener = UnixListener(Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd))))
 
-        public fun from(fd: OwnedFd): UnixListener = UnixListener(Socket.FromInner(FromInner.FromInner(fd)))
+        public fun from(fd: OwnedFd): UnixListener = UnixListener(Socket.fromInner(FromInner.fromInner(fd)))
     }
 }
 

@@ -188,7 +188,7 @@ public interface AsRef<T> {
  *     check(v == listOf(6u.toUByte(), 7u.toUByte(), 8u.toUByte()))
  *     nullTerminate(v)
  *     check(v == listOf(6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 0u.toUByte()))
- *     var doc = Document(info = String.From("Example"), content = mutableListOf(17u, 19u, 8u))
+ *     var doc = Document(info = "Example", content = mutableListOf(17u, 19u, 8u))
  *     caesar(doc, 1u)
  *     check(doc.content == listOf(18u.toUByte(), 20u.toUByte(), 9u.toUByte()))
  *     nullTerminate(doc)
@@ -370,7 +370,7 @@ public interface Into<T> {
  *
  * ```kotlin
  * val string = "hello".toString()
- * val otherString = String.From("hello")
+ * val otherString = "hello"
  * check(string == otherString)
  * ```
  *
@@ -499,10 +499,10 @@ public interface TryInto<T, out Error> {
  * check(smallerNumber == -727379968)
  * // Returns an error because `bigNumber` is too big to
  * // fit in an `Int`.
- * val trySmallerNumber = Int.TryFrom(bigNumber)
+ * val trySmallerNumber = Int.tryFrom(bigNumber)
  * check(trySmallerNumber.isErr())
  * // Returns `Ok(3)`.
- * val trySuccessfulSmallerNumber = Int.TryFrom(3)
+ * val trySuccessfulSmallerNumber = Int.tryFrom(3)
  * check(trySuccessfulSmallerNumber.isOk())
  * ```
  *

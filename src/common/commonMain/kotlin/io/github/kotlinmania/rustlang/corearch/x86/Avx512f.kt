@@ -13145,7 +13145,7 @@ public fun mm256I32scatterEpi32(baseAddr: MutPtr, vindex: M256i, a: M256i, scale
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdd256(baseAddr, 0xffu, vindex.asI32x8(), a.asI32x8(), scale)
+    vpscatterdd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x8(), a.asI32x8(), scale)
 }
 
 /**
@@ -13159,7 +13159,7 @@ public fun mm256MaskI32scatterEpi32(baseAddr: MutPtr, k: Mmask8, vindex: M256i, 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdd256(baseAddr, k, vindex.asI32x8(), a.asI32x8(), scale)
+    vpscatterdd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x8(), a.asI32x8(), scale)
 }
 
 /**
@@ -13188,7 +13188,7 @@ public fun mm256MaskI32scatterEpi64(baseAddr: MutPtr, k: Mmask8, vindex: M128i, 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdq256(baseAddr, k, vindex.asI32x4(), a.asI64x4(), scale)
+    vpscatterdq256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x4(), a.asI64x4(), scale)
 }
 
 /**
@@ -13201,7 +13201,7 @@ public fun mm256I32scatterPd(baseAddr: MutPtr, vindex: M128i, a: M256d, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdpd256(baseAddr, 0xffu, vindex.asI32x4(), a.asF64x4(), scale)
+    vscatterdpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asF64x4(), scale)
 }
 
 /**
@@ -13215,7 +13215,7 @@ public fun mm256MaskI32scatterPd(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdpd256(baseAddr, k, vindex.asI32x4(), a.asF64x4(), scale)
+    vscatterdpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x4(), a.asF64x4(), scale)
 }
 
 /**
@@ -13228,7 +13228,7 @@ public fun mm256I32scatterPs(baseAddr: MutPtr, vindex: M256i, a: M256, scale: In
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdps256(baseAddr, 0xffu, vindex.asI32x8(), a.asF32x8(), scale)
+    vscatterdps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x8(), a.asF32x8(), scale)
 }
 
 /**
@@ -13242,7 +13242,7 @@ public fun mm256MaskI32scatterPs(baseAddr: MutPtr, k: Mmask8, vindex: M256i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdps256(baseAddr, k, vindex.asI32x8(), a.asF32x8(), scale)
+    vscatterdps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x8(), a.asF32x8(), scale)
 }
 
 /**
@@ -13255,7 +13255,7 @@ public fun mm256I64scatterEpi32(baseAddr: MutPtr, vindex: M256i, a: M128i, scale
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqd256(baseAddr, 0xffu, vindex.asI64x4(), a.asI32x4(), scale)
+    vpscatterqd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asI32x4(), scale)
 }
 
 /**
@@ -13269,7 +13269,7 @@ public fun mm256MaskI64scatterEpi32(baseAddr: MutPtr, k: Mmask8, vindex: M256i, 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqd256(baseAddr, k, vindex.asI64x4(), a.asI32x4(), scale)
+    vpscatterqd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x4(), a.asI32x4(), scale)
 }
 
 /**
@@ -13282,7 +13282,7 @@ public fun mm256I64scatterEpi64(baseAddr: MutPtr, vindex: M256i, a: M256i, scale
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqq256(baseAddr, 0xffu, vindex.asI64x4(), a.asI64x4(), scale)
+    vpscatterqq256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asI64x4(), scale)
 }
 
 /**
@@ -13296,7 +13296,7 @@ public fun mm256MaskI64scatterEpi64(baseAddr: MutPtr, k: Mmask8, vindex: M256i, 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqq256(baseAddr, k, vindex.asI64x4(), a.asI64x4(), scale)
+    vpscatterqq256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x4(), a.asI64x4(), scale)
 }
 
 /**
@@ -13309,7 +13309,7 @@ public fun mm256I64scatterPd(baseAddr: MutPtr, vindex: M256i, a: M256d, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqpd256(baseAddr, 0xffu, vindex.asI64x4(), a.asF64x4(), scale)
+    vscatterqpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asF64x4(), scale)
 }
 
 /**
@@ -13323,7 +13323,7 @@ public fun mm256MaskI64scatterPd(baseAddr: MutPtr, k: Mmask8, vindex: M256i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqpd256(baseAddr, k, vindex.asI64x4(), a.asF64x4(), scale)
+    vscatterqpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x4(), a.asF64x4(), scale)
 }
 
 /**
@@ -13336,7 +13336,7 @@ public fun mm256I64scatterPs(baseAddr: MutPtr, vindex: M256i, a: M128, scale: In
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqps256(baseAddr, 0xffu, vindex.asI64x4(), a.asF32x4(), scale)
+    vscatterqps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asF32x4(), scale)
 }
 
 /**
@@ -13350,7 +13350,7 @@ public fun mm256MaskI64scatterPs(baseAddr: MutPtr, k: Mmask8, vindex: M256i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqps256(baseAddr, k, vindex.asI64x4(), a.asF32x4(), scale)
+    vscatterqps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x4(), a.asF32x4(), scale)
 }
 
 /**
@@ -13364,7 +13364,7 @@ public fun mm256MmaskI32gatherEpi32(src: M256i, k: Mmask8, vindex: M256i, baseAd
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I32x8, M256i>(vpgatherdd256(src.asI32x8(), baseAddr, vindex.asI32x8(), k, scale), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
+    return transmuteWithLayouts<I32x8, M256i>(vpgatherdd256(src.asI32x8(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x8(), k, scale), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 }
 
 /**
@@ -13378,7 +13378,7 @@ public fun mm256MmaskI32gatherEpi64(src: M256i, k: Mmask8, vindex: M128i, baseAd
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I64x4, M256i>(vpgatherdq256(src.asI64x4(), baseAddr, vindex.asI32x4(), k, scale), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
+    return transmuteWithLayouts<I64x4, M256i>(vpgatherdq256(src.asI64x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x4(), k, scale), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 }
 
 /**
@@ -13392,7 +13392,7 @@ public fun mm256MmaskI32gatherPd(src: M256d, k: Mmask8, vindex: M128i, baseAddr:
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F64x4, M256d>(vgatherdpd256(src.asF64x4(), baseAddr, vindex.asI32x4(), k, scale), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
+    return transmuteWithLayouts<F64x4, M256d>(vgatherdpd256(src.asF64x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x4(), k, scale), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
 }
 
 /**
@@ -13406,7 +13406,7 @@ public fun mm256MmaskI32gatherPs(src: M256, k: Mmask8, vindex: M256i, baseAddr: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F32x8, M256>(vgatherdps256(src.asF32x8(), baseAddr, vindex.asI32x8(), k, scale), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
+    return transmuteWithLayouts<F32x8, M256>(vgatherdps256(src.asF32x8(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x8(), k, scale), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 }
 
 /**
@@ -13420,7 +13420,7 @@ public fun mm256MmaskI64gatherEpi32(src: M128i, k: Mmask8, vindex: M256i, baseAd
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I32x4, M128i>(vpgatherqd256(src.asI32x4(), baseAddr, vindex.asI64x4(), k, scale), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
+    return transmuteWithLayouts<I32x4, M128i>(vpgatherqd256(src.asI32x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x4(), k, scale), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -13434,7 +13434,7 @@ public fun mm256MmaskI64gatherEpi64(src: M256i, k: Mmask8, vindex: M256i, baseAd
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I64x4, M256i>(vpgatherqq256(src.asI64x4(), baseAddr, vindex.asI64x4(), k, scale), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
+    return transmuteWithLayouts<I64x4, M256i>(vpgatherqq256(src.asI64x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x4(), k, scale), UnresolvedTypeLayout<I64x4>(), UnresolvedTypeLayout<M256i>())
 }
 
 /**
@@ -13448,7 +13448,7 @@ public fun mm256MmaskI64gatherPd(src: M256d, k: Mmask8, vindex: M256i, baseAddr:
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F64x4, M256d>(vgatherqpd256(src.asF64x4(), baseAddr, vindex.asI64x4(), k, scale), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
+    return transmuteWithLayouts<F64x4, M256d>(vgatherqpd256(src.asF64x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x4(), k, scale), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
 }
 
 /**
@@ -13462,7 +13462,7 @@ public fun mm256MmaskI64gatherPs(src: M128, k: Mmask8, vindex: M256i, baseAddr: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F32x4, M128>(vgatherqps256(src.asF32x4(), baseAddr, vindex.asI64x4(), k, scale), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+    return transmuteWithLayouts<F32x4, M128>(vgatherqps256(src.asF32x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x4(), k, scale), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 }
 
 /**
@@ -13475,7 +13475,7 @@ public fun mmI32scatterEpi32(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdd128(baseAddr, 0xffu, vindex.asI32x4(), a.asI32x4(), scale)
+    vpscatterdd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asI32x4(), scale)
 }
 
 /**
@@ -13489,7 +13489,7 @@ public fun mmMaskI32scatterEpi32(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdd128(baseAddr, k, vindex.asI32x4(), a.asI32x4(), scale)
+    vpscatterdd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x4(), a.asI32x4(), scale)
 }
 
 /**
@@ -13502,7 +13502,7 @@ public fun mmI32scatterEpi64(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdq128(baseAddr, 0xffu, vindex.asI32x4(), a.asI64x2(), scale)
+    vpscatterdq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asI64x2(), scale)
 }
 
 /**
@@ -13516,7 +13516,7 @@ public fun mmMaskI32scatterEpi64(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdq128(baseAddr, k, vindex.asI32x4(), a.asI64x2(), scale)
+    vpscatterdq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x4(), a.asI64x2(), scale)
 }
 
 /**
@@ -13529,7 +13529,7 @@ public fun mmI32scatterPd(baseAddr: MutPtr, vindex: M128i, a: M128d, scale: Int)
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdpd128(baseAddr, 0xffu, vindex.asI32x4(), a.asF64x2(), scale)
+    vscatterdpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asF64x2(), scale)
 }
 
 /**
@@ -13543,7 +13543,7 @@ public fun mmMaskI32scatterPd(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: M12
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdpd128(baseAddr, k, vindex.asI32x4(), a.asF64x2(), scale)
+    vscatterdpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x4(), a.asF64x2(), scale)
 }
 
 /**
@@ -13556,7 +13556,7 @@ public fun mmI32scatterPs(baseAddr: MutPtr, vindex: M128i, a: M128, scale: Int) 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdps128(baseAddr, 0xffu, vindex.asI32x4(), a.asF32x4(), scale)
+    vscatterdps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asF32x4(), scale)
 }
 
 /**
@@ -13570,7 +13570,7 @@ public fun mmMaskI32scatterPs(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: M12
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdps128(baseAddr, k, vindex.asI32x4(), a.asF32x4(), scale)
+    vscatterdps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI32x4(), a.asF32x4(), scale)
 }
 
 /**
@@ -13583,7 +13583,7 @@ public fun mmI64scatterEpi32(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqd128(baseAddr, 0xffu, vindex.asI64x2(), a.asI32x4(), scale)
+    vpscatterqd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asI32x4(), scale)
 }
 
 /**
@@ -13597,7 +13597,7 @@ public fun mmMaskI64scatterEpi32(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqd128(baseAddr, k, vindex.asI64x2(), a.asI32x4(), scale)
+    vpscatterqd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x2(), a.asI32x4(), scale)
 }
 
 /**
@@ -13610,7 +13610,7 @@ public fun mmI64scatterEpi64(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqq128(baseAddr, 0xffu, vindex.asI64x2(), a.asI64x2(), scale)
+    vpscatterqq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asI64x2(), scale)
 }
 
 /**
@@ -13624,7 +13624,7 @@ public fun mmMaskI64scatterEpi64(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqq128(baseAddr, k, vindex.asI64x2(), a.asI64x2(), scale)
+    vpscatterqq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x2(), a.asI64x2(), scale)
 }
 
 /**
@@ -13637,7 +13637,7 @@ public fun mmI64scatterPd(baseAddr: MutPtr, vindex: M128i, a: M128d, scale: Int)
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqpd128(baseAddr, 0xffu, vindex.asI64x2(), a.asF64x2(), scale)
+    vscatterqpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asF64x2(), scale)
 }
 
 /**
@@ -13651,7 +13651,7 @@ public fun mmMaskI64scatterPd(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: M12
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqpd128(baseAddr, k, vindex.asI64x2(), a.asF64x2(), scale)
+    vscatterqpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x2(), a.asF64x2(), scale)
 }
 
 /**
@@ -13664,7 +13664,7 @@ public fun mmI64scatterPs(baseAddr: MutPtr, vindex: M128i, a: M128, scale: Int) 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqps128(baseAddr, 0xffu, vindex.asI64x2(), a.asF32x4(), scale)
+    vscatterqps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asF32x4(), scale)
 }
 
 /**
@@ -13677,7 +13677,7 @@ public fun mmMaskI64scatterPs(baseAddr: MutPtr, k: Mmask8, vindex: M128i, a: M12
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqps128(baseAddr, k, vindex.asI64x2(), a.asF32x4(), scale)
+    vscatterqps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), k, vindex.asI64x2(), a.asF32x4(), scale)
 }
 
 /**
@@ -13691,7 +13691,7 @@ public fun mmMmaskI32gatherEpi32(src: M128i, k: Mmask8, vindex: M128i, baseAddr:
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I32x4, M128i>(vpgatherdd128(src.asI32x4(), baseAddr, vindex.asI32x4(), k, scale), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
+    return transmuteWithLayouts<I32x4, M128i>(vpgatherdd128(src.asI32x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x4(), k, scale), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -13705,7 +13705,7 @@ public fun mmMmaskI32gatherEpi64(src: M128i, k: Mmask8, vindex: M128i, baseAddr:
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I64x2, M128i>(vpgatherdq128(src.asI64x2(), baseAddr, vindex.asI32x4(), k, scale), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
+    return transmuteWithLayouts<I64x2, M128i>(vpgatherdq128(src.asI64x2(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x4(), k, scale), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -13719,7 +13719,7 @@ public fun mmMmaskI32gatherPd(src: M128d, k: Mmask8, vindex: M128i, baseAddr: Co
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F64x2, M128d>(vgatherdpd128(src.asF64x2(), baseAddr, vindex.asI32x4(), k, scale), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+    return transmuteWithLayouts<F64x2, M128d>(vgatherdpd128(src.asF64x2(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x4(), k, scale), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 }
 
 /**
@@ -13733,7 +13733,7 @@ public fun mmMmaskI32gatherPs(src: M128, k: Mmask8, vindex: M128i, baseAddr: Con
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F32x4, M128>(vgatherdps128(src.asF32x4(), baseAddr, vindex.asI32x4(), k, scale), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+    return transmuteWithLayouts<F32x4, M128>(vgatherdps128(src.asF32x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI32x4(), k, scale), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 }
 
 /**
@@ -13747,7 +13747,7 @@ public fun mmMmaskI64gatherEpi32(src: M128i, k: Mmask8, vindex: M128i, baseAddr:
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I32x4, M128i>(vpgatherqd128(src.asI32x4(), baseAddr, vindex.asI64x2(), k, scale), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
+    return transmuteWithLayouts<I32x4, M128i>(vpgatherqd128(src.asI32x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x2(), k, scale), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -13761,7 +13761,7 @@ public fun mmMmaskI64gatherEpi64(src: M128i, k: Mmask8, vindex: M128i, baseAddr:
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<I64x2, M128i>(vpgatherqq128(src.asI64x2(), baseAddr, vindex.asI64x2(), k, scale), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
+    return transmuteWithLayouts<I64x2, M128i>(vpgatherqq128(src.asI64x2(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x2(), k, scale), UnresolvedTypeLayout<I64x2>(), UnresolvedTypeLayout<M128i>())
 }
 
 /**
@@ -13775,7 +13775,7 @@ public fun mmMmaskI64gatherPd(src: M128d, k: Mmask8, vindex: M128i, baseAddr: Co
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F64x2, M128d>(vgatherqpd128(src.asF64x2(), baseAddr, vindex.asI64x2(), k, scale), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+    return transmuteWithLayouts<F64x2, M128d>(vgatherqpd128(src.asF64x2(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x2(), k, scale), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 }
 
 /**
@@ -13789,7 +13789,7 @@ public fun mmMmaskI64gatherPs(src: M128, k: Mmask8, vindex: M128i, baseAddr: Con
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    return transmuteWithLayouts<F32x4, M128>(vgatherqps128(src.asF32x4(), baseAddr, vindex.asI64x2(), k, scale), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+    return transmuteWithLayouts<F32x4, M128>(vgatherqps128(src.asF32x4(), ConstPtr(baseAddr.rawAddress, baseAddr.rawMeta), vindex.asI64x2(), k, scale), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 }
 
 /**
@@ -13966,7 +13966,7 @@ public fun mmMaskzCompressPd(k: Mmask8, a: M128d): M128d = transmuteWithLayouts<
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compressstoreu_epi32)
  */
 public fun mm512MaskCompressstoreuEpi32(baseAddr: MutPtr, k: Mmask16, a: M512i) {
-    vcompressstored(baseAddr, a.asI32x16(), k)
+    vcompressstored(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI32x16(), k)
 }
 
 /**
@@ -13975,7 +13975,7 @@ public fun mm512MaskCompressstoreuEpi32(baseAddr: MutPtr, k: Mmask16, a: M512i) 
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compressstoreu_epi32)
  */
 public fun mm256MaskCompressstoreuEpi32(baseAddr: MutPtr, k: Mmask8, a: M256i) {
-    vcompressstored256(baseAddr, a.asI32x8(), k)
+    vcompressstored256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI32x8(), k)
 }
 
 /**
@@ -13984,7 +13984,7 @@ public fun mm256MaskCompressstoreuEpi32(baseAddr: MutPtr, k: Mmask8, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compressstoreu_epi32)
  */
 public fun mmMaskCompressstoreuEpi32(baseAddr: MutPtr, k: Mmask8, a: M128i) {
-    vcompressstored128(baseAddr, a.asI32x4(), k)
+    vcompressstored128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI32x4(), k)
 }
 
 /**
@@ -13993,7 +13993,7 @@ public fun mmMaskCompressstoreuEpi32(baseAddr: MutPtr, k: Mmask8, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compressstoreu_epi64)
  */
 public fun mm512MaskCompressstoreuEpi64(baseAddr: MutPtr, k: Mmask8, a: M512i) {
-    vcompressstoreq(baseAddr, a.asI64x8(), k)
+    vcompressstoreq(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI64x8(), k)
 }
 
 /**
@@ -14002,7 +14002,7 @@ public fun mm512MaskCompressstoreuEpi64(baseAddr: MutPtr, k: Mmask8, a: M512i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compressstoreu_epi64)
  */
 public fun mm256MaskCompressstoreuEpi64(baseAddr: MutPtr, k: Mmask8, a: M256i) {
-    vcompressstoreq256(baseAddr, a.asI64x4(), k)
+    vcompressstoreq256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI64x4(), k)
 }
 
 /**
@@ -14011,7 +14011,7 @@ public fun mm256MaskCompressstoreuEpi64(baseAddr: MutPtr, k: Mmask8, a: M256i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compressstoreu_epi64)
  */
 public fun mmMaskCompressstoreuEpi64(baseAddr: MutPtr, k: Mmask8, a: M128i) {
-    vcompressstoreq128(baseAddr, a.asI64x2(), k)
+    vcompressstoreq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asI64x2(), k)
 }
 
 /**
@@ -14020,7 +14020,7 @@ public fun mmMaskCompressstoreuEpi64(baseAddr: MutPtr, k: Mmask8, a: M128i) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compressstoreu_ps)
  */
 public fun mm512MaskCompressstoreuPs(baseAddr: MutPtr, k: Mmask16, a: M512) {
-    vcompressstoreps(baseAddr, a.asF32x16(), k)
+    vcompressstoreps(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asF32x16(), k)
 }
 
 /**
@@ -14029,7 +14029,7 @@ public fun mm512MaskCompressstoreuPs(baseAddr: MutPtr, k: Mmask16, a: M512) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compressstoreu_ps)
  */
 public fun mm256MaskCompressstoreuPs(baseAddr: MutPtr, k: Mmask8, a: M256) {
-    vcompressstoreps256(baseAddr, a.asF32x8(), k)
+    vcompressstoreps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asF32x8(), k)
 }
 
 /**
@@ -14038,7 +14038,7 @@ public fun mm256MaskCompressstoreuPs(baseAddr: MutPtr, k: Mmask8, a: M256) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compressstoreu_ps)
  */
 public fun mmMaskCompressstoreuPs(baseAddr: MutPtr, k: Mmask8, a: M128) {
-    vcompressstoreps128(baseAddr, a.asF32x4(), k)
+    vcompressstoreps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asF32x4(), k)
 }
 
 /**
@@ -14047,7 +14047,7 @@ public fun mmMaskCompressstoreuPs(baseAddr: MutPtr, k: Mmask8, a: M128) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_mask_compressstoreu_pd)
  */
 public fun mm512MaskCompressstoreuPd(baseAddr: MutPtr, k: Mmask8, a: M512d) {
-    vcompressstorepd(baseAddr, a.asF64x8(), k)
+    vcompressstorepd(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asF64x8(), k)
 }
 
 /**
@@ -14056,7 +14056,7 @@ public fun mm512MaskCompressstoreuPd(baseAddr: MutPtr, k: Mmask8, a: M512d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_mask_compressstoreu_pd)
  */
 public fun mm256MaskCompressstoreuPd(baseAddr: MutPtr, k: Mmask8, a: M256d) {
-    vcompressstorepd256(baseAddr, a.asF64x4(), k)
+    vcompressstorepd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asF64x4(), k)
 }
 
 /**
@@ -14065,7 +14065,7 @@ public fun mm256MaskCompressstoreuPd(baseAddr: MutPtr, k: Mmask8, a: M256d) {
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_mask_compressstoreu_pd)
  */
 public fun mmMaskCompressstoreuPd(baseAddr: MutPtr, k: Mmask8, a: M128d) {
-    vcompressstorepd128(baseAddr, a.asF64x2(), k)
+    vcompressstorepd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), a.asF64x2(), k)
 }
 
 /**

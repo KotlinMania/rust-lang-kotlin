@@ -56,16 +56,16 @@ private object LoongarchsharedJniBridge {
     }
 
     @JvmStatic
-    external fun corearchLoongarchsharedDbar(a: Int)
+    external fun corearchLoongarchsharedExternDbar(a: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedIbar(a: Int)
+    external fun corearchLoongarchsharedExternIbar(a: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedMovgr2fcsr(a: Int, b: Int)
+    external fun corearchLoongarchsharedExternMovgr2fcsr(a: Int, b: Int)
 
     @JvmStatic
-    external fun corearchLoongarchsharedMovfcsr2gr(a: Int): Int
+    external fun corearchLoongarchsharedExternMovfcsr2gr(a: Int): Int
 
     @JvmStatic
     external fun corearchLoongarchsharedExternIocsrrdB(a: Int): Int
@@ -92,7 +92,7 @@ private object LoongarchsharedJniBridge {
     external fun corearchLoongarchsharedExternCpucfg(a: Int): Int
 
     @JvmStatic
-    external fun corearchLoongarchsharedSyscall(a: Int)
+    external fun corearchLoongarchsharedExternSyscall(a: Int)
 
     @JvmStatic
     external fun corearchLoongarchsharedExternFrecipeS(a: Float): Float
@@ -107,20 +107,20 @@ private object LoongarchsharedJniBridge {
     external fun corearchLoongarchsharedExternFrsqrteD(a: Double): Double
 }
 
-public actual fun dbar(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedDbar(a)
+public actual fun externDbar(a: Int) {
+    LoongarchsharedJniBridge.corearchLoongarchsharedExternDbar(a)
 }
 
-public actual fun ibar(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedIbar(a)
+public actual fun externIbar(a: Int) {
+    LoongarchsharedJniBridge.corearchLoongarchsharedExternIbar(a)
 }
 
-public actual fun movgr2fcsr(a: Int, b: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedMovgr2fcsr(a, b)
+public actual fun externMovgr2fcsr(a: Int, b: Int) {
+    LoongarchsharedJniBridge.corearchLoongarchsharedExternMovgr2fcsr(a, b)
 }
 
-public actual fun movfcsr2gr(a: Int): Int =
-    LoongarchsharedJniBridge.corearchLoongarchsharedMovfcsr2gr(a)
+public actual fun externMovfcsr2gr(a: Int): Int =
+    LoongarchsharedJniBridge.corearchLoongarchsharedExternMovfcsr2gr(a)
 
 public actual fun externIocsrrdB(a: Int): Int =
     LoongarchsharedJniBridge.corearchLoongarchsharedExternIocsrrdB(a)
@@ -150,8 +150,8 @@ public actual fun breakTarget(a: Int) {
 public actual fun externCpucfg(a: Int): Int =
     LoongarchsharedJniBridge.corearchLoongarchsharedExternCpucfg(a)
 
-public actual fun syscall(a: Int) {
-    LoongarchsharedJniBridge.corearchLoongarchsharedSyscall(a)
+public actual fun externSyscall(a: Int) {
+    LoongarchsharedJniBridge.corearchLoongarchsharedExternSyscall(a)
 }
 
 public actual fun externFrecipeS(a: Float): Float =

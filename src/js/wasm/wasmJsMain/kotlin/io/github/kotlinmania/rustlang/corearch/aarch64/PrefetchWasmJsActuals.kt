@@ -9,12 +9,12 @@ private external fun initAarch64PrefetchNapiAddon(): Boolean
 
 private val aarch64PrefetchNapiAvailable: Boolean = initAarch64PrefetchNapiAddon()
 
-@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.corearchAarch64PrefetchPrefetch(p0, p1, p2, p3)")
-private external fun wasmCorearchAarch64PrefetchPrefetch(p0: String, p1: Int, p2: Int, p3: Int)
+@JsFun("(p0, p1, p2, p3) => globalThis.__km_napi_kmcore.corearchAarch64PrefetchExternPrefetch(p0, p1, p2, p3)")
+private external fun wasmCorearchAarch64PrefetchExternPrefetch(p0: String, p1: Int, p2: Int, p3: Int)
 
-public actual fun prefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
+public actual fun externPrefetch(p: ConstPtr, rw: Int, loc: Int, ty: Int) {
     if (aarch64PrefetchNapiAvailable) {
-        wasmCorearchAarch64PrefetchPrefetch(p.rawAddress.toString(), rw, loc, ty)
+        wasmCorearchAarch64PrefetchExternPrefetch(p.rawAddress.toString(), rw, loc, ty)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

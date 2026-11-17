@@ -1,8 +1,7 @@
 // port-lint: source array/iter/iter_inner.rs
 package io.github.kotlinmania.rustlang.core.array.iter.iterinner
 
-import io.github.kotlinmania.rustlang.core.iter.sources.empty.Empty
-import io.github.kotlinmania.rustlang.core.iter.sources.empty.empty
+import io.github.kotlinmania.rustlang.core.iter.adapters.zip.zip
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
@@ -11,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.ops.indexrange.IndexRange
 import io.github.kotlinmania.rustlang.core.ops.trytrait.NeverShortCircuit
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.iter.zip
 
 // Defines the `IntoIter` owned iterator for arrays.
 
@@ -126,7 +124,7 @@ public fun <T> specPolymorphicIterCloneSpecCloneT(thisRef: PolymorphicIter<List<
     }
     // Note, we don't really need to match the exact same alive range, so
     // we can just clone into offset 0 regardless of where `self` is.
-    val new = PolymorphicIter.Empty()
+    val new = PolymorphicIter.empty(n)
     cloneIntoNew(thisRef, new)
     return new
 }

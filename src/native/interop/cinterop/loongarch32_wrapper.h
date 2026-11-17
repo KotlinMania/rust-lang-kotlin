@@ -9,10 +9,10 @@
 extern "C" {
 #endif
 
-void corearchLoongarch32Cacop(int32_t a, int32_t b, int32_t c);
-int32_t corearchLoongarch32Csrrd(int32_t a);
-int32_t corearchLoongarch32Csrwr(int32_t a, int32_t b);
-int32_t corearchLoongarch32Csrxchg(int32_t a, int32_t b, int32_t c);
+void corearchLoongarch32ExternCacop(int32_t a, int32_t b, int32_t c);
+int32_t corearchLoongarch32ExternCsrrd(int32_t a);
+int32_t corearchLoongarch32ExternCsrwr(int32_t a, int32_t b);
+int32_t corearchLoongarch32ExternCsrxchg(int32_t a, int32_t b, int32_t c);
 
 #ifdef __cplusplus
 }

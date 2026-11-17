@@ -420,7 +420,7 @@ public fun List<UByte>.partialCmp(other: ByteStr): Ordering? {
 }
 
 public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
-    return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.first)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Utf8Error>(tryResult.errValue()) }.into())
+    return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.value)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Utf8Error>(tryResult.errValue()) }.into())
 }
 
 /**

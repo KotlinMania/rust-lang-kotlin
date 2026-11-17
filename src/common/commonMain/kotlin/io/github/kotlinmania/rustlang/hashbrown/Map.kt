@@ -3247,7 +3247,7 @@ public open class OccupiedEntry<K, V, S, A : Allocator> internal constructor(
      *     }
      *     is Entry.Vacant -> error("panic")
      * }
-     * keyVal.second += 10
+     * (keyVal.second).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (10); targetPlace.write(currentValue) }
      * check(keyVal == Pair("poneyland", RustMutableReference(allocateNativeCell(22, PrimitiveLayouts.I32), PrimitiveLayouts.I32)))
      * check(map["poneyland"] == 22)
      * ```

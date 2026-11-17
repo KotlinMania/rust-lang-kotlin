@@ -143,7 +143,7 @@ public fun stdioHandle(raw: RawHandle): RawHandle {
 public fun fromRawHandleFile(handle: RawHandle): File =
     run {
         val handle1 = MutPtr(handle.rawAddress)
-        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.windows.File.fromInner(FromInner.FromInner(OwnedHandle.FromRawHandle(handle1))))
+        File.fromInner(io.github.kotlinmania.rustlang.std.sys.fs.windows.File.fromInner(FromInner.fromInner(OwnedHandle.fromRawHandle(handle1))))
     }
 
 public fun File.intoRawHandle(): RawHandle = mutPtrFromRustCast(this.intoInner().intoRawHandle())
@@ -222,19 +222,19 @@ public fun UdpSocket.asRawSocket(): RawSocket = this.asInner().socket().asRawSoc
 
 public fun fromRawSocketTcpStream(sock: RawSocket): TcpStream =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.fromRawSocket(sock))
         TcpStream.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpStream.fromInner(sock1))
     }
 
 public fun fromRawSocketTcpListener(sock: RawSocket): TcpListener =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.fromRawSocket(sock))
         TcpListener.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.TcpListener.fromInner(sock1))
     }
 
 public fun fromRawSocketUdpSocket(sock: RawSocket): UdpSocket =
     run {
-        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.FromRawSocket(sock))
+        val sock1 = io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows.Socket.fromInner(OwnedSocket.fromRawSocket(sock))
         UdpSocket.fromInner(io.github.kotlinmania.rustlang.std.sys.net.connection.socket.UdpSocket.fromInner(sock1))
     }
 
@@ -246,12 +246,12 @@ public fun UdpSocket.intoRawSocket(): RawSocket = this.intoInner().intoSocket().
 
 public fun PipeReader.asRawHandle(): RawHandle = this.value.asRawHandle()
 
-public fun fromRawHandlePipeReader(rawHandle: RawHandle): PipeReader = PipeReader.FromInner(FromRawHandle.FromRawHandle(rawHandle))
+public fun fromRawHandlePipeReader(rawHandle: RawHandle): PipeReader = PipeReader.fromInner(FromRawHandle.fromRawHandle(rawHandle))
 
 public fun PipeReader.intoRawHandle(): RawHandle = this.value.intoRawHandle()
 
 public fun PipeWriter.asRawHandle(): RawHandle = this.value.asRawHandle()
 
-public fun fromRawHandlePipeWriter(rawHandle: RawHandle): PipeWriter = PipeWriter.FromInner(FromRawHandle.FromRawHandle(rawHandle))
+public fun fromRawHandlePipeWriter(rawHandle: RawHandle): PipeWriter = PipeWriter.fromInner(FromRawHandle.fromRawHandle(rawHandle))
 
 public fun PipeWriter.intoRawHandle(): RawHandle = this.value.intoRawHandle()

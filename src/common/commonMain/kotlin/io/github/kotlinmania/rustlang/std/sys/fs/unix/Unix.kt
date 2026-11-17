@@ -148,6 +148,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
@@ -161,6 +162,7 @@ import io.github.kotlinmania.rustlang.std.sys.AsInnerMut
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.fd.unix.FileDesc
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.common.Dir
 import io.github.kotlinmania.rustlang.std.sys.fs.common.NOT_FILE_ERROR
 import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
@@ -408,12 +410,12 @@ public open class File(
             // However, since this is a variadic function, C integer promotion rules mean that on
             // the ABI level, this still gets passed as `cInt` (aka `UInt` on Unix platforms).
             val fd = when (val tryResult = cvtR({ open64(path.asPtr(), flags, opts.mode.toInt()) })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<File, Error>(tryResult.errValue()) }
-            return RustResult.Ok<File, Error>(File(FileDesc.FromRawFd(fd)))
+            return RustResult.Ok<File, Error>(File(FileDesc.fromRawFd(fd)))
         }
 
         public fun fromInner(fileDesc: FileDesc): File = File(fileDesc)
 
-        public fun fromRawFd(rawFd: RawFd): File = File(FromRawFd.FromRawFd(rawFd))
+        public fun fromRawFd(rawFd: RawFd): File = File(FromRawFd.fromRawFd(rawFd))
     }
 }
 
@@ -481,6 +483,22 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
         public data object Unknown : StatxState(0u)
         public data object Present : StatxState((Unknown.value + 1u).toUByte())
         public data object Unavailable : StatxState((Present.value + 1u).toUByte())
+
+        public fun toByte(): Byte = value.toByte()
+
+        public fun toUByte(): UByte = value
+
+        public fun toShort(): Short = value.toShort()
+
+        public fun toUShort(): UShort = value.toUShort()
+
+        public fun toInt(): Int = value.toInt()
+
+        public fun toUInt(): UInt = value.toUInt()
+
+        public fun toLong(): Long = value.toLong()
+
+        public fun toULong(): ULong = value.toULong()
     }
     val STATX_SAVED_STATE: Atomic<UByte, Align1<UByte>>  = AtomicU8.new(StatxState.Unknown.value.toUByte())
     syscall(statx, fd, cInt, pathname, cChar, flags, cInt, mask, libc, cUint, statxbuf, libc, statx, cInt)
@@ -745,7 +763,7 @@ public open class DirEntry(
         val fd = when (val tryResult = cvt(dirfd(this.dir.dirp.value))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<FileAttr, Error>(tryResult.errValue()) }
         // Make this FD into a directory handle. We don't actually drop it,
         // so having an `OwnedFd` is fine.
-        val dirHandle = Dir(OwnedFd.FromRawFd(fd))
+        val dirHandle = Dir(OwnedFd.fromRawFd(fd))
         return dirHandle.metadataC(this.name, true)
     }
 
@@ -1427,7 +1445,7 @@ public fun setPermNofollow(p: CStr, perm: FilePermissions): RustResult<Unit, Err
         // and that successfully converted the `Path` to a `CString`,
         // it should be safe to convert the `CStr` back to a `Path`.
         val osStr = OsStr.fromEncodedBytesUnchecked(p1.toBytes())
-        return when (val tryResult = options.open(Path.new(osStr))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }.setPermissions(Permissions.FromInner(perm1))
+        return when (val tryResult = options.open(Path.new(osStr))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }.setPermissions(Permissions.fromInner(perm1))
     }
     // This res value is modified for platforms that support the `fchmodat` syscall.
     var res: RustResult<Unit, Error> = RustResult.Err<Unit, Error>(ErrorKind.Unsupported.into())
@@ -1623,7 +1641,7 @@ public fun mkfifo(path: Path, mode: UInt): RustResult<Unit, Error> =
 
 public fun openatNofollowDironly(parentFd: RawFd?, p: CStr): RustResult<OwnedFd, Error> {
     val fd = when (val tryResult = cvtR({ openat((parentFd ?: AT_FDCWD), p.asPtr(), O_CLOEXEC or O_RDONLY or O_NOFOLLOW or O_DIRECTORY) })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<OwnedFd, Error>(tryResult.errValue()) }
-    return RustResult.Ok<OwnedFd, Error>(OwnedFd.FromRawFd(fd))
+    return RustResult.Ok<OwnedFd, Error>(OwnedFd.fromRawFd(fd))
 }
 
 public fun fdreaddir(dirFd: OwnedFd): RustResult<Pair<ReadDir, RawFd>, Error> {

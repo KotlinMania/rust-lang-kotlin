@@ -1,7 +1,6 @@
 // port-lint: source net/socket_addr.rs
 package io.github.kotlinmania.rustlang.core.net.socketaddr
 
-import io.github.kotlinmania.rustlang.core.iter.adapters.mapwindows.Buffer
 import io.github.kotlinmania.rustlang.core.net.displaybuffer.DisplayBuffer
 import io.github.kotlinmania.rustlang.core.net.ipaddr.IpAddr
 import io.github.kotlinmania.rustlang.core.net.ipaddr.Ipv4Addr
@@ -254,11 +253,11 @@ public sealed class SocketAddr {
             when (ip) {
                 is IpAddr.V4 -> {
                     val (a) = ip
-                    SocketAddr.v4(SocketAddrV4.new(a, port))
+                    SocketAddr.V4(SocketAddrV4.new(a, port))
                 }
                 is IpAddr.V6 -> {
                     val (a1) = ip
-                    SocketAddr.v6(SocketAddrV6.new(a1, port, 0u, 0u))
+                    SocketAddr.V6(SocketAddrV6.new(a1, port, 0u, 0u))
                 }
             }
 
@@ -296,22 +295,22 @@ public sealed class SocketAddr {
          */
         public fun unspecifiedFrom(thisRef: SocketAddr): SocketAddr =
             when (thisRef) {
-                is V4 -> SocketAddr.v4(SocketAddrV4.new(Ipv4Addr.UNSPECIFIED, 0u))
+                is V4 -> SocketAddr.V4(SocketAddrV4.new(Ipv4Addr.UNSPECIFIED, 0u))
                 is V6 -> {
                     val (addr) = thisRef
-                    SocketAddr.v6(SocketAddrV6.new(Ipv6Addr.UNSPECIFIED, 0u, addr.flowinfo(), addr.scopeId()))
+                    SocketAddr.V6(SocketAddrV6.new(Ipv6Addr.UNSPECIFIED, 0u, addr.flowinfo(), addr.scopeId()))
                 }
             }
 
         /**
          * Converts a [SocketAddrV4] into a [SocketAddr.V4].
          */
-        public fun from(sock4: SocketAddrV4): SocketAddr = SocketAddr.v4(sock4)
+        public fun from(sock4: SocketAddrV4): SocketAddr = SocketAddr.V4(sock4)
 
         /**
          * Converts a [SocketAddrV6] into a [SocketAddr.V6].
          */
-        public fun from(sock6: SocketAddrV6): SocketAddr = SocketAddr.v6(sock6)
+        public fun from(sock6: SocketAddrV6): SocketAddr = SocketAddr.V6(sock6)
     }
 }
 
@@ -433,7 +432,7 @@ public open class SocketAddrV4(
             f.writeFmt("${this.ip()}:${this.port()}")
         } else {
             val LONGEST_IPV4_SOCKET_ADDR: String = "255.255.255.255:65535"
-            val buf = DisplayBuffer.Buffer(LONGEST_IPV4_SOCKET_ADDR.len())
+            val buf = DisplayBuffer.buffer(LONGEST_IPV4_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             buf1.writeFmt("${this.ip()}:${this.port()}").unwrap()
             run { f.append(buf1.asStr()); Result.Ok<Unit, Unit>(Unit) }
@@ -693,7 +692,7 @@ public open class SocketAddrV6(
             }
         } else {
             val LONGEST_IPV6_SOCKET_ADDR: String = "[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff%4294967295]:65535"
-            val buf = DisplayBuffer.Buffer(LONGEST_IPV6_SOCKET_ADDR.len())
+            val buf = DisplayBuffer.buffer(LONGEST_IPV6_SOCKET_ADDR.len())
             val buf1 = DisplayBuffer.new(buf)
             when (val matchVal1 = this.scopeId()) {
                 0u -> buf1.writeFmt("[${this.ip()}]:${this.port()}")

@@ -39,6 +39,29 @@ public sealed class FormatState {
     public data object Precision : FormatState()
 
     public fun rustEquals(other: FormatState): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Flags -> 0
+        Width -> 1
+        Precision -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -548,6 +571,31 @@ public sealed class FormatOp {
     public data object LowerHex : FormatOp()
     public data object UpperHex : FormatOp()
     public data object String : FormatOp()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Digit -> 0
+        Octal -> 1
+        LowerHex -> 2
+        UpperHex -> 3
+        String -> 4
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public companion object {
         public fun fromChar(c: Char): FormatOp =

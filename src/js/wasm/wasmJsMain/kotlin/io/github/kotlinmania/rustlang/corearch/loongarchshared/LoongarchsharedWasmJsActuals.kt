@@ -7,17 +7,17 @@ private external fun initLoongarchsharedNapiAddon(): Boolean
 
 private val loongarchsharedNapiAvailable: Boolean = initLoongarchsharedNapiAddon()
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedDbar(p0)")
-private external fun wasmCorearchLoongarchsharedDbar(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternDbar(p0)")
+private external fun wasmCorearchLoongarchsharedExternDbar(p0: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedIbar(p0)")
-private external fun wasmCorearchLoongarchsharedIbar(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternIbar(p0)")
+private external fun wasmCorearchLoongarchsharedExternIbar(p0: Int)
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarchsharedMovgr2fcsr(p0, p1)")
-private external fun wasmCorearchLoongarchsharedMovgr2fcsr(p0: Int, p1: Int)
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternMovgr2fcsr(p0, p1)")
+private external fun wasmCorearchLoongarchsharedExternMovgr2fcsr(p0: Int, p1: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedMovfcsr2gr(p0)")
-private external fun wasmCorearchLoongarchsharedMovfcsr2gr(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternMovfcsr2gr(p0)")
+private external fun wasmCorearchLoongarchsharedExternMovfcsr2gr(p0: Int): Int
 
 @JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternIocsrrdB(p0)")
 private external fun wasmCorearchLoongarchsharedExternIocsrrdB(p0: Int): Int
@@ -43,8 +43,8 @@ private external fun wasmCorearchLoongarchsharedBreakTarget(p0: Int)
 @JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternCpucfg(p0)")
 private external fun wasmCorearchLoongarchsharedExternCpucfg(p0: Int): Int
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedSyscall(p0)")
-private external fun wasmCorearchLoongarchsharedSyscall(p0: Int)
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternSyscall(p0)")
+private external fun wasmCorearchLoongarchsharedExternSyscall(p0: Int)
 
 @JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternFrecipeS(p0)")
 private external fun wasmCorearchLoongarchsharedExternFrecipeS(p0: Double): Double
@@ -58,32 +58,32 @@ private external fun wasmCorearchLoongarchsharedExternFrsqrteS(p0: Double): Doub
 @JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarchsharedExternFrsqrteD(p0)")
 private external fun wasmCorearchLoongarchsharedExternFrsqrteD(p0: Double): Double
 
-public actual fun dbar(a: Int) {
+public actual fun externDbar(a: Int) {
     if (loongarchsharedNapiAvailable) {
-        wasmCorearchLoongarchsharedDbar(a)
+        wasmCorearchLoongarchsharedExternDbar(a)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun ibar(a: Int) {
+public actual fun externIbar(a: Int) {
     if (loongarchsharedNapiAvailable) {
-        wasmCorearchLoongarchsharedIbar(a)
+        wasmCorearchLoongarchsharedExternIbar(a)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun movgr2fcsr(a: Int, b: Int) {
+public actual fun externMovgr2fcsr(a: Int, b: Int) {
     if (loongarchsharedNapiAvailable) {
-        wasmCorearchLoongarchsharedMovgr2fcsr(a, b)
+        wasmCorearchLoongarchsharedExternMovgr2fcsr(a, b)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun movfcsr2gr(a: Int): Int =
-    if (loongarchsharedNapiAvailable) wasmCorearchLoongarchsharedMovfcsr2gr(a) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externMovfcsr2gr(a: Int): Int =
+    if (loongarchsharedNapiAvailable) wasmCorearchLoongarchsharedExternMovfcsr2gr(a) else throw UnsupportedOperationException("Native FFI addon is not available")
 
 public actual fun externIocsrrdB(a: Int): Int =
     if (loongarchsharedNapiAvailable) wasmCorearchLoongarchsharedExternIocsrrdB(a) else throw UnsupportedOperationException("Native FFI addon is not available")
@@ -129,9 +129,9 @@ public actual fun breakTarget(a: Int) {
 public actual fun externCpucfg(a: Int): Int =
     if (loongarchsharedNapiAvailable) wasmCorearchLoongarchsharedExternCpucfg(a) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun syscall(a: Int) {
+public actual fun externSyscall(a: Int) {
     if (loongarchsharedNapiAvailable) {
-        wasmCorearchLoongarchsharedSyscall(a)
+        wasmCorearchLoongarchsharedExternSyscall(a)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }

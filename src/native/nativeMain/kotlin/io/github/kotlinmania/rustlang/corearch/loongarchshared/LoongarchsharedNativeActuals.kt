@@ -3,38 +3,38 @@
 package io.github.kotlinmania.rustlang.corearch.loongarchshared
 
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedBreakTarget
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedDbar
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternCpucfg
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternDbar
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternFrecipeD
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternFrecipeS
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternFrsqrteD
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternFrsqrteS
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIbar
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIocsrrdB
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIocsrrdH
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIocsrrdW
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIocsrwrB
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIocsrwrH
 import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternIocsrwrW
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedIbar
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedMovfcsr2gr
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedMovgr2fcsr
-import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedSyscall
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternMovfcsr2gr
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternMovgr2fcsr
+import io.github.kotlinmania.rustlang.corearch.loongarchshared.cinterop.corearchLoongarchsharedExternSyscall
 import kotlinx.cinterop.ExperimentalForeignApi
 
-public actual fun dbar(a: Int) {
-    corearchLoongarchsharedDbar(a)
+public actual fun externDbar(a: Int) {
+    corearchLoongarchsharedExternDbar(a)
 }
 
-public actual fun ibar(a: Int) {
-    corearchLoongarchsharedIbar(a)
+public actual fun externIbar(a: Int) {
+    corearchLoongarchsharedExternIbar(a)
 }
 
-public actual fun movgr2fcsr(a: Int, b: Int) {
-    corearchLoongarchsharedMovgr2fcsr(a, b)
+public actual fun externMovgr2fcsr(a: Int, b: Int) {
+    corearchLoongarchsharedExternMovgr2fcsr(a, b)
 }
 
-public actual fun movfcsr2gr(a: Int): Int =
-    corearchLoongarchsharedMovfcsr2gr(a)
+public actual fun externMovfcsr2gr(a: Int): Int =
+    corearchLoongarchsharedExternMovfcsr2gr(a)
 
 public actual fun externIocsrrdB(a: Int): Int =
     corearchLoongarchsharedExternIocsrrdB(a)
@@ -64,8 +64,8 @@ public actual fun breakTarget(a: Int) {
 public actual fun externCpucfg(a: Int): Int =
     corearchLoongarchsharedExternCpucfg(a)
 
-public actual fun syscall(a: Int) {
-    corearchLoongarchsharedSyscall(a)
+public actual fun externSyscall(a: Int) {
+    corearchLoongarchsharedExternSyscall(a)
 }
 
 public actual fun externFrecipeS(a: Float): Float =

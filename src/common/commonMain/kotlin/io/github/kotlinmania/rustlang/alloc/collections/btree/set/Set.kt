@@ -1829,7 +1829,7 @@ public fun <T> fromBTreeSetT(arr: List<T>, n: Int): BTreeSet<T, Global> {
     }
     // use stable sort to preserve the insertion order.
     arr.sort()
-    return BTreeSet.fromSortedIter(IntoIterator.IntoIter(arr), Global())
+    return BTreeSet.fromSortedIter(IntoIterator.intoIter(arr), Global())
 }
 
 /**

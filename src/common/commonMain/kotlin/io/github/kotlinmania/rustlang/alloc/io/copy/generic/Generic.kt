@@ -31,8 +31,8 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
  * are specialized with.
  */
 public fun <R, W> genericCopy(reader: R, writer: W): Result<ULong> where R : Read<R>, W : Write {
-    val readPriority = BufferedReaderSpec.BufferPriority(reader)
-    val writePriority = BufferedWriterSpec.BufferPriority(writer)
+    val readPriority = reader.bufferPriority()
+    val writePriority = writer.bufferPriority()
     if (readPriority >= DEFAULT_BUF_SIZE && readPriority >= writePriority) {
         return reader.copyTo(writer)
     }

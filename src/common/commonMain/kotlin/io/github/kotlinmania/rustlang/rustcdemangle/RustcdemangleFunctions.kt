@@ -62,7 +62,7 @@ public fun demangle(s: String): Demangle {
                             val d1 = okValueVal.first
                             val s3 = okValueVal.second
                             suffix = s3
-                            DemangleStyle.v0(d1)
+                            DemangleStyle.V0(d1)
                         }
                         // Note(eddyb) would it make sense to treat an unknown-validity
                         // symbol (e.g. one that errored with `RecursedTooDeep`) as

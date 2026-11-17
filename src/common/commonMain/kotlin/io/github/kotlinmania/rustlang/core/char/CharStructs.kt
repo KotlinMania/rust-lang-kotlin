@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.core.char
 
-import io.github.kotlinmania.rustlang.core.asserting.Printable
 import io.github.kotlinmania.rustlang.core.escape.AlwaysEscaped
 import io.github.kotlinmania.rustlang.core.escape.EscapeIterInner
 import io.github.kotlinmania.rustlang.core.escape.MaybeEscaped
@@ -189,7 +188,7 @@ public open class EscapeDebug internal constructor(
             valueCtorArg = value,
         )
 
-        public fun printable(chr: Char): EscapeDebug = EscapeDebug(EscapeIterInner.Printable(chr))
+        public fun printable(chr: Char): EscapeDebug = EscapeDebug(EscapeIterInner.printable(chr))
 
         public fun backslash(c: io.github.kotlinmania.rustlang.core.ascii.Char): EscapeDebug = EscapeDebug(EscapeIterInner.backslash(c))
 

@@ -34,6 +34,7 @@ import io.github.kotlinmania.rustlang.std.os.windows.io.OwnedHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.RawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.asHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.asRawHandle
+import io.github.kotlinmania.rustlang.std.os.windows.io.fromRawHandle
 import io.github.kotlinmania.rustlang.std.os.windows.io.intoRawHandle
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.AsInner
@@ -345,12 +346,12 @@ public open class Handle(
                 if (event.isNull()) {
                     Result.Err<Handle, Error>(Error.lastOsError())
                 } else {
-                    Result.Ok<Handle, Error>(Handle.FromRawHandle(event))
+                    Result.Ok<Handle, Error>(Handle.fromRawHandle(event))
                 }
             }
 
         public fun fromInner(fileDesc: OwnedHandle): Handle = Handle(fileDesc)
 
-        public fun fromRawHandle(rawHandle: RawHandle): Handle = Handle(FromRawHandle.FromRawHandle(rawHandle))
+        public fun fromRawHandle(rawHandle: RawHandle): Handle = Handle(FromRawHandle.fromRawHandle(rawHandle))
     }
 }

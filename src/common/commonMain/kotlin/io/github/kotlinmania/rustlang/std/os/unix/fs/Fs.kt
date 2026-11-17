@@ -25,6 +25,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.AsFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 
 // Unix-specific extensions to primitives in the [std.fs] module.
 
@@ -495,10 +496,10 @@ public fun Permissions.mode(): UInt = this.asInner().mode()
 
 public fun Permissions.setMode(mode: UInt) {
     var selfMut = this
-    selfMut = Permissions.FromInner(FromInner.FromInner(mode))
+    selfMut = Permissions.fromInner(FromInner.fromInner(mode))
 }
 
-public fun permissionsExtFromModePermissions(mode: UInt): Permissions = Permissions.FromInner(FromInner.FromInner(mode))
+public fun permissionsExtFromModePermissions(mode: UInt): Permissions = Permissions.fromInner(FromInner.fromInner(mode))
 
 /**
  * Unix-specific extensions to [fs.OpenOptions].

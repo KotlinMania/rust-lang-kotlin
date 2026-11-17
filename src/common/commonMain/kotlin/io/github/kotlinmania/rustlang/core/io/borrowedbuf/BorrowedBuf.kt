@@ -1,8 +1,6 @@
 // port-lint: source io/borrowed_buf.rs
 package io.github.kotlinmania.rustlang.core.io.borrowedbuf
 
-import io.github.kotlinmania.rustlang.core.cmp.Eq
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.fmt.Formatter
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -474,13 +472,13 @@ public open class BorrowedCursor<T> internal constructor(
      * one.
      */
     public open fun <R> withUnfilledBuf(f: (BorrowedBuf<T>) -> R): R {
-        val buf = BorrowedBuf.From(this.reborrow())
+        val buf = BorrowedBuf.from(this.reborrow())
         val prevPtr = constPtrFromRustCast(buf.buf)
         val res = f(buf)
         // Check that the caller didn't replace the `BorrowedBuf`.
         // This is necessary for the safety of the code below: if the check wasn't
         // there, one could mark some elements as initialized even though they aren't.
-        check(Eq(prevPtr, buf.buf))
+        check(eq(prevPtr, buf.buf))
         val filled = buf.filled
         val init = buf.init
         // Update `init` and `filled` fields with what was written to the buffer.

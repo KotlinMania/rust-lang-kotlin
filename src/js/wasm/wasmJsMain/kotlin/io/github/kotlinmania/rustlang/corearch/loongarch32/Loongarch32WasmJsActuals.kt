@@ -7,31 +7,31 @@ private external fun initLoongarch32NapiAddon(): Boolean
 
 private val loongarch32NapiAvailable: Boolean = initLoongarch32NapiAddon()
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch32Cacop(p0, p1, p2)")
-private external fun wasmCorearchLoongarch32Cacop(p0: Int, p1: Int, p2: Int)
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch32ExternCacop(p0, p1, p2)")
+private external fun wasmCorearchLoongarch32ExternCacop(p0: Int, p1: Int, p2: Int)
 
-@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarch32Csrrd(p0)")
-private external fun wasmCorearchLoongarch32Csrrd(p0: Int): Int
+@JsFun("(p0) => globalThis.__km_napi_kmcore.corearchLoongarch32ExternCsrrd(p0)")
+private external fun wasmCorearchLoongarch32ExternCsrrd(p0: Int): Int
 
-@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch32Csrwr(p0, p1)")
-private external fun wasmCorearchLoongarch32Csrwr(p0: Int, p1: Int): Int
+@JsFun("(p0, p1) => globalThis.__km_napi_kmcore.corearchLoongarch32ExternCsrwr(p0, p1)")
+private external fun wasmCorearchLoongarch32ExternCsrwr(p0: Int, p1: Int): Int
 
-@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch32Csrxchg(p0, p1, p2)")
-private external fun wasmCorearchLoongarch32Csrxchg(p0: Int, p1: Int, p2: Int): Int
+@JsFun("(p0, p1, p2) => globalThis.__km_napi_kmcore.corearchLoongarch32ExternCsrxchg(p0, p1, p2)")
+private external fun wasmCorearchLoongarch32ExternCsrxchg(p0: Int, p1: Int, p2: Int): Int
 
-public actual fun cacop(a: Int, b: Int, c: Int) {
+public actual fun externCacop(a: Int, b: Int, c: Int) {
     if (loongarch32NapiAvailable) {
-        wasmCorearchLoongarch32Cacop(a, b, c)
+        wasmCorearchLoongarch32ExternCacop(a, b, c)
     } else {
         throw UnsupportedOperationException("Native FFI addon is not available")
     }
 }
 
-public actual fun csrrd(a: Int): Int =
-    if (loongarch32NapiAvailable) wasmCorearchLoongarch32Csrrd(a) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCsrrd(a: Int): Int =
+    if (loongarch32NapiAvailable) wasmCorearchLoongarch32ExternCsrrd(a) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun csrwr(a: Int, b: Int): Int =
-    if (loongarch32NapiAvailable) wasmCorearchLoongarch32Csrwr(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCsrwr(a: Int, b: Int): Int =
+    if (loongarch32NapiAvailable) wasmCorearchLoongarch32ExternCsrwr(a, b) else throw UnsupportedOperationException("Native FFI addon is not available")
 
-public actual fun csrxchg(a: Int, b: Int, c: Int): Int =
-    if (loongarch32NapiAvailable) wasmCorearchLoongarch32Csrxchg(a, b, c) else throw UnsupportedOperationException("Native FFI addon is not available")
+public actual fun externCsrxchg(a: Int, b: Int, c: Int): Int =
+    if (loongarch32NapiAvailable) wasmCorearchLoongarch32ExternCsrxchg(a, b, c) else throw UnsupportedOperationException("Native FFI addon is not available")

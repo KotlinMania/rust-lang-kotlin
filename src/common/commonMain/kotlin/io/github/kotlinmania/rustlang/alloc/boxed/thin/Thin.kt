@@ -226,7 +226,7 @@ public open class WithHeader<H> internal constructor(
                 // Since we only allocate for non-ZSTs, the layout size cannot be zero.
                 check(layout.size() != 0)
                 // SAFETY: We own the allocation with `layout` at `ptr - valueOffset`.
-                alloc.dealloc(this.ptr.asPtr().sub(valueOffset), layout)
+                dealloc(this.ptr.asPtr().sub(valueOffset), layout)
             }
         }
         // `_guard` will deallocate the memory when dropped, even if `dropInPlace` unwinds.
@@ -268,7 +268,7 @@ public open class WithHeader<H> internal constructor(
 // stable since 1.28 ._.
 //
 // On the other hand, look at this gorgeous turbofish!
-alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
+handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
             // Note: It's UB to pass a layout with a zero size to `alloc.alloc`, so
             // we use `layout.dangling()` for this case, which should have a valid
             // alignment for both `T` and `H`.
@@ -280,9 +280,9 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
                     layout.danglingPtr()
                 } else {
                     // SAFETY: We check above that the layout size is nonzero.
-                    val ptr = alloc.alloc(layout)
+                    val ptr = alloc(layout)
                     if (ptr.isNull()) {
-                        alloc.handleAllocError(layout)
+                        handleAllocError(layout)
                     }
                     // SAFETY:
                     // - The size is at least `alignedHeaderSize`.
@@ -307,7 +307,7 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
          */
         public fun <H, T> tryNew(header: H, value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Result<WithHeader<H>, AllocError> {
             val valueLayout = Layout.new<T>(typeLayoutT = typeLayoutT)
-            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: return Result.Err<WithHeader<H>, AllocError>(alloc.AllocError)
+            val (layout, valueOffset) = WithHeader.allocLayout(valueLayout) ?: return Result.Err<WithHeader<H>, AllocError>(AllocError())
             // Note: It's UB to pass a layout with a zero size to `alloc.alloc`, so
             // we use `layout.dangling()` for this case, which should have a valid
             // alignment for both `T` and `H`.
@@ -319,9 +319,9 @@ alloc.handleAllocError(Layout.new<Unit>(typeLayoutT = PrimitiveLayouts.UNIT))
                     layout.danglingPtr()
                 } else {
                     // SAFETY: We check above that the layout size is nonzero.
-                    val ptr = alloc.alloc(layout)
+                    val ptr = alloc(layout)
                     if (ptr.isNull()) {
-                        return Result.Err<WithHeader<H>, AllocError>(alloc.AllocError)
+                        return Result.Err<WithHeader<H>, AllocError>(AllocError())
                     }
                     // SAFETY:
                     // - The size is at least `alignedHeaderSize`.
@@ -413,12 +413,12 @@ public open class WithOpaqueHeader internal constructor(
 
         public fun <H, T> new(header: H, value: T, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): WithOpaqueHeader {
             val ptr = WithHeader.new(header, value)
-            return WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout)
+            return WithOpaqueHeader(ptr.field0, fieldLayout = fieldLayout)
         }
 
         public fun <Dyn, T> newUnsizeZst(value: T, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): WithOpaqueHeader {
             val ptr = WithHeader.newUnsizeZst<Dyn, T>(value)
-            return WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout)
+            return WithOpaqueHeader(ptr.field0, fieldLayout = fieldLayout)
         }
 
         public fun <H, T> tryNew(header: H, value: T, fieldLayout: TypeLayout<NonNull> = UnresolvedTypeLayout()): Result<WithOpaqueHeader, AllocError> = WithHeader.tryNew(header, value).map({ ptr -> WithOpaqueHeader(ptr.value, fieldLayout = fieldLayout) })

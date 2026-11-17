@@ -204,7 +204,7 @@ public interface FromResidual<R, T> {
 
 // because `Result.fromResidual` has it
 // not-exposed but still used via lang-item
-public fun <T, Y> fromYeet(yeeted: Y): T where T : FromResidual<Yeet<Y>, T> = FromResidual.FromResidual(Yeet(yeeted))
+public fun <T, Y> fromYeet(yeeted: Y): T where T : FromResidual<Yeet<Y>, T> = FromResidual.fromResidual(Yeet(yeeted))
 
 /**
  * Allows retrieving the canonical type implementing [Try] that has this type
@@ -229,7 +229,7 @@ public interface Residual<O, out TryType>
  * but importantly not on the contextual type the way it would be if
  * we called `<_ as FromResidual>.fromResidual(r)` directly.
  */
-public fun <TryType, R : Residual<O, TryType>, O> residualIntoTryType(r: R): TryType = FromResidual.FromResidual(r)
+public fun <TryType, R : Residual<O, TryType>, O> residualIntoTryType(r: R): TryType = FromResidual.fromResidual(r)
 
 public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> = TryType
 

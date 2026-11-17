@@ -3541,7 +3541,7 @@ public fun <T, A : Allocator> tryFromArcTArraynA(boxedSlice: Arc<List<T>, A>, n:
  * // Just a single allocation happens here.
  * ```
  */
-public fun <T, I : Iterable<T>> fromIteratorFromIterArcTSlice(iter: I): Arc<List<T>, Global> = ToArcSlice.ToArcSlice(iter.iterator())
+public fun <T, I : Iterable<T>> fromIteratorFromIterArcTSlice(iter: I): Arc<List<T>, Global> = iter.iterator().toArcSlice()
 
 /**
  * Specialization trait used for collecting into `Arc<[T]>`.

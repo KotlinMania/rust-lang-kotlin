@@ -567,6 +567,29 @@ public sealed class Utf8BoundaryError {
     public data object NotABoundary : Utf8BoundaryError()
     public data object OutOfBounds : Utf8BoundaryError()
     public data object BetweenSurrogates : Utf8BoundaryError()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        NotABoundary -> 0
+        OutOfBounds -> 1
+        BetweenSurrogates -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

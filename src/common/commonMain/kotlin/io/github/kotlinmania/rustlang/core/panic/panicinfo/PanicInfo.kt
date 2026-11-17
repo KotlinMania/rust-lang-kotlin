@@ -1,6 +1,7 @@
 // port-lint: source panic/panic_info.rs
 package io.github.kotlinmania.rustlang.core.panic.panicinfo
 
+import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -14,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * [std.panic.PanicHookInfo]: ../../std/panic/struct.PanicHookInfo.html
  */
 public open class PanicInfo(
-    public var message: fmt.Arguments,
+    public var message: Arguments,
     public var location: Location,
     public var canUnwind: Boolean,
     public var forceNoBacktrace: Boolean,
@@ -106,7 +107,7 @@ public open class PanicInfo(
     }
 
     public companion object {
-        public fun new(message: fmt.Arguments, location: Location, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicInfo = PanicInfo(location = location, message = message, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
+        public fun new(message: Arguments, location: Location, canUnwind: Boolean, forceNoBacktrace: Boolean): PanicInfo = PanicInfo(location = location, message = message, canUnwind = canUnwind, forceNoBacktrace = forceNoBacktrace)
     }
 }
 
@@ -119,7 +120,7 @@ public open class PanicInfo(
  * See [PanicInfo.message].
  */
 public open class PanicMessage(
-    public var message: fmt.Arguments,
+    public var message: Arguments,
 ) {
     /**
      * Gets the formatted message, if it has no arguments to be formatted at runtime.

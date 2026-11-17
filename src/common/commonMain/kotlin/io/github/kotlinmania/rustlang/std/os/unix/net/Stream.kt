@@ -27,6 +27,7 @@ import io.github.kotlinmania.rustlang.std.os.fd.OwnedFd
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
 import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
+import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.SocketAncillary
@@ -38,6 +39,7 @@ import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.asInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
@@ -586,13 +588,13 @@ public open class UnixStream(
             return Result.Ok<Pair<UnixStream, UnixStream>, io.github.kotlinmania.rustlang.core.io.error.Error>(Pair(UnixStream(i1), UnixStream(i2)))
         }
 
-        public fun fromRawFd(fd: RawFd): UnixStream = UnixStream(Socket.FromInner(FromInner.FromInner(OwnedFd.FromRawFd(fd))))
+        public fun fromRawFd(fd: RawFd): UnixStream = UnixStream(Socket.fromInner(FromInner.fromInner(OwnedFd.fromRawFd(fd))))
 
-        public fun from(owned: OwnedFd): UnixStream = UnixStream.FromRawFd(owned.intoRawFd())
+        public fun from(owned: OwnedFd): UnixStream = UnixStream.fromRawFd(owned.intoRawFd())
     }
 }
 
 /**
  * Takes ownership of a [UnixStream]s socket file descriptor.
  */
-public fun fromOwnedFd(unixStream: UnixStream): OwnedFd = OwnedFd.FromRawFd(unixStream.intoRawFd())
+public fun fromOwnedFd(unixStream: UnixStream): OwnedFd = OwnedFd.fromRawFd(unixStream.intoRawFd())

@@ -239,7 +239,7 @@ int32_t corearchLoongarch64ExternCrccWDW(int64_t a, int32_t b) {
     return -1;
 }
 
-void corearchLoongarch64Cacop(int64_t a, int64_t b, int64_t c) {
+void corearchLoongarch64ExternCacop(int64_t a, int64_t b, int64_t c) {
     typedef void (*km_fn_t)(int64_t, int64_t, int64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -267,7 +267,7 @@ void corearchLoongarch64Cacop(int64_t a, int64_t b, int64_t c) {
     errno = ENOSYS;
 }
 
-int64_t corearchLoongarch64Csrrd(int32_t a) {
+int64_t corearchLoongarch64ExternCsrrd(int32_t a) {
     typedef int64_t (*km_fn_t)(int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -295,7 +295,7 @@ int64_t corearchLoongarch64Csrrd(int32_t a) {
     return -1;
 }
 
-int64_t corearchLoongarch64Csrwr(int64_t a, int32_t b) {
+int64_t corearchLoongarch64ExternCsrwr(int64_t a, int32_t b) {
     typedef int64_t (*km_fn_t)(int64_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -323,7 +323,7 @@ int64_t corearchLoongarch64Csrwr(int64_t a, int32_t b) {
     return -1;
 }
 
-int64_t corearchLoongarch64Csrxchg(int64_t a, int64_t b, int32_t c) {
+int64_t corearchLoongarch64ExternCsrxchg(int64_t a, int64_t b, int32_t c) {
     typedef int64_t (*km_fn_t)(int64_t, int64_t, int32_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -463,7 +463,7 @@ void corearchLoongarch64ExternAsrtgt(int64_t a, int64_t b) {
     errno = ENOSYS;
 }
 
-int64_t corearchLoongarch64Lddir(int64_t a, int64_t b) {
+int64_t corearchLoongarch64ExternLddir(int64_t a, int64_t b) {
     typedef int64_t (*km_fn_t)(int64_t, int64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32
@@ -491,7 +491,7 @@ int64_t corearchLoongarch64Lddir(int64_t a, int64_t b) {
     return -1;
 }
 
-void corearchLoongarch64Ldpte(int64_t a, int64_t b) {
+void corearchLoongarch64ExternLdpte(int64_t a, int64_t b) {
     typedef void (*km_fn_t)(int64_t, int64_t);
     static km_fn_t km_fn_ptr = NULL;
 #ifdef _WIN32

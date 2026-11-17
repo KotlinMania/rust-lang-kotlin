@@ -5,6 +5,28 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public sealed class Direction {
     public data object Front : Direction()
     public data object Back : Direction()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Front -> 0
+        Back -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public interface CloneFromSpec<T> {
@@ -50,6 +72,28 @@ public sealed class GetDisjointMutError {
     public data object OverlappingIndices : GetDisjointMutError()
 
     public fun rustEquals(other: GetDisjointMutError): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        IndexOutOfBounds -> 0
+        OverlappingIndices -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val msg =

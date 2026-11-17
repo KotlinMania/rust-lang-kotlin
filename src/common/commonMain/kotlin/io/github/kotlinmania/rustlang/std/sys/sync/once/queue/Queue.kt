@@ -29,6 +29,7 @@ import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Acquire
 import io.github.kotlinmania.rustlang.std.sync.atomic.ordering.Release
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
+import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
 public class DebugStruct(
@@ -333,7 +334,7 @@ public open class PanicGuard {
 
 public fun wait(stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>, current: StateAndQueue, returnOnPoisoned: Boolean): StateAndQueue {
     var current1 = current
-    val node = Waiter(thread = thread.currentOrUnnamed(), signaled = AtomicBool.new(false), next = Cell.new(ConstPtr(0L)))
+    val node = Waiter(thread = currentOrUnnamed(), signaled = AtomicBool.new(false), next = Cell.new(ConstPtr(0L)))
     while (true) {
         val state = toState(current1)
         val queue = toQueue(current1)

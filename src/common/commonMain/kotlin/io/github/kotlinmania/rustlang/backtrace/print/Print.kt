@@ -115,6 +115,28 @@ public sealed class PrintFmt {
     public data object Full : PrintFmt()
 
     public fun rustEquals(other: PrintFmt): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Short -> 0
+        Full -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**

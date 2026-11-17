@@ -287,7 +287,7 @@ public fun <BorrowType, K, V, Type, Q> NodeRef<BorrowType, K, V, Type>.findKeyIn
     for ((offset, k) in keys.getUnchecked(startIndex until Int.MAX_VALUE).iter().mapIndexed { index, item -> Pair(index, item) }) {
         when (kmCompareValues(key, k.borrow()).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
             Ordering.Greater -> {}
-            Ordering.Equal -> { return IndexResult.kv(startIndex + offset) }
+            Ordering.Equal -> { return IndexResult.KV(startIndex + offset) }
             Ordering.Less -> { return IndexResult.Edge(startIndex + offset) }
         }
     }

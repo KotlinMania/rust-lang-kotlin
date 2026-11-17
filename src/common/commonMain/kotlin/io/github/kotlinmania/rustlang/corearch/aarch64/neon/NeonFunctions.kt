@@ -60,7 +60,7 @@ public fun vld1qLaneF64(ptr: ConstPtr, src: Float64x2T, lane: Int): Float64x2T {
  */
 public fun vbslF64(a: Uint64x1T, b: Float64x1T, c: Float64x1T): Float64x1T {
     val not = Int64x1T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float64x1T, Uint64x1T>(b, Float64x1T.typeLayout(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float64x1T, Uint64x1T>(b, Float64x1T.typeLayout(), UnresolvedTypeLayout<Uint64x1T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
 }
 
 /**
@@ -76,7 +76,7 @@ public fun vbslP64(a: Poly64x1T, b: Poly64x1T, c: Poly64x1T): Poly64x1T {
  */
 public fun vbslqF64(a: Uint64x2T, b: Float64x2T, c: Float64x2T): Float64x2T {
     val not = Int64x2T.splat(-1)
-    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float64x2T, Uint64x2T>(b, Float64x2T.typeLayout(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = c; simdArg0 }; simdArg0 })
+    return transmute(run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmuteWithLayouts<Float64x2T, Uint64x2T>(b, Float64x2T.typeLayout(), UnresolvedTypeLayout<Uint64x2T>()); simdArg0 }; val simdArg1 = run { val simdArg0 = run { val simdArg0 = a; val simdArg1 = transmute(not); simdArg0 }; val simdArg1 = transmute(c); simdArg0 }; simdArg0 })
 }
 
 /**

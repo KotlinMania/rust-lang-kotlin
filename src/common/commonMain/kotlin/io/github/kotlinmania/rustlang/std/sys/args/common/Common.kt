@@ -1,6 +1,7 @@
 // port-lint: source sys/args/common.rs
 package io.github.kotlinmania.rustlang.std.sys.args.common
 
+import io.github.kotlinmania.rustlang.alloc.vec.intoiter.IntoIter
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero

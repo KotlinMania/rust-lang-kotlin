@@ -14,8 +14,8 @@ import io.github.kotlinmania.rustlang.libc.syscall
 import io.github.kotlinmania.rustlang.libc.unix.SizeT
 import io.github.kotlinmania.rustlang.stddetect.detect.arch.Feature
 import io.github.kotlinmania.rustlang.stddetect.detect.bit.test
+import io.github.kotlinmania.rustlang.stddetect.detect.cache.Initializer
 import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.auxvec.auxv
-import io.github.kotlinmania.rustlang.stddetect.detect.os.linux.s390x.cache
 import io.github.kotlinmania.rustlang.stddetect.detect.os.riscv.implyFeatures
 
 // Run-time feature detection for RISC-V on Linux.
@@ -219,8 +219,8 @@ public fun riscvHwprobe(out: MutableList<RiscvHwprobe>): Boolean {
  * Read list of supported features from (1) the auxiliary vector
  * and (2) the results of `riscvHwprobe` and `prctl` system calls.
  */
-public fun detectFeatures(): cache.Initializer {
-    var value = cache.Initializer.default()
+public fun detectFeatures(): Initializer {
+    var value = Initializer.default()
     var enableFeature =
         { feature, enable ->
             if (enable) {
@@ -250,6 +250,31 @@ public fun detectFeatures(): cache.Initializer {
             public data object MisalignedScalarPerf : Indices()
             public data object MisalignedVectorPerf : Indices()
             public data object MisalignedScalarPerfFallback : Indices()
+
+            private fun kmDiscriminant(): Int =
+                when (this) {
+                BaseBehavior -> 0
+                Extensions -> 1
+                MisalignedScalarPerf -> 2
+                MisalignedVectorPerf -> 3
+                MisalignedScalarPerfFallback -> 4
+                }
+
+            public fun toByte(): Byte = kmDiscriminant().toByte()
+
+            public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+            public fun toShort(): Short = kmDiscriminant().toShort()
+
+            public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+            public fun toInt(): Int = kmDiscriminant()
+
+            public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+            public fun toLong(): Long = kmDiscriminant().toLong()
+
+            public fun toULong(): ULong = kmDiscriminant().toULong()
         }
         val t = mutableListOf(RiscvHwprobe(key = RISCV_HWPROBE_KEY_BASE_BEHAVIOR, value = 0uL), RiscvHwprobe(key = RISCV_HWPROBE_KEY_IMA_EXT_0, value = 0uL), RiscvHwprobe(key = RISCV_HWPROBE_KEY_MISALIGNED_SCALAR_PERF, value = 0uL), RiscvHwprobe(key = RISCV_HWPROBE_KEY_MISALIGNED_VECTOR_PERF, value = 0uL), RiscvHwprobe(key = RISCV_HWPROBE_KEY_CPUPERF_0, value = 0uL))
         if (!riscvHwprobe(t)) {

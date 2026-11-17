@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.thread.functions.panicking
 
 // Synchronization objects that employ poisoning.
 //
@@ -122,7 +123,7 @@ public open class Flag internal constructor(
      * Checks the flag for a guarded borrow, where we may also set poison when `done`.
      */
     public open fun guard(): LockResult<Guard> {
-        val ret = Guard(panicking = thread.panicking())
+        val ret = Guard(panicking = panicking())
         return if (this.get()) {
             Result.Err(PoisonError.new(ret))
         } else {
@@ -131,7 +132,7 @@ public open class Flag internal constructor(
     }
 
     public open fun done(guard: Guard) {
-        if (!guard.panicking && thread.panicking()) {
+        if (!guard.panicking && panicking()) {
             this.failed.store(true, Ordering.Relaxed)
         }
     }

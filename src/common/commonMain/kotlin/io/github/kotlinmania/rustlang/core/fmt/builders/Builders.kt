@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.core.fmt.builders
 
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.default.Default
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
@@ -151,7 +150,7 @@ public open class DebugStruct internal constructor(
                     this.fmt.append(" {\n")
                 }
                 val slot = null
-                val state = Default.Default()
+                val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
                 writer.append(name)
                 writer.append(": ")
@@ -218,7 +217,7 @@ public open class DebugStruct internal constructor(
             if (this.hasFields) {
                 if (this.isPretty()) {
                     val slot = null
-                    val state = Default.Default()
+                    val state = Default.default()
                     val writer = PadAdapter.wrap(this.fmt, slot, state)
                     writer.append("..\n")
                     this.fmt.append("}")
@@ -385,7 +384,7 @@ public open class DebugTuple internal constructor(
                     this.fmt.append("(\n")
                 }
                 val slot = null
-                val state = Default.Default()
+                val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
                 when (val tryResult = value.fmt(writer)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure2 Result.Err(tryResult.errValue()) }
                 writer.append(",\n")
@@ -496,7 +495,7 @@ public open class DebugTuple internal constructor(
             if (this.fields > 0) {
                 if (this.isPretty()) {
                     val slot = null
-                    val state = Default.Default()
+                    val state = Default.default()
                     val writer = PadAdapter.wrap(this.fmt, slot, state)
                     writer.append("..\n")
                     this.fmt.append(")")
@@ -604,7 +603,7 @@ public open class DebugInner internal constructor(
                     this.fmt.append("\n")
                 }
                 val slot = null
-                val state = Default.Default()
+                val state = Default.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, state)
                 when (val tryResult = entry.fmt(writer)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure5 Result.Err(tryResult.errValue()) }
                 writer.append(",\n")
@@ -770,7 +769,7 @@ public open class DebugSet(
             if (this.inner.hasFields) {
                 if (this.inner.isPretty()) {
                     val slot = null
-                    val state = Default.Default()
+                    val state = Default.default()
                     val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
                     writer.append("..\n")
                     this.inner.fmt.append("}")
@@ -951,7 +950,7 @@ public open class DebugList(
             if (this.inner.hasFields) {
                 if (this.inner.isPretty()) {
                     val slot = null
-                    val state = Default.Default()
+                    val state = Default.default()
                     val writer = PadAdapter.wrap(this.inner.fmt, slot, state)
                     writer.append("..\n")
                     this.inner.fmt.append("]")
@@ -1099,7 +1098,7 @@ public open class DebugMap internal constructor(
                     this.fmt.append("\n")
                 }
                 val slot = null
-                this.state = Default.Default()
+                this.state = PadAdapterState.default()
                 val writer = PadAdapter.wrap(this.fmt, slot, this.state)
                 when (val tryResult = key.fmt(writer)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure8 Result.Err(tryResult.errValue()) }
                 writer.append(": ")
@@ -1311,7 +1310,7 @@ public open class DebugMap internal constructor(
             if (this.hasFields) {
                 if (this.isPretty()) {
                     val slot = null
-                    val state = Default.Default()
+                    val state = Default.default()
                     val writer = PadAdapter.wrap(this.fmt, slot, state)
                     writer.append("..\n")
                     this.fmt.append("}")
@@ -1383,7 +1382,7 @@ public open class DebugMap internal constructor(
 
 public fun debugMapNew(fmt: StringBuilder): DebugMap {
     val result = fmt.append("{")
-    return DebugMap(fmt = fmt, result = result, hasFields = false, hasKey = false, state = Default.Default())
+    return DebugMap(fmt = fmt, result = result, hasFields = false, hasKey = false, state = PadAdapterState.default())
 }
 
 /**

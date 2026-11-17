@@ -20,6 +20,13 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.mem.component10
+import io.github.kotlinmania.rustlang.core.mem.component11
+import io.github.kotlinmania.rustlang.core.mem.component12
+import io.github.kotlinmania.rustlang.core.mem.component6
+import io.github.kotlinmania.rustlang.core.mem.component7
+import io.github.kotlinmania.rustlang.core.mem.component8
+import io.github.kotlinmania.rustlang.core.mem.component9
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
@@ -138,6 +145,29 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
  *     public data object Paperback : BookFormat()
  *     public data object Hardback : BookFormat()
  *     public data object Ebook : BookFormat()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Paperback -> 0
+ *         Hardback -> 1
+ *         Ebook -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * open class Book(public var isbn: Int, public var format: BookFormat) {
  *     public open fun eq(other: Book): Boolean {
@@ -164,6 +194,29 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
  *     public data object Ebook : BookFormat()
  *
  *     public fun rustEquals(other: BookFormat): Boolean = this == other
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Paperback -> 0
+ *         Hardback -> 1
+ *         Ebook -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  *
  *     // Implement <BookFormat> == <Book> comparisons
  *     public open fun eq(other: Book): Boolean {
@@ -199,6 +252,29 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
  *     public data object Ebook : BookFormat()
  *
  *     public fun rustEquals(other: BookFormat): Boolean = this == other
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Paperback -> 0
+ *         Hardback -> 1
+ *         Ebook -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  *
  *     public open fun eq(other: Book): Boolean {
  *         return this == other.format
@@ -299,6 +375,29 @@ public interface PartialEq<Rhs> {
  *     public data object Paperback : BookFormat()
  *     public data object Hardback : BookFormat()
  *     public data object Ebook : BookFormat()
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Paperback -> 0
+ *         Hardback -> 1
+ *         Ebook -> 2
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * open class Book(public var isbn: Int, public var format: BookFormat) {
  *     public open fun eq(other: Book): Boolean {
@@ -355,6 +454,22 @@ public sealed class Ordering(
     public data object Greater : Ordering(1)
 
     public fun rustEquals(other: Ordering): Boolean = this == other
+
+    public fun toByte(): Byte = value
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value.toInt()
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 
     public open fun asRaw(): Byte {
         // Note(const-Note): just use `PartialOrd` against `Equal` once that's const
@@ -713,6 +828,28 @@ public fun <K : Ord<K>, V> KeyAndValue<K, V>.cmp(other: KeyAndValue<K, V>): Orde
  *     public data object Bottom : E()
  *
  *     public fun rustEquals(other: E): Boolean = this == other
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Top -> 0
+ *         Bottom -> 1
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * check(E.Top < E.Bottom)
  * ```
@@ -725,6 +862,22 @@ public fun <K : Ord<K>, V> KeyAndValue<K, V>.cmp(other: KeyAndValue<K, V>): Orde
  *     public data object Bottom : E(1)
  *
  *     public fun rustEquals(other: E): Boolean = this == other
+ *
+ *     public fun toByte(): Byte = value.toByte()
+ *
+ *     public fun toUByte(): UByte = value.toUByte()
+ *
+ *     public fun toShort(): Short = value.toShort()
+ *
+ *     public fun toUShort(): UShort = value.toUShort()
+ *
+ *     public fun toInt(): Int = value
+ *
+ *     public fun toUInt(): UInt = value.toUInt()
+ *
+ *     public fun toLong(): Long = value.toLong()
+ *
+ *     public fun toULong(): ULong = value.toULong()
  * }
  * check(E.Bottom < E.Top)
  * ```
@@ -1101,6 +1254,28 @@ public interface Ord<T> : Eq, PartialOrd<T> {
  *     public data object Bottom : E()
  *
  *     public fun rustEquals(other: E): Boolean = this == other
+ *
+ *     private fun kmDiscriminant(): Int =
+ *         when (this) {
+ *         Top -> 0
+ *         Bottom -> 1
+ *         }
+ *
+ *     public fun toByte(): Byte = kmDiscriminant().toByte()
+ *
+ *     public fun toUByte(): UByte = kmDiscriminant().toUByte()
+ *
+ *     public fun toShort(): Short = kmDiscriminant().toShort()
+ *
+ *     public fun toUShort(): UShort = kmDiscriminant().toUShort()
+ *
+ *     public fun toInt(): Int = kmDiscriminant()
+ *
+ *     public fun toUInt(): UInt = kmDiscriminant().toUInt()
+ *
+ *     public fun toLong(): Long = kmDiscriminant().toLong()
+ *
+ *     public fun toULong(): ULong = kmDiscriminant().toULong()
  * }
  * check(E.Top < E.Bottom)
  * ```
@@ -1113,6 +1288,22 @@ public interface Ord<T> : Eq, PartialOrd<T> {
  *     public data object Bottom : E(1)
  *
  *     public fun rustEquals(other: E): Boolean = this == other
+ *
+ *     public fun toByte(): Byte = value.toByte()
+ *
+ *     public fun toUByte(): UByte = value.toUByte()
+ *
+ *     public fun toShort(): Short = value.toShort()
+ *
+ *     public fun toUShort(): UShort = value.toUShort()
+ *
+ *     public fun toInt(): Int = value
+ *
+ *     public fun toUInt(): UInt = value.toUInt()
+ *
+ *     public fun toLong(): Long = value.toLong()
+ *
+ *     public fun toULong(): ULong = value.toULong()
  * }
  * check(E.Bottom < E.Top)
  * ```

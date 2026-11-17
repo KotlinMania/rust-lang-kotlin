@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.AsRef
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.nth
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
@@ -558,7 +557,7 @@ public open class SplitInclusive<T, P, Output>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, cmp.max(1, this.v.size))
+            Pair(1, max(1, this.v.size))
         }
 
     public open fun nextBack(): List<T>? {
@@ -745,7 +744,7 @@ public open class SplitInclusiveMut<T, P, Output>(
             // If the predicate doesn't match anything, we yield one slice.
             // If it matches every element, we yield `len()` one-element slices,
             // or a single empty slice.
-            Pair(1, cmp.max(1, this.v.size))
+            Pair(1, max(1, this.v.size))
         }
 
     public open fun nextBack(): MutableList<T>? {
@@ -2521,7 +2520,7 @@ public fun <T> ChunkBy<T, P>.count(): Int {
     var (previous, rest) = this.slice.splitFirst() ?: return 0
     var count = 1
     for (current in rest) {
-        count += Int.From(!(this.predicate)(previous, current))
+        count += Int.from(!(this.predicate)(previous, current))
         previous = current
     }
     return count

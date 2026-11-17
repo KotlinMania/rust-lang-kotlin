@@ -293,7 +293,7 @@ public fun <M> panicAny(msg: M): Nothing {
  * check(result1.isErr())
  * ```
  */
-public fun <R> catchUnwind(f: () -> R): Result<R> = panicking.catchUnwind(f)
+public fun <R> catchUnwind(f: () -> R): Result<R> = io.github.kotlinmania.rustlang.std.panicking.catchUnwind(f)
 
 /**
  * Triggers a panic without invoking the panic hook.
@@ -324,7 +324,7 @@ public fun <R> catchUnwind(f: () -> R): Result<R> = panicking.catchUnwind(f)
  * }
  * ```
  */
-public fun resumeUnwind(payload: RustAny): Nothing = panicking.resumeUnwind(payload)
+public fun resumeUnwind(payload: RustAny): Nothing = io.github.kotlinmania.rustlang.std.panicking.resumeUnwind(payload)
 
 /**
  * Makes all future panics abort directly without running the panic hook or unwinding.
@@ -383,6 +383,29 @@ public sealed class BacktraceStyle {
     public data object Off : BacktraceStyle()
 
     public fun rustEquals(other: BacktraceStyle): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Short -> 0
+        Full -> 1
+        Off -> 2
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 
     public open fun asU8(): UByte =
         when (this) {

@@ -286,6 +286,28 @@ public sealed class BasicBlock {
      * A basic block that lies on an unwind path.
      */
     public data object Cleanup : BasicBlock()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Normal -> 0
+        Cleanup -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 /**
@@ -301,6 +323,28 @@ public sealed class UnwindTerminateReason {
      * triggered by the drop glue.
      */
     public data object InCleanup : UnwindTerminateReason()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Abi -> 0
+        InCleanup -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 // Unwind actions
@@ -584,6 +628,28 @@ public fun <T> debuginfo(name: String, s: T) {
 public sealed class Safety {
     public data object Safe : Safety()
     public data object Unsafe : Safety()
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Safe -> 0
+        Unsafe -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }
 
 public sealed class PointerCoercion {

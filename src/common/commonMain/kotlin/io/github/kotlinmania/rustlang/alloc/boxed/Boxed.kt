@@ -1336,7 +1336,7 @@ public open class Box<T, A : Allocator>(
          * to call it as `Holder.allocator(b)` instead of `b.allocator()`. This
          * is so that there is no conflict with a method on the inner type.
          */
-        public fun <T, A : Allocator> allocator(b: Box<T, A>): A = b.second
+        public fun <T, A : Allocator> allocator(b: Box<T, A>): A = b.field1
 
         /**
          * Consumes and leaks the `Holder`, returning a mutable reference,

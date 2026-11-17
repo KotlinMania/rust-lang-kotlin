@@ -23,6 +23,22 @@ public sealed class UnwindReasonCode(
     public data object UrcFailure : UnwindReasonCode(9)
 
     public fun rustEquals(other: UnwindReasonCode): Boolean = this == other
+
+    public fun toByte(): Byte = value.toByte()
+
+    public fun toUByte(): UByte = value.toUByte()
+
+    public fun toShort(): Short = value.toShort()
+
+    public fun toUShort(): UShort = value.toUShort()
+
+    public fun toInt(): Int = value
+
+    public fun toUInt(): UInt = value.toUInt()
+
+    public fun toLong(): Long = value.toLong()
+
+    public fun toULong(): ULong = value.toULong()
 }
 
 public typealias UnwindExceptionClass = ULong

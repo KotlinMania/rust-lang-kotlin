@@ -18,6 +18,7 @@ import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.slice.memchr.memrchr
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.iter.CharIndices
 import io.github.kotlinmania.rustlang.core.Mask8x16 as Mask
@@ -603,7 +604,7 @@ public open class CharSearcher(
             // the last byte of the utf8 encoded needle
             // SAFETY: we have an invariant that `utf8Size<5`
             val lastByte = this.utf8Encoded.getUnchecked(this.utf8Size() - 1)
-            when (val matchVal = memchr.memchr(lastByte, bytes)) {
+            when (val matchVal = memchr(lastByte, bytes)) {
                 null -> {
                     // found nothing, exit
                     this.finger = this.fingerBack
@@ -678,7 +679,7 @@ public open class CharSearcher(
             // the last byte of the utf8 encoded needle
             // SAFETY: we have an invariant that `utf8Size<5`
             val lastByte = this.utf8Encoded.getUnchecked(this.utf8Size() - 1)
-            when (val matchVal = memchr.memrchr(lastByte, bytes)) {
+            when (val matchVal = memrchr(lastByte, bytes)) {
                 null -> {
                     this.fingerBack = this.finger
                     // found nothing, exit
@@ -1193,7 +1194,7 @@ public open class StrSearcher(
                         val (a, b) = matchVal2
                         // skip to next char boundary
                         val b1 = this.haystack.ceilCharBoundary(b)
-                        searcher2.position = cmp.max(b1, searcher2.position)
+                        searcher2.position = max(b1, searcher2.position)
                         SearchStep.Reject(a, b1)
                     }
                     else -> {
@@ -1223,7 +1224,7 @@ public open class StrSearcher(
                 if (searcher.position >= bytes.size) {
                     return null
                 }
-                when (val matchVal2 = memchr.memchr(searcher.b, ((bytes).subList(searcher.position, (bytes).size)))) {
+                when (val matchVal2 = memchr(searcher.b, ((bytes).subList(searcher.position, (bytes).size)))) {
                     null -> {
                         searcher.position = bytes.size
                         null
@@ -1333,7 +1334,7 @@ public open class StrSearcher(
                     return null
                 }
                 val bytes = this.haystack.encodeToByteArray().map { it.toUByte() }
-                when (val matchVal2 = memchr.memrchr(searcher.b, ((bytes).subList(0, searcher.end)))) {
+                when (val matchVal2 = memrchr(searcher.b, ((bytes).subList(0, searcher.end)))) {
                     null -> {
                         searcher.end = 0
                         null
@@ -1622,7 +1623,7 @@ public open class TwoWaySearcher(
                 if (longPeriod) {
                     this.critPos
                 } else {
-                    cmp.max(this.critPos, this.memory)
+                    max(this.critPos, this.memory)
                 }
             for (i in start until needle.size) {
                 // SAFETY: on every iteration of `search`, the `haystack.get(self.position + needleLast)`
@@ -1848,7 +1849,7 @@ public open class TwoWaySearcher(
                 // (critPos = 1, period = 3) while being factored with approximate
                 // period in reverse (critPos = 2, period = 2). We use the given
                 // reverse factorization but keep the exact period.
-                val critPosBack = needle.size - cmp.max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
+                val critPosBack = needle.size - max(TwoWaySearcher.reverseMaximalSuffix(needle, period, false), TwoWaySearcher.reverseMaximalSuffix(needle, period, true))
                 TwoWaySearcher(critPos = critPos, critPosBack = critPosBack, period = period, byteset = TwoWaySearcher.bytesetCreate(((needle).subList(0, period))), position = 0, end = end, memory = 0, memoryBack = needle.size)
             } else {
                 // long period case -- we have an approximation to the actual period,
@@ -1857,7 +1858,7 @@ public open class TwoWaySearcher(
                 // Approximate the period by lower bound max(|u|, |v|) + 1.
                 // The critical factorization is efficient to use for both forward and
                 // reverse search.
-                TwoWaySearcher(critPos = critPos, critPosBack = critPos, period = cmp.max(critPos, needle.size - critPos) + 1, byteset = TwoWaySearcher.bytesetCreate(needle), position = 0, end = end, memory = Int.MAX_VALUE, memoryBack = Int.MAX_VALUE)
+                TwoWaySearcher(critPos = critPos, critPosBack = critPos, period = max(critPos, needle.size - critPos) + 1, byteset = TwoWaySearcher.bytesetCreate(needle), position = 0, end = end, memory = Int.MAX_VALUE, memoryBack = Int.MAX_VALUE)
             }
         }
 

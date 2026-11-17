@@ -16,4 +16,26 @@ public sealed class Sign {
     public data object MinusPlus : Sign()
 
     public fun rustEquals(other: Sign): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Minus -> 0
+        MinusPlus -> 1
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }

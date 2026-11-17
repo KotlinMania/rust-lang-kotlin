@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.core.num
 
-import io.github.kotlinmania.rustlang.core.num.IntErrorKind.*
+import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind.*
 
 /**
  * A classification of floating point numbers.
@@ -64,4 +64,29 @@ public sealed class FpCategory {
     public data object Normal : FpCategory()
 
     public fun rustEquals(other: FpCategory): Boolean = this == other
+
+    private fun kmDiscriminant(): Int =
+        when (this) {
+        Nan -> 0
+        Infinite -> 1
+        Zero -> 2
+        Subnormal -> 3
+        Normal -> 4
+        }
+
+    public fun toByte(): Byte = kmDiscriminant().toByte()
+
+    public fun toUByte(): UByte = kmDiscriminant().toUByte()
+
+    public fun toShort(): Short = kmDiscriminant().toShort()
+
+    public fun toUShort(): UShort = kmDiscriminant().toUShort()
+
+    public fun toInt(): Int = kmDiscriminant()
+
+    public fun toUInt(): UInt = kmDiscriminant().toUInt()
+
+    public fun toLong(): Long = kmDiscriminant().toLong()
+
+    public fun toULong(): ULong = kmDiscriminant().toULong()
 }

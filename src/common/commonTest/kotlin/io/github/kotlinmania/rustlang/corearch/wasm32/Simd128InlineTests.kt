@@ -4709,9 +4709,9 @@ public class Simd128InlineTests {
                 check(result1[i] == (((a1.toInt()) * (b1.toInt()) + 0x4000) shr 15).toShort())
             }
         }
-        test(listOf(0, 0, 0, 0, 0, 0, 0, 0), listOf(0, 0, 0, 0, 0, 0, 0, 0))
-        test(listOf(1, 1, 1, 1, 1, 1, 1, 1), listOf(1, 1, 1, 1, 1, 1, 1, 1))
-        test(listOf(-1, 100, 2003, -29494, 12, 128, 994, 1), listOf(-4049, 8494, -10483, 0, 5, 2222, 883, -9))
+        test(shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0), shortArrayOf(0, 0, 0, 0, 0, 0, 0, 0))
+        test(shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1), shortArrayOf(1, 1, 1, 1, 1, 1, 1, 1))
+        test(shortArrayOf((-1).toShort(), 100, 2003, (-29494).toShort(), 12, 128, 994, 1), shortArrayOf((-4049).toShort(), 8494, (-10483).toShort(), 0, 5, 2222, 883, (-9).toShort()))
     }
 
     @kotlin.test.Test

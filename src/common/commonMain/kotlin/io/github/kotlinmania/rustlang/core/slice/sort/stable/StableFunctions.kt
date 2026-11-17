@@ -71,7 +71,7 @@ public fun <T, BufT : BufGuard<T, BufT>> driftsortMain(v: MutableList<T>, isLess
     // 8MB
     val maxFullAlloc = MAX_FULL_ALLOC_BYTES / sizeOf<T>(typeLayoutT = typeLayoutT)
     val len = v.size
-    val allocLen = cmp.max(cmp.max(len - len / 2, minOf(len, maxFullAlloc)), SMALL_SORT_GENERAL_SCRATCH_LEN)
+    val allocLen = max(max(len - len / 2, minOf(len, maxFullAlloc)), SMALL_SORT_GENERAL_SCRATCH_LEN)
     // For small inputs 4KiB of stack storage suffices, which allows us to avoid
     // calling the (de-)allocator. Benchmarks showed this was quite beneficial.
     val stackBuf = AlignedStorage.new()

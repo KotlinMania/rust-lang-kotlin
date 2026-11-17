@@ -308,7 +308,7 @@ public fun mm512MaskzDpbf16Ps(k: Mmask16, src: M512, a: M512bh, b: M512bh): M512
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtpbh_ps)
  */
-public fun mm512CvtpbhPs(a: M256bh): M512 = mm512Castsi512Ps(mm512SlliEpi32(mm512Cvtepi16Epi32(transmuteWithLayouts<M256bh, M512>(a, UnresolvedTypeLayout<M256bh>(), UnresolvedTypeLayout<M512>())), 16))
+public fun mm512CvtpbhPs(a: M256bh): M512 = mm512Castsi512Ps(mm512SlliEpi32(mm512Cvtepi16Epi32(transmute(a)), 16))
 
 /**
  * Converts packed BF16 (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -342,7 +342,7 @@ public fun mm512MaskzCvtpbhPs(k: Mmask16, a: M256bh): M512 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtpbh_ps)
  */
-public fun mm256CvtpbhPs(a: M128bh): M256 = mm256Castsi256Ps(mm256SlliEpi32(mm256Cvtepi16Epi32(transmuteWithLayouts<M128bh, M256>(a, UnresolvedTypeLayout<M128bh>(), UnresolvedTypeLayout<M256>())), 16))
+public fun mm256CvtpbhPs(a: M128bh): M256 = mm256Castsi256Ps(mm256SlliEpi32(mm256Cvtepi16Epi32(transmute(a)), 16))
 
 /**
  * Converts packed BF16 (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -376,7 +376,7 @@ public fun mm256MaskzCvtpbhPs(k: Mmask8, a: M128bh): M256 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtpbh_ps)
  */
-public fun mmCvtpbhPs(a: M128bh): M128 = mmCastsi128Ps(mmSlliEpi32(mmCvtepi16Epi32(transmuteWithLayouts<M128bh, M128>(a, UnresolvedTypeLayout<M128bh>(), UnresolvedTypeLayout<M128>())), 16))
+public fun mmCvtpbhPs(a: M128bh): M128 = mmCastsi128Ps(mmSlliEpi32(mmCvtepi16Epi32(transmute(a)), 16))
 
 /**
  * Converts packed BF16 (16-bit) floating-point elements in a to single-precision (32-bit) floating-point

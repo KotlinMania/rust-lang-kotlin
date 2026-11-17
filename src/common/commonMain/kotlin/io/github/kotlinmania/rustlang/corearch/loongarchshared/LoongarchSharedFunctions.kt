@@ -16,13 +16,13 @@ public fun rdtimehW(): Pair<Int, Int> {
     return Pair(value, tid)
 }
 
-public expect fun dbar(a: Int)
+public expect fun externDbar(a: Int)
 
-public expect fun ibar(a: Int)
+public expect fun externIbar(a: Int)
 
-public expect fun movgr2fcsr(a: Int, b: Int)
+public expect fun externMovgr2fcsr(a: Int, b: Int)
 
-public expect fun movfcsr2gr(a: Int): Int
+public expect fun externMovfcsr2gr(a: Int): Int
 
 public expect fun externIocsrrdB(a: Int): Int
 
@@ -40,7 +40,7 @@ public expect fun breakTarget(a: Int)
 
 public expect fun externCpucfg(a: Int): Int
 
-public expect fun syscall(a: Int)
+public expect fun externSyscall(a: Int)
 
 public expect fun externFrecipeS(a: Float): Float
 
@@ -57,7 +57,7 @@ public fun dbar(imm15: Int) {
     run {
         check(0 <= imm15 && imm15 < (1 shl 15)) { "IMM15 doesn't fit in 15 bits (unsigned)" }
     }
-    dbar(imm15)
+    externDbar(imm15)
 }
 
 /**
@@ -67,7 +67,7 @@ public fun ibar(imm15: Int) {
     run {
         check(0 <= imm15 && imm15 < (1 shl 15)) { "IMM15 doesn't fit in 15 bits (unsigned)" }
     }
-    ibar(imm15)
+    externIbar(imm15)
 }
 
 /**
@@ -77,7 +77,7 @@ public fun movgr2fcsr(a: Int, imm2: Int) {
     run {
         check(0 <= imm2 && imm2 < (1 shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    movgr2fcsr(imm2, a)
+    externMovgr2fcsr(imm2, a)
 }
 
 /**
@@ -87,7 +87,7 @@ public fun movfcsr2gr(imm2: Int): Int {
     run {
         check(0 <= imm2 && imm2 < (1 shl 2)) { "IMM2 doesn't fit in 2 bits (unsigned)" }
     }
-    return movfcsr2gr(imm2)
+    return externMovfcsr2gr(imm2)
 }
 
 /**
@@ -148,7 +148,7 @@ public fun syscall(imm15: Int) {
     run {
         check(0 <= imm15 && imm15 < (1 shl 15)) { "IMM15 doesn't fit in 15 bits (unsigned)" }
     }
-    syscall(imm15.toLong())
+    externSyscall(imm15)
 }
 
 /**

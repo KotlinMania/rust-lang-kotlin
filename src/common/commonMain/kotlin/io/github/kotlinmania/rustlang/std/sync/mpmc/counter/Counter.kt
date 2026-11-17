@@ -13,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.std.process.abort
 
 /**
  * Reference counter internals.
@@ -92,7 +93,7 @@ public open class Sender<C> internal constructor(
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            process.abort()
+            abort()
         }
         return Sender(counter = this.counter)
     }
@@ -167,7 +168,7 @@ public open class Receiver<C> internal constructor(
         // counter. It's very difficult to recover sensibly from such degenerate scenarios so we
         // just abort when the count becomes very large.
         if (count > Int.MAX_VALUE) {
-            process.abort()
+            abort()
         }
         return Receiver(counter = this.counter)
     }

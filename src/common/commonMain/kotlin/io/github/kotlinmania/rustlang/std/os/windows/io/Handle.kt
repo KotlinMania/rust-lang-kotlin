@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -16,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.Rc
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeReader
 import io.github.kotlinmania.rustlang.std.io.pipe.PipeWriter
@@ -37,6 +37,7 @@ import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
 import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
+import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
@@ -129,14 +130,14 @@ public open class BorrowedHandle internal constructor(
         // if we passed it a null handle, but we can treat null as a valid
         // handle which doesn't do any I/O, and allow it to be duplicated.
         if (handle.isNull()) {
-            return Result.Ok<OwnedHandle, Error>(OwnedHandle.FromRawHandle(handle))
+            return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(handle, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
         }
         val ret = MutPtr(0L)
         when (val tryResult = cvt(run {
             val curProc = C.GetCurrentProcess()
             C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
         })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedHandle, Error>(tryResult.errValue()) }
-        return Result.Ok<OwnedHandle, Error>(OwnedHandle.FromRawHandle(ret))
+        return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(ret, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
     }
 
     public override fun asRawHandle(): RawHandle = this.handle
@@ -283,7 +284,7 @@ public open class OwnedHandle internal constructor(
             val handleOrNull1 = handleOrNull
             return if (handleOrNull1.isValid()) {
                 // SAFETY: The handle is not null.
-                Result.Ok<OwnedHandle, NullHandleError>(OwnedHandle.FromRawHandle(handleOrNull1.first))
+                Result.Ok<OwnedHandle, NullHandleError>(OwnedHandle.fromRawHandle(handleOrNull1.first, fieldLayout = fieldLayout))
             } else {
                 Result.Err<OwnedHandle, NullHandleError>(NullHandleError(Unit))
             }
@@ -293,7 +294,7 @@ public open class OwnedHandle internal constructor(
             val handleOrInvalid1 = handleOrInvalid
             return if (handleOrInvalid1.isValid()) {
                 // SAFETY: The handle is not invalid.
-                Result.Ok<OwnedHandle, InvalidHandleError>(OwnedHandle.FromRawHandle(handleOrInvalid1.first))
+                Result.Ok<OwnedHandle, InvalidHandleError>(OwnedHandle.fromRawHandle(handleOrInvalid1.first, fieldLayout = fieldLayout))
             } else {
                 Result.Err<OwnedHandle, InvalidHandleError>(InvalidHandleError(Unit))
             }
@@ -309,17 +310,17 @@ public open class OwnedHandle internal constructor(
         /**
          * Takes ownership of a [`ChildStdin`](process.ChildStdin)'s file handle.
          */
-        public fun from(childStdin: ChildStdin, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.FromRawHandle(childStdin.intoRawHandle())
+        public fun from(childStdin: ChildStdin, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStdin.intoRawHandle(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`ChildStdout`](process.ChildStdout)'s file handle.
          */
-        public fun from(childStdout: ChildStdout, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.FromRawHandle(childStdout.intoRawHandle())
+        public fun from(childStdout: ChildStdout, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStdout.intoRawHandle(), fieldLayout = fieldLayout)
 
         /**
          * Takes ownership of a [`ChildStderr`](process.ChildStderr)'s file handle.
          */
-        public fun from(childStderr: ChildStderr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.FromRawHandle(childStderr.intoRawHandle())
+        public fun from(childStderr: ChildStderr, fieldLayout: TypeLayout<RawHandle> = UnresolvedTypeLayout()): OwnedHandle = OwnedHandle.fromRawHandle(childStderr.intoRawHandle(), fieldLayout = fieldLayout)
 
         public fun from(pipe: PipeReader): OwnedHandle = pipe.intoInner().intoInner()
 
@@ -594,7 +595,7 @@ public fun File.asHandle(): BorrowedHandle = this.asInner().asHandle()
 /**
  * Returns a [`File`](fs.File) that takes ownership of the given handle.
  */
-public fun fromFile(owned: OwnedHandle): File = File.FromInner(FromInner.FromInner(FromInner.FromInner(owned)))
+public fun fromFile(owned: OwnedHandle): File = File.fromInner(FromInner.fromInner(FromInner.fromInner(owned)))
 
 public fun Stdin.asHandle(): BorrowedHandle = BorrowedHandle.borrowRaw(this.asRawHandle())
 
@@ -622,6 +623,6 @@ public fun PipeReader.asHandle(): BorrowedHandle = this.value.asHandle()
 
 public fun PipeWriter.asHandle(): BorrowedHandle = this.value.asHandle()
 
-public fun fromPipeReader(ownedHandle: OwnedHandle): PipeReader = PipeReader.FromInner(FromInner.FromInner(ownedHandle))
+public fun fromPipeReader(ownedHandle: OwnedHandle): PipeReader = PipeReader.fromInner(FromInner.fromInner(ownedHandle))
 
-public fun fromPipeWriter(ownedHandle: OwnedHandle): PipeWriter = PipeWriter.FromInner(FromInner.FromInner(ownedHandle))
+public fun fromPipeWriter(ownedHandle: OwnedHandle): PipeWriter = PipeWriter.fromInner(FromInner.fromInner(ownedHandle))

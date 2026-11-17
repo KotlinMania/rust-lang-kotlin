@@ -7,13 +7,19 @@ import io.github.kotlinmania.rustlang.core.cell.RefMut
 import io.github.kotlinmania.rustlang.core.cell.SyncUnsafeCell
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.char.methods.EscapeDebugExtArgs
-import io.github.kotlinmania.rustlang.core.convert.From
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugStruct
 import io.github.kotlinmania.rustlang.core.fmt.builders.DebugTuple
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.component10
+import io.github.kotlinmania.rustlang.core.mem.component11
+import io.github.kotlinmania.rustlang.core.mem.component12
+import io.github.kotlinmania.rustlang.core.mem.component6
+import io.github.kotlinmania.rustlang.core.mem.component7
+import io.github.kotlinmania.rustlang.core.mem.component8
+import io.github.kotlinmania.rustlang.core.mem.component9
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -139,7 +145,7 @@ public fun write(output: Write, fmt: Arguments): Result {
             // SAFETY: We can assume the strings in the template are valid.
             val s4 =
                 run {
-                    val len = Int.From(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
+                    val len = Int.from(run { val bytesTmp1 = template.castArray().read(); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
                     template = template.add(2)
                     val s3 = linearSliceView(template.asPtr(), len.toInt(), PrimitiveLayouts.U8)
                     template = template.add(len)
@@ -175,7 +181,7 @@ public fun write(output: Write, fmt: Arguments): Result {
                     template = template.add(2)
                 }
                 if (n1 and 8 != 0) {
-                    argIndex = Int.From(run { val bytesTmp6 = template.castArray().read(); ((bytesTmp6[1].toInt() shl 8) or bytesTmp6[0].toInt()).toUShort() })
+                    argIndex = Int.from(run { val bytesTmp6 = template.castArray().read(); ((bytesTmp6[1].toInt() shl 8) or bytesTmp6[0].toInt()).toUShort() })
                     template = template.add(2)
                 }
             }

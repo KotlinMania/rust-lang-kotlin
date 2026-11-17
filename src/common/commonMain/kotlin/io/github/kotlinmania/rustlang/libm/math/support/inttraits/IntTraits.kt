@@ -39,7 +39,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.DisplayHex
 /**
  * Minimal integer implementations needed on all integer types, including wide integers.
  */
-public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<UInt, T> {
+public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T, T>, Not<T>, Shl<UInt, T> {
     /**
      * If `Self` is a signed integer
      */
@@ -62,7 +62,7 @@ public interface MinInt<T, out OtherSign, out Unsigned> : BitOr<T>, Not<T>, Shl<
 /**
  * Trait for some basic operations on integers
  */
-public interface Int<T, out OtherSign, Unsigned> : DisplayHex, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign, BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign<Int<T, OtherSign, Unsigned>>, ShlAssign<UInt>, ShrAssign<UInt>, ShrAssign<Int<T, OtherSign, Unsigned>>, Add<T>, Sub<T>, Mul<T>, Div<T>, Rem<T>, Shl<Int<T, OtherSign, Unsigned>, T>, Shl<UInt, T>, Shr<Int<T, OtherSign, Unsigned>, T>, Shr<UInt, T>, BitXor<T>, BitAnd<T>, CastFrom<Int<T, OtherSign, Unsigned>, T>, CastFrom<UShort, T>, CastFrom<UInt, T>, CastFrom<UByte, T>, CastInto<Int<T, OtherSign, Unsigned>>, CastInto<UShort>, CastInto<UInt>, CastInto<UByte> {
+public interface Int<T, out OtherSign, Unsigned> : DisplayHex, AddAssign<T>, SubAssign<T>, MulAssign<T>, DivAssign<T>, RemAssign<T>, BitAndAssign<T>, BitOrAssign<T>, BitXorAssign<T>, ShlAssign<Int<T, OtherSign, Unsigned>>, ShrAssign<UInt>, Add<T, T>, Sub<T, T>, Mul<T, T>, Div<T, T>, Rem<T, T>, Shl<Int<T, OtherSign, Unsigned>, T>, Shr<Int<T, OtherSign, Unsigned>, T>, BitXor<T, T>, BitAnd<T, T>, CastFrom<Int<T, OtherSign, Unsigned>, T>, CastInto<Int<T, OtherSign, Unsigned>> {
     public fun signed(): OtherSign<Unsigned>
 
     public fun unsigned(): Unsigned
@@ -900,7 +900,7 @@ public fun I128.borrowingSub(other: I128, borrow: Boolean): Pair<I128, Boolean> 
  * Trait for integers twice the bit width of another integer. This is implemented for all
  * primitives except for `UByte`, because there is not a smaller primitive.
  */
-public interface DInt<T, H, out OtherSign, out Unsigned> : Add<T>, Sub<T>, Shl<UInt, T>, Shr<UInt, T> {
+public interface DInt<T, H, out OtherSign, out Unsigned> : Add<T, T>, Sub<T, T>, Shl<UInt, T>, Shr<UInt, T> {
     /**
      * Returns the low half of `self`
      */
